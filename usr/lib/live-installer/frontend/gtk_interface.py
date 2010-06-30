@@ -63,19 +63,9 @@ class InstallerWindow:
 		self.window.set_title(DISTRIBUTION_NAME + " " +  _("Installer"))
 		self.window.connect("destroy", self.quit_cb)
 
-		# now make it sexy
-		path = os.path.join(self.resource_dir, 'background.jpg')
-		pixbuf = gtk.gdk.pixbuf_new_from_file(path)
-		pixmap, mask = pixbuf.render_pixmap_and_mask()
-		width, height = pixmap.get_size()
-		del pixbuf
-
-		self.window.set_app_paintable(True)
 		self.window.resize(width, height)
 		self.window.realize()
-		self.window.window.set_back_pixmap(pixmap, False)
-		del pixmap
-
+		
 		# set the step names
 		self.wTree.get_widget("label_step_1").set_markup(_("Select language"))
 		self.wTree.get_widget("label_step_2").set_markup(_("Choose partitions"))
