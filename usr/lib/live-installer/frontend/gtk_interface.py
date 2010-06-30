@@ -303,7 +303,7 @@ class InstallerWindow:
 						iter = model.append()
 						model.set_value(iter, 0, language_label)
 						model.set_value(iter, 1, language_code)				
-						flag_path = self.resource_dir + '/flags/16/' + language_code + '.png'
+						flag_path = self.resource_dir + '/flags/16/' + country_code + '.png'
 						if os.path.exists(flag_path):
 							model.set_value(iter, 2, gtk.gdk.pixbuf_new_from_file(flag_path))
 						else:
