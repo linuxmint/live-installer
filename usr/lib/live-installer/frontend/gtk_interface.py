@@ -152,8 +152,7 @@ class InstallerWindow:
 		self.wTree.get_widget("label_choose_pass").set_markup("<b>%s</b>" % _("Your password"))
 		self.wTree.get_widget("label_pass_help").set_label(_("Please enter your password twice to ensure it is correct"))
 		self.wTree.get_widget("label_hostname").set_markup("<b>%s</b>" % _("Hostname"))
-		self.wTree.get_widget("label_hostname_help").set_label(_("This hostname will be the computers name on the network"))
-		self.wTree.get_widget("checkbutton_sudo").set_label("%s" % _("Add as administrator (/etc/sudoers)"))
+		self.wTree.get_widget("label_hostname_help").set_label(_("This hostname will be the computers name on the network"))		
 		
 		# try to set the hostname
 		machine = HostMachine()
@@ -599,14 +598,11 @@ class InstallerWindow:
 		top = model.append(None)
 		model.set(top, 0, _("User settings"))
 		username = self.wTree.get_widget("entry_username").get_text()
-		realname = self.wTree.get_widget("entry_your_name").get_text()
-		sudo = self.wTree.get_widget("checkbutton_sudo").get_active()
+		realname = self.wTree.get_widget("entry_your_name").get_text()		
 		iter = model.append(top)
 		model.set(iter, 0, "Username: <b>%s</b>" % username)
 		iter = model.append(top)
-		model.set(iter, 0, "Real name: <b>%s</b>" % realname)
-		iter = model.append(top)
-		model.set(iter, 0, "Administrator: <b>%s</b>" % str(sudo))
+		model.set(iter, 0, "Real name: <b>%s</b>" % realname)		
 		
 		# keyboard cruft
 		top = model.append(None)
@@ -646,9 +642,8 @@ class InstallerWindow:
 		username = self.wTree.get_widget("entry_username").get_text()
 		password = self.wTree.get_widget("entry_userpass1").get_text()
 		realname = self.wTree.get_widget("entry_your_name").get_text()
-		hostname = self.wTree.get_widget("entry_hostname").get_text()
-		sudo = self.wTree.get_widget("checkbutton_sudo").get_active()
-		user = SystemUser(username=username, password=password, realname=realname, sudo=sudo)
+		hostname = self.wTree.get_widget("entry_hostname").get_text()		
+		user = SystemUser(username=username, password=password, realname=realname)
 		inst.set_main_user(user)
 		inst.set_hostname(hostname)
 		

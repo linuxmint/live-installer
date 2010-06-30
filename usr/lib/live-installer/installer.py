@@ -13,12 +13,11 @@ gettext.install("live-installer", "/usr/share/locale")
 class SystemUser:
     ''' Represents the main user '''
    
-    def __init__(self, username=None, realname=None, password=None, sudo=False):
+    def __init__(self, username=None, realname=None, password=None):
 	''' create new SystemUser '''
 	self.username = username
 	self.realname = realname
-	self.password = password
-	self.sudo = sudo
+	self.password = password	
 
 class HostMachine:
 	''' Used to probe information about the host '''
@@ -273,10 +272,7 @@ class InstallerEngine:
 			our_current += 1
 			self.sub_update_progress(total=our_total, current=our_current, message=_("Adding new user to system"))
 			user = self.get_main_user()
-			if(user.sudo):
-				os.system("useradd -s %s -c \"%s\" -G sudo -m %s" % ("/bin/bash", user.realname, user.username))
-			else:
-				os.system("useradd -s %s -c \"%s\" -m %s" % ("/bin/bash", user.realname, user.username))
+			os.system("useradd -s %s -c \"%s\" -G sudo -m %s" % ("/bin/bash", user.realname, user.username))			
 			newusers = open("/tmp/newusers.conf", "w")
 			newusers.write("%s:%s\n" % (user.username, user.password))
 			# add root's password
