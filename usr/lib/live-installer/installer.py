@@ -362,25 +362,8 @@ class InstallerEngine:
 			our_current += 1
 			if(self.grub_device is not None):
 				self.update_progress(pulse=True, total=our_total, current=our_current, message=_("Installing bootloader"))
-				out = open("/tmp/install_grub.sh", "w")
-				out.write("#!/bin/bash\n")
-				out.write("mount --bind /dev/ /target/dev\n")
-				out.write("mount --bind /dev/pts /target/dev/shm\n")
-				out.write("mount --bind /dev/shm /target/dev/shm\n")
-				out.write("mount --bind /proc /target/proc\n")
-				out.write("mount --bind /sys /target/sys\n")
-				out.write("chroot /target/ grub-install %s\n" % self.grub_device)
-				#out.write("chroot /target/ update-grub\n") # you are evil.
-				out.write("chroot /target/ grub-mkconfig -o /boot/grub/grub.cfg\n")
-				out.write("umount --force /target/dev/pts\n")
-				out.write("umount --force /target/dev/shm\n")
-				out.write("umount --force /target/dev\n")
-				out.write("umount --force /target/proc\n")
-				out.write("umount --force /target/sys\n")
-				out.close()
-				os.system("chmod +x /tmp/install_grub.sh")
-				os.system("/tmp/install_grub.sh") # this is lame..
-				os.system("rm -rf /tmp/install_grub.sh")
+				os.system("chroot /target/ /bin/sh -c \"grub-install %s\"" % self.grub_device)
+				os.system("chroot /target/ /bin/sh -c \"grub-mkconfig -o /boot/grub/grub.cfg\"").
 
 			# now unmount it
 		   	os.system("umount --force /target/dev/shm")
