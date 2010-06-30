@@ -1,10 +1,12 @@
 #!/usr/bin/env python
+import sys
+sys.path.append('/usr/lib/live-installer')
+from frontend.gtk_interface import InstallerWindow
 
 try:
 	import pygtk
 	pygtk.require("2.0")
-	import gtk
-	from frontend.gtk_interface import InstallerWindow
+	import gtk	
 except Exception, detail:
 	print detail
 	

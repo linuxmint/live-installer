@@ -363,7 +363,7 @@ class InstallerEngine:
 			if(self.grub_device is not None):
 				self.update_progress(pulse=True, total=our_total, current=our_current, message=_("Installing bootloader"))
 				os.system("chroot /target/ /bin/sh -c \"grub-install %s\"" % self.grub_device)
-				os.system("chroot /target/ /bin/sh -c \"grub-mkconfig -o /boot/grub/grub.cfg\"").
+				os.system("chroot /target/ /bin/sh -c \"grub-mkconfig -o /boot/grub/grub.cfg\"")
 
 			# now unmount it
 		   	os.system("umount --force /target/dev/shm")

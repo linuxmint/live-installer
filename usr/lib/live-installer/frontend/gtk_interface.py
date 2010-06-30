@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+import sys
+sys.path.append('/usr/lib/live-installer')
+from installer import InstallerEngine, fstab, fstab_entry, SystemUser, HostMachine
 
 try:
 	import pygtk
@@ -11,8 +14,7 @@ try:
 	import subprocess
 	import sys
 	sys.path.append('/usr/lib/live-installer')
-	import pango
-	from installer import InstallerEngine, fstab, fstab_entry, SystemUser, HostMachine
+	import pango	
 	import threading
 	import xml.dom.minidom
 	from xml.dom.minidom import parse
@@ -86,6 +88,11 @@ class InstallerWindow:
 		
 		# language view
 		self.wTree.get_widget("label_select_language").set_markup(_("Please select the language you wish to use\nfor this installation from the list below"))
+
+		ren = gtk.CellRendererPixbuf()
+		column = gtk.TreeViewColumn("Flags", ren)
+		column.add_attribute(ren, "pixbuf", 2)
+		self.wTree.get_widget("treeview_language_list").append_column(column)
 
 		ren = gtk.CellRendererText()
 		column = gtk.TreeViewColumn("Languages", ren)
@@ -245,28 +252,66 @@ class InstallerWindow:
 			cur_lang = cur_lang.split("_")[0]
 		model = gtk.ListStore(str,str,gtk.gdk.Pixbuf)
 		model.set_sort_column_id(0, gtk.SORT_ASCENDING)
+		
+		#Load countries into memory
+		countries = {}
+		file = open(os.path.join(self.resource_dir, 'countries'), "r")
+		for line in file:
+			line = line.strip()
+			split = line.split("=")
+			if len(split) == 2:
+				countries[split[0]] = split[1]
+		file.close()
+		
+		#Load languages into memory
+		languages = {}
+		file = open(os.path.join(self.resource_dir, 'languages'), "r")
+		for line in file:
+			line = line.strip()
+			split = line.split("=")
+			if len(split) == 2:
+				languages[split[0]] = split[1]
+		file.close()
+		
 		path = os.path.join(self.resource_dir, 'locales')
 		locales = open(path, "r")
 		cur_index = -1 # find the locale :P
 		set_index = None
 		for line in locales:
 			cur_index += 1
-			if "=" in line:
-				line = line.rstrip("\r\n")
-				split = line.split("=")
-				iter = model.append([split[1], split[0]])
-				model.set_value(iter, 0, split[1])
-				model.set_value(iter, 1, split[0])				
-				flag_path = self.resource_dir + '/flags/16/' + split[0] + '.png')
-				if os.path.exists(flag_path):
-					model.set_value(iter, 2, gtk.gdk.pixbuf_new_from_file(flag_path))
-				else:
-					flag_path = self.resource_dir + '/flags/16/generic.png')
-					model.set_value(iter, 2, gtk.gdk.pixbuf_new_from_file(flag_path))
-				if(split[0] == cur_lang):
-					set_index = iter
-			else:
-				iter = model.append([line,line])
+			if "UTF-8" in line:
+				locale_code = line.replace("UTF-8", "")
+				locale_code = locale_code.replace(".", "")
+				locale_code = locale_code.strip()
+				if "_" in locale_code:
+					split = locale_code.split("_")
+					if len(split) == 2:
+						language_code = split[0]
+						if language_code in languages:
+							language = languages[language_code]
+						else:
+							language = language_code
+						
+						country_code = split[1].lower()
+						if country_code in countries:
+							country = countries[country_code]
+						else:
+							country = country_code
+							
+						language_label = "%s (%s)" % (language, country)
+					
+						iter = model.append()
+						model.set_value(iter, 0, language_label)
+						model.set_value(iter, 1, language_code)				
+						flag_path = self.resource_dir + '/flags/16/' + language_code + '.png'
+						if os.path.exists(flag_path):
+							model.set_value(iter, 2, gtk.gdk.pixbuf_new_from_file(flag_path))
+						else:
+							flag_path = self.resource_dir + '/flags/16/generic.png'
+							model.set_value(iter, 2, gtk.gdk.pixbuf_new_from_file(flag_path))
+						if(split[0] == cur_lang):
+							set_index = iter
+
 		treeview = self.wTree.get_widget("treeview_language_list")
 		treeview.set_model(model)
 		if(set_index is not None):
