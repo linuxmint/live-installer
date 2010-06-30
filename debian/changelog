@@ -1,0 +1,18 @@
+live-installer (1.0.1) debian; urgency=medium
+
+  * Renaming
+
+ -- Clement Lefebvre <root@linuxmint.com>  Wed,  30 Jun 2010 14:02:00 +0000
+
+live-installer (1.0.1) debian; urgency=medium
+
+  * Bug fix regarding grub installation
+
+ -- Ikey Doherty <contactjfreak@gmail.com>  Fri,  25 Jun 2010 23:25:00 +0000
+
+live-installer (1.0.0) debian; urgency=low
+
+  * Initial release
+
+ -- Ikey Doherty <contactjfreak@gmail.com>  Wed,  16 Jun 2010 12:19:00 +0000
+

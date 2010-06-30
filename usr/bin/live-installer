@@ -1,0 +1,3 @@
+#!/bin/bash
+# Launch live-installer with all passed arguments (future reserved)
+/usr/lib/live-installer/main.py $*

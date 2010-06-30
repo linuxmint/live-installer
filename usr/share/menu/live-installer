@@ -1,0 +1,5 @@
+?package(live-installer):needs="X11"\
+   section="Applications/System/Administration"\
+   title="Install Linux Mint Debian Edition"\
+   icon="/usr/share/icons/live-installer.xpm"\
+   command="/usr/bin/gksudo /usr/bin/live-installer"
