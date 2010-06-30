@@ -98,6 +98,8 @@ class InstallerWindow:
 		column = gtk.TreeViewColumn("Languages", ren)
 		column.add_attribute(ren, "text", 0)
 		self.wTree.get_widget("treeview_language_list").append_column(column)
+		
+		self.wTree.get_widget("treeview_language_list").connect("cursor-changed", self.cb_change_language)
 
 		# build the language list
 		self.build_lang_list()
@@ -188,7 +190,8 @@ class InstallerWindow:
 		column = gtk.TreeViewColumn(_("Model"), ren)
 		column.add_attribute(ren, "text", 0)
 		self.wTree.get_widget("treeview_models").append_column(column)
-		self.wTree.get_widget("treeview_models").connect("cursor-changed", self.cb_change_kb_model)
+		self.wTree.get_widget("treeview_models").connect("cursor-changed", self.cb_change_kb_model)			
+		
 		# kb layouts
 		ren = gtk.CellRendererText()
 		column = gtk.TreeViewColumn(_("Layout"), ren)
@@ -302,7 +305,7 @@ class InstallerWindow:
 					
 						iter = model.append()
 						model.set_value(iter, 0, language_label)
-						model.set_value(iter, 1, language_code)				
+						model.set_value(iter, 1, locale_code)				
 						flag_path = self.resource_dir + '/flags/16/' + country_code + '.png'
 						if os.path.exists(flag_path):
 							model.set_value(iter, 2, gtk.gdk.pixbuf_new_from_file(flag_path))
@@ -442,6 +445,18 @@ class InstallerWindow:
 	            rc.append(node.data)
 	    return ''.join(rc)
 
+	def cb_change_language(self, treeview, data=None):
+		''' Called whenever someone updates the language '''
+		model = treeview.get_model()
+		active = treeview.get_selection().get_selected_rows()
+		if(len(active) < 1):
+			return
+		active = active[1][0]
+		if(active is None):
+			return
+		row = model[active]		
+		self.locale = row[1]
+	
 	def cb_change_kb_model(self, treeview, data=None):
 		''' Called whenever someone updates the keyboard model '''
 		model = treeview.get_model()
@@ -647,7 +662,10 @@ class InstallerWindow:
 		inst.set_main_user(user)
 		inst.set_hostname(hostname)
 					
-		# set keyboard crap
+		# set language
+		inst.set_locale(self.locale)
+		
+		# set keyboard
 		inst.set_keyboard_options(layout=self.keyboard_layout, model=self.keyboard_model)
 
 		# grub?

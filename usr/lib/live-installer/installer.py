@@ -238,7 +238,7 @@ class InstallerEngine:
 			except OSError:
 				pass
 		# Steps:
-		our_total = 7
+		our_total = 8
 		our_current = 0
 		# chroot
 		self.update_progress(total=our_total, current=our_current, message=_("Entering new system.."))
@@ -320,6 +320,14 @@ class InstallerEngine:
 			gdmconffh.write("\n[chooser]\n")
 			gdmconffh.write("\n[debug]\n")
 			gdmconffh.close()
+			
+			# set the locale
+			our_current += 1
+			self.sub_update_progress(total=our_total, current=our_current, message=_("Setting locale"))
+			os.system("echo \"%s.UTF-8 UTF-8\" >> /etc/locale.gen" % self.locale)
+			os.system("locale-gen")
+			os.system("echo \"\" > /etc/default/locale")
+			os.system("update-locale LANG=\"%s\"" % self.locale)
 
 			# set the keyboard options..
 			our_current += 1
