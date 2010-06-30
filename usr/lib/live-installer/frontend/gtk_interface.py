@@ -630,7 +630,7 @@ class InstallerWindow:
 		# system stuff
 		# todo; probe
 		hostname = self.wTree.get_widget("entry_hostname").get_text()
-		language = "English"
+		language = self.locale
 		top = model.append(None)
 		model.set(top, 0, _("System settings"))
 		iter = model.append(top)
