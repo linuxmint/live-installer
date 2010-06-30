@@ -63,9 +63,6 @@ class InstallerWindow:
 		self.window.set_title(DISTRIBUTION_NAME + " " +  _("Installer"))
 		self.window.connect("destroy", self.quit_cb)
 
-		self.window.resize(width, height)
-		self.window.realize()
-		
 		# set the step names
 		self.wTree.get_widget("label_step_1").set_markup(_("Select language"))
 		self.wTree.get_widget("label_step_2").set_markup(_("Choose partitions"))
