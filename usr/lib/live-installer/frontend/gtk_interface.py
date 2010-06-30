@@ -172,20 +172,11 @@ class InstallerWindow:
 		entry2 = self.wTree.get_widget("entry_userpass2")
 		entry1.connect("changed", self.pass_mismatcher)
 		entry2.connect("changed", self.pass_mismatcher)
-		
-		# root passwords mismatch..
-		entry1 = self.wTree.get_widget("entry_root_pass1")
-		entry2 = self.wTree.get_widget("entry_root_pass2")
-		entry1.connect("changed", self.pass_mismatcher_root)
-		entry2.connect("changed", self.pass_mismatcher_root)
-		
+				
 		# advanced page
-		self.wTree.get_widget("label_advanced").set_markup(_("On this page you can select advanced options regarding your installation\nRemember that the root password is mandatory"))
-		# root pass
-		self.wTree.get_widget("label_root_pass").set_markup("<b>%s</b>" % _("Root password"))
-		self.wTree.get_widget("label_root_help").set_label(_("The root account is the unlimited account, used to administrate the system"))
-		self.wTree.get_widget("label_root_mismatch_help").set_label(_("Please enter your password twice to ensure it is correct"))
-		# grub password
+		self.wTree.get_widget("label_advanced").set_markup(_("On this page you can select advanced options regarding your installation"))
+		
+		# grub
 		self.wTree.get_widget("label_grub").set_markup("<b>%s</b>" % _("Bootloader"))
 		self.wTree.get_widget("checkbutton_grub").set_label(_("Install GRUB"))
 		self.wTree.get_widget("label_grub_help").set_label(_("GRUB is a bootloader used to load the Linux kernel"))
@@ -460,30 +451,7 @@ class InstallerWindow:
 			img = self.wTree.get_widget("image_mismatch")
 			img.set_from_stock(gtk.STOCK_OK, gtk.ICON_SIZE_BUTTON)
 			label = self.wTree.get_widget("label_mismatch")
-			label.set_label(_("Passwords match"))
-			
-	def pass_mismatcher_root(self, widget):
-		''' Root password match tester '''
-		w = self.wTree.get_widget("entry_root_pass1")
-		w2 = self.wTree.get_widget("entry_root_pass2")
-		txt1 = w.get_text()
-		txt2 = w2.get_text()
-		if(txt1 == "" and txt2 == ""):
-			self.wTree.get_widget("image_root_mismatch").hide()
-			self.wTree.get_widget("label_root_mismatch").hide()
-		else:
-			self.wTree.get_widget("image_root_mismatch").show()
-			self.wTree.get_widget("label_root_mismatch").show()
-		if(txt1 != txt2):
-			img = self.wTree.get_widget("image_root_mismatch")
-			img.set_from_stock(gtk.STOCK_NO, gtk.ICON_SIZE_BUTTON)
-			label = self.wTree.get_widget("label_root_mismatch")
-			label.set_label(_("Passwords do not match"))
-		else:
-			img = self.wTree.get_widget("image_root_mismatch")
-			img.set_from_stock(gtk.STOCK_OK, gtk.ICON_SIZE_BUTTON)
-			label = self.wTree.get_widget("label_root_mismatch")
-			label.set_label(_("Passwords match"))
+			label.set_label(_("Passwords match"))			
 			
 	def wizard_cb(self, widget, goback, data=None):
 		''' wizard buttons '''
@@ -526,16 +494,8 @@ class InstallerWindow:
 				if(password1 != password2):
 					MessageDialog(_("Installation Tool"), _("Your passwords do not match"), gtk.MESSAGE_ERROR).show()
 					return
-			elif(sel == 3):
-				# Advanced options n whatnot.
-				password1 = self.wTree.get_widget("entry_root_pass1").get_text()
-				password2 = self.wTree.get_widget("entry_root_pass2").get_text()
-				if(password1 == ""):
-					MessageDialog(_("Installation Tool"), _("Please provide a password the root account"), gtk.MESSAGE_WARNING).show()
-					return
-				if(password1 != password2):
-					MessageDialog(_("Installation Tool"), _("Your passwords do not match"), gtk.MESSAGE_ERROR).show()
-					return
+			elif(sel == 3):				
+				pass
 		label = self.wTree.get_widget("label_step_" + str(sel+1))
 		text = label.get_label()
 		attrs = pango.AttrList()
@@ -646,11 +606,7 @@ class InstallerWindow:
 		user = SystemUser(username=username, password=password, realname=realname)
 		inst.set_main_user(user)
 		inst.set_hostname(hostname)
-		
-		# set root password
-		root_password = self.wTree.get_widget("entry_root_pass1").get_text()
-		inst.set_root_password(root_password)
-		
+					
 		# set keyboard crap
 		inst.set_keyboard_options(layout=self.keyboard_layout, model=self.keyboard_model)
 

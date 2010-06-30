@@ -82,11 +82,7 @@ class InstallerEngine:
     def get_main_user(self):
 	''' Return the main user '''
 	return self.user
-       
-    def set_root_password(self, password):
-	''' Set the root (0) user password '''
-	self.root_password = password
-		
+           
     def format_device(self, device, filesystem):
 	''' Format the given device to the specified filesystem '''
 	cmd = "mkfs -t %s %s" % (filesystem, device)
@@ -242,7 +238,7 @@ class InstallerEngine:
 			except OSError:
 				pass
 		# Steps:
-		our_total = 8
+		our_total = 7
 		our_current = 0
 		# chroot
 		self.update_progress(total=our_total, current=our_current, message=_("Entering new system.."))
@@ -270,16 +266,12 @@ class InstallerEngine:
 			os.system("apt-get remove --purge --yes --force-yes live-initramfs live-installer")
 			# add new user
 			our_current += 1
-			self.sub_update_progress(total=our_total, current=our_current, message=_("Adding new user to system"))
+			self.sub_update_progress(total=our_total, current=our_current, message=_("Adding user to system"))
 			user = self.get_main_user()
 			os.system("useradd -s %s -c \"%s\" -G sudo -m %s" % ("/bin/bash", user.realname, user.username))			
 			newusers = open("/tmp/newusers.conf", "w")
 			newusers.write("%s:%s\n" % (user.username, user.password))
-			# add root's password
-			our_current += 1
-			self.sub_update_progress(total=our_total, current=our_current, message=_("Setting root password"))
-			root_password = self.root_password
-			newusers.write("root:%s\n" % root_password)
+			newusers.write("root:%s\n" % user.password)
 			newusers.close()
 			os.system("cat /tmp/newusers.conf | chpasswd")
 			os.system("rm -rf /tmp/newusers.conf")
