@@ -243,7 +243,7 @@ class InstallerWindow:
 			cur_lang = cur_lang.split(".")[0]
 		if("_" in cur_lang):
 			cur_lang = cur_lang.split("_")[0]
-		model = gtk.ListStore(str,str)
+		model = gtk.ListStore(str,str,gtk.gdk.Pixbuf)
 		model.set_sort_column_id(0, gtk.SORT_ASCENDING)
 		path = os.path.join(self.resource_dir, 'locales')
 		locales = open(path, "r")
@@ -255,6 +255,14 @@ class InstallerWindow:
 				line = line.rstrip("\r\n")
 				split = line.split("=")
 				iter = model.append([split[1], split[0]])
+				model.set_value(iter, 0, split[1])
+				model.set_value(iter, 1, split[0])				
+				flag_path = self.resource_dir + '/flags/16/' + split[0] + '.png')
+				if os.path.exists(flag_path):
+					model.set_value(iter, 2, gtk.gdk.pixbuf_new_from_file(flag_path))
+				else:
+					flag_path = self.resource_dir + '/flags/16/generic.png')
+					model.set_value(iter, 2, gtk.gdk.pixbuf_new_from_file(flag_path))
 				if(split[0] == cur_lang):
 					set_index = iter
 			else:
