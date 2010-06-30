@@ -327,7 +327,7 @@ class InstallerEngine:
 			os.system("echo \"%s.UTF-8 UTF-8\" >> /etc/locale.gen" % self.locale)
 			os.system("locale-gen")
 			os.system("echo \"\" > /etc/default/locale")
-			os.system("update-locale LANG=\"%s\"" % self.locale)
+			os.system("update-locale LANG=\"%s.UTF-8\"" % self.locale)
 
 			# set the keyboard options..
 			our_current += 1
