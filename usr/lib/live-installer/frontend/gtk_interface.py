@@ -215,7 +215,8 @@ class InstallerWindow:
 		
 		# build partition list
 		self.build_disk_list()
-
+		self.build_cairo_widget()
+		
 		# make everything visible.
 		self.window.show()
 		self.should_pulse = False
@@ -367,7 +368,68 @@ class InstallerWindow:
 		self.wTree.get_widget("treeview_disks").set_model(model)
 		self.wTree.get_widget("combobox_grub").set_model(model2)
 		self.wTree.get_widget("combobox_grub").set_active(0)
-		
+
+	def build_cairo_widget(self):
+		import parted, commands
+		from screen import PyDisk
+		hdd_descriptions = []
+		inxi = commands.getoutput("inxi -D -c 0")
+		parts = inxi.split(":")
+		disks = []
+		for part in parts:
+			if "/dev/" in part:
+				print "~~~~~~~~~" + part
+				hdd = part.strip()
+				hdd = hdd.split()
+				for path in hdd:
+					if "/dev/" in path:
+						device = parted.getDevice(path)
+						disk = parted.Disk(device)				
+						partitions = disk.partitions
+						for partition in disk.partitions:					
+							if partition.fileSystem is None:
+								# no filesystem, check flags
+								print dir(parted)
+								if partition.getFlag(parted.PARTITION_SWAP):
+									type = ("Linux swap")
+								elif partition.getFlag(parted.PARTITION_RAID):
+									type = ("RAID")
+								elif partition.getFlag(parted.PARTITION_LVM):
+									type = ("Linux LVM")
+								elif partition.getFlag(parted.PARTITION_HPSERVICE):
+									type = ("HP Service")
+								elif partition.getFlag(parted.PARTITION_PALO):
+									type = ("PALO")
+								elif partition.getFlag(parted.PARTITION_PREP):
+									type = ("PReP")
+								elif partition.getFlag(parted.PARTITION_MSFT_RESERVED):
+									type = ("MSFT Reserved")
+								elif partition.getFlag(parted.PARTITION_EXTENDED):
+									type = ("Extended Partition")
+								elif partition.getFlag(parted.PARTITION_LOGICAL):
+									type = ("Logical Partition")
+								elif partition.getFlag(parted.PARTITION_FREESPACE):
+									type = ("Free Space")
+								else:
+									type =("Unknown")
+								print partition.type
+							else:
+								type = partition.fileSystem.type
+							
+							number = partition.number
+							name = partition.name
+							size = partition.getSize()
+							print "----> %d %s type=%s size=%s" % (number, name, type, size)
+							disks.append(PyDisk(number, path + str(number), size, type))
+		from screen import Screen
+		myScreen = Screen(disks)
+		style = self.wTree.get_widget("notebook1").style
+		style2 = myScreen.style.copy()
+		style2.bg[gtk.STATE_NORMAL] = style.bg[gtk.STATE_NORMAL]
+		myScreen.set_style(style2)
+		self.wTree.get_widget("vbox_cairo").add(myScreen)
+		self.wTree.get_widget("vbox_cairo").show_all()
+				
 	def build_kb_lists(self):
 		''' Do some xml kung-fu and load the keyboard stuffs '''
 		
