@@ -62,7 +62,10 @@ class InstallerWindow:
 		DISTRIBUTION_NAME = self.installer.get_distribution_name()
 		# load the window object
 		self.window = self.wTree.get_widget("main_window")
-		self.window.set_title(DISTRIBUTION_NAME + " " +  _("Installer"))
+		if "--debug" in sys.argv:
+			self.window.set_title((_("%s Installer") % DISTRIBUTION_NAME) + " (debug)") 
+		else:
+			self.window.set_title(_("%s Installer") % DISTRIBUTION_NAME)
 		self.window.connect("destroy", self.quit_cb)
 
 		# set the step names
@@ -325,38 +328,42 @@ class InstallerWindow:
 		treeview.set_search_column(0)
 		
 
-	def build_disk_list(self):
+	def build_disk_list(self):		
 		model = gtk.ListStore(str,str,bool,str,str,bool)
 		model2 = gtk.ListStore(str)
-		pro = subprocess.Popen("parted -lms", stdout=subprocess.PIPE, shell=True)
-		last_name = ""
-		for line in pro.stdout:
-			line = line.rstrip("\r\n")
-			if ":" in line:
-				split = line.split(":")
-				if(len(split) <= 3):
-					continue
-				if(line.startswith("/dev")):
-					last_name = split[0]
-					model2.append([last_name])
-					continue
-				# device list
-				sections = line.split(" ")
-				device = "%s%s" % (last_name, split[0])
-				filesystem = split[4]
-				# hack. love em eh? ...
-				if(filesystem.startswith("linux-swap")):
-					filesystem = "swap"
-				size_ = split[3]
-				if(len(split) > 5):
-					boot  = split[6]
-					if(boot == "boot;"):
-						model.append([device, filesystem, False, None, size_, True])
+		
+		if "--debug" in sys.argv:
+			model.append(["/dev/debug", "debug", False, None, 0, True])
+		else:
+			pro = subprocess.Popen("parted -lms", stdout=subprocess.PIPE, shell=True)
+			last_name = ""
+			for line in pro.stdout:
+				line = line.rstrip("\r\n")
+				if ":" in line:
+					split = line.split(":")
+					if(len(split) <= 3):
+						continue
+					if(line.startswith("/dev")):
+						last_name = split[0]
+						model2.append([last_name])
+						continue
+					# device list
+					sections = line.split(" ")
+					device = "%s%s" % (last_name, split[0])
+					filesystem = split[4]
+					# hack. love em eh? ...
+					if(filesystem.startswith("linux-swap")):
+						filesystem = "swap"
+					size_ = split[3]
+					if(len(split) > 5):
+						boot  = split[6]
+						if(boot == "boot;"):
+							model.append([device, filesystem, False, None, size_, True])
+						else:
+							model.append([device, filesystem, False, None, size_, False])
 					else:
 						model.append([device, filesystem, False, None, size_, False])
-				else:
-					model.append([device, filesystem, False, None, size_, False])
-				print "%s - %s" % (device, filesystem)
+					print "%s - %s" % (device, filesystem)
 		self.wTree.get_widget("treeview_disks").set_model(model)
 		self.wTree.get_widget("combobox_grub").set_model(model2)
 		self.wTree.get_widget("combobox_grub").set_active(0)
@@ -642,9 +649,14 @@ class InstallerWindow:
 		self.wTree.get_widget("treeview_overview").set_model(model)
 		
 	def do_install(self):
+		if "--debug" in sys.argv:
+			print "DEBUG MODE - INSTALLATION PROCESS NOT LAUNCHED"
+		
+		sys.exit(0)
+			
 		''' Actually perform the installation .. '''
 		inst = self.installer
-		
+		sys.exit(0)
 		# Create fstab
 		files = fstab()
 		model = self.wTree.get_widget("treeview_disks").get_model()
@@ -676,7 +688,7 @@ class InstallerWindow:
 			inst.set_install_bootloader(device=grub_location)
 		inst.set_progress_hook(self.update_progress)
 
-		# do we dare? ..
+		# do we dare? ..		
 		inst.install()
 		
 		# show a message dialog thingum
