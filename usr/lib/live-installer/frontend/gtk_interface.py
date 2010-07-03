@@ -138,7 +138,7 @@ class InstallerWindow:
 		self.wTree.get_widget("treeview_disks").append_column(column)
 		# size
 		ren = gtk.CellRendererText()
-		column = gtk.TreeViewColumn(_("Size"), ren)
+		column = gtk.TreeViewColumn(_("Size (MB)"), ren)
 		column.add_attribute(ren, "text", 4)
 		self.wTree.get_widget("treeview_disks").append_column(column) 
 		
@@ -213,9 +213,8 @@ class InstallerWindow:
 		self.wTree.get_widget("label_installing").set_markup(_("%s is now being installed on your computer\nThis may take some time so please be patient" % DISTRIBUTION_NAME))
 		self.wTree.get_widget("label_install_progress").set_markup("<i>%s</i>" % _("Calculating file indexes..."))
 		
-		# build partition list
-		self.build_disk_list()
-		self.build_cairo_widget()
+		# build partition list		
+		self.build_partitions()
 		
 		# make everything visible.
 		self.window.show()
@@ -327,49 +326,8 @@ class InstallerWindow:
 			treeview.set_cursor(path, focus_column=column)
 			treeview.scroll_to_cell(path, column=column)
 		treeview.set_search_column(0)
-		
-
-	def build_disk_list(self):		
-		model = gtk.ListStore(str,str,bool,str,str,bool)
-		model2 = gtk.ListStore(str)
-		
-		if "--debug" in sys.argv:
-			model.append(["/dev/debug", "debug", False, None, 0, True])
-		else:
-			pro = subprocess.Popen("parted -lms", stdout=subprocess.PIPE, shell=True)
-			last_name = ""
-			for line in pro.stdout:
-				line = line.rstrip("\r\n")
-				if ":" in line:
-					split = line.split(":")
-					if(len(split) <= 3):
-						continue
-					if(line.startswith("/dev")):
-						last_name = split[0]
-						model2.append([last_name])
-						continue
-					# device list
-					sections = line.split(" ")
-					device = "%s%s" % (last_name, split[0])
-					filesystem = split[4]
-					# hack. love em eh? ...
-					if(filesystem.startswith("linux-swap")):
-						filesystem = "swap"
-					size_ = split[3]
-					if(len(split) > 5):
-						boot  = split[6]
-						if(boot == "boot;"):
-							model.append([device, filesystem, False, None, size_, True])
-						else:
-							model.append([device, filesystem, False, None, size_, False])
-					else:
-						model.append([device, filesystem, False, None, size_, False])
-					print "%s - %s" % (device, filesystem)
-		self.wTree.get_widget("treeview_disks").set_model(model)
-		self.wTree.get_widget("combobox_grub").set_model(model2)
-		self.wTree.get_widget("combobox_grub").set_active(0)
-
-	def build_cairo_widget(self):
+			
+	def build_partitions(self):
 		import parted, commands
 		from screen import PyDisk
 		hdd_descriptions = []
@@ -386,41 +344,14 @@ class InstallerWindow:
 						device = parted.getDevice(path)
 						disk = parted.Disk(device)				
 						partitions = disk.partitions
-						for partition in disk.partitions:					
-							if partition.fileSystem is None:
-								# no filesystem, check flags
-								print dir(parted)
-								if partition.getFlag(parted.PARTITION_SWAP):
-									type = ("Linux swap")
-								elif partition.getFlag(parted.PARTITION_RAID):
-									type = ("RAID")
-								elif partition.getFlag(parted.PARTITION_LVM):
-									type = ("Linux LVM")
-								elif partition.getFlag(parted.PARTITION_HPSERVICE):
-									type = ("HP Service")
-								elif partition.getFlag(parted.PARTITION_PALO):
-									type = ("PALO")
-								elif partition.getFlag(parted.PARTITION_PREP):
-									type = ("PReP")
-								elif partition.getFlag(parted.PARTITION_MSFT_RESERVED):
-									type = ("MSFT Reserved")
-								elif partition.getFlag(parted.PARTITION_EXTENDED):
-									type = ("Extended Partition")
-								elif partition.getFlag(parted.PARTITION_LOGICAL):
-									type = ("Logical Partition")
-								elif partition.getFlag(parted.PARTITION_FREESPACE):
-									type = ("Free Space")
-								else:
-									type =("Unknown")
-								print partition.type
-							else:
-								type = partition.fileSystem.type
-							
-							number = partition.number
-							name = partition.name
-							size = partition.getSize()
-							print "----> %d %s type=%s size=%s" % (number, name, type, size)
-							disks.append(PyDisk(number, path + str(number), size, type))
+						
+						partition = disk.getFirstPartition()
+						self.add_partition(disks, partition)						
+						partition = partition.nextPartition()
+						while (partition is not None):
+							self.add_partition(disks, partition)									
+							partition = partition.nextPartition()							
+						
 		from screen import Screen
 		myScreen = Screen(disks)
 		style = self.wTree.get_widget("notebook1").style
@@ -429,6 +360,50 @@ class InstallerWindow:
 		myScreen.set_style(style2)
 		self.wTree.get_widget("vbox_cairo").add(myScreen)
 		self.wTree.get_widget("vbox_cairo").show_all()
+		
+		model = gtk.ListStore(str,str,bool,str,str,bool)
+		model2 = gtk.ListStore(str)
+		
+		for disk in disks:			
+			model.append([disk.name, disk.type, False, None, '%.0f' % round(disk.size, 0), False])
+		
+		self.wTree.get_widget("treeview_disks").set_model(model)
+		self.wTree.get_widget("combobox_grub").set_model(model2)
+		self.wTree.get_widget("combobox_grub").set_active(0)
+
+	def add_partition(self, disks, partition):
+		import parted, commands
+		from screen import PyDisk
+		if partition.number != -1:
+			if partition.fileSystem is None:
+				# no filesystem, check flags								
+				if partition.getFlag(parted.PARTITION_SWAP):
+					type = ("Linux swap")
+				elif partition.getFlag(parted.PARTITION_RAID):
+					type = ("RAID")
+				elif partition.getFlag(parted.PARTITION_LVM):
+					type = ("Linux LVM")
+				elif partition.getFlag(parted.PARTITION_HPSERVICE):
+					type = ("HP Service")
+				elif partition.getFlag(parted.PARTITION_PALO):
+					type = ("PALO")
+				elif partition.getFlag(parted.PARTITION_PREP):
+					type = ("PReP")
+				elif partition.getFlag(parted.PARTITION_MSFT_RESERVED):
+					type = ("MSFT Reserved")
+				elif partition.getFlag(parted.PARTITION_EXTENDED):
+					type = ("Extended Partition")
+				elif partition.getFlag(parted.PARTITION_LOGICAL):
+					type = ("Logical Partition")
+				elif partition.getFlag(parted.PARTITION_FREESPACE):
+					type = ("Free Space")
+				else:
+					type =("Unknown")								
+			else:
+				type = partition.fileSystem.type
+			disks.append(PyDisk(partition.number, partition.path + str(partition.number), partition.getSize(), type))
+		else:
+			disks.append(PyDisk(-1, _("Free space"), partition.getSize(), ""))		
 				
 	def build_kb_lists(self):
 		''' Do some xml kung-fu and load the keyboard stuffs '''
