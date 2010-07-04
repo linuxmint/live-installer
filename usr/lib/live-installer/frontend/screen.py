@@ -141,14 +141,14 @@ class Screen(gtk.DrawingArea):
         self.draw(cr, *self.window.get_size())
 
     def draw(self, cr, width, height):
-        #self.style.apply_default_background(self.window, True, gtk.STATE_NORMAL, None, 0, 0, width, height)
-        #cr.set_source_rgba(0, 0, 0, 0.0)
+        self.style.apply_default_background(self.window, True, gtk.STATE_NORMAL, None, 0, 0, width, height)
+        cr.set_source_rgba(0, 0, 0, 0.0)
         self.width = width # for add_label
         self.height = height # for add_label
         height /= 2
         width -= 40
-        #cr.rectangle(0, 0, width, height)
-        #cr.fill()
+        cr.rectangle(0, 0, width, height)
+        cr.fill()
 
         x_offset = 5
         y_offset = 5
@@ -157,29 +157,30 @@ class Screen(gtk.DrawingArea):
         self.rows = 0
         
         for partition in self.partitions:
-			if partition.partition.number == -1:
-				border_color = (0.6, 0.6, 0.6)
-				fill_color = (0.2, 0.2, 0.6)
-			else:
-				border_color = self.colors[partition.partition.number % len(self.colors)]
-				fill_color = (0.9, 0.9, 0.9)
+			if partition.size > 0.5:
+				if partition.partition.number == -1:
+					border_color = (0.6, 0.6, 0.6)
+					fill_color = (0.6, 0.6, 0.6)
+				else:
+					border_color = self.colors[partition.partition.number % len(self.colors)]
+					fill_color = (0.9, 0.9, 0.9)
 				
-			ratio = float(partition.size) / float(self.total_size)
-			pct = float(ratio * 100)
-			pixels = ratio * width
-			n_width = int(pixels)
-			
-			cr.set_source_rgb(*border_color)
-			self.rounded_rectangle(cr, x_offset-1, 9, n_width+2, height+2)
-			cr.fill()
-							
-			cr.set_source_rgb(*fill_color)
-			self.rounded_rectangle(cr, x_offset, 10, n_width, height)
-			cr.fill()
-			
-			x_offset += n_width
-			x_offset += 3
-									
-			self.add_label(partition.name.replace('/dev/', ''), border_color)
+				ratio = float(partition.size) / float(self.total_size)
+				pct = float(ratio * 100)
+				pixels = ratio * width
+				n_width = int(pixels)
+				
+				cr.set_source_rgb(*border_color)
+				self.rounded_rectangle(cr, x_offset-1, 9, n_width+2, height+2)
+				cr.fill()
+								
+				cr.set_source_rgb(*fill_color)
+				self.rounded_rectangle(cr, x_offset, 10, n_width, height)
+				cr.fill()
+				
+				x_offset += n_width
+				x_offset += 3
+										
+				self.add_label(partition.name.replace('/dev/', ''), border_color)
         self.rows = 0
 
