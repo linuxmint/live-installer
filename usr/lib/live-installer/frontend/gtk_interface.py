@@ -391,25 +391,33 @@ class InstallerWindow:
 											last_added_partition.description = commands.getoutput("cat " + os.path.join(mount_point, 'etc/issue')).replace('\\n', '').replace('\l', '').strip()
 										elif os.path.exists(os.path.join(mount_point, 'Windows/servicing/Version')):
 											version = commands.getoutput("ls %s" % os.path.join(mount_point, 'Windows/servicing/Version'))
-											if "6.1" in version:
+											if version.startswith("6.1"):
 												last_added_partition.description = "Windows 7"
-											elif "6.0" in version:
+											elif version.startswith("6.0"):
 												last_added_partition.description = "Windows Vista"
-											elif "5.1" in version:
+											elif version.startswith("5.1") or version.startswith("5.2"):
 												last_added_partition.description = "Windows XP"
-											elif "5.0" in version:
+											elif version.startswith("5.0"):
+												last_added_partition.description = "Windows 2000"	
+											elif version.startswith("4.90"):
 												last_added_partition.description = "Windows Me"	
+											elif version.startswith("4.1"):
+												last_added_partition.description = "Windows 98"	
+											elif version.startswith("4.0.1381"):
+												last_added_partition.description = "Windows NT"	
+											elif version.startswith("4.0.950"):
+												last_added_partition.description = "Windows 95"												
 										elif os.path.exists(os.path.join(mount_point, 'Boot/BCD')):											
 											if os.system("grep -qs \"V.i.s.t.a\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
-												last_added_partition.description = "Windows Vista Bootloader"
+												last_added_partition.description = "Windows Vista bootloader"
 											elif os.system("grep -qs \"W.i.n.d.o.w.s. .7\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
-												last_added_partition.description = "Windows 7 Bootloader"
+												last_added_partition.description = "Windows 7 bootloader"
 											elif os.system("grep -qs \"W.i.n.d.o.w.s. .R.e.c.o.v.e.r.y. .E.n.v.i.r.o.n.m.e.n.t\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
-												last_added_partition.description = "Windows Recovery"
+												last_added_partition.description = "Windows recovery"
 											elif os.system("grep -qs \"W.i.n.d.o.w.s. .S.e.r.v.e.r. .2.0.0.8\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
-												last_added_partition.description = "Windows Server 2008 Bootloader"
+												last_added_partition.description = "Windows Server 2008 bootloader"
 											else:
-												last_added_partition.description = "Windows Bootloader"																											
+												last_added_partition.description = "Windows bootloader"																											
 										elif os.path.exists(os.path.join(mount_point, 'Windows/System32')):
 											last_added_partition.description = "Windows"
 										
