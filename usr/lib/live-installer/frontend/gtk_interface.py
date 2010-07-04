@@ -114,12 +114,12 @@ class InstallerWindow:
 		# device
 		ren = gtk.CellRendererText()
 		column = gtk.TreeViewColumn(_("Device"), ren)
-		column.add_attribute(ren, "text", 0)
+		column.add_attribute(ren, "markup", 0)
 		self.wTree.get_widget("treeview_disks").append_column(column)
 		# filesystem
 		ren = gtk.CellRendererText()
 		column = gtk.TreeViewColumn(_("Filesystem"), ren)
-		column.add_attribute(ren, "text", 1)
+		column.add_attribute(ren, "markup", 1)
 		self.wTree.get_widget("treeview_disks").append_column(column)
 		# format
 		ren = gtk.CellRendererToggle()
@@ -134,12 +134,12 @@ class InstallerWindow:
 		# mount point
 		ren = gtk.CellRendererText()
 		column = gtk.TreeViewColumn(_("Mount Point"), ren)
-		column.add_attribute(ren, "text", 3)
+		column.add_attribute(ren, "markup", 3)
 		self.wTree.get_widget("treeview_disks").append_column(column)
 		# size
 		ren = gtk.CellRendererText()
 		column = gtk.TreeViewColumn(_("Size (MB)"), ren)
-		column.add_attribute(ren, "text", 4)
+		column.add_attribute(ren, "markup", 4)
 		self.wTree.get_widget("treeview_disks").append_column(column) 
 		
 		# about you
@@ -329,11 +329,11 @@ class InstallerWindow:
 			
 	def build_partitions(self):
 		import parted, commands
-		from screen import PyDisk
+		from screen import Partition
 		hdd_descriptions = []
 		inxi = commands.getoutput("inxi -D -c 0")
 		parts = inxi.split(":")
-		disks = []
+		partitions = []
 		for part in parts:
 			if "/dev/" in part:				
 				hdd = part.strip()
@@ -343,14 +343,14 @@ class InstallerWindow:
 						device = parted.getDevice(path)
 						disk = parted.Disk(device)											
 						partition = disk.getFirstPartition()
-						self.add_partition(disks, partition)						
+						partitions.append(Partition(partition))		
 						partition = partition.nextPartition()
 						while (partition is not None):
-							self.add_partition(disks, partition)									
+							partitions.append(Partition(partition))						
 							partition = partition.nextPartition()							
 						
 		from screen import Screen
-		myScreen = Screen(disks)
+		myScreen = Screen(partitions)
 		style = self.wTree.get_widget("notebook1").style
 		style2 = myScreen.style.copy()
 		style2.bg[gtk.STATE_NORMAL] = style.bg[gtk.STATE_NORMAL]
@@ -361,46 +361,12 @@ class InstallerWindow:
 		model = gtk.ListStore(str,str,bool,str,str,bool)
 		model2 = gtk.ListStore(str)
 		
-		for disk in disks:			
-			model.append([disk.name, disk.type, False, None, '%.0f' % round(disk.size, 0), False])
+		for partition in partitions:			
+			model.append([partition.name, partition.type, False, None, '%.0f' % round(partition.partition.getSize(), 0), False])
 		
 		self.wTree.get_widget("treeview_disks").set_model(model)
 		self.wTree.get_widget("combobox_grub").set_model(model2)
-		self.wTree.get_widget("combobox_grub").set_active(0)
-
-	def add_partition(self, disks, partition):
-		import parted, commands
-		from screen import PyDisk
-		if partition.number != -1:
-			if partition.fileSystem is None:
-				# no filesystem, check flags								
-				if partition.getFlag(parted.PARTITION_SWAP):
-					type = ("Linux swap")
-				elif partition.getFlag(parted.PARTITION_RAID):
-					type = ("RAID")
-				elif partition.getFlag(parted.PARTITION_LVM):
-					type = ("Linux LVM")
-				elif partition.getFlag(parted.PARTITION_HPSERVICE):
-					type = ("HP Service")
-				elif partition.getFlag(parted.PARTITION_PALO):
-					type = ("PALO")
-				elif partition.getFlag(parted.PARTITION_PREP):
-					type = ("PReP")
-				elif partition.getFlag(parted.PARTITION_MSFT_RESERVED):
-					type = ("MSFT Reserved")
-				elif partition.getFlag(parted.PARTITION_EXTENDED):
-					type = ("Extended Partition")
-				elif partition.getFlag(parted.PARTITION_LOGICAL):
-					type = ("Logical Partition")
-				elif partition.getFlag(parted.PARTITION_FREESPACE):
-					type = ("Free Space")
-				else:
-					type =("Unknown")								
-			else:
-				type = partition.fileSystem.type
-			disks.append(PyDisk(partition.number, partition.path + str(partition.number), partition.getSize(), type))
-		else:
-			disks.append(PyDisk(-1, _("Free space"), partition.getSize(), ""))		
+		self.wTree.get_widget("combobox_grub").set_active(0)	
 				
 	def build_kb_lists(self):
 		''' Do some xml kung-fu and load the keyboard stuffs '''
