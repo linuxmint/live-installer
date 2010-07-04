@@ -251,11 +251,11 @@ class InstallerWindow:
 		model[active] = row
 		
 	def build_lang_list(self):
-		cur_lang = os.environ['LANG'] # detect the language. sneaky eh?
+		
+		cur_lang = os.environ['LANG']
 		if("." in cur_lang):
 			cur_lang = cur_lang.split(".")[0]
-		if("_" in cur_lang):
-			cur_lang = cur_lang.split("_")[0]
+		
 		model = gtk.ListStore(str,str,gtk.gdk.Pixbuf)
 		model.set_sort_column_id(0, gtk.SORT_ASCENDING)
 		
@@ -315,7 +315,7 @@ class InstallerWindow:
 						else:
 							flag_path = self.resource_dir + '/flags/16/generic.png'
 							model.set_value(iter, 2, gtk.gdk.pixbuf_new_from_file(flag_path))
-						if(split[0] == cur_lang):
+						if(locale_code == cur_lang):
 							set_index = iter
 
 		treeview = self.wTree.get_widget("treeview_language_list")
@@ -335,16 +335,13 @@ class InstallerWindow:
 		parts = inxi.split(":")
 		disks = []
 		for part in parts:
-			if "/dev/" in part:
-				print "~~~~~~~~~" + part
+			if "/dev/" in part:				
 				hdd = part.strip()
 				hdd = hdd.split()
 				for path in hdd:
 					if "/dev/" in path:
 						device = parted.getDevice(path)
-						disk = parted.Disk(device)				
-						partitions = disk.partitions
-						
+						disk = parted.Disk(device)											
 						partition = disk.getFirstPartition()
 						self.add_partition(disks, partition)						
 						partition = partition.nextPartition()
