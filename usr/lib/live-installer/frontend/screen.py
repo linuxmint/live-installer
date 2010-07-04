@@ -182,7 +182,7 @@ class Screen(gtk.DrawingArea):
 				
 				# partition usage
 				if(partition.used_space != ""):
-					cr.set_source_rgb(0.65, 0.65, 0.7)
+					cr.set_source_rgb(0.8, 0.8, 0.8)
 					pct_used = float((partition.used_space.replace("%", "")))
 					ratio = pct_used / 100
 					pixels = n_width * ratio

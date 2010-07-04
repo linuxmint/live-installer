@@ -389,15 +389,20 @@ class InstallerWindow:
 											last_added_partition.description = commands.getoutput("cat " + os.path.join(mount_point, 'etc/lsb-release') + " | grep DISTRIB_DESCRIPTION").replace('DISTRIB_DESCRIPTION', '').replace('=', '').replace('"', '').strip()
 										elif os.path.exists(os.path.join(mount_point, 'etc/issue')):
 											last_added_partition.description = commands.getoutput("cat " + os.path.join(mount_point, 'etc/issue')).replace('\\n', '').replace('\l', '').strip()
-										elif os.path.exists(os.path.join(mount_point, 'Boot/BCD')):
-											windows_vista = os.system("grep -qs \"V.i.s.t.a\" " + os.path.join(mount_point, 'Boot/BCD'))
-											if windows_vista == 0:
+										elif os.path.exists(os.path.join(mount_point, 'Boot/BCD')):											
+											if os.system("grep -qs \"V.i.s.t.a\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
 												last_added_partition.description = "Windows Vista"
+											elif os.system("grep -qs \"W.i.n.d.o.w.s. .7\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
+												last_added_partition.description = "Windows 7"
+											elif os.system("grep -qs \"W.i.n.d.o.w.s. .R.e.c.o.v.e.r.y. .E.n.v.i.r.o.n.m.e.n.t\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
+												last_added_partition.description = "Windows Recovery"
+											elif os.system("grep -qs \"W.i.n.d.o.w.s. .S.e.r.v.e.r. .2.0.0.8\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
+												last_added_partition.description = "Windows Server 2008"
 											else:
-												last_added_partition.description = "Windows Bootloader" # add check for versions
-										elif os.path.exists(os.path.join(mount_point, 'Windows/servicing/Editions/EditionMatrix.xml')):
-											# add better check for windows 7
-											last_added_partition.description = "Windows 7"																																																
+												last_added_partition.description = "Windows"
+										elif os.path.exists(os.path.join(mount_point, 'Windows/System32')):
+											last_added_partition.description = "Windows"
+										
 									#Umount temp folder
 									if ('/tmp/live-installer/tmpmount' in commands.getoutput('mount')):									
 										os.popen('umount /tmp/live-installer/tmpmount')			
