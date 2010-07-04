@@ -393,7 +393,11 @@ class InstallerWindow:
 											windows_vista = os.system("grep -qs \"V.i.s.t.a\" " + os.path.join(mount_point, 'Boot/BCD'))
 											if windows_vista == 0:
 												last_added_partition.description = "Windows Vista"
-																																																	
+											else:
+												last_added_partition.description = "Windows Bootloader" # add check for versions
+										elif os.path.exists(os.path.join(mount_point, 'Windows/servicing/Editions/EditionMatrix.xml')):
+											# add better check for windows 7
+											last_added_partition.description = "Windows 7"																																																
 									#Umount temp folder
 									if ('/tmp/live-installer/tmpmount' in commands.getoutput('mount')):									
 										os.popen('umount /tmp/live-installer/tmpmount')			

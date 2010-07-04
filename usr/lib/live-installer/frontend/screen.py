@@ -180,6 +180,19 @@ class Screen(gtk.DrawingArea):
 				self.rounded_rectangle(cr, x_offset, 10, n_width, height)
 				cr.fill()
 				
+				# partition usage
+				if(partition.used_space != ""):
+					cr.set_source_rgb(0.65, 0.65, 0.7)
+					pct_used = float((partition.used_space.replace("%", "")))
+					ratio = pct_used / 100
+					pixels = n_width * ratio
+					#u_width = n_width - int(pixels)
+					u_width = int(pixels)
+
+					self.rounded_rectangle(cr, x_offset, 10, u_width, height)
+					cr.fill()
+					cr.set_source_rgb(*fill_color)
+				
 				x_offset += n_width
 				x_offset += 3
 								
