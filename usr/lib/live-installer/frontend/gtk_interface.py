@@ -388,7 +388,11 @@ class InstallerWindow:
 										if os.path.exists(os.path.join(mount_point, 'etc/lsb-release')):
 											last_added_partition.description = commands.getoutput("cat " + os.path.join(mount_point, 'etc/lsb-release') + " | grep DISTRIB_DESCRIPTION").replace('DISTRIB_DESCRIPTION', '').replace('=', '').replace('"', '').strip()
 										elif os.path.exists(os.path.join(mount_point, 'etc/issue')):
-											last_added_partition.description = commands.getoutput("cat " + os.path.join(mount_point, 'etc/issue')).replace('\\n', '').replace('\l', '').strip()											
+											last_added_partition.description = commands.getoutput("cat " + os.path.join(mount_point, 'etc/issue')).replace('\\n', '').replace('\l', '').strip()
+										elif os.path.exists(os.path.join(mount_point, 'Boot/BCD')):
+											windows_vista = os.system("grep -qs \"V.i.s.t.a\" " + os.path.join(mount_point, 'Boot/BCD'))
+											if windows_vista == 0:
+												last_added_partition.description = "Windows Vista"
 																																																	
 									#Umount temp folder
 									if ('/tmp/live-installer/tmpmount' in commands.getoutput('mount')):									
