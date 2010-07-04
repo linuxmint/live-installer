@@ -6,8 +6,15 @@ from math import pi
 
 # Represents a disk partition in an easy format
 class Partition(object):
-	def __init__(self, partition):		
-		self.partition = partition		
+	
+	aggregatedPartitions = []
+	
+	def __init__(self, partition):
+		self.partition = partition
+		self.size = partition.getSize()	
+		self.start = partition.geometry.start	
+		self.end = partition.geometry.end
+		
 		if partition.number != -1:
 			self.name = partition.path
 			if partition.fileSystem is None:
@@ -38,7 +45,12 @@ class Partition(object):
 				self.type = partition.fileSystem.type
 		else:
 			self.type = ""
-			self.name = _("free space")
+			self.name = _("unallocated")
+	
+	def add_partition(self, partition):
+		self.aggregatedPartitions.append(partition)
+		self.size = self.size + partition.getSize()
+		self.end = partition.geometry.end
 
 # Create a GTK+ widget on which we will draw using Cairo
 class Screen(gtk.DrawingArea):
@@ -52,7 +64,7 @@ class Screen(gtk.DrawingArea):
 		self.partitions = partitions
 		self.total_size = 0
 		for partition in self.partitions:
-			self.total_size += partition.partition.getSize()
+			self.total_size += partition.size
 		self.labels_added = False
 		self.label_offset = 10
 		self.y_offset = 110
@@ -152,7 +164,7 @@ class Screen(gtk.DrawingArea):
 				border_color = self.colors[partition.partition.number % len(self.colors)]
 				fill_color = (0.9, 0.9, 0.9)
 				
-			ratio = float(partition.partition.getSize()) / float(self.total_size)
+			ratio = float(partition.size) / float(self.total_size)
 			pct = float(ratio * 100)
 			pixels = ratio * width
 			n_width = int(pixels)

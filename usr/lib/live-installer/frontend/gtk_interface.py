@@ -140,7 +140,17 @@ class InstallerWindow:
 		ren = gtk.CellRendererText()
 		column = gtk.TreeViewColumn(_("Size (MB)"), ren)
 		column.add_attribute(ren, "markup", 4)
-		self.wTree.get_widget("treeview_disks").append_column(column) 
+		self.wTree.get_widget("treeview_disks").append_column(column) 		
+		# start
+		#ren = gtk.CellRendererText()
+		#column = gtk.TreeViewColumn(_("Start"), ren)
+		#column.add_attribute(ren, "markup", 6)
+		#self.wTree.get_widget("treeview_disks").append_column(column) 		
+		# end
+		#ren = gtk.CellRendererText()
+		#column = gtk.TreeViewColumn(_("End"), ren)
+		#column.add_attribute(ren, "markup", 7)
+		#self.wTree.get_widget("treeview_disks").append_column(column) 
 		
 		# about you
 		self.wTree.get_widget("label_setup_user").set_markup(_("You will now need to enter details for your user account\nThis is the account you will use after the installation has completed."))
@@ -337,16 +347,22 @@ class InstallerWindow:
 		for part in parts:
 			if "/dev/" in part:				
 				hdd = part.strip()
-				hdd = hdd.split()
+				hdd = hdd.split()				
 				for path in hdd:
 					if "/dev/" in path:
 						device = parted.getDevice(path)
 						disk = parted.Disk(device)											
-						partition = disk.getFirstPartition()
-						partitions.append(Partition(partition))		
+						partition = disk.getFirstPartition()	
+						last_added_partition = Partition(partition)					
+						partitions.append(last_added_partition)
 						partition = partition.nextPartition()
 						while (partition is not None):
-							partitions.append(Partition(partition))						
+							if last_added_partition.partition.number == -1 and partition.number == -1:
+								last_added_partition.add_partition(partition)
+							else:
+								last_added_partition = Partition(partition)
+								partitions.append(last_added_partition)							
+															
 							partition = partition.nextPartition()							
 						
 		from screen import Screen
@@ -358,11 +374,15 @@ class InstallerWindow:
 		self.wTree.get_widget("vbox_cairo").add(myScreen)
 		self.wTree.get_widget("vbox_cairo").show_all()
 		
-		model = gtk.ListStore(str,str,bool,str,str,bool)
+		model = gtk.ListStore(str,str,bool,str,str,bool, str, str)
 		model2 = gtk.ListStore(str)
 		
-		for partition in partitions:			
-			model.append([partition.name, partition.type, False, None, '%.0f' % round(partition.partition.getSize(), 0), False])
+		for partition in partitions:
+			if partition.size > 0.5:
+				if partition.partition.number == -1:
+					model.append(["<small><span foreground='#555555'>" + partition.name + "</span></small>", partition.type, False, None, '%.0f' % round(partition.size, 0), False, partition.start, partition.end])
+				else:			
+					model.append([partition.name, partition.type, False, None, '%.0f' % round(partition.size, 0), False, partition.start, partition.end])
 		
 		self.wTree.get_widget("treeview_disks").set_model(model)
 		self.wTree.get_widget("combobox_grub").set_model(model2)
