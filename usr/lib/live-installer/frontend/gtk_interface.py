@@ -151,6 +151,11 @@ class InstallerWindow:
 		#column = gtk.TreeViewColumn(_("End"), ren)
 		#column.add_attribute(ren, "markup", 7)
 		#self.wTree.get_widget("treeview_disks").append_column(column) 
+		# Used space
+		ren = gtk.CellRendererText()
+		column = gtk.TreeViewColumn(_("Used space"), ren)
+		column.add_attribute(ren, "markup", 8)
+		self.wTree.get_widget("treeview_disks").append_column(column) 
 		
 		# about you
 		self.wTree.get_widget("label_setup_user").set_markup(_("You will now need to enter details for your user account\nThis is the account you will use after the installation has completed."))
@@ -340,6 +345,9 @@ class InstallerWindow:
 	def build_partitions(self):
 		import parted, commands
 		from screen import Partition
+		
+		os.popen('mkdir -p /tmp/live-installer/tmpmount')
+		
 		hdd_descriptions = []
 		inxi = commands.getoutput("inxi -D -c 0")
 		parts = inxi.split(":")
@@ -361,7 +369,30 @@ class InstallerWindow:
 								last_added_partition.add_partition(partition)
 							else:
 								last_added_partition = Partition(partition)
-								partitions.append(last_added_partition)							
+								partitions.append(last_added_partition)		
+								
+								if partition.number != -1 and "swap" not in last_added_partition.type:
+									
+									#Umount temp folder
+									if ('/tmp/live-installer/tmpmount' in commands.getoutput('mount')):									
+										os.popen('umount /tmp/live-installer/tmpmount')
+									
+									#Mount partition if not mounted
+									if (partition.path not in commands.getoutput('mount')):
+										os.system("mount %s /tmp/live-installer/tmpmount" % partition.path)
+										
+									#Identify partition's description and used space
+									if (partition.path in commands.getoutput('mount')):																													
+										last_added_partition.used_space = commands.getoutput("df | grep %s | awk {'print $5'}" % partition.path)
+										mount_point = commands.getoutput("df | grep %s | awk {'print $6'}" % partition.path)
+										if os.path.exists(os.path.join(mount_point, 'etc/lsb-release')):
+											last_added_partition.description = commands.getoutput("cat " + os.path.join(mount_point, 'etc/lsb-release') + " | grep DISTRIB_DESCRIPTION").replace('DISTRIB_DESCRIPTION', '').replace('=', '').replace('"', '').strip()
+										elif os.path.exists(os.path.join(mount_point, 'etc/issue')):
+											last_added_partition.description = commands.getoutput("cat " + os.path.join(mount_point, 'etc/issue')).replace('\\n', '').replace('\l', '').strip()											
+																																																	
+									#Umount temp folder
+									if ('/tmp/live-installer/tmpmount' in commands.getoutput('mount')):									
+										os.popen('umount /tmp/live-installer/tmpmount')			
 															
 							partition = partition.nextPartition()							
 						
@@ -374,16 +405,19 @@ class InstallerWindow:
 		self.wTree.get_widget("vbox_cairo").add(myScreen)
 		self.wTree.get_widget("vbox_cairo").show_all()
 		
-		model = gtk.ListStore(str,str,bool,str,str,bool, str, str)
+		model = gtk.ListStore(str,str,bool,str,str,bool, str, str, str)
 		model2 = gtk.ListStore(str)
 		
 		for partition in partitions:
 			if partition.size > 0.5:
 				if partition.partition.number == -1:
-					model.append(["<small><span foreground='#555555'>" + partition.name + "</span></small>", partition.type, False, None, '%.0f' % round(partition.size, 0), False, partition.start, partition.end])
+					model.append(["<small><span foreground='#555555'>" + partition.name + "</span></small>", partition.type, False, None, '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.used_space])
 				else:			
-					model.append([partition.name, partition.type, False, None, '%.0f' % round(partition.size, 0), False, partition.start, partition.end])
-		
+					if partition.description != "":
+						model.append([partition.name, "%s (%s)" % (partition.description, partition.type), False, None, '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.used_space])
+					else:
+						model.append([partition.name, partition.type, False, None, '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.used_space])
+					
 		self.wTree.get_widget("treeview_disks").set_model(model)
 		self.wTree.get_widget("combobox_grub").set_model(model2)
 		self.wTree.get_widget("combobox_grub").set_active(0)	

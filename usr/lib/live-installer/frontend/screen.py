@@ -14,6 +14,8 @@ class Partition(object):
 		self.size = partition.getSize()	
 		self.start = partition.geometry.start	
 		self.end = partition.geometry.end
+		self.description = ""
+		self.used_space = ""
 		
 		if partition.number != -1:
 			self.name = partition.path
@@ -180,7 +182,10 @@ class Screen(gtk.DrawingArea):
 				
 				x_offset += n_width
 				x_offset += 3
-										
-				self.add_label(partition.name.replace('/dev/', ''), border_color)
+								
+				if partition.description != "":
+					self.add_label("%s (%s)" % (partition.description, partition.name.replace('/dev/', '')), border_color)
+				else:
+					self.add_label(partition.name.replace('/dev/', ''), border_color)
         self.rows = 0
 
