@@ -69,13 +69,15 @@ class InstallerWindow:
 		self.window.connect("destroy", self.quit_cb)
 
 		# set the step names
-		self.wTree.get_widget("label_step_1").set_markup(_("Select language"))
-		self.wTree.get_widget("label_step_2").set_markup(_("Choose partitions"))
-		self.wTree.get_widget("label_step_3").set_markup(_("Who are you?"))
-		self.wTree.get_widget("label_step_4").set_markup(_("Advanced Options"))
-		self.wTree.get_widget("label_step_5").set_markup(_("Keyboard Layout"))
-		self.wTree.get_widget("label_step_6").set_markup(_("About to install"))
-		self.wTree.get_widget("label_step_7").set_markup(_("Install system"))
+		color = gtk.gdk.color_parse('#3C3C3C')
+		self.wTree.get_widget("eventbox1").modify_bg(gtk.STATE_NORMAL, color)
+		self.wTree.get_widget("label_step_1").set_markup("<small>%s</small> <span color=\"#FFFFFF\">&#187;</span>" % _("Select language"))
+		self.wTree.get_widget("label_step_2").set_markup("<small>%s</small> <span color=\"#FFFFFF\">&#187;</span>" % _("Choose partitions"))
+		self.wTree.get_widget("label_step_3").set_markup("<small>%s</small> <span color=\"#FFFFFF\">&#187;</span>" % _("Who are you?"))
+		self.wTree.get_widget("label_step_4").set_markup("<small>%s</small> <span color=\"#FFFFFF\">&#187;</span>" % _("Advanced Options"))
+		self.wTree.get_widget("label_step_5").set_markup("<small>%s</small> <span color=\"#FFFFFF\">&#187;</span>" % _("Keyboard Layout"))
+		self.wTree.get_widget("label_step_6").set_markup("<small>%s</small> <span color=\"#FFFFFF\">&#187;</span>" % _("About to install"))
+		self.wTree.get_widget("label_step_7").set_markup("<small>%s</small>" % _("Install system"))
 		# make first step label bolded.
 		label = self.wTree.get_widget("label_step_1")
 		text = label.get_label()
@@ -83,14 +85,18 @@ class InstallerWindow:
 		nattr = pango.AttrWeight(pango.WEIGHT_BOLD, 0, len(text))
 		attrs.insert(nattr)
 		label.set_attributes(attrs)
-		
+		label.set_sensitive(False)
 		# set the button events (wizard_cb)
 		self.wTree.get_widget("button_next").connect("clicked", self.wizard_cb, False)
 		self.wTree.get_widget("button_back").connect("clicked", self.wizard_cb, True)
 		self.wTree.get_widget("button_quit").connect("clicked", self.quit_cb)
 		
+		# list of help labels.
+		self.help_labels = []
+
 		# language view
-		self.wTree.get_widget("label_select_language").set_markup(_("Please select the language you wish to use\nfor this installation from the list below"))
+		self.help_labels.append("Please select the language you wish to use\nfor this installation from the list below")
+		#self.wTree.get_widget("label_select_language").set_markup(_("<span color=\"#FFFFFF\">Please select the language you wish to use\nfor this installation from the list below</span>"))
 
 		ren = gtk.CellRendererPixbuf()
 		column = gtk.TreeViewColumn("Flags", ren)
@@ -108,7 +114,7 @@ class InstallerWindow:
 		self.build_lang_list()
 
 		# disk view
-		self.wTree.get_widget("label_select_partition").set_markup(_("Please edit your filesystem mount points using the options below:\nRemember partitioning <b>may cause data loss!</b>"))
+		self.help_labels.append("Please edit your filesystem mount points using the options below:\nRemember partitioning <b>may cause data loss!</b>")
 		self.wTree.get_widget("button_edit").connect("clicked", self.edit_partition)
 		
 		# device
@@ -158,7 +164,7 @@ class InstallerWindow:
 		self.wTree.get_widget("treeview_disks").append_column(column) 
 		
 		# about you
-		self.wTree.get_widget("label_setup_user").set_markup(_("You will now need to enter details for your user account\nThis is the account you will use after the installation has completed."))
+		self.help_labels.append(_("You will now need to enter details for your user account\nThis is the account you will use after the installation has completed."))
 		self.wTree.get_widget("label_your_name").set_markup("<b>%s</b>" % _("Your full name"))
 		self.wTree.get_widget("label_your_name_help").set_label(_("This will be shown in the About Me application"))
 		self.wTree.get_widget("label_username").set_markup("<b>%s</b>" % _("Your username"))
@@ -188,7 +194,7 @@ class InstallerWindow:
 		entry2.connect("changed", self.pass_mismatcher)
 				
 		# advanced page
-		self.wTree.get_widget("label_advanced").set_markup(_("On this page you can select advanced options regarding your installation"))
+		self.help_labels.append(_("On this page you can select advanced options regarding your installation"))
 		
 		# grub
 		self.wTree.get_widget("label_grub").set_markup("<b>%s</b>" % _("Bootloader"))
@@ -201,7 +207,7 @@ class InstallerWindow:
 		grub_check.connect("clicked", lambda x: grub_box.set_sensitive(x.get_active()))
 		
 		# keyboard page
-		self.wTree.get_widget("label_keyboard").set_markup(_("Please choose your keyboard model and keyboard layout using the\noptions below"))
+		self.help_labels.append(_("Please choose your keyboard model and keyboard layout using the\noptions below"))
 		self.wTree.get_widget("label_test_kb").set_label(_("Use this box to test your keyboard layout"))
 		# kb models
 		ren = gtk.CellRendererText()
@@ -219,13 +225,13 @@ class InstallerWindow:
 		self.build_kb_lists()
 		
 		# 'about to install' aka overview
-		self.wTree.get_widget("label_overview").set_markup(_("Please review your options below before going any further.\nPress the finish button to install %s to your hard drive" % DISTRIBUTION_NAME))
+		self.help_labels.append(_("Please review your options below before going any further.\nPress the finish button to install %s to your hard drive" % DISTRIBUTION_NAME))
 		ren = gtk.CellRendererText()
 		column = gtk.TreeViewColumn(_("Overview"), ren)
 		column.add_attribute(ren, "markup", 0)
 		self.wTree.get_widget("treeview_overview").append_column(column)
 		# install page
-		self.wTree.get_widget("label_installing").set_markup(_("%s is now being installed on your computer\nThis may take some time so please be patient" % DISTRIBUTION_NAME))
+		self.help_labels.append(_("%s is now being installed on your computer\nThis may take some time so please be patient" % DISTRIBUTION_NAME))
 		self.wTree.get_widget("label_install_progress").set_markup("<i>%s</i>" % _("Calculating file indexes..."))
 		
 		# build partition list		
@@ -234,6 +240,8 @@ class InstallerWindow:
 		# make everything visible.
 		self.window.show()
 		self.should_pulse = False
+		
+		self.wTree.get_widget("help_label").set_markup("<span color=\"#FFFFFF\">%s</span>" % self.help_labels[0])
 
 	def quit_cb(self, widget, data=None):
 		''' ask whether we should quit. because touchpads do happen '''
@@ -347,7 +355,8 @@ class InstallerWindow:
 		from screen import Partition
 		
 		os.popen('mkdir -p /tmp/live-installer/tmpmount')
-		
+		# disks that you can install grub to
+		grub_model = gtk.ListStore(str)
 		hdd_descriptions = []
 		inxi = commands.getoutput("inxi -D -c 0")
 		parts = inxi.split(":")
@@ -358,6 +367,7 @@ class InstallerWindow:
 				hdd = hdd.split()				
 				for path in hdd:
 					if "/dev/" in path:
+						grub_model.append([path])
 						device = parted.getDevice(path)
 						disk = parted.Disk(device)											
 						partition = disk.getFirstPartition()	
@@ -450,7 +460,7 @@ class InstallerWindow:
 						model.append([partition.name, partition.type, False, None, '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.used_space])
 					
 		self.wTree.get_widget("treeview_disks").set_model(model)
-		self.wTree.get_widget("combobox_grub").set_model(model2)
+		self.wTree.get_widget("combobox_grub").set_model(grub_model)
 		self.wTree.get_widget("combobox_grub").set_active(0)	
 				
 	def build_kb_lists(self):
@@ -649,7 +659,7 @@ class InstallerWindow:
 		nattr = pango.AttrWeight(pango.WEIGHT_NORMAL, 0, len(text))
 		attrs.insert(nattr)
 		label.set_attributes(attrs)
-		label.set_sensitive(False)
+		#label.set_sensitive(False)
 		if(goback):
 			sel-=1
 			if(sel == 0):
@@ -664,7 +674,7 @@ class InstallerWindow:
 		battr = pango.AttrWeight(pango.WEIGHT_BOLD, 0, len(text))
 		attrs.insert(battr)
 		label.set_attributes(attrs)
-		label.set_sensitive(True)
+		#label.set_sensitive(True)
 		self.wTree.get_widget("notebook1").set_current_page(sel)
 
 		if(sel == 5):
@@ -676,7 +686,7 @@ class InstallerWindow:
 			self.wTree.get_widget("button_back").hide()
 			thr = threading.Thread(name="live-install", group=None, args=(), kwargs={}, target=self.do_install)
 			thr.start()
-			
+		self.wTree.get_widget("help_label").set_markup("<span color=\"#FFFFFF\">%s</span>" % self.help_labels[sel])			
 	def show_overview(self):
 		''' build the summary page '''
 		model = gtk.TreeStore(str)
