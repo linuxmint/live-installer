@@ -746,12 +746,10 @@ class InstallerWindow:
 	def do_install(self):
 		if "--debug" in sys.argv:
 			print "DEBUG MODE - INSTALLATION PROCESS NOT LAUNCHED"
-		
-		sys.exit(0)
+			sys.exit(0)
 			
 		''' Actually perform the installation .. '''
 		inst = self.installer
-		sys.exit(0)
 		# Create fstab
 		files = fstab()
 		model = self.wTree.get_widget("treeview_disks").get_model()
