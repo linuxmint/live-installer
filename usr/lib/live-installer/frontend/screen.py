@@ -139,7 +139,7 @@ class Screen(gtk.DrawingArea):
         self.draw(cr, *self.window.get_size())
 
     def draw(self, cr, width, height):
-        self.style.apply_default_background(self.window, True, gtk.STATE_NORMAL, None, 0, 0, width, height)
+        #self.style.apply_default_background(self.window, True, gtk.STATE_NORMAL, None, 0, 0, width, height)
         cr.set_source_rgba(0, 0, 0, 0.0)
         self.width = width # for add_label
         self.height = height # for add_label

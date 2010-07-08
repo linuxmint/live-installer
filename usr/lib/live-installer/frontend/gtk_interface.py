@@ -69,8 +69,7 @@ class InstallerWindow:
 		self.window.connect("destroy", self.quit_cb)
 
 		# set the step names
-		color = gtk.gdk.color_parse('#3C3C3C')
-		self.wTree.get_widget("eventbox1").modify_bg(gtk.STATE_NORMAL, color)
+
 		self.wTree.get_widget("label_step_1").set_markup("<small>%s</small> <span color=\"#FFFFFF\">&#187;</span>" % _("Select language"))
 		self.wTree.get_widget("label_step_2").set_markup("<small>%s</small> <span color=\"#FFFFFF\">&#187;</span>" % _("Choose partitions"))
 		self.wTree.get_widget("label_step_3").set_markup("<small>%s</small> <span color=\"#FFFFFF\">&#187;</span>" % _("Who are you?"))
@@ -241,8 +240,24 @@ class InstallerWindow:
 		self.window.show()
 		self.should_pulse = False
 		
-		self.wTree.get_widget("help_label").set_markup("<span color=\"#FFFFFF\">%s</span>" % self.help_labels[0])
-
+		self.wTree.get_widget("help_label").set_markup("%s" % self.help_labels[0])
+		# this is a hack atm to steal the menubar's background color
+		style = self.wTree.get_widget("menubar").style.copy()
+		self.wTree.get_widget("menubar").hide()
+		color = style.bg[gtk.STATE_NORMAL]
+		color2 = style.fg[gtk.STATE_NORMAL]
+		# apply to the header
+		self.wTree.get_widget("eventbox1").modify_bg(gtk.STATE_NORMAL, color)
+		self.wTree.get_widget("help_label").modify_fg(gtk.STATE_NORMAL, color2)
+		color = self.wTree.get_widget("notebook1").style.bg[gtk.STATE_ACTIVE]
+		self.part_screen.modify_bg(gtk.STATE_NORMAL, color)
+		# now apply to the breadcrumb nav
+		index = 0
+		while(index < 7):
+			index+=1
+			widget = self.wTree.get_widget("label_step_%d" % index)
+			widget.modify_fg(gtk.STATE_NORMAL, color2)
+		
 	def quit_cb(self, widget, data=None):
 		''' ask whether we should quit. because touchpads do happen '''
 		gtk.main_quit()
@@ -439,10 +454,7 @@ class InstallerWindow:
 						
 		from screen import Screen
 		myScreen = Screen(partitions)
-		style = self.wTree.get_widget("notebook1").style
-		style2 = myScreen.style.copy()
-		style2.bg[gtk.STATE_NORMAL] = style.bg[gtk.STATE_NORMAL]
-		myScreen.set_style(style2)
+		self.part_screen = myScreen
 		self.wTree.get_widget("vbox_cairo").add(myScreen)
 		self.wTree.get_widget("vbox_cairo").show_all()
 		
@@ -686,7 +698,8 @@ class InstallerWindow:
 			self.wTree.get_widget("button_back").hide()
 			thr = threading.Thread(name="live-install", group=None, args=(), kwargs={}, target=self.do_install)
 			thr.start()
-		self.wTree.get_widget("help_label").set_markup("<span color=\"#FFFFFF\">%s</span>" % self.help_labels[sel])			
+		self.wTree.get_widget("help_label").set_markup("%s" % self.help_labels[sel])		
+			
 	def show_overview(self):
 		''' build the summary page '''
 		model = gtk.TreeStore(str)
