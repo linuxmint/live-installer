@@ -46,7 +46,7 @@ class MessageDialog(object):
                 
 class InstallerWindow:
 
-	def __init__(self):
+	def __init__(self, fullscreen=False):
 		self.resource_dir = '/usr/share/live-installer/'
 		#self.glade = 'interface.glade'
 		self.glade = os.path.join(self.resource_dir, 'interface.glade')
@@ -95,7 +95,6 @@ class InstallerWindow:
 
 		# language view
 		self.help_labels.append("Please select the language you wish to use\nfor this installation from the list below")
-		#self.wTree.get_widget("label_select_language").set_markup(_("<span color=\"#FFFFFF\">Please select the language you wish to use\nfor this installation from the list below</span>"))
 
 		ren = gtk.CellRendererPixbuf()
 		column = gtk.TreeViewColumn("Flags", ren)
@@ -257,7 +256,17 @@ class InstallerWindow:
 			index+=1
 			widget = self.wTree.get_widget("label_step_%d" % index)
 			widget.modify_fg(gtk.STATE_NORMAL, color2)
-		
+		if(fullscreen):
+			# dedicated installer mode thingum
+			img = gtk.gdk.pixbuf_new_from_file_at_size("/usr/share/live-installer/logo.svg", 96, 96)
+			self.wTree.get_widget("logo").set_from_pixbuf(img)
+			self.window.maximize()
+			self.window.fullscreen()
+		else:
+			# running on livecd (windowed)
+			img = gtk.gdk.pixbuf_new_from_file_at_size("/usr/share/live-installer/logo.svg", 64, 64)
+			self.wTree.get_widget("logo").set_from_pixbuf(img)		
+
 	def quit_cb(self, widget, data=None):
 		''' ask whether we should quit. because touchpads do happen '''
 		gtk.main_quit()

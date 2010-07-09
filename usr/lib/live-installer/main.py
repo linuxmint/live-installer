@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import sys
+import commands
 sys.path.append('/usr/lib/live-installer')
 from frontend.gtk_interface import InstallerWindow
 
@@ -12,5 +13,8 @@ except Exception, detail:
 	
 # main entry
 if __name__ == "__main__":
-	win = InstallerWindow()
+	if("install" in commands.getoutput("cat /proc/cmdline")):
+		win = InstallerWindow(fullscreen=True)
+	else:
+		win = InstallerWindow(fullscreen=False)
 	gtk.main()

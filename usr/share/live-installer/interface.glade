@@ -81,7 +81,7 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkImage" id="image1">
+                      <widget class="GtkImage" id="logo">
                         <property name="visible">True</property>
                         <property name="xpad">6</property>
                         <property name="ypad">2</property>
@@ -96,6 +96,8 @@
                     </child>
                   </widget>
                   <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
                     <property name="padding">2</property>
                     <property name="position">0</property>
                   </packing>
@@ -198,6 +200,8 @@
                     </child>
                   </widget>
                   <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
@@ -205,6 +209,8 @@
             </child>
           </widget>
           <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
             <property name="position">1</property>
           </packing>
         </child>
@@ -429,6 +435,8 @@
                         </child>
                       </widget>
                       <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
                         <property name="padding">4</property>
                         <property name="position">0</property>
                       </packing>
@@ -485,6 +493,9 @@
                         </child>
                       </widget>
                       <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="padding">4</property>
                         <property name="position">1</property>
                       </packing>
                     </child>
@@ -588,6 +599,9 @@
                         </child>
                       </widget>
                       <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="padding">4</property>
                         <property name="position">2</property>
                       </packing>
                     </child>
@@ -643,6 +657,8 @@
                         </child>
                       </widget>
                       <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
                         <property name="position">3</property>
                       </packing>
                     </child>

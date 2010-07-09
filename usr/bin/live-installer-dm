@@ -1,0 +1,11 @@
+#!/bin/bash
+# Set the display
+DISPLAY=":0"
+export DISPLAY
+# detect language (as per the livecd)
+LANG=`cat /etc/default/locale | grep -v '#' | head -n 1 | cut -d '=' -f 2 | sed 's/"//g'`
+export LANG
+# Launches a "display manager" for the live-installer
+/usr/lib/live-installer/standalone-dm.py
+
+

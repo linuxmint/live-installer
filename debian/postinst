@@ -21,6 +21,7 @@ case "$1" in
     configure)
 	update-mime-database /usr/share/mime
 	update-desktop-database
+	update-rc.d live-installer defaults 22
 	test -x /usr/bin/update-menus && update-menus
     ;;
 
