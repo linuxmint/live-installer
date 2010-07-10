@@ -1251,6 +1251,8 @@
   <widget class="GtkWindow" id="progress_window">
     <property name="window_position">center</property>
     <property name="icon">logo.png</property>
+    <property name="skip_taskbar_hint">True</property>
+    <property name="skip_pager_hint">True</property>
     <property name="deletable">False</property>
     <child>
       <widget class="GtkHBox" id="hbox9">

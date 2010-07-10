@@ -672,17 +672,25 @@ class InstallerWindow:
 		sel = nb.get_current_page() 
 		# check each page for errors
 		if(not goback):
+			if(sel == 0 and len(self.disks) == 1):
+				notebook = self.wTree.get_widget("notebook_disks")
+				notebook.set_current_page(1)
+				self.wTree.get_widget("help_label").set_markup(_("Please edit your filesystem mount points using the options below:\nRemember partitioning <b>may cause data loss!</b>"))
+				#self.build_partitions(self.device_node)
+				thr = threading.Thread(name="live-installer-disk-search", group=None, target=self.build_partitions, args=(), kwargs={})
+				thr.start()			
 			if(sel == 1):
 				# disk chooser.
-				notebook = self.wTree.get_widget("notebook_disks")
-				sel2 = notebook.get_current_page()
-				if(sel2 == 0):
-					notebook.set_current_page(1)
-					self.wTree.get_widget("help_label").set_markup(_("Please edit your filesystem mount points using the options below:\nRemember partitioning <b>may cause data loss!</b>"))
-					#self.build_partitions(self.device_node)
-					thr = threading.Thread(name="live-installer-disk-search", group=None, target=self.build_partitions, args=(), kwargs={})
-					thr.start()
-					return
+				if(not len(self.disks) == 1):
+					notebook = self.wTree.get_widget("notebook_disks")
+					sel2 = notebook.get_current_page()
+					if(sel2 == 0):
+						notebook.set_current_page(1)
+						self.wTree.get_widget("help_label").set_markup(_("Please edit your filesystem mount points using the options below:\nRemember partitioning <b>may cause data loss!</b>"))
+						#self.build_partitions(self.device_node)
+						thr = threading.Thread(name="live-installer-disk-search", group=None, target=self.build_partitions, args=(), kwargs={})
+						thr.start()
+						return
 				# partitions page
 				model = self.wTree.get_widget("treeview_disks").get_model()
 				found_root = False
@@ -731,11 +739,14 @@ class InstallerWindow:
 			if(sel == 0):
 				notebook = self.wTree.get_widget("notebook_disks")
 				sel2 = notebook.get_current_page()
-				if(sel2 == 1):
+				if(len(self.disks) == 1):
 					self.wTree.get_widget("notebook_disks").set_current_page(0)
-					self.wTree.get_widget("help_label").set_markup(self.help_labels[sel])
-					sel += 1
+					self.wTree.get_widget("help_label").set_markup(self.help_labels[sel-1])
 				else:
+					if(sel2 == 1):
+						self.wTree.get_widget("notebook_disks").set_current_page(0)
+						self.wTree.get_widget("help_label").set_markup(self.help_labels[sel])
+						sel += 1
 					self.wTree.get_widget("button_back").set_sensitive(False)
 		else:
 			sel+=1
