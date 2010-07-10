@@ -247,6 +247,7 @@ class InstallerWindow:
 		color2 = style.fg[gtk.STATE_NORMAL]
 		# apply to the header
 		self.wTree.get_widget("eventbox1").modify_bg(gtk.STATE_NORMAL, color)
+		self.wTree.get_widget("eventbox1").modify_bg(gtk.STATE_INSENSITIVE, style.bg[gtk.STATE_INSENSITIVE])
 		self.wTree.get_widget("help_label").modify_fg(gtk.STATE_NORMAL, color2)
 		# now apply to the breadcrumb nav
 		index = 0
@@ -405,6 +406,10 @@ class InstallerWindow:
 			
 	def build_partitions(self):
 		self.window.set_sensitive(False)
+		# "busy" cursor.
+		cursor = gtk.gdk.Cursor(gtk.gdk.WATCH)
+		self.window.window.set_cursor(cursor)
+		
 		from progress import ProgressDialog
 		dialog = ProgressDialog()
 		dialog.show(title=_("Installer"), label=_("Scanning disk %s for partitions") % self.device_node)
@@ -517,7 +522,9 @@ class InstallerWindow:
 		self.wTree.get_widget("combobox_grub").set_model(grub_model)
 		self.wTree.get_widget("combobox_grub").set_active(0)	
 		dialog.hide()
+		
 		self.window.set_sensitive(True)
+		self.window.window.set_cursor(None)
 				
 	def build_kb_lists(self):
 		''' Do some xml kung-fu and load the keyboard stuffs '''
