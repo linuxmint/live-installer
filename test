@@ -1,7 +1,9 @@
 #!/bin/bash
 
 sudo rm -rf /etc/live-installer
+sudo rm -rf /etc/init.d/live-installer
 sudo rm -rf /usr/bin/live-installer
+sudo rm -rf /usr/bin/live-installer-dm
 sudo rm -rf /usr/lib/live-installer
 sudo rm -rf /usr/share/live-installer
 sudo rm -rf /usr/share/menu/live-installer
