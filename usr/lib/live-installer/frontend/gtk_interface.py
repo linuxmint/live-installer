@@ -112,7 +112,7 @@ class InstallerWindow:
 		self.build_lang_list()
 
 		# disk view
-		self.help_labels.append("Please edit your filesystem mount points using the options below:\nRemember partitioning <b>may cause data loss!</b>")
+		self.help_labels.append("Please choose a hard disk from the list below to install %s to" % DISTRIBUTION_NAME)
 		self.wTree.get_widget("button_edit").connect("clicked", self.edit_partition)
 		
 		# device
@@ -232,9 +232,9 @@ class InstallerWindow:
 		self.help_labels.append(_("%s is now being installed on your computer\nThis may take some time so please be patient" % DISTRIBUTION_NAME))
 		self.wTree.get_widget("label_install_progress").set_markup("<i>%s</i>" % _("Calculating file indexes..."))
 		
-		# build partition list		
-		self.build_partitions()
-		
+		# build partition list
+		self.device_node = None
+		self.build_disks()
 		# make everything visible.
 		self.window.show()
 		self.should_pulse = False
@@ -248,8 +248,6 @@ class InstallerWindow:
 		# apply to the header
 		self.wTree.get_widget("eventbox1").modify_bg(gtk.STATE_NORMAL, color)
 		self.wTree.get_widget("help_label").modify_fg(gtk.STATE_NORMAL, color2)
-		color = self.wTree.get_widget("notebook1").style.bg[gtk.STATE_ACTIVE]
-		self.part_screen.modify_bg(gtk.STATE_NORMAL, color)
 		# now apply to the breadcrumb nav
 		index = 0
 		while(index < 7):
@@ -373,11 +371,45 @@ class InstallerWindow:
 			treeview.set_cursor(path, focus_column=column)
 			treeview.scroll_to_cell(path, column=column)
 		treeview.set_search_column(0)
+
+	def build_disks(self):
+		import subprocess
+		self.disks = {}
+		inxi = subprocess.Popen("inxi -c0 -D", shell=True, stdout=subprocess.PIPE)
+		parent = None
+		for line in inxi.stdout:
+			line = line.rstrip("\r\n")
+			if(line.startswith("Disks:")):
+				line = line.replace("Disks:", "")
+			device = None
+			section = line.split(":")[2].strip(" ")
+			if("/dev/" in section):
+				device = section.split(" ")[0].replace(" ","")
+				self.disks[device] = section
+				if(parent is None):
+					self.device_node = device
+					radio = gtk.RadioButton(None)
+					radio.connect("clicked", self.select_disk_cb, device)
+					radio.set_label(section)
+					self.wTree.get_widget("vbox_disks").pack_start(radio, expand=False, fill=False)
+					parent = radio
+				else:
+					radio = gtk.RadioButton(parent)
+					radio.connect("clicked", self.select_disk_cb, device)
+					radio.set_label(section)
+					self.wTree.get_widget("vbox_disks").pack_start(radio, expand=False, fill=False)					
+		self.wTree.get_widget("vbox_disks").show_all()
+		
+	def select_disk_cb(self, widget, device):
+		self.device_node = device
 			
 	def build_partitions(self):
+		self.window.set_sensitive(False)
+		from progress import ProgressDialog
+		dialog = ProgressDialog()
+		dialog.show(title=_("Installer"), label=_("Scanning disk %s for partitions") % self.device_node)
 		import parted, commands
 		from screen import Partition
-		
 		os.popen('mkdir -p /tmp/live-installer/tmpmount')
 		# disks that you can install grub to
 		grub_model = gtk.ListStore(str)
@@ -385,88 +417,89 @@ class InstallerWindow:
 		inxi = commands.getoutput("inxi -D -c 0")
 		parts = inxi.split(":")
 		partitions = []
-		for part in parts:
-			if "/dev/" in part:				
-				hdd = part.strip()
-				hdd = hdd.split()				
-				for path in hdd:
-					if "/dev/" in path:
-						grub_model.append([path])
-						device = parted.getDevice(path)
-						disk = parted.Disk(device)											
-						partition = disk.getFirstPartition()	
-						last_added_partition = Partition(partition)					
-						partitions.append(last_added_partition)
-						partition = partition.nextPartition()
-						while (partition is not None):
-							if last_added_partition.partition.number == -1 and partition.number == -1:
-								last_added_partition.add_partition(partition)
+		path = self.device_node # i.e. /dev/sda
+		grub_model.append([path])
+		device = parted.getDevice(path)
+		disk = parted.Disk(device)											
+		partition = disk.getFirstPartition()	
+		last_added_partition = Partition(partition)					
+		partitions.append(last_added_partition)
+		partition = partition.nextPartition()
+		while (partition is not None):
+			if last_added_partition.partition.number == -1 and partition.number == -1:
+				last_added_partition.add_partition(partition)
+			else:
+				last_added_partition = Partition(partition)
+				partitions.append(last_added_partition)		
+				
+				if partition.number != -1 and "swap" not in last_added_partition.type:
+					
+					#Umount temp folder
+					if ('/tmp/live-installer/tmpmount' in commands.getoutput('mount')):									
+						os.popen('umount /tmp/live-installer/tmpmount')
+					
+					#Mount partition if not mounted
+					if (partition.path not in commands.getoutput('mount')):
+						os.system("mount %s /tmp/live-installer/tmpmount" % partition.path)
+						
+					#Identify partition's description and used space
+					if (partition.path in commands.getoutput('mount')):																													
+						last_added_partition.used_space = commands.getoutput("df | grep %s | awk {'print $5'}" % partition.path)
+						mount_point = commands.getoutput("df | grep %s | awk {'print $6'}" % partition.path)
+						if os.path.exists(os.path.join(mount_point, 'etc/lsb-release')):
+							last_added_partition.description = commands.getoutput("cat " + os.path.join(mount_point, 'etc/lsb-release') + " | grep DISTRIB_DESCRIPTION").replace('DISTRIB_DESCRIPTION', '').replace('=', '').replace('"', '').strip()
+						elif os.path.exists(os.path.join(mount_point, 'etc/issue')):
+							last_added_partition.description = commands.getoutput("cat " + os.path.join(mount_point, 'etc/issue')).replace('\\n', '').replace('\l', '').strip()
+						elif os.path.exists(os.path.join(mount_point, 'Windows/servicing/Version')):
+							version = commands.getoutput("ls %s" % os.path.join(mount_point, 'Windows/servicing/Version'))
+							if version.startswith("6.1"):
+								last_added_partition.description = "Windows 7"
+							elif version.startswith("6.0"):
+								last_added_partition.description = "Windows Vista"
+							elif version.startswith("5.1") or version.startswith("5.2"):
+								last_added_partition.description = "Windows XP"
+							elif version.startswith("5.0"):
+								last_added_partition.description = "Windows 2000"	
+							elif version.startswith("4.90"):
+								last_added_partition.description = "Windows Me"	
+							elif version.startswith("4.1"):
+								last_added_partition.description = "Windows 98"	
+							elif version.startswith("4.0.1381"):
+								last_added_partition.description = "Windows NT"	
+							elif version.startswith("4.0.950"):
+								last_added_partition.description = "Windows 95"												
+						elif os.path.exists(os.path.join(mount_point, 'Boot/BCD')):											
+							if os.system("grep -qs \"V.i.s.t.a\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
+								last_added_partition.description = "Windows Vista bootloader"
+							elif os.system("grep -qs \"W.i.n.d.o.w.s. .7\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
+								last_added_partition.description = "Windows 7 bootloader"
+							elif os.system("grep -qs \"W.i.n.d.o.w.s. .R.e.c.o.v.e.r.y. .E.n.v.i.r.o.n.m.e.n.t\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
+								last_added_partition.description = "Windows recovery"
+							elif os.system("grep -qs \"W.i.n.d.o.w.s. .S.e.r.v.e.r. .2.0.0.8\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
+								last_added_partition.description = "Windows Server 2008 bootloader"
 							else:
-								last_added_partition = Partition(partition)
-								partitions.append(last_added_partition)		
-								
-								if partition.number != -1 and "swap" not in last_added_partition.type:
-									
-									#Umount temp folder
-									if ('/tmp/live-installer/tmpmount' in commands.getoutput('mount')):									
-										os.popen('umount /tmp/live-installer/tmpmount')
-									
-									#Mount partition if not mounted
-									if (partition.path not in commands.getoutput('mount')):
-										os.system("mount %s /tmp/live-installer/tmpmount" % partition.path)
-										
-									#Identify partition's description and used space
-									if (partition.path in commands.getoutput('mount')):																													
-										last_added_partition.used_space = commands.getoutput("df | grep %s | awk {'print $5'}" % partition.path)
-										mount_point = commands.getoutput("df | grep %s | awk {'print $6'}" % partition.path)
-										if os.path.exists(os.path.join(mount_point, 'etc/lsb-release')):
-											last_added_partition.description = commands.getoutput("cat " + os.path.join(mount_point, 'etc/lsb-release') + " | grep DISTRIB_DESCRIPTION").replace('DISTRIB_DESCRIPTION', '').replace('=', '').replace('"', '').strip()
-										elif os.path.exists(os.path.join(mount_point, 'etc/issue')):
-											last_added_partition.description = commands.getoutput("cat " + os.path.join(mount_point, 'etc/issue')).replace('\\n', '').replace('\l', '').strip()
-										elif os.path.exists(os.path.join(mount_point, 'Windows/servicing/Version')):
-											version = commands.getoutput("ls %s" % os.path.join(mount_point, 'Windows/servicing/Version'))
-											if version.startswith("6.1"):
-												last_added_partition.description = "Windows 7"
-											elif version.startswith("6.0"):
-												last_added_partition.description = "Windows Vista"
-											elif version.startswith("5.1") or version.startswith("5.2"):
-												last_added_partition.description = "Windows XP"
-											elif version.startswith("5.0"):
-												last_added_partition.description = "Windows 2000"	
-											elif version.startswith("4.90"):
-												last_added_partition.description = "Windows Me"	
-											elif version.startswith("4.1"):
-												last_added_partition.description = "Windows 98"	
-											elif version.startswith("4.0.1381"):
-												last_added_partition.description = "Windows NT"	
-											elif version.startswith("4.0.950"):
-												last_added_partition.description = "Windows 95"												
-										elif os.path.exists(os.path.join(mount_point, 'Boot/BCD')):											
-											if os.system("grep -qs \"V.i.s.t.a\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
-												last_added_partition.description = "Windows Vista bootloader"
-											elif os.system("grep -qs \"W.i.n.d.o.w.s. .7\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
-												last_added_partition.description = "Windows 7 bootloader"
-											elif os.system("grep -qs \"W.i.n.d.o.w.s. .R.e.c.o.v.e.r.y. .E.n.v.i.r.o.n.m.e.n.t\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
-												last_added_partition.description = "Windows recovery"
-											elif os.system("grep -qs \"W.i.n.d.o.w.s. .S.e.r.v.e.r. .2.0.0.8\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
-												last_added_partition.description = "Windows Server 2008 bootloader"
-											else:
-												last_added_partition.description = "Windows bootloader"																											
-										elif os.path.exists(os.path.join(mount_point, 'Windows/System32')):
-											last_added_partition.description = "Windows"
-										
-									#Umount temp folder
-									if ('/tmp/live-installer/tmpmount' in commands.getoutput('mount')):									
-										os.popen('umount /tmp/live-installer/tmpmount')			
-															
-							partition = partition.nextPartition()							
+								last_added_partition.description = "Windows bootloader"																											
+						elif os.path.exists(os.path.join(mount_point, 'Windows/System32')):
+							last_added_partition.description = "Windows"
+						
+					#Umount temp folder
+					if ('/tmp/live-installer/tmpmount' in commands.getoutput('mount')):									
+						os.popen('umount /tmp/live-installer/tmpmount')			
+											
+			partition = partition.nextPartition()							
 						
 		from screen import Screen
 		myScreen = Screen(partitions)
 		self.part_screen = myScreen
+		kids = self.wTree.get_widget("vbox_cairo").get_children()
+		if(kids is not None):
+			for sprog in kids:
+				self.wTree.get_widget("vbox_cairo").remove(sprog)
 		self.wTree.get_widget("vbox_cairo").add(myScreen)
 		self.wTree.get_widget("vbox_cairo").show_all()
-		
+		color = self.wTree.get_widget("notebook1").style.bg[gtk.STATE_ACTIVE]
+		self.part_screen.modify_bg(gtk.STATE_NORMAL, color)
+				
 		model = gtk.ListStore(str,str,bool,str,str,bool, str, str, str)
 		model2 = gtk.ListStore(str)
 		
@@ -483,6 +516,8 @@ class InstallerWindow:
 		self.wTree.get_widget("treeview_disks").set_model(model)
 		self.wTree.get_widget("combobox_grub").set_model(grub_model)
 		self.wTree.get_widget("combobox_grub").set_active(0)	
+		dialog.hide()
+		self.window.set_sensitive(True)
 				
 	def build_kb_lists(self):
 		''' Do some xml kung-fu and load the keyboard stuffs '''
@@ -638,6 +673,16 @@ class InstallerWindow:
 		# check each page for errors
 		if(not goback):
 			if(sel == 1):
+				# disk chooser.
+				notebook = self.wTree.get_widget("notebook_disks")
+				sel2 = notebook.get_current_page()
+				if(sel2 == 0):
+					notebook.set_current_page(1)
+					self.wTree.get_widget("help_label").set_markup(_("Please edit your filesystem mount points using the options below:\nRemember partitioning <b>may cause data loss!</b>"))
+					#self.build_partitions(self.device_node)
+					thr = threading.Thread(name="live-installer-disk-search", group=None, target=self.build_partitions, args=(), kwargs={})
+					thr.start()
+					return
 				# partitions page
 				model = self.wTree.get_widget("treeview_disks").get_model()
 				found_root = False
@@ -684,7 +729,14 @@ class InstallerWindow:
 		if(goback):
 			sel-=1
 			if(sel == 0):
-				self.wTree.get_widget("button_back").set_sensitive(False)
+				notebook = self.wTree.get_widget("notebook_disks")
+				sel2 = notebook.get_current_page()
+				if(sel2 == 1):
+					self.wTree.get_widget("notebook_disks").set_current_page(0)
+					self.wTree.get_widget("help_label").set_markup(self.help_labels[sel])
+					sel += 1
+				else:
+					self.wTree.get_widget("button_back").set_sensitive(False)
 		else:
 			sel+=1
 			self.wTree.get_widget("button_back").set_sensitive(True)
