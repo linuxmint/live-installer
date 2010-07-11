@@ -728,6 +728,40 @@ class InstallerWindow:
 		model = gtk.TreeStore(str)
 		top = model.append(None)
 		model.set(top, 0, "Filesystem operations")
+		
+		top = model.append(None)
+		model.set(top, 0, _("Localization"))
+		iter = model.append(top)
+		model.set(iter, 0, "Language: <b>%s</b>" % self.locale)
+		iter = model.append(top)
+		model.set(iter, 0, "Keyboard layout: <b>%s</b>" % self.keyboard_layout_desc)
+		iter = model.append(top)
+		model.set(iter, 0, "Keyboard model: <b>%s</b>" % self.keyboard_model_desc)
+				
+		top = model.append(None)
+		model.set(top, 0, _("User settings"))
+		username = self.wTree.get_widget("entry_username").get_text()
+		realname = self.wTree.get_widget("entry_your_name").get_text()	
+		iter = model.append(top)
+		model.set(iter, 0, "Real name: <b>%s</b>" % realname)	
+		iter = model.append(top)
+		model.set(iter, 0, "Username: <b>%s</b>" % username)
+				
+		top = model.append(None)
+		model.set(top, 0, _("System settings"))
+		iter = model.append(top)
+		model.set(iter, 0, "Hostname: <b>%s</b>" % self.wTree.get_widget("entry_hostname").get_text())
+				
+		install_grub = self.wTree.get_widget("checkbutton_grub").get_active()
+		grub_box = self.wTree.get_widget("combobox_grub")
+		grub_active = grub_box.get_active()
+		grub_model = grub_box.get_model()
+		iter = model.append(top)
+		if(install_grub):
+			model.set(iter, 0, _("Install bootloader to %s" % ("<b>%s</b>" % grub_model[grub_active][0])))
+		else:
+			model.set(iter, 0, _("Do not install bootloader"))
+				
 		disks = self.wTree.get_widget("treeview_disks").get_model()
 		for item in disks:
 			if(item[2]):
@@ -738,45 +772,7 @@ class InstallerWindow:
 				# mount point
 				iter = model.append(top)
 				model.set(iter, 0, "<b>%s</b>" % (_("Mount %s as %s" % (item[0], item[3]))))
-		install_grub = self.wTree.get_widget("checkbutton_grub").get_active()
-		grub_box = self.wTree.get_widget("combobox_grub")
-		grub_active = grub_box.get_active()
-		grub_model = grub_box.get_model()
-		iter = model.append(top)
-		if(install_grub):
-			model.set(iter, 0, _("Install bootloader to %s" % ("<b>%s</b>" % grub_model[grub_active][0])))
-		else:
-			model.set(iter, 0, _("Do not install bootloader"))
-		# now we show the system info
-		top = model.append(None)
-		model.set(top, 0, _("User settings"))
-		username = self.wTree.get_widget("entry_username").get_text()
-		realname = self.wTree.get_widget("entry_your_name").get_text()		
-		iter = model.append(top)
-		model.set(iter, 0, "Username: <b>%s</b>" % username)
-		iter = model.append(top)
-		model.set(iter, 0, "Real name: <b>%s</b>" % realname)		
 		
-		# keyboard cruft
-		top = model.append(None)
-		model.set(top, 0, _("Keyboard"))
-		iter = model.append(top)
-		model.set(iter, 0, "Layout: <b>%s</b>" % self.keyboard_layout_desc)
-		iter = model.append(top)
-		model.set(iter, 0, "Model: <b>%s</b>" % self.keyboard_model_desc)
-		
-		# system stuff
-		# todo; probe
-		hostname = self.wTree.get_widget("entry_hostname").get_text()
-		language = self.locale
-		top = model.append(None)
-		model.set(top, 0, _("System settings"))
-		iter = model.append(top)
-		model.set(iter, 0, "Hostname: <b>%s</b>" % hostname)
-		#iter = model.append(top)
-		#model.set(iter, 0, "Locale: <b>%s</b>" % locale)
-		iter = model.append(top)
-		model.set(iter, 0, "Language: <b>%s</b>" % language)
 		self.wTree.get_widget("treeview_overview").set_model(model)
 		
 	def do_install(self):
