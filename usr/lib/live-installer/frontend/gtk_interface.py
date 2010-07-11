@@ -171,7 +171,9 @@ class InstallerWindow:
 		self.wTree.get_widget("label_choose_pass").set_markup("<b>%s</b>" % _("Your password"))
 		self.wTree.get_widget("label_pass_help").set_label(_("Please enter your password twice to ensure it is correct"))
 		self.wTree.get_widget("label_hostname").set_markup("<b>%s</b>" % _("Hostname"))
-		self.wTree.get_widget("label_hostname_help").set_label(_("This hostname will be the computers name on the network"))		
+		self.wTree.get_widget("label_hostname_help").set_label(_("This hostname will be the computers name on the network"))	
+				
+		self.wTree.get_widget("entry_your_name").connect("notify::text", self.update_account_fields)
 		
 		# try to set the hostname
 		machine = HostMachine()
@@ -266,7 +268,14 @@ class InstallerWindow:
 		else:
 			# running on livecd (windowed)
 			img = gtk.gdk.pixbuf_new_from_file_at_size("/usr/share/live-installer/logo.svg", 64, 64)
-			self.wTree.get_widget("logo").set_from_pixbuf(img)		
+			self.wTree.get_widget("logo").set_from_pixbuf(img)
+	
+	def update_account_fields(self, entry, prop):	
+		text = entry.props.text.strip().lower()
+		if " " in entry.props.text:			
+			elements = text.split()
+			text = elements[0]					
+		self.wTree.get_widget("entry_username").set_text(text)
 
 	def quit_cb(self, widget, data=None):
 		''' ask whether we should quit. because touchpads do happen '''
