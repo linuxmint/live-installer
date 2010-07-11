@@ -397,22 +397,24 @@ class InstallerWindow:
 			if(line.startswith("Disks:")):
 				line = line.replace("Disks:", "")
 			device = None
-			section = line.split(":")[2].strip(" ")
-			if("/dev/" in section):
-				device = section.split(" ")[0].replace(" ","")
-				self.disks[device] = section
-				if(parent is None):
-					self.device_node = device
-					radio = gtk.RadioButton(None)
-					radio.connect("clicked", self.select_disk_cb, device)
-					radio.set_label(section)
-					self.wTree.get_widget("vbox_disks").pack_start(radio, expand=False, fill=False)
-					parent = radio
-				else:
-					radio = gtk.RadioButton(parent)
-					radio.connect("clicked", self.select_disk_cb, device)
-					radio.set_label(section)
-					self.wTree.get_widget("vbox_disks").pack_start(radio, expand=False, fill=False)					
+			sections = line.split(":")
+			for section in sections:
+				section = section.strip()			
+				if("/dev/" in section):
+					device = section.split(" ")[0].replace(" ","")
+					self.disks[device] = section
+					if(parent is None):
+						self.device_node = device
+						radio = gtk.RadioButton(None)
+						radio.connect("clicked", self.select_disk_cb, device)
+						radio.set_label(section)
+						self.wTree.get_widget("vbox_disks").pack_start(radio, expand=False, fill=False)
+						parent = radio
+					else:
+						radio = gtk.RadioButton(parent)
+						radio.connect("clicked", self.select_disk_cb, device)
+						radio.set_label(section)
+						self.wTree.get_widget("vbox_disks").pack_start(radio, expand=False, fill=False)					
 		self.wTree.get_widget("vbox_disks").show_all()
 		
 	def select_disk_cb(self, widget, device):
