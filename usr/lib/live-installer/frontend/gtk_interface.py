@@ -114,7 +114,8 @@ class InstallerWindow:
 		# disk view
 		self.help_labels.append("Please edit your filesystem mount points using the options below:\nRemember partitioning <b>may cause data loss!</b>")
 		self.wTree.get_widget("button_edit").connect("clicked", self.edit_partition)
-		
+		self.wTree.get_widget("treeview_disks").connect("row_activated", self.edit_partition)
+		 
 		# device
 		ren = gtk.CellRendererText()
 		column = gtk.TreeViewColumn(_("Device"), ren)
@@ -271,7 +272,7 @@ class InstallerWindow:
 		''' ask whether we should quit. because touchpads do happen '''
 		gtk.main_quit()
 
-	def edit_partition(self, widget, data=None):
+	def edit_partition(self, widget, data=None, data2=None):
 		''' edit the partition ... '''
 		disks = self.wTree.get_widget("treeview_disks")
 		model = disks.get_model()
