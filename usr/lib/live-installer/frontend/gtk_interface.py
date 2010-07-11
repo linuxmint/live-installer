@@ -199,13 +199,17 @@ class InstallerWindow:
 		
 		# grub
 		self.wTree.get_widget("label_grub").set_markup("<b>%s</b>" % _("Bootloader"))
-		self.wTree.get_widget("checkbutton_grub").set_label(_("Install GRUB"))
+		self.wTree.get_widget("checkbutton_grub").set_label(_("Install GRUB"))		
 		self.wTree.get_widget("label_grub_help").set_label(_("GRUB is a bootloader used to load the Linux kernel"))
 		
 		# link the checkbutton to the combobox
 		grub_check = self.wTree.get_widget("checkbutton_grub")
 		grub_box = self.wTree.get_widget("combobox_grub")
 		grub_check.connect("clicked", lambda x: grub_box.set_sensitive(x.get_active()))
+		
+		# Install Grub by default
+		grub_check.set_active(True)
+		grub_box.set_sensitive(True)
 		
 		# keyboard page
 		self.help_labels.append(_("Please choose your keyboard model and keyboard layout using the\noptions below"))
