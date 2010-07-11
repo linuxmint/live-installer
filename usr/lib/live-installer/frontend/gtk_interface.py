@@ -43,9 +43,17 @@ class MessageDialog(object):
                 dialog.set_icon_from_file("/usr/share/icons/live-installer.png")
                 dialog.run()
                 dialog.destroy()
-                
+        
+class WizardPage:
+	
+	def __init__(self, breadcrumb_label, breadcrumb_text, help_text):
+		self.breadcrumb_label = breadcrumb_label
+		self.breadcrumb_text = breadcrumb_text
+		self.help_text = help_text
+		self.breadcrumb_label.set_markup("<small>%s</small> <span color=\"#FFFFFF\">-</span>" % self.breadcrumb_text)
+              
 class InstallerWindow:
-
+	
 	def __init__(self, fullscreen=False):
 		self.resource_dir = '/usr/share/live-installer/'
 		#self.glade = 'interface.glade'
@@ -68,34 +76,34 @@ class InstallerWindow:
 			self.window.set_title(_("%s Installer") % DISTRIBUTION_NAME)
 		self.window.connect("destroy", self.quit_cb)
 
-		# set the step names
-
-		self.wTree.get_widget("label_step_1").set_markup("<small>%s</small> <span color=\"#FFFFFF\">&#187;</span>" % _("Select language"))
-		self.wTree.get_widget("label_step_2").set_markup("<small>%s</small> <span color=\"#FFFFFF\">&#187;</span>" % _("Choose partitions"))
-		self.wTree.get_widget("label_step_3").set_markup("<small>%s</small> <span color=\"#FFFFFF\">&#187;</span>" % _("Who are you?"))
-		self.wTree.get_widget("label_step_4").set_markup("<small>%s</small> <span color=\"#FFFFFF\">&#187;</span>" % _("Advanced Options"))
-		self.wTree.get_widget("label_step_5").set_markup("<small>%s</small> <span color=\"#FFFFFF\">&#187;</span>" % _("Keyboard Layout"))
-		self.wTree.get_widget("label_step_6").set_markup("<small>%s</small> <span color=\"#FFFFFF\">&#187;</span>" % _("About to install"))
-		self.wTree.get_widget("label_step_7").set_markup("<small>%s</small>" % _("Install system"))
+		# Wizard pages
+		[self.PAGE_LANGUAGE, self.PAGE_PARTITIONS, self.PAGE_USER, self.PAGE_ADVANCED, self.PAGE_KEYBOARD, self.PAGE_OVERVIEW, self.PAGE_INSTALL] = range(7)
+		self.wizard_pages = range(7)
+		self.wizard_pages[self.PAGE_LANGUAGE] = WizardPage(self.wTree.get_widget("label_step_language"), _("Language selection"), _("Please select your language"))
+		self.wizard_pages[self.PAGE_KEYBOARD] = WizardPage(self.wTree.get_widget("label_step_keyboard"), _("Keyboard layout"), _("Please select your keyboard layout"))
+		self.wizard_pages[self.PAGE_PARTITIONS] = WizardPage(self.wTree.get_widget("label_step_partitions"), _("Disk partitioning"), _("Please select where you want to install %s") % DISTRIBUTION_NAME)
+		self.wizard_pages[self.PAGE_USER] = WizardPage(self.wTree.get_widget("label_step_user"), _("User info"), _("Please indicate your name and select a username, a password and a hostname"))
+		self.wizard_pages[self.PAGE_ADVANCED] = WizardPage(self.wTree.get_widget("label_step_advanced"), _("Advanced options"), _("Please review the following advanced options"))
+		self.wizard_pages[self.PAGE_OVERVIEW] = WizardPage(self.wTree.get_widget("label_step_overview"), _("Summary"), _("Please review this summary and make sure everything is correct"))
+		self.wizard_pages[self.PAGE_INSTALL] = WizardPage(self.wTree.get_widget("label_step_install"), _("Installation"), _("Please wait while %s is being installed on your computer") % DISTRIBUTION_NAME)
+			
+		# Remove last separator in breadcrumb
+		self.wizard_pages[self.PAGE_INSTALL].breadcrumb_label.set_markup("<small>%s</small>" % self.wizard_pages[self.PAGE_INSTALL].breadcrumb_text)
+		
 		# make first step label bolded.
-		label = self.wTree.get_widget("label_step_1")
+		label = self.wTree.get_widget("label_step_language")
 		text = label.get_label()
 		attrs = pango.AttrList()
 		nattr = pango.AttrWeight(pango.WEIGHT_BOLD, 0, len(text))
 		attrs.insert(nattr)
 		label.set_attributes(attrs)
-		label.set_sensitive(False)
+		label.set_sensitive(False)			
+		
 		# set the button events (wizard_cb)
 		self.wTree.get_widget("button_next").connect("clicked", self.wizard_cb, False)
 		self.wTree.get_widget("button_back").connect("clicked", self.wizard_cb, True)
 		self.wTree.get_widget("button_quit").connect("clicked", self.quit_cb)
-		
-		# list of help labels.
-		self.help_labels = []
-
-		# language view
-		self.help_labels.append("Please select the language you wish to use\nfor this installation from the list below")
-
+				
 		ren = gtk.CellRendererPixbuf()
 		column = gtk.TreeViewColumn("Flags", ren)
 		column.add_attribute(ren, "pixbuf", 2)
@@ -111,8 +119,7 @@ class InstallerWindow:
 		# build the language list
 		self.build_lang_list()
 
-		# disk view
-		self.help_labels.append("Please choose a hard disk from the list below to install %s to" % DISTRIBUTION_NAME)
+		# disk view		
 		self.wTree.get_widget("button_edit").connect("clicked", self.edit_partition)
 		self.wTree.get_widget("treeview_disks").connect("row_activated", self.edit_partition)
 		 
@@ -162,8 +169,7 @@ class InstallerWindow:
 		column.add_attribute(ren, "markup", 8)
 		self.wTree.get_widget("treeview_disks").append_column(column) 
 		
-		# about you
-		self.help_labels.append(_("You will now need to enter details for your user account\nThis is the account you will use after the installation has completed."))
+		# about you		
 		self.wTree.get_widget("label_your_name").set_markup("<b>%s</b>" % _("Your full name"))
 		self.wTree.get_widget("label_your_name_help").set_label(_("This will be shown in the About Me application"))
 		self.wTree.get_widget("label_username").set_markup("<b>%s</b>" % _("Your username"))
@@ -192,10 +198,7 @@ class InstallerWindow:
 		entry1 = self.wTree.get_widget("entry_userpass1")
 		entry2 = self.wTree.get_widget("entry_userpass2")
 		entry1.connect("changed", self.pass_mismatcher)
-		entry2.connect("changed", self.pass_mismatcher)
-				
-		# advanced page
-		self.help_labels.append(_("On this page you can select advanced options regarding your installation"))
+		entry2.connect("changed", self.pass_mismatcher)					
 		
 		# grub
 		self.wTree.get_widget("label_grub").set_markup("<b>%s</b>" % _("Bootloader"))
@@ -211,8 +214,7 @@ class InstallerWindow:
 		grub_check.set_active(True)
 		grub_box.set_sensitive(True)
 		
-		# keyboard page
-		self.help_labels.append(_("Please choose your keyboard model and keyboard layout using the\noptions below"))
+		# keyboard page		
 		self.wTree.get_widget("label_test_kb").set_label(_("Use this box to test your keyboard layout"))
 		# kb models
 		ren = gtk.CellRendererText()
@@ -229,14 +231,12 @@ class InstallerWindow:
 		self.wTree.get_widget("treeview_layouts").connect("cursor-changed", self.cb_change_kb_layout)
 		self.build_kb_lists()
 		
-		# 'about to install' aka overview
-		self.help_labels.append(_("Please review your options below before going any further.\nPress the finish button to install %s to your hard drive" % DISTRIBUTION_NAME))
+		# 'about to install' aka overview		
 		ren = gtk.CellRendererText()
 		column = gtk.TreeViewColumn(_("Overview"), ren)
 		column.add_attribute(ren, "markup", 0)
 		self.wTree.get_widget("treeview_overview").append_column(column)
-		# install page
-		self.help_labels.append(_("%s is now being installed on your computer\nThis may take some time so please be patient" % DISTRIBUTION_NAME))
+		# install page		
 		self.wTree.get_widget("label_install_progress").set_markup("<i>%s</i>" % _("Calculating file indexes..."))
 		
 		# build partition list
@@ -246,7 +246,8 @@ class InstallerWindow:
 		self.window.show()
 		self.should_pulse = False
 		
-		self.wTree.get_widget("help_label").set_markup("%s" % self.help_labels[0])
+		self.activate_page(0)		
+		
 		# this is a hack atm to steal the menubar's background color
 		style = self.wTree.get_widget("menubar").style.copy()
 		self.wTree.get_widget("menubar").hide()
@@ -258,10 +259,8 @@ class InstallerWindow:
 		self.wTree.get_widget("help_label").modify_fg(gtk.STATE_NORMAL, color2)
 		# now apply to the breadcrumb nav
 		index = 0
-		while(index < 7):
-			index+=1
-			widget = self.wTree.get_widget("label_step_%d" % index)
-			widget.modify_fg(gtk.STATE_NORMAL, color2)
+		for page in self.wizard_pages:		
+			page.breadcrumb_label.modify_fg(gtk.STATE_NORMAL, color2)			
 		if(fullscreen):
 			# dedicated installer mode thingum
 			img = gtk.gdk.pixbuf_new_from_file_at_size("/usr/share/live-installer/logo.svg", 96, 96)
@@ -699,111 +698,108 @@ class InstallerWindow:
 			label = self.wTree.get_widget("label_mismatch")
 			label.set_label(_("Passwords match"))			
 			
-	def wizard_cb(self, widget, goback, data=None):
-		''' wizard buttons '''
-		nb = self.wTree.get_widget("notebook1")
-		sel = nb.get_current_page() 
-		# check each page for errors
-		if(not goback):
-			if(sel == 0 and len(self.disks) == 1):
-				notebook = self.wTree.get_widget("notebook_disks")
-				notebook.set_current_page(1)
-				self.wTree.get_widget("help_label").set_markup(_("Please edit your filesystem mount points using the options below:\nRemember partitioning <b>may cause data loss!</b>"))
-				#self.build_partitions(self.device_node)
-				thr = threading.Thread(name="live-installer-disk-search", group=None, target=self.build_partitions, args=(), kwargs={})
-				thr.start()			
-			if(sel == 1):
-				# disk chooser.
-				if(not len(self.disks) == 1):
-					notebook = self.wTree.get_widget("notebook_disks")
-					sel2 = notebook.get_current_page()
-					if(sel2 == 0):
-						notebook.set_current_page(1)
-						self.wTree.get_widget("help_label").set_markup(_("Please edit your filesystem mount points using the options below:\nRemember partitioning <b>may cause data loss!</b>"))
-						#self.build_partitions(self.device_node)
-						thr = threading.Thread(name="live-installer-disk-search", group=None, target=self.build_partitions, args=(), kwargs={})
-						thr.start()
-						return
-				# partitions page
-				model = self.wTree.get_widget("treeview_disks").get_model()
-				found_root = False
-				# found_swap = False
-				for row in model:
-					mountpoint = row[3]
-					if(mountpoint == "/"):
-						found_root = True
-				if(not found_root):
-					dlg = MessageDialog(_("Installation Tool"), _("Please select a root (/) partition before proceeding"), gtk.MESSAGE_ERROR)
-					dlg.show()
-					return
-			elif(sel == 2):
-				# about me page
-				username = self.wTree.get_widget("entry_username").get_text()
-				if(username == ""):
-					MessageDialog(_("Installation Tool"), _("Please provide a username"), gtk.MESSAGE_ERROR).show()
-					return
-				# username valid?
-				for char in username:
-					if(char.isupper()):
-						MessageDialog(_("Installation Tool"), _("Your username must be lower case"), gtk.MESSAGE_WARNING).show()
-						return
-					if(char.isspace()):
-						MessageDialog(_("Installation Tool"), _("Your username may not contain whitespace"), gtk.MESSAGE_WARNING).show()
-						return
-				password1 = self.wTree.get_widget("entry_userpass1").get_text()
-				if(password1 == ""):
-					MessageDialog(_("Installation Tool"), _("Please provide a password for your user account"), gtk.MESSAGE_WARNING).show()
-					return
-				password2 = self.wTree.get_widget("entry_userpass2").get_text()
-				if(password1 != password2):
-					MessageDialog(_("Installation Tool"), _("Your passwords do not match"), gtk.MESSAGE_ERROR).show()
-					return
-			elif(sel == 3):				
-				pass
-		label = self.wTree.get_widget("label_step_" + str(sel+1))
-		text = label.get_label()
-		attrs = pango.AttrList()
-		nattr = pango.AttrWeight(pango.WEIGHT_NORMAL, 0, len(text))
-		attrs.insert(nattr)
-		label.set_attributes(attrs)
-		#label.set_sensitive(False)
-		if(goback):
-			sel-=1
-			if(sel == 0):
-				notebook = self.wTree.get_widget("notebook_disks")
-				sel2 = notebook.get_current_page()
-				if(len(self.disks) == 1):
-					self.wTree.get_widget("notebook_disks").set_current_page(0)
-					self.wTree.get_widget("help_label").set_markup(self.help_labels[sel-1])
-				else:
-					if(sel2 == 1):
-						self.wTree.get_widget("notebook_disks").set_current_page(0)
-						self.wTree.get_widget("help_label").set_markup(self.help_labels[sel])
-						sel += 1
-					self.wTree.get_widget("button_back").set_sensitive(False)
-		else:
-			sel+=1
-			self.wTree.get_widget("button_back").set_sensitive(True)
-			
-		label = self.wTree.get_widget("label_step_" + str(sel+1))
-		attrs = pango.AttrList()
-		text = label.get_label()
+	def activate_page(self, index):
+		# Make breadcrumb normal		
+		for page in self.wizard_pages:
+			attrs = pango.AttrList()
+			text = self.wizard_pages[index].breadcrumb_text
+			battr = pango.AttrWeight(pango.WEIGHT_NORMAL, 0, len(text))
+			attrs.insert(battr)
+			page.breadcrumb_label.set_attributes(attrs)
+		
+		# Prepare bold style for one particular breadcrumb item
+		attrs = pango.AttrList()		
 		battr = pango.AttrWeight(pango.WEIGHT_BOLD, 0, len(text))
 		attrs.insert(battr)
-		label.set_attributes(attrs)
-		#label.set_sensitive(True)
-		self.wTree.get_widget("notebook1").set_current_page(sel)
-
-		if(sel == 5):
-			self.show_overview()
-			self.wTree.get_widget("treeview_overview").expand_all()
-		if(sel == 6):
-			# do install
-			self.wTree.get_widget("button_next").hide()
-			self.wTree.get_widget("button_back").hide()
-			thr = threading.Thread(name="live-install", group=None, args=(), kwargs={}, target=self.do_install)
-			thr.start()
-		self.wTree.get_widget("help_label").set_markup("%s" % self.help_labels[sel])		
+		self.wizard_pages[index].breadcrumb_label.set_attributes(attrs)		
+		self.wTree.get_widget("help_label").set_markup("%s" % self.wizard_pages[index].help_text)
+		self.wTree.get_widget("notebook1").set_current_page(index)
+		
+	
+	def wizard_cb(self, widget, goback, data=None):
+		''' wizard buttons '''		
+		sel = self.wTree.get_widget("notebook1").get_current_page()
+		# check each page for errors
+		if(not goback):
+			if(sel == self.PAGE_LANGUAGE):				
+				self.activate_page(self.PAGE_KEYBOARD)
+			elif(sel == self.PAGE_KEYBOARD):
+				self.activate_page(self.PAGE_PARTITIONS)				
+				notebook = self.wTree.get_widget("notebook_disks")
+				if len(self.disks) == 1:					
+					notebook.set_current_page(1)					
+					thr = threading.Thread(name="live-installer-disk-search", group=None, target=self.build_partitions, args=(), kwargs={})
+					thr.start()
+				else:
+					notebook.set_current_page(0)
+			elif(sel == self.PAGE_PARTITIONS):
+				notebook = self.wTree.get_widget("notebook_disks")
+				if notebook.get_current_page() == 0:
+					notebook.set_current_page(1)					
+					thr = threading.Thread(name="live-installer-disk-search", group=None, target=self.build_partitions, args=(), kwargs={})
+					thr.start()
+				else:
+					model = self.wTree.get_widget("treeview_disks").get_model()
+					found_root = False
+					for row in model:
+						mountpoint = row[3]
+						if(mountpoint == "/"):
+							found_root = True
+					if(not found_root):
+						MessageDialog(_("Installation Tool"), _("Please select a root (/) partition before proceeding"), gtk.MESSAGE_ERROR).show()												
+					else:
+						self.activate_page(self.PAGE_USER)
+			elif(sel == self.PAGE_USER):
+				username = self.wTree.get_widget("entry_username").get_text()
+				if(username == ""):
+					MessageDialog(_("Installation Tool"), _("Please provide a username"), gtk.MESSAGE_ERROR).show()					
+				else:
+					# username valid?
+					for char in username:
+						if(char.isupper()):
+							MessageDialog(_("Installation Tool"), _("Your username must be lower case"), gtk.MESSAGE_WARNING).show()							
+						elif(char.isspace()):
+							MessageDialog(_("Installation Tool"), _("Your username may not contain whitespace"), gtk.MESSAGE_WARNING).show()
+						else:
+							password1 = self.wTree.get_widget("entry_userpass1").get_text()
+							password2 = self.wTree.get_widget("entry_userpass2").get_text()
+							if(password1 == ""):
+								MessageDialog(_("Installation Tool"), _("Please provide a password for your user account"), gtk.MESSAGE_WARNING).show()
+							elif(password1 != password2):
+								MessageDialog(_("Installation Tool"), _("Your passwords do not match"), gtk.MESSAGE_ERROR).show()
+							else:
+								self.activate_page(self.PAGE_ADVANCED)
+			elif(sel == self.PAGE_ADVANCED):			
+				self.activate_page(self.PAGE_OVERVIEW)
+				self.show_overview()
+				self.wTree.get_widget("treeview_overview").expand_all()
+			elif(self == self.PAGE_OVERVIEW):
+				self.activate_page(self.PAGE_INSTALL)
+				# do install
+				self.wTree.get_widget("button_next").hide()
+				self.wTree.get_widget("button_back").hide()
+				thr = threading.Thread(name="live-install", group=None, args=(), kwargs={}, target=self.do_install)
+				thr.start()
+			self.wTree.get_widget("button_back").set_sensitive(True)
+		else:		
+			if(sel == self.PAGE_OVERVIEW):
+				self.activate_page(self.PAGE_ADVANCED)
+			if(sel == self.PAGE_ADVANCED):
+				self.activate_page(self.PAGE_USER)
+			if(sel == self.PAGE_USER):
+				self.activate_page(self.PAGE_PARTITIONS)
+				notebook = self.wTree.get_widget("notebook_disks")
+				if len(self.disks) == 1:
+					notebook.set_current_page(1)					
+					thr = threading.Thread(name="live-installer-disk-search", group=None, target=self.build_partitions, args=(), kwargs={})
+					thr.start()
+				else:
+					notebook.set_current_page(0)
+			if(sel == self.PAGE_PARTITIONS):
+				self.activate_page(self.PAGE_KEYBOARD)
+			if(sel == self.PAGE_KEYBOARD):
+				self.activate_page(self.PAGE_LANGUAGE)
+				self.wTree.get_widget("button_back").set_sensitive(False)			
 			
 	def show_overview(self):
 		''' build the summary page '''
