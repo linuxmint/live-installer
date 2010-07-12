@@ -242,25 +242,26 @@ class InstallerWindow:
 		# build partition list
 		self.device_node = None
 		self.build_disks()
-		# make everything visible.
-		self.window.show()
 		self.should_pulse = False
 		
+		# make sure we're on the right page (no pun.)
 		self.activate_page(0)		
 		
 		# this is a hack atm to steal the menubar's background color
+		self.wTree.get_widget("menubar").realize()
 		style = self.wTree.get_widget("menubar").style.copy()
 		self.wTree.get_widget("menubar").hide()
-		color = style.bg[gtk.STATE_NORMAL]
-		color2 = style.fg[gtk.STATE_NORMAL]
 		# apply to the header
-		self.wTree.get_widget("eventbox1").modify_bg(gtk.STATE_NORMAL, color)
+		self.wTree.get_widget("eventbox1").realize()
+		self.wTree.get_widget("eventbox1").modify_bg(gtk.STATE_NORMAL, style.bg[gtk.STATE_NORMAL])
+		self.wTree.get_widget("eventbox1").modify_bg(gtk.STATE_ACTIVE, style.bg[gtk.STATE_ACTIVE])
 		self.wTree.get_widget("eventbox1").modify_bg(gtk.STATE_INSENSITIVE, style.bg[gtk.STATE_INSENSITIVE])
-		self.wTree.get_widget("help_label").modify_fg(gtk.STATE_NORMAL, color2)
+		self.wTree.get_widget("help_label").realize()
+		self.wTree.get_widget("help_label").modify_fg(gtk.STATE_NORMAL, style.fg[gtk.STATE_NORMAL])
 		# now apply to the breadcrumb nav
 		index = 0
 		for page in self.wizard_pages:		
-			page.breadcrumb_label.modify_fg(gtk.STATE_NORMAL, color2)			
+			page.breadcrumb_label.modify_fg(gtk.STATE_NORMAL, style.fg[gtk.STATE_NORMAL])			
 		if(fullscreen):
 			# dedicated installer mode thingum
 			img = gtk.gdk.pixbuf_new_from_file_at_size("/usr/share/live-installer/logo.svg", 96, 96)
@@ -271,7 +272,9 @@ class InstallerWindow:
 			# running on livecd (windowed)
 			img = gtk.gdk.pixbuf_new_from_file_at_size("/usr/share/live-installer/logo.svg", 64, 64)
 			self.wTree.get_widget("logo").set_from_pixbuf(img)
-	
+		# visible please :)
+		self.window.show_all()
+		
 	def update_account_fields(self, entry, prop):	
 		text = entry.props.text.strip().lower()
 		if " " in entry.props.text:			
