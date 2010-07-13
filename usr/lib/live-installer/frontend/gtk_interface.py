@@ -390,6 +390,7 @@ class InstallerWindow:
 		treeview.set_search_column(0)
 
 	def build_disks(self):
+		gtk.gdk.threads_enter()
 		import subprocess
 		self.disks = {}
 		inxi = subprocess.Popen("inxi -c0 -D", shell=True, stdout=subprocess.PIPE)
@@ -428,16 +429,17 @@ class InstallerWindow:
 							radio.set_label(description)
 							self.wTree.get_widget("vbox_disks").pack_start(radio, expand=False, fill=False)					
 		self.wTree.get_widget("vbox_disks").show_all()
-		
+		gtk.gdk.threads_leave()
 	def select_disk_cb(self, widget, device):
 		self.device_node = device
 			
 	def build_partitions(self):
+		gtk.gdk.threads_enter()
 		self.window.set_sensitive(False)
 		# "busy" cursor.
 		cursor = gtk.gdk.Cursor(gtk.gdk.WATCH)
 		self.window.window.set_cursor(cursor)
-		
+		gtk.gdk.threads_leave()
 		from progress import ProgressDialog
 		dialog = ProgressDialog()
 		dialog.show(title=_("Installer"), label=_("Scanning disk %s for partitions") % self.device_node)
@@ -522,6 +524,7 @@ class InstallerWindow:
 			partition = partition.nextPartition()							
 						
 		from screen import Screen
+		gtk.gdk.threads_enter()
 		myScreen = Screen(partitions)
 		self.part_screen = myScreen
 		kids = self.wTree.get_widget("vbox_cairo").get_children()
@@ -532,6 +535,7 @@ class InstallerWindow:
 		self.wTree.get_widget("vbox_cairo").show_all()
 		color = self.wTree.get_widget("notebook1").style.bg[gtk.STATE_ACTIVE]
 		self.part_screen.modify_bg(gtk.STATE_NORMAL, color)
+		gtk.gdk.threads_leave()
 				
 		model = gtk.ListStore(str,str,bool,str,str,bool, str, str, str)
 		model2 = gtk.ListStore(str)
@@ -548,15 +552,16 @@ class InstallerWindow:
 						model.append([partition.name, "%s (%s)" % (partition.description, partition.type), False, None, '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.used_space])
 					else:
 						model.append([partition.name, partition.type, False, None, '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.used_space])
-					
+		gtk.gdk.threads_enter()			
 		self.wTree.get_widget("treeview_disks").set_model(model)
 		self.wTree.get_widget("combobox_grub").set_model(grub_model)
-		self.wTree.get_widget("combobox_grub").set_active(0)	
+		self.wTree.get_widget("combobox_grub").set_active(0)
+		gtk.gdk.threads_leave()
 		dialog.hide()
-		
+		gtk.gdk.threads_enter()
 		self.window.set_sensitive(True)
 		self.window.window.set_cursor(None)
-				
+		gtk.gdk.threads_leave()		
 	def build_kb_lists(self):
 		''' Do some xml kung-fu and load the keyboard stuffs '''
 		
@@ -779,7 +784,7 @@ class InstallerWindow:
 				self.activate_page(self.PAGE_OVERVIEW)
 				self.show_overview()
 				self.wTree.get_widget("treeview_overview").expand_all()
-			elif(self == self.PAGE_OVERVIEW):
+			elif(sel == self.PAGE_OVERVIEW):
 				self.activate_page(self.PAGE_INSTALL)
 				# do install
 				self.wTree.get_widget("button_next").hide()
@@ -882,7 +887,7 @@ class InstallerWindow:
 		user = SystemUser(username=username, password=password, realname=realname)
 		inst.set_main_user(user)
 		inst.set_hostname(hostname)
-					
+				
 		# set language
 		inst.set_locale(self.locale)
 		
@@ -899,7 +904,7 @@ class InstallerWindow:
 
 		# do we dare? ..		
 		inst.install()
-		
+
 		# show a message dialog thingum
 		while(not self.done):
 			time.sleep(0.1)
@@ -945,7 +950,9 @@ class InstallerWindow:
 		def pbar_pulse():
 			if(not self.should_pulse):
 				return False
+			gtk.gdk.threads_enter()
 			self.wTree.get_widget("progressbar").pulse()
+			gtk.gdk.threads_leave()
 			return self.should_pulse
 		if(not self.should_pulse):
 			self.should_pulse = True
@@ -953,9 +960,7 @@ class InstallerWindow:
 		else:
 			# asssume we're "pulsing" already
 			self.should_pulse = True
-			gtk.gdk.threads_enter()
 			pbar_pulse()
-			gtk.gdk.threads_leave()
 		
 class PartitionDialog:
 	
