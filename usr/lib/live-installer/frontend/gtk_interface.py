@@ -137,11 +137,13 @@ class InstallerWindow:
 		ren = gtk.CellRendererToggle()
 		column = gtk.TreeViewColumn(_("Format"), ren)
 		column.add_attribute(ren, "active", 2)
+		column.add_attribute(ren, "visible", 9)
 		self.wTree.get_widget("treeview_disks").append_column(column)
 		# boot flag
 		ren = gtk.CellRendererToggle()
 		column = gtk.TreeViewColumn(_("Boot"), ren)
 		column.add_attribute(ren, "active", 5)
+		column.add_attribute(ren, "visible", 9)
 		self.wTree.get_widget("treeview_disks").append_column(column)		
 		# mount point
 		ren = gtk.CellRendererText()
@@ -540,7 +542,7 @@ class InstallerWindow:
 		self.part_screen.modify_bg(gtk.STATE_NORMAL, color)
 		gtk.gdk.threads_leave()
 				
-		model = gtk.ListStore(str,str,bool,str,str,bool, str, str, str)
+		model = gtk.ListStore(str,str,bool,str,str,bool, str, str, str, bool)
 		model2 = gtk.ListStore(str)
 		
 		extended_sectors = [-1, -1]
@@ -557,14 +559,14 @@ class InstallerWindow:
 					display_name = partition.name
 				
 				if partition.partition.number == -1:
-					model.append(["<small><span foreground='#555555'>" + display_name + "</span></small>", partition.type, False, None, '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space])										
+					model.append(["<small><span foreground='#555555'>" + display_name + "</span></small>", partition.type, False, None, '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space, False])										
 				elif partition.real_type == parted.PARTITION_EXTENDED:					
-					model.append(["<small><span foreground='#555555'>extended partition</span></small>", None, False, None,  '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space])
+					model.append(["<small><span foreground='#555555'>extended partition</span></small>", None, False, None,  '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space, False])
 				else:								
 					if partition.description != "":
-						model.append(["<span foreground='" + color + "'>" + display_name + "</span>", "%s (%s)" % (partition.description, partition.type), False, None, '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space])
+						model.append(["<span foreground='" + color + "'>" + display_name + "</span>", "%s (%s)" % (partition.description, partition.type), False, None, '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space, True])
 					else:
-						model.append(["<span foreground='" + color + "'>" + display_name + "</span>", partition.type, False, None, '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space])
+						model.append(["<span foreground='" + color + "'>" + display_name + "</span>", partition.type, False, None, '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space, True])
 				
 		gtk.gdk.threads_enter()			
 		self.wTree.get_widget("treeview_disks").set_model(model)
