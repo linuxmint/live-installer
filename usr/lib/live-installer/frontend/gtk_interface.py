@@ -438,11 +438,11 @@ class InstallerWindow:
 		self.window.set_sensitive(False)
 		# "busy" cursor.
 		cursor = gtk.gdk.Cursor(gtk.gdk.WATCH)
-		self.window.window.set_cursor(cursor)
-		gtk.gdk.threads_leave()
+		self.window.window.set_cursor(cursor)		
 		from progress import ProgressDialog
 		dialog = ProgressDialog()
 		dialog.show(title=_("Installer"), label=_("Scanning disk %s for partitions") % self.device_node)
+		gtk.gdk.threads_leave()
 		import parted, commands
 		from screen import Partition
 		os.popen('mkdir -p /tmp/live-installer/tmpmount')
