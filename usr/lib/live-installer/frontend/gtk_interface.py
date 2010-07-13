@@ -540,6 +540,9 @@ class InstallerWindow:
 			if partition.size > 0.5:
 				if partition.partition.number == -1:
 					model.append(["<small><span foreground='#555555'>" + partition.name + "</span></small>", partition.type, False, None, '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.used_space])
+				elif partition.real_type == parted.PARTITION_EXTENDED:
+					print "Extended partition"
+					model.append(["<small><span foreground='#555555'>extended partition</span></small>", None, False, None,  '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.used_space])
 				else:			
 					if partition.description != "":
 						model.append([partition.name, "%s (%s)" % (partition.description, partition.type), False, None, '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.used_space])

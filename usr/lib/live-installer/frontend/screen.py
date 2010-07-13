@@ -16,9 +16,11 @@ class Partition(object):
 		self.end = partition.geometry.end
 		self.description = ""
 		self.used_space = ""
+		self.real_type = None
 		
 		if partition.number != -1:
 			self.name = partition.path
+			self.real_type = partition.type
 			if partition.fileSystem is None:
 				# no filesystem, check flags								
 				if partition.type == parted.PARTITION_SWAP:
@@ -167,13 +169,17 @@ class Screen(gtk.DrawingArea):
 				pct = float(ratio * 100)
 				pixels = ratio * width
 				n_width = int(pixels)
-				
+				n_start = 10
+				if(partition.real_type == parted.PARTITION_LOGICAL):
+					height -= 2
+					n_start += 2
+					n_width -= 2
 				cr.set_source_rgb(*border_color)
-				self.rounded_rectangle(cr, x_offset-1, 9, n_width+2, height+2)
+				self.rounded_rectangle(cr, x_offset-1, n_start - 1, n_width+2, height+2)
 				cr.fill()
 								
 				cr.set_source_rgb(*fill_color)
-				self.rounded_rectangle(cr, x_offset, 10, n_width, height)
+				self.rounded_rectangle(cr, x_offset, n_start, n_width, height)
 				cr.fill()
 				
 				# partition usage
@@ -185,13 +191,14 @@ class Screen(gtk.DrawingArea):
 					#u_width = n_width - int(pixels)
 					u_width = int(pixels)
 
-					self.rounded_rectangle(cr, x_offset, 10, u_width, height)
+					self.rounded_rectangle(cr, x_offset, n_start, u_width, height)
 					cr.fill()
 					cr.set_source_rgb(*fill_color)
 				
-				x_offset += n_width
-				x_offset += 3
-								
+				if(partition.real_type != parted.PARTITION_EXTENDED):
+					x_offset += n_width
+					x_offset += 3
+						
 				if partition.description != "":
 					self.add_label("%s (%s)" % (partition.description, partition.name.replace('/dev/', '')), border_color)
 				else:
