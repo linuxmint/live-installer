@@ -21,28 +21,28 @@ class Partition(object):
 			self.name = partition.path
 			if partition.fileSystem is None:
 				# no filesystem, check flags								
-				if partition.getFlag(parted.PARTITION_SWAP):
+				if partition.type == parted.PARTITION_SWAP:
 					self.type = ("Linux swap")
-				elif partition.getFlag(parted.PARTITION_RAID):
+				elif partition.type == parted.PARTITION_RAID:
 					self.type = ("RAID")
-				elif partition.getFlag(parted.PARTITION_LVM):
+				elif partition.type == parted.PARTITION_LVM:
 					self.type = ("Linux LVM")
-				elif partition.getFlag(parted.PARTITION_HPSERVICE):
+				elif partition.type == parted.PARTITION_HPSERVICE:
 					self.type = ("HP Service")
-				elif partition.getFlag(parted.PARTITION_PALO):
+				elif partition.type == parted.PARTITION_PALO:
 					self.type = ("PALO")
-				elif partition.getFlag(parted.PARTITION_PREP):
+				elif partition.type == parted.PARTITION_PREP:
 					self.type = ("PReP")
-				elif partition.getFlag(parted.PARTITION_MSFT_RESERVED):
+				elif partition.type == parted.PARTITION_MSFT_RESERVED:
 					self.type = ("MSFT Reserved")
-				elif partition.getFlag(parted.PARTITION_EXTENDED):
+				elif partition.type == parted.PARTITION_EXTENDED:
 					self.type = ("Extended Partition")
-				elif partition.getFlag(parted.PARTITION_LOGICAL):
+				elif partition.type == parted.PARTITION_LOGICAL:
 					self.type = ("Logical Partition")
-				elif partition.getFlag(parted.PARTITION_FREESPACE):
+				elif partition.type == parted.PARTITION_FREESPACE:
 					self.type = ("Free Space")
 				else:
-					self.type =("Unknown")								
+						self.type =("Unknown")								
 			else:
 				self.type = partition.fileSystem.type
 		else:
