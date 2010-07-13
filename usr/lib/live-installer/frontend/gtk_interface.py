@@ -165,7 +165,7 @@ class InstallerWindow:
 		#self.wTree.get_widget("treeview_disks").append_column(column) 
 		# Used space
 		ren = gtk.CellRendererText()
-		column = gtk.TreeViewColumn(_("Used space"), ren)
+		column = gtk.TreeViewColumn(_("Free space (MB)"), ren)
 		column.add_attribute(ren, "markup", 8)
 		self.wTree.get_widget("treeview_disks").append_column(column) 
 		
@@ -480,6 +480,9 @@ class InstallerWindow:
 					#Identify partition's description and used space
 					if (partition.path in commands.getoutput('mount')):																													
 						last_added_partition.used_space = commands.getoutput("df | grep %s | awk {'print $5'}" % partition.path)
+						if "%" in last_added_partition.used_space:
+							used_space_pct = int(last_added_partition.used_space.replace("%", "").strip())
+							last_added_partition.free_space = int(float(last_added_partition.size) * (float(100) - float(used_space_pct)) / float(100))
 						mount_point = commands.getoutput("df | grep %s | awk {'print $6'}" % partition.path)
 						if os.path.exists(os.path.join(mount_point, 'etc/lsb-release')):
 							last_added_partition.description = commands.getoutput("cat " + os.path.join(mount_point, 'etc/lsb-release') + " | grep DISTRIB_DESCRIPTION").replace('DISTRIB_DESCRIPTION', '').replace('=', '').replace('"', '').strip()
@@ -543,15 +546,15 @@ class InstallerWindow:
 		for partition in partitions:
 			if partition.size > 0.5:
 				if partition.partition.number == -1:
-					model.append(["<small><span foreground='#555555'>" + partition.name + "</span></small>", partition.type, False, None, '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.used_space])
+					model.append(["<small><span foreground='#555555'>" + partition.name + "</span></small>", partition.type, False, None, '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space])
 				elif partition.real_type == parted.PARTITION_EXTENDED:
 					print "Extended partition"
-					model.append(["<small><span foreground='#555555'>extended partition</span></small>", None, False, None,  '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.used_space])
+					model.append(["<small><span foreground='#555555'>extended partition</span></small>", None, False, None,  '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space])
 				else:			
 					if partition.description != "":
-						model.append([partition.name, "%s (%s)" % (partition.description, partition.type), False, None, '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.used_space])
+						model.append([partition.name, "%s (%s)" % (partition.description, partition.type), False, None, '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space])
 					else:
-						model.append([partition.name, partition.type, False, None, '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.used_space])
+						model.append([partition.name, partition.type, False, None, '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space])
 		gtk.gdk.threads_enter()			
 		self.wTree.get_widget("treeview_disks").set_model(model)
 		self.wTree.get_widget("combobox_grub").set_model(grub_model)

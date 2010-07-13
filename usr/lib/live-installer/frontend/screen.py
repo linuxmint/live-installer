@@ -16,6 +16,7 @@ class Partition(object):
 		self.end = partition.geometry.end
 		self.description = ""
 		self.used_space = ""
+		self.free_space = ""
 		self.real_type = None
 		
 		if partition.number != -1:
