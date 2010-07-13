@@ -543,18 +543,29 @@ class InstallerWindow:
 		model = gtk.ListStore(str,str,bool,str,str,bool, str, str, str)
 		model2 = gtk.ListStore(str)
 		
+		extended_sectors = [-1, -1]
+		
+		colors = [ "#010510", "#000099", "#009999", "#009900", "#999999", "#990000" ]
+		
 		for partition in partitions:
 			if partition.size > 0.5:
+				color = colors[partition.partition.number % len(colors)]
+				
+				if partition.real_type == parted.PARTITION_LOGICAL:
+					display_name = "  " + partition.name
+				else:
+					display_name = partition.name
+				
 				if partition.partition.number == -1:
-					model.append(["<small><span foreground='#555555'>" + partition.name + "</span></small>", partition.type, False, None, '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space])
-				elif partition.real_type == parted.PARTITION_EXTENDED:
-					print "Extended partition"
+					model.append(["<small><span foreground='#555555'>" + display_name + "</span></small>", partition.type, False, None, '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space])										
+				elif partition.real_type == parted.PARTITION_EXTENDED:					
 					model.append(["<small><span foreground='#555555'>extended partition</span></small>", None, False, None,  '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space])
-				else:			
+				else:								
 					if partition.description != "":
-						model.append([partition.name, "%s (%s)" % (partition.description, partition.type), False, None, '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space])
+						model.append(["<span foreground='" + color + "'>" + display_name + "</span>", "%s (%s)" % (partition.description, partition.type), False, None, '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space])
 					else:
-						model.append([partition.name, partition.type, False, None, '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space])
+						model.append(["<span foreground='" + color + "'>" + display_name + "</span>", partition.type, False, None, '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space])
+				
 		gtk.gdk.threads_enter()			
 		self.wTree.get_widget("treeview_disks").set_model(model)
 		self.wTree.get_widget("combobox_grub").set_model(grub_model)

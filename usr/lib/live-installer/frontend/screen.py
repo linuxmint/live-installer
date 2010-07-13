@@ -158,7 +158,7 @@ class Screen(gtk.DrawingArea):
         self.rows = 0
         
         for partition in self.partitions:
-			if partition.size > 0.5:
+			if partition.size > 0.5 and partition.real_type != parted.PARTITION_EXTENDED:
 				if partition.partition.number == -1:
 					border_color = (0.6, 0.6, 0.6)
 					fill_color = (0.6, 0.6, 0.6)
@@ -171,10 +171,7 @@ class Screen(gtk.DrawingArea):
 				pixels = ratio * width
 				n_width = int(pixels)
 				n_start = 10
-				if(partition.real_type == parted.PARTITION_LOGICAL):
-					height -= 2
-					n_start += 2
-					n_width -= 2
+				
 				cr.set_source_rgb(*border_color)
 				self.rounded_rectangle(cr, x_offset-1, n_start - 1, n_width+2, height+2)
 				cr.fill()
@@ -195,14 +192,14 @@ class Screen(gtk.DrawingArea):
 					self.rounded_rectangle(cr, x_offset, n_start, u_width, height)
 					cr.fill()
 					cr.set_source_rgb(*fill_color)
+								
+				x_offset += n_width
+				x_offset += 3
 				
-				if(partition.real_type != parted.PARTITION_EXTENDED):
-					x_offset += n_width
-					x_offset += 3
-						
-				if partition.description != "":
-					self.add_label("%s (%s)" % (partition.description, partition.name.replace('/dev/', '')), border_color)
-				else:
-					self.add_label(partition.name.replace('/dev/', ''), border_color)
+				if(partition.partition.number != -1):		
+					if partition.description != "":
+						self.add_label("%s (%s)" % (partition.description, partition.name.replace('/dev/', '')), border_color)
+					else:
+						self.add_label(partition.name.replace('/dev/', ''), border_color)
         self.rows = 0
 
