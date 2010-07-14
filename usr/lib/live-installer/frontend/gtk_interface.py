@@ -22,6 +22,9 @@ try:
 	import time
 except Exception, detail:
 	print detail
+	
+
+import parted, commands
 
 gettext.install("live-installer", "/usr/share/locale")
 gtk.gdk.threads_init()
@@ -120,8 +123,11 @@ class InstallerWindow:
 		self.build_lang_list()
 
 		# disk view		
-		self.wTree.get_widget("button_edit").connect("clicked", self.edit_partition)
-		self.wTree.get_widget("treeview_disks").connect("row_activated", self.edit_partition)
+		self.wTree.get_widget("button_edit").connect("clicked", self.edit_partitions)
+		self.wTree.get_widget("label_edit_partitions").set_label(_("Edit partitions"))
+		self.wTree.get_widget("button_refresh").connect("clicked", self.refresh_partitions)		
+		self.wTree.get_widget("treeview_disks").connect("row_activated", self.assign_partition)
+		self.wTree.get_widget("treeview_disks").connect( "button-release-event", self.partitions_popup_menu)
 		 
 		# device
 		ren = gtk.CellRendererText()
@@ -288,31 +294,98 @@ class InstallerWindow:
 		''' ask whether we should quit. because touchpads do happen '''
 		gtk.main_quit()
 
-	def edit_partition(self, widget, data=None, data2=None):
-		''' edit the partition ... '''
-		disks = self.wTree.get_widget("treeview_disks")
-		model = disks.get_model()
-		active = disks.get_selection().get_selected_rows()
-		if(len(active) < 1):
-			return
-		if(len(active[1]) < 1):
-			return
-		active = active[1][0]
-		if(active is None):
-			return
-		row = model[active]
-		stabber = fstab_entry(row[0], row[3], row[1], None)
-		stabber.format = row[2]
-		dlg = PartitionDialog(stabber)
-		stabber = dlg.show()
-		if(stabber is None):
-			return
-		# now set the model as shown..
-		row[0] = stabber.device
-		row[3] = stabber.mountpoint
-		row[1] = stabber.filesystem
-		row[2] = stabber.format
-		model[active] = row
+	def assign_partition(self, widget, data=None, data2=None):
+		''' assign the partition ... '''
+		model, iter = self.wTree.get_widget("treeview_disks").get_selection().get_selected()
+		if iter is not None:				
+			row = model[iter]
+			partition = row[10]
+			if not partition.real_type == parted.PARTITION_EXTENDED and not partition.partition.number == -1:
+				stabber = fstab_entry(row[0], row[3], row[1], None)
+				stabber.format = row[2]
+				dlg = PartitionDialog(stabber)
+				stabber = dlg.show()
+				if(stabber is None):
+					return
+				# now set the model as shown..
+				row[0] = stabber.device
+				row[3] = stabber.mountpoint
+				row[2] = stabber.format				
+				if stabber.format:
+					if stabber.filesystem == "":
+						row[1] = "ext4"
+					else:
+						row[1] = stabber.filesystem
+				
+				model[iter] = row
+				
+	def partitions_popup_menu( self, widget, event ):
+		if event.button == 3:
+			model, iter = self.wTree.get_widget("treeview_disks").get_selection().get_selected()
+			if iter is not None:
+				partition = model.get_value(iter, 10)
+				if not partition.real_type == parted.PARTITION_EXTENDED and not partition.partition.number == -1:
+					menu = gtk.Menu()
+					menuItem = gtk.MenuItem(_("Assign to /"))
+					menuItem.connect( "activate", self.assignRoot, partition)
+					menu.append(menuItem)
+					menuItem = gtk.MenuItem(_("Assign to /home"))
+					menuItem.connect( "activate", self.assignHome, partition)
+					menu.append(menuItem)
+					menu.show_all()
+					menu.popup( None, None, None, event.button, event.time )
+	
+	def assignRoot(self, menu, partition):		
+		model = self.wTree.get_widget("treeview_disks").get_model()
+		iter = model.get_iter_first()
+		while iter is not None:
+			iter_partition = model.get_value(iter, 10)
+			if iter_partition == partition:
+				model.set_value(iter, 3, "/") # add / assignment
+				model.set_value(iter, 2, True) # format
+				model.set_value(iter, 1, "ext4") # ext4
+			else:
+				mountpoint = model.get_value(iter, 3)
+				if mountpoint == "/":
+					model.set_value(iter, 3, "") # remove / assignment
+					model.set_value(iter, 2, False) # don't format
+					if iter_partition.description != "":
+						model.set_value(iter, 1, "%s (%s)" % (iter_partition.description, iter_partition.type)) # name
+					else:
+						model.set_value(iter, 1, iter_partition.type) # name			
+			iter = model.iter_next(iter)
+		
+	def assignHome(self, menu, partition):
+		model = self.wTree.get_widget("treeview_disks").get_model()
+		iter = model.get_iter_first()
+		while iter is not None:
+			iter_partition = model.get_value(iter, 10)
+			if iter_partition == partition:
+				model.set_value(iter, 3, "/home") # add /home assignment
+				model.set_value(iter, 2, False) # don't format
+				if iter_partition.description != "":
+					model.set_value(iter, 1, "%s (%s)" % (iter_partition.description, iter_partition.type)) # name
+				else:
+					model.set_value(iter, 1, iter_partition.type) # name
+			else:
+				mountpoint = model.get_value(iter, 3)
+				if mountpoint == "/home":
+					model.set_value(iter, 3, "") # remove /home assignment
+					model.set_value(iter, 2, False) # don't format
+					if iter_partition.description != "":
+						model.set_value(iter, 1, "%s (%s)" % (iter_partition.description, iter_partition.type)) # name
+					else:
+						model.set_value(iter, 1, iter_partition.type) # name			
+			iter = model.iter_next(iter)
+	
+	def refresh_partitions(self, widget, data=None):
+		''' refresh the partitions ... '''
+		thr = threading.Thread(name="live-installer-disk-search", group=None, target=self.build_partitions, args=(), kwargs={})
+		thr.start()
+		
+	def edit_partitions(self, widget, data=None):
+		''' edit the partitions ... '''
+		os.popen("gparted %s &" % self.device_node)
 		
 	def build_lang_list(self):
 		
@@ -432,6 +505,7 @@ class InstallerWindow:
 							self.wTree.get_widget("vbox_disks").pack_start(radio, expand=False, fill=False)					
 		self.wTree.get_widget("vbox_disks").show_all()
 		gtk.gdk.threads_leave()
+		
 	def select_disk_cb(self, widget, device):
 		self.device_node = device
 			
@@ -445,14 +519,11 @@ class InstallerWindow:
 		dialog = ProgressDialog()
 		dialog.show(title=_("Installer"), label=_("Scanning disk %s for partitions") % self.device_node)
 		gtk.gdk.threads_leave()
-		import parted, commands
 		from screen import Partition
 		os.popen('mkdir -p /tmp/live-installer/tmpmount')
 		# disks that you can install grub to
 		grub_model = gtk.ListStore(str)
-		hdd_descriptions = []
-		inxi = commands.getoutput("inxi -D -c 0")
-		parts = inxi.split(":")
+						
 		partitions = []
 		path = self.device_node # i.e. /dev/sda
 		grub_model.append([path])
@@ -542,7 +613,7 @@ class InstallerWindow:
 		self.part_screen.modify_bg(gtk.STATE_NORMAL, color)
 		gtk.gdk.threads_leave()
 				
-		model = gtk.ListStore(str,str,bool,str,str,bool, str, str, str, bool)
+		model = gtk.ListStore(str,str,bool,str,str,bool, str, str, str, bool, object)
 		model2 = gtk.ListStore(str)
 		
 		extended_sectors = [-1, -1]
@@ -556,17 +627,17 @@ class InstallerWindow:
 				if partition.real_type == parted.PARTITION_LOGICAL:
 					display_name = "  " + partition.name
 				else:
-					display_name = partition.name
+					display_name = partition.name							
 				
 				if partition.partition.number == -1:
-					model.append(["<small><span foreground='#555555'>" + display_name + "</span></small>", partition.type, False, None, '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space, False])										
+					model.append(["<small><span foreground='#555555'>" + display_name + "</span></small>", partition.type, False, None, '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space, False, partition])										
 				elif partition.real_type == parted.PARTITION_EXTENDED:					
-					model.append(["<small><span foreground='#555555'>extended partition</span></small>", None, False, None,  '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space, False])
+					model.append(["<small><span foreground='#555555'>extended partition</span></small>", None, False, None,  '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space, False, partition])
 				else:								
 					if partition.description != "":
-						model.append(["<span foreground='" + color + "'>" + display_name + "</span>", "%s (%s)" % (partition.description, partition.type), False, None, '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space, True])
+						model.append(["<span foreground='" + color + "'>" + display_name + "</span>", "%s (%s)" % (partition.description, partition.type), False, None, '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space, True, partition])
 					else:
-						model.append(["<span foreground='" + color + "'>" + display_name + "</span>", partition.type, False, None, '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space, True])
+						model.append(["<span foreground='" + color + "'>" + display_name + "</span>", partition.type, False, None, '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space, True, partition])
 				
 		gtk.gdk.threads_enter()			
 		self.wTree.get_widget("treeview_disks").set_model(model)
@@ -578,6 +649,7 @@ class InstallerWindow:
 		self.window.set_sensitive(True)
 		self.window.window.set_cursor(None)
 		gtk.gdk.threads_leave()		
+		
 	def build_kb_lists(self):
 		''' Do some xml kung-fu and load the keyboard stuffs '''
 		
@@ -816,14 +888,13 @@ class InstallerWindow:
 			if(sel == self.PAGE_USER):
 				self.activate_page(self.PAGE_PARTITIONS)
 				notebook = self.wTree.get_widget("notebook_disks")
-				if len(self.disks) == 1:
-					notebook.set_current_page(1)					
-					thr = threading.Thread(name="live-installer-disk-search", group=None, target=self.build_partitions, args=(), kwargs={})
-					thr.start()
-				else:
-					notebook.set_current_page(0)
+				notebook.set_current_page(1)						
 			if(sel == self.PAGE_PARTITIONS):
-				self.activate_page(self.PAGE_KEYBOARD)
+				notebook = self.wTree.get_widget("notebook_disks")
+				if notebook.get_current_page() == 1:
+					notebook.set_current_page(0)
+				else:
+					self.activate_page(self.PAGE_KEYBOARD)
 			if(sel == self.PAGE_KEYBOARD):
 				self.activate_page(self.PAGE_LANGUAGE)
 				self.wTree.get_widget("button_back").set_sensitive(False)			
@@ -1014,6 +1085,7 @@ class PartitionDialog:
 	def build_fs_model(self):
 		''' Build supported filesystems list '''
 		model = gtk.ListStore(str)
+		model.append([""])
 		model.append(["swap"])
 		try:
 			for item in os.listdir("/sbin"):

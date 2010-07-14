@@ -69,7 +69,9 @@ class Screen(gtk.DrawingArea):
 		self.partitions = partitions
 		self.total_size = 0
 		for partition in self.partitions:
-			self.total_size += partition.size
+			if not partition.real_type == parted.PARTITION_EXTENDED:
+				self.total_size += partition.size
+						
 		self.labels_added = False
 		self.label_offset = 10
 		self.y_offset = 110
@@ -139,7 +141,7 @@ class Screen(gtk.DrawingArea):
         #        event.area.width, event.area.height)
         #cr.clip()
 
-        self.draw(cr, *self.window.get_size())
+        self.draw(cr, event.area.width, event.area.height)
 
     def draw(self, cr, width, height):
         #self.style.apply_default_background(self.window, True, gtk.STATE_NORMAL, None, 0, 0, width, height)
@@ -166,9 +168,9 @@ class Screen(gtk.DrawingArea):
 					border_color = self.colors[partition.partition.number % len(self.colors)]
 					fill_color = (0.9, 0.9, 0.9)
 				
-				ratio = float(partition.size) / float(self.total_size)
+				ratio = float(partition.size) / float(self.total_size)				
 				pct = float(ratio * 100)
-				pixels = ratio * width
+				pixels = ratio * width				
 				n_width = int(pixels)
 				n_start = 10
 				
