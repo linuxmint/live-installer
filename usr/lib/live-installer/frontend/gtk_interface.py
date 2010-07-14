@@ -470,6 +470,9 @@ class InstallerWindow:
 		self.disks = {}
 		inxi = subprocess.Popen("inxi -c0 -D", shell=True, stdout=subprocess.PIPE)
 		parent = None
+		
+		# disks that you can install grub to
+		grub_model = gtk.ListStore(str)		
 		for line in inxi.stdout:
 			line = line.rstrip("\r\n")
 			if(line.startswith("Disks:")):
@@ -492,18 +495,18 @@ class InstallerWindow:
 						description = description.replace("  ", " ")
 						self.disks[device] = description
 						if(parent is None):
-							self.device_node = device
 							radio = gtk.RadioButton(None)
-							radio.connect("clicked", self.select_disk_cb, device)
-							radio.set_label(description)
-							self.wTree.get_widget("vbox_disks").pack_start(radio, expand=False, fill=False)
 							parent = radio
+							self.device_node = device							
 						else:
-							radio = gtk.RadioButton(parent)
-							radio.connect("clicked", self.select_disk_cb, device)
-							radio.set_label(description)
-							self.wTree.get_widget("vbox_disks").pack_start(radio, expand=False, fill=False)					
+							radio = gtk.RadioButton(parent)														
+						radio.connect("clicked", self.select_disk_cb, device)
+						radio.set_label(description)
+						self.wTree.get_widget("vbox_disks").pack_start(radio, expand=False, fill=False)	
+						grub_model.append([device])			
 		self.wTree.get_widget("vbox_disks").show_all()
+		self.wTree.get_widget("combobox_grub").set_model(grub_model)
+		self.wTree.get_widget("combobox_grub").set_active(0)
 		gtk.gdk.threads_leave()
 		
 	def select_disk_cb(self, widget, device):
@@ -521,12 +524,9 @@ class InstallerWindow:
 		gtk.gdk.threads_leave()
 		from screen import Partition
 		os.popen('mkdir -p /tmp/live-installer/tmpmount')
-		# disks that you can install grub to
-		grub_model = gtk.ListStore(str)
-						
+								
 		partitions = []
-		path = self.device_node # i.e. /dev/sda
-		grub_model.append([path])
+		path = self.device_node # i.e. /dev/sda		
 		device = parted.getDevice(path)
 		disk = parted.Disk(device)											
 		partition = disk.getFirstPartition()	
@@ -640,9 +640,7 @@ class InstallerWindow:
 						model.append(["<span foreground='" + color + "'>" + display_name + "</span>", partition.type, False, None, '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space, True, partition])
 				
 		gtk.gdk.threads_enter()			
-		self.wTree.get_widget("treeview_disks").set_model(model)
-		self.wTree.get_widget("combobox_grub").set_model(grub_model)
-		self.wTree.get_widget("combobox_grub").set_active(0)
+		self.wTree.get_widget("treeview_disks").set_model(model)		
 		gtk.gdk.threads_leave()
 		dialog.hide()
 		gtk.gdk.threads_enter()
