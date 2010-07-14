@@ -139,7 +139,7 @@ class InstallerEngine:
 	self.locale = newlocale
 	
 	def set_timezone(self, newtimezone):
-	''' Set the timezone '''
+		''' Set the timezone '''
 		self.timezone = newtimezone
        
     def install(self):
