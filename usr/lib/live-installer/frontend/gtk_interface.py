@@ -80,15 +80,16 @@ class InstallerWindow:
 		self.window.connect("destroy", self.quit_cb)
 
 		# Wizard pages
-		[self.PAGE_LANGUAGE, self.PAGE_PARTITIONS, self.PAGE_USER, self.PAGE_ADVANCED, self.PAGE_KEYBOARD, self.PAGE_OVERVIEW, self.PAGE_INSTALL] = range(7)
-		self.wizard_pages = range(7)
+		[self.PAGE_LANGUAGE, self.PAGE_PARTITIONS, self.PAGE_USER, self.PAGE_ADVANCED, self.PAGE_KEYBOARD, self.PAGE_OVERVIEW, self.PAGE_INSTALL, self.PAGE_TIMEZONE] = range(8)
+		self.wizard_pages = range(8)
 		self.wizard_pages[self.PAGE_LANGUAGE] = WizardPage(self.wTree.get_widget("label_step_language"), _("Language selection"), _("Please select your language"))
+		self.wizard_pages[self.PAGE_TIMEZONE] = WizardPage(self.wTree.get_widget("label_step_timezone"), _("Timezone"), _("Please select your timezone"))
 		self.wizard_pages[self.PAGE_KEYBOARD] = WizardPage(self.wTree.get_widget("label_step_keyboard"), _("Keyboard layout"), _("Please select your keyboard layout"))
 		self.wizard_pages[self.PAGE_PARTITIONS] = WizardPage(self.wTree.get_widget("label_step_partitions"), _("Disk partitioning"), _("Please select where you want to install %s") % DISTRIBUTION_NAME)
 		self.wizard_pages[self.PAGE_USER] = WizardPage(self.wTree.get_widget("label_step_user"), _("User info"), _("Please indicate your name and select a username, a password and a hostname"))
 		self.wizard_pages[self.PAGE_ADVANCED] = WizardPage(self.wTree.get_widget("label_step_advanced"), _("Advanced options"), _("Please review the following advanced options"))
 		self.wizard_pages[self.PAGE_OVERVIEW] = WizardPage(self.wTree.get_widget("label_step_overview"), _("Summary"), _("Please review this summary and make sure everything is correct"))
-		self.wizard_pages[self.PAGE_INSTALL] = WizardPage(self.wTree.get_widget("label_step_install"), _("Installation"), _("Please wait while %s is being installed on your computer") % DISTRIBUTION_NAME)
+		self.wizard_pages[self.PAGE_INSTALL] = WizardPage(self.wTree.get_widget("label_step_install"), _("Installation"), _("Please wait while %s is being installed on your computer") % DISTRIBUTION_NAME)		
 			
 		# Remove last separator in breadcrumb
 		self.wizard_pages[self.PAGE_INSTALL].breadcrumb_label.set_markup("<small>%s</small>" % self.wizard_pages[self.PAGE_INSTALL].breadcrumb_text)
@@ -121,6 +122,15 @@ class InstallerWindow:
 
 		# build the language list
 		self.build_lang_list()
+		
+		ren = gtk.CellRendererText()
+		column = gtk.TreeViewColumn("Timezones", ren)
+		column.add_attribute(ren, "text", 0)
+		self.wTree.get_widget("treeview_timezones").append_column(column)
+		
+		self.wTree.get_widget("treeview_timezones").connect("cursor-changed", self.cb_change_timezone)
+		
+		self.build_timezones()
 
 		# disk view		
 		self.wTree.get_widget("button_edit").connect("clicked", self.edit_partitions)
@@ -464,6 +474,28 @@ class InstallerWindow:
 			treeview.scroll_to_cell(path, column=column)
 		treeview.set_search_column(0)
 
+	def build_timezones(self):			
+		model = gtk.ListStore(str, str)
+		model.set_sort_column_id(0, gtk.SORT_ASCENDING)
+				
+		path = os.path.join(self.resource_dir, 'timezones')
+		timezones = open(path, "r")
+		cur_index = -1 # find the timezone :P
+		set_index = None
+		for line in timezones:
+			cur_index += 1
+			content = line.strip().split()
+			if len(content) == 2:
+				country_code = content[0]
+				timezone = content[1]
+				iter = model.append()
+				model.set_value(iter, 0, timezone)						
+				model.set_value(iter, 1, country_code)	
+
+		treeview = self.wTree.get_widget("treeview_timezones")
+		treeview.set_model(model)		
+		treeview.set_search_column(0)
+
 	def build_disks(self):
 		gtk.gdk.threads_enter()
 		import subprocess
@@ -743,6 +775,18 @@ class InstallerWindow:
 			return
 		row = model[active]		
 		self.locale = row[1]
+		
+	def cb_change_timezone(self, treeview, data=None):
+		''' Called whenever someone updates the timezone '''
+		model = treeview.get_model()
+		active = treeview.get_selection().get_selected_rows()
+		if(len(active) < 1):
+			return
+		active = active[1][0]
+		if(active is None):
+			return
+		row = model[active]
+		self.timezone = row[1]
 	
 	def cb_change_kb_model(self, treeview, data=None):
 		''' Called whenever someone updates the keyboard model '''
@@ -818,7 +862,25 @@ class InstallerWindow:
 		sel = self.wTree.get_widget("notebook1").get_current_page()
 		# check each page for errors
 		if(not goback):
-			if(sel == self.PAGE_LANGUAGE):				
+			if(sel == self.PAGE_LANGUAGE):	
+				if ("_" in self.locale):
+					country_code = self.locale.split("_")[1]
+				else:
+					country_code = self.locale
+				treeview = self.wTree.get_widget("treeview_timezones")
+				model = treeview.get_model()
+				iter = model.get_iter_first()
+				while iter is not None:
+					iter_country_code = model.get_value(iter, 1)
+					if iter_country_code == country_code:						
+						column = treeview.get_column(0)
+						path = model.get_path(iter)
+						treeview.set_cursor(path, focus_column=column)
+						treeview.scroll_to_cell(path, column=column)
+						break
+					iter = model.iter_next(iter)
+				self.activate_page(self.PAGE_TIMEZONE)
+			elif (sel == self.PAGE_TIMEZONE):				
 				self.activate_page(self.PAGE_KEYBOARD)
 			elif(sel == self.PAGE_KEYBOARD):
 				self.activate_page(self.PAGE_PARTITIONS)				
@@ -881,20 +943,22 @@ class InstallerWindow:
 		else:		
 			if(sel == self.PAGE_OVERVIEW):
 				self.activate_page(self.PAGE_ADVANCED)
-			if(sel == self.PAGE_ADVANCED):
+			elif(sel == self.PAGE_ADVANCED):
 				self.activate_page(self.PAGE_USER)
-			if(sel == self.PAGE_USER):
+			elif(sel == self.PAGE_USER):
 				self.activate_page(self.PAGE_PARTITIONS)
 				notebook = self.wTree.get_widget("notebook_disks")
 				notebook.set_current_page(1)						
-			if(sel == self.PAGE_PARTITIONS):
+			elif(sel == self.PAGE_PARTITIONS):
 				notebook = self.wTree.get_widget("notebook_disks")
 				if notebook.get_current_page() == 1:
 					notebook.set_current_page(0)
 				else:
 					self.activate_page(self.PAGE_KEYBOARD)
-			if(sel == self.PAGE_KEYBOARD):
-				self.activate_page(self.PAGE_LANGUAGE)
+			elif(sel == self.PAGE_KEYBOARD):
+				self.activate_page(self.PAGE_TIMEZONE)
+			elif(sel == self.PAGE_TIMEZONE):
+				self.activate_page(self.PAGE_LANGUAGE)			
 				self.wTree.get_widget("button_back").set_sensitive(False)			
 			
 	def show_overview(self):
@@ -905,6 +969,8 @@ class InstallerWindow:
 		model.set(top, 0, _("Localization"))
 		iter = model.append(top)
 		model.set(iter, 0, _("Language: ") + "<b>%s</b>" % self.locale)
+		iter = model.append(top)
+		model.set(iter, 0, _("Timezone: ") + "<b>%s</b>" % self.timezone)
 		iter = model.append(top)
 		model.set(iter, 0, _("Keyboard layout: ") + "<b>%s</b>" % self.keyboard_layout_desc)
 		iter = model.append(top)
@@ -975,6 +1041,9 @@ class InstallerWindow:
 				
 		# set language
 		inst.set_locale(self.locale)
+		
+		# set timezone
+		inst.set_timezone(self.timezone)
 		
 		# set keyboard
 		inst.set_keyboard_options(layout=self.keyboard_layout, model=self.keyboard_model)

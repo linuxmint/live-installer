@@ -122,20 +122,17 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkLabel" id="label_step_keyboard">
+                      <widget class="GtkLabel" id="label_step_timezone">
                         <property name="visible">True</property>
-                        <property name="sensitive">False</property>
-                        <property name="xalign">0.10000000149011612</property>
                         <property name="label" translatable="yes">label</property>
                       </widget>
                       <packing>
                         <property name="expand">False</property>
-                        <property name="fill">False</property>
                         <property name="position">1</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkLabel" id="label_step_partitions">
+                      <widget class="GtkLabel" id="label_step_keyboard">
                         <property name="visible">True</property>
                         <property name="sensitive">False</property>
                         <property name="xalign">0.10000000149011612</property>
@@ -148,7 +145,7 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkLabel" id="label_step_user">
+                      <widget class="GtkLabel" id="label_step_partitions">
                         <property name="visible">True</property>
                         <property name="sensitive">False</property>
                         <property name="xalign">0.10000000149011612</property>
@@ -161,7 +158,7 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkLabel" id="label_step_advanced">
+                      <widget class="GtkLabel" id="label_step_user">
                         <property name="visible">True</property>
                         <property name="sensitive">False</property>
                         <property name="xalign">0.10000000149011612</property>
@@ -174,7 +171,7 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkLabel" id="label_step_overview">
+                      <widget class="GtkLabel" id="label_step_advanced">
                         <property name="visible">True</property>
                         <property name="sensitive">False</property>
                         <property name="xalign">0.10000000149011612</property>
@@ -184,6 +181,19 @@
                         <property name="expand">False</property>
                         <property name="fill">False</property>
                         <property name="position">5</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkLabel" id="label_step_overview">
+                        <property name="visible">True</property>
+                        <property name="sensitive">False</property>
+                        <property name="xalign">0.10000000149011612</property>
+                        <property name="label" translatable="yes">label</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">6</property>
                       </packing>
                     </child>
                     <child>
@@ -197,7 +207,7 @@
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">False</property>
-                        <property name="position">6</property>
+                        <property name="position">7</property>
                       </packing>
                     </child>
                   </widget>
@@ -1028,6 +1038,35 @@
                   </widget>
                   <packing>
                     <property name="position">6</property>
+                    <property name="tab_fill">False</property>
+                    <property name="type">tab</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkScrolledWindow" id="scrolledwindow6">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="hscrollbar_policy">automatic</property>
+                    <property name="vscrollbar_policy">automatic</property>
+                    <child>
+                      <widget class="GtkTreeView" id="treeview_timezones">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="headers_visible">False</property>
+                      </widget>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="position">7</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkLabel" id="label10">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">page 8</property>
+                  </widget>
+                  <packing>
+                    <property name="position">7</property>
                     <property name="tab_fill">False</property>
                     <property name="type">tab</property>
                   </packing>
