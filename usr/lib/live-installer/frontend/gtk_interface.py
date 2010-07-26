@@ -327,8 +327,8 @@ class InstallerWindow:
                     else:
                         row[1] = stabber.filesystem
 
-                model[iter] = row
-
+                model[iter] = row                
+                
     def partitions_popup_menu( self, widget, event ):
         if event.button == 3:
             model, iter = self.wTree.get_widget("treeview_disks").get_selection().get_selected()
@@ -1016,10 +1016,7 @@ class InstallerWindow:
         self.wTree.get_widget("treeview_overview").set_model(model)
 
     def do_install(self):
-        if "--debug" in sys.argv:
-            print "DEBUG MODE - INSTALLATION PROCESS NOT LAUNCHED"
-            sys.exit(0)
-
+        
         ''' Actually perform the installation .. '''
         inst = self.installer
         # Create fstab
@@ -1027,8 +1024,16 @@ class InstallerWindow:
         model = self.wTree.get_widget("treeview_disks").get_model()
         for row in model:
             if(row[2] or row[3] is not None): # format or mountpoint specified.
-                files.add_mount(device=row[0], mountpoint=row[3], filesystem=row[1], format=row[2])
+                filesystem = row[1]
+                format = row[2]
+                mountpoint = row[3]
+                device = row[10].name
+                files.add_mount(device=device, mountpoint=mountpoint, filesystem=filesystem, format=format)                
         inst.fstab = files # need to add set_fstab() to InstallerEngine
+
+        if "--debug" in sys.argv:
+            print "DEBUG MODE - INSTALLATION PROCESS NOT LAUNCHED"
+            sys.exit(0)
 
         # set up the system user
         username = self.wTree.get_widget("entry_username").get_text()
