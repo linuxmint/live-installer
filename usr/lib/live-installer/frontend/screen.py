@@ -138,10 +138,10 @@ class Screen(gtk.DrawingArea):
         cr = self.window.cairo_create()
         self.context = cr
         # Restrict Cairo to the exposed area; avoid extra work
-        #cr.set_source_rgba(0, 0, 0, 0)
-        #cr.rectangle(event.area.x, event.area.y,
-        #        event.area.width, event.area.height)
-        #cr.clip()
+        cr.set_source_rgba(0, 0, 0, 0)
+        cr.rectangle(event.area.x, event.area.y,
+                event.area.width, event.area.height)
+        cr.clip()
 
         self.draw(cr, event.area.width, event.area.height)
         
