@@ -138,9 +138,10 @@ class InstallerEngine:
         ''' Set the locale '''
         self.locale = newlocale
 
-    def set_timezone(self, newtimezone):
+    def set_timezone(self, newtimezone, newtimezone_code):
         ''' Set the timezone '''
         self.timezone = newtimezone
+        self.timezone_code = newtimezone_code
 
     def install(self):
         ''' Install this baby to disk '''
@@ -334,7 +335,7 @@ class InstallerEngine:
                 os.system("update-locale LANG=\"%s.UTF-8\"" % self.locale)
 
                 # set the timezone
-                os.system("echo \"%s\" > /etc/timezone" % self.timezone)
+                os.system("echo \"%s\" > /etc/timezone" % self.timezone_code)
                 os.system("cp /usr/share/zoneinfo/%s /etc/localtime" % self.timezone)
 
                 # set the keyboard options..

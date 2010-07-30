@@ -786,7 +786,8 @@ class InstallerWindow:
         if(active is None):
             return
         row = model[active]
-        self.timezone = row[1]
+        self.timezone = row[0]
+        self.timezone_code = row[1]
 
     def cb_change_kb_model(self, treeview, data=None):
         ''' Called whenever someone updates the keyboard model '''
@@ -1048,7 +1049,7 @@ class InstallerWindow:
         inst.set_locale(self.locale)
 
         # set timezone
-        inst.set_timezone(self.timezone)
+        inst.set_timezone(self.timezone, self.timezone_code)
 
         # set keyboard
         inst.set_keyboard_options(layout=self.keyboard_layout, model=self.keyboard_model)
