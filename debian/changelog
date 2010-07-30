@@ -1,3 +1,9 @@
+live-installer (2010.07.30) debian; urgency=medium
+
+  * New version
+
+ -- Clement Lefebvre <root@linuxmint.com>  Fri,  30 Jul 2010 17:02:00 +0000
+
 live-installer (1.0.5) debian; urgency=medium
 
   * Bug fix in update-locale
