@@ -111,6 +111,7 @@
                     <child>
                       <widget class="GtkLabel" id="label_step_language">
                         <property name="visible">True</property>
+                        <property name="sensitive">False</property>
                         <property name="xalign">0.10000000149011612</property>
                         <property name="xpad">5</property>
                         <property name="label" translatable="yes">label</property>
@@ -124,6 +125,7 @@
                     <child>
                       <widget class="GtkLabel" id="label_step_timezone">
                         <property name="visible">True</property>
+                        <property name="sensitive">False</property>
                         <property name="label" translatable="yes">label</property>
                       </widget>
                       <packing>
