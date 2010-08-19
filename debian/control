@@ -10,3 +10,8 @@ Architecture: all
 Depends: python (>= 2.4), python (<< 3), python-gtk2, python-glade2, python-parted, gparted, inxi
 Description: Live Installer
  A live installer
+
+Package: live-installer-slideshow
+Architecture: all
+Description: Live Installer Slideshow
+ A Linux Mint slideshow for the live installer

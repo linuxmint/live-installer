@@ -1029,13 +1029,15 @@ class InstallerWindow:
         else:
              locale_code = self.locale
         
-        browser = webkit.WebView()
-        s = browser.get_settings()
-        s.set_property('enable-file-access-from-file-uris', True)
-        s.set_property('enable-default-context-menu', False)
-        browser.open("file:///usr/share/ubiquity-slideshow/slides/index.html#?locale=" + locale_code)
-        self.wTree.get_widget("vbox_install").add(browser)
-        self.wTree.get_widget("vbox_install").show_all()
+        slideshow_path = "/usr/share/live-installer-slideshow/slides/index.html"
+        if os.path.exists(slideshow_path):
+            browser = webkit.WebView()
+            s = browser.get_settings()
+            s.set_property('enable-file-access-from-file-uris', True)
+            s.set_property('enable-default-context-menu', False)
+            browser.open("file://" + slideshow_path  + "#?locale=" + locale_code)
+            self.wTree.get_widget("vbox_install").add(browser)
+            self.wTree.get_widget("vbox_install").show_all()
                 
         ''' Actually perform the installation .. '''
         inst = self.installer

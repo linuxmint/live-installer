@@ -244,7 +244,7 @@ class InstallerEngine:
                 except OSError:
                     pass
             # Steps:
-            our_total = 8
+            our_total = 9
             our_current = 0
             # chroot
             self.update_progress(total=our_total, current=our_current, message=_("Entering new system.."))
@@ -338,6 +338,16 @@ class InstallerEngine:
                 # set the timezone
                 os.system("echo \"%s\" > /etc/timezone" % self.timezone_code)
                 os.system("cp /usr/share/zoneinfo/%s /etc/localtime" % self.timezone)
+                
+                # localize Firefox and Thunderbird
+                self.sub_update_progress(total=our_total, current=our_current, message=_("Localizing Firefox and Thunderbird"))
+                if self.locale != "en_US":
+                    os.system("apt-get update")
+                    if "_" in self.locale:
+                        language_code = self.locale.split("_")[0]
+                        if language_code in ["fr"]:
+                           os.system("apt-get install --yes --force-yes firefox-l10n-" + language_code)
+                           os.system("apt-get install --yes --force-yes thunderbird-l10n-" + language_code)
 
                 # set the keyboard options..
                 our_current += 1
