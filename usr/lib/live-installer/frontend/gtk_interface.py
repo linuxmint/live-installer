@@ -51,10 +51,11 @@ class WizardPage:
 
     def __init__(self, breadcrumb_label, breadcrumb_text, help_text):
         self.breadcrumb_label = breadcrumb_label
-        self.breadcrumb_text = breadcrumb_text
+        self.breadcrumb_text = "" #breadcrumb_text
         self.help_text = help_text
-        self.breadcrumb_label.set_markup("<small>%s</small> <span color=\"#FFFFFF\">-</span>" % self.breadcrumb_text)
-
+        #self.breadcrumb_label.set_markup("<small>%s</small> <span color=\"#FFFFFF\">-</span>" % self.breadcrumb_text)
+        self.breadcrumb_label.set_markup("")
+		
 class InstallerWindow:
 
     def __init__(self, fullscreen=False):
@@ -519,9 +520,9 @@ class InstallerWindow:
                     for element in elements:
                         if "/dev/" in element:
                             device = element
-                    if elements[len(elements) -1].endswith("GB") or elements[elements[len(elements) -1]].endswith("GB"):
-                        size = elements[len(elements) -1]
-                        section = section.replace(size, "(%s)" % size)
+                        if element.endswith("GB"):
+                            size = element
+                            section = section.replace(size, "(%s)" % size)
                     if device is not None:
                         description = section.replace(device, "").strip()
                         description = description.replace("  ", " ")
@@ -861,6 +862,8 @@ class InstallerWindow:
     def wizard_cb(self, widget, goback, data=None):
         ''' wizard buttons '''
         sel = self.wTree.get_widget("notebook1").get_current_page()
+        self.wTree.get_widget("button_next").set_label(_("Forward"))
+        
         # check each page for errors
         if(not goback):
             if(sel == self.PAGE_LANGUAGE):
@@ -933,6 +936,7 @@ class InstallerWindow:
                 self.activate_page(self.PAGE_OVERVIEW)
                 self.show_overview()
                 self.wTree.get_widget("treeview_overview").expand_all()
+                self.wTree.get_widget("button_next").set_label(_("Install"))
             elif(sel == self.PAGE_OVERVIEW):
                 self.activate_page(self.PAGE_INSTALL)
                 # do install
