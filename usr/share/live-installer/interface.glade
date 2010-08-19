@@ -986,11 +986,8 @@
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkVBox" id="vbox15">
+                  <widget class="GtkVBox" id="vbox_install">
                     <property name="visible">True</property>
-                    <child>
-                      <placeholder/>
-                    </child>
                     <child>
                       <placeholder/>
                     </child>
@@ -1025,7 +1022,7 @@
                         <property name="expand">False</property>
                         <property name="fill">False</property>
                         <property name="pack_type">end</property>
-                        <property name="position">2</property>
+                        <property name="position">0</property>
                       </packing>
                     </child>
                   </widget>

@@ -20,6 +20,7 @@ try:
     from xml.dom.minidom import parse
     import gobject
     import time
+    import webkit
 except Exception, detail:
     print detail
 
@@ -291,7 +292,7 @@ class InstallerWindow:
             # running on livecd (windowed)
             img = gtk.gdk.pixbuf_new_from_file_at_size("/usr/share/live-installer/logo.svg", 64, 64)
             self.wTree.get_widget("logo").set_from_pixbuf(img)
-        # visible please :)
+        # visible please :)                      
         self.window.show_all()
 
     def update_account_fields(self, entry, prop):
@@ -1021,7 +1022,21 @@ class InstallerWindow:
         self.wTree.get_widget("treeview_overview").set_model(model)
 
     def do_install(self):
+		
+        ''' Launch the Slideshow '''
+        if ("_" in self.locale):
+            locale_code = self.locale.split("_")[0]
+        else:
+             locale_code = self.locale
         
+        browser = webkit.WebView()
+        s = browser.get_settings()
+        s.set_property('enable-file-access-from-file-uris', True)
+        s.set_property('enable-default-context-menu', False)
+        browser.open("file:///usr/share/ubiquity-slideshow/slides/index.html#?locale=" + locale_code)
+        self.wTree.get_widget("vbox_install").add(browser)
+        self.wTree.get_widget("vbox_install").show_all()
+                
         ''' Actually perform the installation .. '''
         inst = self.installer
         # Create fstab
@@ -1037,7 +1052,7 @@ class InstallerWindow:
         inst.fstab = files # need to add set_fstab() to InstallerEngine
 
         if "--debug" in sys.argv:
-            print "DEBUG MODE - INSTALLATION PROCESS NOT LAUNCHED"
+            print "DEBUG MODE - INSTALLATION PROCESS NOT LAUNCHED"            
             sys.exit(0)
 
         # set up the system user
