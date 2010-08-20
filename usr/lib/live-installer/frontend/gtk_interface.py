@@ -292,7 +292,27 @@ class InstallerWindow:
             # running on livecd (windowed)
             img = gtk.gdk.pixbuf_new_from_file_at_size("/usr/share/live-installer/logo.svg", 64, 64)
             self.wTree.get_widget("logo").set_from_pixbuf(img)
-        # visible please :)                      
+        # visible please :)    
+        
+        
+        ''' Launch the Slideshow '''
+        if ("_" in self.locale):
+            locale_code = self.locale.split("_")[0]
+        else:
+             locale_code = self.locale
+        
+        slideshow_path = "/usr/share/live-installer-slideshow/slides/index.html"
+        if os.path.exists(slideshow_path):
+            gtk.gdk.threads_enter()
+            browser = webkit.WebView()
+            s = browser.get_settings()
+            s.set_property('enable-file-access-from-file-uris', True)
+            s.set_property('enable-default-context-menu', False)
+            browser.open("file://" + slideshow_path  + "#?locale=" + locale_code)
+            self.wTree.get_widget("vbox_install").add(browser)
+            self.wTree.get_widget("vbox_install").show_all()
+            gtk.gdk.threads_leave()
+                          
         self.window.show_all()
 
     def update_account_fields(self, entry, prop):
@@ -1021,25 +1041,7 @@ class InstallerWindow:
 
         self.wTree.get_widget("treeview_overview").set_model(model)
 
-    def do_install(self):
-		
-        ''' Launch the Slideshow '''
-        if ("_" in self.locale):
-            locale_code = self.locale.split("_")[0]
-        else:
-             locale_code = self.locale
-        
-        slideshow_path = "/usr/share/live-installer-slideshow/slides/index.html"
-        if os.path.exists(slideshow_path):
-            gtk.gdk.threads_enter()
-            browser = webkit.WebView()
-            s = browser.get_settings()
-            s.set_property('enable-file-access-from-file-uris', True)
-            s.set_property('enable-default-context-menu', False)
-            browser.open("file://" + slideshow_path  + "#?locale=" + locale_code)
-            self.wTree.get_widget("vbox_install").add(browser)
-            self.wTree.get_widget("vbox_install").show_all()
-            gtk.gdk.threads_leave()
+    def do_install(self):            
                 
         ''' Actually perform the installation .. '''
         inst = self.installer
