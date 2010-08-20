@@ -287,7 +287,7 @@ class InstallerEngine:
             self.update_progress(total=our_total, current=our_current, message=_("Writing filesystem mount information"))
             # make sure fstab has default /proc and /sys entries
             if(not os.path.exists("/target/etc/fstab")):
-                self.run_in_chroot("echo \"#### Static Filesystem Table File\" > /etc/fstab")
+                os.system("echo \"#### Static Filesystem Table File\" > /target/etc/fstab")
             fstabber = open("/target/etc/fstab", "a")
             fstabber.write("proc\t/proc\tproc\tnodev,noexec,nosuid\t0\t0\n")
             for item in self.fstab.get_entries():
@@ -332,14 +332,15 @@ class InstallerEngine:
             # set the locale
             our_current += 1
             self.update_progress(total=our_total, current=our_current, message=_("Setting locale"))
-            self.run_in_chroot("echo \"%s.UTF-8 UTF-8\" >> /etc/locale.gen" % self.locale)
+            os.system("echo \"%s.UTF-8 UTF-8\" >> /target/etc/locale.gen" % self.locale)
             self.run_in_chroot("locale-gen")
-            self.run_in_chroot("echo \"\" > /etc/default/locale")
+            os.system("echo \"\" > /target/etc/default/locale")
             self.run_in_chroot("update-locale LANG=\"%s.UTF-8\"" % self.locale)
+            self.run_in_chroot("update-locale LANG=%s.UTF-8" % self.locale)
 
             # set the timezone
-            self.run_in_chroot("echo \"%s\" > /etc/timezone" % self.timezone_code)
-            self.run_in_chroot("cp /usr/share/zoneinfo/%s /etc/localtime" % self.timezone)
+            os.system("echo \"%s\" > /target/etc/timezone" % self.timezone_code)
+            os.system("cp /target/usr/share/zoneinfo/%s /target/etc/localtime" % self.timezone)
             
             # localize Firefox and Thunderbird
             self.update_progress(total=our_total, current=our_current, message=_("Localizing Firefox and Thunderbird"))
@@ -368,6 +369,21 @@ class InstallerEngine:
             newconsolefh.close()
             self.run_in_chroot("rm /etc/default/console-setup")
             self.run_in_chroot("mv /etc/default/console-setup.new /etc/default/console-setup")
+            
+            consolefh = open("/target/etc/default/keyboard", "r")
+            newconsolefh = open("/target/etc/default/keyboard.new", "w")
+            for line in consolefh:
+                line = line.rstrip("\r\n")
+                if(line.startswith("XKBMODEL=")):
+                    newconsolefh.write("XKBMODEL=\"%s\"\n" % self.keyboard_model)
+                elif(line.startswith("XKBLAYOUT=")):
+                    newconsolefh.write("XKBLAYOUT=\"%s\"\n" % self.keyboard_layout)
+                else:
+                    newconsolefh.write("%s\n" % line)
+            consolefh.close()
+            newconsolefh.close()
+            self.run_in_chroot("rm /etc/default/keyboard")
+            self.run_in_chroot("mv /etc/default/keyboard.new /etc/default/keyboard")
 
             # write MBR (grub)
             our_current += 1
