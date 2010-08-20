@@ -243,175 +243,156 @@ class InstallerEngine:
                     os.utime(directory, (atime, mtime))
                 except OSError:
                     pass
+                    
             # Steps:
             our_total = 9
             our_current = 0
             # chroot
-            self.update_progress(total=our_total, current=our_current, message=_("Entering new system.."))
-            os.system("mkfifo /target/tmp/INSTALL_PIPE")
+            self.update_progress(total=our_total, current=our_current, message=_("Entering new system.."))            
             os.system("mount --bind /dev/ /target/dev/")
             os.system("mount --bind /dev/shm /target/dev/shm")
             os.system("mount --bind /dev/pts /target/dev/pts")
             os.system("mount --bind /sys/ /target/sys/")
             os.system("mount --bind /proc/ /target/proc/")
-            child_pid = os.fork()
-            if(child_pid == 0):
-                # we be the child.
-                os.chroot("/target/")
-                # remove live user
-                live_user = self.live_user
-                our_current += 1
-                self.sub_update_progress(total=our_total, current=our_current, message=_("Removing live configuration (user)"))
-                os.system("deluser %s" % live_user)
-                # can happen
-                if(os.path.exists("/home/%s" % live_user)):
-                    os.system("rm -rf /home/%s" % live_user)
-                # remove live-initramfs (or w/e)
-                our_current += 1
-                self.sub_update_progress(total=our_total, current=our_current, message=_("Removing live configuration (packages)"))
-                os.system("apt-get remove --purge --yes --force-yes live-initramfs live-installer")
-                # add new user
-                our_current += 1
-                self.sub_update_progress(total=our_total, current=our_current, message=_("Adding user to system"))
-                user = self.get_main_user()
-                os.system("useradd -s %s -c \"%s\" -G sudo -m %s" % ("/bin/bash", user.realname, user.username))
-                newusers = open("/tmp/newusers.conf", "w")
-                newusers.write("%s:%s\n" % (user.username, user.password))
-                newusers.write("root:%s\n" % user.password)
-                newusers.close()
-                os.system("cat /tmp/newusers.conf | chpasswd")
-                os.system("rm -rf /tmp/newusers.conf")
-                # write the /etc/fstab
-                our_current += 1
-                self.sub_update_progress(total=our_total, current=our_current, message=_("Writing filesystem mount information"))
-                # make sure fstab has default /proc and /sys entries
-                if(not os.path.exists("/etc/fstab")):
-                    os.system("echo \"#### Static Filesystem Table File\" > /etc/fstab")
-                fstabber = open("/etc/fstab", "a")
-                fstabber.write("proc\t/proc\tproc\tnodev,noexec,nosuid\t0\t0\n")
-                for item in self.fstab.get_entries():
-                    if(item.options is None):
-                        item.options = "rw,errors=remount-ro"
-                    if(item.filesystem == "swap"):
-                        # special case..
-                        fstabber.write("%s\tswap\tswap\tsw\t0\t0\n" % item.device)
-                    else:
-                        fstabber.write("%s\t%s\t%s\t%s\t%s\t%s\n" % (item.device, item.mountpoint, item.filesystem, item.options, "0", "0"))
-                fstabber.close()
-                # write host+hostname infos
-                our_current += 1
-                self.sub_update_progress(total=our_total, current=our_current, message=_("Setting hostname"))
-                hostnamefh = open("/etc/hostname", "w")
-                hostnamefh.write("%s\n" % self.hostname)
-                hostnamefh.close()
-                hostsfh = open("/etc/hosts", "w")
-                hostsfh.write("127.0.0.1\tlocalhost\n")
-                hostsfh.write("127.0.1.1\t%s\n" % self.hostname)
-                hostsfh.write("# The following lines are desirable for IPv6 capable hosts\n")
-                hostsfh.write("::1     localhost ip6-localhost ip6-loopback\n")
-                hostsfh.write("fe00::0 ip6-localnet\n")
-                hostsfh.write("ff00::0 ip6-mcastprefix\n")
-                hostsfh.write("ff02::1 ip6-allnodes\n")
-                hostsfh.write("ff02::2 ip6-allrouters\n")
-                hostsfh.write("ff02::3 ip6-allhosts\n")
-                hostsfh.close()
+            os.system("cp -f /etc/resolv.conf /target/etc/resolv.conf")
+                                          
+            # remove live user
+            live_user = self.live_user
+            our_current += 1
+            self.update_progress(total=our_total, current=our_current, message=_("Removing live configuration (user)"))
+            self.run_in_chroot("deluser %s" % live_user)
+            # can happen
+            if(os.path.exists("/target/home/%s" % live_user)):
+                self.run_in_chroot("rm -rf /home/%s" % live_user)
+            
+            # remove live-initramfs (or w/e)
+            our_current += 1
+            self.update_progress(total=our_total, current=our_current, message=_("Removing live configuration (packages)"))
+            self.run_in_chroot("apt-get remove --purge --yes --force-yes live-initramfs live-installer")
+            
+            # add new user
+            our_current += 1
+            self.update_progress(total=our_total, current=our_current, message=_("Adding user to system"))
+            user = self.get_main_user()
+            self.run_in_chroot("useradd -s %s -c \"%s\" -G sudo -m %s" % ("/bin/bash", user.realname, user.username))
+            newusers = open("/target/tmp/newusers.conf", "w")
+            newusers.write("%s:%s\n" % (user.username, user.password))
+            newusers.write("root:%s\n" % user.password)
+            newusers.close()
+            self.run_in_chroot("cat /tmp/newusers.conf | chpasswd")
+            self.run_in_chroot("rm -rf /tmp/newusers.conf")
+            
+            # write the /etc/fstab
+            our_current += 1
+            self.update_progress(total=our_total, current=our_current, message=_("Writing filesystem mount information"))
+            # make sure fstab has default /proc and /sys entries
+            if(not os.path.exists("/target/etc/fstab")):
+                self.run_in_chroot("echo \"#### Static Filesystem Table File\" > /etc/fstab")
+            fstabber = open("/target/etc/fstab", "a")
+            fstabber.write("proc\t/proc\tproc\tnodev,noexec,nosuid\t0\t0\n")
+            for item in self.fstab.get_entries():
+                if(item.options is None):
+                    item.options = "rw,errors=remount-ro"
+                if(item.filesystem == "swap"):
+                    # special case..
+                    fstabber.write("%s\tswap\tswap\tsw\t0\t0\n" % item.device)
+                else:
+                    fstabber.write("%s\t%s\t%s\t%s\t%s\t%s\n" % (item.device, item.mountpoint, item.filesystem, item.options, "0", "0"))
+            fstabber.close()
+            
+            # write host+hostname infos
+            our_current += 1
+            self.update_progress(total=our_total, current=our_current, message=_("Setting hostname"))
+            hostnamefh = open("/target/etc/hostname", "w")
+            hostnamefh.write("%s\n" % self.hostname)
+            hostnamefh.close()
+            hostsfh = open("/target/etc/hosts", "w")
+            hostsfh.write("127.0.0.1\tlocalhost\n")
+            hostsfh.write("127.0.1.1\t%s\n" % self.hostname)
+            hostsfh.write("# The following lines are desirable for IPv6 capable hosts\n")
+            hostsfh.write("::1     localhost ip6-localhost ip6-loopback\n")
+            hostsfh.write("fe00::0 ip6-localnet\n")
+            hostsfh.write("ff00::0 ip6-mcastprefix\n")
+            hostsfh.write("ff02::1 ip6-allnodes\n")
+            hostsfh.write("ff02::2 ip6-allrouters\n")
+            hostsfh.write("ff02::3 ip6-allhosts\n")
+            hostsfh.close()
 
-                # gdm overwrite (specific to Debian/live-initramfs)
-                gdmconffh = open("/etc/gdm3/daemon.conf", "w")
-                gdmconffh.write("# GDM configuration storage\n")
-                gdmconffh.write("\n[daemon]\n")
-                gdmconffh.write("\n[security]\n")
-                gdmconffh.write("\n[xdmcp]\n")
-                gdmconffh.write("\n[greeter]\n")
-                gdmconffh.write("\n[chooser]\n")
-                gdmconffh.write("\n[debug]\n")
-                gdmconffh.close()
+            # gdm overwrite (specific to Debian/live-initramfs)
+            gdmconffh = open("/target/etc/gdm3/daemon.conf", "w")
+            gdmconffh.write("# GDM configuration storage\n")
+            gdmconffh.write("\n[daemon]\n")
+            gdmconffh.write("\n[security]\n")
+            gdmconffh.write("\n[xdmcp]\n")
+            gdmconffh.write("\n[greeter]\n")
+            gdmconffh.write("\n[chooser]\n")
+            gdmconffh.write("\n[debug]\n")
+            gdmconffh.close()
 
-                # set the locale
-                our_current += 1
-                self.sub_update_progress(total=our_total, current=our_current, message=_("Setting locale"))
-                os.system("echo \"%s.UTF-8 UTF-8\" >> /etc/locale.gen" % self.locale)
-                os.system("locale-gen")
-                os.system("echo \"\" > /etc/default/locale")
-                os.system("update-locale LANG=\"%s.UTF-8\"" % self.locale)
+            # set the locale
+            our_current += 1
+            self.update_progress(total=our_total, current=our_current, message=_("Setting locale"))
+            self.run_in_chroot("echo \"%s.UTF-8 UTF-8\" >> /etc/locale.gen" % self.locale)
+            self.run_in_chroot("locale-gen")
+            self.run_in_chroot("echo \"\" > /etc/default/locale")
+            self.run_in_chroot("update-locale LANG=\"%s.UTF-8\"" % self.locale)
 
-                # set the timezone
-                os.system("echo \"%s\" > /etc/timezone" % self.timezone_code)
-                os.system("cp /usr/share/zoneinfo/%s /etc/localtime" % self.timezone)
-                
-                # localize Firefox and Thunderbird
-                self.sub_update_progress(total=our_total, current=our_current, message=_("Localizing Firefox and Thunderbird"))
-                if self.locale != "en_US":
-                    os.system("apt-get update")
-                    if "_" in self.locale:
-                        language_code = self.locale.split("_")[0]
-                        if language_code in ["fr"]:
-                           os.system("apt-get install --yes --force-yes firefox-l10n-" + language_code)
-                           os.system("apt-get install --yes --force-yes thunderbird-l10n-" + language_code)
+            # set the timezone
+            self.run_in_chroot("echo \"%s\" > /etc/timezone" % self.timezone_code)
+            self.run_in_chroot("cp /usr/share/zoneinfo/%s /etc/localtime" % self.timezone)
+            
+            # localize Firefox and Thunderbird
+            self.update_progress(total=our_total, current=our_current, message=_("Localizing Firefox and Thunderbird"))
+            if self.locale != "en_US":
+                self.run_in_chroot("apt-get update")
+                if "_" in self.locale:
+                    language_code = self.locale.split("_")[0]
+                    if language_code in ["fr"]:
+                       self.run_in_chroot("apt-get install --yes --force-yes firefox-l10n-" + language_code)
+                       self.run_in_chroot("apt-get install --yes --force-yes thunderbird-l10n-" + language_code)
 
-                # set the keyboard options..
-                our_current += 1
-                self.sub_update_progress(total=our_total, current=our_current, message=_("Setting keyboard options"))
-                consolefh = open("/etc/default/console-setup", "r")
-                newconsolefh = open("/etc/default/console-setup.new", "w")
-                for line in consolefh:
-                    line = line.rstrip("\r\n")
-                    if(line.startswith("XKBMODEL=")):
-                        newconsolefh.write("XKBMODEL=\"%s\"\n" % self.keyboard_model)
-                    elif(line.startswith("XKBLAYOUT=")):
-                        newconsolefh.write("XKBLAYOUT=\"%s\"\n" % self.keyboard_layout)
-                    else:
-                        newconsolefh.write("%s\n" % line)
-                consolefh.close()
-                newconsolefh.close()
-                os.system("rm /etc/default/console-setup")
-                os.system("mv /etc/default/console-setup.new /etc/default/console-setup")
+            # set the keyboard options..
+            our_current += 1
+            self.update_progress(total=our_total, current=our_current, message=_("Setting keyboard options"))
+            consolefh = open("/target/etc/default/console-setup", "r")
+            newconsolefh = open("/target/etc/default/console-setup.new", "w")
+            for line in consolefh:
+                line = line.rstrip("\r\n")
+                if(line.startswith("XKBMODEL=")):
+                    newconsolefh.write("XKBMODEL=\"%s\"\n" % self.keyboard_model)
+                elif(line.startswith("XKBLAYOUT=")):
+                    newconsolefh.write("XKBLAYOUT=\"%s\"\n" % self.keyboard_layout)
+                else:
+                    newconsolefh.write("%s\n" % line)
+            consolefh.close()
+            newconsolefh.close()
+            self.run_in_chroot("rm /etc/default/console-setup")
+            self.run_in_chroot("mv /etc/default/console-setup.new /etc/default/console-setup")
 
-                # notify that we be finished now.
-                our_current += 1
-                self.sub_update_progress(done=True, total=our_total, current=our_current, message=_("Done."))
-            else:
-                thepipe = open("/target/tmp/INSTALL_PIPE", "r")
-                while(True):
-                    if(not os.path.exists("/target/tmp/INSTALL_PIPE")):
-                        break # file may disappear
-                    line = thepipe.readline()
-                    line = line.rstrip("\r\n")
-                    if (line.replace(" ", "") == ""):
-                        continue # skip blank lines
-                    if( line == "DONE" ):
-                        break
-                    self.update_progress(pulse=True, message=line)
-                # now nuke the pipe
-                if(os.path.exists("/target/tmp/INSTALL_PIPE")):
-                    os.unlink("/target/tmp/INSTALL_PIPE")
+            # write MBR (grub)
+            our_current += 1
+            if(self.grub_device is not None):
+                self.update_progress(pulse=True, total=our_total, current=our_current, message=_("Installing bootloader"))
+                self.run_in_chroot("grub-install %s" % self.grub_device)
+                self.run_in_chroot("grub-mkconfig -o /boot/grub/grub.cfg")                               
 
-                # write MBR (grub)
-                our_current += 1
-                if(self.grub_device is not None):
-                    self.update_progress(pulse=True, total=our_total, current=our_current, message=_("Installing bootloader"))
-                    os.system("chroot /target/ /bin/sh -c \"grub-install %s\"" % self.grub_device)
-                    os.system("chroot /target/ /bin/sh -c \"grub-mkconfig -o /boot/grub/grub.cfg\"")
+            # now unmount it
+            os.system("umount --force /target/dev/shm")
+            os.system("umount --force /target/dev/pts")
+            os.system("umount --force /target/dev/")
+            os.system("umount --force /target/sys/")
+            os.system("umount --force /target/proc/")
+            os.system("rm -rf /target/etc/resolv.conf")
+            self.do_unmount("/target")
+            self.do_unmount("/source")
 
-                # now unmount it
-                os.system("umount --force /target/dev/shm")
-                os.system("umount --force /target/dev/pts")
-                os.system("umount --force /target/dev/")
-                os.system("umount --force /target/sys/")
-                os.system("umount --force /target/proc/")
-                self.do_unmount("/target")
-                self.do_unmount("/source")
-
-                self.update_progress(done=True, message=_("Installation finished"))
-        except Exception,detail:
+            self.update_progress(done=True, message=_("Installation finished"))
+            
+        except Exception, detail:
             print detail
-
-    def sub_update_progress(self, total=None,current=None,fail=False,done=False,message=None):
-        ''' Only called from the chroot '''
-        if(fail or done):
-            os.system("echo \"DONE\" >> /tmp/INSTALL_PIPE")
-        else:
-            os.system("echo \"%s\" >> /tmp/INSTALL_PIPE" % message)
+    
+    def run_in_chroot(self, command):
+        os.system("chroot /target/ /bin/sh -c \"%s\"" % command)   
 
     def do_mount(self, device, dest, type, options=None):
         ''' Mount a filesystem '''

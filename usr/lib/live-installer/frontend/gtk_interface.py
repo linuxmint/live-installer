@@ -1031,6 +1031,7 @@ class InstallerWindow:
         
         slideshow_path = "/usr/share/live-installer-slideshow/slides/index.html"
         if os.path.exists(slideshow_path):
+            gtk.gdk.threads_enter()
             browser = webkit.WebView()
             s = browser.get_settings()
             s.set_property('enable-file-access-from-file-uris', True)
@@ -1038,6 +1039,7 @@ class InstallerWindow:
             browser.open("file://" + slideshow_path  + "#?locale=" + locale_code)
             self.wTree.get_widget("vbox_install").add(browser)
             self.wTree.get_widget("vbox_install").show_all()
+            gtk.gdk.threads_leave()
                 
         ''' Actually perform the installation .. '''
         inst = self.installer
@@ -1098,6 +1100,9 @@ class InstallerWindow:
         sys.exit(0)
 
     def update_progress(self, fail=False, done=False, pulse=False, total=0,current=0,message=""):
+        
+        print "%d/%d: %s" % (current, total, message)
+        
         # TODO: ADD FAIL CHECKS..
         if(pulse):
             gtk.gdk.threads_enter()

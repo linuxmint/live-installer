@@ -53,7 +53,7 @@ install: build
 	cp -r $(CURDIR)/etc $(CURDIR)/debian/live-installer/
 
 	mkdir -p -p $(CURDIR)/debian/live-installer-slideshow
-        cp -r $(CURDIR)/slideshow/usr $(CURDIR)/debian/live-installer-slideshow/
+	cp -r $(CURDIR)/slideshow/usr $(CURDIR)/debian/live-installer-slideshow/
 
 # Build architecture-independent files here.
 binary-indep: build install
