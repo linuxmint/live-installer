@@ -1,0 +1,85 @@
+body {
+	padding: 1em 1em 15em 5em;
+	font-family: Geneva, Arial, Helvetica, sans-serif;
+	font-size: 76%;
+}
+
+#content {
+
+}
+
+ul.crossfade {
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	position: relative;
+}
+#fade-example-3 {
+	border: 3px solid #000;
+}
+#fade-example-1 li,#fade-example-2 li {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 506px;
+	height: 380px;
+	background-color: #FFF;
+	visibility: hidden;
+}
+#fade-example-3 li {
+	position: absolute;
+	top: 0;
+	left: 0;
+	visibility: hidden;
+}
+li img {
+	display: block;
+	border: 3px solid #FFF;
+}
+.caption {
+	clear: both;
+	padding: 1em;
+	background-color: #FFF;
+}
+.example {
+	position: relative;
+	background-color:#F2F2F2;
+	border:5px solid #CCCCCC;
+	padding:1em;
+	margin-bottom: 1em;
+	width: 520px;
+	height: 520px;
+}
+.example-r {
+	position: relative;
+	background-color:#F2F2F2;
+	border:5px solid #CCCCCC;
+	padding:1em;
+	width: 700px;
+	margin-bottom: 1em;
+}
+code {
+	font-family: monospace;
+	font-size: 1.2em;
+}
+.control {
+	position: absolute;
+	z-index: 100;
+	cursor: pointer;
+	font-size: 2em;
+	font-weight: bold;
+	color: #FFF;
+}
+#fade-example-1-next {
+	right: 8%;
+	top: 71%;
+}
+#fade-example-1-previous {
+	left: 6%;
+	top: 71%;
+}
+.ajax {
+	margin: 3em;
+	border: 1em solid #FF8C00;
+	padding: 1em;
+}
