@@ -10,8 +10,10 @@ sudo rm -rf /usr/share/menu/live-installer
 sudo rm -rf /usr/share/icons/live-installer.png
 sudo rm -rf /usr/share/icons/live-installer.xpm
 sudo rm -rf /usr/share/applications/live-installer-launcher.desktop
+sudo rm -rf /usr/share/live-installer-slideshow
 
 sudo cp -R usr /
 sudo cp -R etc /
+sudo cp -R slideshow/usr /
 
 live-installer --debug
