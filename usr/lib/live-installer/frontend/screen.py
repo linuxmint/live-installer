@@ -3,6 +3,7 @@ import gtk
 import gtk.glade
 import cairo
 from math import pi
+import gobject
 
 # Represents a disk partition in an easy format
 class Partition(object):
@@ -83,8 +84,9 @@ class Screen(gtk.DrawingArea):
                                          (0.0, 0.6, 0.0),
                                          (0.6, 0.6, 0.6),
                                          (0.6, 0.0, 0.0)]
-        #import gobject
+                                         
         #gobject.timeout_add(10, self.tick)
+                
 
     def add_label(self, label, color):
         ''' Add a label to the whatchacallit '''
@@ -143,18 +145,19 @@ class Screen(gtk.DrawingArea):
                 event.area.width, event.area.height)
         cr.clip()
 
-        self.draw(cr, event.area.width, event.area.height)
+        self.draw(cr, event.area.width, event.area.height)            
         
     def tick(self):
-        #print "refreshing"
+        print "refreshing"
         self.alloc = self.get_allocation()
         rect = gtk.gdk.Rectangle(self.alloc.x, self.alloc.y, self.alloc.width, self.alloc.height)
         self.window.invalidate_rect(rect, True)
-        #print "refreshed"
+        self.window.process_updates(True)
+        print "refreshed"
         return True		
 
     def draw(self, cr, width, height):
-        #self.style.apply_default_background(self.window, True, gtk.STATE_NORMAL, None, 0, 0, width, height)
+        self.style.apply_default_background(self.window, True, gtk.STATE_NORMAL, None, 0, 0, width, height)
         cr.set_source_rgba(0, 0, 0, 0.0)
         self.width = width # for add_label
         self.height = height # for add_label

@@ -302,16 +302,14 @@ class InstallerWindow:
              locale_code = self.locale
         
         slideshow_path = "/usr/share/live-installer-slideshow/slides/index.html"
-        if os.path.exists(slideshow_path):
-            gtk.gdk.threads_enter()
+        if os.path.exists(slideshow_path):            
             browser = webkit.WebView()
             s = browser.get_settings()
             s.set_property('enable-file-access-from-file-uris', True)
             s.set_property('enable-default-context-menu', False)
             browser.open("file://" + slideshow_path  + "#?locale=" + locale_code)
             self.wTree.get_widget("vbox_install").add(browser)
-            self.wTree.get_widget("vbox_install").show_all()
-            gtk.gdk.threads_leave()
+            self.wTree.get_widget("vbox_install").show_all()            
                           
         self.window.show_all()
 
@@ -336,7 +334,7 @@ class InstallerWindow:
                 stabber = fstab_entry(row[0], row[3], row[1], None)
                 stabber.format = row[2]
                 dlg = PartitionDialog(stabber)
-                stabber = dlg.show()
+                stabber = dlg.show()               
                 if(stabber is None):
                     return
                 # now set the model as shown..
@@ -653,10 +651,11 @@ class InstallerWindow:
 
             partition = partition.nextPartition()
 
-        from screen import Screen
-        gtk.gdk.threads_enter()
+        from screen import Screen        
         myScreen = Screen(partitions)
         self.part_screen = myScreen
+        
+        gtk.gdk.threads_enter()
         kids = self.wTree.get_widget("vbox_cairo").get_children()
         if(kids is not None):
             for sprog in kids:
@@ -1006,17 +1005,23 @@ class InstallerWindow:
     def show_overview(self):
         ''' build the summary page '''
         model = gtk.TreeStore(str)
+        
+        print " ## OVERVIEW "
 
         top = model.append(None)
         model.set(top, 0, _("Localization"))
         iter = model.append(top)
         model.set(iter, 0, _("Language: ") + "<b>%s</b>" % self.locale)
+        print " Language: %s " % self.locale
         iter = model.append(top)
         model.set(iter, 0, _("Timezone: ") + "<b>%s</b>" % self.timezone)
+        print " Timezone: %s " % self.timezone
         iter = model.append(top)
         model.set(iter, 0, _("Keyboard layout: ") + "<b>%s</b>" % self.keyboard_layout_desc)
+        print " Keyboard layout: %s " % self.keyboard_layout_desc
         iter = model.append(top)
         model.set(iter, 0, _("Keyboard model: ") + "<b>%s</b>" % self.keyboard_model_desc)
+        print " Keyboard model: %s " % self.keyboard_model_desc
 
         top = model.append(None)
         model.set(top, 0, _("User settings"))
@@ -1024,13 +1029,16 @@ class InstallerWindow:
         realname = self.wTree.get_widget("entry_your_name").get_text()
         iter = model.append(top)
         model.set(iter, 0, _("Real name: ") + "<b>%s</b>" % realname)
+        print " Real name: %s " % realname
         iter = model.append(top)
         model.set(iter, 0, _("Username: ") + "<b>%s</b>" % username)
+        print " Username: %s " % username
 
         top = model.append(None)
         model.set(top, 0, _("System settings"))
         iter = model.append(top)
         model.set(iter, 0, _("Hostname: ") + "<b>%s</b>" % self.wTree.get_widget("entry_hostname").get_text())
+        print " Hostname: %s " % self.wTree.get_widget("entry_hostname").get_text()
 
         install_grub = self.wTree.get_widget("checkbutton_grub").get_active()
         grub_box = self.wTree.get_widget("combobox_grub")
@@ -1039,8 +1047,10 @@ class InstallerWindow:
         iter = model.append(top)
         if(install_grub):
             model.set(iter, 0, _("Install bootloader in %s") % ("<b>%s</b>" % grub_model[grub_active][0]))
+            print " Install bootloader in %s" % grub_model[grub_active][0]
         else:
             model.set(iter, 0, _("Do not install bootloader"))
+            print " Do not install bootloader"
 
         top = model.append(None)
         model.set(top, 0, _("Filesystem operations"))
@@ -1050,15 +1060,18 @@ class InstallerWindow:
                 # format it
                 iter = model.append(top)
                 model.set(iter, 0, "<b>%s</b>" % (_("Format %s (%s) as %s") % (item[0], item[4], item[1])))
+                print " Format %s (%s) as %s" % (item[10].name, item[4], item[1])
             if(item[3] is not None and item[3] is not ""):
                 # mount point
                 iter = model.append(top)
                 model.set(iter, 0, "<b>%s</b>" % (_("Mount %s as %s") % (item[0], item[3])))
+                print " Mount %s as %s" % (item[10].name, item[3])
 
         self.wTree.get_widget("treeview_overview").set_model(model)
 
     def do_install(self):            
                 
+        print " ## INSTALLATION "
         ''' Actually perform the installation .. '''
         inst = self.installer
         # Create fstab
@@ -1074,7 +1087,7 @@ class InstallerWindow:
         inst.fstab = files # need to add set_fstab() to InstallerEngine
 
         if "--debug" in sys.argv:
-            print "DEBUG MODE - INSTALLATION PROCESS NOT LAUNCHED"            
+            print " ## DEBUG MODE - INSTALLATION PROCESS NOT LAUNCHED"            
             sys.exit(0)
 
         # set up the system user
@@ -1112,6 +1125,7 @@ class InstallerWindow:
         gtk.gdk.threads_enter()
         MessageDialog(_("Installation Tool"), _("Installation is now complete. Please restart your computer to use the new system"), gtk.MESSAGE_INFO).show()
         gtk.gdk.threads_leave()
+        print " ## INSTALLATION COMPLETE "
         # safe??
         gtk.main_quit()
         # you are now..
@@ -1119,7 +1133,7 @@ class InstallerWindow:
 
     def update_progress(self, fail=False, done=False, pulse=False, total=0,current=0,message=""):
         
-        print "%d/%d: %s" % (current, total, message)
+        #print "%d/%d: %s" % (current, total, message)
         
         # TODO: ADD FAIL CHECKS..
         if(pulse):

@@ -1,4 +1,10 @@
-live-installer (2010.08.21) debian; urgency=medium
+live-installer (2010.08.29) debian; urgency=medium
+
+  * Better tracing  
+
+ -- Clement Lefebvre <root@linuxmint.com>  Sun,  28 Aug 2010 10:54:00 +0000
+ 
+ live-installer (2010.08.21) debian; urgency=medium
 
   * slideshow improvements
   * detects keyboard layout based on selected locale

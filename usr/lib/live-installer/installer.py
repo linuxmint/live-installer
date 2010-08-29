@@ -147,6 +147,7 @@ class InstallerEngine:
     def install(self):
         ''' Install this baby to disk '''
         # mount the media location.
+        print " --> Installation started"
         try:
             if(not os.path.exists("/target")):
                 os.mkdir("/target")
@@ -156,7 +157,7 @@ class InstallerEngine:
             root = self.media
             root_type = self.media_type
             if(not os.path.exists(root)):
-                print _("Base filesystem does not exist! Bailing")
+                print "Base filesystem does not exist! Critical error (exiting)."
                 sys.exit(1) # change to report
             root_device = None
             # format partitions as appropriate
@@ -170,6 +171,7 @@ class InstallerEngine:
                     self.update_progress(total=4, current=1, pulse=True, message=_("Formatting %s as %s..." % (item.device, item.filesystem)))
                     self.format_device(item.device, item.filesystem)
             # mount filesystem
+            print " --> Mounting partitions"
             self.update_progress(total=4, current=2, message=_("Mounting %s on %s") % (root, "/source/"))
             self.do_mount(root, "/source/", root_type, options="loop")
             self.update_progress(total=4, current=3, message=_("Mounting %s on %s") % (root_device.device, "/target/"))
@@ -182,6 +184,7 @@ class InstallerEngine:
             our_current = -1
             os.chdir(SOURCE)
             # index the files
+            print " --> Indexing files"
             for top,dirs,files in os.walk(SOURCE, topdown=False):
                 our_total += len(dirs) + len(files)
                 self.update_progress(pulse=True, message=_("Indexing files to be copied.."))
@@ -200,6 +203,7 @@ class InstallerEngine:
                     mode = stat.S_IMODE(st.st_mode)
 
                     # now show the world what we're doing
+                    print " --> Copying files"
                     our_current += 1
                     self.update_progress(total=our_total, current=our_current, message=_("Copying %s" % rpath))
 
@@ -236,6 +240,7 @@ class InstallerEngine:
                         os.utime(targetpath, (st.st_atime, st.st_mtime))
                 # Apply timestamps to all directories now that the items within them
                 # have been copied.
+            print " --> Restoring meta-info"
             for dirtime in directory_times:
                 (directory, atime, mtime) = dirtime
                 try:
@@ -248,6 +253,7 @@ class InstallerEngine:
             our_total = 9
             our_current = 0
             # chroot
+            print " --> Chrooting"
             self.update_progress(total=our_total, current=our_current, message=_("Entering new system.."))            
             os.system("mount --bind /dev/ /target/dev/")
             os.system("mount --bind /dev/shm /target/dev/shm")
@@ -257,6 +263,7 @@ class InstallerEngine:
             os.system("cp -f /etc/resolv.conf /target/etc/resolv.conf")
                                           
             # remove live user
+            print " --> Removing live user"
             live_user = self.live_user
             our_current += 1
             self.update_progress(total=our_total, current=our_current, message=_("Removing live configuration (user)"))
@@ -266,11 +273,13 @@ class InstallerEngine:
                 self.run_in_chroot("rm -rf /home/%s" % live_user)
             
             # remove live-initramfs (or w/e)
+            print " --> Removing live-initramfs"
             our_current += 1
             self.update_progress(total=our_total, current=our_current, message=_("Removing live configuration (packages)"))
             self.run_in_chroot("apt-get remove --purge --yes --force-yes live-initramfs live-installer")
             
             # add new user
+            print " --> Adding new user"
             our_current += 1
             self.update_progress(total=our_total, current=our_current, message=_("Adding user to system"))
             user = self.get_main_user()
@@ -283,6 +292,7 @@ class InstallerEngine:
             self.run_in_chroot("rm -rf /tmp/newusers.conf")
             
             # write the /etc/fstab
+            print " --> Writing fstab"
             our_current += 1
             self.update_progress(total=our_total, current=our_current, message=_("Writing filesystem mount information"))
             # make sure fstab has default /proc and /sys entries
@@ -301,6 +311,7 @@ class InstallerEngine:
             fstabber.close()
             
             # write host+hostname infos
+            print " --> Writing hostname"
             our_current += 1
             self.update_progress(total=our_total, current=our_current, message=_("Setting hostname"))
             hostnamefh = open("/target/etc/hostname", "w")
@@ -319,6 +330,7 @@ class InstallerEngine:
             hostsfh.close()
 
             # gdm overwrite (specific to Debian/live-initramfs)
+            print " --> Configuring GDM"
             gdmconffh = open("/target/etc/gdm3/daemon.conf", "w")
             gdmconffh.write("# GDM configuration storage\n")
             gdmconffh.write("\n[daemon]\n")
@@ -330,6 +342,7 @@ class InstallerEngine:
             gdmconffh.close()
 
             # set the locale
+            print " --> Setting the locale"
             our_current += 1
             self.update_progress(total=our_total, current=our_current, message=_("Setting locale"))
             os.system("echo \"%s.UTF-8 UTF-8\" >> /target/etc/locale.gen" % self.locale)
@@ -339,10 +352,12 @@ class InstallerEngine:
             self.run_in_chroot("update-locale LANG=%s.UTF-8" % self.locale)
 
             # set the timezone
+            print " --> Setting the timezone"
             os.system("echo \"%s\" > /target/etc/timezone" % self.timezone_code)
             os.system("cp /target/usr/share/zoneinfo/%s /target/etc/localtime" % self.timezone)
             
             # localize Firefox and Thunderbird
+            print " --> Localizing Firefox and Thunderbird"
             self.update_progress(total=our_total, current=our_current, message=_("Localizing Firefox and Thunderbird"))
             if self.locale != "en_US":
                 import commands
@@ -371,6 +386,7 @@ class InstallerEngine:
                             self.run_in_chroot("apt-get install --yes --force-yes thunderbird-l10n-" + language_code)                                                                                        
 
             # set the keyboard options..
+            print " --> Setting the keyboard"
             our_current += 1
             self.update_progress(total=our_total, current=our_current, message=_("Setting keyboard options"))
             consolefh = open("/target/etc/default/console-setup", "r")
@@ -404,6 +420,7 @@ class InstallerEngine:
             self.run_in_chroot("mv /etc/default/keyboard.new /etc/default/keyboard")
 
             # write MBR (grub)
+            print " --> Configuring Grub"
             our_current += 1
             if(self.grub_device is not None):
                 self.update_progress(pulse=True, total=our_total, current=our_current, message=_("Installing bootloader"))
@@ -411,6 +428,7 @@ class InstallerEngine:
                 self.run_in_chroot("grub-mkconfig -o /boot/grub/grub.cfg")                               
 
             # now unmount it
+            print " --> Unmounting partitions"
             os.system("umount --force /target/dev/shm")
             os.system("umount --force /target/dev/pts")
             os.system("umount --force /target/dev/")
