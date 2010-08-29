@@ -1,3 +1,9 @@
+live-installer (2010.08.29.1) debian; urgency=medium
+
+  * Better tracing  
+
+ -- Clement Lefebvre <root@linuxmint.com>  Sun,  28 Aug 2010 12:31:00 +0000
+
 live-installer (2010.08.29) debian; urgency=medium
 
   * Better tracing  

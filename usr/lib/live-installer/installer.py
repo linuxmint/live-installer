@@ -189,6 +189,7 @@ class InstallerEngine:
                 our_total += len(dirs) + len(files)
                 self.update_progress(pulse=True, message=_("Indexing files to be copied.."))
             our_total += 1 # safenessness
+            print " --> Copying files"
             for top,dirs,files in os.walk(SOURCE):
                 # Sanity check. Python is a bit schitzo
                 dirpath = top
@@ -202,8 +203,7 @@ class InstallerEngine:
                     st = os.lstat(sourcepath)
                     mode = stat.S_IMODE(st.st_mode)
 
-                    # now show the world what we're doing
-                    print " --> Copying files"
+                    # now show the world what we're doing                    
                     our_current += 1
                     self.update_progress(total=our_total, current=our_current, message=_("Copying %s" % rpath))
 
