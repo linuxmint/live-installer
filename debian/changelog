@@ -2,7 +2,7 @@ live-installer (2010.08.31) debian; urgency=medium
 
   * Fixed useradd with space chars in name 
 
- -- Clement Lefebvre <root@linuxmint.com>  Tue,  31 Aug 2010 16:24:00 +00
+ -- Clement Lefebvre <root@linuxmint.com>  Tue,  31 Aug 2010 16:24:00 +0000
 
 live-installer (2010.08.29.1) debian; urgency=medium
 
