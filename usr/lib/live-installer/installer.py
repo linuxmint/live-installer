@@ -283,7 +283,7 @@ class InstallerEngine:
             our_current += 1
             self.update_progress(total=our_total, current=our_current, message=_("Adding user to system"))
             user = self.get_main_user()
-            self.run_in_chroot("useradd -s %s -c \"%s\" -G sudo -m %s" % ("/bin/bash", user.realname, user.username))
+            self.run_in_chroot("useradd -s %s -c \'%s\' -G sudo -m %s" % ("/bin/bash", user.realname, user.username))
             newusers = open("/target/tmp/newusers.conf", "w")
             newusers.write("%s:%s\n" % (user.username, user.password))
             newusers.write("root:%s\n" % user.password)
