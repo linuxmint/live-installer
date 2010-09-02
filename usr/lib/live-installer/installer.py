@@ -465,16 +465,20 @@ class InstallerEngine:
         time.sleep(2)
         found_theme = False
         found_entry = False
-        grubfh = open("/boot/grub/grub.cfg", "r")
-        for line in grubfh:
-            line = line.rstrip("\r\n")
-            if("/boot/grub/linuxmint.png" in line):
-                found_theme = True
-            if ("menuentry" in line and "Mint" in line):
-                found_entry = True
-                print " --> Found Grub entry: %s " % line
-        grubfh.close()
-        return (found_theme and found_entry)
+        if os.path.exists("/target/boot/grub/grub.cfg"):
+            grubfh = open("/target/boot/grub/grub.cfg", "r")
+            for line in grubfh:
+                line = line.rstrip("\r\n")
+                if("/boot/grub/linuxmint.png" in line):
+                    found_theme = True
+                if ("menuentry" in line and "Mint" in line):
+                    found_entry = True
+                    print " --> Found Grub entry: %s " % line
+            grubfh.close()
+            return (found_theme and found_entry)
+        else:
+            print "!No /target/boot/grub/grub.cfg file found!"
+            return False
 
     def do_mount(self, device, dest, type, options=None):
         ''' Mount a filesystem '''
