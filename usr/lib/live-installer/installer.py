@@ -462,6 +462,7 @@ class InstallerEngine:
     def check_grub(self):
         self.update_progress(pulse=True, total=our_total, current=our_current, message=_("Checking bootloader"))
         print " --> Checking Grub configuration"
+        time.sleep(2)
         found_theme = False
         found_entry = False
         grubfh = open("/boot/grub/grub.cfg", "r")

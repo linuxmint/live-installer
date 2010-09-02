@@ -1,4 +1,10 @@
-live-installer (2010.09.02.1) debian; urgency=medium
+live-installer (2010.09.02.2) debian; urgency=medium
+
+  * Added 2 sec sleep before grub checks
+
+ -- Clement Lefebvre <root@linuxmint.com>  Thu,  02 Sep 2010 17:14:00 +0000
+ 
+ live-installer (2010.09.02.1) debian; urgency=medium
 
   * Retry mechanism for grub-mkconfig
 
