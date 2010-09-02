@@ -334,7 +334,7 @@ class InstallerWindow:
                 stabber = fstab_entry(row[0], row[3], row[1], None)
                 stabber.format = row[2]
                 dlg = PartitionDialog(stabber)
-                stabber = dlg.show()               
+                stabber = dlg.show()                 
                 if(stabber is None):
                     return
                 # now set the model as shown..
@@ -346,6 +346,11 @@ class InstallerWindow:
                         row[1] = "ext4"
                     else:
                         row[1] = stabber.filesystem
+                else:
+                    if row[10].description != "":
+                        row[1] = "%s (%s)" % (row[10].description, row[10].type)
+                    else:
+                        row[1] = row[10].type
 
                 model[iter] = row                
                 
@@ -356,6 +361,11 @@ class InstallerWindow:
                 partition = model.get_value(iter, 10)
                 if not partition.real_type == parted.PARTITION_EXTENDED and not partition.partition.number == -1:
                     menu = gtk.Menu()
+                    menuItem = gtk.MenuItem(_("Edit"))
+                    menuItem.connect( "activate", self.assign_partition, partition)
+                    menu.append(menuItem)
+                    menuItem = gtk.SeparatorMenuItem()
+                    menu.append(menuItem)
                     menuItem = gtk.MenuItem(_("Assign to /"))
                     menuItem.connect( "activate", self.assignRoot, partition)
                     menu.append(menuItem)
@@ -1198,7 +1208,7 @@ class PartitionDialog:
         # i18n
         self.dTree.get_widget("label_partition").set_markup("<b>%s</b>" % _("Device:"))
         self.dTree.get_widget("label_partition_value").set_label(self.stab.device)
-        self.dTree.get_widget("label_use_as").set_markup("<b>%s</b>" % _("Use as:"))
+        self.dTree.get_widget("label_use_as").set_markup(_("Filesystem:"))
         # set the correct filesystem in this dialog
         cur = -1
         model = self.dTree.get_widget("combobox_use_as").get_model()
@@ -1207,15 +1217,34 @@ class PartitionDialog:
             if(item[0] == self.stab.filesystem):
                 self.dTree.get_widget("combobox_use_as").set_active(cur)
                 break
-        self.dTree.get_widget("label_mount_point").set_markup("<b>%s</b>" % _("Mount point:"))
+        self.dTree.get_widget("label_mount_point").set_markup(_("Mount point:"))
         if(self.stab.mountpoint is not None):
             self.dTree.get_widget("comboboxentry_mount_point").child.set_text(self.stab.mountpoint)
         self.dTree.get_widget("checkbutton_format").set_label(_("Format"))
+        self.dTree.get_widget("checkbutton_format").child.set_use_markup(True)
         self.dTree.get_widget("checkbutton_format").set_active(self.stab.format)
-
+        self.dTree.get_widget("checkbutton_format").connect("toggled", self.preselect_ext4)
+        
+    def preselect_ext4(self, widget, data=None):
+        try:
+            if widget.get_active():         
+                wanted_fs = "ext4"                
+            else:
+                wanted_fs = ""
+            model = self.dTree.get_widget("combobox_use_as").get_model()
+            iter = model.get_iter_first()
+            while iter is not None:
+                filesystem = model.get_value(iter, 0)
+                if filesystem == wanted_fs:
+                    self.dTree.get_widget("combobox_use_as").set_active_iter(iter)
+                    return
+                iter = model.iter_next(iter)                    
+        except Exception, detail:
+            print detail
+        
     def build_fs_model(self):
         ''' Build supported filesystems list '''
-        model = gtk.ListStore(str)
+        model = gtk.ListStore(str)        
         model.append([""])
         model.append(["swap"])
         try:

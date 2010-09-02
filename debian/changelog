@@ -1,3 +1,12 @@
+live-installer (2010.09.02) debian; urgency=medium
+
+  * Fixed redraw problem in installer's partition screen
+  * Improved usability with format/assign_partition dialog
+  * Shade added to scroll area for timezones
+  * Added Edit menu item in context menu in partitions table
+
+ -- Clement Lefebvre <root@linuxmint.com>  Thu,  02 Sep 2010 15:30:00 +0000
+
 live-installer (2010.08.31) debian; urgency=medium
 
   * Fixed useradd with space chars in name 
