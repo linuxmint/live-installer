@@ -426,10 +426,10 @@ class InstallerEngine:
                 self.update_progress(pulse=True, total=our_total, current=our_current, message=_("Installing bootloader"))
                 print " --> Running grub-install"
                 self.run_in_chroot("grub-install %s" % self.grub_device)
-                self.configure_grub()
+                self.configure_grub(our_total, our_current)
                 grub_retries = 0
-                while (not self.check_grub()):
-                    self.configure_grub()
+                while (not self.check_grub(our_total, our_current)):
+                    self.configure_grub(our_total, our_current)
                     grub_retries = grub_retries + 1
                     if grub_retries >= 5:
                         self.update_progress(done=True, message=_("WARNING: The grub bootloader was not configured properly! You need to configure it manually."))
@@ -454,12 +454,12 @@ class InstallerEngine:
     def run_in_chroot(self, command):
         os.system("chroot /target/ /bin/sh -c \"%s\"" % command)
         
-    def configure_grub(self):
+    def configure_grub(self, our_total, our_current):
         self.update_progress(pulse=True, total=our_total, current=our_current, message=_("Configuring bootloader"))
         print " --> Running grub-mkconfig"
         self.run_in_chroot("grub-mkconfig -o /boot/grub/grub.cfg")
     
-    def check_grub(self):
+    def check_grub(self, our_total, our_current):
         self.update_progress(pulse=True, total=our_total, current=our_current, message=_("Checking bootloader"))
         print " --> Checking Grub configuration"
         time.sleep(2)
