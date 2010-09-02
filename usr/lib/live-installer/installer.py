@@ -424,9 +424,17 @@ class InstallerEngine:
             our_current += 1
             if(self.grub_device is not None):
                 self.update_progress(pulse=True, total=our_total, current=our_current, message=_("Installing bootloader"))
+                print " --> Running grub-install"
                 self.run_in_chroot("grub-install %s" % self.grub_device)
-                self.run_in_chroot("grub-mkconfig -o /boot/grub/grub.cfg")                               
-
+                self.configure_grub()
+                grub_retries = 0
+                while (not self.check_grub()):
+                    self.configure_grub()
+                    grub_retries = grub_retries + 1
+                    if grub_retries >= 5:
+                        self.update_progress(done=True, message=_("WARNING: The grub bootloader was not configured properly! You need to configure it manually."))
+                        break                
+            
             # now unmount it
             print " --> Unmounting partitions"
             os.system("umount --force /target/dev/shm")
@@ -444,7 +452,28 @@ class InstallerEngine:
             print detail
     
     def run_in_chroot(self, command):
-        os.system("chroot /target/ /bin/sh -c \"%s\"" % command)   
+        os.system("chroot /target/ /bin/sh -c \"%s\"" % command)
+        
+    def configure_grub(self):
+        self.update_progress(pulse=True, total=our_total, current=our_current, message=_("Configuring bootloader"))
+        print " --> Running grub-mkconfig"
+        self.run_in_chroot("grub-mkconfig -o /boot/grub/grub.cfg")
+    
+    def check_grub(self):
+        self.update_progress(pulse=True, total=our_total, current=our_current, message=_("Checking bootloader"))
+        print " --> Checking Grub configuration"
+        found_theme = False
+        found_entry = False
+        grubfh = open("/boot/grub/grub.cfg", "r")
+        for line in grubfh:
+            line = line.rstrip("\r\n")
+            if("/boot/grub/linuxmint.png" in line):
+                found_theme = True
+            if ("menuentry" in line and "Mint" in line):
+                found_entry = True
+                print " --> Found Grub entry: %s " % line
+        grubfh.close()
+        return (found_theme and found_entry)
 
     def do_mount(self, device, dest, type, options=None):
         ''' Mount a filesystem '''
