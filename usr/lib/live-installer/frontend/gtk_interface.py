@@ -1079,77 +1079,95 @@ class InstallerWindow:
 
         self.wTree.get_widget("treeview_overview").set_model(model)
 
-    def do_install(self):            
-                
-        print " ## INSTALLATION "
-        ''' Actually perform the installation .. '''
-        inst = self.installer
-        # Create fstab
-        files = fstab()
-        model = self.wTree.get_widget("treeview_disks").get_model()
-        for row in model:
-            if(row[2] or row[3] is not None): # format or mountpoint specified.
-                filesystem = row[1]
-                format = row[2]
-                mountpoint = row[3]
-                device = row[10].name
-                files.add_mount(device=device, mountpoint=mountpoint, filesystem=filesystem, format=format)                
-        inst.fstab = files # need to add set_fstab() to InstallerEngine
-
-        if "--debug" in sys.argv:
-            print " ## DEBUG MODE - INSTALLATION PROCESS NOT LAUNCHED"            
-            sys.exit(0)
-
-        # set up the system user
-        username = self.wTree.get_widget("entry_username").get_text()
-        password = self.wTree.get_widget("entry_userpass1").get_text()
-        realname = self.wTree.get_widget("entry_your_name").get_text()
-        hostname = self.wTree.get_widget("entry_hostname").get_text()
-        user = SystemUser(username=username, password=password, realname=realname)
-        inst.set_main_user(user)
-        inst.set_hostname(hostname)
-
-        # set language
-        inst.set_locale(self.locale)
-
-        # set timezone
-        inst.set_timezone(self.timezone, self.timezone_code)
-
-        # set keyboard
-        inst.set_keyboard_options(layout=self.keyboard_layout, model=self.keyboard_model)
-
-        # grub?
-        do_grub = self.wTree.get_widget("checkbutton_grub").get_active()
-        if(do_grub):
-            grub_box = self.wTree.get_widget("combobox_grub")
-            grub_location = grub_box.get_model()[grub_box.get_active()][0]
-            inst.set_install_bootloader(device=grub_location)
-        inst.set_progress_hook(self.update_progress)
-
-        # do we dare? ..
-        self.critical_error_happened = False
+    def do_install(self):
         
-        inst.install()
+        try:        
+            print " ## INSTALLATION "
+            ''' Actually perform the installation .. '''
+            inst = self.installer
+            # Create fstab
+            files = fstab()
+            model = self.wTree.get_widget("treeview_disks").get_model()
+            for row in model:
+                if(row[2] or row[3] is not None): # format or mountpoint specified.
+                    filesystem = row[1]
+                    format = row[2]
+                    mountpoint = row[3]
+                    device = row[10].name
+                    files.add_mount(device=device, mountpoint=mountpoint, filesystem=filesystem, format=format)                
+            inst.fstab = files # need to add set_fstab() to InstallerEngine
 
-        # show a message dialog thingum
-        while(not self.done):
-            time.sleep(0.1)
-        if not critical_error_happened:
-            gtk.gdk.threads_enter()
-            MessageDialog(_("Installation finished"), _("Installation is now complete. Please restart your computer to use the new system"), gtk.MESSAGE_INFO).show()
-            gtk.gdk.threads_leave()
-        print " ## INSTALLATION COMPLETE "
+            if "--debug" in sys.argv:
+                print " ## DEBUG MODE - INSTALLATION PROCESS NOT LAUNCHED"            
+                sys.exit(0)
+
+            # set up the system user
+            username = self.wTree.get_widget("entry_username").get_text()
+            password = self.wTree.get_widget("entry_userpass1").get_text()
+            realname = self.wTree.get_widget("entry_your_name").get_text()
+            hostname = self.wTree.get_widget("entry_hostname").get_text()
+            user = SystemUser(username=username, password=password, realname=realname)
+            inst.set_main_user(user)
+            inst.set_hostname(hostname)
+
+            # set language
+            inst.set_locale(self.locale)
+
+            # set timezone
+            inst.set_timezone(self.timezone, self.timezone_code)
+
+            # set keyboard
+            inst.set_keyboard_options(layout=self.keyboard_layout, model=self.keyboard_model)
+
+            # grub?
+            do_grub = self.wTree.get_widget("checkbutton_grub").get_active()
+            if(do_grub):
+                grub_box = self.wTree.get_widget("combobox_grub")
+                grub_location = grub_box.get_model()[grub_box.get_active()][0]
+                inst.set_install_bootloader(device=grub_location)
+            inst.set_progress_hook(self.update_progress)
+
+            # do we dare? ..
+            self.critical_error_happened = False
+            
+            try:
+                inst.install()
+            except Exception, detail1:
+                print detail1
+                try:
+                    gtk.gdk.threads_enter()
+                    MessageDialog(_("Installation error"), str(detail), gtk.MESSAGE_ERROR).show()
+                    gtk.gdk.threads_leave()
+                except Exception, detail2:
+                    print detail2
+
+            # show a message dialog thingum
+            while(not self.done):
+                time.sleep(0.1)
+            
+            if self.critical_error_happened:
+                gtk.gdk.threads_enter()
+                MessageDialog(_("Installation error"), self.critical_error_message, gtk.MESSAGE_ERROR).show()
+                gtk.gdk.threads_leave()                
+            else:
+                gtk.gdk.threads_enter()
+                MessageDialog(_("Installation finished"), _("Installation is now complete. Please restart your computer to use the new system"), gtk.MESSAGE_INFO).show()
+                gtk.gdk.threads_leave()
+                
+            print " ## INSTALLATION COMPLETE "
+            
+        except Exception, detail:
+            print "!!!! General exception"
+            print detail
+            
         # safe??
         gtk.main_quit()
         # you are now..
         sys.exit(0)
 
-    def error_message(self, critical=False, message=""):
-        if critical:
-            self.critical_error_happened = True
-        gtk.gdk.threads_enter()
-        MessageDialog(_("Installation error"), message, gtk.MESSAGE_ERROR).show()
-        gtk.gdk.threads_leave()
+    def error_message(self, message=""):
+        self.critical_error_happened = True
+        self.critical_error_message = message
 
     def update_progress(self, fail=False, done=False, pulse=False, total=0,current=0,message=""):
         

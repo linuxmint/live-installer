@@ -458,11 +458,16 @@ class InstallerEngine:
         self.update_progress(pulse=True, total=our_total, current=our_current, message=_("Configuring bootloader"))
         print " --> Running grub-mkconfig"
         self.run_in_chroot("grub-mkconfig -o /boot/grub/grub.cfg")
+        grub_output = commands.getoutput("chroot /target/ /bin/sh -c \"grub-mkconfig -o /boot/grub/grub.cfg\"")
+        grubfh = open("/var/log/live-installer-grub-output.log", "w")
+        grubfh.writelines(grub_output)
+        grubfh.close()
+        
     
     def check_grub(self, our_total, our_current):
         self.update_progress(pulse=True, total=our_total, current=our_current, message=_("Checking bootloader"))
         print " --> Checking Grub configuration"
-        time.sleep(2)
+        time.sleep(5)
         found_theme = False
         found_entry = False
         if os.path.exists("/target/boot/grub/grub.cfg"):
