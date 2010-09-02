@@ -432,8 +432,8 @@ class InstallerEngine:
                     self.configure_grub(our_total, our_current)
                     grub_retries = grub_retries + 1
                     if grub_retries >= 5:
-                        self.update_progress(done=True, message=_("WARNING: The grub bootloader was not configured properly! You need to configure it manually."))
-                        break                
+                        self.error_message(critical=True, message=_("WARNING: The grub bootloader was not configured properly! You need to configure it manually."))
+                        break
             
             # now unmount it
             print " --> Unmounting partitions"

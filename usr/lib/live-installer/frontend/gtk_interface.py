@@ -1127,19 +1127,29 @@ class InstallerWindow:
         inst.set_progress_hook(self.update_progress)
 
         # do we dare? ..
+        self.critical_error_happened = False
+        
         inst.install()
 
         # show a message dialog thingum
         while(not self.done):
             time.sleep(0.1)
-        gtk.gdk.threads_enter()
-        MessageDialog(_("Installation Tool"), _("Installation is now complete. Please restart your computer to use the new system"), gtk.MESSAGE_INFO).show()
-        gtk.gdk.threads_leave()
+        if not critical_error_happened:
+            gtk.gdk.threads_enter()
+            MessageDialog(_("Installation finished"), _("Installation is now complete. Please restart your computer to use the new system"), gtk.MESSAGE_INFO).show()
+            gtk.gdk.threads_leave()
         print " ## INSTALLATION COMPLETE "
         # safe??
         gtk.main_quit()
         # you are now..
         sys.exit(0)
+
+    def error_message(self, critical=False, message=""):
+        if critical:
+            self.critical_error_happened = True
+        gtk.gdk.threads_enter()
+        MessageDialog(_("Installation error"), message, gtk.MESSAGE_ERROR).show()
+        gtk.gdk.threads_leave()
 
     def update_progress(self, fail=False, done=False, pulse=False, total=0,current=0,message=""):
         
