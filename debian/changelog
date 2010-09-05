@@ -1,3 +1,9 @@
+live-installer (2010.09.05.2) debian; urgency=medium
+
+  * Fixed mount problems when using multiple partitions
+
+ -- Clement Lefebvre <root@linuxmint.com>  Sun,  05 Sep 2010 13:29:00 +0000
+
 live-installer (2010.09.05.1) debian; urgency=medium
 
   * Fixed exception when HDD is blank without a partition table

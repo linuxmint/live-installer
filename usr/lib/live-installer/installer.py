@@ -173,9 +173,16 @@ class InstallerEngine:
             # mount filesystem
             print " --> Mounting partitions"
             self.update_progress(total=4, current=2, message=_("Mounting %s on %s") % (root, "/source/"))
+            print " ------ Mounting %s on %s" % (root, "/source/")
             self.do_mount(root, "/source/", root_type, options="loop")
             self.update_progress(total=4, current=3, message=_("Mounting %s on %s") % (root_device.device, "/target/"))
+            print " ------ Mounting %s on %s" % (root_device.device, "/target/")
             self.do_mount(root_device.device, "/target", root_device.filesystem, None)
+            for item in self.fstab.get_entries():
+                if(item.mountpoint != "/"):
+                    print " ------ Mounting %s on %s" % (item.device, "/target" + item.mountpoint)
+                    self.do_mount(item.device, "/target" + item.mountpoint, item.filesystem, None)
+            
             # walk root filesystem. we're too lazy though :P
             SOURCE = "/source/"
             DEST = "/target/"
@@ -449,10 +456,14 @@ class InstallerEngine:
             os.system("umount --force /target/sys/")
             os.system("umount --force /target/proc/")
             os.system("rm -rf /target/etc/resolv.conf")
+            for item in self.fstab.get_entries():
+                if(item.mountpoint != "/"):
+                    self.do_unmount("/target" + item.mountpoint)
             self.do_unmount("/target")
             self.do_unmount("/source")
 
             self.update_progress(done=True, message=_("Installation finished"))
+            print " --> All done"
             
         except Exception, detail:
             print detail
