@@ -1,4 +1,10 @@
-live-installer (2010.09.02.9) debian; urgency=medium
+live-installer (2010.09.05) debian; urgency=medium
+
+  * Replaced commands call with os.system in APT cleaning step
+
+ -- Clement Lefebvre <root@linuxmint.com>  Sun,  05 Sep 2010 10:24:00 +0000
+
+live-installer (2010.09.02.10) debian; urgency=medium
 
   * Filename error fixed
 

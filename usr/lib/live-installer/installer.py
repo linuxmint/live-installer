@@ -250,7 +250,7 @@ class InstallerEngine:
                     pass
                     
             # Steps:
-            our_total = 9
+            our_total = 10
             our_current = 0
             # chroot
             print " --> Chrooting"
@@ -434,6 +434,12 @@ class InstallerEngine:
                     if grub_retries >= 5:
                         self.error_message(critical=True, message=_("WARNING: The grub bootloader was not configured properly! You need to configure it manually."))
                         break
+                        
+            # write MBR (grub)
+            print " --> Cleaning APT"
+            our_current += 1
+            self.update_progress(pulse=True, total=our_total, current=our_current, message=_("Cleaning APT"))
+            os.system("chroot /target/ /bin/sh -c \"dpkg --configure -a\"")
             
             # now unmount it
             print " --> Unmounting partitions"
