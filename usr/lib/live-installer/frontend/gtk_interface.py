@@ -588,78 +588,81 @@ class InstallerWindow:
         os.popen('mkdir -p /tmp/live-installer/tmpmount')
 
         partitions = []
-        path = self.device_node # i.e. /dev/sda
-        device = parted.getDevice(path)
-        disk = parted.Disk(device)
-        partition = disk.getFirstPartition()
-        last_added_partition = Partition(partition)
-        partitions.append(last_added_partition)
-        partition = partition.nextPartition()
-        while (partition is not None):
-            if last_added_partition.partition.number == -1 and partition.number == -1:
-                last_added_partition.add_partition(partition)
-            else:
-                last_added_partition = Partition(partition)
-                partitions.append(last_added_partition)
-
-                if partition.number != -1 and "swap" not in last_added_partition.type:
-
-                    #Umount temp folder
-                    if ('/tmp/live-installer/tmpmount' in commands.getoutput('mount')):
-                        os.popen('umount /tmp/live-installer/tmpmount')
-
-                    #Mount partition if not mounted
-                    if (partition.path not in commands.getoutput('mount')):
-                        os.system("mount %s /tmp/live-installer/tmpmount" % partition.path)
-
-                    #Identify partition's description and used space
-                    if (partition.path in commands.getoutput('mount')):
-                        last_added_partition.used_space = commands.getoutput("df | grep %s | awk {'print $5'}" % partition.path)
-                        if "%" in last_added_partition.used_space:
-                            used_space_pct = int(last_added_partition.used_space.replace("%", "").strip())
-                            last_added_partition.free_space = int(float(last_added_partition.size) * (float(100) - float(used_space_pct)) / float(100))
-                        mount_point = commands.getoutput("df | grep %s | awk {'print $6'}" % partition.path)
-                        if os.path.exists(os.path.join(mount_point, 'etc/lsb-release')):
-                            last_added_partition.description = commands.getoutput("cat " + os.path.join(mount_point, 'etc/lsb-release') + " | grep DISTRIB_DESCRIPTION").replace('DISTRIB_DESCRIPTION', '').replace('=', '').replace('"', '').strip()
-                        elif os.path.exists(os.path.join(mount_point, 'etc/issue')):
-                            last_added_partition.description = commands.getoutput("cat " + os.path.join(mount_point, 'etc/issue')).replace('\\n', '').replace('\l', '').strip()
-                        elif os.path.exists(os.path.join(mount_point, 'Windows/servicing/Version')):
-                            version = commands.getoutput("ls %s" % os.path.join(mount_point, 'Windows/servicing/Version'))
-                            if version.startswith("6.1"):
-                                last_added_partition.description = "Windows 7"
-                            elif version.startswith("6.0"):
-                                last_added_partition.description = "Windows Vista"
-                            elif version.startswith("5.1") or version.startswith("5.2"):
-                                last_added_partition.description = "Windows XP"
-                            elif version.startswith("5.0"):
-                                last_added_partition.description = "Windows 2000"
-                            elif version.startswith("4.90"):
-                                last_added_partition.description = "Windows Me"
-                            elif version.startswith("4.1"):
-                                last_added_partition.description = "Windows 98"
-                            elif version.startswith("4.0.1381"):
-                                last_added_partition.description = "Windows NT"
-                            elif version.startswith("4.0.950"):
-                                last_added_partition.description = "Windows 95"
-                        elif os.path.exists(os.path.join(mount_point, 'Boot/BCD')):
-                            if os.system("grep -qs \"V.i.s.t.a\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
-                                last_added_partition.description = "Windows Vista bootloader"
-                            elif os.system("grep -qs \"W.i.n.d.o.w.s. .7\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
-                                last_added_partition.description = "Windows 7 bootloader"
-                            elif os.system("grep -qs \"W.i.n.d.o.w.s. .R.e.c.o.v.e.r.y. .E.n.v.i.r.o.n.m.e.n.t\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
-                                last_added_partition.description = "Windows recovery"
-                            elif os.system("grep -qs \"W.i.n.d.o.w.s. .S.e.r.v.e.r. .2.0.0.8\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
-                                last_added_partition.description = "Windows Server 2008 bootloader"
-                            else:
-                                last_added_partition.description = "Windows bootloader"
-                        elif os.path.exists(os.path.join(mount_point, 'Windows/System32')):
-                            last_added_partition.description = "Windows"
-
-                    #Umount temp folder
-                    if ('/tmp/live-installer/tmpmount' in commands.getoutput('mount')):
-                        os.popen('umount /tmp/live-installer/tmpmount')
-
+        try:
+            path = self.device_node # i.e. /dev/sda
+            device = parted.getDevice(path)
+            disk = parted.Disk(device)
+            partition = disk.getFirstPartition()
+            last_added_partition = Partition(partition)
+            partitions.append(last_added_partition)
             partition = partition.nextPartition()
+            while (partition is not None):
+                if last_added_partition.partition.number == -1 and partition.number == -1:
+                    last_added_partition.add_partition(partition)
+                else:
+                    last_added_partition = Partition(partition)
+                    partitions.append(last_added_partition)
+
+                    if partition.number != -1 and "swap" not in last_added_partition.type:
+
+                        #Umount temp folder
+                        if ('/tmp/live-installer/tmpmount' in commands.getoutput('mount')):
+                            os.popen('umount /tmp/live-installer/tmpmount')
+
+                        #Mount partition if not mounted
+                        if (partition.path not in commands.getoutput('mount')):
+                            os.system("mount %s /tmp/live-installer/tmpmount" % partition.path)
+
+                        #Identify partition's description and used space
+                        if (partition.path in commands.getoutput('mount')):
+                            last_added_partition.used_space = commands.getoutput("df | grep %s | awk {'print $5'}" % partition.path)
+                            if "%" in last_added_partition.used_space:
+                                used_space_pct = int(last_added_partition.used_space.replace("%", "").strip())
+                                last_added_partition.free_space = int(float(last_added_partition.size) * (float(100) - float(used_space_pct)) / float(100))
+                            mount_point = commands.getoutput("df | grep %s | awk {'print $6'}" % partition.path)
+                            if os.path.exists(os.path.join(mount_point, 'etc/lsb-release')):
+                                last_added_partition.description = commands.getoutput("cat " + os.path.join(mount_point, 'etc/lsb-release') + " | grep DISTRIB_DESCRIPTION").replace('DISTRIB_DESCRIPTION', '').replace('=', '').replace('"', '').strip()
+                            elif os.path.exists(os.path.join(mount_point, 'etc/issue')):
+                                last_added_partition.description = commands.getoutput("cat " + os.path.join(mount_point, 'etc/issue')).replace('\\n', '').replace('\l', '').strip()
+                            elif os.path.exists(os.path.join(mount_point, 'Windows/servicing/Version')):
+                                version = commands.getoutput("ls %s" % os.path.join(mount_point, 'Windows/servicing/Version'))
+                                if version.startswith("6.1"):
+                                    last_added_partition.description = "Windows 7"
+                                elif version.startswith("6.0"):
+                                    last_added_partition.description = "Windows Vista"
+                                elif version.startswith("5.1") or version.startswith("5.2"):
+                                    last_added_partition.description = "Windows XP"
+                                elif version.startswith("5.0"):
+                                    last_added_partition.description = "Windows 2000"
+                                elif version.startswith("4.90"):
+                                    last_added_partition.description = "Windows Me"
+                                elif version.startswith("4.1"):
+                                    last_added_partition.description = "Windows 98"
+                                elif version.startswith("4.0.1381"):
+                                    last_added_partition.description = "Windows NT"
+                                elif version.startswith("4.0.950"):
+                                    last_added_partition.description = "Windows 95"
+                            elif os.path.exists(os.path.join(mount_point, 'Boot/BCD')):
+                                if os.system("grep -qs \"V.i.s.t.a\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
+                                    last_added_partition.description = "Windows Vista bootloader"
+                                elif os.system("grep -qs \"W.i.n.d.o.w.s. .7\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
+                                    last_added_partition.description = "Windows 7 bootloader"
+                                elif os.system("grep -qs \"W.i.n.d.o.w.s. .R.e.c.o.v.e.r.y. .E.n.v.i.r.o.n.m.e.n.t\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
+                                    last_added_partition.description = "Windows recovery"
+                                elif os.system("grep -qs \"W.i.n.d.o.w.s. .S.e.r.v.e.r. .2.0.0.8\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
+                                    last_added_partition.description = "Windows Server 2008 bootloader"
+                                else:
+                                    last_added_partition.description = "Windows bootloader"
+                            elif os.path.exists(os.path.join(mount_point, 'Windows/System32')):
+                                last_added_partition.description = "Windows"
+
+                        #Umount temp folder
+                        if ('/tmp/live-installer/tmpmount' in commands.getoutput('mount')):
+                            os.popen('umount /tmp/live-installer/tmpmount')
+
+                partition = partition.nextPartition()
+        except Exception, detail:
+            print detail
 
         from screen import Screen        
         myScreen = Screen(partitions)
