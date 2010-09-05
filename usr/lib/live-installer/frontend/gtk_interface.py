@@ -1129,6 +1129,7 @@ class InstallerWindow:
                 grub_location = grub_box.get_model()[grub_box.get_active()][0]
                 inst.set_install_bootloader(device=grub_location)
             inst.set_progress_hook(self.update_progress)
+            inst.set_error_hook(self.error_message)
 
             # do we dare? ..
             self.critical_error_happened = False

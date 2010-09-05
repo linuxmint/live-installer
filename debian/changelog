@@ -1,4 +1,10 @@
-live-installer (2010.09.05.2) debian; urgency=medium
+live-installer (2010.09.05.4) debian; urgency=medium
+
+  * Fixed use-case with /boot partition (grub check failing)
+
+ -- Clement Lefebvre <root@linuxmint.com>  Sun,  05 Sep 2010 17:03:00 +0000
+
+live-installer (2010.09.05.3) debian; urgency=medium
 
   * Fixed mount problems when using multiple partitions
 

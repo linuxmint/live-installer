@@ -124,6 +124,10 @@ class InstallerEngine:
         ''' i.e. def my_callback(progress_type, message, current_progress, total) '''
         ''' Where progress_type is any off PROGRESS_START, PROGRESS_UPDATE, PROGRESS_COMPLETE, PROGRESS_ERROR '''
         self.update_progress = progresshook
+        
+    def set_error_hook(self, errorhook):
+        ''' Set a callback to be called on errors '''
+        self.error_message = errorhook
 
     def get_distribution_name(self):
         return self.distribution_name
@@ -181,6 +185,7 @@ class InstallerEngine:
             for item in self.fstab.get_entries():
                 if(item.mountpoint != "/"):
                     print " ------ Mounting %s on %s" % (item.device, "/target" + item.mountpoint)
+                    os.system("mkdir -p /target" + item.mountpoint)
                     self.do_mount(item.device, "/target" + item.mountpoint, item.filesystem, None)
             
             # walk root filesystem. we're too lazy though :P
@@ -491,13 +496,14 @@ class InstallerEngine:
             grubfh = open("/target/boot/grub/grub.cfg", "r")
             for line in grubfh:
                 line = line.rstrip("\r\n")
-                if("/boot/grub/linuxmint.png" in line):
+                if("linuxmint.png" in line):
                     found_theme = True
+                    print " --> Found Grub theme: %s " % line
                 if ("menuentry" in line and "Mint" in line):
                     found_entry = True
                     print " --> Found Grub entry: %s " % line
             grubfh.close()
-            return (found_theme and found_entry)
+            return (found_entry)
         else:
             print "!No /target/boot/grub/grub.cfg file found!"
             return False
