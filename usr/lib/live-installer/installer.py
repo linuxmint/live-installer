@@ -170,14 +170,13 @@ class InstallerEngine:
             # format partitions as appropriate
             for item in self.fstab.get_entries():
                 if(item.mountpoint == "/"):
-                    root_device = item
-                    item.format = True
-                if(item.format != ""):
+                    root_device = item                    
+                if(item.format is not None and item.format != ""):
                     # well now, we gets to nuke stuff.
                     # report it. should grab the total count of filesystems to be formatted ..
                     self.update_progress(total=4, current=1, pulse=True, message=_("Formatting %s as %s..." % (item.device, item.format)))
                     self.format_device(item.device, item.format)    
-                    item.filesystem = item.format            
+                    item.filesystem = item.format
                 
             # mount filesystem
             print " --> Mounting partitions"
@@ -547,7 +546,7 @@ class fstab(object):
     def __init__(self):
         self.mapping = dict()
 
-    def add_mount(self, device=None, mountpoint=None, filesystem=None, options=None,format=False):
+    def add_mount(self, device=None, mountpoint=None, filesystem=None, options=None,format=""):
         if(not self.mapping.has_key(device)):
             self.mapping[device] = fstab_entry(device, mountpoint, filesystem, options)
             self.mapping[device].format = format
@@ -578,4 +577,4 @@ class fstab_entry(object):
         self.mountpoint = mountpoint
         self.filesystem = filesystem
         self.options = options
-        self.format = False
+        self.format = ""
