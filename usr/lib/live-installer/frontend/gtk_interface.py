@@ -1014,7 +1014,7 @@ class InstallerWindow:
             model = self.wTree.get_widget("treeview_disks").get_model()            
             for row in model:
                 if((row[2] is not None and row[2] != "") or (row[3] is not None and row[3] != "")): # format or mountpoint specified.
-                    filesystem = row[1]
+                    filesystem = row[10].type
                     format = row[2]
                     mountpoint = row[3]
                     device = row[10].name

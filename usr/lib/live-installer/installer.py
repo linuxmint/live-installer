@@ -90,6 +90,7 @@ class InstallerEngine:
             cmd = "mkswap %s" % device
         else:
             cmd = "mkfs -t %s %s" % (filesystem, device)
+        print "EXECUTING: '%s'" % cmd
         p = Popen(cmd, shell=True)
         p.wait() # this blocks
         return p.returncode
@@ -223,6 +224,10 @@ class InstallerEngine:
                     our_current += 1
                     self.update_progress(total=our_total, current=our_current, message=_("Copying %s" % rpath))
 
+                    if os.path.exists(targetpath):
+                        if not os.path.isdir(targetpath):
+                            os.remove(targetpath)                        
+
                     if stat.S_ISLNK(st.st_mode):
                         if os.path.lexists(targetpath):
                             os.unlink(targetpath)
@@ -231,7 +236,7 @@ class InstallerEngine:
                     elif stat.S_ISDIR(st.st_mode):
                         if not os.path.isdir(targetpath):
                             os.mkdir(targetpath, mode)
-                    elif stat.S_ISCHR(st.st_mode):
+                    elif stat.S_ISCHR(st.st_mode):                        
                         os.mknod(targetpath, stat.S_IFCHR | mode, st.st_rdev)
                     elif stat.S_ISBLK(st.st_mode):
                         os.mknod(targetpath, stat.S_IFBLK | mode, st.st_rdev)
@@ -441,7 +446,7 @@ class InstallerEngine:
             if(self.grub_device is not None):
                 self.update_progress(pulse=True, total=our_total, current=our_current, message=_("Installing bootloader"))
                 print " --> Running grub-install"
-                self.run_in_chroot("grub-install %s" % self.grub_device)
+                self.run_in_chroot("grub-install --force %s" % self.grub_device)
                 self.configure_grub(our_total, our_current)
                 grub_retries = 0
                 while (not self.check_grub(our_total, our_current)):
@@ -474,8 +479,10 @@ class InstallerEngine:
             self.update_progress(done=True, message=_("Installation finished"))
             print " --> All done"
             
-        except Exception, detail:
-            print detail
+        except Exception:            
+            import traceback
+            exc_type, exc_value, exc_traceback = sys.exc_info()
+            traceback.print_tb(exc_traceback, limit=1, file=sys.stdout)
     
     def run_in_chroot(self, command):
         os.system("chroot /target/ /bin/sh -c \"%s\"" % command)
@@ -516,15 +523,19 @@ class InstallerEngine:
         ''' Mount a filesystem '''
         p = None
         if(options is not None):
-            p = Popen("mount -o %s -t %s %s %s" % (options, type, device, dest),shell=True)
+            cmd = "mount -o %s -t %s %s %s" % (options, type, device, dest)            
         else:
-            p = Popen("mount -t %s %s %s" % (type, device, dest),shell=True)
+            cmd = "mount -t %s %s %s" % (type, device, dest)
+        print "EXECUTING: '%s'" % cmd
+        p = Popen(cmd ,shell=True)        
         p.wait()
         return p.returncode
 
     def do_unmount(self, mountpoint):
         ''' Unmount a filesystem '''
-        p = Popen("umount %s" % mountpoint, shell=True)
+        cmd = "umount %s" % mountpoint
+        print "EXECUTING: '%s'" % cmd
+        p = Popen(cmd, shell=True)
         p.wait()
         return p.returncode
 
