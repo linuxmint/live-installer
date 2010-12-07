@@ -148,24 +148,18 @@ class InstallerWindow:
         self.wTree.get_widget("treeview_disks").append_column(column)
         # filesystem
         ren = gtk.CellRendererText()
-        column = gtk.TreeViewColumn(_("Filesystem"), ren)
+        column = gtk.TreeViewColumn(_("Description"), ren)
         column.add_attribute(ren, "markup", 1)
         self.wTree.get_widget("treeview_disks").append_column(column)
         # format
-        ren = gtk.CellRendererToggle()
-        column = gtk.TreeViewColumn(_("Format"), ren)
-        column.add_attribute(ren, "active", 2)
-        column.add_attribute(ren, "visible", 9)
-        self.wTree.get_widget("treeview_disks").append_column(column)
-        # boot flag
-        ren = gtk.CellRendererToggle()
-        column = gtk.TreeViewColumn(_("Boot"), ren)
-        column.add_attribute(ren, "active", 5)
-        column.add_attribute(ren, "visible", 9)
-        self.wTree.get_widget("treeview_disks").append_column(column)
+        ren = gtk.CellRendererText()
+        column = gtk.TreeViewColumn(_("Format as"), ren)
+        column.add_attribute(ren, "markup", 2)
+        #column.add_attribute(ren, "visible", 9)
+        self.wTree.get_widget("treeview_disks").append_column(column)      
         # mount point
         ren = gtk.CellRendererText()
-        column = gtk.TreeViewColumn(_("Mount Point"), ren)
+        column = gtk.TreeViewColumn(_("Mount as"), ren)
         column.add_attribute(ren, "markup", 3)
         self.wTree.get_widget("treeview_disks").append_column(column)
         # size
@@ -173,16 +167,6 @@ class InstallerWindow:
         column = gtk.TreeViewColumn(_("Size (MB)"), ren)
         column.add_attribute(ren, "markup", 4)
         self.wTree.get_widget("treeview_disks").append_column(column)
-        # start
-        #ren = gtk.CellRendererText()
-        #column = gtk.TreeViewColumn(_("Start"), ren)
-        #column.add_attribute(ren, "markup", 6)
-        #self.wTree.get_widget("treeview_disks").append_column(column)
-        # end
-        #ren = gtk.CellRendererText()
-        #column = gtk.TreeViewColumn(_("End"), ren)
-        #column.add_attribute(ren, "markup", 7)
-        #self.wTree.get_widget("treeview_disks").append_column(column)
         # Used space
         ren = gtk.CellRendererText()
         column = gtk.TreeViewColumn(_("Free space (MB)"), ren)
@@ -260,8 +244,6 @@ class InstallerWindow:
         self.wTree.get_widget("label_install_progress").set_markup("<i>%s</i>" % _("Calculating file indexes..."))
 
         # build partition list
-        self.device_node = None
-        self.build_disks()
         self.should_pulse = False
 
         # make sure we're on the right page (no pun.)
@@ -330,28 +312,12 @@ class InstallerWindow:
         if iter is not None:
             row = model[iter]
             partition = row[10]
-            if not partition.real_type == parted.PARTITION_EXTENDED and not partition.partition.number == -1:
-                stabber = fstab_entry(row[0], row[3], row[1], None)
-                stabber.format = row[2]
-                dlg = PartitionDialog(stabber)
-                stabber = dlg.show()                 
-                if(stabber is None):
-                    return
-                # now set the model as shown..
-                row[0] = stabber.device
-                row[3] = stabber.mountpoint
-                row[2] = stabber.format
-                if stabber.format:
-                    if stabber.filesystem == "":
-                        row[1] = "ext4"
-                    else:
-                        row[1] = stabber.filesystem
-                else:
-                    if row[10].description != "":
-                        row[1] = "%s (%s)" % (row[10].description, row[10].type)
-                    else:
-                        row[1] = row[10].type
-
+            if not partition.real_type == parted.PARTITION_EXTENDED and not partition.partition.number == -1:                       
+                dlg = PartitionDialog(row[0], row[3], row[2], row[1])
+                (mount_as, format_as) = dlg.show()
+                # now set the model as shown..                
+                row[3] = mount_as
+                row[2] = format_as                
                 model[iter] = row                
                 
     def partitions_popup_menu( self, widget, event ):
@@ -382,17 +348,12 @@ class InstallerWindow:
             iter_partition = model.get_value(iter, 10)
             if iter_partition == partition:
                 model.set_value(iter, 3, "/") # add / assignment
-                model.set_value(iter, 2, True) # format
-                model.set_value(iter, 1, "ext4") # ext4
+                model.set_value(iter, 2, "ext4") # format                
             else:
                 mountpoint = model.get_value(iter, 3)
                 if mountpoint == "/":
                     model.set_value(iter, 3, "") # remove / assignment
-                    model.set_value(iter, 2, False) # don't format
-                    if iter_partition.description != "":
-                        model.set_value(iter, 1, "%s (%s)" % (iter_partition.description, iter_partition.type)) # name
-                    else:
-                        model.set_value(iter, 1, iter_partition.type) # name
+                    model.set_value(iter, 2, "") # don't format                   
             iter = model.iter_next(iter)
 
     def assignHome(self, menu, partition):
@@ -402,20 +363,12 @@ class InstallerWindow:
             iter_partition = model.get_value(iter, 10)
             if iter_partition == partition:
                 model.set_value(iter, 3, "/home") # add /home assignment
-                model.set_value(iter, 2, False) # don't format
-                if iter_partition.description != "":
-                    model.set_value(iter, 1, "%s (%s)" % (iter_partition.description, iter_partition.type)) # name
-                else:
-                    model.set_value(iter, 1, iter_partition.type) # name
+                model.set_value(iter, 2, "") # don't format                
             else:
                 mountpoint = model.get_value(iter, 3)
                 if mountpoint == "/home":
                     model.set_value(iter, 3, "") # remove /home assignment
-                    model.set_value(iter, 2, False) # don't format
-                    if iter_partition.description != "":
-                        model.set_value(iter, 1, "%s (%s)" % (iter_partition.description, iter_partition.type)) # name
-                    else:
-                        model.set_value(iter, 1, iter_partition.type) # name
+                    model.set_value(iter, 2, "") # don't format                    
             iter = model.iter_next(iter)
 
     def refresh_partitions(self, widget, data=None):
@@ -425,7 +378,7 @@ class InstallerWindow:
 
     def edit_partitions(self, widget, data=None):
         ''' edit the partitions ... '''
-        os.popen("gparted %s &" % self.device_node)
+        os.popen("gparted &")
 
     def build_lang_list(self):
 
@@ -525,55 +478,7 @@ class InstallerWindow:
         treeview = self.wTree.get_widget("treeview_timezones")
         treeview.set_model(model)
         treeview.set_search_column(0)
-
-    def build_disks(self):
-        gtk.gdk.threads_enter()
-        import subprocess
-        self.disks = {}
-        inxi = subprocess.Popen("inxi -c0 -D", shell=True, stdout=subprocess.PIPE)
-        parent = None
-
-        # disks that you can install grub to
-        grub_model = gtk.ListStore(str)
-        for line in inxi.stdout:
-            line = line.rstrip("\r\n")
-            if(line.startswith("Disks:")):
-                line = line.replace("Disks:", "")
-            device = None
-            sections = line.split(":")
-            for section in sections:
-                section = section.strip()
-                if("/dev/" in section):
-                    device = None
-                    elements = section.split()
-                    for element in elements:
-                        if "/dev/" in element:
-                            device = element
-                        if element.endswith("GB"):
-                            size = element
-                            section = section.replace(size, "(%s)" % size)
-                    if device is not None:
-                        description = section.replace(device, "").strip()
-                        description = description.replace("  ", " ")
-                        self.disks[device] = description
-                        if(parent is None):
-                            radio = gtk.RadioButton(None)
-                            parent = radio
-                            self.device_node = device
-                        else:
-                            radio = gtk.RadioButton(parent)
-                        radio.connect("clicked", self.select_disk_cb, device)
-                        radio.set_label(description)
-                        self.wTree.get_widget("vbox_disks").pack_start(radio, expand=False, fill=False)
-                        grub_model.append([device])
-        self.wTree.get_widget("vbox_disks").show_all()
-        self.wTree.get_widget("combobox_grub").set_model(grub_model)
-        self.wTree.get_widget("combobox_grub").set_active(0)
-        gtk.gdk.threads_leave()
-
-    def select_disk_cb(self, widget, device):
-        self.device_node = device
-
+  
     def build_partitions(self):
         gtk.gdk.threads_enter()
         self.window.set_sensitive(False)
@@ -582,85 +487,112 @@ class InstallerWindow:
         self.window.window.set_cursor(cursor)
         from progress import ProgressDialog
         dialog = ProgressDialog()
-        dialog.show(title=_("Installer"), label=_("Scanning disk %s for partitions") % self.device_node)
+        dialog.show(title=_("Installer"), label=_("Scanning for partitions"))
         gtk.gdk.threads_leave()
         from screen import Partition
         os.popen('mkdir -p /tmp/live-installer/tmpmount')
-
-        partitions = []
+        
         try:
-            path = self.device_node # i.e. /dev/sda
-            device = parted.getDevice(path)
-            disk = parted.Disk(device)
-            partition = disk.getFirstPartition()
-            last_added_partition = Partition(partition)
-            partitions.append(last_added_partition)
-            partition = partition.nextPartition()
-            while (partition is not None):
-                if last_added_partition.partition.number == -1 and partition.number == -1:
-                    last_added_partition.add_partition(partition)
-                else:
-                    last_added_partition = Partition(partition)
-                    partitions.append(last_added_partition)
-
-                    if partition.number != -1 and "swap" not in last_added_partition.type:
-
-                        #Umount temp folder
-                        if ('/tmp/live-installer/tmpmount' in commands.getoutput('mount')):
-                            os.popen('umount /tmp/live-installer/tmpmount')
-
-                        #Mount partition if not mounted
-                        if (partition.path not in commands.getoutput('mount')):
-                            os.system("mount %s /tmp/live-installer/tmpmount" % partition.path)
-
-                        #Identify partition's description and used space
-                        if (partition.path in commands.getoutput('mount')):
-                            last_added_partition.used_space = commands.getoutput("df | grep %s | awk {'print $5'}" % partition.path)
-                            if "%" in last_added_partition.used_space:
-                                used_space_pct = int(last_added_partition.used_space.replace("%", "").strip())
-                                last_added_partition.free_space = int(float(last_added_partition.size) * (float(100) - float(used_space_pct)) / float(100))
-                            mount_point = commands.getoutput("df | grep %s | awk {'print $6'}" % partition.path)
-                            if os.path.exists(os.path.join(mount_point, 'etc/lsb-release')):
-                                last_added_partition.description = commands.getoutput("cat " + os.path.join(mount_point, 'etc/lsb-release') + " | grep DISTRIB_DESCRIPTION").replace('DISTRIB_DESCRIPTION', '').replace('=', '').replace('"', '').strip()
-                            elif os.path.exists(os.path.join(mount_point, 'etc/issue')):
-                                last_added_partition.description = commands.getoutput("cat " + os.path.join(mount_point, 'etc/issue')).replace('\\n', '').replace('\l', '').strip()
-                            elif os.path.exists(os.path.join(mount_point, 'Windows/servicing/Version')):
-                                version = commands.getoutput("ls %s" % os.path.join(mount_point, 'Windows/servicing/Version'))
-                                if version.startswith("6.1"):
-                                    last_added_partition.description = "Windows 7"
-                                elif version.startswith("6.0"):
-                                    last_added_partition.description = "Windows Vista"
-                                elif version.startswith("5.1") or version.startswith("5.2"):
-                                    last_added_partition.description = "Windows XP"
-                                elif version.startswith("5.0"):
-                                    last_added_partition.description = "Windows 2000"
-                                elif version.startswith("4.90"):
-                                    last_added_partition.description = "Windows Me"
-                                elif version.startswith("4.1"):
-                                    last_added_partition.description = "Windows 98"
-                                elif version.startswith("4.0.1381"):
-                                    last_added_partition.description = "Windows NT"
-                                elif version.startswith("4.0.950"):
-                                    last_added_partition.description = "Windows 95"
-                            elif os.path.exists(os.path.join(mount_point, 'Boot/BCD')):
-                                if os.system("grep -qs \"V.i.s.t.a\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
-                                    last_added_partition.description = "Windows Vista bootloader"
-                                elif os.system("grep -qs \"W.i.n.d.o.w.s. .7\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
-                                    last_added_partition.description = "Windows 7 bootloader"
-                                elif os.system("grep -qs \"W.i.n.d.o.w.s. .R.e.c.o.v.e.r.y. .E.n.v.i.r.o.n.m.e.n.t\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
-                                    last_added_partition.description = "Windows recovery"
-                                elif os.system("grep -qs \"W.i.n.d.o.w.s. .S.e.r.v.e.r. .2.0.0.8\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
-                                    last_added_partition.description = "Windows Server 2008 bootloader"
-                                else:
-                                    last_added_partition.description = "Windows bootloader"
-                            elif os.path.exists(os.path.join(mount_point, 'Windows/System32')):
-                                last_added_partition.description = "Windows"
-
-                        #Umount temp folder
-                        if ('/tmp/live-installer/tmpmount' in commands.getoutput('mount')):
-                            os.popen('umount /tmp/live-installer/tmpmount')
-
+        
+            disks = [] 
+            
+            inxi = subprocess.Popen("inxi -c0 -D", shell=True, stdout=subprocess.PIPE)        
+            for line in inxi.stdout:
+                line = line.rstrip("\r\n")
+                if(line.startswith("Disks:")):
+                    line = line.replace("Disks:", "")            
+                sections = line.split(":")
+                for section in sections:
+                    section = section.strip()
+                    if("/dev/" in section):                    
+                        elements = section.split()
+                        for element in elements:
+                            if "/dev/" in element:
+                                disks.append(element)                                
+                                            
+            grub_model = gtk.ListStore(str)
+            partitions = []
+            for disk in disks:                
+                path =  disk # i.e. /dev/sda
+                grub_model.append([path])
+                device = parted.getDevice(path)
+                disk = parted.Disk(device)
+                partition = disk.getFirstPartition()
+                last_added_partition = Partition(partition)
+                partitions.append(last_added_partition)
                 partition = partition.nextPartition()
+                while (partition is not None):
+                    if last_added_partition.partition.number == -1 and partition.number == -1:
+                        last_added_partition.add_partition(partition)
+                    else:
+                        last_added_partition = Partition(partition)
+                        partitions.append(last_added_partition)
+                
+                        if "swap" in last_added_partition.type:
+                            last_added_partition.type = _("swap")
+
+                        if partition.number != -1 and "swap" not in last_added_partition.type:
+                            
+                            grub_model.append([partition.path])
+
+                            #Umount temp folder
+                            if ('/tmp/live-installer/tmpmount' in commands.getoutput('mount')):
+                                os.popen('umount /tmp/live-installer/tmpmount')
+
+                            #Mount partition if not mounted
+                            if (partition.path not in commands.getoutput('mount')):
+                                os.system("mount %s /tmp/live-installer/tmpmount" % partition.path)
+
+                            #Identify partition's description and used space
+                            if (partition.path in commands.getoutput('mount')):
+                                last_added_partition.used_space = commands.getoutput("df | grep %s | awk {'print $5'}" % partition.path)
+                                if "%" in last_added_partition.used_space:
+                                    used_space_pct = int(last_added_partition.used_space.replace("%", "").strip())
+                                    last_added_partition.free_space = int(float(last_added_partition.size) * (float(100) - float(used_space_pct)) / float(100))
+                                mount_point = commands.getoutput("df | grep %s | awk {'print $6'}" % partition.path)
+                                if os.path.exists(os.path.join(mount_point, 'etc/lsb-release')):
+                                    last_added_partition.description = commands.getoutput("cat " + os.path.join(mount_point, 'etc/lsb-release') + " | grep DISTRIB_DESCRIPTION").replace('DISTRIB_DESCRIPTION', '').replace('=', '').replace('"', '').strip()
+                                elif os.path.exists(os.path.join(mount_point, 'etc/issue')):
+                                    last_added_partition.description = commands.getoutput("cat " + os.path.join(mount_point, 'etc/issue')).replace('\\n', '').replace('\l', '').strip()
+                                elif os.path.exists(os.path.join(mount_point, 'Windows/servicing/Version')):
+                                    version = commands.getoutput("ls %s" % os.path.join(mount_point, 'Windows/servicing/Version'))
+                                    if version.startswith("6.1"):
+                                        last_added_partition.description = "Windows 7"
+                                    elif version.startswith("6.0"):
+                                        last_added_partition.description = "Windows Vista"
+                                    elif version.startswith("5.1") or version.startswith("5.2"):
+                                        last_added_partition.description = "Windows XP"
+                                    elif version.startswith("5.0"):
+                                        last_added_partition.description = "Windows 2000"
+                                    elif version.startswith("4.90"):
+                                        last_added_partition.description = "Windows Me"
+                                    elif version.startswith("4.1"):
+                                        last_added_partition.description = "Windows 98"
+                                    elif version.startswith("4.0.1381"):
+                                        last_added_partition.description = "Windows NT"
+                                    elif version.startswith("4.0.950"):
+                                        last_added_partition.description = "Windows 95"
+                                elif os.path.exists(os.path.join(mount_point, 'Boot/BCD')):
+                                    if os.system("grep -qs \"V.i.s.t.a\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
+                                        last_added_partition.description = "Windows Vista bootloader"
+                                    elif os.system("grep -qs \"W.i.n.d.o.w.s. .7\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
+                                        last_added_partition.description = "Windows 7 bootloader"
+                                    elif os.system("grep -qs \"W.i.n.d.o.w.s. .R.e.c.o.v.e.r.y. .E.n.v.i.r.o.n.m.e.n.t\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
+                                        last_added_partition.description = "Windows recovery"
+                                    elif os.system("grep -qs \"W.i.n.d.o.w.s. .S.e.r.v.e.r. .2.0.0.8\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
+                                        last_added_partition.description = "Windows Server 2008 bootloader"
+                                    else:
+                                        last_added_partition.description = "Windows bootloader"
+                                elif os.path.exists(os.path.join(mount_point, 'Windows/System32')):
+                                    last_added_partition.description = "Windows"
+
+                            #Umount temp folder
+                            if ('/tmp/live-installer/tmpmount' in commands.getoutput('mount')):
+                                os.popen('umount /tmp/live-installer/tmpmount')
+
+                    partition = partition.nextPartition()
+            self.wTree.get_widget("combobox_grub").set_model(grub_model)
+            self.wTree.get_widget("combobox_grub").set_active(0)
         except Exception, detail:
             print detail
 
@@ -679,7 +611,7 @@ class InstallerWindow:
         self.part_screen.modify_bg(gtk.STATE_NORMAL, color)
         gtk.gdk.threads_leave()
 
-        model = gtk.ListStore(str,str,bool,str,str,bool, str, str, str, bool, object)
+        model = gtk.ListStore(str,str,str,str,str,bool, str, str, str, bool, object)
         model2 = gtk.ListStore(str)
 
         extended_sectors = [-1, -1]
@@ -696,14 +628,14 @@ class InstallerWindow:
                     display_name = partition.name
 
                 if partition.partition.number == -1:
-                    model.append(["<small><span foreground='#555555'>" + display_name + "</span></small>", partition.type, False, None, '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space, False, partition])
+                    model.append(["<small><span foreground='#555555'>" + display_name + "</span></small>", partition.type, "", "", '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space, False, partition])
                 elif partition.real_type == parted.PARTITION_EXTENDED:
-                    model.append(["<small><span foreground='#555555'>extended partition</span></small>", None, False, None,  '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space, False, partition])
+                    model.append(["<small><span foreground='#555555'>extended partition</span></small>", None, "", "",  '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space, False, partition])
                 else:
                     if partition.description != "":
-                        model.append(["<span foreground='" + color + "'>" + display_name + "</span>", "%s (%s)" % (partition.description, partition.type), False, None, '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space, True, partition])
+                        model.append(["<span foreground='" + color + "'>" + display_name + "</span>", "%s (%s)" % (partition.description, partition.type), "", "", '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space, True, partition])
                     else:
-                        model.append(["<span foreground='" + color + "'>" + display_name + "</span>", partition.type, False, None, '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space, True, partition])
+                        model.append(["<span foreground='" + color + "'>" + display_name + "</span>", partition.type, "", "", '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space, True, partition])
 
         gtk.gdk.threads_enter()
         self.wTree.get_widget("treeview_disks").set_model(model)
@@ -937,30 +869,24 @@ class InstallerWindow:
                 self.activate_page(self.PAGE_KEYBOARD)
             elif(sel == self.PAGE_KEYBOARD):
                 self.activate_page(self.PAGE_PARTITIONS)
-                notebook = self.wTree.get_widget("notebook_disks")
-                if len(self.disks) == 1:
-                    notebook.set_current_page(1)
-                    thr = threading.Thread(name="live-installer-disk-search", group=None, target=self.build_partitions, args=(), kwargs={})
-                    thr.start()
+                thr = threading.Thread(name="live-installer-disk-search", group=None, target=self.build_partitions, args=(), kwargs={})
+                thr.start()                
+            elif(sel == self.PAGE_PARTITIONS):                
+                model = self.wTree.get_widget("treeview_disks").get_model()
+                error = True
+                errorMessage = _("Please select a root (/) partition before proceeding")
+                for row in model:
+                    mountpoint = row[3]
+                    if(mountpoint == "/"):
+                        error = False
+                        format = row[2]
+                        if format is None or format == "":
+                            error = True
+                            errorMessage = _("Please indicate a filesystem to format the root (/) partition before proceeding")                        
+                if(error):
+                    MessageDialog(_("Installation Tool"), errorMessage, gtk.MESSAGE_ERROR).show()
                 else:
-                    notebook.set_current_page(0)
-            elif(sel == self.PAGE_PARTITIONS):
-                notebook = self.wTree.get_widget("notebook_disks")
-                if notebook.get_current_page() == 0:
-                    notebook.set_current_page(1)
-                    thr = threading.Thread(name="live-installer-disk-search", group=None, target=self.build_partitions, args=(), kwargs={})
-                    thr.start()
-                else:
-                    model = self.wTree.get_widget("treeview_disks").get_model()
-                    found_root = False
-                    for row in model:
-                        mountpoint = row[3]
-                        if(mountpoint == "/"):
-                            found_root = True
-                    if(not found_root):
-                        MessageDialog(_("Installation Tool"), _("Please select a root (/) partition before proceeding"), gtk.MESSAGE_ERROR).show()
-                    else:
-                        self.activate_page(self.PAGE_USER)
+                    self.activate_page(self.PAGE_USER)
             elif(sel == self.PAGE_USER):
                 username = self.wTree.get_widget("entry_username").get_text()
                 if(username == ""):
@@ -1000,15 +926,9 @@ class InstallerWindow:
             elif(sel == self.PAGE_ADVANCED):
                 self.activate_page(self.PAGE_USER)
             elif(sel == self.PAGE_USER):
-                self.activate_page(self.PAGE_PARTITIONS)
-                notebook = self.wTree.get_widget("notebook_disks")
-                notebook.set_current_page(1)
+                self.activate_page(self.PAGE_PARTITIONS)                
             elif(sel == self.PAGE_PARTITIONS):
-                notebook = self.wTree.get_widget("notebook_disks")
-                if notebook.get_current_page() == 1:
-                    notebook.set_current_page(0)
-                else:
-                    self.activate_page(self.PAGE_KEYBOARD)
+                self.activate_page(self.PAGE_KEYBOARD)
             elif(sel == self.PAGE_KEYBOARD):
                 self.activate_page(self.PAGE_TIMEZONE)
             elif(sel == self.PAGE_TIMEZONE):
@@ -1069,16 +989,17 @@ class InstallerWindow:
         model.set(top, 0, _("Filesystem operations"))
         disks = self.wTree.get_widget("treeview_disks").get_model()
         for item in disks:
-            if(item[2]):
+            if(item[2] is not None and item[2] is not ""):
                 # format it
                 iter = model.append(top)
-                model.set(iter, 0, "<b>%s</b>" % (_("Format %s (%s) as %s") % (item[0], item[4], item[1])))
-                print " Format %s (%s) as %s" % (item[10].name, item[4], item[1])
+                model.set(iter, 0, "<b>%s</b>" % (_("Format %s (%s) as %s") % (item[0], item[4], item[2])))
+                print " Format %s (%s) as %s" % (item[10].name, item[4], item[2])
+        for item in disks:
             if(item[3] is not None and item[3] is not ""):
                 # mount point
                 iter = model.append(top)
                 model.set(iter, 0, "<b>%s</b>" % (_("Mount %s as %s") % (item[0], item[3])))
-                print " Mount %s as %s" % (item[10].name, item[3])
+                print " Mount %s as %s" % (item[10].name, item[3])       
 
         self.wTree.get_widget("treeview_overview").set_model(model)
 
@@ -1090,9 +1011,9 @@ class InstallerWindow:
             inst = self.installer
             # Create fstab
             files = fstab()
-            model = self.wTree.get_widget("treeview_disks").get_model()
+            model = self.wTree.get_widget("treeview_disks").get_model()            
             for row in model:
-                if(row[2] or row[3] is not None): # format or mountpoint specified.
+                if((row[2] is not None and row[2] != "") or (row[3] is not None and row[3] != "")): # format or mountpoint specified.
                     filesystem = row[1]
                     format = row[2]
                     mountpoint = row[3]
@@ -1224,93 +1145,63 @@ class InstallerWindow:
 
 class PartitionDialog:
 
-    def __init__(self, item_to_edit):
+    def __init__(self, path, mount_as, format_as, type):
         self.resource_dir = '/usr/share/live-installer/'
         self.glade = os.path.join(self.resource_dir, 'interface.glade')
         self.dTree = gtk.glade.XML(self.glade, 'dialog')
         self.window = self.dTree.get_widget("dialog")
         self.window.set_title(_("Edit partition"))
-
-        self.cancelled = False
-        self.dTree.get_widget("button_cancel").connect("clicked", self.cb_cancel)
-        self.build_fs_model()
-        self.build_mount_model()
-        # this is the fstab entry we will return
-        self.stab = item_to_edit
+               
+        ''' Build supported filesystems list '''
+        model = gtk.ListStore(str)        
+        model.append([""])
+        if type == _("swap"):        
+            model.append(["swap"])
+        else:
+            try:
+                for item in os.listdir("/sbin"):
+                    if(item.startswith("mkfs.")):
+                        fstype = item.split(".")[1]
+                        model.append([fstype])
+            except Exception, detail:
+                print detail
+                print _("Could not build supported filesystems list!")
+        self.dTree.get_widget("combobox_use_as").set_model(model)
+        
+        if type == _("swap"):
+            mounts = ["", "swap"]
+        else:
+            mounts = ["", "/", "/boot", "/tmp", "/home", "/srv"]
+        model = gtk.ListStore(str)
+        for mount in mounts:
+            model.append([mount])
+        self.dTree.get_widget("comboboxentry_mount_point").set_model(model)  
+                
         # i18n
         self.dTree.get_widget("label_partition").set_markup("<b>%s</b>" % _("Device:"))
-        self.dTree.get_widget("label_partition_value").set_label(self.stab.device)
-        self.dTree.get_widget("label_use_as").set_markup(_("Filesystem:"))
-        # set the correct filesystem in this dialog
+        self.dTree.get_widget("label_partition_value").set_label(path)        
+        
+        self.dTree.get_widget("label_use_as").set_markup(_("Format as:"))        
         cur = -1
         model = self.dTree.get_widget("combobox_use_as").get_model()
         for item in model:
             cur += 1
-            if(item[0] == self.stab.filesystem):
+            if(item[0] == format_as):
                 self.dTree.get_widget("combobox_use_as").set_active(cur)
                 break
-        self.dTree.get_widget("label_mount_point").set_markup(_("Mount point:"))
-        if(self.stab.mountpoint is not None):
-            self.dTree.get_widget("comboboxentry_mount_point").child.set_text(self.stab.mountpoint)
-        self.dTree.get_widget("checkbutton_format").set_label(_("Format"))
-        self.dTree.get_widget("checkbutton_format").child.set_use_markup(True)
-        self.dTree.get_widget("checkbutton_format").set_active(self.stab.format)
-        self.dTree.get_widget("checkbutton_format").connect("toggled", self.preselect_ext4)
-        
-    def preselect_ext4(self, widget, data=None):
-        try:
-            if widget.get_active():         
-                wanted_fs = "ext4"                
-            else:
-                wanted_fs = ""
-            model = self.dTree.get_widget("combobox_use_as").get_model()
-            iter = model.get_iter_first()
-            while iter is not None:
-                filesystem = model.get_value(iter, 0)
-                if filesystem == wanted_fs:
-                    self.dTree.get_widget("combobox_use_as").set_active_iter(iter)
-                    return
-                iter = model.iter_next(iter)                    
-        except Exception, detail:
-            print detail
-        
-    def build_fs_model(self):
-        ''' Build supported filesystems list '''
-        model = gtk.ListStore(str)        
-        model.append([""])
-        model.append(["swap"])
-        try:
-            for item in os.listdir("/sbin"):
-                if(item.startswith("mkfs.")):
-                    fstype = item.split(".")[1]
-                    model.append([fstype])
-        except Exception, detail:
-            print detail
-            print _("Could not build supported filesystems list!")
-        self.dTree.get_widget("combobox_use_as").set_model(model)
-
-    def build_mount_model(self):
-        mounts = ["/", "/boot", "/tmp", "/home", "/srv"]
-        model = gtk.ListStore(str)
-        for mount in mounts:
-            model.append([mount])
-        self.dTree.get_widget("comboboxentry_mount_point").set_model(model)
-
-    def cb_cancel(self, w, data=None):
-        self.cancelled = True
+                
+        self.dTree.get_widget("label_mount_point").set_markup(_("Mount as:"))
+        self.dTree.get_widget("comboboxentry_mount_point").child.set_text(mount_as)         
 
     def show(self):
         self.window.run()
-        self.window.hide()
-        if(self.cancelled):
-            return None
-        self.stab.format = self.dTree.get_widget("checkbutton_format").get_active()
+        self.window.hide()        
         w = self.dTree.get_widget("comboboxentry_mount_point")
-        if(w.child.get_text().replace(" ","") != ""):
-            self.stab.mountpoint = w.child.get_text()
+        w.child.get_text().replace(" ","")
+        mount_as = w.child.get_text()
         w = self.dTree.get_widget("combobox_use_as")
         # find filesystem ..
         active = w.get_active()
         model = w.get_model()[active]
-        self.stab.filesystem = model[0]
-        return self.stab
+        format_as = model[0]
+        return (mount_as, format_as)

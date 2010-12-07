@@ -86,7 +86,10 @@ class InstallerEngine:
 
     def format_device(self, device, filesystem):
         ''' Format the given device to the specified filesystem '''
-        cmd = "mkfs -t %s %s" % (filesystem, device)
+        if filesystem == "swap":
+            cmd = "mkswap %s" % device
+        else:
+            cmd = "mkfs -t %s %s" % (filesystem, device)
         p = Popen(cmd, shell=True)
         p.wait() # this blocks
         return p.returncode
@@ -169,11 +172,13 @@ class InstallerEngine:
                 if(item.mountpoint == "/"):
                     root_device = item
                     item.format = True
-                if(item.format):
+                if(item.format != ""):
                     # well now, we gets to nuke stuff.
                     # report it. should grab the total count of filesystems to be formatted ..
-                    self.update_progress(total=4, current=1, pulse=True, message=_("Formatting %s as %s..." % (item.device, item.filesystem)))
-                    self.format_device(item.device, item.filesystem)
+                    self.update_progress(total=4, current=1, pulse=True, message=_("Formatting %s as %s..." % (item.device, item.format)))
+                    self.format_device(item.device, item.format)    
+                    item.filesystem = item.format            
+                
             # mount filesystem
             print " --> Mounting partitions"
             self.update_progress(total=4, current=2, message=_("Mounting %s on %s") % (root, "/source/"))
@@ -183,7 +188,7 @@ class InstallerEngine:
             print " ------ Mounting %s on %s" % (root_device.device, "/target/")
             self.do_mount(root_device.device, "/target", root_device.filesystem, None)
             for item in self.fstab.get_entries():
-                if(item.mountpoint != "/"):
+                if(item.mountpoint != "/" and item.mountpoint != "swap"):
                     print " ------ Mounting %s on %s" % (item.device, "/target" + item.mountpoint)
                     os.system("mkdir -p /target" + item.mountpoint)
                     self.do_mount(item.device, "/target" + item.mountpoint, item.filesystem, None)
@@ -462,7 +467,7 @@ class InstallerEngine:
             os.system("umount --force /target/proc/")
             os.system("rm -rf /target/etc/resolv.conf")
             for item in self.fstab.get_entries():
-                if(item.mountpoint != "/"):
+                if(item.mountpoint != "/" and item.mountpoint != "swap"):
                     self.do_unmount("/target" + item.mountpoint)
             self.do_unmount("/target")
             self.do_unmount("/source")
