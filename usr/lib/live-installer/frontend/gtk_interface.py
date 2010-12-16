@@ -888,25 +888,49 @@ class InstallerWindow:
                 else:
                     self.activate_page(self.PAGE_USER)
             elif(sel == self.PAGE_USER):
+                errorFound = False
+                errorMessage = ""
+                
                 username = self.wTree.get_widget("entry_username").get_text()
+                password1 = self.wTree.get_widget("entry_userpass1").get_text()
+                password2 = self.wTree.get_widget("entry_userpass2").get_text()
+                hostname = self.wTree.get_widget("entry_hostname").get_text()
+                
                 if(username == ""):
-                    MessageDialog(_("Installation Tool"), _("Please provide a username"), gtk.MESSAGE_ERROR).show()
+                    errorFound = True
+                    errorMessage = _("Please provide a username")
+                elif(password1 == ""):
+                    errorFound = True
+                    errorMessage = _("Please provide a password for your user account")
+                elif(password1 != password2):
+                    errorFound = True
+                    errorMessage = _("Your passwords do not match")
+                elif(hostname == ""):
+                    errorFound = True
+                    errorMessage = _("Please provide a hostname")
+
+                for char in username:
+                    if(char.isupper()):
+                        errorFound = True
+                        errorMessage = _("Your username must be lower case")
+                        break
+                    elif(char.isspace()):
+                        errorFound = True
+                        errorMessage = _("Your username may not contain whitespace")
+                
+                for char in hostname:
+                    if(char.isupper()):
+                        errorFound = True
+                        errorMessage = _("Your hostname must be lower case")
+                        break
+                    elif(char.isspace()):
+                        errorFound = True
+                        errorMessage = _("Your hostname may not contain whitespace")
+                    
+                if (errorFound):
+                    MessageDialog(_("Installation Tool"), errorMessage, gtk.MESSAGE_WARNING).show()
                 else:
-                    # username valid?
-                    for char in username:
-                        if(char.isupper()):
-                            MessageDialog(_("Installation Tool"), _("Your username must be lower case"), gtk.MESSAGE_WARNING).show()
-                        elif(char.isspace()):
-                            MessageDialog(_("Installation Tool"), _("Your username may not contain whitespace"), gtk.MESSAGE_WARNING).show()
-                        else:
-                            password1 = self.wTree.get_widget("entry_userpass1").get_text()
-                            password2 = self.wTree.get_widget("entry_userpass2").get_text()
-                            if(password1 == ""):
-                                MessageDialog(_("Installation Tool"), _("Please provide a password for your user account"), gtk.MESSAGE_WARNING).show()
-                            elif(password1 != password2):
-                                MessageDialog(_("Installation Tool"), _("Your passwords do not match"), gtk.MESSAGE_ERROR).show()
-                            else:
-                                self.activate_page(self.PAGE_ADVANCED)
+                     self.activate_page(self.PAGE_ADVANCED)
             elif(sel == self.PAGE_ADVANCED):
                 self.activate_page(self.PAGE_OVERVIEW)
                 self.show_overview()
