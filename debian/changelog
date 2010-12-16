@@ -1,3 +1,9 @@
+live-installer (2010.12.16) debian; urgency=medium
+
+  * No default value for hostname
+
+ -- Clement Lefebvre <root@linuxmint.com>  Thu,  16 Dec 2010 11:03:00 +0000
+
 live-installer (2010.12.07) debian; urgency=medium
 
   * Make use of swap partitions
