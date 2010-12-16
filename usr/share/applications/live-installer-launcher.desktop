@@ -1,5 +1,5 @@
 [Desktop Entry]
-Name=Install Distribution
+Name=Install Linux Mint
 GenericName=Live Installer
 Comment=Install the operating system to disk
 Exec=gksudo /usr/bin/live-installer
