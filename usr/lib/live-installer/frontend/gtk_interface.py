@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import sys
 sys.path.append('/usr/lib/live-installer')
-from installer import InstallerEngine, fstab, fstab_entry, SystemUser, HostMachine
+from installer import InstallerEngine, fstab, fstab_entry, SystemUser #, HostMachine
 
 try:
     import pygtk
@@ -186,17 +186,17 @@ class InstallerWindow:
         self.wTree.get_widget("entry_your_name").connect("notify::text", self.update_account_fields)
 
         # try to set the hostname
-        machine = HostMachine()
-        model = machine.get_model()
-        hostname = ""
-        if(model is not None):
-            model = model.replace(" ", "").lower()
-            hostname = model + "-"
-        if(machine.is_laptop()):
-            hostname += _("laptop")
-        else:
-            hostname += _("desktop")
-        self.wTree.get_widget("entry_hostname").set_text(hostname)
+        #machine = HostMachine()
+        #model = machine.get_model()
+        #hostname = ""
+        #if(model is not None):
+        #    model = model.replace(" ", "").lower()
+        #    hostname = model + "-"
+        #if(machine.is_laptop()):
+        #    hostname += _("laptop")
+        #else:
+        #    hostname += _("desktop")
+        #self.wTree.get_widget("entry_hostname").set_text(hostname)
 
         # events for detecting password mismatch..
         entry1 = self.wTree.get_widget("entry_userpass1")
