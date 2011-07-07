@@ -50,12 +50,8 @@ class MessageDialog(object):
 
 class WizardPage:
 
-    def __init__(self, breadcrumb_label, breadcrumb_text, help_text):
-        self.breadcrumb_label = breadcrumb_label
-        self.breadcrumb_text = "" #breadcrumb_text
-        self.help_text = help_text
-        #self.breadcrumb_label.set_markup("<small>%s</small> <span color=\"#FFFFFF\">-</span>" % self.breadcrumb_text)
-        self.breadcrumb_label.set_markup("")
+    def __init__(self, help_text):
+        self.help_text = help_text        
 		
 class InstallerWindow:
 
@@ -84,27 +80,15 @@ class InstallerWindow:
         # Wizard pages
         [self.PAGE_LANGUAGE, self.PAGE_PARTITIONS, self.PAGE_USER, self.PAGE_ADVANCED, self.PAGE_KEYBOARD, self.PAGE_OVERVIEW, self.PAGE_INSTALL, self.PAGE_TIMEZONE] = range(8)
         self.wizard_pages = range(8)
-        self.wizard_pages[self.PAGE_LANGUAGE] = WizardPage(self.wTree.get_widget("label_step_language"), _("Language selection"), _("Please select your language"))
-        self.wizard_pages[self.PAGE_TIMEZONE] = WizardPage(self.wTree.get_widget("label_step_timezone"), _("Timezone"), _("Please select your timezone"))
-        self.wizard_pages[self.PAGE_KEYBOARD] = WizardPage(self.wTree.get_widget("label_step_keyboard"), _("Keyboard layout"), _("Please select your keyboard layout"))
-        self.wizard_pages[self.PAGE_PARTITIONS] = WizardPage(self.wTree.get_widget("label_step_partitions"), _("Disk partitioning"), _("Please select where you want to install %s") % DISTRIBUTION_NAME)
-        self.wizard_pages[self.PAGE_USER] = WizardPage(self.wTree.get_widget("label_step_user"), _("User info"), _("Please indicate your name and select a username, a password and a hostname"))
-        self.wizard_pages[self.PAGE_ADVANCED] = WizardPage(self.wTree.get_widget("label_step_advanced"), _("Advanced options"), _("Please review the following advanced options"))
-        self.wizard_pages[self.PAGE_OVERVIEW] = WizardPage(self.wTree.get_widget("label_step_overview"), _("Summary"), _("Please review this summary and make sure everything is correct"))
-        self.wizard_pages[self.PAGE_INSTALL] = WizardPage(self.wTree.get_widget("label_step_install"), _("Installation"), _("Please wait while %s is being installed on your computer") % DISTRIBUTION_NAME)
-
-        # Remove last separator in breadcrumb
-        self.wizard_pages[self.PAGE_INSTALL].breadcrumb_label.set_markup("<small>%s</small>" % self.wizard_pages[self.PAGE_INSTALL].breadcrumb_text)
-
-        # make first step label bolded.
-        label = self.wTree.get_widget("label_step_language")
-        text = label.get_label()
-        attrs = pango.AttrList()
-        nattr = pango.AttrWeight(pango.WEIGHT_BOLD, 0, len(text))
-        attrs.insert(nattr)
-        label.set_attributes(attrs)
-        label.set_sensitive(False)
-
+        self.wizard_pages[self.PAGE_LANGUAGE] = WizardPage(_("Choose your language"))
+        self.wizard_pages[self.PAGE_TIMEZONE] = WizardPage(_("Choose your timezone"))
+        self.wizard_pages[self.PAGE_KEYBOARD] = WizardPage(_("Choose your keyboard layout"))
+        self.wizard_pages[self.PAGE_PARTITIONS] = WizardPage(_("Select where you want to install Linux Mint"))
+        self.wizard_pages[self.PAGE_USER] = WizardPage(_("Please indicate your name and select a username, a password and a hostname"))
+        self.wizard_pages[self.PAGE_ADVANCED] = WizardPage(_("Please review the following advanced options"))
+        self.wizard_pages[self.PAGE_OVERVIEW] = WizardPage(_("Please review this summary and make sure everything is correct"))
+        self.wizard_pages[self.PAGE_INSTALL] = WizardPage(_("Please wait while Linux Mint is being installed on your computer"))
+        
         # set the button events (wizard_cb)
         self.wTree.get_widget("button_next").connect("clicked", self.wizard_cb, False)
         self.wTree.get_widget("button_back").connect("clicked", self.wizard_cb, True)
@@ -261,29 +245,13 @@ class InstallerWindow:
         self.wTree.get_widget("menubar").realize()
         style = self.wTree.get_widget("menubar").style.copy()
         self.wTree.get_widget("menubar").hide()
-        # apply to the header
-        self.wTree.get_widget("eventbox1").realize()
-        self.wTree.get_widget("eventbox1").modify_bg(gtk.STATE_NORMAL, style.bg[gtk.STATE_NORMAL])
-        self.wTree.get_widget("eventbox1").modify_bg(gtk.STATE_ACTIVE, style.bg[gtk.STATE_ACTIVE])
-        self.wTree.get_widget("eventbox1").modify_bg(gtk.STATE_INSENSITIVE, style.bg[gtk.STATE_INSENSITIVE])
+        # apply to the header       
         self.wTree.get_widget("help_label").realize()
-        self.wTree.get_widget("help_label").modify_fg(gtk.STATE_NORMAL, style.fg[gtk.STATE_NORMAL])
-        # now apply to the breadcrumb nav
-        index = 0
-        for page in self.wizard_pages:
-            page.breadcrumb_label.modify_fg(gtk.STATE_NORMAL, style.fg[gtk.STATE_NORMAL])
+        self.wTree.get_widget("help_label").modify_fg(gtk.STATE_NORMAL, style.fg[gtk.STATE_NORMAL])       
         if(fullscreen):
             # dedicated installer mode thingum
-            img = gtk.gdk.pixbuf_new_from_file_at_size("/usr/share/live-installer/logo.svg", 96, 96)
-            self.wTree.get_widget("logo").set_from_pixbuf(img)
             self.window.maximize()
-            self.window.fullscreen()
-        else:
-            # running on livecd (windowed)
-            img = gtk.gdk.pixbuf_new_from_file_at_size("/usr/share/live-installer/logo.svg", 64, 64)
-            self.wTree.get_widget("logo").set_from_pixbuf(img)
-        # visible please :)    
-        
+            self.window.fullscreen()        
         
         ''' Launch the Slideshow '''
         if ("_" in self.locale):
@@ -443,6 +411,7 @@ class InstallerWindow:
                             country = country_code
 
                         language_label = "%s (%s)" % (language, country)
+                        #language_label = "%s - %s" % (country, language)
 
                         iter = model.append()
                         model.set_value(iter, 0, language_label)
@@ -877,20 +846,7 @@ class InstallerWindow:
             label.set_label(_("Passwords match"))
 
     def activate_page(self, index):
-        # Make breadcrumb normal
-        for page in self.wizard_pages:
-            attrs = pango.AttrList()
-            text = self.wizard_pages[index].breadcrumb_text
-            battr = pango.AttrWeight(pango.WEIGHT_NORMAL, 0, len(text))
-            attrs.insert(battr)
-            page.breadcrumb_label.set_attributes(attrs)
-
-        # Prepare bold style for one particular breadcrumb item
-        attrs = pango.AttrList()
-        battr = pango.AttrWeight(pango.WEIGHT_BOLD, 0, len(text))
-        attrs.insert(battr)
-        self.wizard_pages[index].breadcrumb_label.set_attributes(attrs)
-        self.wTree.get_widget("help_label").set_markup("%s" % self.wizard_pages[index].help_text)
+        self.wTree.get_widget("help_label").set_markup("<big><b>%s</b></big>" % self.wizard_pages[index].help_text)
         self.wTree.get_widget("notebook1").set_current_page(index)
 
 

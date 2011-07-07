@@ -3,6 +3,7 @@
   <!-- interface-requires gtk+ 2.16 -->
   <!-- interface-naming-policy project-wide -->
   <widget class="GtkWindow" id="main_window">
+    <property name="border_width">6</property>
     <property name="window_position">center</property>
     <property name="default_width">640</property>
     <property name="default_height">480</property>
@@ -63,170 +64,12 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkEventBox" id="eventbox1">
+          <widget class="GtkLabel" id="help_label">
             <property name="visible">True</property>
-            <child>
-              <widget class="GtkVBox" id="vbox2">
-                <property name="visible">True</property>
-                <property name="orientation">vertical</property>
-                <child>
-                  <widget class="GtkHBox" id="hbox8">
-                    <property name="visible">True</property>
-                    <child>
-                      <widget class="GtkLabel" id="help_label">
-                        <property name="visible">True</property>
-                        <property name="xalign">0</property>
-                        <property name="xpad">5</property>
-                        <property name="label" translatable="yes">label</property>
-                      </widget>
-                      <packing>
-                        <property name="padding">2</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkImage" id="logo">
-                        <property name="visible">True</property>
-                        <property name="xpad">6</property>
-                        <property name="ypad">2</property>
-                        <property name="pixbuf">logo.png</property>
-                      </widget>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="pack_type">end</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                  </widget>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="padding">2</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <widget class="GtkHBox" id="hbox5">
-                    <property name="visible">True</property>
-                    <property name="spacing">4</property>
-                    <child>
-                      <widget class="GtkLabel" id="label_step_language">
-                        <property name="visible">True</property>
-                        <property name="sensitive">False</property>
-                        <property name="xalign">0.10000000149011612</property>
-                        <property name="xpad">5</property>
-                        <property name="label" translatable="yes">label</property>
-                      </widget>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkLabel" id="label_step_timezone">
-                        <property name="visible">True</property>
-                        <property name="sensitive">False</property>
-                        <property name="label" translatable="yes">label</property>
-                      </widget>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkLabel" id="label_step_keyboard">
-                        <property name="visible">True</property>
-                        <property name="sensitive">False</property>
-                        <property name="xalign">0.10000000149011612</property>
-                        <property name="label" translatable="yes">label</property>
-                      </widget>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkLabel" id="label_step_partitions">
-                        <property name="visible">True</property>
-                        <property name="sensitive">False</property>
-                        <property name="xalign">0.10000000149011612</property>
-                        <property name="label" translatable="yes">label</property>
-                      </widget>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">3</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkLabel" id="label_step_user">
-                        <property name="visible">True</property>
-                        <property name="sensitive">False</property>
-                        <property name="xalign">0.10000000149011612</property>
-                        <property name="label" translatable="yes">label</property>
-                      </widget>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">4</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkLabel" id="label_step_advanced">
-                        <property name="visible">True</property>
-                        <property name="sensitive">False</property>
-                        <property name="xalign">0.10000000149011612</property>
-                        <property name="label" translatable="yes">label</property>
-                      </widget>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">5</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkLabel" id="label_step_overview">
-                        <property name="visible">True</property>
-                        <property name="sensitive">False</property>
-                        <property name="xalign">0.10000000149011612</property>
-                        <property name="label" translatable="yes">label</property>
-                      </widget>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">6</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkLabel" id="label_step_install">
-                        <property name="visible">True</property>
-                        <property name="sensitive">False</property>
-                        <property name="xalign">0.10000000149011612</property>
-                        <property name="xpad">5</property>
-                        <property name="label" translatable="yes">label</property>
-                      </widget>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">7</property>
-                      </packing>
-                    </child>
-                  </widget>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-              </widget>
-            </child>
+            <property name="xpad">5</property>
+            <property name="label" translatable="yes">label</property>
           </widget>
           <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
             <property name="position">1</property>
           </packing>
         </child>
