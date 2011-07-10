@@ -1,3 +1,3 @@
 #!/bin/bash
 # Launch live-installer with all passed arguments (future reserved)
-python -tt /usr/lib/live-installer/main.py $*
+/usr/bin/python2.7 -tt /usr/lib/live-installer/main.py $*
