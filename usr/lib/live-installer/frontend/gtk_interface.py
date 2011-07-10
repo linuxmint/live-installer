@@ -21,6 +21,8 @@ try:
     import gobject
     import time
     import webkit
+    import GeoIP
+    import urllib
 except Exception, detail:
     print detail
 
@@ -358,6 +360,17 @@ class InstallerWindow:
 
     def build_lang_list(self):
 
+        #Try to find out where we're located...
+        cur_country_code = None
+        try:
+            whatismyip = 'http://debian.linuxmint.com/installer/show_my_ip.php'
+            ip = urllib.urlopen(whatismyip).readlines()[0]
+            gi = GeoIP.new(GeoIP.GEOIP_MEMORY_CACHE)
+            cur_country_code = gi.country_code_by_addr(ip)
+        except:
+            pass #best effort, we get here if we're not connected to the Internet            
+
+        #Plan B... find out what locale we're in (i.e. USA on the live session)
         cur_lang = os.environ['LANG']
         if("." in cur_lang):
             cur_lang = cur_lang.split(".")[0]
@@ -422,8 +435,22 @@ class InstallerWindow:
                         else:
                             flag_path = self.resource_dir + '/flags/16/generic.png'
                             model.set_value(iter, 2, gtk.gdk.pixbuf_new_from_file(flag_path))
-                        if(locale_code == cur_lang):
+                        # If it's matching our country code, that's our language right there.. 
+                        if ((cur_country_code is not None) and (cur_country_code.lower() == country_code)):                            
+                            if (set_index is None):
+                                set_index = iter                                
+                            else:
+                                # If we find more than one language for a particular country, one of them being English, go for English by default.
+                                if (language_code == "en"):
+                                    set_index = iter                 
+                                # Guesswork... handy for countries which have their own language (fr_FR, de_DE, es_ES.. etc. )
+                                elif (country_code == language_code):
+                                    set_index = iter
+                                    
+                        # as a plan B... use the locale (USA)
+                        if((set_index is None) and (locale_code == cur_lang)):
                             set_index = iter
+                            #print "Set via locale: " + cur_lang
 
         treeview = self.wTree.get_widget("treeview_language_list")
         treeview.set_model(model)
