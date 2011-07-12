@@ -23,6 +23,8 @@ try:
     import webkit
     import GeoIP
     import urllib
+    import webkit
+    import string
 except Exception, detail:
     print detail
 
@@ -529,6 +531,11 @@ class InstallerWindow:
                                             
             grub_model = gtk.ListStore(str)
             partitions = []
+            
+            html_partitions = ""        
+            model = gtk.ListStore(str,str,str,str,str,str,str, object, bool, str, str, bool)
+            model2 = gtk.ListStore(str)
+            
             for disk in disks:                 
                 path =  disk # i.e. /dev/sda
                 grub_model.append([path])
@@ -538,6 +545,7 @@ class InstallerWindow:
                 last_added_partition = Partition(partition)
                 partitions.append(last_added_partition)
                 partition = partition.nextPartition()
+                html_partitions = html_partitions + "<table width='100%'><tr>"
                 while (partition is not None):
                     if last_added_partition.partition.number == -1 and partition.number == -1:
                         last_added_partition.add_partition(partition)
@@ -572,16 +580,11 @@ class InstallerWindow:
                                             used_space_pct = int(last_added_partition.used_space.replace("%", "").strip())
                                             last_added_partition.free_space = int(float(last_added_partition.size) * (float(100) - float(used_space_pct)) / float(100))                                            
                                                                             
-                                        print partition.path
-                                        print mount_point
                                         if os.path.exists(os.path.join(mount_point, 'etc/lsb-release')):
-                                            print "YEST1"
                                             last_added_partition.description = commands.getoutput("cat " + os.path.join(mount_point, 'etc/lsb-release') + " | grep DISTRIB_DESCRIPTION").replace('DISTRIB_DESCRIPTION', '').replace('=', '').replace('"', '').strip()                                    
                                         if os.path.exists(os.path.join(mount_point, 'etc/issue')):
                                             last_added_partition.description = commands.getoutput("cat " + os.path.join(mount_point, 'etc/issue')).replace('\\n', '').replace('\l', '').strip()                                    
-                                            print "YEST2"
                                         if os.path.exists(os.path.join(mount_point, 'Windows/servicing/Version')):
-                                            print "YEST3"
                                             version = commands.getoutput("ls %s" % os.path.join(mount_point, 'Windows/servicing/Version'))                                    
                                             if version.startswith("6.1"):
                                                 last_added_partition.description = "Windows 7"
@@ -600,7 +603,6 @@ class InstallerWindow:
                                             elif version.startswith("4.0.950"):
                                                 last_added_partition.description = "Windows 95"
                                         elif os.path.exists(os.path.join(mount_point, 'Boot/BCD')):
-                                            print "YEST4"
                                             if os.system("grep -qs \"V.i.s.t.a\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
                                                 last_added_partition.description = "Windows Vista bootloader"
                                             elif os.system("grep -qs \"W.i.n.d.o.w.s. .7\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
@@ -612,7 +614,6 @@ class InstallerWindow:
                                             else:
                                                 last_added_partition.description = "Windows bootloader"
                                         elif os.path.exists(os.path.join(mount_point, 'Windows/System32')):
-                                            print "YEST5"
                                             last_added_partition.description = "Windows"
                                         break
                             else:
@@ -622,78 +623,103 @@ class InstallerWindow:
                             #Umount temp folder
                             if ('/tmp/live-installer/tmpmount' in commands.getoutput('mount')):
                                 os.popen('umount /tmp/live-installer/tmpmount')
+                                
+                    if last_added_partition.size > 1.0:
+                        if last_added_partition.real_type == parted.PARTITION_LOGICAL:
+                            display_name = "  " + last_added_partition.name
+                        else:
+                            display_name = last_added_partition.name
+
+                        iter = model.append([display_name, last_added_partition.type, last_added_partition.description, "", "", '%.0f' % round(last_added_partition.size, 0), last_added_partition.free_space, last_added_partition, False, last_added_partition.start, last_added_partition.end, False]);
+                        if last_added_partition.partition.number == -1:                     
+                            model.set_value(iter, INDEX_PARTITION_TYPE, "<span foreground='#a9a9a9'>%s</span>" % last_added_partition.type)                                    
+                        elif last_added_partition.real_type == parted.PARTITION_EXTENDED:                    
+                            model.set_value(iter, INDEX_PARTITION_TYPE, "<span foreground='#a9a9a9'>%s</span>" % _("Extended"))  
+                        else:                                        
+                            if last_added_partition.type == "ntfs":
+                                color = "#42e5ac"
+                            elif last_added_partition.type == "fat32":
+                                color = "#18d918"
+                            elif last_added_partition.type == "ext4":
+                                color = "#4b6983"
+                            elif last_added_partition.type == "ext3":
+                                color = "#7590ae"
+                            elif last_added_partition.type in ["linux-swap", "swap"]:
+                                color = "#c1665a"
+                            else:
+                                color = "#a9a9a9"
+                            model.set_value(iter, INDEX_PARTITION_TYPE, "<span foreground='%s'>%s</span>" % (color, last_added_partition.type))                                            
+                            html_partition = "<td class='partition-cell' title='$title' style='border: 3px solid $color;' width='$space%'><div class='partition'>\n  <div style='width: $usage; background-color: #f8f8ba; height: 50px'></div>\n <div class='partition-text'>$path</div><div class='partition-os'>$OS</div>\n</div>\n</td>"        
+                            deviceSize = float(device.getSize()) * float(0.9) # Hack.. reducing the real size to 90% of what it is, to make sure our partitions fit..
+                            space = int((float(partition.getSize()) / deviceSize) * float(80))                            
+                            subs = {}
+                            if (space >= 10):
+                                subs['path'] = display_name.replace("/dev/", "")                            
+                                subs['OS'] = last_added_partition.description
+                            elif (space >= 5):
+                                subs['path'] = display_name.replace("/dev/", "")                            
+                                subs['OS'] = ""                            
+                            else:
+                                #Not enough space, don't write the name
+                                subs['path'] = ""                          
+                                subs['OS'] = ""
+                            subs['color'] = color                            
+                            if (space == 0):
+                                space = 1
+                            subs['space'] = space
+                            subs['title'] = display_name + "\n" + last_added_partition.description
+                            if "%" in last_added_partition.used_space:               
+                                subs['usage'] = last_added_partition.used_space.strip()
+                            html_partition = string.Template(html_partition).safe_substitute(subs)                     
+                            html_partitions = html_partitions + html_partition
                             
                     partition = partition.nextPartition()
+                html_partitions = html_partitions + "</tr></table>"
             self.wTree.get_widget("combobox_grub").set_model(grub_model)
             self.wTree.get_widget("combobox_grub").set_active(0)
+            gtk.gdk.threads_enter()
+            
+            
+            import tempfile
+            
+            html_header = "<html><head><style>body {background-color:#d6d6d6;} \
+            .partition{position:relative; width:100%; float: left; background: white;} \
+            .partition-cell{ position:relative; margin: 2px 5px 2px 0; padding: 1px; float: left; background: white;} \
+            .partition-text{ position:absolute; top:10; text-align: center; width=100px; left: 0; right: 0; margin: 0 auto; font-size:12px; } \
+            .partition-os{ position:absolute; top:30; text-align: center; width=100px; left: 0; right: 0; margin: 0 auto; font-size:10px; font-style:italic;color:#555555;} </style></head><body>"
+            html_footer = "</body></html>"
+            html = html_header + html_partitions + html_footer
+           
+            # create temporary file
+            f = tempfile.NamedTemporaryFile(delete=False)
+            f.write(html)
+            f.close()  
+            
+            browser = webkit.WebView()
+            s = browser.get_settings()
+            s.set_property('enable-file-access-from-file-uris', True)
+            s.set_property('enable-default-context-menu', False)            
+            browser.open(f.name)            
+            #browser.load_html_string(html, "file://")     
+            self.wTree.get_widget("scrolled_partitions").add(browser)
+            self.wTree.get_widget("scrolled_partitions").show_all()    
+                                                         
+            
+            gtk.gdk.threads_leave()
+            
+            gtk.gdk.threads_enter()
+            self.wTree.get_widget("treeview_disks").set_model(model)
+            gtk.gdk.threads_leave()
+            dialog.hide()
+            gtk.gdk.threads_enter()
+            self.window.set_sensitive(True)
+            self.window.window.set_cursor(None)
+            gtk.gdk.threads_leave()
         except Exception, detail:
             print detail
-
-        from screen import Screen        
-        myScreen = Screen(partitions)
-        self.part_screen = myScreen
+                                      
+                
         
-        gtk.gdk.threads_enter()
-        kids = self.wTree.get_widget("vbox_cairo").get_children()
-        if(kids is not None):
-            for sprog in kids:
-                self.wTree.get_widget("vbox_cairo").remove(sprog)
-        self.wTree.get_widget("vbox_cairo").add(myScreen)
-        self.wTree.get_widget("vbox_cairo").show_all()
-        color = self.wTree.get_widget("notebook1").style.bg[gtk.STATE_ACTIVE]
-        self.part_screen.modify_bg(gtk.STATE_NORMAL, color)
-        gtk.gdk.threads_leave()
-
-        model = gtk.ListStore(str,str,str,str,str,str,str, object, bool, str, str, bool)
-        model2 = gtk.ListStore(str)
-
-        extended_sectors = [-1, -1]
-
-        for partition in partitions:
-            if partition.size > 1.0:
-                if partition.real_type == parted.PARTITION_LOGICAL:
-                    display_name = "  " + partition.name
-                else:
-                    display_name = partition.name
-
-                iter = model.append([display_name, partition.type, partition.description, "", "", '%.0f' % round(partition.size, 0), partition.free_space, partition, False, partition.start, partition.end, False]);
-                if partition.partition.number == -1:                     
-                    model.set_value(iter, INDEX_PARTITION_TYPE, "<span foreground='#a9a9a9'>%s</span>" % partition.type)                                    
-                elif partition.real_type == parted.PARTITION_EXTENDED:                    
-                    model.set_value(iter, INDEX_PARTITION_TYPE, "<span foreground='#a9a9a9'>%s</span>" % _("Extended"))  
-                else:
-                    if partition.type == "ntfs":
-                        color = "#42e5ac"
-                    elif partition.type == "fat32":
-                        color = "#18d918"
-                    elif partition.type == "ext4":
-                        color = "#4b6983"
-                    elif partition.type == "ext3":
-                        color = "#7590ae"
-                    elif partition.type in ["linux-swap", "swap"]:
-                        color = "#c1665a"
-                    else:
-                        color = "#a9a9a9"
-                    model.set_value(iter, INDEX_PARTITION_TYPE, "<span foreground='%s'>%s</span>" % (color, partition.type))                                            
-
-#                if partition.partition.number == -1:                    
- #                   model.append(["<small><span foreground='#555555'>" + display_name + "</span></small>", partition.type, "", "", '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space, False, partition])
-  #              elif partition.real_type == parted.PARTITION_EXTENDED:
-   #                 model.append(["<small><span foreground='#555555'>extended partition</span></small>", None, "", "",  '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space, False, partition])
-    #            else:
-     #               if partition.description != "":
-      #                  model.append(["<span foreground='" + color + "'>" + display_name + "</span>", "%s (%s)" % (partition.description, partition.type), "", "", '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space, True, partition])
-       #             else:
-        #                model.append(["<span foreground='" + color + "'>" + display_name + "</span>", partition.type, "", "", '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space, True, partition])
-
-        gtk.gdk.threads_enter()
-        self.wTree.get_widget("treeview_disks").set_model(model)
-        gtk.gdk.threads_leave()
-        dialog.hide()
-        gtk.gdk.threads_enter()
-        self.window.set_sensitive(True)
-        self.window.window.set_cursor(None)
-        gtk.gdk.threads_leave()
 
     def build_kb_lists(self):
         ''' Do some xml kung-fu and load the keyboard stuffs '''
