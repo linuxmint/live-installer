@@ -32,6 +32,15 @@ import parted, commands
 gettext.install("live-installer", "/usr/share/locale")
 gtk.gdk.threads_init()
 
+INDEX_PARTITION_PATH=0
+INDEX_PARTITION_TYPE=1
+INDEX_PARTITION_DESCRIPTION=2
+INDEX_PARTITION_FORMAT_AS=3
+INDEX_PARTITION_MOUNT_AS=4
+INDEX_PARTITION_SIZE=5
+INDEX_PARTITION_FREE_SPACE=6
+INDEX_PARTITION_OBJECT=7
+
 ''' Handy. Makes message dialogs easy :D '''
 class MessageDialog(object):
 
@@ -130,33 +139,37 @@ class InstallerWindow:
         # device
         ren = gtk.CellRendererText()
         column = gtk.TreeViewColumn(_("Device"), ren)
-        column.add_attribute(ren, "markup", 0)
+        column.add_attribute(ren, "markup", INDEX_PARTITION_PATH)
         self.wTree.get_widget("treeview_disks").append_column(column)
-        # filesystem
+        # Type
         ren = gtk.CellRendererText()
-        column = gtk.TreeViewColumn(_("Description"), ren)
-        column.add_attribute(ren, "markup", 1)
+        column = gtk.TreeViewColumn(_("Type"), ren)
+        column.add_attribute(ren, "markup", INDEX_PARTITION_TYPE)
+        self.wTree.get_widget("treeview_disks").append_column(column)
+        # description
+        ren = gtk.CellRendererText()
+        column = gtk.TreeViewColumn(_("Operating system"), ren)
+        column.add_attribute(ren, "markup", INDEX_PARTITION_DESCRIPTION)
         self.wTree.get_widget("treeview_disks").append_column(column)
         # format
         ren = gtk.CellRendererText()
         column = gtk.TreeViewColumn(_("Format as"), ren)
-        column.add_attribute(ren, "markup", 2)
-        #column.add_attribute(ren, "visible", 9)
+        column.add_attribute(ren, "markup", INDEX_PARTITION_FORMAT_AS)        
         self.wTree.get_widget("treeview_disks").append_column(column)      
         # mount point
         ren = gtk.CellRendererText()
         column = gtk.TreeViewColumn(_("Mount as"), ren)
-        column.add_attribute(ren, "markup", 3)
+        column.add_attribute(ren, "markup", INDEX_PARTITION_MOUNT_AS)
         self.wTree.get_widget("treeview_disks").append_column(column)
         # size
         ren = gtk.CellRendererText()
         column = gtk.TreeViewColumn(_("Size (MB)"), ren)
-        column.add_attribute(ren, "markup", 4)
+        column.add_attribute(ren, "markup", INDEX_PARTITION_SIZE)
         self.wTree.get_widget("treeview_disks").append_column(column)
         # Used space
         ren = gtk.CellRendererText()
         column = gtk.TreeViewColumn(_("Free space (MB)"), ren)
-        column.add_attribute(ren, "markup", 8)
+        column.add_attribute(ren, "markup", INDEX_PARTITION_FREE_SPACE)
         self.wTree.get_widget("treeview_disks").append_column(column)
 
         # about you
@@ -289,20 +302,20 @@ class InstallerWindow:
         model, iter = self.wTree.get_widget("treeview_disks").get_selection().get_selected()
         if iter is not None:
             row = model[iter]
-            partition = row[10]
+            partition = row[INDEX_PARTITION_OBJECT]
             if not partition.real_type == parted.PARTITION_EXTENDED and not partition.partition.number == -1:                       
-                dlg = PartitionDialog(row[0], row[3], row[2], row[1])
+                dlg = PartitionDialog(row[INDEX_PARTITION_PATH], row[INDEX_PARTITION_MOUNT_AS], row[INDEX_PARTITION_FORMAT_AS], row[INDEX_PARTITION_DESCRIPTION])
                 (mount_as, format_as) = dlg.show()
                 # now set the model as shown..                
-                row[3] = mount_as
-                row[2] = format_as                
+                row[INDEX_PARTITION_MOUNT_AS] = mount_as
+                row[INDEX_PARTITION_FORMAT_AS] = format_as                
                 model[iter] = row                
                 
     def partitions_popup_menu( self, widget, event ):
         if event.button == 3:
             model, iter = self.wTree.get_widget("treeview_disks").get_selection().get_selected()
             if iter is not None:
-                partition = model.get_value(iter, 10)
+                partition = model.get_value(iter, INDEX_PARTITION_OBJECT)
                 if not partition.real_type == parted.PARTITION_EXTENDED and not partition.partition.number == -1:
                     menu = gtk.Menu()
                     menuItem = gtk.MenuItem(_("Edit"))
@@ -323,30 +336,30 @@ class InstallerWindow:
         model = self.wTree.get_widget("treeview_disks").get_model()
         iter = model.get_iter_first()
         while iter is not None:
-            iter_partition = model.get_value(iter, 10)
+            iter_partition = model.get_value(iter, INDEX_PARTITION_OBJECT)
             if iter_partition == partition:
-                model.set_value(iter, 3, "/") # add / assignment
-                model.set_value(iter, 2, "ext4") # format                
+                model.set_value(iter, INDEX_PARTITION_MOUNT_AS, "/") # add / assignment
+                model.set_value(iter, INDEX_PARTITION_FORMAT_AS, "ext4") # format                
             else:
-                mountpoint = model.get_value(iter, 3)
+                mountpoint = model.get_value(iter, INDEX_PARTITION_MOUNT_AS)
                 if mountpoint == "/":
-                    model.set_value(iter, 3, "") # remove / assignment
-                    model.set_value(iter, 2, "") # don't format                   
+                    model.set_value(iter, INDEX_PARTITION_MOUNT_AS, "") # remove / assignment
+                    model.set_value(iter, INDEX_PARTITION_FORMAT_AS, "") # don't format                   
             iter = model.iter_next(iter)
 
     def assignHome(self, menu, partition):
         model = self.wTree.get_widget("treeview_disks").get_model()
         iter = model.get_iter_first()
         while iter is not None:
-            iter_partition = model.get_value(iter, 10)
+            iter_partition = model.get_value(iter, INDEX_PARTITION_OBJECT)
             if iter_partition == partition:
-                model.set_value(iter, 3, "/home") # add /home assignment
-                model.set_value(iter, 2, "") # don't format                
+                model.set_value(iter, INDEX_PARTITION_MOUNT_AS, "/home") # add /home assignment
+                model.set_value(iter, INDEX_PARTITION_FORMAT_AS, "") # don't format                
             else:
-                mountpoint = model.get_value(iter, 3)
+                mountpoint = model.get_value(iter, INDEX_PARTITION_MOUNT_AS)
                 if mountpoint == "/home":
-                    model.set_value(iter, 3, "") # remove /home assignment
-                    model.set_value(iter, 2, "") # don't format                    
+                    model.set_value(iter, INDEX_PARTITION_MOUNT_AS, "") # remove /home assignment
+                    model.set_value(iter, INDEX_PARTITION_FORMAT_AS, "") # don't format                    
             iter = model.iter_next(iter)
 
     def refresh_partitions(self, widget, data=None):
@@ -516,7 +529,7 @@ class InstallerWindow:
                                             
             grub_model = gtk.ListStore(str)
             partitions = []
-            for disk in disks:                
+            for disk in disks:                 
                 path =  disk # i.e. /dev/sda
                 grub_model.append([path])
                 device = parted.getDevice(path)
@@ -535,7 +548,7 @@ class InstallerWindow:
                         if "swap" in last_added_partition.type:
                             last_added_partition.type = _("swap")
 
-                        if partition.number != -1 and "swap" not in last_added_partition.type:
+                        if partition.number != -1 and "swap" not in last_added_partition.type and partition.type != parted.PARTITION_EXTENDED:
                             
                             grub_model.append([partition.path])
 
@@ -544,56 +557,72 @@ class InstallerWindow:
                                 os.popen('umount /tmp/live-installer/tmpmount')
 
                             #Mount partition if not mounted
-                            if (partition.path not in commands.getoutput('mount')):
+                            if (partition.path not in commands.getoutput('mount')):                                
                                 os.system("mount %s /tmp/live-installer/tmpmount" % partition.path)
 
                             #Identify partition's description and used space
                             if (partition.path in commands.getoutput('mount')):
-                                last_added_partition.used_space = commands.getoutput("df | grep %s | awk {'print $5'}" % partition.path)
-                                if "%" in last_added_partition.used_space:
-                                    used_space_pct = int(last_added_partition.used_space.replace("%", "").strip())
-                                    last_added_partition.free_space = int(float(last_added_partition.size) * (float(100) - float(used_space_pct)) / float(100))
-                                mount_point = commands.getoutput("df | grep %s | awk {'print $6'}" % partition.path)
-                                if os.path.exists(os.path.join(mount_point, 'etc/lsb-release')):
-                                    last_added_partition.description = commands.getoutput("cat " + os.path.join(mount_point, 'etc/lsb-release') + " | grep DISTRIB_DESCRIPTION").replace('DISTRIB_DESCRIPTION', '').replace('=', '').replace('"', '').strip()
-                                elif os.path.exists(os.path.join(mount_point, 'etc/issue')):
-                                    last_added_partition.description = commands.getoutput("cat " + os.path.join(mount_point, 'etc/issue')).replace('\\n', '').replace('\l', '').strip()
-                                elif os.path.exists(os.path.join(mount_point, 'Windows/servicing/Version')):
-                                    version = commands.getoutput("ls %s" % os.path.join(mount_point, 'Windows/servicing/Version'))
-                                    if version.startswith("6.1"):
-                                        last_added_partition.description = "Windows 7"
-                                    elif version.startswith("6.0"):
-                                        last_added_partition.description = "Windows Vista"
-                                    elif version.startswith("5.1") or version.startswith("5.2"):
-                                        last_added_partition.description = "Windows XP"
-                                    elif version.startswith("5.0"):
-                                        last_added_partition.description = "Windows 2000"
-                                    elif version.startswith("4.90"):
-                                        last_added_partition.description = "Windows Me"
-                                    elif version.startswith("4.1"):
-                                        last_added_partition.description = "Windows 98"
-                                    elif version.startswith("4.0.1381"):
-                                        last_added_partition.description = "Windows NT"
-                                    elif version.startswith("4.0.950"):
-                                        last_added_partition.description = "Windows 95"
-                                elif os.path.exists(os.path.join(mount_point, 'Boot/BCD')):
-                                    if os.system("grep -qs \"V.i.s.t.a\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
-                                        last_added_partition.description = "Windows Vista bootloader"
-                                    elif os.system("grep -qs \"W.i.n.d.o.w.s. .7\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
-                                        last_added_partition.description = "Windows 7 bootloader"
-                                    elif os.system("grep -qs \"W.i.n.d.o.w.s. .R.e.c.o.v.e.r.y. .E.n.v.i.r.o.n.m.e.n.t\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
-                                        last_added_partition.description = "Windows recovery"
-                                    elif os.system("grep -qs \"W.i.n.d.o.w.s. .S.e.r.v.e.r. .2.0.0.8\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
-                                        last_added_partition.description = "Windows Server 2008 bootloader"
-                                    else:
-                                        last_added_partition.description = "Windows bootloader"
-                                elif os.path.exists(os.path.join(mount_point, 'Windows/System32')):
-                                    last_added_partition.description = "Windows"
+                                df_lines = commands.getoutput("df 2>/dev/null | grep %s" % partition.path).split('\n')
+                                for df_line in df_lines:
+                                    df_elements = df_line.split()
+                                    if df_elements[0] == partition.path:
+                                        last_added_partition.used_space = df_elements[4]  
+                                        mount_point = df_elements[5]                              
+                                        if "%" in last_added_partition.used_space:
+                                            used_space_pct = int(last_added_partition.used_space.replace("%", "").strip())
+                                            last_added_partition.free_space = int(float(last_added_partition.size) * (float(100) - float(used_space_pct)) / float(100))                                            
+                                                                            
+                                        print partition.path
+                                        print mount_point
+                                        if os.path.exists(os.path.join(mount_point, 'etc/lsb-release')):
+                                            print "YEST1"
+                                            last_added_partition.description = commands.getoutput("cat " + os.path.join(mount_point, 'etc/lsb-release') + " | grep DISTRIB_DESCRIPTION").replace('DISTRIB_DESCRIPTION', '').replace('=', '').replace('"', '').strip()                                    
+                                        if os.path.exists(os.path.join(mount_point, 'etc/issue')):
+                                            last_added_partition.description = commands.getoutput("cat " + os.path.join(mount_point, 'etc/issue')).replace('\\n', '').replace('\l', '').strip()                                    
+                                            print "YEST2"
+                                        if os.path.exists(os.path.join(mount_point, 'Windows/servicing/Version')):
+                                            print "YEST3"
+                                            version = commands.getoutput("ls %s" % os.path.join(mount_point, 'Windows/servicing/Version'))                                    
+                                            if version.startswith("6.1"):
+                                                last_added_partition.description = "Windows 7"
+                                            elif version.startswith("6.0"):
+                                                last_added_partition.description = "Windows Vista"
+                                            elif version.startswith("5.1") or version.startswith("5.2"):
+                                                last_added_partition.description = "Windows XP"
+                                            elif version.startswith("5.0"):
+                                                last_added_partition.description = "Windows 2000"
+                                            elif version.startswith("4.90"):
+                                                last_added_partition.description = "Windows Me"
+                                            elif version.startswith("4.1"):
+                                                last_added_partition.description = "Windows 98"
+                                            elif version.startswith("4.0.1381"):
+                                                last_added_partition.description = "Windows NT"
+                                            elif version.startswith("4.0.950"):
+                                                last_added_partition.description = "Windows 95"
+                                        elif os.path.exists(os.path.join(mount_point, 'Boot/BCD')):
+                                            print "YEST4"
+                                            if os.system("grep -qs \"V.i.s.t.a\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
+                                                last_added_partition.description = "Windows Vista bootloader"
+                                            elif os.system("grep -qs \"W.i.n.d.o.w.s. .7\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
+                                                last_added_partition.description = "Windows 7 bootloader"
+                                            elif os.system("grep -qs \"W.i.n.d.o.w.s. .R.e.c.o.v.e.r.y. .E.n.v.i.r.o.n.m.e.n.t\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
+                                                last_added_partition.description = "Windows recovery"
+                                            elif os.system("grep -qs \"W.i.n.d.o.w.s. .S.e.r.v.e.r. .2.0.0.8\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
+                                                last_added_partition.description = "Windows Server 2008 bootloader"
+                                            else:
+                                                last_added_partition.description = "Windows bootloader"
+                                        elif os.path.exists(os.path.join(mount_point, 'Windows/System32')):
+                                            print "YEST5"
+                                            last_added_partition.description = "Windows"
+                                        break
+                            else:
+                                print "Failed to mount %s" % partition.path
 
+                            
                             #Umount temp folder
                             if ('/tmp/live-installer/tmpmount' in commands.getoutput('mount')):
                                 os.popen('umount /tmp/live-installer/tmpmount')
-
+                            
                     partition = partition.nextPartition()
             self.wTree.get_widget("combobox_grub").set_model(grub_model)
             self.wTree.get_widget("combobox_grub").set_active(0)
@@ -615,31 +644,47 @@ class InstallerWindow:
         self.part_screen.modify_bg(gtk.STATE_NORMAL, color)
         gtk.gdk.threads_leave()
 
-        model = gtk.ListStore(str,str,str,str,str,bool, str, str, str, bool, object)
+        model = gtk.ListStore(str,str,str,str,str,str,str, object, bool, str, str, bool)
         model2 = gtk.ListStore(str)
 
         extended_sectors = [-1, -1]
 
-        colors = [ "#010510", "#000099", "#009999", "#009900", "#999999", "#990000" ]
-
         for partition in partitions:
-            if partition.size > 0.5:
-                color = colors[partition.partition.number % len(colors)]
-
+            if partition.size > 1.0:
                 if partition.real_type == parted.PARTITION_LOGICAL:
                     display_name = "  " + partition.name
                 else:
                     display_name = partition.name
 
-                if partition.partition.number == -1:
-                    model.append(["<small><span foreground='#555555'>" + display_name + "</span></small>", partition.type, "", "", '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space, False, partition])
-                elif partition.real_type == parted.PARTITION_EXTENDED:
-                    model.append(["<small><span foreground='#555555'>extended partition</span></small>", None, "", "",  '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space, False, partition])
+                iter = model.append([display_name, partition.type, partition.description, "", "", '%.0f' % round(partition.size, 0), partition.free_space, partition, False, partition.start, partition.end, False]);
+                if partition.partition.number == -1:                     
+                    model.set_value(iter, INDEX_PARTITION_TYPE, "<span foreground='#a9a9a9'>%s</span>" % partition.type)                                    
+                elif partition.real_type == parted.PARTITION_EXTENDED:                    
+                    model.set_value(iter, INDEX_PARTITION_TYPE, "<span foreground='#a9a9a9'>%s</span>" % _("Extended"))  
                 else:
-                    if partition.description != "":
-                        model.append(["<span foreground='" + color + "'>" + display_name + "</span>", "%s (%s)" % (partition.description, partition.type), "", "", '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space, True, partition])
+                    if partition.type == "ntfs":
+                        color = "#42e5ac"
+                    elif partition.type == "fat32":
+                        color = "#18d918"
+                    elif partition.type == "ext4":
+                        color = "#4b6983"
+                    elif partition.type == "ext3":
+                        color = "#7590ae"
+                    elif partition.type in ["linux-swap", "swap"]:
+                        color = "#c1665a"
                     else:
-                        model.append(["<span foreground='" + color + "'>" + display_name + "</span>", partition.type, "", "", '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space, True, partition])
+                        color = "#a9a9a9"
+                    model.set_value(iter, INDEX_PARTITION_TYPE, "<span foreground='%s'>%s</span>" % (color, partition.type))                                            
+
+#                if partition.partition.number == -1:                    
+ #                   model.append(["<small><span foreground='#555555'>" + display_name + "</span></small>", partition.type, "", "", '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space, False, partition])
+  #              elif partition.real_type == parted.PARTITION_EXTENDED:
+   #                 model.append(["<small><span foreground='#555555'>extended partition</span></small>", None, "", "",  '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space, False, partition])
+    #            else:
+     #               if partition.description != "":
+      #                  model.append(["<span foreground='" + color + "'>" + display_name + "</span>", "%s (%s)" % (partition.description, partition.type), "", "", '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space, True, partition])
+       #             else:
+        #                model.append(["<span foreground='" + color + "'>" + display_name + "</span>", partition.type, "", "", '%.0f' % round(partition.size, 0), False, partition.start, partition.end, partition.free_space, True, partition])
 
         gtk.gdk.threads_enter()
         self.wTree.get_widget("treeview_disks").set_model(model)

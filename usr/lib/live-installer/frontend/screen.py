@@ -75,13 +75,6 @@ class Screen(gtk.DrawingArea):
         self.label_offset = 10
         self.y_offset = 110
         self.rows = 0        
-        self.colors = [ (0.1, 0.5, 1.0),
-                         (0.0, 0.0, 0.6),
-                         (0.0, 0.6, 0.6),
-                         (0.0, 0.6, 0.0),
-                         (0.6, 0.6, 0.6),
-                         (0.6, 0.0, 0.0)]
-
         self.update()        
         gobject.timeout_add(1000, self.update)
         
@@ -127,10 +120,10 @@ class Screen(gtk.DrawingArea):
             if partition.size > 0.5 and partition.real_type != parted.PARTITION_EXTENDED:
                 if partition.partition.number == -1:
                     border_color = (0.6, 0.6, 0.6)
-                    fill_color = (0.6, 0.6, 0.6)
+                    fill_color = (1.0, 1.0, 1.0)
                 else:
                     border_color = self.colors[partition.partition.number % len(self.colors)]
-                    fill_color = (0.9, 0.9, 0.9)
+                    fill_color = (1.0, 1.0, 1.0) #f8f8ba
 
                 ratio = float(partition.size) / float(self.total_size)
                 pct = float(ratio * 100)
