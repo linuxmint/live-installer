@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import sys
 sys.path.append('/usr/lib/live-installer')
-from installer import InstallerEngine, fstab, fstab_entry
+from installer import InstallerEngine, Setup, PartitionSetup
 
 try:
     import pygtk
@@ -41,103 +41,6 @@ INDEX_PARTITION_MOUNT_AS=4
 INDEX_PARTITION_SIZE=5
 INDEX_PARTITION_FREE_SPACE=6
 INDEX_PARTITION_OBJECT=7
-
-# Represents the choices made by the user
-class Setup(object):
-    language = None
-    timezone = None
-    timezone_code = None
-    keyboard_model = None    
-    keyboard_layout = None    
-    keyboard_variant = None    
-    partitions = [] #Array of PartitionSetup objects
-    username = None
-    hostname = None
-    password1 = None
-    password2 = None
-    real_name = None    
-    grub_device = None
-    disks = []
-    target_disk = None
-    
-    #Descriptions (used by the summary screen)    
-    keyboard_model_description = None
-    keyboard_layout_description = None
-    keyboard_variant_description = None
-    
-    def print_setup(self):
-        if "--debug" in sys.argv:  
-            print "-------------------------------------------------------------------------"
-            print "language: %s" % self.language
-            print "timezone: %s (%s)" % (self.timezone, self.timezone_code)        
-            print "keyboard: %s - %s (%s) - %s - %s (%s)" % (self.keyboard_model, self.keyboard_layout, self.keyboard_variant, self.keyboard_model_description, self.keyboard_layout_description, self.keyboard_variant_description)        
-            print "user: %s (%s)" % (self.username, self.real_name)
-            print "hostname: %s " % self.hostname
-            print "passwords: %s - %s" % (self.password1, self.password2)        
-            print "grub_device: %s " % self.grub_device
-            print "target_disk: %s " % self.target_disk
-            print "disks: %s " % self.disks                       
-            print "partitions:"
-            for partition in self.partitions:
-                partition.print_partition()
-            print "-------------------------------------------------------------------------"
-    
-class PartitionSetup(object):
-    name = ""    
-    type = ""
-    format_as = None
-    mount_as = None    
-    partition = None
-    aggregatedPartitions = []
-
-    def __init__(self, partition):
-        self.partition = partition
-        self.size = partition.getSize()
-        self.start = partition.geometry.start
-        self.end = partition.geometry.end
-        self.description = ""
-        self.used_space = ""
-        self.free_space = ""
-
-        if partition.number != -1:
-            self.name = partition.path            
-            if partition.fileSystem is None:
-                # no filesystem, check flags
-                if partition.type == parted.PARTITION_SWAP:
-                    self.type = ("Linux swap")
-                elif partition.type == parted.PARTITION_RAID:
-                    self.type = ("RAID")
-                elif partition.type == parted.PARTITION_LVM:
-                    self.type = ("Linux LVM")
-                elif partition.type == parted.PARTITION_HPSERVICE:
-                    self.type = ("HP Service")
-                elif partition.type == parted.PARTITION_PALO:
-                    self.type = ("PALO")
-                elif partition.type == parted.PARTITION_PREP:
-                    self.type = ("PReP")
-                elif partition.type == parted.PARTITION_MSFT_RESERVED:
-                    self.type = ("MSFT Reserved")
-                elif partition.type == parted.PARTITION_EXTENDED:
-                    self.type = ("Extended Partition")
-                elif partition.type == parted.PARTITION_LOGICAL:
-                    self.type = ("Logical Partition")
-                elif partition.type == parted.PARTITION_FREESPACE:
-                    self.type = ("Free Space")
-                else:
-                    self.type =("Unknown")
-            else:
-                self.type = partition.fileSystem.type
-        else:
-            self.type = ""
-            self.name = _("unallocated")
-
-    def add_partition(self, partition):
-        self.aggregatedPartitions.append(partition)
-        self.size = self.size + partition.getSize()
-        self.end = partition.geometry.end
-    
-    def print_partition(self):
-        print "Device: %s, format as: %s, mount as: %s" % (self.partition.path, self.format_as, self.mount_as)
 
 class ProgressDialog:
 	
@@ -1308,18 +1211,7 @@ class InstallerWindow:
         try:        
             print " ## INSTALLATION "
             ''' Actually perform the installation .. '''
-            inst = self.installer
-            # Create fstab
-            files = fstab()
-            model = self.wTree.get_widget("treeview_disks").get_model()         
-            for row in model:
-                if((row[2] is not None and row[2] != "") or (row[3] is not None and row[3] != "")): # format or mountpoint specified.
-                    filesystem = row[10].type
-                    format = row[2]
-                    mountpoint = row[3]
-                    device = row[10].name
-                    files.add_mount(device=device, mountpoint=mountpoint, filesystem=filesystem, format=format)                
-            inst.fstab = files # need to add set_fstab() to InstallerEngine
+            inst = self.installer            
 
             if "--debug" in sys.argv:
                 print " ## DEBUG MODE - INSTALLATION PROCESS NOT LAUNCHED"            
@@ -1332,7 +1224,7 @@ class InstallerWindow:
             self.critical_error_happened = False
             
             try:
-                inst.install()
+                inst.install(self.setup)
             except Exception, detail1:
                 print detail1
                 try:
