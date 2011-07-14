@@ -11,52 +11,6 @@ from configobj import ConfigObj
 
 gettext.install("live-installer", "/usr/share/locale")
 
-class SystemUser:
-    ''' Represents the main user '''
-
-    def __init__(self, username=None, realname=None, password=None):
-        ''' create new SystemUser '''
-        self.username = username
-        self.realname = realname
-        self.password = password
-
-class HostMachine:
-    ''' Used to probe information about the host '''
-
-    def is_laptop(self):
-        ''' Returns True/False as to whether the host is a laptop '''
-        ret = False
-        try:
-            p = Popen("laptop-detect", shell=True)
-            p.wait() # we want the return code
-            retcode = p.returncode
-            if(retcode == 0):
-                # its a laptop
-                ret = True
-        except:
-            pass # doesn't matter, laptop-detect doesnt exist on the host
-        return ret
-
-    def get_model(self):
-        ''' return the model of the pooter '''
-        ret = None
-        try:
-            model = commands.getoutput("dmidecode --string system-product-name")
-            ret = model.rstrip("\r\n").lstrip()
-        except:
-            pass # doesn't matter.
-        return ret
-
-    def get_manufacturer(self):
-        ''' return the system manufacturer '''
-        ret = None
-        try:
-            manu = commands.getoutput("dmidecode --string system-manufacturer")
-            ret = manu.rstrip("\r\n ").lstrip()
-        except:
-            pass # doesn't matter
-        return ret
-
 class InstallerEngine:
     ''' This is central to the live installer '''
 
