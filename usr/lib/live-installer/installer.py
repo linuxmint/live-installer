@@ -7,6 +7,7 @@ import gettext
 import stat
 import commands
 import sys
+import parted
 from configobj import ConfigObj
 
 gettext.install("live-installer", "/usr/share/locale")

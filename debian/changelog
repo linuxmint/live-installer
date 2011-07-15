@@ -1,3 +1,9 @@
+live-installer (2011.07.15) debian; urgency=medium
+
+  * Latest version
+
+ -- Clement Lefebvre <root@linuxmint.com>  Fri,  15 Jul 2011 14:42:00 +0000
+
 live-installer (2010.12.16.1) debian; urgency=medium
 
   * Better validation process for username, passwords and hostname
