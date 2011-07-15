@@ -221,31 +221,27 @@ class InstallerEngine:
                 os.system("echo \"#### Static Filesystem Table File\" > /target/etc/fstab")
             fstab = open("/target/etc/fstab", "a")
             fstab.write("proc\t/proc\tproc\tdefaults\t0\t0\n")
-            for partition in setup.partitions:                            
+            for partition in setup.partitions:
+                partition_uuid = partition.partition.path # If we can't find the UUID we use the path
+                try:                    
+                    blkid = commands.getoutput('blkid').split('\n')
+                    for blkid_line in blkid:
+                        blkid_elements = blkid_line.split(':')
+                        if blkid_elements[0] == partition.partition.path:
+                            blkid_mini_elements = blkid_line.split()
+                            for blkid_mini_element in blkid_mini_elements:
+                                if "UUID=" in blkid_mini_element:
+                                    partition_uuid = blkid_mini_element.replace('"', '').strip()
+                                    break
+                            break
+                except Exception, detail:
+                    print detail
+                
+                fstab.write("# %s\n" % (partition.partition.path))
                 if(partition.type == "swap"):                    
-                    fstab.write("%s\tswap\tswap\tsw\t0\t0\n" % partition.partition.path)
-                else:
-                    uuid = None
-                    try:
-                        #try to find the UUID for the partition
-                        blkid = commands.getoutput('blkid').split('\n')
-                        for blkid_line in blkid:
-                            blkid_elements = blkid_line.split(':')
-                            if blkid_elements[0] == partition.partition.path:
-                                blkid_mini_elements = blkid_line.split()
-                                for blkid_mini_element in blkid_mini_elements:
-                                    if "UUID=" in blkid_mini_element:
-                                        uuid = blkid_mini_element.replace('"', '').strip()
-                                        break
-                                break
-                    except Exception, detail:
-                        print detail
-                        
-                    if uuid is None:
-                        fstab.write("%s\t%s\t%s\t%s\t%s\t%s\n" % (partition.partition.path, partition.mount_as, partition.type, "rw,errors=remount-ro", "0", "0"))
-                    else:
-                        fstab.write("# %s\n" % (partition.partition.path))
-                        fstab.write("%s\t%s\t%s\t%s\t%s\t%s\n" % (uuid, partition.mount_as, partition.type, "rw,errors=remount-ro", "0", "0"))
+                    fstab.write("%s\tswap\tswap\tsw\t0\t0\n" % partition_uuid)
+                else:                                                    
+                    fstab.write("%s\t%s\t%s\t%s\t%s\t%s\n" % (partition_uuid, partition.mount_as, partition.type, "rw,errors=remount-ro", "0", "0"))
             fstab.close()
             
             # write host+hostname infos
@@ -297,8 +293,7 @@ class InstallerEngine:
             # localize Firefox and Thunderbird
             print " --> Localizing Firefox and Thunderbird"
             self.update_progress(total=our_total, current=our_current, message=_("Localizing Firefox and Thunderbird"))
-            if setup.language != "en_US":
-                import commands
+            if setup.language != "en_US":                
                 os.system("apt-get update")
                 self.do_run_in_chroot("apt-get update")
                 locale = setup.language.replace("_", "-")                
