@@ -220,12 +220,32 @@ class InstallerEngine:
             if(not os.path.exists("/target/etc/fstab")):
                 os.system("echo \"#### Static Filesystem Table File\" > /target/etc/fstab")
             fstab = open("/target/etc/fstab", "a")
-            fstab.write("proc\t/proc\tproc\tnodev,noexec,nosuid\t0\t0\n")
+            fstab.write("proc\t/proc\tproc\tdefaults\t0\t0\n")
             for partition in setup.partitions:                            
                 if(partition.type == "swap"):                    
                     fstab.write("%s\tswap\tswap\tsw\t0\t0\n" % partition.partition.path)
                 else:
-                    fstab.write("%s\t%s\t%s\t%s\t%s\t%s\n" % (partition.partition.path, partition.mount_as, partition.type, "rw,errors=remount-ro", "0", "0"))
+                    uuid = None
+                    try:
+                        #try to find the UUID for the partition
+                        blkid = commands.getoutput('blkid').split('\n')
+                        for blkid_line in blkid:
+                            blkid_elements = blkid_line.split(':')
+                            if blkid_elements[0] == partition.partition.path:
+                                blkid_mini_elements = blkid_line.split()
+                                for blkid_mini_element in blkid_mini_elements:
+                                    if "UUID=" in blkid_mini_element:
+                                        uuid = blkid_mini_element.replace('"', '').strip()
+                                        break
+                                break
+                    except Exception, detail:
+                        print detail
+                        
+                    if uuid is None:
+                        fstab.write("%s\t%s\t%s\t%s\t%s\t%s\n" % (partition.partition.path, partition.mount_as, partition.type, "rw,errors=remount-ro", "0", "0"))
+                    else:
+                        fstab.write("# %s\n" % (partition.partition.path))
+                        fstab.write("%s\t%s\t%s\t%s\t%s\t%s\n" % (uuid, partition.mount_as, partition.type, "rw,errors=remount-ro", "0", "0"))
             fstab.close()
             
             # write host+hostname infos
