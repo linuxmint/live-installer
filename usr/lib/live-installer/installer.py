@@ -198,7 +198,7 @@ class InstallerEngine:
             print " --> Removing live-initramfs"
             our_current += 1
             self.update_progress(total=our_total, current=our_current, message=_("Removing live configuration (packages)"))
-            self.do_run_in_chroot("apt-get remove --purge --yes --force-yes live-initramfs live-installer live-config live-config-sysvinit")
+            self.do_run_in_chroot("apt-get remove --purge --yes --force-yes live-boot live-boot-initramfs-tools live-initramfs live-installer live-config live-config-sysvinit")
             
             # add new user
             print " --> Adding new user"
