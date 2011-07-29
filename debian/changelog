@@ -1,3 +1,10 @@
+live-installer (2011.07.29.1) debian; urgency=medium
+
+  * Single threaded partition builder
+  * No more slideshow
+
+ -- Clement Lefebvre <root@linuxmint.com>  Fri,  29 Jul 2011 15:09:00 +0000
+
 live-installer (2011.07.29) debian; urgency=medium
 
   * Renamed launcher file
