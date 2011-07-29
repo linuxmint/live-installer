@@ -23,7 +23,6 @@ try:
     import webkit
     import GeoIP
     import urllib
-    import webkit
     import string
     import parted
 except Exception, detail:
@@ -109,7 +108,7 @@ class InstallerWindow:
         self.done = False
         self.fail = False
 
-        # here cometh the installer engine
+        # here comes the installer engine
         self.installer = InstallerEngine()
         # the distribution name
         DISTRIBUTION_NAME = self.installer.get_distribution_name()
@@ -299,24 +298,33 @@ class InstallerWindow:
             self.window.maximize()
             self.window.fullscreen()        
         
-        ''' Launch the Slideshow '''
-        if ("_" in self.setup.language):
-            locale_code = self.setup.language.split("_")[0]
-        else:
-             locale_code = self.setup.language
+        #''' Launch the Slideshow '''
+        #if ("_" in self.setup.language):
+        #    locale_code = self.setup.language.split("_")[0]
+        #else:
+        #     locale_code = self.setup.language
         
-        slideshow_path = "/usr/share/live-installer-slideshow/slides/index.html"
-        if os.path.exists(slideshow_path):            
-            browser = webkit.WebView()
-            s = browser.get_settings()
-            s.set_property('enable-file-access-from-file-uris', True)
-            s.set_property('enable-default-context-menu', False)
-            browser.open("file://" + slideshow_path  + "#?locale=" + locale_code)
-            self.wTree.get_widget("vbox_install").add(browser)
-            self.wTree.get_widget("vbox_install").show_all()            
-                          
+        #slideshow_path = "/usr/share/live-installer-slideshow/slides/index.html"
+        #if os.path.exists(slideshow_path):            
+        #    browser = webkit.WebView()
+        #    s = browser.get_settings()
+        #    s.set_property('enable-file-access-from-file-uris', True)
+        #    s.set_property('enable-default-context-menu', False)
+        #    browser.open("file://" + slideshow_path  + "#?locale=" + locale_code)
+        #    self.wTree.get_widget("vbox_install").add(browser)
+        #    self.wTree.get_widget("vbox_install").show_all()            
+                                          
+        self.wTree.get_widget("label_install_1").set_label(_("Please wait while the operating system is installed on your computer."))
+        self.wTree.get_widget("label_install_2").set_label(_("The installation should take approximately 10 minutes."))
+        self.wTree.get_widget("label_install_3").set_label(_("We hope you enjoy this new release. Thank you for choosing Linux Mint."))     
+        
+        self.browser = webkit.WebView()
+        s = self.browser.get_settings()
+        s.set_property('enable-file-access-from-file-uris', True)
+        s.set_property('enable-default-context-menu', False)     
+        self.wTree.get_widget("scrolled_partitions").add(self.browser)   
+        
         self.window.show_all()
-            
 
     def assign_realname(self, entry, prop):
         self.setup.real_name = entry.props.text
@@ -406,8 +414,7 @@ class InstallerWindow:
 
     def refresh_partitions(self, widget, data=None):
         ''' refresh the partitions ... '''
-        thr = threading.Thread(name="live-installer-disk-search", group=None, target=self.build_partitions, args=(), kwargs={})
-        thr.start()
+        self.build_partitions()
 
     def edit_partitions(self, widget, data=None):
         ''' edit the partitions ... '''
@@ -568,15 +575,12 @@ class InstallerWindow:
             treeview.scroll_to_cell(path, column=column)
             self.setup.target_disk = model.get_value(model.get_iter_first(), 0)        
   
-    def build_partitions(self):
-        gtk.gdk.threads_enter()
+    def build_partitions(self):        
         self.window.set_sensitive(False)
         # "busy" cursor.
         cursor = gtk.gdk.Cursor(gtk.gdk.WATCH)
         self.window.window.set_cursor(cursor)        
-        dialog = ProgressDialog()
-        dialog.show(title=_("Installer"), label=_("Scanning for partitions"))
-        gtk.gdk.threads_leave()        
+        
         os.popen('mkdir -p /tmp/live-installer/tmpmount')
         
         try:                                                                                            
@@ -732,8 +736,7 @@ class InstallerWindow:
                 html_partitions = html_partitions + "</tr></table>"
             self.wTree.get_widget("combobox_grub").set_model(grub_model)
             self.wTree.get_widget("combobox_grub").set_active(0)
-            
-            gtk.gdk.threads_enter()            
+                        
             import tempfile            
             html_header = "<html><head><style>body {background-color:#d6d6d6;} \
             .partition{position:relative; width:100%; float: left; background: white;} \
@@ -747,22 +750,14 @@ class InstallerWindow:
             f = tempfile.NamedTemporaryFile(delete=False)
             f.write(html)
             f.close()  
-            
-            browser = webkit.WebView()
-            s = browser.get_settings()
-            s.set_property('enable-file-access-from-file-uris', True)
-            s.set_property('enable-default-context-menu', False)            
-            browser.open(f.name)            
-            #browser.load_html_string(html, "file://")     
-            self.wTree.get_widget("scrolled_partitions").add(browser)
+                                   
+            self.browser.open(f.name)            
+            #browser.load_html_string(html, "file://")                 
             self.wTree.get_widget("scrolled_partitions").show_all()                                                                        
-            self.wTree.get_widget("treeview_disks").set_model(model)
-            
-            dialog.hide()
-            
+            self.wTree.get_widget("treeview_disks").set_model(model)                                
             self.window.set_sensitive(True)
             self.window.window.set_cursor(None)
-            gtk.gdk.threads_leave()
+            
         except Exception, detail:
             print detail
                                       
@@ -1072,12 +1067,10 @@ class InstallerWindow:
                     self.activate_page(self.PAGE_HDD)                
                 else:
                     self.activate_page(self.PAGE_PARTITIONS)                
-                    thr = threading.Thread(name="live-installer-disk-search", group=None, target=self.build_partitions, args=(), kwargs={})
-                    thr.start()                
+                    self.build_partitions()                    
             elif(sel == self.PAGE_HDD):
                 self.activate_page(self.PAGE_PARTITIONS)
-                thr = threading.Thread(name="live-installer-disk-search", group=None, target=self.build_partitions, args=(), kwargs={})
-                thr.start()                
+                self.build_partitions()
             elif(sel == self.PAGE_PARTITIONS):                
                 model = self.wTree.get_widget("treeview_disks").get_model()
                 error = True
