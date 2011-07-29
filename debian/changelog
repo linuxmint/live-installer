@@ -1,3 +1,9 @@
+live-installer (2011.07.29) debian; urgency=medium
+
+  * Renamed launcher file
+
+ -- Clement Lefebvre <root@linuxmint.com>  Fri,  29 Jul 2011 10:05:00 +0000
+
 live-installer (2011.07.25) debian; urgency=medium
 
   * Remove live-boot and live-boot-initramfs-tools
