@@ -1,3 +1,10 @@
+live-installer (2011.07.30) debian; urgency=medium
+
+  * Don't fail when a partition cannot be unmounted
+  * Don't try to unmount partitions which aren't mounted.. :)
+
+ -- Clement Lefebvre <root@linuxmint.com>  Sat,  30 Jul 2011 15:00:00 +0000
+
 live-installer (2011.07.29.1) debian; urgency=medium
 
   * Single threaded partition builder

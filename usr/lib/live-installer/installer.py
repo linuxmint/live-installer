@@ -380,17 +380,21 @@ class InstallerEngine:
             
             # now unmount it
             print " --> Unmounting partitions"
-            os.system("umount --force /target/dev/shm")
-            os.system("umount --force /target/dev/pts")
-            os.system("umount --force /target/dev/")
-            os.system("umount --force /target/sys/")
-            os.system("umount --force /target/proc/")
-            os.system("rm -rf /target/etc/resolv.conf")
-            for partition in setup.partitions:
-                if(partition.mount_as != "/" and partition.mount_as != "swap"):
-                    self.do_unmount("/target" + partition.mount_as)
-            self.do_unmount("/target")
-            self.do_unmount("/source")
+            try:
+                os.system("umount --force /target/dev/shm")
+                os.system("umount --force /target/dev/pts")
+                os.system("umount --force /target/dev/")
+                os.system("umount --force /target/sys/")
+                os.system("umount --force /target/proc/")
+                os.system("rm -rf /target/etc/resolv.conf")
+                for partition in setup.partitions:
+                    if(partition.mount_as is not None and partition.mount_as != "" and partition.mount_as != "/" and partition.mount_as != "swap"):
+                        self.do_unmount("/target" + partition.mount_as)
+                self.do_unmount("/target")
+                self.do_unmount("/source")
+            except Exception, detail:
+                #best effort, no big deal if we can't umount something
+                print detail 
 
             self.update_progress(done=True, message=_("Installation finished"))
             print " --> All done"
