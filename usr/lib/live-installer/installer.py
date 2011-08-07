@@ -44,7 +44,7 @@ class InstallerEngine:
         for partition in setup.partitions:                    
             if(partition.format_as is not None and partition.format_as != ""):                
                 # report it. should grab the total count of filesystems to be formatted ..
-                self.update_progress(total=4, current=1, pulse=True, message=_("Formatting %s as %s..." % (partition.partition.path, partition.format_as)))
+                self.update_progress(total=4, current=1, pulse=True, message=_("Formatting %(partition)s as %(format)s..." % {'partition':partition.partition.path, 'format':partition.format_as}))
                 
                 #Format it
                 if partition.format_as == "swap":
@@ -59,7 +59,7 @@ class InstallerEngine:
     def step_mount_partitions(self, setup):
         # Mount the installation media
         print " --> Mounting partitions"
-        self.update_progress(total=4, current=2, message=_("Mounting %s on %s") % (self.media, "/source/"))
+        self.update_progress(total=4, current=2, message=_("Mounting %(partition)s on %(mountpoint)s") % {'partition':self.media, 'mountpoint':"/source/"})
         print " ------ Mounting %s on %s" % (self.media, "/source/")
         self.do_mount(self.media, "/source/", self.media_type, options="loop")
         
@@ -67,7 +67,7 @@ class InstallerEngine:
         for partition in setup.partitions:                    
             if(partition.mount_as is not None and partition.mount_as != ""):   
                   if partition.mount_as == "/":
-                        self.update_progress(total=4, current=3, message=_("Mounting %s on %s") % (partition.partition.path, "/target/"))
+                        self.update_progress(total=4, current=3, message=_("Mounting %(partition)s on %(mountpoint)s") % {'partition':partition.partition.path, 'mountpoint':"/target/"})
                         print " ------ Mounting %s on %s" % (partition.partition.path, "/target/")
                         self.do_mount(partition.partition.path, "/target", partition.type, None)
                         break

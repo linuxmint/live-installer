@@ -1212,12 +1212,12 @@ class InstallerWindow:
             if(partition.format_as is not None and partition.format_as != ""):
                 # format it
                 iter = model.append(top)
-                model.set(iter, 0, "<b>%s</b>" % (_("Format %s as %s") % (partition.partition.path, partition.format_as)))
+                model.set(iter, 0, "<b>%s</b>" % (_("Format %(partition)s as %(format)s") % {'partition':partition.partition.path, 'format':partition.format_as}))
         for partition in self.setup.partitions:
             if(partition.mount_as is not None and partition.mount_as != ""):
                 # mount point
                 iter = model.append(top)
-                model.set(iter, 0, "<b>%s</b>" % (_("Mount %s as %s") % (partition.partition.path, partition.mount_as)))
+                model.set(iter, 0, "<b>%s</b>" % (_("Mount %(partition)s as %(mountpoint)s") % {'partition':partition.partition.path, 'mountpoint':partition.mount_as}))
         self.wTree.get_widget("treeview_overview").set_model(model)
 
     def do_install(self):        
