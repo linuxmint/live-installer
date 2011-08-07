@@ -89,8 +89,9 @@ class MessageDialog(object):
 
 class WizardPage:
 
-    def __init__(self, help_text):
-        self.help_text = help_text        
+    def __init__(self, help_text, icon):
+        self.help_text = help_text    
+        self.icon = icon    
 		
 class InstallerWindow:
 
@@ -123,15 +124,15 @@ class InstallerWindow:
         # Wizard pages
         [self.PAGE_LANGUAGE, self.PAGE_PARTITIONS, self.PAGE_USER, self.PAGE_ADVANCED, self.PAGE_KEYBOARD, self.PAGE_OVERVIEW, self.PAGE_INSTALL, self.PAGE_TIMEZONE, self.PAGE_HDD] = range(9)
         self.wizard_pages = range(9)
-        self.wizard_pages[self.PAGE_LANGUAGE] = WizardPage(_("Choose your language"))
-        self.wizard_pages[self.PAGE_TIMEZONE] = WizardPage(_("Choose your timezone"))
-        self.wizard_pages[self.PAGE_KEYBOARD] = WizardPage(_("Choose your keyboard layout"))
-        self.wizard_pages[self.PAGE_HDD] = WizardPage(_("On which hard drive do you want to install Linux Mint?"))
-        self.wizard_pages[self.PAGE_PARTITIONS] = WizardPage(_("Select where you want to install Linux Mint"))
-        self.wizard_pages[self.PAGE_USER] = WizardPage(_("Please indicate your name and select a username, a password and a hostname"))
-        self.wizard_pages[self.PAGE_ADVANCED] = WizardPage(_("Please review the following advanced options"))
-        self.wizard_pages[self.PAGE_OVERVIEW] = WizardPage(_("Please review this summary and make sure everything is correct"))
-        self.wizard_pages[self.PAGE_INSTALL] = WizardPage(_("Please wait while Linux Mint is being installed on your computer"))
+        self.wizard_pages[self.PAGE_LANGUAGE] = WizardPage(_("Choose your language"), "locales.png")
+        self.wizard_pages[self.PAGE_TIMEZONE] = WizardPage(_("Choose your timezone"), "time.png")
+        self.wizard_pages[self.PAGE_KEYBOARD] = WizardPage(_("Choose your keyboard layout"), "keyboard.png")
+        self.wizard_pages[self.PAGE_HDD] = WizardPage(_("On which hard drive do you want to install Linux Mint?"), "hdd.svg")
+        self.wizard_pages[self.PAGE_PARTITIONS] = WizardPage(_("Select where you want to install Linux Mint"), "hdd.svg")
+        self.wizard_pages[self.PAGE_USER] = WizardPage(_("Please indicate your name and select a username, a password and a hostname"), "user.png")
+        self.wizard_pages[self.PAGE_ADVANCED] = WizardPage(_("Please review the following advanced options"), "advanced.png")
+        self.wizard_pages[self.PAGE_OVERVIEW] = WizardPage(_("Please review this summary and make sure everything is correct"), "summary.png")
+        self.wizard_pages[self.PAGE_INSTALL] = WizardPage(_("Please wait while Linux Mint is being installed on your computer"), "install.png")
         
         # set the button events (wizard_cb)
         self.wTree.get_widget("button_next").connect("clicked", self.wizard_cb, False)
@@ -1035,6 +1036,7 @@ class InstallerWindow:
         
     def activate_page(self, index):
         self.wTree.get_widget("help_label").set_markup("<big><b>%s</b></big>" % self.wizard_pages[index].help_text)
+        self.wTree.get_widget("help_icon").set_from_file("/usr/share/live-installer/icons/%s" % self.wizard_pages[index].icon)
         self.wTree.get_widget("notebook1").set_current_page(index)
 
     def wizard_cb(self, widget, goback, data=None):

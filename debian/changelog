@@ -1,6 +1,7 @@
 live-installer (2011.08.07) debian; urgency=medium
 
   * Allow all HDDs to be used by grub
+  * Icons added to the top label
 
  -- Clement Lefebvre <root@linuxmint.com>  Sun,  07 Aug 2011 11:41:00 +0000
 
