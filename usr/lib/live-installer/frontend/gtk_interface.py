@@ -171,6 +171,7 @@ class InstallerWindow:
         self.wTree.get_widget("treeview_hdds").append_column(column)
         self.wTree.get_widget("treeview_hdds").connect("cursor-changed", self.assign_hdd)
         self.build_hdds()
+        self.build_grub_partitions()
         
         self.wTree.get_widget("button_edit").connect("clicked", self.edit_partitions)
         self.wTree.get_widget("label_edit_partitions").set_label(_("Edit partitions"))
@@ -573,7 +574,24 @@ class InstallerWindow:
             path = model.get_path(model.get_iter_first())
             treeview.set_cursor(path, focus_column=column)
             treeview.scroll_to_cell(path, column=column)
-            self.setup.target_disk = model.get_value(model.get_iter_first(), 0)        
+            self.setup.target_disk = model.get_value(model.get_iter_first(), 0) 
+    
+    def build_grub_partitions(self):
+        grub_model = gtk.ListStore(str)
+        # Add disks
+        for disk in self.setup.disks:
+            grub_model.append([disk])
+        # Add partitions
+        partitions = commands.getoutput("fdisk -l | grep ^/dev/").split("\n")
+        for partition in partitions:
+            try:
+                partition = partition.split()[0].strip()
+                if partition.startswith("/dev/"):
+                    grub_model.append([partition])
+            except Exception, detail:
+                print detail
+        self.wTree.get_widget("combobox_grub").set_model(grub_model)
+        self.wTree.get_widget("combobox_grub").set_active(0)
   
     def build_partitions(self):        
         self.window.set_sensitive(False)
@@ -584,7 +602,7 @@ class InstallerWindow:
         os.popen('mkdir -p /tmp/live-installer/tmpmount')
         
         try:                                                                                            
-            grub_model = gtk.ListStore(str)
+            #grub_model = gtk.ListStore(str)
             self.setup.partitions = []
             
             html_partitions = ""        
@@ -595,7 +613,7 @@ class InstallerWindow:
             
             if self.setup.target_disk is not None:
                 path =  self.setup.target_disk # i.e. /dev/sda
-                grub_model.append([path])
+                #grub_model.append([path])
                 device = parted.getDevice(path)
                 disk = parted.Disk(device)
                 partition = disk.getFirstPartition()
@@ -614,7 +632,7 @@ class InstallerWindow:
 
                         if partition.number != -1 and "swap" not in last_added_partition.type and partition.type != parted.PARTITION_EXTENDED:
                             
-                            grub_model.append([partition.path])
+                            #grub_model.append([partition.path])
 
                             #Umount temp folder
                             if ('/tmp/live-installer/tmpmount' in commands.getoutput('mount')):
@@ -734,8 +752,8 @@ class InstallerWindow:
                             
                     partition = partition.nextPartition()
                 html_partitions = html_partitions + "</tr></table>"
-            self.wTree.get_widget("combobox_grub").set_model(grub_model)
-            self.wTree.get_widget("combobox_grub").set_active(0)
+            #self.wTree.get_widget("combobox_grub").set_model(grub_model)
+            #self.wTree.get_widget("combobox_grub").set_active(0)
                         
             import tempfile            
             html_header = "<html><head><style>body {background-color:#d6d6d6;} \
