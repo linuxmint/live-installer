@@ -29,7 +29,7 @@ except Exception, detail:
     print detail
 
 
-gettext.install("live-installer", "/usr/share/locale")
+gettext.install("live-installer", "/usr/share/linuxmint/locale")
 gtk.gdk.threads_init()
 
 INDEX_PARTITION_PATH=0
@@ -124,15 +124,15 @@ class InstallerWindow:
         # Wizard pages
         [self.PAGE_LANGUAGE, self.PAGE_PARTITIONS, self.PAGE_USER, self.PAGE_ADVANCED, self.PAGE_KEYBOARD, self.PAGE_OVERVIEW, self.PAGE_INSTALL, self.PAGE_TIMEZONE, self.PAGE_HDD] = range(9)
         self.wizard_pages = range(9)
-        self.wizard_pages[self.PAGE_LANGUAGE] = WizardPage(_("Choose your language"), "locales.png")
-        self.wizard_pages[self.PAGE_TIMEZONE] = WizardPage(_("Choose your timezone"), "time.png")
-        self.wizard_pages[self.PAGE_KEYBOARD] = WizardPage(_("Choose your keyboard layout"), "keyboard.png")
-        self.wizard_pages[self.PAGE_HDD] = WizardPage(_("On which hard drive do you want to install Linux Mint?"), "hdd.svg")
-        self.wizard_pages[self.PAGE_PARTITIONS] = WizardPage(_("Select where you want to install Linux Mint"), "hdd.svg")
-        self.wizard_pages[self.PAGE_USER] = WizardPage(_("Please indicate your name and select a username, a password and a hostname"), "user.png")
-        self.wizard_pages[self.PAGE_ADVANCED] = WizardPage(_("Please review the following advanced options"), "advanced.png")
-        self.wizard_pages[self.PAGE_OVERVIEW] = WizardPage(_("Please review this summary and make sure everything is correct"), "summary.png")
-        self.wizard_pages[self.PAGE_INSTALL] = WizardPage(_("Please wait while Linux Mint is being installed on your computer"), "install.png")
+        self.wizard_pages[self.PAGE_LANGUAGE] = WizardPage("Choose your language", "locales.png")
+        self.wizard_pages[self.PAGE_TIMEZONE] = WizardPage("Choose your timezone", "time.png")
+        self.wizard_pages[self.PAGE_KEYBOARD] = WizardPage("Choose your keyboard layout", "keyboard.png")
+        self.wizard_pages[self.PAGE_HDD] = WizardPage("On which hard drive do you want to install Linux Mint?", "hdd.svg")
+        self.wizard_pages[self.PAGE_PARTITIONS] = WizardPage("Select where you want to install Linux Mint", "hdd.svg")
+        self.wizard_pages[self.PAGE_USER] = WizardPage("Please indicate your name and select a username, a password and a hostname", "user.png")
+        self.wizard_pages[self.PAGE_ADVANCED] = WizardPage("Please review the following advanced options", "advanced.png")
+        self.wizard_pages[self.PAGE_OVERVIEW] = WizardPage("Please review this summary and make sure everything is correct", "summary.png")
+        self.wizard_pages[self.PAGE_INSTALL] = WizardPage("Please wait while Linux Mint is being installed on your computer", "install.png")
         
         # set the button events (wizard_cb)
         self.wTree.get_widget("button_next").connect("clicked", self.wizard_cb, False)
@@ -164,12 +164,12 @@ class InstallerWindow:
 
         # disk view
         ren = gtk.CellRendererText()
-        column = gtk.TreeViewColumn("Hard drive", ren)
-        column.add_attribute(ren, "text", 0)
-        self.wTree.get_widget("treeview_hdds").append_column(column)
-        column = gtk.TreeViewColumn("Description", ren)
-        column.add_attribute(ren, "text", 1)
-        self.wTree.get_widget("treeview_hdds").append_column(column)
+        self.column1 = gtk.TreeViewColumn("Hard drive", ren)
+        self.column1.add_attribute(ren, "text", 0)
+        self.wTree.get_widget("treeview_hdds").append_column(self.column1)
+        self.column2 = gtk.TreeViewColumn("Description", ren)
+        self.column2.add_attribute(ren, "text", 1)
+        self.wTree.get_widget("treeview_hdds").append_column(self.column2)
         self.wTree.get_widget("treeview_hdds").connect("cursor-changed", self.assign_hdd)
         self.build_hdds()
         self.build_grub_partitions()
@@ -182,49 +182,39 @@ class InstallerWindow:
         
         # device
         ren = gtk.CellRendererText()
-        column = gtk.TreeViewColumn(_("Device"), ren)
-        column.add_attribute(ren, "markup", INDEX_PARTITION_PATH)
-        self.wTree.get_widget("treeview_disks").append_column(column)
+        self.column3 = gtk.TreeViewColumn(_("Device"), ren)
+        self.column3.add_attribute(ren, "markup", INDEX_PARTITION_PATH)
+        self.wTree.get_widget("treeview_disks").append_column(self.column3)
         # Type
         ren = gtk.CellRendererText()
-        column = gtk.TreeViewColumn(_("Type"), ren)
-        column.add_attribute(ren, "markup", INDEX_PARTITION_TYPE)
-        self.wTree.get_widget("treeview_disks").append_column(column)
+        self.column4 = gtk.TreeViewColumn(_("Type"), ren)
+        self.column4.add_attribute(ren, "markup", INDEX_PARTITION_TYPE)
+        self.wTree.get_widget("treeview_disks").append_column(self.column4)
         # description
         ren = gtk.CellRendererText()
-        column = gtk.TreeViewColumn(_("Operating system"), ren)
-        column.add_attribute(ren, "markup", INDEX_PARTITION_DESCRIPTION)
-        self.wTree.get_widget("treeview_disks").append_column(column)        
+        self.column5 = gtk.TreeViewColumn(_("Operating system"), ren)
+        self.column5.add_attribute(ren, "markup", INDEX_PARTITION_DESCRIPTION)
+        self.wTree.get_widget("treeview_disks").append_column(self.column5)        
         # mount point
         ren = gtk.CellRendererText()
-        column = gtk.TreeViewColumn(_("Mount point"), ren)
-        column.add_attribute(ren, "markup", INDEX_PARTITION_MOUNT_AS)
-        self.wTree.get_widget("treeview_disks").append_column(column)
+        self.column6 = gtk.TreeViewColumn(_("Mount point"), ren)
+        self.column6.add_attribute(ren, "markup", INDEX_PARTITION_MOUNT_AS)
+        self.wTree.get_widget("treeview_disks").append_column(self.column6)
         # format
         ren = gtk.CellRendererText()
-        column = gtk.TreeViewColumn(_("Format?"), ren)
-        column.add_attribute(ren, "markup", INDEX_PARTITION_FORMAT_AS)        
-        self.wTree.get_widget("treeview_disks").append_column(column)
+        self.column7 = gtk.TreeViewColumn(_("Format?"), ren)
+        self.column7.add_attribute(ren, "markup", INDEX_PARTITION_FORMAT_AS)        
+        self.wTree.get_widget("treeview_disks").append_column(self.column7)
         # size
         ren = gtk.CellRendererText()
-        column = gtk.TreeViewColumn(_("Size"), ren)
-        column.add_attribute(ren, "markup", INDEX_PARTITION_SIZE)
-        self.wTree.get_widget("treeview_disks").append_column(column)
+        self.column8 = gtk.TreeViewColumn(_("Size"), ren)
+        self.column8.add_attribute(ren, "markup", INDEX_PARTITION_SIZE)
+        self.wTree.get_widget("treeview_disks").append_column(self.column8)
         # Used space
         ren = gtk.CellRendererText()
-        column = gtk.TreeViewColumn(_("Free space"), ren)
-        column.add_attribute(ren, "markup", INDEX_PARTITION_FREE_SPACE)
-        self.wTree.get_widget("treeview_disks").append_column(column)
-
-        # about you
-        self.wTree.get_widget("label_your_name").set_markup("<b>%s</b>" % _("Your full name"))
-        self.wTree.get_widget("label_your_name_help").set_label(_("This will be shown in the About Me application"))
-        self.wTree.get_widget("label_username").set_markup("<b>%s</b>" % _("Your username"))
-        self.wTree.get_widget("label_username_help").set_label(_("This is the name you will use to login to your computer"))
-        self.wTree.get_widget("label_choose_pass").set_markup("<b>%s</b>" % _("Your password"))
-        self.wTree.get_widget("label_pass_help").set_label(_("Please enter your password twice to ensure it is correct"))
-        self.wTree.get_widget("label_hostname").set_markup("<b>%s</b>" % _("Hostname"))
-        self.wTree.get_widget("label_hostname_help").set_label(_("This hostname will be the computers name on the network"))
+        self.column9 = gtk.TreeViewColumn(_("Free space"), ren)
+        self.column9.add_attribute(ren, "markup", INDEX_PARTITION_FREE_SPACE)
+        self.wTree.get_widget("treeview_disks").append_column(self.column9)
 
         self.wTree.get_widget("entry_your_name").connect("notify::text", self.assign_realname)        
         self.wTree.get_widget("entry_username").connect("notify::text", self.assign_username)    
@@ -233,11 +223,6 @@ class InstallerWindow:
         # events for detecting password mismatch..        
         self.wTree.get_widget("entry_userpass1").connect("changed", self.assign_password)
         self.wTree.get_widget("entry_userpass2").connect("changed", self.assign_password)
-
-        # grub
-        self.wTree.get_widget("label_grub").set_markup("<b>%s</b>" % _("Bootloader"))
-        self.wTree.get_widget("checkbutton_grub").set_label(_("Install GRUB"))
-        self.wTree.get_widget("label_grub_help").set_label(_("GRUB is a bootloader used to load the Linux kernel"))
 
         # link the checkbutton to the combobox
         grub_check = self.wTree.get_widget("checkbutton_grub")
@@ -248,10 +233,6 @@ class InstallerWindow:
         # Install Grub by default
         grub_check.set_active(True)
         grub_box.set_sensitive(True)
-
-        # keyboard page
-        self.wTree.get_widget("label_test_kb").set_label(_("Use this box to test your keyboard layout"))
-        self.wTree.get_widget("label_kb_model").set_label(_("Model"))
         
         # kb models
         cell = gtk.CellRendererText()
@@ -261,26 +242,29 @@ class InstallerWindow:
 
         # kb layouts
         ren = gtk.CellRendererText()
-        column = gtk.TreeViewColumn(_("Layout"), ren)
-        column.add_attribute(ren, "text", 0)
-        self.wTree.get_widget("treeview_layouts").append_column(column)
+        self.column10 = gtk.TreeViewColumn(_("Layout"), ren)
+        self.column10.add_attribute(ren, "text", 0)
+        self.wTree.get_widget("treeview_layouts").append_column(self.column10)
         self.wTree.get_widget("treeview_layouts").connect("cursor-changed", self.assign_keyboard_layout)
         
         ren = gtk.CellRendererText()
-        column = gtk.TreeViewColumn(_("Variant"), ren)
-        column.add_attribute(ren, "text", 0)
-        self.wTree.get_widget("treeview_variants").append_column(column)
+        self.column11 = gtk.TreeViewColumn(_("Variant"), ren)
+        self.column11.add_attribute(ren, "text", 0)
+        self.wTree.get_widget("treeview_variants").append_column(self.column11)
         self.wTree.get_widget("treeview_variants").connect("cursor-changed", self.assign_keyboard_variant)
         
         self.build_kb_lists()
 
         # 'about to install' aka overview
         ren = gtk.CellRendererText()
-        column = gtk.TreeViewColumn(_("Overview"), ren)
-        column.add_attribute(ren, "markup", 0)
-        self.wTree.get_widget("treeview_overview").append_column(column)
+        self.column12 = gtk.TreeViewColumn(_("Overview"), ren)
+        self.column12.add_attribute(ren, "markup", 0)
+        self.wTree.get_widget("treeview_overview").append_column(self.column12)
         # install page
         self.wTree.get_widget("label_install_progress").set_markup("<i>%s</i>" % _("Calculating file indexes..."))
+    
+        #i18n
+        self.i18n()
 
         # build partition list
         self.should_pulse = False
@@ -314,11 +298,7 @@ class InstallerWindow:
         #    s.set_property('enable-default-context-menu', False)
         #    browser.open("file://" + slideshow_path  + "#?locale=" + locale_code)
         #    self.wTree.get_widget("vbox_install").add(browser)
-        #    self.wTree.get_widget("vbox_install").show_all()            
-                                          
-        self.wTree.get_widget("label_install_1").set_label(_("Please wait while the operating system is installed on your computer."))
-        self.wTree.get_widget("label_install_2").set_label(_("The installation should take approximately 10 minutes."))
-        self.wTree.get_widget("label_install_3").set_label(_("We hope you enjoy this new release. Thank you for choosing Linux Mint."))     
+        #    self.wTree.get_widget("vbox_install").show_all()                                                            
         
         self.browser = webkit.WebView()
         s = self.browser.get_settings()
@@ -327,6 +307,45 @@ class InstallerWindow:
         self.wTree.get_widget("scrolled_partitions").add(self.browser)   
         
         self.window.show_all()
+        
+    def i18n(self):
+        # about you
+        self.wTree.get_widget("label_your_name").set_markup("<b>%s</b>" % _("Your full name"))
+        self.wTree.get_widget("label_your_name_help").set_label(_("This will be shown in the About Me application"))
+        self.wTree.get_widget("label_username").set_markup("<b>%s</b>" % _("Your username"))
+        self.wTree.get_widget("label_username_help").set_label(_("This is the name you will use to login to your computer"))
+        self.wTree.get_widget("label_choose_pass").set_markup("<b>%s</b>" % _("Your password"))
+        self.wTree.get_widget("label_pass_help").set_label(_("Please enter your password twice to ensure it is correct"))
+        self.wTree.get_widget("label_hostname").set_markup("<b>%s</b>" % _("Hostname"))
+        self.wTree.get_widget("label_hostname_help").set_label(_("This hostname will be the computers name on the network"))
+        
+        # grub
+        self.wTree.get_widget("label_grub").set_markup("<b>%s</b>" % _("Bootloader"))
+        self.wTree.get_widget("checkbutton_grub").set_label(_("Install GRUB"))
+        self.wTree.get_widget("label_grub_help").set_label(_("GRUB is a bootloader used to load the Linux kernel"))
+        
+        # keyboard page
+        self.wTree.get_widget("label_test_kb").set_label(_("Use this box to test your keyboard layout"))
+        self.wTree.get_widget("label_kb_model").set_label(_("Model"))
+        
+        #Installation
+        self.wTree.get_widget("label_install_1").set_label(_("Please wait while the operating system is installed on your computer."))
+        self.wTree.get_widget("label_install_2").set_label(_("The installation should take approximately 10 minutes."))
+        self.wTree.get_widget("label_install_3").set_label(_("We hope you enjoy this new release. Thank you for choosing Linux Mint."))    
+        
+        #Columns
+        self.column1.set_title(_("Hard drive")) 
+        self.column2.set_title(_("Description")) 
+        self.column3.set_title(_("Device")) 
+        self.column4.set_title(_("Type")) 
+        self.column5.set_title(_("Operating system")) 
+        self.column6.set_title(_("Mount point")) 
+        self.column7.set_title(_("Format?")) 
+        self.column8.set_title(_("Size")) 
+        self.column9.set_title(_("Free space")) 
+        self.column10.set_title(_("Layout")) 
+        self.column11.set_title(_("Variant")) 
+        self.column12.set_title(_("Overview")) 
 
     def assign_realname(self, entry, prop):
         self.setup.real_name = entry.props.text
@@ -928,6 +947,14 @@ class InstallerWindow:
         row = model[active]
         self.setup.language = row[1]
         self.setup.print_setup()
+        try:            
+            self.translation = gettext.translation('live-installer', "/usr/share/linuxmint/locale", languages=[self.setup.language])
+            self.translation.install()
+        except Exception, detail:
+            print "No translation found, switching back to English"
+            self.translation = gettext.translation('live-installer', "/usr/share/linuxmint/locale", languages=['en'])
+            self.translation.install()        
+        self.i18n()
 
     def assign_hdd(self, treeview, data=None):
         ''' Called whenever someone updates the HDD '''
@@ -1035,7 +1062,8 @@ class InstallerWindow:
         self.setup.print_setup()
         
     def activate_page(self, index):
-        self.wTree.get_widget("help_label").set_markup("<big><b>%s</b></big>" % self.wizard_pages[index].help_text)
+        help_text = _(self.wizard_pages[index].help_text)        
+        self.wTree.get_widget("help_label").set_markup("<big><b>%s</b></big>" % help_text)
         self.wTree.get_widget("help_icon").set_from_file("/usr/share/live-installer/icons/%s" % self.wizard_pages[index].icon)
         self.wTree.get_widget("notebook1").set_current_page(index)
 
