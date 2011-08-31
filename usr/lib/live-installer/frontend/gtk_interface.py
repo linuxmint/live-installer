@@ -86,6 +86,25 @@ class MessageDialog(object):
         dialog.set_icon_from_file("/usr/share/icons/live-installer.png")
         dialog.run()
         dialog.destroy()
+        
+class QuestionDialog(object):
+    def __init__(self, title, message):
+        self.title = title
+        self.message = message       
+
+    ''' Show me on screen '''
+    def show(self):    
+        dialog = gtk.MessageDialog(None, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_QUESTION, gtk.BUTTONS_YES_NO, self.message)
+        dialog.set_title(self.title)
+        dialog.set_position(gtk.WIN_POS_CENTER)
+        dialog.set_icon_from_file("/usr/share/icons/live-installer.png")
+        answer = dialog.run()
+        if respons==gtk.RESPONSE_YES:
+            return_value = True
+        else:
+            return_value = False
+        dialog.destroy()
+        return return_value    
 
 class WizardPage:
 
@@ -634,8 +653,43 @@ class InstallerWindow:
             if self.setup.target_disk is not None:
                 path =  self.setup.target_disk # i.e. /dev/sda
                 #grub_model.append([path])
-                device = parted.getDevice(path)
-                disk = parted.Disk(device)
+                device = parted.getDevice(path)                
+                try:
+                    disk = parted.Disk(device)
+                except Exception:
+                    dialog = QuestionDialog(_("Installation Tool"), _("No partition table was found on the hard drive. Do you want the installer to create a set of partitions for you? Note: This will erase any data present on the disk."))
+                    if (dialog.show()):
+                        # Create a default partition set up                        
+                        disk = parted.freshDisk(device, 'msdos')
+                        disk.commit()
+
+                        #Swap
+                        regions = disk.getFreeSpaceRegions()
+                        if len(regions) > 0:
+                            region = regions[-1]    
+                            ram_size = int(commands.getoutput("cat /proc/meminfo | grep MemTotal | awk {'print $2'}")) # in KiB
+                            num_sectors = parted.sizeToSectors(ram_size, "KiB", device.sectorSize)
+                            num_sectors = int(float(num_sectors) * 1.5) # Swap is 1.5 times bigger than RAM
+                            if num_sectors < region.length:
+                                new_geom = parted.Geometry(device=device, start=1, length=num_sectors)
+                                partition = parted.Partition(disk=disk, type=parted.PARTITION_NORMAL, geometry=new_geom)
+                                constraint = parted.Constraint(exactGeom=new_geom)
+                                disk.addPartition(partition=partition, constraint=constraint)
+                                disk.commit()    
+                                os.system("mkswap /dev/sda1")
+
+                        #Root 
+                        regions = disk.getFreeSpaceRegions()
+                        if len(regions) > 0:
+                            region = regions[-1]
+                            partition = parted.Partition(disk=disk, type=parted.PARTITION_NORMAL, geometry=region)
+                            constraint = parted.Constraint(exactGeom=region)
+                            disk.addPartition(partition=partition, constraint=constraint)
+                            disk.commit()
+                            os.system("mkfs.ext4 /dev/sda2")                        
+                    else:
+                        # Do nothing... just get out of here..
+                        raise
                 partition = disk.getFirstPartition()
                 last_added_partition = PartitionSetup(partition)
                 #self.setup.partitions.append(last_added_partition)
@@ -793,13 +847,19 @@ class InstallerWindow:
             #browser.load_html_string(html, "file://")                 
             self.wTree.get_widget("scrolled_partitions").show_all()                                                                        
             self.wTree.get_widget("treeview_disks").set_model(model)                                
-            self.window.set_sensitive(True)
-            self.window.window.set_cursor(None)
+            
             
         except Exception, detail:
             print detail
-                                      
+            dialog = QuestionDialog(_("Installation Tool"), _("No partition table was found on the hard drive. Do you want the installer to create a set of partitions for you? Note: This will erase any data present on the disk."))
+            if (dialog.show()):
+                # Create a default partition set up
                 
+            else:
+                # Do nothing... 
+                
+        self.window.set_sensitive(True)
+        self.window.window.set_cursor(None)        
         
 
     def build_kb_lists(self):

@@ -1,3 +1,9 @@
+live-installer (2011.08.31) debian; urgency=medium
+
+  * If the HDD has no partition table, create a default set of partitions
+
+ -- Clement Lefebvre <root@linuxmint.com>  Wed,  31 Aug 2011 17:11:00 +0000
+
 live-installer (2011.08.07) debian; urgency=medium
 
   * Allow all HDDs to be used by grub
