@@ -1,6 +1,9 @@
 live-installer (2011.08.31) debian; urgency=medium
 
   * If the HDD has no partition table, create a default set of partitions
+  * In /etc/fstab: Do not add partitions when their mount point is None
+  * In /etc/fstab: Non-ext filesystems now use default mount options instead of ext specific ones
+  * In /etc/fstab: Activate fsck flag for the root partition
 
  -- Clement Lefebvre <root@linuxmint.com>  Wed,  31 Aug 2011 17:11:00 +0000
 

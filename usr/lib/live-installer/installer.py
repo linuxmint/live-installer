@@ -222,26 +222,38 @@ class InstallerEngine:
             fstab = open("/target/etc/fstab", "a")
             fstab.write("proc\t/proc\tproc\tdefaults\t0\t0\n")
             for partition in setup.partitions:
-                partition_uuid = partition.partition.path # If we can't find the UUID we use the path
-                try:                    
-                    blkid = commands.getoutput('blkid').split('\n')
-                    for blkid_line in blkid:
-                        blkid_elements = blkid_line.split(':')
-                        if blkid_elements[0] == partition.partition.path:
-                            blkid_mini_elements = blkid_line.split()
-                            for blkid_mini_element in blkid_mini_elements:
-                                if "UUID=" in blkid_mini_element:
-                                    partition_uuid = blkid_mini_element.replace('"', '').strip()
-                                    break
-                            break
-                except Exception, detail:
-                    print detail
-                
-                fstab.write("# %s\n" % (partition.partition.path))
-                if(partition.type == "swap"):                    
-                    fstab.write("%s\tswap\tswap\tsw\t0\t0\n" % partition_uuid)
-                else:                                                    
-                    fstab.write("%s\t%s\t%s\t%s\t%s\t%s\n" % (partition_uuid, partition.mount_as, partition.type, "rw,errors=remount-ro", "0", "0"))
+                if (partition.mount_as is not None and partition.mount_as != "None"):
+                    partition_uuid = partition.partition.path # If we can't find the UUID we use the path
+                    try:                    
+                        blkid = commands.getoutput('blkid').split('\n')
+                        for blkid_line in blkid:
+                            blkid_elements = blkid_line.split(':')
+                            if blkid_elements[0] == partition.partition.path:
+                                blkid_mini_elements = blkid_line.split()
+                                for blkid_mini_element in blkid_mini_elements:
+                                    if "UUID=" in blkid_mini_element:
+                                        partition_uuid = blkid_mini_element.replace('"', '').strip()
+                                        break
+                                break
+                    except Exception, detail:
+                        print detail
+                                        
+                    fstab.write("# %s\n" % (partition.partition.path))                            
+                    
+                    if(partition.mount_as == "/"):
+                        fstab_fsck_option = "1"
+                    else:
+                        fstab_fsck_option = "0" 
+                                            
+                    if("ext" in partition.type):
+                        fstab_mount_options = "rw,errors=remount-ro"
+                    else:
+                        fstab_mount_options = "defaults"
+                        
+                    if(partition.type == "swap"):                    
+                        fstab.write("%s\tswap\tswap\tsw\t0\t0\n" % partition_uuid)
+                    else:                                                    
+                        fstab.write("%s\t%s\t%s\t%s\t%s\t%s\n" % (partition_uuid, partition.mount_as, partition.type, fstab_mount_options, "0", fstab_fsck_option))
             fstab.close()
             
             # write host+hostname infos
