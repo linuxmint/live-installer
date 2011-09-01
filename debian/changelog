@@ -1,3 +1,11 @@
+live-installer (2011.09.02) debian; urgency=medium
+
+  * Fixed self.column1 warning and activation of language by default
+  * Fixed partition table question dialog not working
+  * Fixed default partition setup - partition names
+
+ -- Clement Lefebvre <root@linuxmint.com>  Thu,  1 Sep 2011 13:18:00 +0000
+
 live-installer (2011.09.01) debian; urgency=medium
 
   * Indentation bug fix in GTK frontend

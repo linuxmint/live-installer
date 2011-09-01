@@ -99,7 +99,7 @@ class QuestionDialog(object):
         dialog.set_position(gtk.WIN_POS_CENTER)
         dialog.set_icon_from_file("/usr/share/icons/live-installer.png")
         answer = dialog.run()
-        if respons==gtk.RESPONSE_YES:
+        if answer==gtk.RESPONSE_YES:
             return_value = True
         else:
             return_value = False
@@ -167,8 +167,7 @@ class InstallerWindow:
         column = gtk.TreeViewColumn("Languages", ren)
         column.add_attribute(ren, "text", 0)
         self.wTree.get_widget("treeview_language_list").append_column(column)
-
-        
+        self.wTree.get_widget("treeview_language_list").connect("cursor-changed", self.assign_language)
 
         # build the language list
         self.build_lang_list()
@@ -176,7 +175,6 @@ class InstallerWindow:
         column = gtk.TreeViewColumn("Timezones", ren)
         column.add_attribute(ren, "text", 0)
         self.wTree.get_widget("treeview_timezones").append_column(column)
-
         self.wTree.get_widget("treeview_timezones").connect("cursor-changed", self.assign_timezone)
 
         self.build_timezones()
@@ -324,8 +322,6 @@ class InstallerWindow:
         s.set_property('enable-file-access-from-file-uris', True)
         s.set_property('enable-default-context-menu', False)     
         self.wTree.get_widget("scrolled_partitions").add(self.browser)   
-        
-        self.wTree.get_widget("treeview_language_list").connect("cursor-changed", self.assign_language)
         
         self.window.show_all()
         
@@ -678,7 +674,7 @@ class InstallerWindow:
                                 constraint = parted.Constraint(exactGeom=new_geom)
                                 disk.addPartition(partition=partition, constraint=constraint)
                                 disk.commit()    
-                                os.system("mkswap /dev/sda1")
+                                os.system("mkswap %s" % partition.path)                                
 
                         #Root
                         regions = disk.getFreeSpaceRegions()
@@ -687,8 +683,8 @@ class InstallerWindow:
                             partition = parted.Partition(disk=disk, type=parted.PARTITION_NORMAL, geometry=region)
                             constraint = parted.Constraint(exactGeom=region)
                             disk.addPartition(partition=partition, constraint=constraint)
-                            disk.commit()
-                            os.system("mkfs.ext4 /dev/sda2")                        
+                            disk.commit()                            
+                            os.system("mkfs.ext4 %s" % partition.path)                   
                     else:
                         # Do nothing... just get out of here..
                         raise
@@ -1010,7 +1006,10 @@ class InstallerWindow:
             print "No translation found, switching back to English"
             self.translation = gettext.translation('live-installer', "/usr/share/linuxmint/locale", languages=['en'])
             self.translation.install()        
-        self.i18n()
+        try:
+            self.i18n()
+        except:
+            pass # Best effort. Fails the first time as self.column1 doesn't exist yet.
 
     def assign_hdd(self, treeview, data=None):
         ''' Called whenever someone updates the HDD '''
