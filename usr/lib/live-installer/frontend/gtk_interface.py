@@ -189,7 +189,7 @@ class InstallerWindow:
         self.wTree.get_widget("treeview_hdds").append_column(self.column2)
         self.wTree.get_widget("treeview_hdds").connect("cursor-changed", self.assign_hdd)
         self.build_hdds()
-        self.build_grub_partitions()
+        #self.build_grub_partitions()
         
         self.wTree.get_widget("button_edit").connect("clicked", self.edit_partitions)
         self.wTree.get_widget("label_edit_partitions").set_label(_("Edit partitions"))
@@ -1237,6 +1237,7 @@ class InstallerWindow:
                 if (errorFound):
                     MessageDialog(_("Installation Tool"), errorMessage, gtk.MESSAGE_WARNING).show()
                 else:
+                     self.build_grub_partitions()
                      self.activate_page(self.PAGE_ADVANCED)
             elif(sel == self.PAGE_ADVANCED):
                 self.activate_page(self.PAGE_OVERVIEW)

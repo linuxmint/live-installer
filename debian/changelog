@@ -1,3 +1,9 @@
+live-installer (2011.09.05) debian; urgency=medium
+
+  * Generate grub partitions in combo before showing the advanced page
+
+ -- Clement Lefebvre <root@linuxmint.com>  Thu,  1 Sep 2011 18:18:00 +0000
+
 live-installer (2011.09.04) debian; urgency=medium
 
   * Create a 1MiB post-MBR gap in the partition table to accomodate Grub2
