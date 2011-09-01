@@ -1,3 +1,9 @@
+live-installer (2011.09.03) debian; urgency=medium
+
+  * Fixed, refresh partition table after creating it.
+
+ -- Clement Lefebvre <root@linuxmint.com>  Thu,  1 Sep 2011 14:55:00 +0000
+
 live-installer (2011.09.02) debian; urgency=medium
 
   * Fixed self.column1 warning and activation of language by default

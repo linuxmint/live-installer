@@ -684,7 +684,9 @@ class InstallerWindow:
                             constraint = parted.Constraint(exactGeom=region)
                             disk.addPartition(partition=partition, constraint=constraint)
                             disk.commit()                            
-                            os.system("mkfs.ext4 %s" % partition.path)                   
+                            os.system("mkfs.ext4 %s" % partition.path)
+                        self.build_partitions()
+                        return
                     else:
                         # Do nothing... just get out of here..
                         raise
