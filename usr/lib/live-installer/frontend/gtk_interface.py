@@ -168,7 +168,7 @@ class InstallerWindow:
         column.add_attribute(ren, "text", 0)
         self.wTree.get_widget("treeview_language_list").append_column(column)
 
-        self.wTree.get_widget("treeview_language_list").connect("cursor-changed", self.assign_language)
+        
 
         # build the language list
         self.build_lang_list()
@@ -324,6 +324,8 @@ class InstallerWindow:
         s.set_property('enable-file-access-from-file-uris', True)
         s.set_property('enable-default-context-menu', False)     
         self.wTree.get_widget("scrolled_partitions").add(self.browser)   
+        
+        self.wTree.get_widget("treeview_language_list").connect("cursor-changed", self.assign_language)
         
         self.window.show_all()
         
@@ -678,7 +680,7 @@ class InstallerWindow:
                                 disk.commit()    
                                 os.system("mkswap /dev/sda1")
 
-                        #Root 
+                        #Root
                         regions = disk.getFreeSpaceRegions()
                         if len(regions) > 0:
                             region = regions[-1]
@@ -850,13 +852,7 @@ class InstallerWindow:
             
             
         except Exception, detail:
-            print detail
-            dialog = QuestionDialog(_("Installation Tool"), _("No partition table was found on the hard drive. Do you want the installer to create a set of partitions for you? Note: This will erase any data present on the disk."))
-            if (dialog.show()):
-                # Create a default partition set up
-                
-            else:
-                # Do nothing... 
+            print detail  
                 
         self.window.set_sensitive(True)
         self.window.window.set_cursor(None)        

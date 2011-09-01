@@ -1,3 +1,10 @@
+live-installer (2011.09.01) debian; urgency=medium
+
+  * Indentation bug fix in GTK frontend
+  * Fixed warning message about missing column called by i18n()
+
+ -- Clement Lefebvre <root@linuxmint.com>  Thu,  1 Sep 2011 12:24:00 +0000
+
 live-installer (2011.08.31) debian; urgency=medium
 
   * If the HDD has no partition table, create a default set of partitions
