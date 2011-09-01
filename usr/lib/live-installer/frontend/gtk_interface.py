@@ -666,14 +666,19 @@ class InstallerWindow:
                         if len(regions) > 0:
                             region = regions[-1]    
                             ram_size = int(commands.getoutput("cat /proc/meminfo | grep MemTotal | awk {'print $2'}")) # in KiB
+                            post_mbr_gap = parted.sizeToSectors(1, "MiB", device.sectorSize) # Grub2 requires a post-MBR gap
+                            start = post_mbr_gap
                             num_sectors = parted.sizeToSectors(ram_size, "KiB", device.sectorSize)
                             num_sectors = int(float(num_sectors) * 1.5) # Swap is 1.5 times bigger than RAM
-                            if num_sectors < region.length:
-                                new_geom = parted.Geometry(device=device, start=1, length=num_sectors)
-                                partition = parted.Partition(disk=disk, type=parted.PARTITION_NORMAL, geometry=new_geom)
-                                constraint = parted.Constraint(exactGeom=new_geom)
+                            end = start + num_sectors
+                            cylinder = device.endSectorToCylinder(end)
+                            end = device.endCylinderToSector(cylinder)
+                            geometry = parted.Geometry(device=device, start=start, end=end)
+                            if end < region.length:
+                                partition = parted.Partition(disk=disk, type=parted.PARTITION_NORMAL, geometry=geometry)
+                                constraint = parted.Constraint(exactGeom=geometry)
                                 disk.addPartition(partition=partition, constraint=constraint)
-                                disk.commit()    
+                                disk.commit()
                                 os.system("mkswap %s" % partition.path)                                
 
                         #Root
@@ -685,6 +690,7 @@ class InstallerWindow:
                             disk.addPartition(partition=partition, constraint=constraint)
                             disk.commit()                            
                             os.system("mkfs.ext4 %s" % partition.path)
+                       
                         self.build_partitions()
                         return
                     else:

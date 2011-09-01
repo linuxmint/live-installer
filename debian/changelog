@@ -1,3 +1,10 @@
+live-installer (2011.09.04) debian; urgency=medium
+
+  * Create a 1MiB post-MBR gap in the partition table to accomodate Grub2
+  * Align the end of the swap partition on the nearest cylinder
+
+ -- Clement Lefebvre <root@linuxmint.com>  Thu,  1 Sep 2011 17:18:00 +0000
+
 live-installer (2011.09.03) debian; urgency=medium
 
   * Fixed, refresh partition table after creating it.
