@@ -308,7 +308,7 @@ class InstallerEngine:
             if setup.language != "en_US":                
                 os.system("apt-get update")
                 self.do_run_in_chroot("apt-get update")
-                locale = setup.language.replace("_", "-")                
+                locale = setup.language.replace("_", "-").lower()                
                                
                 num_res = commands.getoutput("aptitude search firefox-l10n-%s | grep firefox-l10n-%s | wc -l" % (locale, locale))
                 if num_res != "0":                    

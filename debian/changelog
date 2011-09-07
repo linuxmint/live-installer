@@ -1,3 +1,9 @@
+live-installer (2011.09.07) debian; urgency=medium
+
+  * Fix installer failing to localize firefox/thunderbird for locales which define country variants (pt_BR for instance)
+
+ -- Clement Lefebvre <root@linuxmint.com>  Wed,  7 Sep 2011 11:12:00 +0000
+
 live-installer (2011.09.05) debian; urgency=medium
 
   * Generate grub partitions in combo before showing the advanced page
