@@ -1327,11 +1327,14 @@ class InstallerWindow:
 
             # do we dare? ..
             self.critical_error_happened = False
+
+            do_try_finish_install = True
             
             try:
-                inst.install(self.setup)
+                inst.init_install(self.setup)
             except Exception, detail1:
                 print detail1
+                do_try_finish_install = False
                 try:
                     gtk.gdk.threads_enter()
                     MessageDialog(_("Installation error"), str(detail1), gtk.MESSAGE_ERROR).show()
@@ -1339,20 +1342,38 @@ class InstallerWindow:
                 except Exception, detail2:
                     print detail2
 
-            # show a message dialog thingum
-            while(not self.done):
-                time.sleep(0.1)
-            
             if self.critical_error_happened:
                 gtk.gdk.threads_enter()
                 MessageDialog(_("Installation error"), self.critical_error_message, gtk.MESSAGE_ERROR).show()
-                gtk.gdk.threads_leave()                
-            else:
-                gtk.gdk.threads_enter()
-                MessageDialog(_("Installation finished"), _("Installation is now complete. Please restart your computer to use the new system"), gtk.MESSAGE_INFO).show()
                 gtk.gdk.threads_leave()
+                do_try_finish_install = False
+
+            if do_try_finish_install:
+                try:
+                    inst.finish_install(self.setup)
+                except Exception, detail1:
+                    print detail1
+                    try:
+                        gtk.gdk.threads_enter()
+                        MessageDialog(_("Installation error"), str(detail1), gtk.MESSAGE_ERROR).show()
+                        gtk.gdk.threads_leave()
+                    except Exception, detail2:
+                        print detail2
+
+                # show a message dialog thingum
+                while(not self.done):
+                    time.sleep(0.1)
+            
+                if self.critical_error_happened:
+                    gtk.gdk.threads_enter()
+                    MessageDialog(_("Installation error"), self.critical_error_message, gtk.MESSAGE_ERROR).show()
+                    gtk.gdk.threads_leave()                
+                else:
+                    gtk.gdk.threads_enter()
+                    MessageDialog(_("Installation finished"), _("Installation is now complete. Please restart your computer to use the new system"), gtk.MESSAGE_INFO).show()
+                    gtk.gdk.threads_leave()
                 
-            print " ## INSTALLATION COMPLETE "
+                print " ## INSTALLATION COMPLETE "
             
         except Exception, detail:
             print "!!!! General exception"
