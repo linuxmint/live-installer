@@ -127,6 +127,7 @@ class InstallerWindow:
         # should be set early
         self.done = False
         self.fail = False
+        self.paused = False
 
         # here comes the installer engine
         self.installer = InstallerEngine()
@@ -141,17 +142,19 @@ class InstallerWindow:
         self.window.connect("destroy", self.quit_cb)
 
         # Wizard pages
-        [self.PAGE_LANGUAGE, self.PAGE_PARTITIONS, self.PAGE_USER, self.PAGE_ADVANCED, self.PAGE_KEYBOARD, self.PAGE_OVERVIEW, self.PAGE_INSTALL, self.PAGE_TIMEZONE, self.PAGE_HDD] = range(9)
-        self.wizard_pages = range(9)
+        [self.PAGE_LANGUAGE, self.PAGE_PARTITIONS, self.PAGE_USER, self.PAGE_ADVANCED, self.PAGE_KEYBOARD, self.PAGE_OVERVIEW, self.PAGE_INSTALL, self.PAGE_TIMEZONE, self.PAGE_HDD, self.PAGE_CUSTOMWARNING, self.PAGE_CUSTOMPAUSED] = range(11)
+        self.wizard_pages = range(11)
         self.wizard_pages[self.PAGE_LANGUAGE] = WizardPage("Choose your language", "locales.png")
         self.wizard_pages[self.PAGE_TIMEZONE] = WizardPage("Choose your timezone", "time.png")
         self.wizard_pages[self.PAGE_KEYBOARD] = WizardPage("Choose your keyboard layout", "keyboard.png")
         self.wizard_pages[self.PAGE_USER] = WizardPage("Please indicate your name and select a username, a password and a hostname", "user.png")
         self.wizard_pages[self.PAGE_HDD] = WizardPage("On which hard drive do you want to install Linux Mint?", "hdd.svg")
         self.wizard_pages[self.PAGE_PARTITIONS] = WizardPage("Select where you want to install Linux Mint", "hdd.svg")
+        self.wizard_pages[self.PAGE_CUSTOMWARNING] = WizardPage("Please make sure you wish to manually manage partitions", "hdd.svg")
         self.wizard_pages[self.PAGE_ADVANCED] = WizardPage("Please review the following advanced options", "advanced.png")
         self.wizard_pages[self.PAGE_OVERVIEW] = WizardPage("Please review this summary and make sure everything is correct", "summary.png")
         self.wizard_pages[self.PAGE_INSTALL] = WizardPage("Please wait while Linux Mint is being installed on your computer", "install.png")
+        self.wizard_pages[self.PAGE_CUSTOMPAUSED] = WizardPage("Installation is Paused: Please finish custom installation", "install.png")
         
         # set the button events (wizard_cb)
         self.wTree.get_widget("button_next").connect("clicked", self.wizard_cb, False)
@@ -190,6 +193,10 @@ class InstallerWindow:
         self.wTree.get_widget("treeview_hdds").connect("cursor-changed", self.assign_hdd)
         self.build_hdds()
         #self.build_grub_partitions()
+
+        self.wTree.get_widget("radio_hdd").set_group(self.wTree.get_widget("radio_custom"))
+        self.wTree.get_widget("radio_hdd").connect("toggled", self.hdd_pane_toggled)
+        self.wTree.get_widget("radio_hdd").set_active(True)
         
         self.wTree.get_widget("button_edit").connect("clicked", self.edit_partitions)
         self.wTree.get_widget("label_edit_partitions").set_label(_("Edit partitions"))
@@ -324,6 +331,32 @@ class InstallerWindow:
         self.wTree.get_widget("scrolled_partitions").add(self.browser)   
         
         self.window.show_all()
+
+        # fix text wrap
+        self.fix_text_wrap()
+
+    def fix_text_wrap(self):
+        while gtk.events_pending():
+            gtk.main_iteration_do(False)
+
+        # this looks bad on resize, but to handle it on resize gracefully requires quite a bit of code (to keep from lagging)
+        width = self.window.get_size()[0] - 75
+
+        # custom install warning
+        self.wTree.get_widget("label_custom_install_directions_1").set_size_request(width, -1)
+        self.wTree.get_widget("label_custom_install_directions_1").set_size_request(width, -1)
+        self.wTree.get_widget("label_custom_install_directions_2").set_size_request(width, -1)
+        self.wTree.get_widget("label_custom_install_directions_3").set_size_request(width, -1)
+        self.wTree.get_widget("label_custom_install_directions_4").set_size_request(width, -1)
+        self.wTree.get_widget("label_custom_install_directions_5").set_size_request(width, -1)
+        self.wTree.get_widget("label_custom_install_directions_6").set_size_request(width, -1)
+
+        # custom install installation paused directions
+        self.wTree.get_widget("label_custom_install_paused_1").set_size_request(width, -1)
+        self.wTree.get_widget("label_custom_install_paused_2").set_size_request(width, -1)
+        self.wTree.get_widget("label_custom_install_paused_3").set_size_request(width, -1)
+        self.wTree.get_widget("label_custom_install_paused_4").set_size_request(width, -1)
+        self.wTree.get_widget("label_custom_install_paused_5").set_size_request(width, -1)
         
     def i18n(self):
         # about you
@@ -349,6 +382,25 @@ class InstallerWindow:
         self.wTree.get_widget("label_install_1").set_label(_("Please wait while the operating system is installed on your computer."))
         self.wTree.get_widget("label_install_2").set_label(_("The installation should take approximately 10 minutes."))
         self.wTree.get_widget("label_install_3").set_label(_("We hope you enjoy this new release. Thank you for choosing Linux Mint."))    
+
+        # custom install warning
+        self.wTree.get_widget("label_custom_install_directions_1").set_label(_("You have selected to manage your partitions manually, this feature is for ADVANCED USERS ONLY."))
+        self.wTree.get_widget("label_custom_install_directions_2").set_label(_("Before continuing, please mount your target filesystem(s) at /target."))
+        self.wTree.get_widget("label_custom_install_directions_3").set_label(_("Do NOT mount virtual devices such as /dev, /proc, /sys, etc on /target/."))
+        self.wTree.get_widget("label_custom_install_directions_4").set_label(_("During the install, you will be given time to chroot into /target and install any pacakges that will be needed to boot your new system."))
+        self.wTree.get_widget("label_custom_install_directions_5").set_label(_("During the install, you will be required to write your own /etc/fstab."))
+        self.wTree.get_widget("label_custom_install_directions_6").set_label(_("If you arent sure what any of this means, please go back and deselect manual partition management."))
+
+        # custom install installation paused directions
+        self.wTree.get_widget("label_custom_install_paused_1").set_label(_("Please do the following and then click Forward to finish Installation:"))
+        self.wTree.get_widget("label_custom_install_paused_2").set_label(_("Create /target/etc/fstab for the filesystems as they will be mounted in your new system, matching those currently mounted at /target (without using the /target prefix in the mount paths themselves)."))
+        self.wTree.get_widget("label_custom_install_paused_3").set_label(_("Install any packages that may be needed for first boot (mdadm, cryptsetup, dmraid, etc) by calling \"sudo chroot /target\" followed by the relevant apt-get/aptitude installations."))
+        self.wTree.get_widget("label_custom_install_paused_4").set_label(_("Note that in order for update-initramfs to work properly in some cases (such as dm-crypt), you may need to have drives currently mounted using the same block device name as they appear in /target/etc/fstab."))
+        self.wTree.get_widget("label_custom_install_paused_5").set_label(_("Double-check that your /target/etc/fstab is correct, matches what your new system will have at first boot, and matches what is currently mounted at /target."))
+
+        # hdd page
+        self.wTree.get_widget("label_radio_hdd").set_label(_("Install Linux Mint on the selected drive from the following list."))
+        self.wTree.get_widget("label_radio_custom").set_label(_("Manually mount partitions for install (ADVANCED USERS ONLY)."))
         
         #Columns
         self.column1.set_title(_("Hard drive")) 
@@ -1029,7 +1081,17 @@ class InstallerWindow:
         if(active is None):
             return
         row = model[active]
-        self.setup.target_disk = row[0]        
+        self.setup.target_disk = row[0] 
+
+    def hdd_pane_toggled(self, hdd_button):
+        ''' Called whenever the radio buttons on the hdd page toggle ''' 
+        if(hdd_button.get_active()):
+            self.wTree.get_widget("treeview_hdds").set_sensitive(True)
+            self.setup.skip_mount = False
+        else:
+            self.wTree.get_widget("treeview_hdds").set_sensitive(False)
+            self.setup.skip_mount = True
+        self.setup.print_setup()
 
     def assign_timezone(self, treeview, data=None):
         ''' Called whenever someone updates the timezone '''
@@ -1216,14 +1278,13 @@ class InstallerWindow:
                 if (errorFound):
                     MessageDialog(_("Installation Tool"), errorMessage, gtk.MESSAGE_WARNING).show()
                 else:
-                    if len(self.setup.disks) > 1:
-                        self.activate_page(self.PAGE_HDD)                
-                    else:
-                        self.activate_page(self.PAGE_PARTITIONS)                
-                        self.build_partitions()  
+                    self.activate_page(self.PAGE_HDD)                
             elif(sel == self.PAGE_HDD):
-                self.activate_page(self.PAGE_PARTITIONS)
-                self.build_partitions()
+                if (self.setup.skip_mount):
+                    self.activate_page(self.PAGE_CUSTOMWARNING)
+                else:
+                    self.activate_page(self.PAGE_PARTITIONS)
+                    self.build_partitions()
             elif(sel == self.PAGE_PARTITIONS):                
                 model = self.wTree.get_widget("treeview_disks").get_model()
                 error = True
@@ -1239,6 +1300,9 @@ class InstallerWindow:
                 else:
                     self.build_grub_partitions()
                     self.activate_page(self.PAGE_ADVANCED)
+            elif(sel == self.PAGE_CUSTOMWARNING):
+                self.build_grub_partitions()
+                self.activate_page(self.PAGE_ADVANCED)
             elif(sel == self.PAGE_ADVANCED):
                 self.activate_page(self.PAGE_OVERVIEW)
                 self.show_overview()
@@ -1251,12 +1315,21 @@ class InstallerWindow:
                 self.wTree.get_widget("button_back").hide()
                 thr = threading.Thread(name="live-install", group=None, args=(), kwargs={}, target=self.do_install)
                 thr.start()
+            elif(sel == self.PAGE_CUSTOMPAUSED):
+                self.activate_page(self.PAGE_INSTALL)
+                self.wTree.get_widget("button_next").hide()
+                self.paused = False
             self.wTree.get_widget("button_back").set_sensitive(True)
         else:
             if(sel == self.PAGE_OVERVIEW):
                 self.activate_page(self.PAGE_ADVANCED)
             elif(sel == self.PAGE_ADVANCED):
-                self.activate_page(self.PAGE_PARTITIONS)              
+                if (self.setup.skip_mount):
+                    self.activate_page(self.PAGE_CUSTOMWARNING)
+                else:
+                    self.activate_page(self.PAGE_PARTITIONS)              
+            elif(sel == self.PAGE_CUSTOMWARNING):
+                self.activate_page(self.PAGE_HDD)
             elif(sel == self.PAGE_PARTITIONS):
                 self.activate_page(self.PAGE_HDD)
             elif(sel == self.PAGE_HDD):
@@ -1299,17 +1372,21 @@ class InstallerWindow:
         else:
             model.set(iter, 0, _("Do not install bootloader"))
         top = model.append(None)
-        model.set(top, 0, _("Filesystem operations"))        
-        for partition in self.setup.partitions:
-            if(partition.format_as is not None and partition.format_as != ""):
-                # format it
-                iter = model.append(top)
-                model.set(iter, 0, "<b>%s</b>" % (_("Format %(partition)s as %(format)s") % {'partition':partition.partition.path, 'format':partition.format_as}))
-        for partition in self.setup.partitions:
-            if(partition.mount_as is not None and partition.mount_as != ""):
-                # mount point
-                iter = model.append(top)
-                model.set(iter, 0, "<b>%s</b>" % (_("Mount %(partition)s as %(mountpoint)s") % {'partition':partition.partition.path, 'mountpoint':partition.mount_as}))
+        model.set(top, 0, _("Filesystem operations"))  
+        if(self.setup.skip_mount):
+            iter = model.append(top)
+            model.set(iter, 0, "<b>Use already-mounted /target.</b>")
+        else:      
+            for partition in self.setup.partitions:
+                if(partition.format_as is not None and partition.format_as != ""):
+                    # format it
+                    iter = model.append(top)
+                    model.set(iter, 0, "<b>%s</b>" % (_("Format %(partition)s as %(format)s") % {'partition':partition.partition.path, 'format':partition.format_as}))
+            for partition in self.setup.partitions:
+                if(partition.mount_as is not None and partition.mount_as != ""):
+                    # mount point
+                    iter = model.append(top)
+                    model.set(iter, 0, "<b>%s</b>" % (_("Mount %(partition)s as %(mountpoint)s") % {'partition':partition.partition.path, 'mountpoint':partition.mount_as}))
         self.wTree.get_widget("treeview_overview").set_model(model)
 
     def do_install(self):        
@@ -1349,6 +1426,17 @@ class InstallerWindow:
                 do_try_finish_install = False
 
             if do_try_finish_install:
+                if(self.setup.skip_mount):
+                    gtk.gdk.threads_enter()
+                    self.paused = True
+                    self.activate_page(self.PAGE_CUSTOMPAUSED)
+                    self.wTree.get_widget("button_next").show()
+                    MessageDialog(_("Installation Paused"), _("Installation is now paused. Please read the instructions on the page carefully and click Forward to finish installation."), gtk.MESSAGE_INFO).show()
+                    gtk.gdk.threads_leave()
+
+                    while(self.paused):
+                        time.sleep(0.1)
+
                 try:
                     inst.finish_install(self.setup)
                 except Exception, detail1:
