@@ -146,9 +146,9 @@ class InstallerWindow:
         self.wizard_pages[self.PAGE_LANGUAGE] = WizardPage("Choose your language", "locales.png")
         self.wizard_pages[self.PAGE_TIMEZONE] = WizardPage("Choose your timezone", "time.png")
         self.wizard_pages[self.PAGE_KEYBOARD] = WizardPage("Choose your keyboard layout", "keyboard.png")
+        self.wizard_pages[self.PAGE_USER] = WizardPage("Please indicate your name and select a username, a password and a hostname", "user.png")
         self.wizard_pages[self.PAGE_HDD] = WizardPage("On which hard drive do you want to install Linux Mint?", "hdd.svg")
         self.wizard_pages[self.PAGE_PARTITIONS] = WizardPage("Select where you want to install Linux Mint", "hdd.svg")
-        self.wizard_pages[self.PAGE_USER] = WizardPage("Please indicate your name and select a username, a password and a hostname", "user.png")
         self.wizard_pages[self.PAGE_ADVANCED] = WizardPage("Please review the following advanced options", "advanced.png")
         self.wizard_pages[self.PAGE_OVERVIEW] = WizardPage("Please review this summary and make sure everything is correct", "summary.png")
         self.wizard_pages[self.PAGE_INSTALL] = WizardPage("Please wait while Linux Mint is being installed on your computer", "install.png")
@@ -1174,28 +1174,7 @@ class InstallerWindow:
                     iter = model.iter_next(iter)
                 self.activate_page(self.PAGE_KEYBOARD)
             elif(sel == self.PAGE_KEYBOARD):
-                if len(self.setup.disks) > 1:
-                    self.activate_page(self.PAGE_HDD)                
-                else:
-                    self.activate_page(self.PAGE_PARTITIONS)                
-                    self.build_partitions()                    
-            elif(sel == self.PAGE_HDD):
-                self.activate_page(self.PAGE_PARTITIONS)
-                self.build_partitions()
-            elif(sel == self.PAGE_PARTITIONS):                
-                model = self.wTree.get_widget("treeview_disks").get_model()
-                error = True
-                errorMessage = _("Please select a root (/) partition before proceeding")
-                for partition in self.setup.partitions:                    
-                    if(partition.mount_as == "/"):
-                        error = False                        
-                        if partition.format_as is None or partition.format_as == "":
-                            error = True
-                            errorMessage = _("Please indicate a filesystem to format the root (/) partition before proceeding")                        
-                if(error):
-                    MessageDialog(_("Installation Tool"), errorMessage, gtk.MESSAGE_ERROR).show()
-                else:
-                    self.activate_page(self.PAGE_USER)
+                self.activate_page(self.PAGE_USER)
             elif(sel == self.PAGE_USER):
                 errorFound = False
                 errorMessage = ""
@@ -1237,8 +1216,29 @@ class InstallerWindow:
                 if (errorFound):
                     MessageDialog(_("Installation Tool"), errorMessage, gtk.MESSAGE_WARNING).show()
                 else:
-                     self.build_grub_partitions()
-                     self.activate_page(self.PAGE_ADVANCED)
+                    if len(self.setup.disks) > 1:
+                        self.activate_page(self.PAGE_HDD)                
+                    else:
+                        self.activate_page(self.PAGE_PARTITIONS)                
+                        self.build_partitions()  
+            elif(sel == self.PAGE_HDD):
+                self.activate_page(self.PAGE_PARTITIONS)
+                self.build_partitions()
+            elif(sel == self.PAGE_PARTITIONS):                
+                model = self.wTree.get_widget("treeview_disks").get_model()
+                error = True
+                errorMessage = _("Please select a root (/) partition before proceeding")
+                for partition in self.setup.partitions:                    
+                    if(partition.mount_as == "/"):
+                        error = False                        
+                        if partition.format_as is None or partition.format_as == "":
+                            error = True
+                            errorMessage = _("Please indicate a filesystem to format the root (/) partition before proceeding")                        
+                if(error):
+                    MessageDialog(_("Installation Tool"), errorMessage, gtk.MESSAGE_ERROR).show()
+                else:
+                    self.build_grub_partitions()
+                    self.activate_page(self.PAGE_ADVANCED)
             elif(sel == self.PAGE_ADVANCED):
                 self.activate_page(self.PAGE_OVERVIEW)
                 self.show_overview()
@@ -1256,13 +1256,13 @@ class InstallerWindow:
             if(sel == self.PAGE_OVERVIEW):
                 self.activate_page(self.PAGE_ADVANCED)
             elif(sel == self.PAGE_ADVANCED):
-                self.activate_page(self.PAGE_USER)
-            elif(sel == self.PAGE_USER):
-                self.activate_page(self.PAGE_PARTITIONS)                
+                self.activate_page(self.PAGE_PARTITIONS)              
             elif(sel == self.PAGE_PARTITIONS):
                 self.activate_page(self.PAGE_HDD)
             elif(sel == self.PAGE_HDD):
-                self.activate_page(self.PAGE_KEYBOARD)
+                self.activate_page(self.PAGE_USER)
+            elif(sel == self.PAGE_USER):
+                self.activate_page(self.PAGE_KEYBOARD)  
             elif(sel == self.PAGE_KEYBOARD):
                 self.activate_page(self.PAGE_TIMEZONE)
             elif(sel == self.PAGE_TIMEZONE):
