@@ -1334,7 +1334,7 @@ class InstallerWindow:
                 print detail1
                 try:
                     gtk.gdk.threads_enter()
-                    MessageDialog(_("Installation error"), str(detail), gtk.MESSAGE_ERROR).show()
+                    MessageDialog(_("Installation error"), str(detail1), gtk.MESSAGE_ERROR).show()
                     gtk.gdk.threads_leave()
                 except Exception, detail2:
                     print detail2

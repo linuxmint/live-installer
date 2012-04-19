@@ -205,12 +205,8 @@ class InstallerEngine:
             our_current += 1
             self.update_progress(total=our_total, current=our_current, message=_("Adding user to system"))           
             self.do_run_in_chroot("useradd -s %s -c \'%s\' -G sudo -m %s" % ("/bin/bash", setup.real_name, setup.username))
-            newusers = open("/target/tmp/newusers.conf", "w")
-            newusers.write("%s:%s\n" % (setup.username, setup.password1))
-            newusers.write("root:%s\n" % setup.password1)
-            newusers.close()
-            self.do_run_in_chroot("cat /tmp/newusers.conf | chpasswd")
-            self.do_run_in_chroot("rm -rf /tmp/newusers.conf")
+            self.do_run_in_chroot("echo %s:%s | chpasswd" % (setup.username, setup.password1))
+            self.do_run_in_chroot("echo root:%s | chpasswd" % setup.password1)
             
             # write the /etc/fstab
             print " --> Writing fstab"
@@ -381,7 +377,7 @@ class InstallerEngine:
                     self.do_configure_grub(our_total, our_current)
                     grub_retries = grub_retries + 1
                     if grub_retries >= 5:
-                        self.error_message(critical=True, message=_("WARNING: The grub bootloader was not configured properly! You need to configure it manually."))
+                        self.error_message(message=_("WARNING: The grub bootloader was not configured properly! You need to configure it manually."))
                         break
                         
             # Clean APT
