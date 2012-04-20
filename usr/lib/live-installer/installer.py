@@ -275,17 +275,17 @@ class InstallerEngine:
             hostsfh.write("ff02::3 ip6-allhosts\n")
             hostsfh.close()
 
-            # gdm overwrite (specific to Debian/live-initramfs)
-            print " --> Configuring GDM"
-            gdmconffh = open("/target/etc/gdm3/daemon.conf", "w")
-            gdmconffh.write("# GDM configuration storage\n")
-            gdmconffh.write("\n[daemon]\n")
-            gdmconffh.write("\n[security]\n")
-            gdmconffh.write("\n[xdmcp]\n")
-            gdmconffh.write("\n[greeter]\n")
-            gdmconffh.write("\n[chooser]\n")
-            gdmconffh.write("\n[debug]\n")
-            gdmconffh.close()
+            # MDM overwrite (specific to Debian/live-initramfs)
+            print " --> Configuring MDM"
+            mdmconffh = open("/target/etc/mdm/mdm.conf", "w")
+            mdmconffh.write("# MDM configuration\n")
+            mdmconffh.write("\n[daemon]\n")
+            mdmconffh.write("\n[security]\n")
+            mdmconffh.write("\n[xdmcp]\n")
+            mdmconffh.write("\n[greeter]\n")
+            mdmconffh.write("\n[chooser]\n")
+            mdmconffh.write("\n[debug]\n")
+            mdmconffh.close()
 
             # set the locale
             print " --> Setting the locale"
