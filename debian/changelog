@@ -1,4 +1,4 @@
-live-installer (2012.04.20) debian; urgency=low
+live-installer (2012.04.20.1) debian; urgency=low
 
   * Replaced GDM config with MDM config
   * Fixed formatting issues for JFS, XFS, BTRFS and a couple of other filesystems
