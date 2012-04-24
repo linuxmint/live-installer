@@ -61,14 +61,17 @@ class InstallerEngine:
                 p = Popen(cmd, shell=True)
                 p.wait() # this blocks
                 partition.type = partition.format_as
-                                        
-    def step_mount_partitions(self, setup):
+
+    def step_mount_source(self, setup):
         # Mount the installation media
         print " --> Mounting partitions"
         self.update_progress(total=4, current=2, message=_("Mounting %(partition)s on %(mountpoint)s") % {'partition':self.media, 'mountpoint':"/source/"})
         print " ------ Mounting %s on %s" % (self.media, "/source/")
         self.do_mount(self.media, "/source/", self.media_type, options="loop")
-        
+                                        
+    def step_mount_partitions(self, setup):  
+        self.step_mount_source(setup)
+      
         # Mount the target partition
         for partition in setup.partitions:                    
             if(partition.mount_as is not None and partition.mount_as != ""):   
@@ -85,11 +88,14 @@ class InstallerEngine:
                 os.system("mkdir -p /target" + partition.mount_as)
                 self.do_mount(partition.partition.path, "/target" + partition.mount_as, partition.type, None)
 
-    def install(self, setup):        
+    def init_install(self, setup):        
         # mount the media location.
         print " --> Installation started"
         try:
             if(not os.path.exists("/target")):
+                if (setup.skip_mount):
+                    self.error_message(message=_("ERROR: You must first manually mount your target filesystem(s) at /target to do a custom install!"))
+                    return
                 os.mkdir("/target")
             if(not os.path.exists("/source")):
                 os.mkdir("/source")
@@ -97,9 +103,21 @@ class InstallerEngine:
             if(not os.path.exists(self.media)):
                 print "Base filesystem does not exist! Critical error (exiting)."
                 sys.exit(1) # change to report
+
+            try:
+                os.system("umount --force /target/dev/shm")
+                os.system("umount --force /target/dev/pts")
+                os.system("umount --force /target/dev/")
+                os.system("umount --force /target/sys/")
+                os.system("umount --force /target/proc/")
+            except:
+                pass
        
-            self.step_format_partitions(setup)
-            self.step_mount_partitions(setup)                        
+            if (not setup.skip_mount):
+                self.step_format_partitions(setup)
+                self.step_mount_partitions(setup)                        
+            else:
+                self.step_mount_source(setup)
             
             # walk root filesystem
             SOURCE = "/source/"
@@ -178,7 +196,7 @@ class InstallerEngine:
                     pass
                     
             # Steps:
-            our_total = 10
+            our_total = 11
             our_current = 0
             # chroot
             print " --> Chrooting"
@@ -211,12 +229,10 @@ class InstallerEngine:
             our_current += 1
             self.update_progress(total=our_total, current=our_current, message=_("Adding user to system"))           
             self.do_run_in_chroot("useradd -s %s -c \'%s\' -G sudo -m %s" % ("/bin/bash", setup.real_name, setup.username))
-            newusers = open("/target/tmp/newusers.conf", "w")
-            newusers.write("%s:%s\n" % (setup.username, setup.password1))
-            newusers.write("root:%s\n" % setup.password1)
-            newusers.close()
-            self.do_run_in_chroot("cat /tmp/newusers.conf | chpasswd")
-            self.do_run_in_chroot("rm -rf /tmp/newusers.conf")
+            os.system("chroot /target/ /bin/bash -c \"shopt -s dotglob && cp -R /etc/skel/* /home/%s/\"" % setup.username)
+            self.do_run_in_chroot("chown -R %s:%s /home/%s" % (setup.username, setup.username, setup.username))
+            self.do_run_in_chroot("echo %s:%s | chpasswd" % (setup.username, setup.password1))
+            self.do_run_in_chroot("echo root:%s | chpasswd" % setup.password1)
             
             # write the /etc/fstab
             print " --> Writing fstab"
@@ -227,41 +243,53 @@ class InstallerEngine:
                 os.system("echo \"#### Static Filesystem Table File\" > /target/etc/fstab")
             fstab = open("/target/etc/fstab", "a")
             fstab.write("proc\t/proc\tproc\tdefaults\t0\t0\n")
-            for partition in setup.partitions:
-                if (partition.mount_as is not None and partition.mount_as != "None"):
-                    partition_uuid = partition.partition.path # If we can't find the UUID we use the path
-                    try:                    
-                        blkid = commands.getoutput('blkid').split('\n')
-                        for blkid_line in blkid:
-                            blkid_elements = blkid_line.split(':')
-                            if blkid_elements[0] == partition.partition.path:
-                                blkid_mini_elements = blkid_line.split()
-                                for blkid_mini_element in blkid_mini_elements:
-                                    if "UUID=" in blkid_mini_element:
-                                        partition_uuid = blkid_mini_element.replace('"', '').strip()
-                                        break
-                                break
-                    except Exception, detail:
-                        print detail
+            if(not setup.skip_mount):
+                for partition in setup.partitions:
+                    if (partition.mount_as is not None and partition.mount_as != "None"):
+                        partition_uuid = partition.partition.path # If we can't find the UUID we use the path
+                        try:                    
+                            blkid = commands.getoutput('blkid').split('\n')
+                            for blkid_line in blkid:
+                                blkid_elements = blkid_line.split(':')
+                                if blkid_elements[0] == partition.partition.path:
+                                    blkid_mini_elements = blkid_line.split()
+                                    for blkid_mini_element in blkid_mini_elements:
+                                        if "UUID=" in blkid_mini_element:
+                                            partition_uuid = blkid_mini_element.replace('"', '').strip()
+                                            break
+                                    break
+                        except Exception, detail:
+                            print detail
                                         
-                    fstab.write("# %s\n" % (partition.partition.path))                            
+                        fstab.write("# %s\n" % (partition.partition.path))                            
                     
-                    if(partition.mount_as == "/"):
-                        fstab_fsck_option = "1"
-                    else:
-                        fstab_fsck_option = "0" 
+                        if(partition.mount_as == "/"):
+                            fstab_fsck_option = "1"
+                        else:
+                            fstab_fsck_option = "0" 
                                             
-                    if("ext" in partition.type):
-                        fstab_mount_options = "rw,errors=remount-ro"
-                    else:
-                        fstab_mount_options = "defaults"
+                        if("ext" in partition.type):
+                            fstab_mount_options = "rw,errors=remount-ro"
+                        else:
+                            fstab_mount_options = "defaults"
                         
-                    if(partition.type == "swap"):                    
-                        fstab.write("%s\tswap\tswap\tsw\t0\t0\n" % partition_uuid)
-                    else:                                                    
-                        fstab.write("%s\t%s\t%s\t%s\t%s\t%s\n" % (partition_uuid, partition.mount_as, partition.type, fstab_mount_options, "0", fstab_fsck_option))
+                        if(partition.type == "swap"):                    
+                            fstab.write("%s\tswap\tswap\tsw\t0\t0\n" % partition_uuid)
+                        else:                                                    
+                            fstab.write("%s\t%s\t%s\t%s\t%s\t%s\n" % (partition_uuid, partition.mount_as, partition.type, fstab_mount_options, "0", fstab_fsck_option))
             fstab.close()
-            
+
+        except Exception:            
+            import traceback
+            exc_type, exc_value, exc_traceback = sys.exc_info()
+            traceback.print_tb(exc_traceback, limit=1, file=sys.stdout)
+
+    def finish_install(self, setup):
+        try:
+            # Steps:
+            our_total = 11
+            our_current = 4
+
             # write host+hostname infos
             print " --> Writing hostname"
             our_current += 1
@@ -387,8 +415,14 @@ class InstallerEngine:
                     self.do_configure_grub(our_total, our_current)
                     grub_retries = grub_retries + 1
                     if grub_retries >= 5:
-                        self.error_message(critical=True, message=_("WARNING: The grub bootloader was not configured properly! You need to configure it manually."))
+                        self.error_message(message=_("WARNING: The grub bootloader was not configured properly! You need to configure it manually."))
                         break
+
+            # recreate initramfs to include things like mdadm/dm-crypt/etc in case its needed to boot a custom install
+            print " --> Configuring Initramfs"
+            our_current += 1
+            if (setup.skip_mount):
+                self.do_run_in_chroot("/usr/sbin/update-initramfs -u -k all")
                         
             # Clean APT
             print " --> Cleaning APT"
@@ -405,10 +439,11 @@ class InstallerEngine:
                 os.system("umount --force /target/sys/")
                 os.system("umount --force /target/proc/")
                 os.system("rm -rf /target/etc/resolv.conf")
-                for partition in setup.partitions:
-                    if(partition.mount_as is not None and partition.mount_as != "" and partition.mount_as != "/" and partition.mount_as != "swap"):
-                        self.do_unmount("/target" + partition.mount_as)
-                self.do_unmount("/target")
+                if(not setup.skip_mount):
+                    for partition in setup.partitions:
+                        if(partition.mount_as is not None and partition.mount_as != "" and partition.mount_as != "/" and partition.mount_as != "swap"):
+                            self.do_unmount("/target" + partition.mount_as)
+                    self.do_unmount("/target")
                 self.do_unmount("/source")
             except Exception, detail:
                 #best effort, no big deal if we can't umount something
@@ -506,6 +541,14 @@ class Setup(object):
     grub_device = None
     disks = []
     target_disk = None
+    # Optionally skip all mouting/partitioning for advanced users with custom setups (raid/dmcrypt/etc)
+    # Make sure the user knows that they need to:
+    #  * Mount their target directory structure at /target
+    #  * NOT mount /target/dev, /target/dev/shm, /target/dev/pts, /target/proc, and /target/sys
+    #  * Manually create /target/etc/fstab after init_install has completed and before finish_install is called
+    #  * Install cryptsetup/dmraid/mdadm/etc in target environment (using chroot) between init_install and finish_install
+    #  * Make sure target is mounted using the same block device as is used in /target/etc/fstab (eg if you change the name of a dm-crypt device between now and /target/etc/fstab, update-initramfs will likely fail)
+    skip_mount = False
     
     #Descriptions (used by the summary screen)    
     keyboard_model_description = None
@@ -522,11 +565,13 @@ class Setup(object):
             print "hostname: %s " % self.hostname
             print "passwords: %s - %s" % (self.password1, self.password2)        
             print "grub_device: %s " % self.grub_device
-            print "target_disk: %s " % self.target_disk
-            print "disks: %s " % self.disks                       
-            print "partitions:"
-            for partition in self.partitions:
-                partition.print_partition()
+            print "skip_mount: %s" % self.skip_mount
+            if (not self.skip_mount):
+                print "target_disk: %s " % self.target_disk
+                print "disks: %s " % self.disks                       
+                print "partitions:"
+                for partition in self.partitions:
+                    partition.print_partition()
             print "-------------------------------------------------------------------------"
     
 class PartitionSetup(object):
