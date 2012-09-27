@@ -23,6 +23,13 @@ case "$1" in
 	update-desktop-database
 	update-rc.d live-installer defaults 22
 	test -x /usr/bin/update-menus && update-menus
+	
+	# Change the logo symbolic link when on KDE
+	desktop=`cat /etc/linuxmint/info | grep DESKTOP`
+	case "$desktop" in (*KDE*)
+	  ln -s -f /usr/share/live-installer/logo-kde.png /usr/share/live-installer/logo.png;
+	  ln -s -f /usr/share/live-installer/bullet-point-kde.png /usr/share/live-installer/bullet-point.png;
+	esac
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)

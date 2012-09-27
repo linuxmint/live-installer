@@ -22,7 +22,20 @@ class InstallerEngine:
         self.distribution_version = configuration['distribution']['DISTRIBUTION_VERSION']        
         self.live_user = configuration['install']['LIVE_USER_NAME']
         self.media = configuration['install']['LIVE_MEDIA_SOURCE']
-        self.media_type = configuration['install']['LIVE_MEDIA_TYPE']                
+        self.media_type = configuration['install']['LIVE_MEDIA_TYPE']
+        # Save the desktop environment
+        self.desktop = self.get_desktop_environment
+    
+    # Get the system's desktop environment
+    def get_desktop_environment(self):
+        desktop = ''
+        if 'KDE_FULL_SESSION' in os.environ:
+            desktop = 'kde'
+        elif 'GNOME_DESKTOP_SESSION_ID' in os.environ or 'XDG_CURRENT_DESKTOP' in os.environ:
+            desktop = 'gnome'
+        elif 'MATE_DESKTOP_SESSION_ID' in os.environ:
+            desktop = 'mate'
+        return desktop
 
     def set_progress_hook(self, progresshook):
         ''' Set a callback to be called on progress updates '''
@@ -56,7 +69,7 @@ class InstallerEngine:
                         cmd = "mkfs.%s -f %s" % (partition.format_as, partition.partition.path)
                     else:
                         cmd = "mkfs.%s %s" % (partition.format_as, partition.partition.path) # works with bfs, btrfs, ext2, ext3, ext4, minix, msdos, ntfs, vfat
-					
+                
                 print "EXECUTING: '%s'" % cmd
                 p = Popen(cmd, shell=True)
                 p.wait() # this blocks
@@ -205,15 +218,26 @@ class InstallerEngine:
             our_current += 1
             self.update_progress(total=our_total, current=our_current, message=_("Removing live configuration (packages)"))
             self.do_run_in_chroot("apt-get remove --purge --yes --force-yes live-boot live-boot-initramfs-tools live-initramfs live-installer live-config live-config-sysvinit")
+            
             # On KDE the purge is incomplete and leaves redundant symbolic links in the rc*.d directories.
             # The resulting startpar error prevents gsfxi to successfully install the Nvidia drivers.
             self.do_run_in_chroot("update-rc.d -f live-installer remove")
             
+            # Remove gparted when kde is used
+            if self.desktop == 'kde':
+                print " --> Removing gparted from KDE"
+                our_current += 1
+                self.update_progress(total=our_total, current=our_current, message=_("Removing gparted from KDE"))
+                self.do_run_in_chroot("apt-get remove --purge --yes --force-yes gparted")
+            
             # add new user
             print " --> Adding new user"
             our_current += 1
-            self.update_progress(total=our_total, current=our_current, message=_("Adding user to system"))           
-            self.do_run_in_chroot("useradd -s %s -c \'%s\' -G sudo -m %s" % ("/bin/bash", setup.real_name, setup.username))
+            self.update_progress(total=our_total, current=our_current, message=_("Adding user to system"))
+                       
+            # Add more groups (not only sudo) to get all working on kde for the initial user
+            self.do_run_in_chroot("useradd -s %s -c \'%s\' -G sudo,adm,dialout,audio,video,cdrom,floppy,dip,plugdev,lpadmin,sambashare -m %s" % ("/bin/bash", setup.real_name, setup.username))
+            
             newusers = open("/target/tmp/newusers.conf", "w")
             newusers.write("%s:%s\n" % (setup.username, setup.password1))
             newusers.write("root:%s\n" % setup.password1)
@@ -320,6 +344,7 @@ class InstallerEngine:
             self.do_run_in_chroot("update-locale LANG=%s.UTF-8" % setup.language)
 
             # set the timezone
+            # TODO: need translations
             print " --> Setting the timezone"
             os.system("echo \"%s\" > /target/etc/timezone" % setup.timezone_code)
             os.system("cp /target/usr/share/zoneinfo/%s /target/etc/localtime" % setup.timezone)
@@ -332,6 +357,37 @@ class InstallerEngine:
                 self.do_run_in_chroot("apt-get update")
                 locale = setup.language.replace("_", "-").lower()                
                                
+                # KDE
+                if self.desktop == 'kde':
+                    print " --> Localizing KDE"
+                    self.update_progress(total=our_total, current=our_current, message=_("Localizing KDE"))
+                    num_res = commands.getoutput("aptitude search kde-l10n-%s | grep kde-l10n-%s | wc -l" % (locale, locale))
+                    if num_res != "0":                    
+                        self.do_run_in_chroot("apt-get install --yes --force-yes kde-l10n-" + locale)
+                    else:
+                        if "_" in setup.language:
+                            language_code = setup.language.split("_")[0]
+                            num_res = commands.getoutput("aptitude search kde-l10n-%s | grep kde-l10n-%s | wc -l" % (language_code, language_code))
+                            if num_res != "0":                            
+                                self.do_run_in_chroot("apt-get install --yes --force-yes kde-l10n-" + language_code)
+                
+                # LibreOffice
+                print " --> Localizing LibreOffice"
+                self.update_progress(total=our_total, current=our_current, message=_("Localizing LibreOffice"))
+                num_res = commands.getoutput("aptitude search libreoffice-l10n-%s | grep libreoffice-l10n-%s | wc -l" % (locale, locale))
+                if num_res != "0":                    
+                    self.do_run_in_chroot("apt-get install --yes --force-yes libreoffice-l10n-" + locale)
+                else:
+                    if "_" in setup.language:
+                        language_code = setup.language.split("_")[0]
+                        num_res = commands.getoutput("aptitude search libreoffice-l10n-%s | grep libreoffice-l10n-%s | wc -l" % (language_code, language_code))
+                        if num_res != "0":                            
+                            self.do_run_in_chroot("apt-get install --yes --force-yes libreoffice-l10n-" + language_code)
+                            self.do_run_in_chroot("apt-get install --yes --force-yes aspell-" + language_code)
+                
+                # Firefox
+                print " --> Localizing Firefox"
+                self.update_progress(total=our_total, current=our_current, message=_("Localizing Firefox"))
                 num_res = commands.getoutput("aptitude search firefox-l10n-%s | grep firefox-l10n-%s | wc -l" % (locale, locale))
                 if num_res != "0":                    
                     self.do_run_in_chroot("apt-get install --yes --force-yes firefox-l10n-" + locale)
@@ -342,6 +398,9 @@ class InstallerEngine:
                         if num_res != "0":                            
                             self.do_run_in_chroot("apt-get install --yes --force-yes firefox-l10n-" + language_code)
                
+                # Thunderbird
+                print " --> Localizing Thunderbird"
+                self.update_progress(total=our_total, current=our_current, message=_("Localizing Thunderbird"))
                 num_res = commands.getoutput("aptitude search thunderbird-l10n-%s | grep thunderbird-l10n-%s | wc -l" % (locale, locale))
                 if num_res != "0":
                     self.do_run_in_chroot("apt-get install --yes --force-yes thunderbird-l10n-" + locale)

@@ -1152,8 +1152,7 @@
             <child>
               <widget class="GtkComboBox" id="combobox_use_as">
                 <property name="visible">True</property>
-                <property name="items" translatable="yes">ext4 filesystem
-</property>
+                <property name="items" translatable="yes">ext4 filesystem</property>
               </widget>
               <packing>
                 <property name="left_attach">1</property>

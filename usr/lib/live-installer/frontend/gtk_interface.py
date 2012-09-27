@@ -42,32 +42,32 @@ INDEX_PARTITION_FREE_SPACE=6
 INDEX_PARTITION_OBJECT=7
 
 class ProgressDialog:
-	
-	def __init__(self):
-		self.glade = '/usr/share/live-installer/interface.glade'
-		self.dTree = gtk.glade.XML(self.glade, 'progress_window')
-		self.window = self.dTree.get_widget('progress_window')
-		self.progressbar = self.dTree.get_widget('progressbar_operation')
-		self.label = self.dTree.get_widget('label_operation')
-		self.should_pulse = False
-		
-	def show(self, label=None, title=None):
-		def pbar_pulse():
-			if(not self.should_pulse):
-				return False
-			self.progressbar.pulse()
-			return self.should_pulse
-		if(label is not None):
-			self.label.set_markup(label)
-		if(title is not None):
-			self.window.set_title(title)
-		self.should_pulse = True
-		self.window.show_all()
-		gobject.timeout_add(100, pbar_pulse)
-		
-	def hide(self):
-		self.should_pulse = False
-		self.window.hide()	
+
+    def __init__(self):
+        self.glade = '/usr/share/live-installer/interface.glade'
+        self.dTree = gtk.glade.XML(self.glade, 'progress_window')
+        self.window = self.dTree.get_widget('progress_window')
+        self.progressbar = self.dTree.get_widget('progressbar_operation')
+        self.label = self.dTree.get_widget('label_operation')
+        self.should_pulse = False
+
+    def show(self, label=None, title=None):
+        def pbar_pulse():
+            if(not self.should_pulse):
+                return False
+            self.progressbar.pulse()
+            return self.should_pulse
+        if(label is not None):
+            self.label.set_markup(label)
+        if(title is not None):
+            self.window.set_title(title)
+        self.should_pulse = True
+        self.window.show_all()
+        gobject.timeout_add(100, pbar_pulse)
+
+    def hide(self):
+        self.should_pulse = False
+        self.window.hide()
 
 ''' Handy. Makes message dialogs easy :D '''
 class MessageDialog(object):
@@ -83,7 +83,7 @@ class MessageDialog(object):
         dialog = gtk.MessageDialog(None, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT, self.style, gtk.BUTTONS_OK, self.message)
         dialog.set_title(self.title)
         dialog.set_position(gtk.WIN_POS_CENTER)
-        dialog.set_icon_from_file("/usr/share/icons/live-installer.png")
+        dialog.set_icon_from_file("/usr/share/live-installer/logo.png")
         dialog.run()
         dialog.destroy()
         
@@ -97,7 +97,7 @@ class QuestionDialog(object):
         dialog = gtk.MessageDialog(None, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_QUESTION, gtk.BUTTONS_YES_NO, self.message)
         dialog.set_title(self.title)
         dialog.set_position(gtk.WIN_POS_CENTER)
-        dialog.set_icon_from_file("/usr/share/icons/live-installer.png")
+        dialog.set_icon_from_file("/usr/share/live-installer/logo.png")
         answer = dialog.run()
         if answer==gtk.RESPONSE_YES:
             return_value = True
@@ -111,7 +111,7 @@ class WizardPage:
     def __init__(self, help_text, icon):
         self.help_text = help_text    
         self.icon = icon    
-		
+
 class InstallerWindow:
 
     def __init__(self, fullscreen=False):
