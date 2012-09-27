@@ -26,9 +26,12 @@ case "$1" in
 	
 	# Change the logo symbolic link when on KDE
 	desktop=`cat /etc/linuxmint/info | grep DESKTOP`
-	case "$desktop" in (*KDE*)
+	case "$desktop" in 
+	*KDE*)
 	  ln -s -f /usr/share/live-installer/logo-kde.png /usr/share/live-installer/logo.png;
 	  ln -s -f /usr/share/live-installer/bullet-point-kde.png /usr/share/live-installer/bullet-point.png;
+	  ln -s -f /usr/share/live-installer/slideshow/link/background-kde.jpg /usr/share/live-installer/slideshow/link/background.jpg;
+	  ln -s -f /usr/share/live-installer/slideshow/icons/logo-kde.png /usr/share/live-installer/slideshow/icons/logo.png;
 	esac
     ;;
 
