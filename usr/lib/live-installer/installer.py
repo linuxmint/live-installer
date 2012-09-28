@@ -24,17 +24,19 @@ class InstallerEngine:
         self.media = configuration['install']['LIVE_MEDIA_SOURCE']
         self.media_type = configuration['install']['LIVE_MEDIA_TYPE']
         # Save the desktop environment
-        self.desktop = self.get_desktop_environment
+        self.desktop = self.get_desktop_environment()
     
     # Get the system's desktop environment
     def get_desktop_environment(self):
-        desktop = ''
-        if 'KDE_FULL_SESSION' in os.environ:
-            desktop = 'kde'
-        elif 'GNOME_DESKTOP_SESSION_ID' in os.environ or 'XDG_CURRENT_DESKTOP' in os.environ:
-            desktop = 'gnome'
-        elif 'MATE_DESKTOP_SESSION_ID' in os.environ:
-            desktop = 'mate'
+        desktop = os.environ.get('DESKTOP_SESSION')
+        if desktop == None:
+            # Dirty: KDE_FULL_SESSION does not always exist: also check if kdm exists
+            if 'KDE_FULL_SESSION' in os.environ or os.path.isfile('/usr/bin/kdm'):
+                desktop = 'kde'
+            elif 'GNOME_DESKTOP_SESSION_ID' in os.environ or 'XDG_CURRENT_DESKTOP' in os.environ:
+                desktop = 'gnome'
+            elif 'MATE_DESKTOP_SESSION_ID' in os.environ:
+                desktop = 'mate'
         return desktop
 
     def set_progress_hook(self, progresshook):
