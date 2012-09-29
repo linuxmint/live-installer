@@ -1325,10 +1325,16 @@ class InstallerWindow:
             self.critical_error_happened = False
             
             try:
-                # Now it's time to load the slide show
+                # Now it's time to load the slide show in a separate thread
+                # There were rare cases of live-installer crashes
+                # Use threading to prevent live-installer to crash when something goes bad in the execution of the JavaScript code of the slideshow
                 if os.path.exists(self.slideshow_path):
-                    print "Slideshow URL=file://" + self.slideshow_path  + "#?locale=" + self.country_code.lower()
-                    self.install_browser.open("file://" + self.slideshow_path  + "#?locale=" + self.country_code.lower())
+                    url = "file://" + self.slideshow_path  + "#?locale=" + self.country_code.lower()
+                    print "Slideshow URL=" + url
+                    slideThr = threading.Thread(name="live-install-slideshow", group=None, args=[url], kwargs={}, target=self.install_browser.open)
+                    # Let the slide-thread die when the parent thread dies
+                    slideThr.setDaemon(1)
+                    slideThr.start()
                 
                 # Start installing
                 inst.install(self.setup)
