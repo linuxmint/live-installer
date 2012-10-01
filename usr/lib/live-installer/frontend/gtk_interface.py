@@ -25,6 +25,7 @@ try:
     import urllib
     import string
     import parted
+    from slideshow import Slideshow
 except Exception, detail:
     print detail
 
@@ -302,17 +303,18 @@ class InstallerWindow:
             self.window.fullscreen()        
         
         # Initiate the slide show
-        self.slideshow_path = "/usr/share/live-installer/slideshow/index.html"
-        if os.path.exists(self.slideshow_path):            
-            self.install_browser = webkit.WebView()
-            s = self.install_browser.get_settings()
+        self.slideshow_path = "/usr/share/live-installer/slideshow"
+        if os.path.exists(self.slideshow_path):
+            self.slideshow_browser = webkit.WebView()
+            s = self.slideshow_browser.get_settings()
             s.set_property('enable-file-access-from-file-uris', True)
             s.set_property('enable-default-context-menu', False)
             # Just open an empty html page to allow the window resize itself to the correct size
-            self.install_browser.open("file:///usr/share/live-installer/slideshow/empty.html")
-            self.wTree.get_widget("vbox_install").add(self.install_browser)
+            self.slideshow_browser.open("file://" + os.path.join(self.slideshow_path, 'template.html'))
+            self.wTree.get_widget("vbox_install").add(self.slideshow_browser)
             self.wTree.get_widget("vbox_install").show_all() 
-        
+
+
         self.browser = webkit.WebView()
         s = self.browser.get_settings()
         s.set_property('enable-file-access-from-file-uris', True)
@@ -1329,11 +1331,9 @@ class InstallerWindow:
                 # There were rare cases of live-installer crashes
                 # Use threading to prevent live-installer to crash when something goes bad in the execution of the JavaScript code of the slideshow
                 if os.path.exists(self.slideshow_path):
-                    url = "file://" + self.slideshow_path  + "#?locale=" + self.country_code.lower()
-                    print "Slideshow URL=" + url
-                    slideThr = threading.Thread(name="live-install-slideshow", group=None, args=[url], kwargs={}, target=self.install_browser.open)
+                    slideThr = Slideshow(self.slideshow_browser, self.slideshow_path, self.setup.language)
                     # Let the slide-thread die when the parent thread dies
-                    slideThr.setDaemon(1)
+                    slideThr.daemon = True
                     slideThr.start()
                 
                 # Start installing

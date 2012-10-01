@@ -82,7 +82,7 @@ Typically an image. This is positioned at the bottom right of a slide.
 	width:auto;
 	height:auto;
 	
-	bottom:-300px;
+	bottom:0px;
 	right:10px;
 	
 	z-index:11;
