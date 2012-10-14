@@ -11,6 +11,7 @@ pages = [
 'welcome.html',
 'giants.html',
 'desktop-ready.html',
+'office.html',
 'windows.html',
 'safe.html',
 'community.html'
@@ -74,7 +75,7 @@ class Slideshow(threading.Thread):
                 while runLoop:
                     # Get the full path of the content page
                     if os.path.isfile(self.pageContent[i][0]):
-                        print 'Load page: ' + self.pageContent[i][0]
+                        #print 'Load page: ' + self.pageContent[i][0]
                         # Load html into browser object
                         # Use glib to schedule an update of the parent browser object
                         # If you do this directly the objects won't refresh
