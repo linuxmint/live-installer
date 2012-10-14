@@ -25,6 +25,7 @@ try:
     import urllib
     import string
     import parted
+    from slideshow import Slideshow
 except Exception, detail:
     print detail
 
@@ -42,32 +43,32 @@ INDEX_PARTITION_FREE_SPACE=6
 INDEX_PARTITION_OBJECT=7
 
 class ProgressDialog:
-	
-	def __init__(self):
-		self.glade = '/usr/share/live-installer/interface.glade'
-		self.dTree = gtk.glade.XML(self.glade, 'progress_window')
-		self.window = self.dTree.get_widget('progress_window')
-		self.progressbar = self.dTree.get_widget('progressbar_operation')
-		self.label = self.dTree.get_widget('label_operation')
-		self.should_pulse = False
-		
-	def show(self, label=None, title=None):
-		def pbar_pulse():
-			if(not self.should_pulse):
-				return False
-			self.progressbar.pulse()
-			return self.should_pulse
-		if(label is not None):
-			self.label.set_markup(label)
-		if(title is not None):
-			self.window.set_title(title)
-		self.should_pulse = True
-		self.window.show_all()
-		gobject.timeout_add(100, pbar_pulse)
-		
-	def hide(self):
-		self.should_pulse = False
-		self.window.hide()	
+
+    def __init__(self):
+        self.glade = '/usr/share/live-installer/interface.glade'
+        self.dTree = gtk.glade.XML(self.glade, 'progress_window')
+        self.window = self.dTree.get_widget('progress_window')
+        self.progressbar = self.dTree.get_widget('progressbar_operation')
+        self.label = self.dTree.get_widget('label_operation')
+        self.should_pulse = False
+
+    def show(self, label=None, title=None):
+        def pbar_pulse():
+            if(not self.should_pulse):
+                return False
+            self.progressbar.pulse()
+            return self.should_pulse
+        if(label is not None):
+            self.label.set_markup(label)
+        if(title is not None):
+            self.window.set_title(title)
+        self.should_pulse = True
+        self.window.show_all()
+        gobject.timeout_add(100, pbar_pulse)
+
+    def hide(self):
+        self.should_pulse = False
+        self.window.hide()
 
 ''' Handy. Makes message dialogs easy :D '''
 class MessageDialog(object):
@@ -83,7 +84,7 @@ class MessageDialog(object):
         dialog = gtk.MessageDialog(None, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT, self.style, gtk.BUTTONS_OK, self.message)
         dialog.set_title(self.title)
         dialog.set_position(gtk.WIN_POS_CENTER)
-        dialog.set_icon_from_file("/usr/share/icons/live-installer.png")
+        dialog.set_icon_from_file("/usr/share/live-installer/logo.png")
         dialog.run()
         dialog.destroy()
         
@@ -97,7 +98,7 @@ class QuestionDialog(object):
         dialog = gtk.MessageDialog(None, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_QUESTION, gtk.BUTTONS_YES_NO, self.message)
         dialog.set_title(self.title)
         dialog.set_position(gtk.WIN_POS_CENTER)
-        dialog.set_icon_from_file("/usr/share/icons/live-installer.png")
+        dialog.set_icon_from_file("/usr/share/live-installer/logo.png")
         answer = dialog.run()
         if answer==gtk.RESPONSE_YES:
             return_value = True
@@ -111,7 +112,7 @@ class WizardPage:
     def __init__(self, help_text, icon):
         self.help_text = help_text    
         self.icon = icon    
-		
+
 class InstallerWindow:
 
     def __init__(self, fullscreen=False):
@@ -301,22 +302,19 @@ class InstallerWindow:
             self.window.maximize()
             self.window.fullscreen()        
         
-        #''' Launch the Slideshow '''
-        #if ("_" in self.setup.language):
-        #    locale_code = self.setup.language.split("_")[0]
-        #else:
-        #     locale_code = self.setup.language
-        
-        #slideshow_path = "/usr/share/live-installer-slideshow/slides/index.html"
-        #if os.path.exists(slideshow_path):            
-        #    browser = webkit.WebView()
-        #    s = browser.get_settings()
-        #    s.set_property('enable-file-access-from-file-uris', True)
-        #    s.set_property('enable-default-context-menu', False)
-        #    browser.open("file://" + slideshow_path  + "#?locale=" + locale_code)
-        #    self.wTree.get_widget("vbox_install").add(browser)
-        #    self.wTree.get_widget("vbox_install").show_all()                                                            
-        
+        # Initiate the slide show
+        self.slideshow_path = "/usr/share/live-installer/slideshow"
+        if os.path.exists(self.slideshow_path):
+            self.slideshow_browser = webkit.WebView()
+            s = self.slideshow_browser.get_settings()
+            s.set_property('enable-file-access-from-file-uris', True)
+            s.set_property('enable-default-context-menu', False)
+            # Just open an empty html page to allow the window resize itself to the correct size
+            self.slideshow_browser.open("file://" + os.path.join(self.slideshow_path, 'template.html'))
+            self.wTree.get_widget("vbox_install").add(self.slideshow_browser)
+            self.wTree.get_widget("vbox_install").show_all() 
+
+
         self.browser = webkit.WebView()
         s = self.browser.get_settings()
         s.set_property('enable-file-access-from-file-uris', True)
@@ -517,11 +515,11 @@ class InstallerWindow:
                         else:
                             language = language_code
 
-                        country_code = split[1].lower()
-                        if country_code in countries:
-                            country = countries[country_code]
+                        self.country_code = split[1].lower()
+                        if self.country_code in countries:
+                            country = countries[self.country_code]
                         else:
-                            country = country_code
+                            country = self.country_code
 
                         language_label = "%s (%s)" % (language, country)
                         #language_label = "%s - %s" % (country, language)
@@ -529,14 +527,14 @@ class InstallerWindow:
                         iter = model.append()
                         model.set_value(iter, 0, language_label)
                         model.set_value(iter, 1, locale_code)
-                        flag_path = self.resource_dir + '/flags/16/' + country_code + '.png'
+                        flag_path = self.resource_dir + '/flags/16/' + self.country_code + '.png'
                         if os.path.exists(flag_path):
                             model.set_value(iter, 2, gtk.gdk.pixbuf_new_from_file(flag_path))
                         else:
                             flag_path = self.resource_dir + '/flags/16/generic.png'
                             model.set_value(iter, 2, gtk.gdk.pixbuf_new_from_file(flag_path))
                         # If it's matching our country code, that's our language right there.. 
-                        if ((cur_country_code is not None) and (cur_country_code.lower() == country_code)):                            
+                        if ((cur_country_code is not None) and (cur_country_code.lower() == self.country_code)):                            
                             if (set_index is None):
                                 set_index = iter                                
                             else:
@@ -544,7 +542,7 @@ class InstallerWindow:
                                 if (language_code == "en"):
                                     set_index = iter                 
                                 # Guesswork... handy for countries which have their own language (fr_FR, de_DE, es_ES.. etc. )
-                                elif (country_code == language_code):
+                                elif (self.country_code == language_code):
                                     set_index = iter
                                     
                         # as a plan B... use the locale (USA)
@@ -573,11 +571,11 @@ class InstallerWindow:
             cur_index += 1
             content = line.strip().split()
             if len(content) == 2:
-                country_code = content[0]
+                self.country_code = content[0]
                 timezone = content[1]
                 iter = model.append()
                 model.set_value(iter, 0, timezone)
-                model.set_value(iter, 1, country_code)
+                model.set_value(iter, 1, self.country_code)
 
         treeview = self.wTree.get_widget("treeview_timezones")
         treeview.set_model(model)
@@ -1139,15 +1137,15 @@ class InstallerWindow:
         if(not goback):
             if(sel == self.PAGE_LANGUAGE):
                 if ("_" in self.setup.language):
-                    country_code = self.setup.language.split("_")[1]
+                    self.country_code = self.setup.language.split("_")[1]
                 else:
-                    country_code = self.setup.language
+                    self.country_code = self.setup.language
                 treeview = self.wTree.get_widget("treeview_timezones")
                 model = treeview.get_model()
                 iter = model.get_iter_first()
                 while iter is not None:
                     iter_country_code = model.get_value(iter, 1)
-                    if iter_country_code == country_code:
+                    if iter_country_code == self.country_code:
                         column = treeview.get_column(0)
                         path = model.get_path(iter)
                         treeview.set_cursor(path, focus_column=column)
@@ -1157,15 +1155,15 @@ class InstallerWindow:
                 self.activate_page(self.PAGE_TIMEZONE)
             elif (sel == self.PAGE_TIMEZONE):
                 if ("_" in self.setup.language):
-                    country_code = self.setup.language.split("_")[1]
+                    self.country_code = self.setup.language.split("_")[1]
                 else:
-                    country_code = self.setup.language
+                    self.country_code = self.setup.language
                 treeview = self.wTree.get_widget("treeview_layouts")
                 model = treeview.get_model()
                 iter = model.get_iter_first()                
                 while iter is not None:
                     iter_country_code = model.get_value(iter, 1)
-                    if iter_country_code.lower() == country_code.lower():
+                    if iter_country_code.lower() == self.country_code.lower():
                         column = treeview.get_column(0)
                         path = model.get_path(iter)
                         treeview.set_cursor(path, focus_column=column)
@@ -1329,7 +1327,18 @@ class InstallerWindow:
             self.critical_error_happened = False
             
             try:
+                # Now it's time to load the slide show in a separate thread
+                # There were rare cases of live-installer crashes
+                # Use threading to prevent live-installer to crash when something goes bad in the execution of the JavaScript code of the slideshow
+                if os.path.exists(self.slideshow_path):
+                    slideThr = Slideshow(self.slideshow_browser, self.slideshow_path, self.setup.language)
+                    # Let the slide-thread die when the parent thread dies
+                    slideThr.daemon = True
+                    slideThr.start()
+                
+                # Start installing
                 inst.install(self.setup)
+                
             except Exception, detail1:
                 print detail1
                 try:
