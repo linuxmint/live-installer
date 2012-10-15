@@ -1,6 +1,7 @@
+#!/usr/bin/env python
+
 import os
 import subprocess
-from subprocess import Popen
 import time
 import shutil
 import gettext
@@ -8,6 +9,7 @@ import stat
 import commands
 import sys
 import parted
+import re
 from configobj import ConfigObj
 
 gettext.install("live-installer", "/usr/share/locale")
@@ -25,6 +27,9 @@ class InstallerEngine:
         self.media_type = configuration['install']['LIVE_MEDIA_TYPE']
         # Save the desktop environment
         self.desktop = self.get_desktop_environment()
+        
+        # Flush print when it's called
+        sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
     
     # Get the system's desktop environment
     def get_desktop_environment(self):
@@ -73,8 +78,9 @@ class InstallerEngine:
                         cmd = "mkfs.%s %s" % (partition.format_as, partition.partition.path) # works with bfs, btrfs, ext2, ext3, ext4, minix, msdos, ntfs, vfat
                 
                 print "EXECUTING: '%s'" % cmd
-                p = Popen(cmd, shell=True)
-                p.wait() # this blocks
+                self.exec_cmd(cmd)
+                #p = Popen(cmd, shell=True)
+                #p.wait() # this blocks
                 partition.type = partition.format_as
                                         
     def step_mount_partitions(self, setup):
@@ -125,9 +131,9 @@ class InstallerEngine:
             os.chdir(SOURCE)
             # index the files
             print " --> Indexing files"
+            self.update_progress(pulse=True, message=_("Indexing files to be copied.."))
             for top,dirs,files in os.walk(SOURCE, topdown=False):
                 our_total += len(dirs) + len(files)
-                self.update_progress(pulse=True, message=_("Indexing files to be copied.."))
             our_total += 1 # safenessness
             print " --> Copying files"
             for top,dirs,files in os.walk(SOURCE):
@@ -204,7 +210,54 @@ class InstallerEngine:
             os.system("mount --bind /sys/ /target/sys/")
             os.system("mount --bind /proc/ /target/proc/")
             os.system("cp -f /etc/resolv.conf /target/etc/resolv.conf")
-                                          
+            
+            # Remove PAE kernel for 486 systems
+            self.update_progress(pulse=True, message=_("Checking your kernel"))
+            # Get machine type
+            machine = self.exec_cmd('uname -m')[0]
+            if machine == 'i486':
+                # Because PAE is not running we can remove the selected PAE packages
+                # Get installed pae packages
+                packages = self.exec_cmd('apt search linux-[a-z]*-[0-9]+.*-686-pae | grep ^i')
+                for line in packages:
+                    print 'packages line: ' + line
+                    matchObj = re.search('linux[a-z0-9-\.]*', line)
+                    if matchObj:
+                        package = matchObj.group(0)
+                        print 'Package to remove: ' + package
+                        self.do_run_in_chroot('apt-get -y --force-yes purge ' + package)
+            elif machine == 'i686':
+                # Unfortunately, I cannot remove a kernel that is in use (486 kernel) so I'll have to leave that to the user but I can move 486 files in /boot and update-grub
+                # Move 486 versions of /boot/vmlinuz* and /boot/initrd.img*
+                # [DECIDED TO KEEP 486]
+                #kernelRelease = self.exec_cmd('uname -r')[0]
+                #vmlinuz = DEST + 'boot/vmlinuz-' + kernelRelease
+                #if os.path.exists(vmlinuz):
+                #    self.do_run_in_chroot("mv -f " + vmlinuz + " " + vmlinuz + ".bak")
+                #initrd = DEST + 'boot/initrd.img-' + kernelRelease
+                #if os.path.exists(initrd):
+                #    self.do_run_in_chroot("mv -f " + initrd + " " + initrd + ".bak")
+                
+                # Create new symbolic links - /vmlinuz and /initrd.img
+                # Get installed pae packages
+                paeImage = self.exec_cmd('apt search linux-image*-[0-9]+.*-686-pae | grep ^i')
+                if paeImage:
+                    paeImageLine = paeImage[0]
+                    print 'PAE image: ' + paeImageLine
+                    matchObj = re.search('\d[\d\.-]+pae', paeImageLine)
+                    if matchObj:
+                        kernelReleasePae = matchObj.group(0)
+                        # Create vmlinuz symbolic link
+                        vmlinuzPae = '/boot/vmlinuz-' + kernelReleasePae
+                        print vmlinuzPae
+                        if os.path.exists(DEST + vmlinuzPae):
+                            self.do_run_in_chroot("ln -s -f " + vmlinuzPae + " /vmlinuz")
+                        # Create initrd.img symbolic link
+                        initrdPae = '/boot/initrd.img-' + kernelReleasePae
+                        print initrdPae
+                        if os.path.exists(DEST + initrdPae):
+                            self.do_run_in_chroot("ln -s -f " + initrdPae + " /initrd.img")
+            
             # remove live user
             print " --> Removing live user"
             live_user = self.live_user
@@ -246,6 +299,13 @@ class InstallerEngine:
             newusers.close()
             self.do_run_in_chroot("cat /tmp/newusers.conf | chpasswd")
             self.do_run_in_chroot("rm -rf /tmp/newusers.conf")
+            
+            # Make the new user the default user in KDM
+            kdmrcPath = '/target/etc/kde4/kdm/kdmrc'
+            if os.path.exists(kdmrcPath):
+                defUsrCmd = "sed -i 's/^#DefaultUser=.*/DefaultUser=" + setup.username + "/g' " + kdmrcPath
+                print defUsrCmd
+                os.system(defUsrCmd)
             
             # write the /etc/fstab
             print " --> Writing fstab"
@@ -353,7 +413,7 @@ class InstallerEngine:
             
             # localize Firefox and Thunderbird
             print " --> Localizing Firefox and Thunderbird"
-            self.update_progress(total=our_total, current=our_current, message=_("Localizing Firefox and Thunderbird"))
+            #self.update_progress(total=our_total, current=our_current, message=_("Localizing Firefox and Thunderbird"))
             if setup.language != "en_US":                
                 os.system("apt-get update")
                 self.do_run_in_chroot("apt-get update")
@@ -500,6 +560,8 @@ class InstallerEngine:
             traceback.print_tb(exc_traceback, limit=1, file=sys.stdout)
     
     def do_run_in_chroot(self, command):
+        command = command.replace('"', "'").strip()
+        print "chroot /target/ /bin/sh -c \"%s\"" % command
         os.system("chroot /target/ /bin/sh -c \"%s\"" % command)
         
     def do_configure_grub(self, our_total, our_current):
@@ -541,17 +603,19 @@ class InstallerEngine:
         else:
             cmd = "mount -t %s %s %s" % (type, device, dest)
         print "EXECUTING: '%s'" % cmd
-        p = Popen(cmd ,shell=True)        
-        p.wait()
-        return p.returncode
+        self.exec_cmd(cmd)
+        #p = Popen(cmd ,shell=True)        
+        #p.wait()
+        #return p.returncode
 
     def do_unmount(self, mountpoint):
         ''' Unmount a filesystem '''
         cmd = "umount %s" % mountpoint
         print "EXECUTING: '%s'" % cmd
-        p = Popen(cmd, shell=True)
-        p.wait()
-        return p.returncode
+        self.exec_cmd(cmd)
+        #p = Popen(cmd, shell=True)
+        #p.wait()
+        #return p.returncode
 
     def do_copy_file(self, source, dest):
         # TODO: Add md5 checks. BADLY needed..
@@ -565,6 +629,17 @@ class InstallerEngine:
             dst.write(read)
         input.close()
         dst.close()
+    
+    # Execute schell command and return output in a list
+    def exec_cmd(self, cmd):
+        p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        lstOut = []
+        for line in p.stdout.readlines():
+            # Strip the line, also from null spaces (strip() only strips white spaces)
+            line = line.strip().strip("\0")
+            if line != '':
+                lstOut.append(line)
+        return lstOut
 
 # Represents the choices made by the user
 class Setup(object):
