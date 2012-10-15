@@ -1,6 +1,7 @@
+#!/usr/bin/env python
+
 import os
 import subprocess
-from subprocess import Popen
 import time
 import shutil
 import gettext
@@ -8,6 +9,7 @@ import stat
 import commands
 import sys
 import parted
+import re
 from configobj import ConfigObj
 
 gettext.install("live-installer", "/usr/share/locale")
@@ -22,7 +24,25 @@ class InstallerEngine:
         self.distribution_version = configuration['distribution']['DISTRIBUTION_VERSION']        
         self.live_user = configuration['install']['LIVE_USER_NAME']
         self.media = configuration['install']['LIVE_MEDIA_SOURCE']
-        self.media_type = configuration['install']['LIVE_MEDIA_TYPE']                
+        self.media_type = configuration['install']['LIVE_MEDIA_TYPE']
+        # Save the desktop environment
+        self.desktop = self.get_desktop_environment()
+        
+        # Flush print when it's called
+        sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
+    
+    # Get the system's desktop environment
+    def get_desktop_environment(self):
+        desktop = os.environ.get('DESKTOP_SESSION')
+        if desktop == None:
+            # Dirty: KDE_FULL_SESSION does not always exist: also check if kdm exists
+            if 'KDE_FULL_SESSION' in os.environ or os.path.isfile('/usr/bin/kdm'):
+                desktop = 'kde'
+            elif 'GNOME_DESKTOP_SESSION_ID' in os.environ or 'XDG_CURRENT_DESKTOP' in os.environ:
+                desktop = 'gnome'
+            elif 'MATE_DESKTOP_SESSION_ID' in os.environ:
+                desktop = 'mate'
+        return desktop
 
     def set_progress_hook(self, progresshook):
         ''' Set a callback to be called on progress updates '''
@@ -56,10 +76,11 @@ class InstallerEngine:
                         cmd = "mkfs.%s -f %s" % (partition.format_as, partition.partition.path)
                     else:
                         cmd = "mkfs.%s %s" % (partition.format_as, partition.partition.path) # works with bfs, btrfs, ext2, ext3, ext4, minix, msdos, ntfs, vfat
-					
+                
                 print "EXECUTING: '%s'" % cmd
-                p = Popen(cmd, shell=True)
-                p.wait() # this blocks
+                self.exec_cmd(cmd)
+                #p = Popen(cmd, shell=True)
+                #p.wait() # this blocks
                 partition.type = partition.format_as
                                         
     def step_mount_partitions(self, setup):
@@ -110,9 +131,9 @@ class InstallerEngine:
             os.chdir(SOURCE)
             # index the files
             print " --> Indexing files"
+            self.update_progress(pulse=True, message=_("Indexing files to be copied.."))
             for top,dirs,files in os.walk(SOURCE, topdown=False):
                 our_total += len(dirs) + len(files)
-                self.update_progress(pulse=True, message=_("Indexing files to be copied.."))
             our_total += 1 # safenessness
             print " --> Copying files"
             for top,dirs,files in os.walk(SOURCE):
@@ -189,7 +210,54 @@ class InstallerEngine:
             os.system("mount --bind /sys/ /target/sys/")
             os.system("mount --bind /proc/ /target/proc/")
             os.system("cp -f /etc/resolv.conf /target/etc/resolv.conf")
-                                          
+            
+            # Remove PAE kernel for 486 systems
+            self.update_progress(pulse=True, message=_("Checking your kernel"))
+            # Get machine type
+            machine = self.exec_cmd('uname -m')[0]
+            if machine == 'i486':
+                # Because PAE is not running we can remove the selected PAE packages
+                # Get installed pae packages
+                packages = self.exec_cmd('apt search linux-[a-z]*-[0-9]+.*-686-pae | grep ^i')
+                for line in packages:
+                    print 'packages line: ' + line
+                    matchObj = re.search('linux[a-z0-9-\.]*', line)
+                    if matchObj:
+                        package = matchObj.group(0)
+                        print 'Package to remove: ' + package
+                        self.do_run_in_chroot('apt-get -y --force-yes purge ' + package)
+            elif machine == 'i686':
+                # Unfortunately, I cannot remove a kernel that is in use (486 kernel) so I'll have to leave that to the user but I can move 486 files in /boot and update-grub
+                # Move 486 versions of /boot/vmlinuz* and /boot/initrd.img*
+                # [DECIDED TO KEEP 486]
+                #kernelRelease = self.exec_cmd('uname -r')[0]
+                #vmlinuz = DEST + 'boot/vmlinuz-' + kernelRelease
+                #if os.path.exists(vmlinuz):
+                #    self.do_run_in_chroot("mv -f " + vmlinuz + " " + vmlinuz + ".bak")
+                #initrd = DEST + 'boot/initrd.img-' + kernelRelease
+                #if os.path.exists(initrd):
+                #    self.do_run_in_chroot("mv -f " + initrd + " " + initrd + ".bak")
+                
+                # Create new symbolic links - /vmlinuz and /initrd.img
+                # Get installed pae packages
+                paeImage = self.exec_cmd('apt search linux-image*-[0-9]+.*-686-pae | grep ^i')
+                if paeImage:
+                    paeImageLine = paeImage[0]
+                    print 'PAE image: ' + paeImageLine
+                    matchObj = re.search('\d[\d\.-]+pae', paeImageLine)
+                    if matchObj:
+                        kernelReleasePae = matchObj.group(0)
+                        # Create vmlinuz symbolic link
+                        vmlinuzPae = '/boot/vmlinuz-' + kernelReleasePae
+                        print vmlinuzPae
+                        if os.path.exists(DEST + vmlinuzPae):
+                            self.do_run_in_chroot("ln -s -f " + vmlinuzPae + " /vmlinuz")
+                        # Create initrd.img symbolic link
+                        initrdPae = '/boot/initrd.img-' + kernelReleasePae
+                        print initrdPae
+                        if os.path.exists(DEST + initrdPae):
+                            self.do_run_in_chroot("ln -s -f " + initrdPae + " /initrd.img")
+            
             # remove live user
             print " --> Removing live user"
             live_user = self.live_user
@@ -206,17 +274,38 @@ class InstallerEngine:
             self.update_progress(total=our_total, current=our_current, message=_("Removing live configuration (packages)"))
             self.do_run_in_chroot("apt-get remove --purge --yes --force-yes live-boot live-boot-initramfs-tools live-initramfs live-installer live-config live-config-sysvinit")
             
+            # On KDE the purge is incomplete and leaves redundant symbolic links in the rc*.d directories.
+            # The resulting startpar error prevents gsfxi to successfully install the Nvidia drivers.
+            self.do_run_in_chroot("update-rc.d -f live-installer remove")
+            
+            # Remove gparted when kde is used
+            if self.desktop == 'kde':
+                print " --> Removing gparted from KDE"
+                our_current += 1
+                self.update_progress(total=our_total, current=our_current, message=_("Removing gparted from KDE"))
+                self.do_run_in_chroot("apt-get remove --purge --yes --force-yes gparted")
+            
             # add new user
             print " --> Adding new user"
             our_current += 1
-            self.update_progress(total=our_total, current=our_current, message=_("Adding user to system"))           
-            self.do_run_in_chroot("useradd -s %s -c \'%s\' -G sudo -m %s" % ("/bin/bash", setup.real_name, setup.username))
+            self.update_progress(total=our_total, current=our_current, message=_("Adding user to system"))
+                       
+            # Add more groups (not only sudo) to get all working on kde for the initial user
+            self.do_run_in_chroot("useradd -s %s -c \'%s\' -G sudo,adm,dialout,audio,video,cdrom,floppy,dip,plugdev,lpadmin,sambashare -m %s" % ("/bin/bash", setup.real_name, setup.username))
+            
             newusers = open("/target/tmp/newusers.conf", "w")
             newusers.write("%s:%s\n" % (setup.username, setup.password1))
             newusers.write("root:%s\n" % setup.password1)
             newusers.close()
             self.do_run_in_chroot("cat /tmp/newusers.conf | chpasswd")
             self.do_run_in_chroot("rm -rf /tmp/newusers.conf")
+            
+            # Make the new user the default user in KDM
+            kdmrcPath = '/target/etc/kde4/kdm/kdmrc'
+            if os.path.exists(kdmrcPath):
+                defUsrCmd = "sed -i 's/^#DefaultUser=.*/DefaultUser=" + setup.username + "/g' " + kdmrcPath
+                print defUsrCmd
+                os.system(defUsrCmd)
             
             # write the /etc/fstab
             print " --> Writing fstab"
@@ -281,17 +370,30 @@ class InstallerEngine:
             hostsfh.write("ff02::3 ip6-allhosts\n")
             hostsfh.close()
 
-            # MDM overwrite (specific to Debian/live-initramfs)
-            print " --> Configuring MDM"
-            mdmconffh = open("/target/etc/mdm/mdm.conf", "w")
-            mdmconffh.write("# MDM configuration\n")
-            mdmconffh.write("\n[daemon]\n")
-            mdmconffh.write("\n[security]\n")
-            mdmconffh.write("\n[xdmcp]\n")
-            mdmconffh.write("\n[greeter]\n")
-            mdmconffh.write("\n[chooser]\n")
-            mdmconffh.write("\n[debug]\n")
-            mdmconffh.close()
+            if os.path.exists("/target/etc/gdm3/daemon.conf"):
+                # gdm overwrite (specific to Debian/live-initramfs)
+                print " --> Configuring GDM"
+                gdmconffh = open("/target/etc/gdm3/daemon.conf", "w")
+                gdmconffh.write("# GDM configuration storage\n")
+                gdmconffh.write("\n[daemon]\n")
+                gdmconffh.write("\n[security]\n")
+                gdmconffh.write("\n[xdmcp]\n")
+                gdmconffh.write("\n[greeter]\n")
+                gdmconffh.write("\n[chooser]\n")
+                gdmconffh.write("\n[debug]\n")
+                gdmconffh.close()
+            elif os.path.exists("/target/etc/mdm/mdm.conf"):
+                # MDM overwrite (specific to Debian/live-initramfs)
+                print " --> Configuring MDM"
+                mdmconffh = open("/target/etc/mdm/mdm.conf", "w")
+                mdmconffh.write("# MDM configuration\n")
+                mdmconffh.write("\n[daemon]\n")
+                mdmconffh.write("\n[security]\n")
+                mdmconffh.write("\n[xdmcp]\n")
+                mdmconffh.write("\n[greeter]\n")
+                mdmconffh.write("\n[chooser]\n")
+                mdmconffh.write("\n[debug]\n")
+                mdmconffh.close()
 
             # set the locale
             print " --> Setting the locale"
@@ -304,18 +406,50 @@ class InstallerEngine:
             self.do_run_in_chroot("update-locale LANG=%s.UTF-8" % setup.language)
 
             # set the timezone
+            # TODO: need translations
             print " --> Setting the timezone"
             os.system("echo \"%s\" > /target/etc/timezone" % setup.timezone_code)
             os.system("cp /target/usr/share/zoneinfo/%s /target/etc/localtime" % setup.timezone)
             
             # localize Firefox and Thunderbird
             print " --> Localizing Firefox and Thunderbird"
-            self.update_progress(total=our_total, current=our_current, message=_("Localizing Firefox and Thunderbird"))
+            #self.update_progress(total=our_total, current=our_current, message=_("Localizing Firefox and Thunderbird"))
             if setup.language != "en_US":                
                 os.system("apt-get update")
                 self.do_run_in_chroot("apt-get update")
                 locale = setup.language.replace("_", "-").lower()                
                                
+                # KDE
+                if self.desktop == 'kde':
+                    print " --> Localizing KDE"
+                    self.update_progress(total=our_total, current=our_current, message=_("Localizing KDE"))
+                    num_res = commands.getoutput("aptitude search kde-l10n-%s | grep kde-l10n-%s | wc -l" % (locale, locale))
+                    if num_res != "0":                    
+                        self.do_run_in_chroot("apt-get install --yes --force-yes kde-l10n-" + locale)
+                    else:
+                        if "_" in setup.language:
+                            language_code = setup.language.split("_")[0]
+                            num_res = commands.getoutput("aptitude search kde-l10n-%s | grep kde-l10n-%s | wc -l" % (language_code, language_code))
+                            if num_res != "0":                            
+                                self.do_run_in_chroot("apt-get install --yes --force-yes kde-l10n-" + language_code)
+                
+                # LibreOffice
+                print " --> Localizing LibreOffice"
+                self.update_progress(total=our_total, current=our_current, message=_("Localizing LibreOffice"))
+                num_res = commands.getoutput("aptitude search libreoffice-l10n-%s | grep libreoffice-l10n-%s | wc -l" % (locale, locale))
+                if num_res != "0":                    
+                    self.do_run_in_chroot("apt-get install --yes --force-yes libreoffice-l10n-" + locale)
+                else:
+                    if "_" in setup.language:
+                        language_code = setup.language.split("_")[0]
+                        num_res = commands.getoutput("aptitude search libreoffice-l10n-%s | grep libreoffice-l10n-%s | wc -l" % (language_code, language_code))
+                        if num_res != "0":                            
+                            self.do_run_in_chroot("apt-get install --yes --force-yes libreoffice-l10n-" + language_code)
+                            self.do_run_in_chroot("apt-get install --yes --force-yes aspell-" + language_code)
+                
+                # Firefox
+                print " --> Localizing Firefox"
+                self.update_progress(total=our_total, current=our_current, message=_("Localizing Firefox"))
                 num_res = commands.getoutput("aptitude search firefox-l10n-%s | grep firefox-l10n-%s | wc -l" % (locale, locale))
                 if num_res != "0":                    
                     self.do_run_in_chroot("apt-get install --yes --force-yes firefox-l10n-" + locale)
@@ -326,6 +460,9 @@ class InstallerEngine:
                         if num_res != "0":                            
                             self.do_run_in_chroot("apt-get install --yes --force-yes firefox-l10n-" + language_code)
                
+                # Thunderbird
+                print " --> Localizing Thunderbird"
+                self.update_progress(total=our_total, current=our_current, message=_("Localizing Thunderbird"))
                 num_res = commands.getoutput("aptitude search thunderbird-l10n-%s | grep thunderbird-l10n-%s | wc -l" % (locale, locale))
                 if num_res != "0":
                     self.do_run_in_chroot("apt-get install --yes --force-yes thunderbird-l10n-" + locale)
@@ -423,6 +560,8 @@ class InstallerEngine:
             traceback.print_tb(exc_traceback, limit=1, file=sys.stdout)
     
     def do_run_in_chroot(self, command):
+        command = command.replace('"', "'").strip()
+        print "chroot /target/ /bin/sh -c \"%s\"" % command
         os.system("chroot /target/ /bin/sh -c \"%s\"" % command)
         
     def do_configure_grub(self, our_total, our_current):
@@ -464,17 +603,19 @@ class InstallerEngine:
         else:
             cmd = "mount -t %s %s %s" % (type, device, dest)
         print "EXECUTING: '%s'" % cmd
-        p = Popen(cmd ,shell=True)        
-        p.wait()
-        return p.returncode
+        self.exec_cmd(cmd)
+        #p = Popen(cmd ,shell=True)        
+        #p.wait()
+        #return p.returncode
 
     def do_unmount(self, mountpoint):
         ''' Unmount a filesystem '''
         cmd = "umount %s" % mountpoint
         print "EXECUTING: '%s'" % cmd
-        p = Popen(cmd, shell=True)
-        p.wait()
-        return p.returncode
+        self.exec_cmd(cmd)
+        #p = Popen(cmd, shell=True)
+        #p.wait()
+        #return p.returncode
 
     def do_copy_file(self, source, dest):
         # TODO: Add md5 checks. BADLY needed..
@@ -488,6 +629,17 @@ class InstallerEngine:
             dst.write(read)
         input.close()
         dst.close()
+    
+    # Execute schell command and return output in a list
+    def exec_cmd(self, cmd):
+        p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        lstOut = []
+        for line in p.stdout.readlines():
+            # Strip the line, also from null spaces (strip() only strips white spaces)
+            line = line.strip().strip("\0")
+            if line != '':
+                lstOut.append(line)
+        return lstOut
 
 # Represents the choices made by the user
 class Setup(object):
