@@ -73,15 +73,15 @@ class ProgressDialog:
 ''' Handy. Makes message dialogs easy :D '''
 class MessageDialog(object):
 
-    def __init__(self, title, message, style):
+    def __init__(self, title, message, style, parent=None):
         self.title = title
         self.message = message
         self.style = style
+        self.parent = parent
 
     ''' Show me on screen '''
     def show(self):
-
-        dialog = gtk.MessageDialog(None, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT, self.style, gtk.BUTTONS_OK, self.message)
+        dialog = gtk.MessageDialog(self.parent, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT, self.style, gtk.BUTTONS_OK, self.message)
         dialog.set_title(self.title)
         dialog.set_position(gtk.WIN_POS_CENTER)
         dialog.set_icon_from_file("/usr/share/live-installer/logo.png")
@@ -89,13 +89,14 @@ class MessageDialog(object):
         dialog.destroy()
         
 class QuestionDialog(object):
-    def __init__(self, title, message):
+    def __init__(self, title, message, parent=None):
         self.title = title
-        self.message = message       
+        self.message = message
+        self.parent = parent
 
     ''' Show me on screen '''
     def show(self):    
-        dialog = gtk.MessageDialog(None, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_QUESTION, gtk.BUTTONS_YES_NO, self.message)
+        dialog = gtk.MessageDialog(self.parent, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_QUESTION, gtk.BUTTONS_YES_NO, self.message)
         dialog.set_title(self.title)
         dialog.set_position(gtk.WIN_POS_CENTER)
         dialog.set_icon_from_file("/usr/share/live-installer/logo.png")
@@ -144,15 +145,15 @@ class InstallerWindow:
         # Wizard pages
         [self.PAGE_LANGUAGE, self.PAGE_PARTITIONS, self.PAGE_USER, self.PAGE_ADVANCED, self.PAGE_KEYBOARD, self.PAGE_OVERVIEW, self.PAGE_INSTALL, self.PAGE_TIMEZONE, self.PAGE_HDD] = range(9)
         self.wizard_pages = range(9)
-        self.wizard_pages[self.PAGE_LANGUAGE] = WizardPage("Choose your language", "locales.png")
-        self.wizard_pages[self.PAGE_TIMEZONE] = WizardPage("Choose your timezone", "time.png")
-        self.wizard_pages[self.PAGE_KEYBOARD] = WizardPage("Choose your keyboard layout", "keyboard.png")
-        self.wizard_pages[self.PAGE_HDD] = WizardPage("On which hard drive do you want to install Linux Mint?", "hdd.svg")
-        self.wizard_pages[self.PAGE_PARTITIONS] = WizardPage("Select where you want to install Linux Mint", "hdd.svg")
-        self.wizard_pages[self.PAGE_USER] = WizardPage("Please indicate your name and select a username, a password and a hostname", "user.png")
-        self.wizard_pages[self.PAGE_ADVANCED] = WizardPage("Please review the following advanced options", "advanced.png")
-        self.wizard_pages[self.PAGE_OVERVIEW] = WizardPage("Please review this summary and make sure everything is correct", "summary.png")
-        self.wizard_pages[self.PAGE_INSTALL] = WizardPage("Please wait while Linux Mint is being installed on your computer", "install.png")
+        self.wizard_pages[self.PAGE_LANGUAGE] = WizardPage(_("Choose your language"), "locales.png")
+        self.wizard_pages[self.PAGE_TIMEZONE] = WizardPage(_("Choose your timezone"), "time.png")
+        self.wizard_pages[self.PAGE_KEYBOARD] = WizardPage(_("Choose your keyboard layout"), "keyboard.png")
+        self.wizard_pages[self.PAGE_HDD] = WizardPage(_("On which hard drive do you want to install Linux Mint?"), "hdd.svg")
+        self.wizard_pages[self.PAGE_PARTITIONS] = WizardPage(_("Select where you want to install Linux Mint"), "hdd.svg")
+        self.wizard_pages[self.PAGE_USER] = WizardPage(_("Please indicate your name and select a username, a password and a hostname"), "user.png")
+        self.wizard_pages[self.PAGE_ADVANCED] = WizardPage(_("Please review the following advanced options"), "advanced.png")
+        self.wizard_pages[self.PAGE_OVERVIEW] = WizardPage(_("Please review this summary and make sure everything is correct"), "summary.png")
+        self.wizard_pages[self.PAGE_INSTALL] = WizardPage(_("Please wait while Linux Mint is being installed on your computer"), "install.png")
         
         # set the button events (wizard_cb)
         self.wTree.get_widget("button_next").connect("clicked", self.wizard_cb, False)
@@ -193,7 +194,6 @@ class InstallerWindow:
         #self.build_grub_partitions()
         
         self.wTree.get_widget("button_edit").connect("clicked", self.edit_partitions)
-        self.wTree.get_widget("label_edit_partitions").set_label(_("Edit partitions"))
         self.wTree.get_widget("button_refresh").connect("clicked", self.refresh_partitions)
         self.wTree.get_widget("treeview_disks").connect("row_activated", self.assign_partition)
         self.wTree.get_widget("treeview_disks").connect( "button-release-event", self.partitions_popup_menu)
@@ -294,9 +294,13 @@ class InstallerWindow:
         self.wTree.get_widget("menubar").realize()
         style = self.wTree.get_widget("menubar").style.copy()
         self.wTree.get_widget("menubar").hide()
-        # apply to the header       
-        self.wTree.get_widget("help_label").realize()
-        self.wTree.get_widget("help_label").modify_fg(gtk.STATE_NORMAL, style.fg[gtk.STATE_NORMAL])       
+        # apply to the header
+        self.title_box = self.wTree.get_widget("title_eventbox")
+        bgColor = gtk.gdk.color_parse('#585858')
+        self.title_box.modify_bg(gtk.STATE_NORMAL, bgColor)
+        fgColor = gtk.gdk.color_parse('#FFFFFF')
+        self.help_label = self.wTree.get_widget("help_label")
+        self.help_label.modify_fg(gtk.STATE_NORMAL, fgColor)     
         if(fullscreen):
             # dedicated installer mode thingum
             self.window.maximize()
@@ -343,11 +347,6 @@ class InstallerWindow:
         self.wTree.get_widget("label_test_kb").set_label(_("Use this box to test your keyboard layout"))
         self.wTree.get_widget("label_kb_model").set_label(_("Model"))
         
-        #Installation
-        self.wTree.get_widget("label_install_1").set_label(_("Please wait while the operating system is installed on your computer."))
-        self.wTree.get_widget("label_install_2").set_label(_("The installation should take approximately 10 minutes."))
-        self.wTree.get_widget("label_install_3").set_label(_("We hope you enjoy this new release. Thank you for choosing Linux Mint."))    
-        
         #Columns
         self.column1.set_title(_("Hard drive")) 
         self.column2.set_title(_("Description")) 
@@ -360,7 +359,10 @@ class InstallerWindow:
         self.column9.set_title(_("Free space")) 
         self.column10.set_title(_("Layout")) 
         self.column11.set_title(_("Variant")) 
-        self.column12.set_title(_("Overview")) 
+        self.column12.set_title(_("Overview"))
+        
+        # Partitions
+        self.wTree.get_widget("label_edit_partitions").set_label(_("Edit partitions"))
 
     def assign_realname(self, entry, prop):
         self.setup.real_name = entry.props.text
@@ -653,7 +655,7 @@ class InstallerWindow:
                 try:
                     disk = parted.Disk(device)
                 except Exception:
-                    dialog = QuestionDialog(_("Installation Tool"), _("No partition table was found on the hard drive. Do you want the installer to create a set of partitions for you? Note: This will erase any data present on the disk."))
+                    dialog = QuestionDialog(_("Installation Tool"), _("No partition table was found on the hard drive. Do you want the installer to create a set of partitions for you? Note: This will erase any data present on the disk."), self.window)
                     if (dialog.show()):
                         # Create a default partition set up                        
                         disk = parted.freshDisk(device, 'msdos')
@@ -1132,6 +1134,7 @@ class InstallerWindow:
         ''' wizard buttons '''
         sel = self.wTree.get_widget("notebook1").get_current_page()
         self.wTree.get_widget("button_next").set_label(_("Forward"))
+        self.wTree.get_widget("button_back").set_sensitive(True)
         
         # check each page for errors
         if(not goback):
@@ -1191,7 +1194,7 @@ class InstallerWindow:
                             error = True
                             errorMessage = _("Please indicate a filesystem to format the root (/) partition before proceeding")                        
                 if(error):
-                    MessageDialog(_("Installation Tool"), errorMessage, gtk.MESSAGE_ERROR).show()
+                    MessageDialog(_("Installation Tool"), errorMessage, gtk.MESSAGE_ERROR, self.window).show()
                 else:
                     self.activate_page(self.PAGE_USER)
             elif(sel == self.PAGE_USER):
@@ -1233,7 +1236,7 @@ class InstallerWindow:
                             errorMessage = _("Your hostname may not contain whitespace")
                     
                 if (errorFound):
-                    MessageDialog(_("Installation Tool"), errorMessage, gtk.MESSAGE_WARNING).show()
+                    MessageDialog(_("Installation Tool"), errorMessage, gtk.MESSAGE_WARNING, self.window).show()
                 else:
                      self.build_grub_partitions()
                      self.activate_page(self.PAGE_ADVANCED)
@@ -1245,12 +1248,13 @@ class InstallerWindow:
             elif(sel == self.PAGE_OVERVIEW):
                 self.activate_page(self.PAGE_INSTALL)
                 # do install
-                self.wTree.get_widget("button_next").hide()
-                self.wTree.get_widget("button_back").hide()
+                self.wTree.get_widget("button_next").set_sensitive(False)
+                self.wTree.get_widget("button_back").set_sensitive(False)
+                self.wTree.get_widget("button_quit").set_sensitive(False)
                 thr = threading.Thread(name="live-install", group=None, args=(), kwargs={}, target=self.do_install)
                 thr.start()
-            self.wTree.get_widget("button_back").set_sensitive(True)
         else:
+            self.wTree.get_widget("button_back").set_sensitive(True)
             if(sel == self.PAGE_OVERVIEW):
                 self.activate_page(self.PAGE_ADVANCED)
             elif(sel == self.PAGE_ADVANCED):
@@ -1265,7 +1269,6 @@ class InstallerWindow:
                 self.activate_page(self.PAGE_TIMEZONE)
             elif(sel == self.PAGE_TIMEZONE):
                 self.activate_page(self.PAGE_LANGUAGE)
-                self.wTree.get_widget("button_back").set_sensitive(False)
 
     def show_overview(self):
         ''' build the summary page '''
@@ -1343,7 +1346,7 @@ class InstallerWindow:
                 print detail1
                 try:
                     gtk.gdk.threads_enter()
-                    MessageDialog(_("Installation error"), str(detail), gtk.MESSAGE_ERROR).show()
+                    MessageDialog(_("Installation error"), str(detail), gtk.MESSAGE_ERROR, self.window).show()
                     gtk.gdk.threads_leave()
                 except Exception, detail2:
                     print detail2
@@ -1354,11 +1357,15 @@ class InstallerWindow:
             
             if self.critical_error_happened:
                 gtk.gdk.threads_enter()
-                MessageDialog(_("Installation error"), self.critical_error_message, gtk.MESSAGE_ERROR).show()
+                MessageDialog(_("Installation error"), self.critical_error_message, gtk.MESSAGE_ERROR, self.window).show()
                 gtk.gdk.threads_leave()                
             else:
                 gtk.gdk.threads_enter()
-                MessageDialog(_("Installation finished"), _("Installation is now complete. Please restart your computer to use the new system"), gtk.MESSAGE_INFO).show()
+                #MessageDialog(_("Installation finished"), _("Installation is now complete. Please restart your computer to use the new system"), gtk.MESSAGE_INFO).show()
+                dialog = QuestionDialog(_("Installation finished"), _("Installation is now complete. Please restart your computer to use the new system"), self.window)
+                if (dialog.show()):
+                    # Reboot now
+                    os.system('reboot')
                 gtk.gdk.threads_leave()
                 
             print " ## INSTALLATION COMPLETE "
