@@ -238,6 +238,12 @@ class InstallerEngine:
             self.do_run_in_chroot("echo %s:%s | chpasswd" % (setup.username, setup.password1))
             self.do_run_in_chroot("echo root:%s | chpasswd" % setup.password1)
             
+            # Make the new user the default user in KDM            
+            if os.path.exists('/target/etc/kde4/kdm/kdmrc'):
+                defUsrCmd = "sed -i 's/^#DefaultUser=.*/DefaultUser=" + setup.username + "/g' " + kdmrcPath
+                print defUsrCmd
+                os.system(defUsrCmd)
+            
             # write the /etc/fstab
             print " --> Writing fstab"
             our_current += 1
