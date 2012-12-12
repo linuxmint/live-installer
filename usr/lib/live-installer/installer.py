@@ -21,7 +21,9 @@ class InstallerEngine:
         self.distribution_version = configuration['distribution']['DISTRIBUTION_VERSION']        
         self.live_user = configuration['install']['LIVE_USER_NAME']
         self.media = configuration['install']['LIVE_MEDIA_SOURCE']
-        self.media_type = configuration['install']['LIVE_MEDIA_TYPE']                
+        self.media_type = configuration['install']['LIVE_MEDIA_TYPE']  
+        # Flush print when it's called    
+        sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
 
     def set_progress_hook(self, progresshook):
         ''' Set a callback to be called on progress updates '''
