@@ -232,7 +232,7 @@ class InstallerEngine:
             print " --> Adding new user"
             our_current += 1
             self.update_progress(total=our_total, current=our_current, message=_("Adding user to system"))           
-            self.do_run_in_chroot("useradd -s %s -c \'%s\' -G sudo -m %s" % ("/bin/bash", setup.real_name, setup.username))
+            self.do_run_in_chroot("useradd -s %s -c \'%s\' -G sudo,adm,dialout,audio,video,cdrom,floppy,dip,plugdev,lpadmin,sambashare -m %s" % ("/bin/bash", setup.real_name, setup.username))
             os.system("chroot /target/ /bin/bash -c \"shopt -s dotglob && cp -R /etc/skel/* /home/%s/\"" % setup.username)
             self.do_run_in_chroot("chown -R %s:%s /home/%s" % (setup.username, setup.username, setup.username))
             self.do_run_in_chroot("echo %s:%s | chpasswd" % (setup.username, setup.password1))
