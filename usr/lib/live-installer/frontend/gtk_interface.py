@@ -147,17 +147,17 @@ class InstallerWindow:
         # Wizard pages
         [self.PAGE_LANGUAGE, self.PAGE_PARTITIONS, self.PAGE_USER, self.PAGE_ADVANCED, self.PAGE_KEYBOARD, self.PAGE_OVERVIEW, self.PAGE_INSTALL, self.PAGE_TIMEZONE, self.PAGE_HDD, self.PAGE_CUSTOMWARNING, self.PAGE_CUSTOMPAUSED] = range(11)
         self.wizard_pages = range(11)
-        self.wizard_pages[self.PAGE_LANGUAGE] = WizardPage(_("Choose your language"), "locales.png")
-        self.wizard_pages[self.PAGE_TIMEZONE] = WizardPage(_("Choose your timezone"), "time.png")
-        self.wizard_pages[self.PAGE_KEYBOARD] = WizardPage(_("Choose your keyboard layout"), "keyboard.png")
-        self.wizard_pages[self.PAGE_USER] = WizardPage(_("Please indicate your name and select a username, a password and a hostname"), "user.png")
-        self.wizard_pages[self.PAGE_HDD] = WizardPage(_("On which hard drive do you want to install Linux Mint?"), "hdd.svg")
-        self.wizard_pages[self.PAGE_PARTITIONS] = WizardPage(_("Select where you want to install Linux Mint"), "hdd.svg")
+        self.wizard_pages[self.PAGE_LANGUAGE] = WizardPage(_("Language"), "locales.png")
+        self.wizard_pages[self.PAGE_TIMEZONE] = WizardPage(_("Timezone"), "time.png")
+        self.wizard_pages[self.PAGE_KEYBOARD] = WizardPage(_("Keyboard layout"), "keyboard.png")
+        self.wizard_pages[self.PAGE_USER] = WizardPage(_("User info"), "user.png")
+        self.wizard_pages[self.PAGE_HDD] = WizardPage(_("Hard drive"), "hdd.svg")
+        self.wizard_pages[self.PAGE_PARTITIONS] = WizardPage(_("Partitioning"), "hdd.svg")
         self.wizard_pages[self.PAGE_CUSTOMWARNING] = WizardPage(_("Please make sure you wish to manually manage partitions"), "hdd.svg")
-        self.wizard_pages[self.PAGE_ADVANCED] = WizardPage(_("Please review the following advanced options"), "advanced.png")
-        self.wizard_pages[self.PAGE_OVERVIEW] = WizardPage(_("Please review this summary and make sure everything is correct"), "summary.png")
-        self.wizard_pages[self.PAGE_INSTALL] = WizardPage(_("Please wait while Linux Mint is being installed on your computer"), "install.png")
-        self.wizard_pages[self.PAGE_CUSTOMPAUSED] = WizardPage(_("Installation is Paused: Please finish custom installation"), "install.png")
+        self.wizard_pages[self.PAGE_ADVANCED] = WizardPage(_("Advanced options"), "advanced.png")
+        self.wizard_pages[self.PAGE_OVERVIEW] = WizardPage(_("Summary"), "summary.png")
+        self.wizard_pages[self.PAGE_INSTALL] = WizardPage(_("Installing Linux Mint..."), "install.png")
+        self.wizard_pages[self.PAGE_CUSTOMPAUSED] = WizardPage(_("Installation is Paused: Please finish the custom installation"), "install.png")
         
         # set the button events (wizard_cb)
         self.wTree.get_widget("button_next").connect("clicked", self.wizard_cb, False)
@@ -410,8 +410,8 @@ class InstallerWindow:
         self.wTree.get_widget("label_custom_install_paused_5").set_label(_("Double-check that your /target/etc/fstab is correct, matches what your new system will have at first boot, and matches what is currently mounted at /target."))
 
         # hdd page
-        self.wTree.get_widget("label_radio_hdd").set_label(_("Install Linux Mint on the selected drive from the following list."))
-        self.wTree.get_widget("label_radio_custom").set_label(_("Manually mount partitions for install (ADVANCED USERS ONLY)."))
+        self.wTree.get_widget("label_radio_hdd").set_label(_("Install Linux Mint on the selected drive:"))
+        self.wTree.get_widget("label_radio_custom").set_label(_("Manually mount partitions (ADVANCED USERS ONLY)."))
         
         #Columns
         self.column1.set_title(_("Hard drive")) 
