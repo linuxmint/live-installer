@@ -352,15 +352,45 @@ class InstallerEngine:
             print " --> Setting the timezone"
             os.system("echo \"%s\" > /target/etc/timezone" % setup.timezone_code)
             os.system("cp /target/usr/share/zoneinfo/%s /target/etc/localtime" % setup.timezone)
-            
+                        
             # localize Firefox and Thunderbird
-            print " --> Localizing Firefox and Thunderbird"
-            self.update_progress(total=our_total, current=our_current, message=_("Localizing Firefox and Thunderbird"))
+            print " --> Localizing packages"
+            self.update_progress(total=our_total, current=our_current, message=_("Localizing packages"))
             if setup.language != "en_US":                
                 os.system("apt-get update")
                 self.do_run_in_chroot("apt-get update")
                 locale = setup.language.replace("_", "-").lower()                
-                               
+
+                # KDE
+                if os.path.isfile('/usr/bin/kdm'):
+                    print " --> Localizing KDE"
+                    self.update_progress(total=our_total, current=our_current, message=_("Localizing KDE"))
+                    num_res = commands.getoutput("aptitude search kde-l10n-%s | grep kde-l10n-%s | wc -l" % (locale, locale))
+                    if num_res != "0":                    
+                        self.do_run_in_chroot("apt-get install --yes --force-yes kde-l10n-" + locale)
+                    else:
+                        if "_" in setup.language:
+                            language_code = setup.language.split("_")[0]
+                            num_res = commands.getoutput("aptitude search kde-l10n-%s | grep kde-l10n-%s | wc -l" % (language_code, language_code))
+                            if num_res != "0":                            
+                                self.do_run_in_chroot("apt-get install --yes --force-yes kde-l10n-" + language_code)                
+                # LibreOffice
+                print " --> Localizing LibreOffice"
+                self.update_progress(total=our_total, current=our_current, message=_("Localizing LibreOffice"))
+                num_res = commands.getoutput("aptitude search libreoffice-l10n-%s | grep libreoffice-l10n-%s | wc -l" % (locale, locale))
+                if num_res != "0":                    
+                    self.do_run_in_chroot("apt-get install --yes --force-yes libreoffice-l10n-" + locale)
+                else:
+                    if "_" in setup.language:
+                        language_code = setup.language.split("_")[0]
+                        num_res = commands.getoutput("aptitude search libreoffice-l10n-%s | grep libreoffice-l10n-%s | wc -l" % (language_code, language_code))
+                        if num_res != "0":                            
+                            self.do_run_in_chroot("apt-get install --yes --force-yes libreoffice-l10n-" + language_code)
+                            self.do_run_in_chroot("apt-get install --yes --force-yes aspell-" + language_code)                
+                
+                # Firefox
+                print " --> Localizing Firefox"
+                self.update_progress(total=our_total, current=our_current, message=_("Localizing Firefox"))               
                 num_res = commands.getoutput("aptitude search firefox-l10n-%s | grep firefox-l10n-%s | wc -l" % (locale, locale))
                 if num_res != "0":                    
                     self.do_run_in_chroot("apt-get install --yes --force-yes firefox-l10n-" + locale)
@@ -371,6 +401,9 @@ class InstallerEngine:
                         if num_res != "0":                            
                             self.do_run_in_chroot("apt-get install --yes --force-yes firefox-l10n-" + language_code)
                
+                # Thunderbird
+                print " --> Localizing Thunderbird"
+                self.update_progress(total=our_total, current=our_current, message=_("Localizing Thunderbird"))              
                 num_res = commands.getoutput("aptitude search thunderbird-l10n-%s | grep thunderbird-l10n-%s | wc -l" % (locale, locale))
                 if num_res != "0":
                     self.do_run_in_chroot("apt-get install --yes --force-yes thunderbird-l10n-" + locale)
