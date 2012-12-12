@@ -1,6 +1,5 @@
 import os
 import subprocess
-from subprocess import Popen
 import time
 import shutil
 import gettext
@@ -58,8 +57,7 @@ class InstallerEngine:
                         cmd = "mkfs.%s %s" % (partition.format_as, partition.partition.path) # works with bfs, btrfs, ext2, ext3, ext4, minix, msdos, ntfs, vfat
 					
                 print "EXECUTING: '%s'" % cmd
-                p = Popen(cmd, shell=True)
-                p.wait() # this blocks
+                self.exec_cmd(cmd)
                 partition.type = partition.format_as
 
     def step_mount_source(self, setup):
@@ -508,6 +506,8 @@ class InstallerEngine:
             traceback.print_tb(exc_traceback, limit=1, file=sys.stdout)
     
     def do_run_in_chroot(self, command):
+        command = command.replace('"', "'").strip()
+        print "chroot /target/ /bin/sh -c \"%s\"" % command
         os.system("chroot /target/ /bin/sh -c \"%s\"" % command)
         
     def do_configure_grub(self, our_total, our_current):
@@ -549,16 +549,14 @@ class InstallerEngine:
         else:
             cmd = "mount -t %s %s %s" % (type, device, dest)
         print "EXECUTING: '%s'" % cmd
-        p = Popen(cmd ,shell=True)        
-        p.wait()
+        self.exec_cmd(cmd)
         return p.returncode
 
     def do_unmount(self, mountpoint):
         ''' Unmount a filesystem '''
         cmd = "umount %s" % mountpoint
         print "EXECUTING: '%s'" % cmd
-        p = Popen(cmd, shell=True)
-        p.wait()
+        self.exec_cmd(cmd)
         return p.returncode
 
     def do_copy_file(self, source, dest):
@@ -573,6 +571,17 @@ class InstallerEngine:
             dst.write(read)
         input.close()
         dst.close()
+    
+    # Execute schell command and return output in a list
+    def exec_cmd(self, cmd):
+        p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        lstOut = []
+        for line in p.stdout.readlines():
+            # Strip the line, also from null spaces (strip() only strips white spaces)
+            line = line.strip().strip("\0")
+            if line != '':
+                lstOut.append(line)
+        return lstOut
 
 # Represents the choices made by the user
 class Setup(object):
