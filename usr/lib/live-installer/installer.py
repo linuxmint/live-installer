@@ -128,9 +128,9 @@ class InstallerEngine:
             os.chdir(SOURCE)
             # index the files
             print " --> Indexing files"
+            self.update_progress(pulse=True, message=_("Indexing files to be copied.."))
             for top,dirs,files in os.walk(SOURCE, topdown=False):
-                our_total += len(dirs) + len(files)
-                self.update_progress(pulse=True, message=_("Indexing files to be copied.."))
+                our_total += len(dirs) + len(files)                
             our_total += 1 # safenessness
             print " --> Copying files"
             for top,dirs,files in os.walk(SOURCE):
