@@ -28,6 +28,7 @@ try:
 except Exception, detail:
     print detail
 
+from slideshow import Slideshow
 
 gettext.install("live-installer", "/usr/share/linuxmint/locale")
 gtk.gdk.threads_init()
@@ -322,7 +323,17 @@ class InstallerWindow:
         #    s.set_property('enable-default-context-menu', False)
         #    browser.open("file://" + slideshow_path  + "#?locale=" + locale_code)
         #    self.wTree.get_widget("vbox_install").add(browser)
-        #    self.wTree.get_widget("vbox_install").show_all()                                                            
+        #    self.wTree.get_widget("vbox_install").show_all()         
+        # Initiate the slide show
+        self.slideshow_path = "/usr/share/live-installer/slideshow"
+        if os.path.exists(self.slideshow_path):
+            self.slideshow_browser = webkit.WebView()
+            s = self.slideshow_browser.get_settings()
+            s.set_property('enable-file-access-from-file-uris', True)
+            s.set_property('enable-default-context-menu', False)            
+            self.slideshow_browser.open("file://" + os.path.join(self.slideshow_path, 'template.html'))
+            self.wTree.get_widget("vbox_install").add(self.slideshow_browser)
+            self.wTree.get_widget("vbox_install").show_all()                                                            
         
         self.browser = webkit.WebView()
         s = self.browser.get_settings()
@@ -1201,7 +1212,7 @@ class InstallerWindow:
         if(not goback):
             if(sel == self.PAGE_LANGUAGE):
                 if ("_" in self.setup.language):
-                    country_code = self.setup.language.split("_")[1]
+                    country_code = self.setup.language.split("_")[1]                    
                 else:
                     country_code = self.setup.language
                 treeview = self.wTree.get_widget("treeview_timezones")
@@ -1405,6 +1416,14 @@ class InstallerWindow:
             # do we dare? ..
             self.critical_error_happened = False
 
+            # Now it's time to load the slide show
+            if os.path.exists(self.slideshow_path):                        
+                slideThr = Slideshow(self.slideshow_browser, self.slideshow_path, self.setup.language)
+                # Let the slide-thread die when the parent thread dies
+                slideThr.daemon = True
+                slideThr.start()
+
+            # Start installing
             do_try_finish_install = True
             
             try:
