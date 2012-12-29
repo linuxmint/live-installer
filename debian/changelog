@@ -1,3 +1,13 @@
+live-installer (2012.12.29) debian; urgency=low
+
+  * Added, GDM/KDM support
+  * Slideshow
+  * UI improvements
+  * Localize LibreOffice, KDE
+  * Support for manual targets
+
+ -- Clement Lefebvre <root@linuxmint.com>  Sat, 29 Dec 2012 15:50:51 +0000
+
 live-installer (2012.04.20.1) debian; urgency=low
 
   * Replaced GDM config with MDM config
