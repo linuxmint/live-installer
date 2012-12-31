@@ -1181,6 +1181,10 @@ class InstallerWindow:
         self.setup.keyboard_variant = row[1]
         self.setup.keyboard_variant_description = row[0]
         self.setup.print_setup()
+        
+        filename = "/tmp/live-install-keyboard-layout.png"
+        os.system("python /usr/lib/live-installer/frontend/generate_keyboard_layout.py %s %s %s" % (self.setup.keyboard_layout, self.setup.keyboard_variant, filename))
+        self.wTree.get_widget("image_keyboard").set_from_file(filename)        
 
     def assign_password(self, widget):
         ''' Someone typed into the entry '''
