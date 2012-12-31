@@ -557,15 +557,13 @@ class InstallerEngine:
         else:
             cmd = "mount -t %s %s %s" % (type, device, dest)
         print "EXECUTING: '%s'" % cmd
-        self.exec_cmd(cmd)
-        return p.returncode
+        self.exec_cmd(cmd)        
 
     def do_unmount(self, mountpoint):
         ''' Unmount a filesystem '''
         cmd = "umount %s" % mountpoint
         print "EXECUTING: '%s'" % cmd
-        self.exec_cmd(cmd)
-        return p.returncode
+        self.exec_cmd(cmd)        
 
     def do_copy_file(self, source, dest):
         # TODO: Add md5 checks. BADLY needed..
