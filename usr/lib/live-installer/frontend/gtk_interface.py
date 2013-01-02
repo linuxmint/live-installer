@@ -14,6 +14,7 @@ try:
     import subprocess
     import sys
     sys.path.append('/usr/lib/live-installer')
+    from PIL import Image
     import pango
     import threading
     import xml.dom.minidom
@@ -24,7 +25,7 @@ try:
     import GeoIP
     import urllib
     import string
-    import parted
+    import parted    
 except Exception, detail:
     print detail
 
@@ -648,6 +649,23 @@ class InstallerWindow:
         treeview = self.wTree.get_widget("treeview_timezones")
         treeview.set_model(model)
         treeview.set_search_column(0)
+        timezone_map = self.wTree.get_widget("image_timezones")
+        timezone_event = self.wTree.get_widget("event_timezones")
+        timezone_map.set_from_file("/usr/share/live-installer/timezone/bg.png")
+        timezone_event.connect("button-release-event", self.timezone_map_clicked)   
+        
+        
+             
+        
+    def timezone_map_clicked(self, widget, event):
+        x = event.x
+        y = event.y
+        print "Coords: %s %s" % (x, y)
+        im = Image.open('/usr/share/live-installer/timezone/cc.png')
+        rgb_im = im.convert('RGB')
+        hexcolor = '#%02x%02x%02x' % rgb_im.getpixel((x, y))
+        print "Color: %s" % (hexcolor) 
+        
         
     def build_hdds(self):
         self.setup.disks = []
