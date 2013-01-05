@@ -13,6 +13,7 @@ try:
     import commands
     import subprocess
     import sys
+    import math    
     sys.path.append('/usr/lib/live-installer')
     from PIL import Image
     import pango
@@ -115,6 +116,77 @@ class WizardPage:
     def __init__(self, help_text, icon):
         self.help_text = help_text    
         self.icon = icon    
+        
+class Timezone:
+    def __init__(self, name, country_code, coordinates):
+        self.height = 409 # Height of the map
+        self.width = 800 # Width of the map
+        self.name = name
+        self.country_code = country_code
+        self.coordinates = coordinates
+        latlongsplit = coordinates.find('-', 1)
+        if latlongsplit == -1:
+            latlongsplit = coordinates.find('+', 1)
+        if latlongsplit != -1:
+            self.latitude = coordinates[:latlongsplit]
+            self.longitude = coordinates[latlongsplit:]
+        else:
+            self.latitude = coordinates
+            self.longitude = '+0'
+        
+        self.latitude = self.parse_position(self.latitude, 2)
+        self.longitude = self.parse_position(self.longitude, 3)
+        
+        (self.x, self.y) = self.getPosition(self.latitude, self.longitude)            
+    
+    def parse_position(self, position, wholedigits):
+        if position == '' or len(position) < 4 or wholedigits > 9:
+            return 0.0
+        wholestr = position[:wholedigits + 1]
+        fractionstr = position[wholedigits + 1:]
+        whole = float(wholestr)
+        fraction = float(fractionstr)
+        if whole >= 0.0:
+            return whole + fraction / pow(10.0, len(fractionstr))
+        else:
+            return whole - fraction / pow(10.0, len(fractionstr))            
+        
+    # @return pixel coordinate of a latitude and longitude for self
+    # map uses Miller Projection, but is also clipped
+    def getPosition(self, la, lo):
+        # need to add/sub magic numbers because the map doesn't actually go from -180...180, -90...90
+        # thus the upper corner is not -180, -90 and we have to compensate
+        # we need a better method of determining the actually range so we can better place citites (shtylman)
+        xdeg_offset = -6
+        # the 180 - 35) accounts for the fact that the map does not span the entire -90 to 90
+        # the map does span the entire 360 though, just offset
+        x = (self.width * (180.0 + lo) / 360.0) + (self.width * xdeg_offset/ 180.0)
+        x = x % self.width
+
+        #top and bottom clipping latitudes
+        topLat = 81
+        bottomLat = -59
+
+        #percent of entire possible range
+        topPer = topLat/180.0
+
+        # get the y in rectangular coordinates
+        y = 1.25 * math.log(math.tan(math.pi/4.0 + 0.4 * math.radians(la)))
+
+        # calculate the map range (smaller than full range because the map is clipped on top and bottom
+        fullRange = 4.6068250867599998
+        # the amount of the full range devoted to the upper hemisphere
+        topOffset = fullRange*topPer
+        mapRange = abs(1.25 * math.log(math.tan(math.pi/4.0 + 0.4 * math.radians(bottomLat))) - topOffset)
+
+        # Convert to a percentage of the map range
+        y = abs(y - topOffset)
+        y = y / mapRange
+
+        # this then becomes the percentage of the height
+        y = y * self.height
+
+        return (int(x), int(y))        
 		
 class InstallerWindow:
 
@@ -177,12 +249,7 @@ class InstallerWindow:
         self.wTree.get_widget("treeview_language_list").connect("cursor-changed", self.assign_language)
 
         # build the language list
-        self.build_lang_list()
-        ren = gtk.CellRendererText()
-        column = gtk.TreeViewColumn("Timezones", ren)
-        column.add_attribute(ren, "text", 0)
-        self.wTree.get_widget("treeview_timezones").append_column(column)
-        self.wTree.get_widget("treeview_timezones").connect("cursor-changed", self.assign_timezone)
+        self.build_lang_list()        
 
         self.build_timezones()
 
@@ -385,6 +452,9 @@ class InstallerWindow:
         self.wTree.get_widget("label_pass_help").set_label(_("Please enter your password twice to ensure it is correct"))
         self.wTree.get_widget("label_hostname").set_markup("<b>%s</b>" % _("Hostname"))
         self.wTree.get_widget("label_hostname_help").set_label(_("This hostname will be the computers name on the network"))
+        
+        # timezones
+        self.wTree.get_widget("label_timezones").set_label(_("Selected timezone:"))
         
         # grub
         self.wTree.get_widget("label_grub").set_markup("<b>%s</b>" % _("Bootloader"))
@@ -629,44 +699,184 @@ class InstallerWindow:
         treeview.set_search_column(0)
 
     def build_timezones(self):
-        model = gtk.ListStore(str, str)
-        model.set_sort_column_id(0, gtk.SORT_ASCENDING)
-
-        path = os.path.join(self.resource_dir, 'timezones')
-        timezones = open(path, "r")
-        cur_index = -1 # find the timezone :P
-        set_index = None
+        
+        self.combo_timezones = self.wTree.get_widget("combo_timezones")
+        self.combo_timezones.connect('changed', self.timezone_combo_selected)
+        
+        self.timezone_colors = {}
+        self.timezone_colors["2b0000"] = "-11.0"
+        self.timezone_colors["550000"] = "-10.0"
+        self.timezone_colors["66ff00"] = "-9.5"
+        self.timezone_colors["800000"] = "-9.0"
+        self.timezone_colors["aa0000"] = "-8.0"
+        self.timezone_colors["d40000"] = "-7.0"
+        self.timezone_colors["ff0001"] = "-6.0"
+        self.timezone_colors["66ff00"] = "-5.5"
+        self.timezone_colors["ff2a2a"] = "-5.0"
+        self.timezone_colors["c0ff00"] = "-4.5"
+        self.timezone_colors["ff5555"] = "-4.0"
+        self.timezone_colors["00ff00"] = "-3.5"
+        self.timezone_colors["ff8080"] = "-3.0"
+        self.timezone_colors["ffaaaa"] = "-2.0"
+        self.timezone_colors["ffd5d5"] = "-1.0"
+        self.timezone_colors["2b1100"] = "0.0"
+        self.timezone_colors["552200"] = "1.0"
+        self.timezone_colors["803300"] = "2.0"
+        self.timezone_colors["aa4400"] = "3.0"
+        self.timezone_colors["00ff66"] = "3.5"
+        self.timezone_colors["d45500"] = "4.0"
+        self.timezone_colors["00ccff"] = "4.5"
+        self.timezone_colors["ff6600"] = "5.0"
+        self.timezone_colors["0066ff"] = "5.5"        
+        self.timezone_colors["00ffcc"] = "5.75"
+        self.timezone_colors["ff7f2a"] = "6.0"
+        self.timezone_colors["cc00ff"] = "6.5"
+        self.timezone_colors["ff9955"] = "7.0"
+        self.timezone_colors["ffb380"] = "8.0"
+        self.timezone_colors["ffccaa"] = "9.0"
+        self.timezone_colors["a90345"] = "9.5"
+        self.timezone_colors["ffe6d5"] = "10.0"
+        self.timezone_colors["d10255"] = "10.5"
+        self.timezone_colors["d4aa00"] = "11.0"
+        self.timezone_colors["fc0266"] = "11.5"
+        self.timezone_colors["ffcc00"] = "12.0"
+        self.timezone_colors["fd2c80"] = "12.75"
+        self.timezone_colors["fc5598"] = "13.0"
+        
+        #Add some timezones for cities which are located on borders (for which the color doesn't match the color of the rest of the timezone)
+        self.timezone_colors["6771a9"] = "5.5" # Calcutta, India
+        self.timezone_colors["ff7b7b"] = "-3.0" # Buenos Aires, Argentina
+        self.timezone_colors["ff7f7f"] = "-3.0" # Rio Gallegos, Argentina
+        self.timezone_colors["d45c27"] = "11.0" # Lord Howe, Australia
+        self.timezone_colors["b71f54"] = "10.5" # Adelaide, Australia        
+        self.timezone_colors["d29130"] = "-4.0" # Aruba
+        self.timezone_colors["ee5f00"] = "4.0" # Baku, Azerbaidjan
+        self.timezone_colors["6a2a00"] = "2.0" # Sofia, Bulgaria
+        self.timezone_colors["3c1800"] = "" # Porto Novo
+        self.timezone_colors["3c1800"] = "1.0" # Benin
+        self.timezone_colors["ff9898"] = "-3.0" # Maceio, Brazil
+        self.timezone_colors["ff3f3f"] = "-4.0" # Rio Branco, Brazil
+        self.timezone_colors["ff802c"] = "6.0" # Thimphu, Bhutan
+        self.timezone_colors["ff0000"] = "-6.0" # Belize
+        self.timezone_colors["11f709"] = "-3.5" # St Johns, Canada
+        self.timezone_colors["e56347"] = "-4.0" # Curacao
+        self.timezone_colors["cd5200"] = "4.0" # Tbilisi, Georgia
+        self.timezone_colors["2f1300"] = "0.0" # Guernsey. UK
+        self.timezone_colors["cea7a3"] = "0.0" # Danmarkshavn, Greenland
+        self.timezone_colors["ff2b2b"] = "-4.0" # Thule, Greenland
+        self.timezone_colors["79594e"] = "0.0" # Banjul, Gambia
+        self.timezone_colors["c7a19d"] = "0.0" # Conakry, Guinea
+        self.timezone_colors["5b3e31"] = "0.0" # Bissau, Guinea-Bissau
+        self.timezone_colors["3f2314"] = "0.0" # Monrovia, Liberia
+        self.timezone_colors["d515db"] = "6.5" # Rangoon, Myanmar
+        self.timezone_colors["fd0000"] = "-7.0" # Bahia_Banderas, Mexico
+        self.timezone_colors["ffb37f"] = "8.0" # Kuching, Malaysia
+        self.timezone_colors["ff0066"] = "11.5" # Norfolk
+        self.timezone_colors["351500"] = "1.0" # Lagos, Nigeria
+        self.timezone_colors["ff8935"] = "12.75" # Chatham, New Zealand
+        self.timezone_colors["913a00"] = "2.0" # Kigali, Rwanda
+        self.timezone_colors["ffb17d"] = "8.0" # Singapore
+        self.timezone_colors["ddb6b3"] = "0.0" # Freetown, Sierra Leone
+        self.timezone_colors["ffb482"] = "9.0" # Dili, East Timor
+        self.timezone_colors["ff5599"] = "13.0" # Tongatapu, Tonga
+        self.timezone_colors["ff2020"] = "-5.0" # Monticello, USA        
+        self.timezone_colors["ff2525"] = "-5.0" # Marengo, USA
+        self.timezone_colors["9d0000"] = "-9.0" # Metlakatla, Alaska/USA
+        
+        self.timezones = []        
+        model = gtk.ListStore(str, object)
+        model.set_sort_column_id(0, gtk.SORT_ASCENDING)                   
+        timezones = open("/usr/share/zoneinfo/zone.tab", "r")
         for line in timezones:
-            cur_index += 1
-            content = line.strip().split()
-            if len(content) == 2:
-                country_code = content[0]
-                timezone = content[1]
-                iter = model.append()
-                model.set_value(iter, 0, timezone)
-                model.set_value(iter, 1, country_code)
+            if not line.strip().startswith("#"):                
+                content = line.strip().split("\t")
+                if len(content) >= 2:                    
+                    country_code = content[0]
+                    coordinates = content[1]
+                    timezone = content[2]
+                    tz = Timezone(timezone, country_code, coordinates)
+                    self.timezones.append(tz)
+                    iter = model.append()
+                    model.set_value(iter, 0, timezone)
+                    model.set_value(iter, 1, tz)  
 
-        treeview = self.wTree.get_widget("treeview_timezones")
-        treeview.set_model(model)
-        treeview.set_search_column(0)
-        timezone_map = self.wTree.get_widget("image_timezones")
+                    # Uncomment the code below to check that each timezone has a corresponding color code (the code is here for debugging only)
+                    #print "Timezone: %s, X: %s, Y: %s" % (tz.name, tz.x, tz.y)
+                    #if (tz.x <= 800 and tz.y <= 409):
+                    #    im = Image.open('/usr/share/live-installer/timezone/cc.png')
+                    #    rgb_im = im.convert('RGB')                    
+                    #    hexcolor = '%02x%02x%02x' % rgb_im.getpixel((tz.x, tz.y))
+                    #    print " Color: #%s" % (hexcolor)
+                    #    image = "/usr/share/live-installer/timezone/timezone_%s.png" % self.timezone_colors[hexcolor]
+                    #    print "Image: %s" % image
+            
+        cell = gtk.CellRendererText()
+        self.combo_timezones.pack_start(cell, True)
+        self.combo_timezones.add_attribute(cell, 'text', 0)
+        
+        self.combo_timezones.set_model(model)
+        self.timezone_map = self.wTree.get_widget("image_timezones")
         timezone_event = self.wTree.get_widget("event_timezones")
-        timezone_map.set_from_file("/usr/share/live-installer/timezone/bg.png")
+        self.timezone_map.set_from_file("/usr/share/live-installer/timezone/bg.png")
         timezone_event.connect("button-release-event", self.timezone_map_clicked)   
-        
-        
-             
-        
+                     
+    def timezone_combo_selected(self, combobox):
+        model = combobox.get_model()
+        index = combobox.get_active()
+        if index:
+            timezone = model[index][1]
+            self.timezone_select(timezone)            
+    
     def timezone_map_clicked(self, widget, event):
         x = event.x
         y = event.y
         print "Coords: %s %s" % (x, y)
+        
+        min_distance = 1000 # Looking for min, starting with a large number
+        closest_timezone = None
+        for timezone in self.timezones:
+            distance = abs(x - timezone.x) + abs(y - timezone.y)
+            if distance < min_distance:
+                min_distance = distance
+                closest_timezone = timezone
+        
+        print "Closest timezone %s" % closest_timezone.name
+        self.timezone_select(closest_timezone)
+                
+        model = self.combo_timezones.get_model()
+        iter = model.get_iter_first()
+        while iter is not None:            
+            if closest_timezone.name == model.get_value(iter, 1).name:
+                self.combo_timezones.set_active_iter(iter)
+                break
+            iter = model.iter_next(iter)
+        
+    def timezone_select(self, timezone):        
         im = Image.open('/usr/share/live-installer/timezone/cc.png')
         rgb_im = im.convert('RGB')
-        hexcolor = '#%02x%02x%02x' % rgb_im.getpixel((x, y))
-        print "Color: %s" % (hexcolor) 
+        hexcolor = '%02x%02x%02x' % rgb_im.getpixel((timezone.x, timezone.y))
+        print "Color: #%s" % (hexcolor)
         
+        overlay_path = "/usr/share/live-installer/timezone/timezone_%s.png" % self.timezone_colors[hexcolor]
+        print "Image: %s" % overlay_path
         
+        # Superpose the picture of the timezone on the map
+        background = Image.open("/usr/share/live-installer/timezone/bg.png")
+        dot = Image.open("/usr/share/live-installer/timezone/dot.png")
+        overlay = Image.open(overlay_path)
+        background = background.convert("RGBA")
+        overlay = overlay.convert("RGBA")
+        dot = dot.convert("RGBA")
+        background.paste(overlay, (0,0), overlay)
+        background.paste(dot, (timezone.x-3, timezone.y-3), dot)
+        background.save("/tmp/live-installer-map.png","PNG")
+        self.timezone_map.set_from_file("/tmp/live-installer-map.png")
+        
+        # Save the selection
+        self.setup.timezone = timezone.name
+        self.setup.timezone_code = timezone.name
+                
+                
     def build_hdds(self):
         self.setup.disks = []
         model = gtk.ListStore(str, str)            
@@ -1124,20 +1334,7 @@ class InstallerWindow:
             self.wTree.get_widget("treeview_hdds").set_sensitive(False)
             self.setup.skip_mount = True
         self.setup.print_setup()
-
-    def assign_timezone(self, treeview, data=None):
-        ''' Called whenever someone updates the timezone '''
-        model = treeview.get_model()
-        active = treeview.get_selection().get_selected_rows()
-        if(len(active) < 1):
-            return
-        active = active[1][0]
-        if(active is None):
-            return
-        row = model[active]
-        self.setup.timezone = row[0]
-        self.setup.timezone_code = row[1]
-    
+        
     def assign_grub_install(self, checkbox, grub_box, data=None):
         grub_box.set_sensitive(checkbox.get_active())
         if checkbox.get_active():
@@ -1241,16 +1438,13 @@ class InstallerWindow:
                     country_code = self.setup.language.split("_")[1]                    
                 else:
                     country_code = self.setup.language
-                treeview = self.wTree.get_widget("treeview_timezones")
-                model = treeview.get_model()
+                combo = self.wTree.get_widget("combo_timezones")
+                model = combo.get_model()
                 iter = model.get_iter_first()
                 while iter is not None:
-                    iter_country_code = model.get_value(iter, 1)
+                    iter_country_code = model.get_value(iter, 1).country_code
                     if iter_country_code == country_code:
-                        column = treeview.get_column(0)
-                        path = model.get_path(iter)
-                        treeview.set_cursor(path, focus_column=column)
-                        treeview.scroll_to_cell(path, column=column)
+                        combo.set_active_iter(iter)                        
                         break
                     iter = model.iter_next(iter)
                 self.activate_page(self.PAGE_TIMEZONE)
