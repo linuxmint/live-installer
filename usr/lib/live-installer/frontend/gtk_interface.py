@@ -251,7 +251,7 @@ class InstallerWindow:
         # build user info page
         self.wTree.get_widget("face_select_picture_button").connect( "button-release-event", self.face_select_picture_button_clicked)        
         self.wTree.get_widget("face_take_picture_button").connect( "button-release-event", self.face_take_picture_button_clicked)           
-        os.system("convert --resize x96 /usr/share/pixmaps/faces/user-generic.png /tmp/live-installer-face.png")
+        os.system("convert /usr/share/pixmaps/faces/user-generic.png -resize x96 /tmp/live-installer-face.png")
         self.wTree.get_widget("face_image").set_from_file("/tmp/live-installer-face.png")   
         
         webcam_detected = False
@@ -473,7 +473,7 @@ class InstallerWindow:
         response = chooser.run()
         if response == gtk.RESPONSE_OK:
             filename = chooser.get_filename()
-            os.system("convert --resize x96 %s /tmp/live-installer-face.png" % filename)
+            os.system("convert %s -resize x96 /tmp/live-installer-face.png" % filename)
             self.wTree.get_widget("face_image").set_from_file("/tmp/live-installer-face.png")
         chooser.destroy()
     
@@ -500,7 +500,7 @@ class InstallerWindow:
                 img = cv.QueryFrame(capture)        
                 if img != None:
                     cv.SaveImage("/tmp/live-installer-webcam.png", img)
-                    os.system("convert --resize x96 /tmp/live-installer-webcam.png /tmp/live-installer-face.png")
+                    os.system("convert /tmp/live-installer-webcam.png -resize x96 /tmp/live-installer-face.png")
                     self.wTree.get_widget("face_image").set_from_file("/tmp/live-installer-face.png")
         except Exception, detail:
             print detail
