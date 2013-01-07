@@ -238,6 +238,9 @@ class InstallerEngine:
             self.do_run_in_chroot("echo %s:%s | chpasswd" % (setup.username, setup.password1))
             self.do_run_in_chroot("echo root:%s | chpasswd" % setup.password1)
             
+            # Add user's face
+            os.system("cp /tmp/live-installer-face.png /target/home/%s/.face" % setup.username)
+            
             # Make the new user the default user in KDM            
             if os.path.exists('/target/etc/kde4/kdm/kdmrc'):
                 defUsrCmd = "sed -i 's/^#DefaultUser=.*/DefaultUser=" + setup.username + "/g' " + kdmrcPath
