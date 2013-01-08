@@ -240,6 +240,7 @@ class InstallerEngine:
             
             # Add user's face
             os.system("cp /tmp/live-installer-face.png /target/home/%s/.face" % setup.username)
+            self.do_run_in_chroot("chown %s:%s /home/%s/.face" % (setup.username, setup.username, setup.username))
             
             # Make the new user the default user in KDM            
             if os.path.exists('/target/etc/kde4/kdm/kdmrc'):
