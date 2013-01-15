@@ -1,3 +1,9 @@
+live-installer (2013.01.15) debian; urgency=low
+
+  * UI improvements
+
+ -- Clement Lefebvre <root@linuxmint.com>  Tue, 15 Jan 2013 14:17:51 +0000
+
 live-installer (2013.01.08) debian; urgency=low
 
   * Timezone map
