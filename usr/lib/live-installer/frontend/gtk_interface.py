@@ -1483,7 +1483,7 @@ class InstallerWindow:
             return
         row = model[active]
         if (row[1] is None):
-            os.system("setxkbmap -layout %s" % self.setup.keyboard_layout)
+            os.system("setxkbmap -layout us,%s" % self.setup.keyboard_layout)
         else:
             os.system("setxkbmap -variant %s" % row[1])
         self.setup.keyboard_variant = row[1]
@@ -1616,9 +1616,9 @@ class InstallerWindow:
                 for partition in self.setup.partitions:                    
                     if(partition.mount_as == "/"):
                         error = False                        
-                        if partition.format_as is None or partition.format_as == "":
-                            error = True
-                            errorMessage = _("Please indicate a filesystem to format the root (/) partition before proceeding")                        
+#                        if partition.format_as is None or partition.format_as == "":
+#                            error = True
+#                            errorMessage = _("Please indicate a filesystem to format the root (/) partition before proceeding")                        
                 if(error):
                     MessageDialog(_("Installation Tool"), errorMessage, gtk.MESSAGE_ERROR, self.window).show()
                 else:
