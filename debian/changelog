@@ -1,3 +1,10 @@
+live-installer (2013.02.25) debian; urgency=low
+
+  * Fix for resolv.conf
+  * Fix for special characters in password
+
+ -- Clement Lefebvre <root@linuxmint.com>  Mon, 25 Feb 2013 10:57:27 +0000
+
 live-installer (2013.01.15) debian; urgency=low
 
   * UI improvements
