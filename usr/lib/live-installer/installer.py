@@ -235,8 +235,10 @@ class InstallerEngine:
             self.do_run_in_chroot("useradd -s %s -c \'%s\' -G sudo,adm,dialout,audio,video,cdrom,floppy,dip,plugdev,lpadmin,sambashare -m %s" % ("/bin/bash", setup.real_name, setup.username))
             os.system("chroot /target/ /bin/bash -c \"shopt -s dotglob && cp -R /etc/skel/* /home/%s/\"" % setup.username)
             self.do_run_in_chroot("chown -R %s:%s /home/%s" % (setup.username, setup.username, setup.username))
-            self.do_run_in_chroot("echo %s:%s | chpasswd" % (setup.username, setup.password1))
-            self.do_run_in_chroot("echo root:%s | chpasswd" % setup.password1)
+            
+            setup.password1 = setup.password1.replace('"', '\\"')            
+            self.do_run_in_chroot("echo \"%s:%s\" | chpasswd" % (setup.username, setup.password1))
+            self.do_run_in_chroot("echo \"root:%s\" | chpasswd" % setup.password1)
             
             # Add user's face
             os.system("cp /tmp/live-installer-face.png /target/home/%s/.face" % setup.username)
