@@ -206,6 +206,7 @@ class InstallerEngine:
             os.system("mount --bind /dev/pts /target/dev/pts")
             os.system("mount --bind /sys/ /target/sys/")
             os.system("mount --bind /proc/ /target/proc/")
+            os.system("mv /target/etc/resolv.conf /target/etc/resolv.conf.bk")
             os.system("cp -f /etc/resolv.conf /target/etc/resolv.conf")
                                           
             # remove live user
@@ -500,7 +501,8 @@ class InstallerEngine:
                 os.system("umount --force /target/dev/")
                 os.system("umount --force /target/sys/")
                 os.system("umount --force /target/proc/")
-                os.system("rm -rf /target/etc/resolv.conf")
+                os.system("rm -f /target/etc/resolv.conf")
+                os.system("mv /target/etc/resolv.conf.bk /target/etc/resolv.conf")
                 if(not setup.skip_mount):
                     for partition in setup.partitions:
                         if(partition.mount_as is not None and partition.mount_as != "" and partition.mount_as != "/" and partition.mount_as != "swap"):
