@@ -237,9 +237,17 @@ class InstallerEngine:
             os.system("chroot /target/ /bin/bash -c \"shopt -s dotglob && cp -R /etc/skel/* /home/%s/\"" % setup.username)
             self.do_run_in_chroot("chown -R %s:%s /home/%s" % (setup.username, setup.username, setup.username))
             
-            setup.password1 = setup.password1.replace('"', '\\"')            
-            self.do_run_in_chroot("echo \"%s:%s\" | chpasswd" % (setup.username, setup.password1))
-            self.do_run_in_chroot("echo \"root:%s\" | chpasswd" % setup.password1)
+            fp = open("/target/tmp/.passwd", "w")
+            fp.write(setup.username +  ":" + setup.password1 + "\n")
+            fp.close()
+            self.do_run_in_chroot("cat /tmp/.passwd | chpasswd")
+            os.system("rm -f /target/tmp/.passwd")
+
+            fp = open("/target/tmp/.passwd", "w")
+            fp.write("root:" + setup.password1 + "\n")
+            fp.close()
+            self.do_run_in_chroot("cat /tmp/.passwd | chpasswd")
+            os.system("rm -f /target/tmp/.passwd")            
             
             # Add user's face
             os.system("cp /tmp/live-installer-face.png /target/home/%s/.face" % setup.username)
