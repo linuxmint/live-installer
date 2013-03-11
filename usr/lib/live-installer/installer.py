@@ -239,11 +239,6 @@ class InstallerEngine:
             
             fp = open("/target/tmp/.passwd", "w")
             fp.write(setup.username +  ":" + setup.password1 + "\n")
-            fp.close()
-            self.do_run_in_chroot("cat /tmp/.passwd | chpasswd")
-            os.system("rm -f /target/tmp/.passwd")
-
-            fp = open("/target/tmp/.passwd", "w")
             fp.write("root:" + setup.password1 + "\n")
             fp.close()
             self.do_run_in_chroot("cat /tmp/.passwd | chpasswd")
