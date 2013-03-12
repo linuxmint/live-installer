@@ -1,3 +1,9 @@
+live-installer (2013.03.12) debian; urgency=low
+
+  * Fix for non-editable mount patch in partition edit dialog
+
+ -- Clement Lefebvre <root@linuxmint.com>  Tue, 12 Mar 2013 14:20:45 +0000
+
 live-installer (2013.03.11) debian; urgency=low
 
   * Fix for special chars in password

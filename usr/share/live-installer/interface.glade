@@ -67,11 +67,12 @@
             <child>
               <widget class="GtkComboBoxEntry" id="comboboxentry_mount_point">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="can_focus">True</property>
+                <property name="has_entry">True</property>
                 <property name="items" translatable="yes">b</property>
                 <child internal-child="entry">
                   <widget class="GtkEntry" id="comboboxentry-entry2">
-                    <property name="can_focus">False</property>
+                    <property name="can_focus">True</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
                     <property name="primary_icon_sensitive">True</property>
