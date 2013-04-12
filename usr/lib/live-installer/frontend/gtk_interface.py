@@ -1765,6 +1765,7 @@ class InstallerWindow:
                     self.wTree.get_widget("button_next").show()
                     MessageDialog(_("Installation Paused"), _("Installation is now paused. Please read the instructions on the page carefully and click Forward to finish installation."), gtk.MESSAGE_INFO, self.window).show()
                     gtk.gdk.threads_leave()
+                    self.wTree.get_widget("button_next").set_sensitive(True)
 
                     while(self.paused):
                         time.sleep(0.1)
