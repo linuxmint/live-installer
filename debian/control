@@ -16,8 +16,7 @@ Depends: ${misc:Depends}, ${python:Depends}
   , python-gtk2
   , python-glade2
   , python-webkit
-  , python-parted
-  , gparted
+  , python-parted, parted, gparted
   , python-geoip
   , geoip-database-contrib
   , python-qt4

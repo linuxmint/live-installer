@@ -1,0 +1,143 @@
+<html>
+<head>
+<style>
+html,body,div {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  float: left;
+  position: relative;
+  cursor: default;
+  -webkit-user-select: none; user-select: none;
+  -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+}
+body {
+  /* "transparent" might be used with newer WebKit by setting
+     wv.set_transparent(True) on the WebView object and when using
+     a compositing window manager. Sadly, didn't work for me. */
+  background: #ddd;
+  height: 100%;
+  font: 13px sans-serif;
+  text-align: center;
+}
+.partition {
+  border-right: 3px solid transparent;
+}
+.info {
+  color:white;
+  letter-spacing: .5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 2px 2px 2px black;
+  border: 5px solid transparent;
+  top: 50%;
+  height: 30px;
+  margin-top: -15px;
+}
+.info i {
+  font-size: 11px;
+}
+.used {
+  position: absolute;
+  background: rgba(0, 0, 0, .2);
+  border-radius: 5px 0 0 5px;
+}
+.fs {
+  position: absolute;
+  border: 1px solid #222;
+  border-radius: 5px;
+  background: #ccc -webkit-linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, .5));
+  background: #ccc linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, .5));
+}
+
+/* Colors (approximately) from gparted */
+.btrfs { background-color: #f95; }
+.exfat { background-color: #070; }
+.ext2  { background-color: #39f; }
+.ext3  { background-color: #09f; }
+.ext4  { background-color: #36f; }
+.fat16 { background-color: #0f0; }
+.fat32 { background-color: #0c0; }
+.hfs   { background-color: #c69; }
+.jfs   { background-color: #ff6; }
+.swap  { background-color: #730; }
+.ntfs  { background-color: #396; }
+.reiserfs { background-color: #c30; }
+.ufs   { background-color: #960; }
+.xfs   { background-color: #ed8; }
+.zfs   { background-color: #c0c; }
+
+.freespace {
+  border: none;
+  background: transparent;
+}
+</style>
+</head>
+<body>
+
+<!-- Expected format for each partition: CUT_HERE
+
+<div style="width:{0.size_percent}%">
+  <div title="{0.name}{0.os_fs_info}" class="partition">
+    <div class="fs {0.style}"></div>
+    <div class="used" style="width:{0.used_percent}%"></div>
+    <div class="info">
+      <b>{0.short_name}</b><br/>
+      <i>{0.description}</i>
+    </div>
+  </div>
+</div>
+
+CUT_HERE (← and don't remove these markers ↑) -->
+
+<!-- Example: --
+
+<div style="width:40%">
+  <div title="/dev/sda1: Ubuntu (20GB; 12GB free)" class="partition">
+    <div class="fs ext4"></div>
+    <div class="used" style="width:40%"></div>
+    <div class="info">
+      <b>sda1</b><br>
+      <i>Ubuntu</i>
+    </div>
+  </div>
+</div>
+<div style="width:5%">
+  <div title="/dev/sda2" class="partition">
+    <div class="fs swap"></div>
+    <div class="used" style="width:0%"></div>
+    <div class="info">
+      <b>sda2</b><br>
+      <i></i>
+    </div>
+  </div>
+</div>
+<div style="width:15%">
+  <div title="" class="partition">
+    <div class="fs freespace"></div>
+    <div class="used" style="width:0%"></div>
+    <div class="info">
+      <b></b>free space<br>
+      <i></i>
+    </div>
+  </div>
+</div>
+<div style="width:40%">
+  <div title="/dev/sda3: Windows 7 (20GB; 4GB free)" class="partition">
+    <div class="fs ntfs"></div>
+    <div class="used" style="width:80%"></div>
+    <div class="info">
+      <b>sda3</b><br>
+      <i>Windows 7</i>
+    </div>
+  </div>
+</div>
+
+<!-- -->
+
+{PARTITIONS_HTML}
+
+</body>
+</html>
