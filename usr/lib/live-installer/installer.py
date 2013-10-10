@@ -4,7 +4,6 @@ import subprocess
 import time
 import shutil
 import gettext
-import stat
 import commands
 import sys
 import parted
@@ -147,81 +146,28 @@ class InstallerEngine:
         else:
             self.step_mount_source(setup)
 
-        # walk root filesystem
+        # Transfer the files
         SOURCE = "/source/"
         DEST = "/target/"
-        directory_times = []
-        our_total = 0
-        our_current = -1
-        os.chdir(SOURCE)
-        # index the files
-        print " --> Indexing files"
-        self.update_progress(pulse=True, message=_("Indexing files to be copied.."))
-        for top,dirs,files in os.walk(SOURCE, topdown=False):
-            our_total += len(dirs) + len(files)
-        our_total += 1 # safenessness
-        print " --> Copying files"
-        for top,dirs,files in os.walk(SOURCE):
-            # Sanity check. Python is a bit schitzo
-            dirpath = top
-            if(dirpath.startswith(SOURCE)):
-                dirpath = dirpath[len(SOURCE):]
-            for name in dirs + files:
-                # following is hacked/copied from Ubiquity
-                rpath = os.path.join(dirpath, name)
-                sourcepath = os.path.join(SOURCE, rpath)
-                targetpath = os.path.join(DEST, rpath)
-                st = os.lstat(sourcepath)
-                mode = stat.S_IMODE(st.st_mode)
-
-                # now show the world what we're doing
-                our_current += 1
-                self.update_progress(total=our_total, current=our_current, message=_("Copying %s" % rpath))
-
-                if os.path.exists(targetpath):
-                    if not os.path.isdir(targetpath):
-                        os.remove(targetpath)
-                if stat.S_ISLNK(st.st_mode):
-                    if os.path.lexists(targetpath):
-                        os.unlink(targetpath)
-                    linkto = os.readlink(sourcepath)
-                    os.symlink(linkto, targetpath)
-                elif stat.S_ISDIR(st.st_mode):
-                    if not os.path.isdir(targetpath):
-                        os.mkdir(targetpath, mode)
-                elif stat.S_ISCHR(st.st_mode):
-                    os.mknod(targetpath, stat.S_IFCHR | mode, st.st_rdev)
-                elif stat.S_ISBLK(st.st_mode):
-                    os.mknod(targetpath, stat.S_IFBLK | mode, st.st_rdev)
-                elif stat.S_ISFIFO(st.st_mode):
-                    os.mknod(targetpath, stat.S_IFIFO | mode)
-                elif stat.S_ISSOCK(st.st_mode):
-                    os.mknod(targetpath, stat.S_IFSOCK | mode)
-                elif stat.S_ISREG(st.st_mode):
-                    # we don't do blacklisting yet..
-                    try:
-                        os.unlink(targetpath)
-                    except:
-                        pass
-                    self.do_copy_file(sourcepath, targetpath)
-                os.lchown(targetpath, st.st_uid, st.st_gid)
-                if not stat.S_ISLNK(st.st_mode):
-                    os.chmod(targetpath, mode)
-                if stat.S_ISDIR(st.st_mode):
-                    directory_times.append((targetpath, st.st_atime, st.st_mtime))
-                # os.utime() sets timestamp of target, not link
-                elif not stat.S_ISLNK(st.st_mode):
-                    os.utime(targetpath, (st.st_atime, st.st_mtime))
-            # Apply timestamps to all directories now that the items within them
-            # have been copied.
-        print " --> Restoring meta-info"
-        for dirtime in directory_times:
-            (directory, atime, mtime) = dirtime
-            try:
-                self.update_progress(pulse=True, message=_("Restoring meta-information on %s" % directory))
-                os.utime(directory, (atime, mtime))
-            except OSError:
-                pass
+        EXCLUDE_DIRS = "home/* dev/* proc/* sys/* tmp/* run/* mnt/* media/* lost+found source target".split()
+        our_current = 0
+        # (Valid) assumption: num-of-files-to-copy ~= num-of-used-inodes-on-/
+        our_total = int(commands.getoutput("df --inodes /{src} | awk 'END{{ print $3 }}'".format(src=SOURCE.strip('/'))))
+        print " --> Copying {} files".format(our_total)
+        rsync_filter = ' '.join('--exclude=' + SOURCE + d for d in EXCLUDE_DIRS)
+        rsync = subprocess.Popen("rsync --verbose --archive --no-D --acls "
+                                 "--hard-links --xattrs {rsync_filter} "
+                                 "{src}* {dst}".format(src=SOURCE, dst=DEST, rsync_filter=rsync_filter),
+                                 shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        while rsync.poll() is None:
+            line = rsync.stdout.readline()
+            if not line:  # still copying the previous file, just wait
+                time.sleep(0.1)
+            else:
+                our_current = min(our_current + 1, our_total)
+                self.update_progress(total=our_total, current=our_current, message=_("Copying %s" % line))
+                print "Copying " + line
+        print "rsync exited with returncode: " + str(rsync.poll())
 
         # Steps:
         our_total = 11
@@ -575,19 +521,6 @@ class InstallerEngine:
         print "EXECUTING: '%s'" % cmd
         self.exec_cmd(cmd)        
 
-    def do_copy_file(self, source, dest):
-        # TODO: Add md5 checks. BADLY needed..
-        BUF_SIZE = 16 * 1024
-        input = open(source, "rb")
-        dst = open(dest, "wb")
-        while(True):
-            read = input.read(BUF_SIZE)
-            if not read:
-                break
-            dst.write(read)
-        input.close()
-        dst.close()
-    
     # Execute schell command and return output in a list
     def exec_cmd(self, cmd):
         p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)

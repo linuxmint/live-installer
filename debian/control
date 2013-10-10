@@ -29,6 +29,7 @@ Depends: ${misc:Depends}, ${python:Depends}
   , gdisk
   , isoquery, iso-codes, locales
   , adduser
+  , rsync
 Description: Live Installer
  A live installer
 
