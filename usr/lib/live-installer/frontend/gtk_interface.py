@@ -1044,8 +1044,14 @@ class InstallerWindow:
                 except Exception:
                     dialog = QuestionDialog(_("Installation Tool"), _("No partition table was found on the hard drive. Do you want the installer to create a set of partitions for you? Note: This will erase any data present on the disk."), self.window)
                     if (dialog.show()):
-                        # Create a default partition set up                        
-                        disk = parted.freshDisk(device, 'msdos')
+                        # Create a default partition set up
+                        # try to load efivars
+                        os.system("modprobe efivars >/dev/null 2>&1")
+                        # Are we running under with efi ?
+                        if os.path.exists("/proc/efi") or os.path.exists("/sys/firmware/efi"):
+                            disk = parted.freshDisk(device, 'gpt')
+                        else :
+                            disk = parted.freshDisk(device, 'msdos')
                         disk.commit()
 
                         #Swap
