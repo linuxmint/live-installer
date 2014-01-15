@@ -7,7 +7,7 @@ Standards-Version: 3.7.2
 
 Package: live-installer
 Architecture: all
-Depends: python (>= 2.4), python (<< 3), python-gtk2, python-glade2, python-parted, python-webkit, gparted, inxi, python-geoip, python-qt4, python-opencv, python-numpy, imagemagick, python-imaging, desktop-file-utils
+Depends: python (>= 2.4), python (<< 3), python-gtk2, python-glade2, python-parted, python-webkit, gparted, inxi, python-geoip, python-qt4, python-opencv, python-numpy, imagemagick, python-imaging, desktop-file-utils, shared-mime-info
 Description: Live Installer
  A live installer
 
