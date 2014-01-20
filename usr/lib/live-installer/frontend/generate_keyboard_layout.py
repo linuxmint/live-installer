@@ -229,7 +229,7 @@ class Keyboard(QWidget):
             return
 
         variantParam = ""
-        if self.variant:
+        if self.variant is not None and self.variant != "None":
             variantParam = "-variant %s" % self.variant
 
         cmd="ckbcomp -model pc106 -layout %s %s -compact" % (self.layout, variantParam)
