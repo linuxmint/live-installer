@@ -692,7 +692,7 @@ class InstallerWindow:
         #Try to find out where we're located...
         cur_country_code = None
         try:
-            whatismyip = 'http://debian.linuxmint.com/installer/show_my_ip.php'
+            whatismyip = 'http://www.linuxmint.com/installer/show_my_ip.php'
             ip = urllib.urlopen(whatismyip).readlines()[0]
             gi = GeoIP.new(GeoIP.GEOIP_MEMORY_CACHE)
             cur_country_code = gi.country_code_by_addr(ip)
