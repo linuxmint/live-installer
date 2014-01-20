@@ -194,7 +194,12 @@ class InstallerEngine:
                     os.utime(directory, (atime, mtime))
                 except OSError:
                     pass
-                    
+            
+            if self.setup.partitiontable == 'gpt':
+                os.system("mkdir -p /boot/efi/EFI/linuxmint")
+                os.system("cp /lib/live/mount/medium/EFI/BOOT/grubx64efi /boot/efi/EFI/linuxmint")
+                os.system("efibootmgr -c -d /dev/sda -p 1 -l \\EFI\\linuxmint\\grubx64.efi -L LinuxMint")
+            
             # Steps:
             our_total = 11
             our_current = 0
@@ -582,6 +587,7 @@ class Setup(object):
     grub_device = None
     disks = []
     target_disk = None
+    partitiontable = None
     # Optionally skip all mouting/partitioning for advanced users with custom setups (raid/dmcrypt/etc)
     # Make sure the user knows that they need to:
     #  * Mount their target directory structure at /target
@@ -609,6 +615,7 @@ class Setup(object):
             print "skip_mount: %s" % self.skip_mount
             if (not self.skip_mount):
                 print "target_disk: %s " % self.target_disk
+                print "partition table: %s " % self.partitiontable
                 print "disks: %s " % self.disks                       
                 print "partitions:"
                 for partition in self.partitions:

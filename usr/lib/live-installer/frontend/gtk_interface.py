@@ -1049,17 +1049,39 @@ class InstallerWindow:
                         # Are we running under with efi ?
                         if os.path.exists("/proc/efi") or os.path.exists("/sys/firmware/efi"):
                             disk = parted.freshDisk(device, 'gpt')
+                            self.setup.partitiontable = 'gpt'
                         else :
                             disk = parted.freshDisk(device, 'msdos')
-                        disk.commit()
-
+                            self.setup.partitiontable ='msdos'
+                        disk.commit()                        
+                        post_mbr_gap = parted.sizeToSectors(1, "MiB", device.sectorSize) # Grub2 requires a post-MBR gap
+                        start = post_mbr_gap  
+                        #efi                        
+                        regions = disk.getFreeSpaceRegions()
+                        if len(regions) and (self.setup.partitiontable == 'gpt') > 0:                                                            
+                                region = regions[-1]                                                                                                                                  
+                                root_size = 419430
+                                num_sectors = parted.sizeToSectors(root_size, "KiB", device.sectorSize)
+                                end = start + num_sectors                                
+                                cylinder = device.endSectorToCylinder(end)
+                                end = device.endCylinderToSector(cylinder)
+                                geometry = parted.Geometry(device=device, start=start, end=end)
+                                if end < region.length:
+                                    partition = parted.Partition(disk=disk, type=parted.PARTITION_NORMAL, geometry=geometry)
+                                    constraint = parted.Constraint(exactGeom=geometry)
+                                    disk.addPartition(partition=partition, constraint=constraint)
+                                    partition.setFlag(parted.PARTITION_BOOT)
+                                    
+                                    disk.commit()
+                                    os.system("mkfs.vfat %s -F 32 -n boot" % partition.path)
+                                                                     
+                                    post_partition_gap = parted.sizeToSectors(512, "KiB", device.sectorSize)
+                                    start = end + post_partition_gap
                         #Swap
                         regions = disk.getFreeSpaceRegions()
                         if len(regions) > 0:
                             region = regions[-1]    
-                            ram_size = int(commands.getoutput("cat /proc/meminfo | grep MemTotal | awk {'print $2'}")) # in KiB
-                            post_mbr_gap = parted.sizeToSectors(1, "MiB", device.sectorSize) # Grub2 requires a post-MBR gap
-                            start = post_mbr_gap
+                            ram_size = int(commands.getoutput("cat /proc/meminfo | grep MemTotal | awk {'print $2'}")) # in KiB                            
                             num_sectors = parted.sizeToSectors(ram_size, "KiB", device.sectorSize)
                             num_sectors = int(float(num_sectors) * 1.5) # Swap is 1.5 times bigger than RAM
                             end = start + num_sectors
@@ -1072,7 +1094,7 @@ class InstallerWindow:
                                 disk.addPartition(partition=partition, constraint=constraint)
                                 disk.commit()
                                 os.system("mkswap %s" % partition.path)                                
-
+                        
                         #Root
                         regions = disk.getFreeSpaceRegions()
                         if len(regions) > 0:
@@ -1082,12 +1104,12 @@ class InstallerWindow:
                             disk.addPartition(partition=partition, constraint=constraint)
                             disk.commit()                            
                             os.system("mkfs.ext4 %s" % partition.path)
-                       
+                            
                         self.build_partitions()
                         return
                     else:
                         # Do nothing... just get out of here..
-                        raise
+                        raise                    
                 partition = disk.getFirstPartition()
                 last_added_partition = PartitionSetup(partition)
                 #self.setup.partitions.append(last_added_partition)
@@ -1097,8 +1119,8 @@ class InstallerWindow:
                     if last_added_partition.partition.number == -1 and partition.number == -1:
                         last_added_partition.add_partition(partition)
                     else:                        
-                        last_added_partition = PartitionSetup(partition)
-                                        
+                        last_added_partition = PartitionSetup(partition)                       
+                        
                         if "swap" in last_added_partition.type:
                             last_added_partition.type = "swap"                                                            
 
@@ -1186,6 +1208,10 @@ class InstallerWindow:
                                 color = "#42e5ac"
                             elif last_added_partition.type == "fat32":
                                 color = "#18d918"
+                                if (partition.getFlag(parted.PARTITION_BOOT)) and (self.setup.partitiontable == 'gpt'):
+                                    last_added_partition.mount_as = "/boot/efi"
+                                    model.set_value(iter, INDEX_PARTITION_MOUNT_AS, "/boot/efi")
+                                    #print "%s" % int(float(partition.getSize()))
                             elif last_added_partition.type == "ext4":
                                 color = "#4b6983"
                             elif last_added_partition.type == "ext3":
