@@ -208,16 +208,6 @@ class InstallerEngine:
             os.system("mount --bind /proc/ /target/proc/")
             os.system("mv /target/etc/resolv.conf /target/etc/resolv.conf.bk")
             os.system("cp -f /etc/resolv.conf /target/etc/resolv.conf")
-                                          
-            # remove live user
-            print " --> Removing live user"
-            live_user = self.live_user
-            our_current += 1
-            self.update_progress(total=our_total, current=our_current, message=_("Removing live configuration (user)"))
-            self.do_run_in_chroot("deluser %s" % live_user)
-            # can happen
-            if(os.path.exists("/target/home/%s" % live_user)):
-                self.do_run_in_chroot("rm -rf /home/%s" % live_user)
             
             # remove live-initramfs (or w/e)
             print " --> Removing live packages"
@@ -227,7 +217,7 @@ class InstallerEngine:
             
             # When the purge is incomplete and leaves redundant symbolic links in the rc*.d directories.
             # The resulting startpar error prevents gsfxi to successfully install the Nvidia drivers.
-            self.do_run_in_chroot("update-rc.d -f live-installer remove")                    
+            self.do_run_in_chroot("update-rc.d -f live-installer remove")
                         
             # add new user
             print " --> Adding new user"
@@ -328,32 +318,7 @@ class InstallerEngine:
             hostsfh.write("ff02::2 ip6-allrouters\n")
             hostsfh.write("ff02::3 ip6-allhosts\n")
             hostsfh.close()
-
-            if os.path.exists("/target/etc/gdm3/daemon.conf"):
-                # gdm overwrite (specific to Debian/live-initramfs)
-                print " --> Configuring GDM"
-                gdmconffh = open("/target/etc/gdm3/daemon.conf", "w")
-                gdmconffh.write("# GDM configuration storage\n")
-                gdmconffh.write("\n[daemon]\n")
-                gdmconffh.write("\n[security]\n")
-                gdmconffh.write("\n[xdmcp]\n")
-                gdmconffh.write("\n[greeter]\n")
-                gdmconffh.write("\n[chooser]\n")
-                gdmconffh.write("\n[debug]\n")
-                gdmconffh.close()
-            elif os.path.exists("/target/etc/mdm/mdm.conf"):
-                # MDM overwrite (specific to Debian/live-initramfs)
-                print " --> Configuring MDM"
-                mdmconffh = open("/target/etc/mdm/mdm.conf", "w")
-                mdmconffh.write("# MDM configuration\n")
-                mdmconffh.write("\n[daemon]\n")
-                mdmconffh.write("\n[security]\n")
-                mdmconffh.write("\n[xdmcp]\n")
-                mdmconffh.write("\n[greeter]\n")
-                mdmconffh.write("\n[chooser]\n")
-                mdmconffh.write("\n[debug]\n")
-                mdmconffh.close()
-
+        
             # set the locale
             print " --> Setting the locale"
             our_current += 1
