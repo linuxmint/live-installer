@@ -459,8 +459,7 @@ class InstallerWindow:
                                         backend=None)
         chooser.set_default_response(gtk.RESPONSE_OK)
         chooser.set_current_folder("/usr/share/pixmaps/faces")
-        if os.path.exists("/home/mint"):
-            chooser.add_shortcut_folder("/home/mint")
+
         filter = gtk.FileFilter()
         filter.set_name(_('Images'))
         filter.add_mime_type('image/png')
