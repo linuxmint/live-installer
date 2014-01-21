@@ -198,7 +198,7 @@ class InstallerEngine:
             if self.setup.partitiontable == 'gpt':
                 os.system("mkdir -p /boot/efi/EFI/linuxmint")
                 os.system("cp /lib/live/mount/medium/EFI/BOOT/grubx64efi /boot/efi/EFI/linuxmint")
-                os.system("efibootmgr -c -d /dev/sda -p 1 -l \\EFI\\linuxmint\\grubx64.efi -L LinuxMint")
+                self.do_run_in_chroot("efibootmgr -c -d /dev/sda -p 1 -l \\EFI\\linuxmint\\grubx64.efi -L LinuxMint")
             
             # Steps:
             our_total = 11
