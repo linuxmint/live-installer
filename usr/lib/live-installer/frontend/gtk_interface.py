@@ -1920,7 +1920,7 @@ class PartitionDialog:
         if "swap" in type:
             mounts = ["", "swap"]
         else:
-            mounts = ["", "/", "/boot", "/tmp", "/home", "/srv"]
+            mounts = ["", "/", "/boot", "/boot/efi", "/tmp", "/home", "/srv"]
         model = gtk.ListStore(str)
         for mount in mounts:
             model.append([mount])
