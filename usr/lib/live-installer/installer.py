@@ -77,8 +77,12 @@ class InstallerEngine:
             if(partition.mount_as is not None and partition.mount_as != ""):   
                   if partition.mount_as == "/":
                         self.update_progress(total=4, current=3, message=_("Mounting %(partition)s on %(mountpoint)s") % {'partition':partition.partition.path, 'mountpoint':"/target/"})
-                        print " ------ Mounting %s on %s" % (partition.partition.path, "/target/")
-                        self.do_mount(partition.partition.path, "/target", partition.type, None)
+                        print " ------ Mounting partition %s on %s" % (partition.partition.path, "/target/")
+                        if partition.type == "fat32":
+                            fs = "vfat"
+                        else:
+                            fs = partition.type
+                        self.do_mount(partition.partition.path, "/target", fs, None)
                         break
         
         # Mount the other partitions        
@@ -86,7 +90,11 @@ class InstallerEngine:
             if(partition.mount_as is not None and partition.mount_as != "" and partition.mount_as != "/" and partition.mount_as != "swap"):
                 print " ------ Mounting %s on %s" % (partition.partition.path, "/target" + partition.mount_as)
                 os.system("mkdir -p /target" + partition.mount_as)
-                self.do_mount(partition.partition.path, "/target" + partition.mount_as, partition.type, None)
+                if partition.type == "fat32":
+                    fs = "vfat"
+                else:
+                    fs = partition.type
+                self.do_mount(partition.partition.path, "/target" + partition.mount_as, fs, None)
 
     def init_install(self, setup):        
         # mount the media location.
@@ -194,12 +202,7 @@ class InstallerEngine:
                     os.utime(directory, (atime, mtime))
                 except OSError:
                     pass
-            
-            if self.setup.partitiontable == 'gpt':
-                os.system("mkdir -p /target/boot/efi/EFI/linuxmint")
-                os.system("cp /lib/live/mount/medium/EFI/BOOT/grubx64efi /target/boot/efi/EFI/linuxmint")
-                self.do_run_in_chroot("efibootmgr -c -d /dev/sda -p 1 -l \\EFI\\linuxmint\\grubx64.efi -L LinuxMint")
-            
+
             # Steps:
             our_total = 11
             our_current = 0
@@ -213,16 +216,31 @@ class InstallerEngine:
             os.system("mount --bind /proc/ /target/proc/")
             os.system("mv /target/etc/resolv.conf /target/etc/resolv.conf.bk")
             os.system("cp -f /etc/resolv.conf /target/etc/resolv.conf")
+
+            kernelversion= commands.getoutput("uname -r")
+            os.system("cp /lib/live/mount/medium/live/vmlinuz /target/boot/vmlinuz-%s" % kernelversion)
+            os.system("cp /lib/live/mount/medium/live/initrd.img /target/boot/initrd.img-%s" % kernelversion)
             
-            # remove live-initramfs (or w/e)
+            if (setup.gptonefi):
+                os.system("mkdir -p /target/boot/efi/EFI/linuxmint")
+                os.system("cp /lib/live/mount/medium/EFI/BOOT/grubx64.efi /target/boot/efi/EFI/linuxmint")
+                os.system("mkdir -p /target/media/cdrom")
+                # Detect cdrom device
+                # TODO : properly detect cdrom device
+                # Mount it
+                if (int(os.system("mount /dev/sr0 /target/media/cdrom"))):
+                    print " --> Failed to mount CDROM. Install will failed"
+                self.do_run_in_chroot("apt-cdrom -o Acquire::cdrom::AutoDetect=false -m add")
+                self.do_run_in_chroot("apt-get update")
+                self.do_run_in_chroot("apt-get install -y --force-yes grub-efi efibootmgr")
+
+            # remove live-packages (or w/e)
             print " --> Removing live packages"
             our_current += 1
             self.update_progress(total=our_total, current=our_current, message=_("Removing live configuration (packages)"))
-            self.do_run_in_chroot("apt-get remove --purge --yes --force-yes live-boot live-boot-initramfs-tools live-initramfs live-installer live-config live-config-sysvinit gparted")
-            
-            # When the purge is incomplete and leaves redundant symbolic links in the rc*.d directories.
-            # The resulting startpar error prevents gsfxi to successfully install the Nvidia drivers.
-            self.do_run_in_chroot("update-rc.d -f live-installer remove")
+            with open("/lib/live/mount/medium/live/filesystem.packages-remove", "r") as fd:
+                line = fd.read().replace('\n', ' ')
+            self.do_run_in_chroot("apt-get remove --purge --yes --force-yes %s" % line)
                         
             # add new user
             print " --> Adding new user"
@@ -471,6 +489,9 @@ class InstallerEngine:
             try:
                 os.system("umount --force /target/dev/shm")
                 os.system("umount --force /target/dev/pts")
+                if setup.gptonefi:
+                    os.system("umount --force /target/boot/efi")
+                    os.system("umount --force /target/media/cdrom")
                 os.system("umount --force /target/dev/")
                 os.system("umount --force /target/sys/")
                 os.system("umount --force /target/proc/")
@@ -518,10 +539,10 @@ class InstallerEngine:
             grubfh = open("/target/boot/grub/grub.cfg", "r")
             for line in grubfh:
                 line = line.rstrip("\r\n")
-                if("linuxmint.png" in line):
+                if("06_mint_theme" in line):
                     found_theme = True
                     print " --> Found Grub theme: %s " % line
-                if ("menuentry" in line and "Mint" in line):
+                if ("menuentry" in line and "LinuxMint" in line):
                     found_entry = True
                     print " --> Found Grub entry: %s " % line
             grubfh.close()
@@ -587,7 +608,7 @@ class Setup(object):
     grub_device = None
     disks = []
     target_disk = None
-    partitiontable = None
+    gptonefi = False
     # Optionally skip all mouting/partitioning for advanced users with custom setups (raid/dmcrypt/etc)
     # Make sure the user knows that they need to:
     #  * Mount their target directory structure at /target
@@ -615,7 +636,10 @@ class Setup(object):
             print "skip_mount: %s" % self.skip_mount
             if (not self.skip_mount):
                 print "target_disk: %s " % self.target_disk
-                print "partition table: %s " % self.partitiontable
+                if self.gptonefi:
+                    print "GPT partition table: True"
+                else:
+                    print "GPT partition table: False"
                 print "disks: %s " % self.disks                       
                 print "partitions:"
                 for partition in self.partitions:

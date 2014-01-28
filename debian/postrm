@@ -1,0 +1,11 @@
+#! /bin/sh
+
+set -e
+
+case "$1" in
+    purge|remove)
+        update-rc.d live-installer remove >/dev/null
+    ;;   
+esac
+
+exit 0

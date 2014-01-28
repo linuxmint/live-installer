@@ -1033,7 +1033,10 @@ class InstallerWindow:
             model2 = gtk.ListStore(str)
             
             swap_found = False
-            
+            os.system("modprobe efivars >/dev/null 2>&1")
+            # Are we running under with efi ?
+            if os.path.exists("/proc/efi") or os.path.exists("/sys/firmware/efi"):
+                self.setup.gptonefi = True
             if self.setup.target_disk is not None:
                 path =  self.setup.target_disk # i.e. /dev/sda
                 #grub_model.append([path])
@@ -1047,18 +1050,16 @@ class InstallerWindow:
                         # try to load efivars
                         os.system("modprobe efivars >/dev/null 2>&1")
                         # Are we running under with efi ?
-                        if os.path.exists("/proc/efi") or os.path.exists("/sys/firmware/efi"):
+                        if (self.setup.gptonefi):
                             disk = parted.freshDisk(device, 'gpt')
-                            self.setup.partitiontable = 'gpt'
-                        else :
+                        else:
                             disk = parted.freshDisk(device, 'msdos')
-                            self.setup.partitiontable ='msdos'
                         disk.commit()                        
                         post_mbr_gap = parted.sizeToSectors(1, "MiB", device.sectorSize) # Grub2 requires a post-MBR gap
                         start = post_mbr_gap  
                         #efi                        
                         regions = disk.getFreeSpaceRegions()
-                        if len(regions) and (self.setup.partitiontable == 'gpt') > 0:                                                            
+                        if ((len(regions) > 0) and (self.setup.gptonefi)):
                                 region = regions[-1]                                                                                                                                  
                                 root_size = 419430
                                 num_sectors = parted.sizeToSectors(root_size, "KiB", device.sectorSize)
@@ -1073,7 +1074,7 @@ class InstallerWindow:
                                     partition.setFlag(parted.PARTITION_BOOT)
                                     
                                     disk.commit()
-                                    os.system("mkfs.vfat %s -F 32 -n boot" % partition.path)
+                                    os.system("mkfs.vfat %s -F 32 " % partition.path)
                                                                      
                                     post_partition_gap = parted.sizeToSectors(512, "KiB", device.sectorSize)
                                     start = end + post_partition_gap
@@ -1151,7 +1152,9 @@ class InstallerWindow:
                                         if os.path.exists(os.path.join(mount_point, 'etc/lsb-release')):
                                             last_added_partition.description = commands.getoutput("cat " + os.path.join(mount_point, 'etc/lsb-release') + " | grep DISTRIB_DESCRIPTION").replace('DISTRIB_DESCRIPTION', '').replace('=', '').replace('"', '').strip()                                    
                                         if os.path.exists(os.path.join(mount_point, 'etc/issue')):
-                                            last_added_partition.description = commands.getoutput("cat " + os.path.join(mount_point, 'etc/issue')).replace('\\n', '').replace('\l', '').strip()                                    
+                                            last_added_partition.description = commands.getoutput("cat " + os.path.join(mount_point, 'etc/issue')).replace('\\n', '').replace('\l', '').strip()
+                                        if os.path.exists(os.path.join(mount_point, 'EFI')):
+                                            last_added_partition.description = "EFI System Partition"
                                         if os.path.exists(os.path.join(mount_point, 'Windows/servicing/Version')):
                                             version = commands.getoutput("ls %s" % os.path.join(mount_point, 'Windows/servicing/Version'))                                    
                                             if version.startswith("6.1"):
@@ -1208,10 +1211,9 @@ class InstallerWindow:
                                 color = "#42e5ac"
                             elif last_added_partition.type == "fat32":
                                 color = "#18d918"
-                                if (partition.getFlag(parted.PARTITION_BOOT)) and (self.setup.partitiontable == 'gpt'):
+                                if (partition.getFlag(parted.PARTITION_BOOT)) and (self.setup.gptonefi):
                                     last_added_partition.mount_as = "/boot/efi"
                                     model.set_value(iter, INDEX_PARTITION_MOUNT_AS, "/boot/efi")
-                                    #print "%s" % int(float(partition.getSize()))
                             elif last_added_partition.type == "ext4":
                                 color = "#4b6983"
                             elif last_added_partition.type == "ext3":
@@ -1642,16 +1644,23 @@ class InstallerWindow:
                     self.build_partitions()
             elif(sel == self.PAGE_PARTITIONS):                
                 model = self.wTree.get_widget("treeview_disks").get_model()
-                error = True
-                errorMessage = _("Please select a root (/) partition before proceeding")
-                for partition in self.setup.partitions:                    
+                rooterror = True
+                efierror = True
+                rooterrorMessage = _("Please select a root (/) partition before proceeding")
+                efierrorMessage= _("Please select an EFI system partition (/boot/efi) before proceeding")
+                for partition in self.setup.partitions:
                     if(partition.mount_as == "/"):
-                        error = False                        
+                        rooterror = False
                         if partition.format_as is None or partition.format_as == "":
-                            error = True
-                            errorMessage = _("Please indicate a filesystem to format the root (/) partition before proceeding")                        
-                if(error):
-                    MessageDialog(_("Installation Tool"), errorMessage, gtk.MESSAGE_ERROR, self.window).show()
+                            rooterror = True
+                            rooterrorMessage = _("Please indicate a filesystem to format the root (/) partition before proceeding")
+                for partition in self.setup.partitions:        
+                    if(partition.mount_as == "/boot/efi") and self.setup.gptonefi:
+                        efierror = False
+                if(rooterror):
+                    MessageDialog(_("Installation Tool"), rooterrorMessage, gtk.MESSAGE_ERROR, self.window).show()
+                elif(efierror):
+                    MessageDialog(_("Installation Tool"), efierrorMessage, gtk.MESSAGE_ERROR, self.window).show()
                 else:
                     self.build_grub_partitions()
                     self.activate_page(self.PAGE_ADVANCED)
