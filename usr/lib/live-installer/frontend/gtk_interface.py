@@ -1054,7 +1054,8 @@ class InstallerWindow:
                             disk = parted.freshDisk(device, 'gpt')
                         else:
                             disk = parted.freshDisk(device, 'msdos')
-                        disk.commit()                        
+                        disk.commit()
+                        post_partition_gap = parted.sizeToSectors(512, "KiB", device.sectorSize)
                         post_mbr_gap = parted.sizeToSectors(1, "MiB", device.sectorSize) # Grub2 requires a post-MBR gap
                         start = post_mbr_gap  
                         #efi                        
@@ -1075,8 +1076,6 @@ class InstallerWindow:
                                     
                                     disk.commit()
                                     os.system("mkfs.vfat %s -F 32 " % partition.path)
-                                                                     
-                                    post_partition_gap = parted.sizeToSectors(512, "KiB", device.sectorSize)
                                     start = end + post_partition_gap
                         #Swap
                         regions = disk.getFreeSpaceRegions()
@@ -1100,8 +1099,11 @@ class InstallerWindow:
                         regions = disk.getFreeSpaceRegions()
                         if len(regions) > 0:
                             region = regions[-1]
-                            partition = parted.Partition(disk=disk, type=parted.PARTITION_NORMAL, geometry=region)
-                            constraint = parted.Constraint(exactGeom=region)
+                            start = end + post_partition_gap
+                            end = region.length - parted.sizeToSectors(1, "MiB", device.sectorSize)
+                            geometry = parted.Geometry(device=device, start=start, end=end)
+                            partition = parted.Partition(disk=disk, type=parted.PARTITION_NORMAL, geometry=geometry)
+                            constraint = parted.Constraint(exactGeom=geometry)
                             disk.addPartition(partition=partition, constraint=constraint)
                             disk.commit()                            
                             os.system("mkfs.ext4 %s" % partition.path)
