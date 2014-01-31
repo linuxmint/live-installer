@@ -1654,9 +1654,13 @@ class InstallerWindow:
                         if partition.format_as is None or partition.format_as == "":
                             rooterror = True
                             rooterrorMessage = _("Please indicate a filesystem to format the root (/) partition before proceeding")
-                for partition in self.setup.partitions:        
-                    if(partition.mount_as == "/boot/efi") and self.setup.gptonefi:
-                        efierror = False
+                if self.setup.gptonefi:
+                    for partition in self.setup.partitions:        
+                        if(partition.mount_as == "/boot/efi"):
+                            efierror = False
+                else:
+                    # We are not in an EFI environnment
+                    efierror = False
                 if(rooterror):
                     MessageDialog(_("Installation Tool"), rooterrorMessage, gtk.MESSAGE_ERROR, self.window).show()
                 elif(efierror):
