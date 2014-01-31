@@ -1081,9 +1081,12 @@ class InstallerWindow:
                         regions = disk.getFreeSpaceRegions()
                         if len(regions) > 0:
                             region = regions[-1]    
-                            ram_size = int(commands.getoutput("cat /proc/meminfo | grep MemTotal | awk {'print $2'}")) # in KiB                            
-                            num_sectors = parted.sizeToSectors(ram_size, "KiB", device.sectorSize)
-                            num_sectors = int(float(num_sectors) * 1.5) # Swap is 1.5 times bigger than RAM
+                            ram_size = int(commands.getoutput("cat /proc/meminfo | grep MemTotal | awk {'print $2'}")) # in KiB
+                            if ram_size < 2097152:
+                                num_sectors = parted.sizeToSectors(ram_size, "KiB", device.sectorSize)
+                                num_sectors = int(float(num_sectors) * 1.5) # Swap is 1.5 times bigger than RAM if RAM < 2Go
+                            else:
+                                num_sectors = parted.sizeToSectors(2097152, "KiB", device.sectorSize)
                             end = start + num_sectors
                             cylinder = device.endSectorToCylinder(end)
                             end = device.endCylinderToSector(cylinder)
