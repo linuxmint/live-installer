@@ -492,6 +492,7 @@ class InstallerEngine:
                 if setup.gptonefi:
                     os.system("umount --force /target/boot/efi")
                     os.system("umount --force /target/media/cdrom")
+                    self.do_run_in_chroot("sed -i 's/^deb cdrom/#deb cdrom/' /etc/apt/sources.list")
                 os.system("umount --force /target/dev/")
                 os.system("umount --force /target/sys/")
                 os.system("umount --force /target/proc/")
