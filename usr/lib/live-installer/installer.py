@@ -476,7 +476,7 @@ class InstallerEngine:
             print " --> Configuring Initramfs"
             our_current += 1
             if (setup.skip_mount):
-                self.do_run_in_chroot("/usr/sbin/update-initramfs -u -k all")
+                self.do_run_in_chroot("/usr/sbin/update-initramfs -t -u -k all")
                         
             # Clean APT
             print " --> Cleaning APT"
