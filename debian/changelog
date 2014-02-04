@@ -1,3 +1,18 @@
+live-installer (2014.02.04) debian; urgency=low
+
+  * New checkout :
+  * [bd61c2a] End of installation : apt-get autoremove in chroot
+  * [c39ba4e] Allow update custom initramfs
+  * [76e5f97] Comment cdrom entry
+  * [0662933] Fix perms
+  * [ad2a9c5] Bump standard version
+  * [6b30fa2] improve existing EFI system partition detection
+  * [d6d47fc] 2Go swap if RAM > 2Go. Otherwise, swap = 1,5 * RAM size
+  * [bd1cddc] Add 1mb free space
+  * [069c29d] Bug fix: Allow legacy BIOS installation
+
+ -- Frédéric Gaudet <fred@linuxmint.com>  Tue, 04 Feb 2014 13:24:10 +0100
+
 live-installer (2014.01.31) debian; urgency=low
 
   * Bug fix: Allow legacy BIOS installation
