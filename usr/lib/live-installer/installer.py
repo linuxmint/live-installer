@@ -483,6 +483,8 @@ class InstallerEngine:
             our_current += 1
             self.update_progress(pulse=True, total=our_total, current=our_current, message=_("Cleaning APT"))
             os.system("chroot /target/ /bin/sh -c \"dpkg --configure -a\"")
+            self.do_run_in_chroot("sed -i 's/^deb cdrom/#deb cdrom/' /etc/apt/sources.list")
+            self.do_run_in_chroot("apt-get -y --force-yes autoremove")
             
             # now unmount it
             print " --> Unmounting partitions"
@@ -492,7 +494,6 @@ class InstallerEngine:
                 if setup.gptonefi:
                     os.system("umount --force /target/boot/efi")
                     os.system("umount --force /target/media/cdrom")
-                    self.do_run_in_chroot("sed -i 's/^deb cdrom/#deb cdrom/' /etc/apt/sources.list")
                 os.system("umount --force /target/dev/")
                 os.system("umount --force /target/sys/")
                 os.system("umount --force /target/proc/")
