@@ -1214,9 +1214,10 @@ class InstallerWindow:
                         else:                                        
                             if last_added_partition.type == "ntfs":
                                 color = "#42e5ac"
-                            elif last_added_partition.type == "fat32":
+                            # FAT16 should not be used for EFI system partition, but if it exists, let's detect it correctly
+                            elif last_added_partition.type == "fat32" or last_added_partition.type == "fat16" :
                                 color = "#18d918"
-                                if (partition.getFlag(parted.PARTITION_BOOT)) and (self.setup.gptonefi):
+                                if last_added_partition.description == "EFI System Partition":
                                     last_added_partition.mount_as = "/boot/efi"
                                     model.set_value(iter, INDEX_PARTITION_MOUNT_AS, "/boot/efi")
                             elif last_added_partition.type == "ext4":
