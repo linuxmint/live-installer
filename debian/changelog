@@ -1,3 +1,12 @@
+live-installer (2014.02.05) debian; urgency=low
+
+  * New checkout :
+  * [96b6fd4] Debian does not takeover by default (ubuntu does)
+  * [61d029b] Support displaying old FAT16 EFI System partition
+  * [f8d26ee] Bug fix : use vfat partition type in fstab
+
+ -- Frédéric Gaudet <fred@linuxmint.com>  Wed, 05 Feb 2014 13:50:03 +0100
+
 live-installer (2014.02.04) debian; urgency=low
 
   * New checkout :
