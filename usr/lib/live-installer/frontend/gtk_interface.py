@@ -45,41 +45,42 @@ INDEX_PARTITION_FREE_SPACE=6
 INDEX_PARTITION_OBJECT=7
 
 class ProgressDialog:
-	
-	def __init__(self):
-		self.glade = '/usr/share/live-installer/interface.glade'
-		self.dTree = gtk.glade.XML(self.glade, 'progress_window')
-		self.window = self.dTree.get_widget('progress_window')
-		self.progressbar = self.dTree.get_widget('progressbar_operation')
-		self.label = self.dTree.get_widget('label_operation')
-		self.should_pulse = False
-		
-	def show(self, label=None, title=None):
-		def pbar_pulse():
-			if(not self.should_pulse):
-				return False
-			self.progressbar.pulse()
-			return self.should_pulse
-		if(label is not None):
-			self.label.set_markup(label)
-		if(title is not None):
-			self.window.set_title(title)
-		self.should_pulse = True
-		self.window.show_all()
-		gobject.timeout_add(100, pbar_pulse)
-		
-	def hide(self):
-		self.should_pulse = False
-		self.window.hide()	
+    
+    def __init__(self):
+        self.glade = '/usr/share/live-installer/interface.glade'
+        self.dTree = gtk.glade.XML(self.glade, 'progress_window')
+        self.window = self.dTree.get_widget('progress_window')
+        self.progressbar = self.dTree.get_widget('progressbar_operation')
+        self.label = self.dTree.get_widget('label_operation')
+        self.should_pulse = False
+        
+    def show(self, label=None, title=None):
+        def pbar_pulse():
+            if(not self.should_pulse):
+                return False
+            self.progressbar.pulse()
+            return self.should_pulse
+        if(label is not None):
+            self.label.set_markup(label)
+        if(title is not None):
+            self.window.set_title(title)
+        self.should_pulse = True
+        self.window.show_all()
+        gobject.timeout_add(100, pbar_pulse)
+        
+    def hide(self):
+        self.should_pulse = False
+        self.window.hide()  
 
 ''' Handy. Makes message dialogs easy :D '''
 class MessageDialog(object):
 
-    def __init__(self, title, message, style, parent=None):
+    def __init__(self, title, message, style, parent=None, secondary_message=None):
         self.title = title
         self.message = message
         self.style = style
         self.parent = parent
+        self.secondary_message = secondary_message
 
     ''' Show me on screen '''
     def show(self):
@@ -88,6 +89,9 @@ class MessageDialog(object):
         dialog.set_title(self.title)
         dialog.set_position(gtk.WIN_POS_CENTER)
         dialog.set_icon_from_file("/usr/share/icons/live-installer.png")
+        dialog.set_markup(self.message)
+        if self.secondary_message is not None:
+            dialog.format_secondary_markup(self.secondary_message)
         dialog.run()
         dialog.destroy()
         
@@ -187,7 +191,7 @@ class Timezone:
         y = y * self.height
 
         return (int(x), int(y))        
-		
+        
 class InstallerWindow:
 
     def __init__(self, fullscreen=False):
@@ -489,7 +493,7 @@ class InstallerWindow:
             #print e
             have_preview = False
         file_chooser.set_preview_widget_active(have_preview)
-        return	
+        return  
             
     def face_take_picture_button_clicked(self, widget, event):
         try:
@@ -645,6 +649,14 @@ class InstallerWindow:
                     menuItem = gtk.MenuItem(_("Assign to /home"))
                     menuItem.connect( "activate", self.assign_mount_point_context_menu_wrapper, partition, "/home", "")
                     menu.append(menuItem)
+
+                    if self.setup.gptonefi:
+                        menuItem = gtk.SeparatorMenuItem()
+                        menu.append(menuItem)
+                        menuItem = gtk.MenuItem(_("Assign to /boot/efi"))
+                        menuItem.connect( "activate", self.assign_mount_point_context_menu_wrapper, partition, "/boot/efi", "")
+                        menu.append(menuItem)
+
                     menu.show_all()
                     menu.popup( None, None, None, event.button, event.time )
 
@@ -1649,30 +1661,48 @@ class InstallerWindow:
                     self.build_partitions()
             elif(sel == self.PAGE_PARTITIONS):                
                 model = self.wTree.get_widget("treeview_disks").get_model()
-                rooterror = True
-                efierror = True
-                rooterrorMessage = _("Please select a root (/) partition before proceeding")
-                efierrorMessage= _("Please select an EFI system partition (/boot/efi) before proceeding")
+
+                # Check for root partition
+                found_root_partition = False
                 for partition in self.setup.partitions:
                     if(partition.mount_as == "/"):
-                        rooterror = False
-                        if partition.format_as is None or partition.format_as == "":
-                            rooterror = True
-                            rooterrorMessage = _("Please indicate a filesystem to format the root (/) partition before proceeding")
+                        found_root_partition = True
+                        if partition.format_as is None or partition.format_as == "":                            
+                            MessageDialog(_("Installation Tool"), _("Please indicate a filesystem to format the root (/) partition before proceeding"), gtk.MESSAGE_ERROR, self.window).show()
+                            return
+                if not found_root_partition:
+                    MessageDialog(_("Installation Tool"), _("<b>Please select a root partition</b>"), gtk.MESSAGE_ERROR, self.window, _("A root partition is needed to install Linux Mint.\n\n - Mount point: /\n - Recommended size: Larger than 10GB\n - Recommended format: ext4\n ")).show()
+                    return
+
                 if self.setup.gptonefi:
-                    for partition in self.setup.partitions:        
+                    # Check for an EFI partition
+                    found_efi_partition = False
+                    for partition in self.setup.partitions:
                         if(partition.mount_as == "/boot/efi"):
-                            efierror = False
-                else:
-                    # We are not in an EFI environnment
-                    efierror = False
-                if(rooterror):
-                    MessageDialog(_("Installation Tool"), rooterrorMessage, gtk.MESSAGE_ERROR, self.window).show()
-                elif(efierror):
-                    MessageDialog(_("Installation Tool"), efierrorMessage, gtk.MESSAGE_ERROR, self.window).show()
-                else:
-                    self.build_grub_partitions()
-                    self.activate_page(self.PAGE_ADVANCED)
+                            found_efi_partition = True
+                            if not partition.partition.getFlag(parted.PARTITION_BOOT):
+                                MessageDialog(_("Installation Tool"), _("The EFI partition is not bootable. Please edit the partition flags."), gtk.MESSAGE_ERROR, self.window).show()
+                                return
+                            if int(float(partition.size)) < 100:
+                                MessageDialog(_("Installation Tool"), _("The EFI partition is too small. It must be at least 100MB."), gtk.MESSAGE_ERROR, self.window).show()
+                                return
+                            if partition.format_as == None or partition.format_as == "":
+                                # No partitioning
+                                if partition.type != "vfat" and partition.type != "fat32":
+                                    MessageDialog(_("Installation Tool"), _("The EFI partition must be formatted as vfat."), gtk.MESSAGE_ERROR, self.window).show()
+                                    return
+                            else:
+                                if partition.format_as != "vfat":
+                                    MessageDialog(_("Installation Tool"), _("The EFI partition must be formatted as vfat."), gtk.MESSAGE_ERROR, self.window).show()
+                                    return
+                            
+                    if not found_efi_partition:
+                        MessageDialog(_("Installation Tool"), _("<b>Please select an EFI partition</b>"), gtk.MESSAGE_ERROR, self.window, _("An EFI system partition is needed with the following requirements:\n\n - Mount point: /boot/efi\n - Partition flags: Bootable\n - Size: Larger than 100MB\n - Format: vfat or fat32\n\nTo ensure compatibility with Windows we recommend you use the first partition of the disk as the EFI system partition.\n ")).show()
+                        return
+
+                self.build_grub_partitions()
+                self.activate_page(self.PAGE_ADVANCED)
+
             elif(sel == self.PAGE_CUSTOMWARNING):
                 self.build_grub_partitions()
                 self.activate_page(self.PAGE_ADVANCED)
