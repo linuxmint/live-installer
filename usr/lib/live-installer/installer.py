@@ -90,7 +90,7 @@ class InstallerEngine:
             if(partition.mount_as is not None and partition.mount_as != "" and partition.mount_as != "/" and partition.mount_as != "swap"):
                 print " ------ Mounting %s on %s" % (partition.partition.path, "/target" + partition.mount_as)
                 os.system("mkdir -p /target" + partition.mount_as)
-                if partition.type == "fat32":
+                if partition.type == "fat16" or partition.type == "fat32":
                     fs = "vfat"
                 else:
                     fs = partition.type
@@ -305,11 +305,14 @@ class InstallerEngine:
                             fstab_mount_options = "rw,errors=remount-ro"
                         else:
                             fstab_mount_options = "defaults"
-                        
-                        if(partition.type == "swap"):                    
+                        if partition.type == "fat16" or partition.type == "fat32":
+                            fs = "vfat"
+                        else:
+                            fs = partition.type
+                        if(fs == "swap"):
                             fstab.write("%s\tswap\tswap\tsw\t0\t0\n" % partition_uuid)
-                        else:                                                    
-                            fstab.write("%s\t%s\t%s\t%s\t%s\t%s\n" % (partition_uuid, partition.mount_as, partition.type, fstab_mount_options, "0", fstab_fsck_option))
+                        else:
+                            fstab.write("%s\t%s\t%s\t%s\t%s\t%s\n" % (partition_uuid, partition.mount_as, fs, fstab_mount_options, "0", fstab_fsck_option))
             fstab.close()
 
         except Exception:            
