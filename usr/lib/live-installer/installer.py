@@ -480,6 +480,7 @@ class InstallerEngine:
             our_current += 1
             if (setup.skip_mount):
                 self.do_run_in_chroot("/usr/sbin/update-initramfs -t -u -k all")
+                self.do_run_in_chroot("/usr/bin/sha1sum /boot/initrd.img-%s > /var/lib/initramfs-tools/%s" % (kernelversion,kernelversion))
                         
             # Clean APT
             print " --> Cleaning APT"
