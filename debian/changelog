@@ -1,3 +1,9 @@
+live-installer (2014.02.06.1) debian; urgency=low
+
+  * Cosmetic fixes
+
+ -- Clement Lefebvre <root@linuxmint.com>  Thu, 06 Feb 2014 14:46:43 +0000
+
 live-installer (2014.02.06) debian; urgency=low
 
   * EFI fixes
