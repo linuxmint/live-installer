@@ -1225,37 +1225,45 @@ class InstallerWindow:
                             model.set_value(iter, INDEX_PARTITION_TYPE, "<span foreground='#a9a9a9'>%s</span>" % _("Extended"))  
                         else:                                        
                             if last_added_partition.type == "ntfs":
-                                color = "#42e5ac"
+                                color = "#66a6a8"
+                                style = "ntfs"
                             elif last_added_partition.type == "fat32" or last_added_partition.type == "fat16":
-                                color = "#18d918"
+                                color = "#47872a"
+                                style = "fat"
                                 if last_added_partition.description == "EFI System Partition":
                                     last_added_partition.mount_as = "/boot/efi"
                                     model.set_value(iter, INDEX_PARTITION_MOUNT_AS, "/boot/efi")
                             elif last_added_partition.type == "ext4":
-                                color = "#4b6983"
+                                color = "#21619e"
+                                style = "ext4"
                             elif last_added_partition.type == "ext3":
-                                color = "#7590ae"
+                                color = "#2582a0"
+                                style = "ext"
+                            elif last_added_partition.type == "ext2":
+                                color = "#2582a0"
+                                style = "ext"
                             elif last_added_partition.type in ["linux-swap", "swap"]:
-                                color = "#c1665a"
+                                color = "#be3a37"
+                                style = "swap"
                                 last_added_partition.mount_as = "swap"
                                 model.set_value(iter, INDEX_PARTITION_MOUNT_AS, "swap")
                             else:
-                                color = "#a9a9a9"
+                                color = "#636363"
+                                style = "unknown"
                             model.set_value(iter, INDEX_PARTITION_TYPE, "<span foreground='%s'>%s</span>" % (color, last_added_partition.type))                                            
-                            html_partition = "<td class='partition-cell' title='$title' style='border: 3px solid $color;' width='$space%'><div class='partition'>\n  <div style='width: $usage; background-color: #f8f8ba; height: 50px'></div>\n <div class='partition-text'>$path</div><div class='partition-os'>$OS</div>\n</div>\n</td>"        
+                            html_partition = "<td class='partition-cell' title='$title' width='$space%'><div class='partition " + style + "'>\n  <div class='shine' style='width: $usage; height: 50px'></div>\n <div class='partition-text'>$path</div><div class='partition-os'>$OS</div>\n</div>\n</td>"
                             deviceSize = float(device.getSize()) * float(0.9) # Hack.. reducing the real size to 90% of what it is, to make sure our partitions fit..
                             space = int((float(partition.getSize()) / deviceSize) * float(80))                            
                             subs = {}
-                            if (space >= 10):
-                                subs['path'] = display_name.replace("/dev/", "")                            
-                                subs['OS'] = last_added_partition.description
-                            elif (space >= 5):
-                                subs['path'] = display_name.replace("/dev/", "")                            
-                                subs['OS'] = ""                            
-                            else:
+                            subs['OS'] = last_added_partition.description
+                            subs['path'] = display_name.replace("/dev/", "")
+                            if (space < 10 and len(last_added_partition.description) > 5):
+                                subs['OS'] = "%s..." % last_added_partition.description[0:5]
+                            if (space < 5):
                                 #Not enough space, don't write the name
                                 subs['path'] = ""                          
                                 subs['OS'] = ""
+
                             subs['color'] = color                            
                             if (space == 0):
                                 space = 1
@@ -1263,6 +1271,8 @@ class InstallerWindow:
                             subs['title'] = display_name + "\n" + last_added_partition.description
                             if "%" in last_added_partition.used_space:               
                                 subs['usage'] = last_added_partition.used_space.strip()
+                            else:
+                                subs['usage'] = "0"
                             html_partition = string.Template(html_partition).safe_substitute(subs)                     
                             html_partitions = html_partitions + html_partition
                             self.setup.partitions.append(last_added_partition)
@@ -1273,11 +1283,20 @@ class InstallerWindow:
             #self.wTree.get_widget("combobox_grub").set_active(0)
                         
             import tempfile            
-            html_header = "<html><head><style>body {background-color:#d6d6d6;} \
-            .partition{position:relative; width:100%; float: left; background: white;} \
-            .partition-cell{ position:relative; margin: 2px 5px 2px 0; padding: 1px; float: left; background: white;} \
-            .partition-text{ position:absolute; top:10; text-align: center; width=100px; left: 0; right: 0; margin: 0 auto; font-size:12px; } \
-            .partition-os{ position:absolute; top:30; text-align: center; width=100px; left: 0; right: 0; margin: 0 auto; font-size:10px; font-style:italic;color:#555555;} </style></head><body>"
+            html_header = "<html><head><style> \
+body{background-color:#d6d6d6;} \
+.partition{position:relative;width:100%;float: left;background: white;border-radius: 3px;} \
+.partition-cell{position:relative;margin: 2px 5px 2px 0;padding: 1px;float: left;background: #9c9c9c;border-radius: 3px;} \
+.partition-text{position:absolute;top:10;text-align: center;width=100px;left: 0;right: 0;margin: 0 auto;font-size:12px;font-weight: bold;color:#ffffff;text-shadow: 1px 1px 1px #000;} \
+.partition-os{position:absolute;top:30;text-align: center;width=100px;left: 0;right: 0;margin: 0 auto;font-size:10px;color:#ffffff;text-shadow: 1px 1px 1px #000;} \
+.fat {background-color: #b4d59b;background-image: -webkit-gradient(linear, left top, left bottom, from(#b4d59b), to(#47872a));background-image: -webkit-linear-gradient(top, #b4d59b, #47872a);background-image: -moz-linear-gradient(top, #b4d59b, #47872a);} \
+.ntfs {background-color: #c9e3e4;background-image: -webkit-gradient(linear, left top, left bottom, from(#c9e3e4), to(#66a6a8));background-image: -webkit-linear-gradient(top,#c9e3e4, #66a6a8);background-image: -moz-linear-gradient(top, #c9e3e4, #66a6a8);} \
+.ext {background-color: #98d4e0;background-image: -webkit-gradient(linear, left top, left bottom, from(#98d4e0), to(#2582a0));background-image: -webkit-linear-gradient(top, #98d4e0, #2582a0);background-image: -moz-linear-gradient(top, #98d4e0, #2582a0);} \
+.ext4 {background-color: #95c4de;background-image: -webkit-gradient(linear, left top, left bottom, from(#95c4de), to(#21619e));background-image: -webkit-linear-gradient(top, #95c4de, #21619e);background-image: -moz-linear-gradient(top, #95c4de, #21619e);} \
+.swap {background-color: #eaaca9;background-image: -webkit-gradient(linear, left top, left bottom, from(#eaaca9), to(#be3a37));background-image: -webkit-linear-gradient(top, #eaaca9, #be3a37);background-image: -moz-linear-gradient(top, #eaaca9, #be3a37);} \
+.unknown {background-color: #c8c8c8;background-image: -webkit-gradient(linear, left top, left bottom, from(#c8c8c8), to(#636363));background-image: -webkit-linear-gradient(top, #c8c8c8, #636363);background-image: -moz-linear-gradient(top, #c8c8c8, #636363);} \
+.shine {position: relative;opacity: .2; top: 0;right: 0;bottom: 0;left: 0;background: #fff;-moz-border-radius: 0px;-webkit-border-radius: 0px;border-radius: 0px;margin:1px;} \
+</style></head><body>"
             html_footer = "</body></html>"
             html = html_header + html_partitions + html_footer
            
@@ -1285,7 +1304,7 @@ class InstallerWindow:
             f = tempfile.NamedTemporaryFile(delete=False)
             f.write(html)
             f.close()  
-                                   
+       
             self.browser.open(f.name)            
             #browser.load_html_string(html, "file://")                 
             self.wTree.get_widget("scrolled_partitions").show_all()                                                                        
