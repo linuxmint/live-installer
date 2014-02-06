@@ -399,6 +399,7 @@ class InstallerWindow:
         self.wTree.get_widget("menubar").hide()
         # apply to the header       
         self.title_box = self.wTree.get_widget("title_eventbox")
+        self.title_box.set_border_width(6);
         bgColor = gtk.gdk.color_parse('#585858')
         self.title_box.modify_bg(gtk.STATE_NORMAL, bgColor)
         fgColor = gtk.gdk.color_parse('#FFFFFF')
@@ -995,9 +996,17 @@ class InstallerWindow:
                 if("/dev/" in section):                    
                     elements = section.split()
                     for element in elements:
-                        if "/dev/" in element: 
+                        if "/dev/" in element:
                             self.setup.disks.append(element)
-                            description = section.replace(element, "").strip()
+                            description = element.replace('/dev/', '')
+                            if os.path.exists('/sys/block/%s/device/model' % description):
+                                try:
+                                    process = subprocess.Popen('cat /sys/block/%s/device/model' % description, shell=True, stdout=subprocess.PIPE)
+                                    for linep in process.stdout:
+                                        description = linep.rstrip("\r\n")
+                                        break
+                                except Exception, detail:
+                                    print detail
                             iter = model.append([element, description]);
                 
         self.wTree.get_widget("treeview_hdds").set_model(model)
@@ -1140,7 +1149,8 @@ class InstallerWindow:
                         last_added_partition = PartitionSetup(partition)                       
                         
                         if "swap" in last_added_partition.type:
-                            last_added_partition.type = "swap"                                                            
+                            last_added_partition.type = "swap"
+                            last_added_partition.description = "swap"
 
                         if partition.number != -1 and "swap" not in last_added_partition.type and partition.type != parted.PARTITION_EXTENDED:
                             
@@ -1170,6 +1180,8 @@ class InstallerWindow:
                                             last_added_partition.description = commands.getoutput("cat " + os.path.join(mount_point, 'etc/lsb-release') + " | grep DISTRIB_DESCRIPTION").replace('DISTRIB_DESCRIPTION', '').replace('=', '').replace('"', '').strip()
                                         if os.path.exists(os.path.join(mount_point, 'etc/issue')):
                                             last_added_partition.description = commands.getoutput("cat " + os.path.join(mount_point, 'etc/issue')).replace('\\n', '').replace('\l', '').strip()
+                                        if os.path.exists(os.path.join(mount_point, 'etc/linuxmint/info')):
+                                            last_added_partition.description = commands.getoutput("cat " + os.path.join(mount_point, 'etc/linuxmint/info') + " | grep GRUB_TITLE").replace('GRUB_TITLE', '').replace('=', '').replace('"', '').strip()
                                         if int(commands.getoutput("/sbin/gdisk -l " + self.setup.target_disk + " | grep \"" + str(partition.number) + "   \" |  grep \"EF00\" | wc -l")) == 1:
                                             last_added_partition.description = "EFI System Partition"
                                         if os.path.exists(os.path.join(mount_point, 'Windows/servicing/Version')):
