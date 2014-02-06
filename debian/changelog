@@ -1,3 +1,10 @@
+live-installer (2014.02.06) debian; urgency=low
+
+  * EFI fixes
+  * Nicer looking partitions
+
+ -- Clement Lefebvre <root@linuxmint.com>  Thu, 06 Feb 2014 12:29:56 +0000
+
 live-installer (2014.02.04) debian; urgency=low
 
   * New checkout :
