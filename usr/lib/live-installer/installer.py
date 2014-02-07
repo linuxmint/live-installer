@@ -55,6 +55,8 @@ class InstallerEngine:
                         cmd = "mkfs.%s -q %s" % (partition.format_as, partition.partition.path)
                     elif (partition.format_as == "xfs"):
                         cmd = "mkfs.%s -f %s" % (partition.format_as, partition.partition.path)
+                    elif (partition.format_as == "vfat"):
+                        cmd = "mkfs.%s %s -F 32" % (partition.format_as, partition.partition.path)
                     else:
                         cmd = "mkfs.%s %s" % (partition.format_as, partition.partition.path) # works with bfs, btrfs, ext2, ext3, ext4, minix, msdos, ntfs, vfat
 					

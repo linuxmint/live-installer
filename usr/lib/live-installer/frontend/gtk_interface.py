@@ -1719,7 +1719,7 @@ body{background-color:#d6d6d6;} \
                                 return
                             if partition.format_as == None or partition.format_as == "":
                                 # No partitioning
-                                if partition.type != "vfat" and partition.type != "fat32":
+                                if partition.type != "vfat" and partition.type != "fat32" and partition.type != "fat16":
                                     MessageDialog(_("Installation Tool"), _("The EFI partition must be formatted as vfat."), gtk.MESSAGE_ERROR, self.window).show()
                                     return
                             else:
