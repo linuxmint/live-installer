@@ -1,3 +1,9 @@
+live-installer (2014.02.10) debian; urgency=low
+
+  * Additional fixes for VFAT
+
+ -- Clement Lefebvre <root@linuxmint.com>  Mon, 10 Feb 2014 11:11:03 +0000
+
 live-installer (2014.02.06.1) debian; urgency=low
 
   * Cosmetic fixes
