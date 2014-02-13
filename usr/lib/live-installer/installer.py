@@ -231,7 +231,7 @@ class InstallerEngine:
                 # TODO : properly detect cdrom device
                 # Mount it
                 if (int(os.system("mount /dev/sr0 /target/media/cdrom"))):
-                    print " --> Failed to mount CDROM. Install will failed"
+                    print " --> Failed to mount CDROM. Install will fail"
                 self.do_run_in_chroot("apt-cdrom -o Acquire::cdrom::AutoDetect=false -m add")
                 self.do_run_in_chroot("apt-get update")
                 self.do_run_in_chroot("apt-get install -y --force-yes grub-efi efibootmgr")
@@ -483,6 +483,7 @@ class InstallerEngine:
             print " --> Configuring Initramfs"
             our_current += 1
             self.do_run_in_chroot("/usr/sbin/update-initramfs -t -u -k all")
+            kernelversion= commands.getoutput("uname -r")
             self.do_run_in_chroot("/usr/bin/sha1sum /boot/initrd.img-%s > /var/lib/initramfs-tools/%s" % (kernelversion,kernelversion))
                         
             # Clean APT
