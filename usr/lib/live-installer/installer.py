@@ -479,12 +479,11 @@ class InstallerEngine:
                         self.error_message(message=_("WARNING: The grub bootloader was not configured properly! You need to configure it manually."))
                         break
 
-            # recreate initramfs to include things like mdadm/dm-crypt/etc in case its needed to boot a custom install
+            # recreate initramfs (needed in case of skip_mount also, to include things like mdadm/dm-crypt/etc in case its needed to boot a custom install)
             print " --> Configuring Initramfs"
             our_current += 1
-            if (setup.skip_mount):
-                self.do_run_in_chroot("/usr/sbin/update-initramfs -t -u -k all")
-                self.do_run_in_chroot("/usr/bin/sha1sum /boot/initrd.img-%s > /var/lib/initramfs-tools/%s" % (kernelversion,kernelversion))
+            self.do_run_in_chroot("/usr/sbin/update-initramfs -t -u -k all")
+            self.do_run_in_chroot("/usr/bin/sha1sum /boot/initrd.img-%s > /var/lib/initramfs-tools/%s" % (kernelversion,kernelversion))
                         
             # Clean APT
             print " --> Cleaning APT"

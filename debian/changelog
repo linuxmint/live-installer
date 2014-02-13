@@ -1,3 +1,9 @@
+live-installer (2014.02.13) debian; urgency=low
+
+  * Update initrd at the end of the installation
+
+ -- Clement Lefebvre <root@linuxmint.com>  Thu, 13 Feb 2014 10:29:26 +0000
+
 live-installer (2014.02.10) debian; urgency=low
 
   * Additional fixes for VFAT
