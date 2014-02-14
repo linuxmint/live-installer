@@ -1,3 +1,9 @@
+live-installer (2014.02.14) debian; urgency=low
+
+  * l10n and efi fixes
+
+ -- Clement Lefebvre <root@linuxmint.com>  Fri, 14 Feb 2014 11:49:43 +0000
+
 live-installer (2014.02.13) debian; urgency=low
 
   * Update initrd at the end of the installation
