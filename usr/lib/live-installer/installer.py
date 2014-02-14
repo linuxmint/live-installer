@@ -226,15 +226,19 @@ class InstallerEngine:
             if (setup.gptonefi):
                 os.system("mkdir -p /target/boot/efi/EFI/linuxmint")
                 os.system("cp /lib/live/mount/medium/EFI/BOOT/grubx64.efi /target/boot/efi/EFI/linuxmint")
-                os.system("mkdir -p /target/media/cdrom")
-                # Detect cdrom device
-                # TODO : properly detect cdrom device
-                # Mount it
-                if (int(os.system("mount /dev/sr0 /target/media/cdrom"))):
-                    print " --> Failed to mount CDROM. Install will fail"
-                self.do_run_in_chroot("apt-cdrom -o Acquire::cdrom::AutoDetect=false -m add")
-                self.do_run_in_chroot("apt-get update")
-                self.do_run_in_chroot("apt-get install -y --force-yes grub-efi efibootmgr")
+                os.system("mkdir -p /target/debs")
+                os.system("cp /lib/live/mount/medium/pool/main/g/grub2/grub-efi* /target/debs/")
+                os.system("cp /lib/live/mount/medium/pool/main/e/efibootmgr/efibootmgr* /target/debs/")
+                self.do_run_in_chroot("dpkg -i /debs/*")
+                os.system("rm -rf /target/debs")
+
+            # Detect cdrom device
+            # TODO : properly detect cdrom device
+            # Mount it
+            # os.system("mkdir -p /target/media/cdrom")
+            # if (int(os.system("mount /dev/sr0 /target/media/cdrom"))):
+            #     print " --> Failed to mount CDROM. Install will fail"
+            # self.do_run_in_chroot("apt-cdrom -o Acquire::cdrom::AutoDetect=false -m add")
 
             # remove live-packages (or w/e)
             print " --> Removing live packages"
@@ -364,66 +368,19 @@ class InstallerEngine:
             os.system("echo \"%s\" > /target/etc/timezone" % setup.timezone_code)
             os.system("cp /target/usr/share/zoneinfo/%s /target/etc/localtime" % setup.timezone)
                         
-            # localize Firefox and Thunderbird
+            # localizing
             print " --> Localizing packages"
             self.update_progress(total=our_total, current=our_current, message=_("Localizing packages"))
-            if setup.language != "en_US":                
-                os.system("apt-get update")
-                self.do_run_in_chroot("apt-get update")
-                locale = setup.language.replace("_", "-").lower()                
-
-                # KDE
-                if os.path.isfile('/usr/bin/kdm'):
-                    print " --> Localizing KDE"
-                    self.update_progress(total=our_total, current=our_current, message=_("Localizing KDE"))
-                    num_res = commands.getoutput("aptitude search kde-l10n-%s | grep kde-l10n-%s | wc -l" % (locale, locale))
-                    if num_res != "0":                    
-                        self.do_run_in_chroot("apt-get install --yes --force-yes kde-l10n-" + locale)
-                    else:
-                        if "_" in setup.language:
-                            language_code = setup.language.split("_")[0]
-                            num_res = commands.getoutput("aptitude search kde-l10n-%s | grep kde-l10n-%s | wc -l" % (language_code, language_code))
-                            if num_res != "0":                            
-                                self.do_run_in_chroot("apt-get install --yes --force-yes kde-l10n-" + language_code)                
-                # LibreOffice
-                print " --> Localizing LibreOffice"
-                self.update_progress(total=our_total, current=our_current, message=_("Localizing LibreOffice"))
-                num_res = commands.getoutput("aptitude search libreoffice-l10n-%s | grep libreoffice-l10n-%s | wc -l" % (locale, locale))
-                if num_res != "0":                    
-                    self.do_run_in_chroot("apt-get install --yes --force-yes libreoffice-l10n-" + locale)
-                else:
-                    if "_" in setup.language:
-                        language_code = setup.language.split("_")[0]
-                        num_res = commands.getoutput("aptitude search libreoffice-l10n-%s | grep libreoffice-l10n-%s | wc -l" % (language_code, language_code))
-                        if num_res != "0":                            
-                            self.do_run_in_chroot("apt-get install --yes --force-yes libreoffice-l10n-" + language_code)
-                            self.do_run_in_chroot("apt-get install --yes --force-yes aspell-" + language_code)                
-                
-                # Firefox
-                print " --> Localizing Firefox"
-                self.update_progress(total=our_total, current=our_current, message=_("Localizing Firefox"))               
-                num_res = commands.getoutput("aptitude search firefox-l10n-%s | grep firefox-l10n-%s | wc -l" % (locale, locale))
-                if num_res != "0":                    
-                    self.do_run_in_chroot("apt-get install --yes --force-yes firefox-l10n-" + locale)
-                else:
-                    if "_" in setup.language:
-                        language_code = setup.language.split("_")[0]
-                        num_res = commands.getoutput("aptitude search firefox-l10n-%s | grep firefox-l10n-%s | wc -l" % (language_code, language_code))
-                        if num_res != "0":                            
-                            self.do_run_in_chroot("apt-get install --yes --force-yes firefox-l10n-" + language_code)
-               
-                # Thunderbird
-                print " --> Localizing Thunderbird"
-                self.update_progress(total=our_total, current=our_current, message=_("Localizing Thunderbird"))              
-                num_res = commands.getoutput("aptitude search thunderbird-l10n-%s | grep thunderbird-l10n-%s | wc -l" % (locale, locale))
-                if num_res != "0":
-                    self.do_run_in_chroot("apt-get install --yes --force-yes thunderbird-l10n-" + locale)
-                else:
-                    if "_" in setup.language:
-                        language_code = setup.language.split("_")[0]
-                        num_res = commands.getoutput("aptitude search thunderbird-l10n-%s | grep thunderbird-l10n-%s | wc -l" % (language_code, language_code))
-                        if num_res != "0":
-                            self.do_run_in_chroot("apt-get install --yes --force-yes thunderbird-l10n-" + language_code)                                                                                        
+            if setup.language != "en_US":               
+                os.system("mkdir -p /target/debs")
+                language_code = setup.language
+                if "_" in setup.language:
+                    language_code = setup.language.split("_")[0]
+                l10ns = commands.getoutput("find /lib/live/mount/medium/pool | grep 'l10n-%s\\|hunspell-%s'" % (language_code, language_code))
+                for l10n in l10ns.split("\n"):
+                    os.system("cp %s /target/debs/" % l10n)
+                self.do_run_in_chroot("dpkg -i /debs/*")
+                os.system("rm -rf /target/debs")
 
             # set the keyboard options..
             print " --> Setting the keyboard"
