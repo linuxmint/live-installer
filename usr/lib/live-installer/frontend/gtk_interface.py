@@ -196,6 +196,10 @@ class InstallerWindow:
 
     def __init__(self, fullscreen=False):
         
+        #Disable the screensaver to prevent a segfault situation in GTK2
+        os.system("sudo -u mint gsettings set org.cinnamon.desktop.screensaver lock-enabled false 2> /dev/null")
+        os.system("sudo -u mint gsettings set org.mate.screensaver lock-enabled false 2> /dev/null")
+        
         #Build the Setup object (where we put all our choices)
         self.setup = Setup()
         
