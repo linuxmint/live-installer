@@ -1182,7 +1182,7 @@ class InstallerWindow:
                                             last_added_partition.description = commands.getoutput("cat " + os.path.join(mount_point, 'etc/issue')).replace('\\n', '').replace('\l', '').strip()
                                         if os.path.exists(os.path.join(mount_point, 'etc/linuxmint/info')):
                                             last_added_partition.description = commands.getoutput("cat " + os.path.join(mount_point, 'etc/linuxmint/info') + " | grep GRUB_TITLE").replace('GRUB_TITLE', '').replace('=', '').replace('"', '').strip()
-                                        if int(commands.getoutput("/sbin/gdisk -l " + self.setup.target_disk + " | grep \"" + str(partition.number) + "   \" |  grep \"EF00\" | wc -l")) == 1:
+                                        if commands.getoutput("/sbin/gdisk -l %s | grep EF00 | awk {'print $1;'}" % self.setup.target_disk) == str(partition.number):                                            
                                             last_added_partition.description = "EFI System Partition"
                                         if os.path.exists(os.path.join(mount_point, 'Windows/servicing/Version')):
                                             version = commands.getoutput("ls %s" % os.path.join(mount_point, 'Windows/servicing/Version'))                                    
