@@ -980,34 +980,27 @@ class InstallerWindow:
         # Save the selection
         self.setup.timezone = timezone.name
         self.setup.timezone_code = timezone.name
-                
-                
+                                
     def build_hdds(self):
         self.setup.disks = []
         model = gtk.ListStore(str, str)            
-        inxi = subprocess.Popen("inxi -c0 -D", shell=True, stdout=subprocess.PIPE)      
-        for line in inxi.stdout:
+        output = subprocess.Popen("lsblk -nrdo TYPE,NAME,SIZE,RM | grep ^disk", shell=True, stdout=subprocess.PIPE)
+        for line in output.stdout:
             line = line.rstrip("\r\n")
-            if(line.startswith("Disks:")):
-                line = line.replace("Disks:", "")            
-            sections = line.split(":")
-            for section in sections:
-                section = section.strip()
-                if("/dev/" in section):                    
-                    elements = section.split()
-                    for element in elements:
-                        if "/dev/" in element:
-                            self.setup.disks.append(element)
-                            description = element.replace('/dev/', '')
-                            if os.path.exists('/sys/block/%s/device/model' % description):
-                                try:
-                                    process = subprocess.Popen('cat /sys/block/%s/device/model' % description, shell=True, stdout=subprocess.PIPE)
-                                    for linep in process.stdout:
-                                        description = linep.rstrip("\r\n")
-                                        break
-                                except Exception, detail:
-                                    print detail
-                            iter = model.append([element, description]);
+            sections = line.split(" ")
+            if len(sections) == 4:
+                dev_name = sections[1]
+                dev_size = sections[2]
+                dev_removable = sections[3]
+                dev_path = "/dev/%s" % dev_name
+                dev_model = commands.getoutput("lsblk -nrdo MODEL %s" % dev_path)
+                self.setup.disks.append(dev_path)
+                description = "%s (%s)" % (dev_model, dev_size)
+                if dev_removable == "1":
+                    description = _("Removable device:") + " " + description
+                iter = model.append([dev_path, description]);
+            else:
+                print "WARNING, erroneous info collected for disks. Please show this to the development team: %s" % line
                 
         self.wTree.get_widget("treeview_hdds").set_model(model)
         
@@ -1026,14 +1019,15 @@ class InstallerWindow:
         for disk in self.setup.disks:
             grub_model.append([disk])
         # Add partitions
-        partitions = commands.getoutput("fdisk -l | grep ^/dev/").split("\n")
-        for partition in partitions:
-            try:
-                partition = partition.split()[0].strip()
-                if partition.startswith("/dev/"):
-                    grub_model.append([partition])
-            except Exception, detail:
-                print detail
+        output = commands.getoutput("lsblk -nrbo TYPE,NAME | grep ^part").split("\n")
+        for line in output:
+            line = line.strip()
+            sections = line.split(" ")
+            if len(sections) == 2:
+                partition = sections[1]
+                grub_model.append(["/dev/%s" % partition])
+            else:
+                print "WARNING, erroneous info collected for partitions. Please show this to the development team: %s" % line            
         self.wTree.get_widget("combobox_grub").set_model(grub_model)
         self.wTree.get_widget("combobox_grub").set_active(0)
   
@@ -2023,7 +2017,7 @@ class PartitionDialog:
 
     def show(self):
         self.window.run()
-        self.window.hide()        
+        self.window.hide()
         w = self.dTree.get_widget("comboboxentry_mount_point")
         w.child.get_text().replace(" ","")
         mount_as = w.child.get_text()
