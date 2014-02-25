@@ -1117,7 +1117,7 @@ class InstallerWindow:
                         if len(regions) > 0:
                             region = regions[-1]
                             start = end + post_partition_gap
-                            end = region.length - parted.sizeToSectors(1, "MiB", device.sectorSize)
+                            end = start + region.length - parted.sizeToSectors(1, "MiB", device.sectorSize)
                             geometry = parted.Geometry(device=device, start=start, end=end)
                             partition = parted.Partition(disk=disk, type=parted.PARTITION_NORMAL, geometry=geometry)
                             constraint = parted.Constraint(exactGeom=geometry)
