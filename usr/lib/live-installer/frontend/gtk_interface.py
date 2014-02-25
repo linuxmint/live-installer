@@ -1097,11 +1097,10 @@ class InstallerWindow:
                         if len(regions) > 0:
                             region = regions[-1]    
                             ram_size = int(commands.getoutput("cat /proc/meminfo | grep MemTotal | awk {'print $2'}")) # in KiB
-                            if ram_size < 2097152:
-                                num_sectors = parted.sizeToSectors(ram_size, "KiB", device.sectorSize)
-                                num_sectors = int(float(num_sectors) * 1.5) # Swap is 1.5 times bigger than RAM if RAM < 2Go
-                            else:
-                                num_sectors = parted.sizeToSectors(2097152, "KiB", device.sectorSize)
+                            ram_size = ram_size * 1.5 # Give 1.5 times the amount of RAM                            
+                            if ram_size > 2097152:
+                                ram_size = 2097152 # But no more than 2GB
+                            num_sectors = parted.sizeToSectors(ram_size, "KiB", device.sectorSize)
                             end = start + num_sectors
                             cylinder = device.endSectorToCylinder(end)
                             end = device.endCylinderToSector(cylinder)
@@ -1111,7 +1110,7 @@ class InstallerWindow:
                                 constraint = parted.Constraint(exactGeom=geometry)
                                 disk.addPartition(partition=partition, constraint=constraint)
                                 disk.commit()
-                                os.system("mkswap %s" % partition.path)                                
+                                os.system("mkswap %s" % partition.path)                     
                         
                         #Root
                         regions = disk.getFreeSpaceRegions()
