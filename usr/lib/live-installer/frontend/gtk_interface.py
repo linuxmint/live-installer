@@ -238,7 +238,7 @@ class InstallerWindow:
         self.wizard_pages[self.PAGE_ADVANCED] = WizardPage(_("Advanced options"), "advanced.png")
         self.wizard_pages[self.PAGE_OVERVIEW] = WizardPage(_("Summary"), "summary.png")
         self.wizard_pages[self.PAGE_INSTALL] = WizardPage(_("Installing Linux Mint..."), "install.png")
-        self.wizard_pages[self.PAGE_CUSTOMPAUSED] = WizardPage(_("Installation is Paused: Please finish the custom installation"), "install.png")
+        self.wizard_pages[self.PAGE_CUSTOMPAUSED] = WizardPage(_("Installation is paused: please finish the custom installation"), "install.png")
         
         # set the button events (wizard_cb)
         self.wTree.get_widget("button_next").connect("clicked", self.wizard_cb, False)
@@ -572,7 +572,7 @@ class InstallerWindow:
         self.wTree.get_widget("label_custom_install_directions_3").set_label(_("Do NOT mount virtual devices such as /dev, /proc, /sys, etc on /target/."))
         self.wTree.get_widget("label_custom_install_directions_4").set_label(_("During the install, you will be given time to chroot into /target and install any pacakges that will be needed to boot your new system."))
         self.wTree.get_widget("label_custom_install_directions_5").set_label(_("During the install, you will be required to write your own /etc/fstab."))
-        self.wTree.get_widget("label_custom_install_directions_6").set_label(_("If you arent sure what any of this means, please go back and deselect manual partition management."))
+        self.wTree.get_widget("label_custom_install_directions_6").set_label(_("If you aren't sure what any of this means, please go back and deselect manual partition management."))
 
         # custom install installation paused directions
         self.wTree.get_widget("label_custom_install_paused_1").set_label(_("Please do the following and then click Forward to finish Installation:"))
