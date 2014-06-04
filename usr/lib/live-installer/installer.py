@@ -112,7 +112,8 @@ class InstallerEngine:
             # find the squashfs..
             if(not os.path.exists(self.media)):
                 print "Base filesystem does not exist! Critical error (exiting)."
-                sys.exit(1) # change to report
+                self.error_message(message=_("ERROR: source filesystem not found"))
+                return
 
             try:
                 os.system("umount --force /target/dev/shm")
