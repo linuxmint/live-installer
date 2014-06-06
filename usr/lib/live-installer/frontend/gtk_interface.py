@@ -481,7 +481,7 @@ class InstallerWindow:
         response = chooser.run()
         if response == gtk.RESPONSE_OK:
             filename = chooser.get_filename()
-            os.system("convert %s -resize x96 /tmp/live-installer-face.png" % filename)
+            os.system("convert '%s' -resize x96 /tmp/live-installer-face.png" % filename)
             self.wTree.get_widget("face_image").set_from_file("/tmp/live-installer-face.png")
         chooser.destroy()
     
