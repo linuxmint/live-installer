@@ -1163,7 +1163,7 @@ class InstallerWindow:
 
                             #Identify partition's description and used space
                             if (partition.path in commands.getoutput('mount')):
-                                df_lines = commands.getoutput("df 2>/dev/null | grep %s" % partition.path).split('\n')
+                                df_lines = commands.getoutput("grep %s /proc/mounts 2>/dev/null" % partition.path).split('\n')
                                 for df_line in df_lines:
                                     df_elements = df_line.split()
                                     if df_elements[0] == partition.path:
