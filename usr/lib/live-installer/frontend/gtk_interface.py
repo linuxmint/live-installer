@@ -716,6 +716,8 @@ class InstallerWindow:
         except:
             pass #best effort, we get here if we're not connected to the Internet            
 
+        self.cur_country_code = cur_country_code
+
         #Plan B... find out what locale we're in (i.e. USA on the live session)
         cur_lang = os.environ['LANG']
         if("." in cur_lang):
@@ -1614,8 +1616,8 @@ body{background-color:#d6d6d6;} \
                 iter = model.get_iter_first()
                 while iter is not None:
                     iter_country_code = model.get_value(iter, 1).country_code
-                    if iter_country_code == country_code:
-                        combo.set_active_iter(iter)                        
+                    if iter_country_code == self.cur_country_code:
+                        combo.set_active_iter(iter)
                         break
                     iter = model.iter_next(iter)
                 self.activate_page(self.PAGE_TIMEZONE)
