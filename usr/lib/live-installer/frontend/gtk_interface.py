@@ -546,6 +546,10 @@ class InstallerWindow:
         self.wTree.get_widget("label_pass_help").set_markup("<span fgcolor='#3C3C3C'><sub><i>%s</i></sub></span>" % _("Please enter your password twice to ensure it is correct"))
         self.wTree.get_widget("label_hostname").set_markup("<b>%s</b>" % _("Hostname"))
         self.wTree.get_widget("label_hostname_help").set_markup("<span fgcolor='#3C3C3C'><sub><i>%s</i></sub></span>" % _("This hostname will be the computers name on the network"))
+        self.wTree.get_widget("label_autologin").set_markup("<b>%s</b>" % _("Automatic login"))
+        self.wTree.get_widget("label_autologin_help").set_markup("<span fgcolor='#3C3C3C'><sub><i>%s</i></sub></span>" % _("If enabled, the login screen is skipped when the system starts, and you are signed into your desktop session automatically."))
+        self.wTree.get_widget("checkbutton_autologin").set_label(_("Log in automatically on system boot"))
+        self.wTree.get_widget("checkbutton_autologin").connect("toggled", self.assign_autologin)
                 
         self.wTree.get_widget("face_label").set_markup("<b>%s</b>" % _("Your picture"))
         self.wTree.get_widget("face_description").set_markup("<span fgcolor='#3C3C3C'><sub><i>%s</i></sub></span>" % _("This picture represents your user account. It is used in the login screen and a few other places."))
@@ -1508,6 +1512,9 @@ body{background-color:#d6d6d6;} \
             self.setup.skip_mount = True
         self.setup.print_setup()
         
+    def assign_autologin(self, checkbox, data=None):
+        self.setup.autologin = checkbox.get_active()
+
     def assign_grub_install(self, checkbox, grub_box, data=None):
         grub_box.set_sensitive(checkbox.get_active())
         if checkbox.get_active():
