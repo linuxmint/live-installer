@@ -263,6 +263,21 @@ class InstallerEngine:
             self.do_run_in_chroot("cat /tmp/.passwd | chpasswd")
             os.system("rm -f /target/tmp/.passwd")            
             
+            # Set autologin for user if they so elected
+            if setup.autologin:
+                # LightDM
+                self.do_run_in_chroot(r"sed -i -r 's/^#?(autologin-user)\s*=.*/\1={user}/' /etc/lightdm/lightdm.conf".format(user=setup.username))
+                # MDM
+                self.do_run_in_chroot(r"sed -i -r -e '/^AutomaticLogin(Enable)?\s*=/d' -e 's/^(\[daemon\])/\1\nAutomaticLoginEnable=true\nAutomaticLogin={user}/' /etc/mdm/mdm.conf".format(user=setup.username))
+                # GDM3
+                self.do_run_in_chroot(r"sed -i -r -e '/^(#\s*)?AutomaticLogin(Enable)?\s*=/d' -e 's/^(\[daemon\])/\1\nAutomaticLoginEnable=true\nAutomaticLogin={user}/' /etc/gdm3/daemon.conf".format(user=setup.username))
+                # KDE4
+                self.do_run_in_chroot(r"sed -i -r -e 's/^#?(AutomaticLoginEnable)\s*=.*/\1=true/' -e 's/^#?(AutomaticLoginUser)\s*.*/\1={user}/' /etc/kde4/kdm/kdmrc".format(user=setup.username))
+                # LXDM
+                self.do_run_in_chroot(r"sed -i -r -e 's/^#?(autologin)\s*=.*/\1={user}/' /etc/lxdm/lxdm.conf".format(user=setup.username))
+                # SLiM
+                self.do_run_in_chroot(r"sed -i -r -e 's/^#?(default_user)\s.*/\1  {user}/' -e 's/^#?(auto_login)\s.*/\1  yes/' /etc/slim.conf".format(user=setup.username))
+
             # Add user's face
             os.system("cp /tmp/live-installer-face.png /target/home/%s/.face" % setup.username)
             self.do_run_in_chroot("chown %s:%s /home/%s/.face" % (setup.username, setup.username, setup.username))
@@ -569,6 +584,7 @@ class Setup(object):
     partitions = [] #Array of PartitionSetup objects
     username = None
     hostname = None
+    autologin = False
     password1 = None
     password2 = None
     real_name = None    
@@ -597,6 +613,7 @@ class Setup(object):
             print "timezone: %s (%s)" % (self.timezone, self.timezone_code)        
             print "keyboard: %s - %s (%s) - %s - %s (%s)" % (self.keyboard_model, self.keyboard_layout, self.keyboard_variant, self.keyboard_model_description, self.keyboard_layout_description, self.keyboard_variant_description)        
             print "user: %s (%s)" % (self.username, self.real_name)
+            print "autologin: ", self.autologin
             print "hostname: %s " % self.hostname
             print "passwords: %s - %s" % (self.password1, self.password2)        
             print "grub_device: %s " % self.grub_device
