@@ -1,3 +1,0 @@
-#!/bin/bash
-
-xgettext --language=Python --keyword=_ --output=live-installer.pot usr/lib/live-installer/installer.py usr/lib/live-installer/main.py usr/lib/live-installer/frontend/gtk_interface.py

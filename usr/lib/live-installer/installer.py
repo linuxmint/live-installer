@@ -2,14 +2,12 @@ import os
 import subprocess
 import time
 import shutil
-import gettext
 import stat
 import commands
 import sys
 import parted
 from configobj import ConfigObj
 
-gettext.install("live-installer", "/usr/share/locale")
 
 class InstallerEngine:
     ''' This is central to the live installer '''

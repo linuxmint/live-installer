@@ -31,7 +31,7 @@ except Exception, detail:
 
 from slideshow import Slideshow
 
-gettext.install("live-installer", "/usr/share/linuxmint/locale")
+gettext.install("live-installer")
 gtk.gdk.threads_init()
 
 INDEX_PARTITION_PATH=0
@@ -409,33 +409,17 @@ class InstallerWindow:
             # dedicated installer mode thingum
             self.window.maximize()
             self.window.fullscreen()        
-        
-        #''' Launch the Slideshow '''
-        #if ("_" in self.setup.language):
-        #    locale_code = self.setup.language.split("_")[0]
-        #else:
-        #     locale_code = self.setup.language
-        
-        #slideshow_path = "/usr/share/live-installer-slideshow/slides/index.html"
-        #if os.path.exists(slideshow_path):            
-        #    browser = webkit.WebView()
-        #    s = browser.get_settings()
-        #    s.set_property('enable-file-access-from-file-uris', True)
-        #    s.set_property('enable-default-context-menu', False)
-        #    browser.open("file://" + slideshow_path  + "#?locale=" + locale_code)
-        #    self.wTree.get_widget("vbox_install").add(browser)
-        #    self.wTree.get_widget("vbox_install").show_all()         
-        # Initiate the slide show
-        self.slideshow_path = "/usr/share/live-installer/slideshow"
-        if os.path.exists(self.slideshow_path):
-            self.slideshow_browser = webkit.WebView()
-            s = self.slideshow_browser.get_settings()
-            s.set_property('enable-file-access-from-file-uris', True)
-            s.set_property('enable-default-context-menu', False)            
-            self.slideshow_browser.open("file://" + os.path.join(self.slideshow_path, 'template.html'))
-            self.wTree.get_widget("vbox_install").add(self.slideshow_browser)
-            self.wTree.get_widget("vbox_install").show_all()                                                            
-        
+
+        # Configure slideshow webview
+        self.slideshow_browser = webkit.WebView()
+        s = self.slideshow_browser.get_settings()
+        s.set_property('enable-file-access-from-file-uris', True)
+        s.set_property('enable-default-context-menu', False)
+        self.slideshow_browser.load_string(_('No slideshow template found.'), 'text/html', 'UTF-8', 'file:///')
+        self.wTree.get_widget("vbox_install").add(self.slideshow_browser)
+        self.wTree.get_widget("vbox_install").show_all()
+
+        # Configure disks webview
         self.browser = webkit.WebView()
         s = self.browser.get_settings()
         s.set_property('enable-file-access-from-file-uris', True)
@@ -1159,13 +1143,10 @@ class InstallerWindow:
         row = model[active]
         self.setup.language = row[1]
         self.setup.print_setup()
-        try:            
-            self.translation = gettext.translation('live-installer', "/usr/share/linuxmint/locale", languages=[self.setup.language])
-            self.translation.install()
-        except Exception, detail:
-            print "No translation found, switching back to English"
-            self.translation = gettext.translation('live-installer', "/usr/share/linuxmint/locale", languages=['en'])
-            self.translation.install()        
+        try: gettext.translation('live-installer', languages=[self.setup.language, self.setup.language.split('_')[0]]).install()
+        except IOError, OSError:
+            # default to env variables (or hardcoded English) if chosen language not available
+            gettext.install('live-installer')
         try:
             self.i18n()
         except:
@@ -1504,11 +1485,9 @@ class InstallerWindow:
             self.critical_error_happened = False
 
             # Now it's time to load the slide show
-            if os.path.exists(self.slideshow_path):                        
-                slideThr = Slideshow(self.slideshow_browser, self.slideshow_path, self.setup.language)
-                # Let the slide-thread die when the parent thread dies
-                slideThr.daemon = True
-                slideThr.start()
+            slideThr = Slideshow(self.slideshow_browser, self.setup.language)
+            slideThr.daemon = True  # let the slide-thread die with the parent
+            slideThr.start()
 
             # Start installing
             do_try_finish_install = True
