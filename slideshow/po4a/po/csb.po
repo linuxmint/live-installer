@@ -1,0 +1,256 @@
+# SOME DESCRIPTIVE TITLE
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: live-installer-slideshow\n"
+"POT-Creation-Date: 2014-09-15 01:03+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. type: Content of: <h1>
+#: en/10_welcome.html:1
+msgid "Welcome to Linux Mint Debian"
+msgstr "Witómë"
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:6
+msgid "Thank you for choosing Linux Mint."
+msgstr "Dzãkùjemë za wëbiérk Linux Minta."
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:7
+msgid ""
+"We believe in sharing and being open-minded. Our vision of Freedom includes "
+"being able to do what you want with your computer, and the operating system "
+"should never stand in the way."
+msgstr ""
+"Ma wierzimë w dzelenié sã ë òtemkłosc. Nają wizëją wólnotë je to, że të z "
+"twòjim kòmpùtrã mòżesz robic wszëtkò to co le chcesz, a twòjô òperacjowô "
+"systema mô ce w tim akùratno wspierac."
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:8
+msgid ""
+"We focus on ease of use, comfort, and elegance to make your experience with "
+"Linux Mint as enjoyable as possible."
+msgstr ""
+"Kòncentrëjemë sã na prostoce w brëkùnkù, kòmforce ë szëkòwnocë, abë twòjé "
+"òdkrëwanié Linuksa Mint bëło jak nôbarżi lubné jakno to le je mòżlëwé."
+
+#. type: Content of: <div><div><p>
+#: en/10_welcome.html:11
+msgid ""
+"We hope you will have a wonderful time spent with Linux Mint, and that you "
+"will enjoy using it as much as we do developing it!"
+msgstr ""
+"Mómë nôdzejã, że bãdzesz miôł pëszny czas z Linuksã Minta ë że jegò brëkùnk "
+"dô ce tëli szpôsu co nama jegò rozwijanié."
+
+#. type: Content of: <h1>
+#: en/20_giants.html:1
+msgid "Standing on the shoulders of Giants"
+msgstr "Òparti na Stolemach"
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:6
+msgid "Linux Mint is a Debian-based GNU/Linux distribution."
+msgstr "Linux Mint je distribùcëją òpiartą spòdlowò na Debianie GNU/Linux"
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:7
+msgid ""
+"Our innovations and the huge Debian package selection make Linux Mint one of "
+"the most attractive desktop operating systems available to home users."
+msgstr ""
+"Naji inowacëje ë stolemnô zamkłosc paczetów Debiana robią z Linux Minta baro "
+"atrakcjowé graficzné òkrãżé dlô domôcegò brëkùnkù."
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:8
+#, fuzzy
+#| msgid ""
+#| "At home, Linux Mint is the 4th most widely used desktop operating system, "
+#| "behind Microsoft Windows, Apple OS X and Ubuntu."
+msgid ""
+"At home, GNU/Linux distributions like Linux Mint or Ubuntu are among the "
+"most widely used desktop operating systems, right next to Microsoft Windows "
+"and Apple OS X."
+msgstr ""
+"W dodôcych brëkùnkach je Linux Mint na 4 placu westrzód pòpùlarnotë "
+"graficznych òkrãżów, pò Microsoft Windows, Apple OS X ë Ubuntu."
+
+#. type: Content of: <h1>
+#: en/30_desktop-ready.html:1
+msgid "Out of the box"
+msgstr "Ju przëszëkòwóné"
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:6
+#, fuzzy
+#| msgid ""
+#| "Firefox, Thunderbird, OpenOffice.org and Xchat come pre-installed in "
+#| "Linux Mint, so you can get started immediately with your daily routine on "
+#| "your desktop and the Internet."
+msgid ""
+"Most standard applications you are used to come pre-installed in Linux Mint, "
+"so you can get started immediately with your daily routine on your desktop "
+"and the Internet."
+msgstr ""
+"Firefox, Thunderbird, OpenOffice.org ë Xchat są ju winstalowóné w Linux "
+"Mint, tak zé mòżesz zarô z pùltã ë internetã wësztartowac."
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:7
+#, fuzzy
+#| msgid ""
+#| "Other popular applications such as Skype, Google Earth, Opera can be "
+#| "installed with a click of the mouse."
+msgid ""
+"Other popular applications such as Skype, Google Earth, Opera, and over "
+"30,000+ more can be installed with a click of the mouse."
+msgstr ""
+"Jinszé apliakcëje jakno n.p. Skype, Google Earth czë Opera mòże doinstalowac "
+"jednym klëkniãcem mëszë."
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:8
+msgid ""
+"Linux Mint is compatible with most popular file formats: zip, doc, xls, pdf, "
+"rar, mp3, wmv, mpg, mp4, mov ..."
+msgstr ""
+"Linux Mint je kòmpatibilny z wikszoscą znónych fòrmatów lopków: zip, doc, "
+"xls, pdf, rar, mp3, wmv, mpg, mp4, mov ..."
+
+#. type: Content of: <h1>
+#: en/40_office.html:1
+msgid "Be productive"
+msgstr ""
+
+#. type: Content of: <div><div><ul><li>
+#: en/40_office.html:6
+msgid ""
+"Use LibreOffice to create professional documents, spreadsheets and "
+"presentations that are fully compatible with Microsoft Office. Share "
+"printers or access them remotely."
+msgstr ""
+
+#. type: Content of: <h1>
+#: en/50_windows.html:1
+msgid "An alternative to mainstream operating systems"
+msgstr "Alternatiwa dlô spòpùlarizowónych òperacjowich systemów"
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:6
+msgid "Linux Mint is easy to use, powerful and configurable."
+msgstr ""
+"Linux Mint je prosti w brëkùnkù, sztabilny ë elasticzny w swòji kònfigùracëji"
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:7
+msgid ""
+"Linux Mint can detect other operating systems and install itself beside "
+"them. You can choose which operating system to launch when you start the "
+"computer."
+msgstr ""
+"Linux Mint je w sztãdzë rozpòznac jinszé òperacjowé systemë é winstalowac se "
+"kòl tich. Przë zrëszaniu kòmpùtra mòżesz pòzdze wëbiérac, chtërny òperacjowi "
+"systemë chcesz prawie brëkòwac."
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:8
+msgid ""
+"Install Wine and run Windows software in Linux Mint. Or install VirtualBox, "
+"and run Windows itself within Linux Mint."
+msgstr ""
+
+#. type: Content of: <h1>
+#: en/60_safe.html:1
+msgid "Safe updates"
+msgstr "Zaktualnienié bezpiekù"
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:6
+msgid ""
+"Linux Mint is safe and stable, you don't need an antivirus, an anti-spyware, "
+"a defragmentation tool or a registry cleaner."
+msgstr ""
+"Linux Mint je bezpieczny ë sztabilny, nie je ce w nim nót niżódny "
+"antiwirósowi czë antiszpijónowsczi programë, nôrzãdzów do defragmentacëji ë "
+"czësczeniô registrów."
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:7
+msgid ""
+"Receive fixes and security updates all in one place, for the entire system, "
+"including the software you install."
+msgstr ""
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:8
+msgid ""
+"The Linux Mint Update Manager sits discreetly in your system tray and lets "
+"you know when updates are available. You don't have to apply updates when "
+"you don't want to. The Update Manager won't pop up or annoy you in any way."
+msgstr ""
+"Menadżera aktualizacëji Linux Mint sedzy diskrétno w systemòwim zabiérnikù ë "
+"dôwô ce wiédzã jeżlë przëstãpné są zaktualnienia. Nie je ce nót jich "
+"instalowac, jeżlë tegò nie chcesz. Menadżera aktualizacëji nie bãdze ce "
+"nerwòwôł wëskakùjącyma òknama ëtp."
+
+#. type: Content of: <h1>
+#: en/70_chat.html:1
+msgid "Stay connected"
+msgstr ""
+
+#. type: Content of: <div><div><ul><li>
+#: en/70_chat.html:6
+msgid ""
+"Keep in touch with your friends and contacts, by email, messenger or on your "
+"favorite social networks. Linux Mint provides all you need to interact with "
+"Twitter, Facebook, Google Hangouts, ICQ, IRC, AIM, Yahoo and many other "
+"networks."
+msgstr ""
+
+#. type: Content of: <h1>
+#: en/80_community.html:1
+msgid "A great community"
+msgstr "Bëlnô zrzesznica"
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:6
+msgid ""
+"The Linux Mint community is one of the best on the Internet. Our users not "
+"only provide most of our funding, but also ideas, artwork, and sometimes "
+"even source code."
+msgstr ""
+"Zrzesznica wkół Linux Mint je jedną z nôlepszich w sécë. Naji nôléżnicë "
+"wspierają w wikszoscë ùdbã dëtkòwò, zbògacôją jã dejama, kùńsztownyma "
+"robòtama ë tej sej robòtą nas zdrojowim kòdã."
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:7
+msgid ""
+"Linux Mint users are happy to share their passion, enthusiasm, and eagerness "
+"to help. Don't hesitate to ask questions in the forums or get involved with "
+"the community."
+msgstr ""
+"Brëkòwnicë Linux Mint chãtno dzelą sã swòją pasëją, entuzjazmą, a téż chãtno "
+"pòmôgają. Nie miej strachù pëtac na fòrumie abò dołączëc do zrzesznicë."
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:8
+msgid ""
+"Send us your feedback and tell us about your experience. We'll listen to "
+"your ideas and use them to further improve Linux Mint."
+msgstr ""
+"Sélôj nama wiadła ò felach ë twòjich doznaniach w brëkùnkù. Bãdzemë mielë "
+"starã ò ùwzglãdnienié twòjich dejów, tak abë je wprowôdzac do pòprôwków w "
+"Linux Mint."

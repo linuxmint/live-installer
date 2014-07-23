@@ -1,0 +1,267 @@
+# Hindi translation for live-installer-slideshow
+# Copyright (c) 2011 Rosetta Contributors and Canonical Ltd 2011
+# This file is distributed under the same license as the live-installer-slideshow package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: live-installer-slideshow\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2014-09-15 01:03+0300\n"
+"PO-Revision-Date: 2011-10-05 16:52+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Hindi <hi@li.org>\n"
+"Language: hi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2014-05-03 20:44+0000\n"
+"X-Generator: Launchpad (build 16985)\n"
+
+#. type: Content of: <h1>
+#: en/10_welcome.html:1
+msgid "Welcome to Linux Mint Debian"
+msgstr "स्वागत"
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:6
+msgid "Thank you for choosing Linux Mint."
+msgstr "Thank you for choosing Linux Mint."
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:7
+msgid ""
+"We believe in sharing and being open-minded. Our vision of Freedom includes "
+"being able to do what you want with your computer, and the operating system "
+"should never stand in the way."
+msgstr ""
+"हम बाँटने और खुले रहने में विश्वास रखते हैं. स्वतंत्रता की हमारी संकल्पना है कि आप अपने कंप्यूटर "
+"के साथ जो करना चाहें उसमे सक्षम रहें, और आपके ऑपरेटिंग सिस्टम को इसमें आपकी मदद करनी "
+"चाहिए."
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:8
+msgid ""
+"We focus on ease of use, comfort, and elegance to make your experience with "
+"Linux Mint as enjoyable as possible."
+msgstr ""
+"हम इस्तेमाल में आसानी, आराम और लालित्य पर फोकस कर लिनक्स मिंट डेस्कटॉप के साथ आपके अनुभव "
+"को सुखद बनाने का प्रयास करते हैं."
+
+#. type: Content of: <div><div><p>
+#: en/10_welcome.html:11
+msgid ""
+"We hope you will have a wonderful time spent with Linux Mint, and that you "
+"will enjoy using it as much as we do developing it!"
+msgstr ""
+"हमें उम्मीद है कि आप लिनक्स मिंट के साथ एक अच्छा समय बिताएंगे और आप इसका उपयोग कर के "
+"उतना ही आनंद प्राप्त करेंगे जितना हमें इसे विक्सित करते समय आया!"
+
+#. type: Content of: <h1>
+#: en/20_giants.html:1
+msgid "Standing on the shoulders of Giants"
+msgstr "उत्कृष्ट नींव पर आधारित"
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:6
+#, fuzzy
+#| msgid ""
+#| "Linux Mint is a Debian-based GNU/Linux distribution derived from and "
+#| "compatible with Ubuntu."
+msgid "Linux Mint is a Debian-based GNU/Linux distribution."
+msgstr "लिनक्स मिन्ट एक डेबियन-आधारित GNU/लिनक्स वितरण है और यह उबुन्टु के ही अनुरूप है।"
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:7
+#, fuzzy
+#| msgid ""
+#| "Our innovations, the rapid development of Ubuntu and the huge Debian "
+#| "package selection make Linux Mint one of the most attractive desktop "
+#| "operating systems available to home users."
+msgid ""
+"Our innovations and the huge Debian package selection make Linux Mint one of "
+"the most attractive desktop operating systems available to home users."
+msgstr ""
+"हमारे नवीन आविष्कार, उबुन्टु का तीव्र विकास और डेबियन के विशाल पैकेज संग्रह लिनक्स मिन्ट "
+"को घरेलु उपभोक्ता के लिए एक आकर्षक कंप्यूटर ऑपरेटिंग तंत्र बनाते हैं।"
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:8
+#, fuzzy
+#| msgid ""
+#| "At home, Linux Mint is the 4th most widely used desktop operating system, "
+#| "behind Microsoft Windows, Apple OS X and Ubuntu."
+msgid ""
+"At home, GNU/Linux distributions like Linux Mint or Ubuntu are among the "
+"most widely used desktop operating systems, right next to Microsoft Windows "
+"and Apple OS X."
+msgstr ""
+"माइक्रोसॉफ्ट विंडोस, एपल मैक ओस और उबुन्टु के बाद लिनक्स मिन्ट चौथा सबसे ज्यादा घरेलु "
+"उपयोग में आने वाला कंप्यूटर ऑपरेटिंग तंत्र है।"
+
+#. type: Content of: <h1>
+#: en/30_desktop-ready.html:1
+msgid "Out of the box"
+msgstr "इस्तेमाल करने के लिए तैयार"
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:6
+#, fuzzy
+#| msgid ""
+#| "Firefox, Thunderbird, OpenOffice.org and Xchat come pre-installed in "
+#| "Linux Mint, so you can get started immediately with your daily routine on "
+#| "your desktop and the Internet."
+msgid ""
+"Most standard applications you are used to come pre-installed in Linux Mint, "
+"so you can get started immediately with your daily routine on your desktop "
+"and the Internet."
+msgstr ""
+"लिनक्स मिन्ट में फायरफॉक्स, थंडरबर्ड, ओपनऑफिस एवं एक्सचैट शुरू से ही संस्थापित आते हैं, ताकि "
+"आप कंप्यूटर और इन्टरनेट पर अपना काम तुरंत चालू कर सकें।"
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:7
+#, fuzzy
+#| msgid ""
+#| "Other popular applications such as Skype, Google Earth, Opera can be "
+#| "installed with a click of the mouse."
+msgid ""
+"Other popular applications such as Skype, Google Earth, Opera, and over "
+"30,000+ more can be installed with a click of the mouse."
+msgstr ""
+"दूसरे प्रसिद्द एप्लीकेशन जैसे की स्काइप, पिकासा, गूगल अर्थ, ओपेरा, आप एक माउस के क्लिक से "
+"स्थापित कर सकते हैं।"
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:8
+#, fuzzy
+#| msgid ""
+#| "Linux Mint is compatible with most popular file formats: zip, doc, xls, "
+#| "pdf, rar, mp3, wmv, mpg, mp4, mov ...etc"
+msgid ""
+"Linux Mint is compatible with most popular file formats: zip, doc, xls, pdf, "
+"rar, mp3, wmv, mpg, mp4, mov ..."
+msgstr ""
+"लिनक्स मिन्ट अधिकतर प्रसिद्द फाइल फॉर्मेट जैसे की zip, doc, xls, pdf, rar, mp3, wmv, "
+"mpg, mp4, mov इत्यादि के साथ काम कर सकता है।"
+
+#. type: Content of: <h1>
+#: en/40_office.html:1
+msgid "Be productive"
+msgstr ""
+
+#. type: Content of: <div><div><ul><li>
+#: en/40_office.html:6
+msgid ""
+"Use LibreOffice to create professional documents, spreadsheets and "
+"presentations that are fully compatible with Microsoft Office. Share "
+"printers or access them remotely."
+msgstr ""
+
+#. type: Content of: <h1>
+#: en/50_windows.html:1
+msgid "An alternative to mainstream operating systems"
+msgstr "मुख्यधारा के ऑपरेटिंग सिस्टम्स के लिए एक विकल्प"
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:6
+msgid "Linux Mint is easy to use, powerful and configurable."
+msgstr "लिनक्स मिंट उपयोग में आसान, शक्तिशाली और विन्यास है"
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:7
+msgid ""
+"Linux Mint can detect other operating systems and install itself beside "
+"them. You can choose which operating system to launch when you start the "
+"computer."
+msgstr ""
+"लिनक्स मिंट अन्य ऑपरेटिंग सिस्टम का पता लगाकर स्वयं को उनके के पास स्थापित कर सकता है. "
+"आप कम्प्यूटर शुरू करते समय जो ऑपरेटिंग सिस्टम ईस्तेमाल करना चाहें उसे चुन सकते हैं."
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:8
+msgid ""
+"Install Wine and run Windows software in Linux Mint. Or install VirtualBox, "
+"and run Windows itself within Linux Mint."
+msgstr ""
+
+#. type: Content of: <h1>
+#: en/60_safe.html:1
+msgid "Safe updates"
+msgstr "सुरक्षित अद्यतन"
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:6
+msgid ""
+"Linux Mint is safe and stable, you don't need an antivirus, an anti-spyware, "
+"a defragmentation tool or a registry cleaner."
+msgstr ""
+"लिनक्स मिंट सुरक्षित और स्थिर है, आपको किसी एंटीवायरस या स्पाईवेयर, या डिफ्रागमेंटेशन "
+"उपकरण या फिर किसी रजिस्ट्री क्लीनर की कत्तई जरुरत नहीं है"
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:7
+msgid ""
+"Receive fixes and security updates all in one place, for the entire system, "
+"including the software you install."
+msgstr ""
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:8
+msgid ""
+"The Linux Mint Update Manager sits discreetly in your system tray and lets "
+"you know when updates are available. You don't have to apply updates when "
+"you don't want to. The Update Manager won't pop up or annoy you in any way."
+msgstr ""
+"लिनक्स मिंट अद्यतन प्रबंधक आपके सिस्टम ट्रे में चुपचाप बैठता है और अद्यतन उपलब्ध होने पर आपको "
+"सूचना देता है. जब आप अद्यतन लागू नहीं करना चाहते है तो नहीं करें. अद्यतन प्रबंधक ऊपर पॉप "
+"अप नहीं करेगा या आप को किसी भी तरह से परेशान नहीं करेगा."
+
+#. type: Content of: <h1>
+#: en/70_chat.html:1
+msgid "Stay connected"
+msgstr ""
+
+#. type: Content of: <div><div><ul><li>
+#: en/70_chat.html:6
+msgid ""
+"Keep in touch with your friends and contacts, by email, messenger or on your "
+"favorite social networks. Linux Mint provides all you need to interact with "
+"Twitter, Facebook, Google Hangouts, ICQ, IRC, AIM, Yahoo and many other "
+"networks."
+msgstr ""
+
+#. type: Content of: <h1>
+#: en/80_community.html:1
+msgid "A great community"
+msgstr "एक उत्कृष्ट समुदाय"
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:6
+msgid ""
+"The Linux Mint community is one of the best on the Internet. Our users not "
+"only provide most of our funding, but also ideas, artwork, and sometimes "
+"even source code."
+msgstr ""
+"लिनक्स मिन्ट समुदाय इन्टरनेट के उत्कृष्ट समुदायों में से एक है. हमारे उपभोक्ता हमारा अधिकतर "
+"व्यय उठाते हैं, विचार प्रदान करते हैं, कला प्रदान करते हैं और कभी कभी कंप्यूटर कोड भी दान "
+"करते हैं."
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:7
+msgid ""
+"Linux Mint users are happy to share their passion, enthusiasm, and eagerness "
+"to help. Don't hesitate to ask questions in the forums or get involved with "
+"the community."
+msgstr ""
+"लिनक्स मिंट उपयोगकर्ता आम तौर पर अपने जोश और उत्साह शेयर करने में खुश होते हैं और मदद करने "
+"के लिए उत्सुक रहते हैं. फोरम पर सवाल पूछने या समुदाय में शामिल होने में संकोच न करें."
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:8
+msgid ""
+"Send us your feedback and tell us about your experience. We'll listen to "
+"your ideas and use them to further improve Linux Mint."
+msgstr ""
+"अपने सुझाव और अनुभव हमें बताएं. हम आपके विचारों को सुनेंगे और उन्हें लिनक्स मिन्ट को बेहतर बनने "
+"के लिए उपयोग करेंगे."

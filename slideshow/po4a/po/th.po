@@ -1,0 +1,272 @@
+# Thai translation for live-installer-slideshow
+# Copyright (c) 2014 Rosetta Contributors and Canonical Ltd 2014
+# This file is distributed under the same license as the live-installer-slideshow package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: live-installer-slideshow\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2014-09-15 01:03+0300\n"
+"PO-Revision-Date: 2014-04-25 17:53+0000\n"
+"Last-Translator: KL <sumoisrock@gmail.com>\n"
+"Language-Team: Thai <th@li.org>\n"
+"Language: th\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2014-05-03 20:44+0000\n"
+"X-Generator: Launchpad (build 16985)\n"
+
+#. type: Content of: <h1>
+#: en/10_welcome.html:1
+msgid "Welcome to Linux Mint Debian"
+msgstr "ยินดีต้อนรับ"
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:6
+msgid "Thank you for choosing Linux Mint."
+msgstr "Thank you for choosing Linux Mint."
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:7
+msgid ""
+"We believe in sharing and being open-minded. Our vision of Freedom includes "
+"being able to do what you want with your computer, and the operating system "
+"should never stand in the way."
+msgstr ""
+"เราเชื่อมั่นใน การแบ่งปัน และ เปิดเผยซอสโค้ด "
+"วิสัยทัศน์แห่งความอิสระของเราที่เชื่อมั่นว่าทุกคนควรได้รับสิทธิ์ในการจัดการ หรือ "
+"ดำเนินการต่างๆบนคอมพิวเตอร์ส่วนบุคคล และ "
+"ระบบปฏิบัติการย่อมสามารถตอบสนองความต้องการดังกล่าว"
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:8
+msgid ""
+"We focus on ease of use, comfort, and elegance to make your experience with "
+"Linux Mint as enjoyable as possible."
+msgstr ""
+"เราได้ให้ความสำคัญกับ การใช้งานที่ง่ายขึ้น สะดวกขึ้น และ นำท่านสู่ประสบการณ์ที่ดีในการใช้งาน "
+"ลีนุกซ์บนเครื่องคอมพิวเตอร์ส่วนบุคคล ให้ได้มากที่สุดเท่าที่จะเป็นไปได้"
+
+#. type: Content of: <div><div><p>
+#: en/10_welcome.html:11
+msgid ""
+"We hope you will have a wonderful time spent with Linux Mint, and that you "
+"will enjoy using it as much as we do developing it!"
+msgstr ""
+"เราคาดหวังเป็นอย่างยิ่งว่า ท่านจะได้ความประทับใจในการใช้งาน ลีนุซ์บนคอมพิวเตอร์ส่วนบุคคล "
+"ดังที่เรามุ่งมั่นเพื่อตอบสนองเหตุผลดังกล่าว"
+
+#. type: Content of: <h1>
+#: en/20_giants.html:1
+msgid "Standing on the shoulders of Giants"
+msgstr "ยืนอยู่บนไหล่ของยักษา"
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:6
+#, fuzzy
+#| msgid ""
+#| "Linux Mint is a Debian-based GNU/Linux distribution derived from and "
+#| "compatible with Ubuntu."
+msgid "Linux Mint is a Debian-based GNU/Linux distribution."
+msgstr ""
+"ลีนุกซ์มิ้นท์(Linux Mint)ใช้เทคโนโลยีของเดเบียน (Debian-base GNU/Linux) "
+"ซึ่งพัฒนาและเผยแพร่โดย Ubuntu"
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:7
+#, fuzzy
+#| msgid ""
+#| "Our innovations, the rapid development of Ubuntu and the huge Debian "
+#| "package selection make Linux Mint one of the most attractive desktop "
+#| "operating systems available to home users."
+msgid ""
+"Our innovations and the huge Debian package selection make Linux Mint one of "
+"the most attractive desktop operating systems available to home users."
+msgstr ""
+"นวัฒกรรมของเรา ได้ต่อยอดมาจาก Ubuntu และ Debian จากการเลือกสรรที่ดี "
+"ทำให้ลีนุกซ์มิ้นท์เป็นระบบปฏิบัติการสำหรับคอมพิวเตอร์ส่วนบุคคลที่น่าสนใจ"
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:8
+#, fuzzy
+#| msgid ""
+#| "At home, Linux Mint is the 4th most widely used desktop operating system, "
+#| "behind Microsoft Windows, Apple OS X and Ubuntu."
+msgid ""
+"At home, GNU/Linux distributions like Linux Mint or Ubuntu are among the "
+"most widely used desktop operating systems, right next to Microsoft Windows "
+"and Apple OS X."
+msgstr ""
+"จากผู้ใช้งานคอมพิวเตอร์ส่วนบุคคล ลีนุกซ์มิ้ท (Linux Mint) "
+"ได้ขึ้นอันดับเป็นระบบปฏิบัติการที่มีคนใช้มากเป็นอันดับ 4 ซึ่งตามหลัง ไมโครซอฟท์ วินโดว์, แอปเปิ้ล "
+"แมค โอเอส และ อูบันตู ตามลำดับ"
+
+#. type: Content of: <h1>
+#: en/30_desktop-ready.html:1
+msgid "Out of the box"
+msgstr "ออกนอกกรอบ"
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:6
+#, fuzzy
+#| msgid ""
+#| "Firefox, Thunderbird, OpenOffice.org and Xchat come pre-installed in "
+#| "Linux Mint, so you can get started immediately with your daily routine on "
+#| "your desktop and the Internet."
+msgid ""
+"Most standard applications you are used to come pre-installed in Linux Mint, "
+"so you can get started immediately with your daily routine on your desktop "
+"and the Internet."
+msgstr ""
+"ไฟร์ฟ็อกซ์ (Firefox), ธันเดอร์เบิร์ด (Thunderbird), โอเพ่นออฟฟิศ (OpenOffice.org) และ "
+"เอ็กแชต (Xchat) ได้รับการติดตั้งแล้วในลินุกซ์มินต์ (Linux Mint) "
+"ดังนั้นคุณสามารถเริ่มใช้งานได้ทันทีบนเครื่องคอมพิวเตอร์ desktop และอินเทอร์เน็ต"
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:7
+#, fuzzy
+#| msgid ""
+#| "Other popular applications such as Skype, Google Earth, Opera can be "
+#| "installed with a click of the mouse."
+msgid ""
+"Other popular applications such as Skype, Google Earth, Opera, and over "
+"30,000+ more can be installed with a click of the mouse."
+msgstr ""
+"โปรแกรมที่ได้รับความนิยมอื่น ๆ เช่น Skype, Google Earth, Opera "
+"สามารถติดตั้งได้ด้วยการคลิกเมาส์"
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:8
+#, fuzzy
+#| msgid ""
+#| "Linux Mint is compatible with most popular file formats: zip, doc, xls, "
+#| "pdf, rar, mp3, wmv, mpg, mp4, mov ...etc"
+msgid ""
+"Linux Mint is compatible with most popular file formats: zip, doc, xls, pdf, "
+"rar, mp3, wmv, mpg, mp4, mov ..."
+msgstr ""
+"Linux Mint เข้ากันได้กับไฟล์หลายรูปแบบ เช่น zip, doc, xls, pdf, rar, mp3, wmv, mpg, "
+"mp4, mov เป็นต้น"
+
+#. type: Content of: <h1>
+#: en/40_office.html:1
+msgid "Be productive"
+msgstr ""
+
+#. type: Content of: <div><div><ul><li>
+#: en/40_office.html:6
+msgid ""
+"Use LibreOffice to create professional documents, spreadsheets and "
+"presentations that are fully compatible with Microsoft Office. Share "
+"printers or access them remotely."
+msgstr ""
+
+#. type: Content of: <h1>
+#: en/50_windows.html:1
+msgid "An alternative to mainstream operating systems"
+msgstr "ตัวเลือกระบบโอเปอร์เรติ้ง ซีสเต็ม"
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:6
+msgid "Linux Mint is easy to use, powerful and configurable."
+msgstr "Linux Mint is easy to use, powerful and configurable."
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:7
+msgid ""
+"Linux Mint can detect other operating systems and install itself beside "
+"them. You can choose which operating system to launch when you start the "
+"computer."
+msgstr ""
+"Linux Mint can detect other operating systems and install itself beside "
+"them. You can choose which operating system to launch when you start the "
+"computer."
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:8
+msgid ""
+"Install Wine and run Windows software in Linux Mint. Or install VirtualBox, "
+"and run Windows itself within Linux Mint."
+msgstr ""
+
+#. type: Content of: <h1>
+#: en/60_safe.html:1
+msgid "Safe updates"
+msgstr "อัพเดตอย่างปลอดภัย"
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:6
+msgid ""
+"Linux Mint is safe and stable, you don't need an antivirus, an anti-spyware, "
+"a defragmentation tool or a registry cleaner."
+msgstr ""
+"ลีนุกซ์ มินต์ มีความปลอดภัยและมีความเสถียร คุณไม่จำเป็นที่จะต้องใช้โปรแกรมแอนตี้ไวรัส "
+"แอนตี้สปายแวร์ โปรแกรมดิสก์ยูทิลิตี้ สำหรับจัดเรียงข้อมูล หรือโปรแกรมทำความสะอาดรีจิสทรีใด ๆ เลย"
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:7
+msgid ""
+"Receive fixes and security updates all in one place, for the entire system, "
+"including the software you install."
+msgstr ""
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:8
+msgid ""
+"The Linux Mint Update Manager sits discreetly in your system tray and lets "
+"you know when updates are available. You don't have to apply updates when "
+"you don't want to. The Update Manager won't pop up or annoy you in any way."
+msgstr ""
+"The Linux Mint Update Manager sits discreetly in your system tray and lets "
+"you know when updates are available. You don't have to apply updates when "
+"you don't want to. The Update Manager won't pop up or annoy you in any way."
+
+#. type: Content of: <h1>
+#: en/70_chat.html:1
+msgid "Stay connected"
+msgstr "ไม่พลาดการติดต่อ"
+
+#. type: Content of: <div><div><ul><li>
+#: en/70_chat.html:6
+msgid ""
+"Keep in touch with your friends and contacts, by email, messenger or on your "
+"favorite social networks. Linux Mint provides all you need to interact with "
+"Twitter, Facebook, Google Hangouts, ICQ, IRC, AIM, Yahoo and many other "
+"networks."
+msgstr ""
+
+#. type: Content of: <h1>
+#: en/80_community.html:1
+msgid "A great community"
+msgstr "ชุมชนขนาดใหญ่"
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:6
+msgid ""
+"The Linux Mint community is one of the best on the Internet. Our users not "
+"only provide most of our funding, but also ideas, artwork, and sometimes "
+"even source code."
+msgstr ""
+"ชุมชนลินุกซ์มินท์ คือ หนึ่งในชุมชนที่ดีที่สุดบนอินเตอร์เนต โดยทุนการดำเนินงานส่วนใหญ่มาจากสมาชิก "
+"นอกจากนั่นยังรวมถึง แนวคิด อาร์ตเวิร์ก หรือ แม้กระทั่งซอสโค้ด"
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:7
+msgid ""
+"Linux Mint users are happy to share their passion, enthusiasm, and eagerness "
+"to help. Don't hesitate to ask questions in the forums or get involved with "
+"the community."
+msgstr ""
+"กลุ่มผู้ใช้ลินุกซ์มินต์ ปกติแล้วจะมีความสุขที่ได้ร่วมแสดงความรู้สึก และมีความกระตือรือร้น "
+"ที่จะได้มีส่วนในการช่วยเหลือ โดยไม่ลังเลที่จะถามคำถามในฟอรั่ม เพื่อแสดงการมีส่วนร่วมในชุมชน"
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:8
+msgid ""
+"Send us your feedback and tell us about your experience. We'll listen to "
+"your ideas and use them to further improve Linux Mint."
+msgstr ""
+"ส่งผลย้อนกลับ (feedback) ของคุณมาให้เราและบอกให้เราทราบถึงประสบการณ์จากการใช้งานของคุณ "
+"เราจะรับฟังความคิดเห็นของคุณและจะใช้ให้เป็นประโยชน์ในการปรับปรุงลินุกซ์มินต์ต่อไป"

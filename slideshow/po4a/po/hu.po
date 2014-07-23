@@ -1,0 +1,279 @@
+# Hungarian translation of slideshow-mint.
+# Copyright (C) 2013 Free Software Foundation, Inc.
+# This file is distributed under the same license as the slideshow-mint package.
+# KAMI <kami911@gmail.com>, 2013-2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: live-installer-slideshow\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-09-15 01:03+0300\n"
+"PO-Revision-Date: 2013-12-12 23:39+0000\n"
+"Last-Translator: Frank Barnores <Unknown>\n"
+"Language-Team: Hungarian\n"
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2014-05-03 20:44+0000\n"
+"X-Generator: Launchpad (build 16985)\n"
+
+#. type: Content of: <h1>
+#: en/10_welcome.html:1
+msgid "Welcome to Linux Mint Debian"
+msgstr "Üdvözöljük!"
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:6
+msgid "Thank you for choosing Linux Mint."
+msgstr "Köszönjük, hogy a LinuxMintet választotta."
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:7
+msgid ""
+"We believe in sharing and being open-minded. Our vision of Freedom includes "
+"being able to do what you want with your computer, and the operating system "
+"should never stand in the way."
+msgstr ""
+"Hiszünk az együttműködésben és a nyíltságban. A szabadságról alkotott "
+"elképzelésünk szerint az operációs rendszernek lehetővé kell tennie, hogy Ön "
+"arra használhassa számítógépét, amire akarja."
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:8
+msgid ""
+"We focus on ease of use, comfort, and elegance to make your experience with "
+"Linux Mint as enjoyable as possible."
+msgstr ""
+"A könnyű kezelhetőségre, a kényelemre és az eleganciára fókuszálunk, hogy a "
+"Linux Minttel való kapcsolata olyan élménydús legyen, amilyen csak lehet."
+
+#. type: Content of: <div><div><p>
+#: en/10_welcome.html:11
+msgid ""
+"We hope you will have a wonderful time spent with Linux Mint, and that you "
+"will enjoy using it as much as we do developing it!"
+msgstr ""
+"Reméljük, hogy a Linux Mint elnyeri a tetszését, és legalább annyira fogja "
+"élvezni a használatát, mint amennyire mi élveztük az elkészítését!"
+
+#. type: Content of: <h1>
+#: en/20_giants.html:1
+msgid "Standing on the shoulders of Giants"
+msgstr "Óriások vállán állva"
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:6
+msgid "Linux Mint is a Debian-based GNU/Linux distribution."
+msgstr "A Linux Mint egy Debian alapú GNU/Linux disztribúció"
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:7
+msgid ""
+"Our innovations and the huge Debian package selection make Linux Mint one of "
+"the most attractive desktop operating systems available to home users."
+msgstr ""
+"Újításaink és a Debian óriási csomagválasztéka teszik a Linux Mintet az "
+"otthoni felhasználók egyik legvonzóbb asztali operációs rendszerévé."
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:8
+#, fuzzy
+#| msgid ""
+#| "At home, Linux Mint is the 4th most widely used desktop operating system, "
+#| "behind Microsoft Windows, Apple OS X and Ubuntu."
+msgid ""
+"At home, GNU/Linux distributions like Linux Mint or Ubuntu are among the "
+"most widely used desktop operating systems, right next to Microsoft Windows "
+"and Apple OS X."
+msgstr ""
+"Az otthoni felhasználást tekintve a Linux Mint a negyedik legelterjedtebb "
+"asztali operációs rendszer a Microsoft Windows, az Apple OS X és az Ubuntu "
+"után."
+
+#. type: Content of: <h1>
+#: en/30_desktop-ready.html:1
+msgid "Out of the box"
+msgstr "Azonnal használatra kész"
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:6
+#, fuzzy
+#| msgid ""
+#| "Firefox, Thunderbird, OpenOffice.org and Xchat come pre-installed in "
+#| "Linux Mint, so you can get started immediately with your daily routine on "
+#| "your desktop and the Internet."
+msgid ""
+"Most standard applications you are used to come pre-installed in Linux Mint, "
+"so you can get started immediately with your daily routine on your desktop "
+"and the Internet."
+msgstr ""
+"A Firefox, a Thunderbird, az OpenOffice.org és az Xchat az alaptelepítés "
+"része, így a munkaasztal és az internet rögtön rendelkezésre áll."
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:7
+#, fuzzy
+#| msgid ""
+#| "Other popular applications such as Skype, Google Earth, Opera can be "
+#| "installed with a click of the mouse."
+msgid ""
+"Other popular applications such as Skype, Google Earth, Opera, and over "
+"30,000+ more can be installed with a click of the mouse."
+msgstr ""
+"Más népszerű alkalmazások, mint például a Skype, a a Google Earth vagy az "
+"Opera egy egérkattintással telepíthetők."
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:8
+#, fuzzy
+#| msgid ""
+#| "Linux Mint is compatible with most popular file formats: zip, doc, xls, "
+#| "pdf, rar, mp3, wmv, mpg, mp4, mov ...etc"
+msgid ""
+"Linux Mint is compatible with most popular file formats: zip, doc, xls, pdf, "
+"rar, mp3, wmv, mpg, mp4, mov ..."
+msgstr ""
+"A Linux Mint kompatibilis a legtöbb népszerű fájlformátummal: zip, doc, xls, "
+"pdf, rar, mp3, wmv, mpg, mp4, mov, ..."
+
+#. type: Content of: <h1>
+#: en/40_office.html:1
+msgid "Be productive"
+msgstr "Használja a munkában"
+
+#. type: Content of: <div><div><ul><li>
+#: en/40_office.html:6
+msgid ""
+"Use LibreOffice to create professional documents, spreadsheets and "
+"presentations that are fully compatible with Microsoft Office. Share "
+"printers or access them remotely."
+msgstr ""
+"Használja a LibreOffice-t professzionális dokumentumok, táblázatok és "
+"prezentációk készítéséhez, amelyek teljes mértékben kompatibilisek a "
+"Microsoft Office-szal. Osszon meg nyomtatókat vagy érje el őket távolról."
+
+#. type: Content of: <h1>
+#: en/50_windows.html:1
+msgid "An alternative to mainstream operating systems"
+msgstr "Az általánosan elterjedt operációs rendszerek alternatívája"
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:6
+msgid "Linux Mint is easy to use, powerful and configurable."
+msgstr "A Linux Mint könnyen használható, hatékony és testreszabható."
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:7
+msgid ""
+"Linux Mint can detect other operating systems and install itself beside "
+"them. You can choose which operating system to launch when you start the "
+"computer."
+msgstr ""
+"A Linux Mint a meglévő operációs rendszerek mellé is telepíthető. Ebben az "
+"esetben az aktuálisan használni kívánt operációs rendszert a számítógép "
+"bekapcsolása után lehet kiválasztani."
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:8
+#, fuzzy
+#| msgid ""
+#| "Install Wine and run Windows software in Linux Mint. Or install "
+#| "Virtualbox, and run Windows itself within Linux Mint."
+msgid ""
+"Install Wine and run Windows software in Linux Mint. Or install VirtualBox, "
+"and run Windows itself within Linux Mint."
+msgstr ""
+"Telepítse a Wine-t és futtasson segítségével Windows szoftvereket. Telepítse "
+"a Virtualbox-ot és futtasson Windows-t a Linux Mint-en belül."
+
+#. type: Content of: <h1>
+#: en/60_safe.html:1
+msgid "Safe updates"
+msgstr "Biztonságos frissítések"
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:6
+msgid ""
+"Linux Mint is safe and stable, you don't need an antivirus, an anti-spyware, "
+"a defragmentation tool or a registry cleaner."
+msgstr ""
+"A Linux Mint biztonságos és stabil, nincs szükség vírus- és "
+"kémprogramirtásra, töredezettségmentesítésre vagy regisztrációsadatbázis-"
+"takarításra."
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:7
+msgid ""
+"Receive fixes and security updates all in one place, for the entire system, "
+"including the software you install."
+msgstr ""
+"A teljes rendszerhez és a telepített szoftverekhez is fogadhat javításokat "
+"és biztonsági frissítéseket."
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:8
+msgid ""
+"The Linux Mint Update Manager sits discreetly in your system tray and lets "
+"you know when updates are available. You don't have to apply updates when "
+"you don't want to. The Update Manager won't pop up or annoy you in any way."
+msgstr ""
+"A Linux Mint frissítéskezelője a rendszertálcán futva diszkréten értesíti "
+"Önt az elérhető frissítésekről. Ezeket nem kell alkalmaznia, ha nem akarja. "
+"A Frissítéskezelő nem fogja Önt felugróablakokkal vagy más módon ezzel "
+"zavarni."
+
+#. type: Content of: <h1>
+#: en/70_chat.html:1
+msgid "Stay connected"
+msgstr "Maradjon kapcsolatban ismerőseivel"
+
+#. type: Content of: <div><div><ul><li>
+#: en/70_chat.html:6
+msgid ""
+"Keep in touch with your friends and contacts, by email, messenger or on your "
+"favorite social networks. Linux Mint provides all you need to interact with "
+"Twitter, Facebook, Google Hangouts, ICQ, IRC, AIM, Yahoo and many other "
+"networks."
+msgstr ""
+"Tartsa a kapcsolatot barátaival, ismerőseivel e-mailben, üzenetküldőkkel "
+"vagy kedvenc közösségi hálózatain. A Linux Mint segítségével ezt könnyedén "
+"megteheti Twitter, Facebook, Google Hangouts, ICQ, Google Talk, AIM, Yahoo "
+"és még sok más hálózaton is."
+
+#. type: Content of: <h1>
+#: en/80_community.html:1
+msgid "A great community"
+msgstr "Egy nagyszerű közösség"
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:6
+msgid ""
+"The Linux Mint community is one of the best on the Internet. Our users not "
+"only provide most of our funding, but also ideas, artwork, and sometimes "
+"even source code."
+msgstr ""
+"A Linux Mint közösség egyike a legjobb internetes közösségeknek. "
+"Felhasználóinktól származik pénzügyi támogatásunk jelentős része, de "
+"emellett nagyon sok ötletet, grafikai elemet, sőt néha még programkódot is "
+"kapunk tőlük."
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:7
+msgid ""
+"Linux Mint users are happy to share their passion, enthusiasm, and eagerness "
+"to help. Don't hesitate to ask questions in the forums or get involved with "
+"the community."
+msgstr ""
+"A Linux Mint felhasználók többnyire szívesen osztják meg másokkal örömüket, "
+"lelkesedésüket, és boldogan segítenek. Ön se habozzon kérdéseket feltenni a "
+"fórumokban és részt venni a közösség életében."
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:8
+msgid ""
+"Send us your feedback and tell us about your experience. We'll listen to "
+"your ideas and use them to further improve Linux Mint."
+msgstr ""
+"Várjuk visszajelzését. Kérjük, küldje el ötleteit, észrevételeit, hogy "
+"felhasználhassuk őket a Linux Mint továbbfejlesztéséhez."

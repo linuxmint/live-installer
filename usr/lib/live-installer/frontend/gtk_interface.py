@@ -11,7 +11,6 @@ import pygtk; pygtk.require("2.0")
 import gtk
 import gtk.glade
 import glib
-import gettext
 import os
 import re
 import commands
@@ -26,7 +25,8 @@ import webkit
 import string
 import parted
 
-gettext.install("live-installer", "/usr/share/linuxmint/locale")
+import gettext; gettext.install("live-installer")
+
 gtk.gdk.threads_init()
 
 LOADING_ANIMATION = '/usr/share/live-installer/loading.gif'
@@ -252,33 +252,17 @@ class InstallerWindow:
             # dedicated installer mode thingum
             self.window.maximize()
             self.window.fullscreen()        
-        
-        #''' Launch the Slideshow '''
-        #if ("_" in self.setup.language):
-        #    locale_code = self.setup.language.split("_")[0]
-        #else:
-        #     locale_code = self.setup.language
-        
-        #slideshow_path = "/usr/share/live-installer-slideshow/slides/index.html"
-        #if os.path.exists(slideshow_path):            
-        #    browser = webkit.WebView()
-        #    s = browser.get_settings()
-        #    s.set_property('enable-file-access-from-file-uris', True)
-        #    s.set_property('enable-default-context-menu', False)
-        #    browser.open("file://" + slideshow_path  + "#?locale=" + locale_code)
-        #    self.wTree.get_widget("vbox_install").add(browser)
-        #    self.wTree.get_widget("vbox_install").show_all()         
-        # Initiate the slide show
-        self.slideshow_path = "/usr/share/live-installer/slideshow"
-        if os.path.exists(self.slideshow_path):
-            self.slideshow_browser = webkit.WebView()
-            s = self.slideshow_browser.get_settings()
-            s.set_property('enable-file-access-from-file-uris', True)
-            s.set_property('enable-default-context-menu', False)            
-            self.slideshow_browser.open("file://" + os.path.join(self.slideshow_path, 'template.html'))
-            self.wTree.get_widget("vbox_install").add(self.slideshow_browser)
-            self.wTree.get_widget("vbox_install").show_all()                                                            
-        
+
+        # Configure slideshow webview
+        self.slideshow_browser = webkit.WebView()
+        s = self.slideshow_browser.get_settings()
+        s.set_property('enable-file-access-from-file-uris', True)
+        s.set_property('enable-default-context-menu', False)
+        self.slideshow_browser.load_string(_('No slideshow template found.'), 'text/html', 'UTF-8', 'file:///')
+        self.wTree.get_widget("vbox_install").add(self.slideshow_browser)
+        self.wTree.get_widget("vbox_install").show_all()
+
+        # Configure disks webview
         self.partitions_browser = webkit.WebView()
         s = self.partitions_browser.get_settings()
         s.set_property('enable-file-access-from-file-uris', True)
@@ -782,25 +766,19 @@ class InstallerWindow:
             treeview.scroll_to_cell(path)
         except NameError: pass  # set_keyboard_layout not set
 
-    def assign_language(self, treeview, data=None):
+    def assign_language(self, treeview):
         ''' Called whenever someone updates the language '''
-        model = treeview.get_model()
-        active = treeview.get_selection().get_selected_rows()
-        if(len(active) < 1):
-            return
-        active = active[1][0]
-        if(active is None):
-            return
-        row = model[active]
+        model, rows = treeview.get_selection().get_selected_rows()
+        if not rows: return
+        row = model[rows[0]]
         self.setup.language = row[-1]
         self.setup.print_setup()
-        gettext.translation('live-installer', "/usr/share/linuxmint/locale",
-                            languages=[self.setup.language, self.setup.language.split('_')[0]],
+        gettext.translation('live-installer',
+                            languages=[self.setup.language,
+                                       self.setup.language.split('_')[0]],
                             fallback=True).install()  # Try e.g. zh_CN, zh, or fallback to hardcoded English
-        try:
-            self.i18n()
-        except:
-            pass # Best effort. Fails the first time as self.column1 doesn't exist yet.
+        try: self.i18n()
+        except: pass # Fails the first time as self.column1 doesn't exist yet.
 
     def assign_autologin(self, checkbox, data=None):
         self.setup.autologin = checkbox.get_active()
@@ -1109,9 +1087,7 @@ class InstallerWindow:
         self.critical_error_happened = False
 
         # Now it's time to load the slide show
-        slideThr = Slideshow(self.slideshow_browser, self.setup.language)
-        slideThr.daemon = True  # let the slide-thread die with the parent
-        slideThr.start()
+        Slideshow(self.slideshow_browser, self.setup.language).start()
 
         # Start installing
         do_try_finish_install = True

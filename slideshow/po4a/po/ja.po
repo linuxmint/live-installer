@@ -1,0 +1,295 @@
+# Japanese translation for live-installer-slideshow
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the live-installer-slideshow package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: live-installer-slideshow\n"
+"Report-Msgid-Bugs-To: https://launchpad.net/~linuxmint-translation-team-"
+"japanese\n"
+"POT-Creation-Date: 2014-09-15 01:03+0300\n"
+"PO-Revision-Date: 2013-11-17 07:39+0000\n"
+"Last-Translator: OKANO Takayoshi <Unknown>\n"
+"Language-Team: Japanese <https://launchpad.net/~linuxmint-translation-team-"
+"japanese>\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2014-05-03 20:44+0000\n"
+"X-Generator: Launchpad (build 16985)\n"
+
+#. type: Content of: <h1>
+#: en/10_welcome.html:1
+msgid "Welcome to Linux Mint Debian"
+msgstr "ようこそ"
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:6
+msgid "Thank you for choosing Linux Mint."
+msgstr "Linux Mintを選んでいただき誠にありがとうございます。"
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:7
+msgid ""
+"We believe in sharing and being open-minded. Our vision of Freedom includes "
+"being able to do what you want with your computer, and the operating system "
+"should never stand in the way."
+msgstr ""
+"我々はシェアすること、オープンであるということを堅く信じています。我々にとっ"
+"て「自由」とはコンピュータを使って好きなことが出来ることであり、オペレーティ"
+"ングシステムはその手助けをしなくてはなりません。"
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:8
+msgid ""
+"We focus on ease of use, comfort, and elegance to make your experience with "
+"Linux Mint as enjoyable as possible."
+msgstr ""
+"Linux Mintのデスクトップはできるだけ楽しく使えるように、簡単且つエレガントな"
+"操作に重点を置いています。"
+
+#. type: Content of: <div><div><p>
+#: en/10_welcome.html:11
+msgid ""
+"We hope you will have a wonderful time spent with Linux Mint, and that you "
+"will enjoy using it as much as we do developing it!"
+msgstr ""
+"Linux Mintで素晴らしい一時を過ごしてください。そして開発を楽しんだ我々ととも"
+"に、Linux Mintをエンジョイしてください！"
+
+#. type: Content of: <h1>
+#: en/20_giants.html:1
+msgid "Standing on the shoulders of Giants"
+msgstr "Standing on the shoulders of Giants"
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:6
+#, fuzzy
+#| msgid ""
+#| "Linux Mint is a Debian-based GNU/Linux distribution derived from and "
+#| "compatible with Ubuntu."
+msgid "Linux Mint is a Debian-based GNU/Linux distribution."
+msgstr ""
+"Linux MintはUbuntuから派生した、Ubuntuと互換性のあるDebianベースのGNU/Linux"
+"ディストリビュージョンです。"
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:7
+#, fuzzy
+#| msgid ""
+#| "Our innovations, the rapid development of Ubuntu and the huge Debian "
+#| "package selection make Linux Mint one of the most attractive desktop "
+#| "operating systems available to home users."
+msgid ""
+"Our innovations and the huge Debian package selection make Linux Mint one of "
+"the most attractive desktop operating systems available to home users."
+msgstr ""
+"我々の様々な革新、Ubuntuの急速な発展、Debianの巨大なパッケージセレクションに"
+"より、Linux Mintはホームユーザーにとって最も魅力的なデスクトップオペレーティ"
+"ングシステムとなっています。"
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:8
+#, fuzzy
+#| msgid ""
+#| "At home, Linux Mint is the 4th most widely used desktop operating system, "
+#| "behind Microsoft Windows, Apple OS X and Ubuntu."
+msgid ""
+"At home, GNU/Linux distributions like Linux Mint or Ubuntu are among the "
+"most widely used desktop operating systems, right next to Microsoft Windows "
+"and Apple OS X."
+msgstr ""
+"ホームユースに限ると、Linux MintはMicrosoft Windows、Apple OS X、Ubuntuに続い"
+"て４番目に広く使用されているデスクトップオペレーティングシステムです。"
+
+#. type: Content of: <h1>
+#: en/30_desktop-ready.html:1
+msgid "Out of the box"
+msgstr "すぐに使えます"
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:6
+#, fuzzy
+#| msgid ""
+#| "Firefox, Thunderbird, OpenOffice.org and Xchat come pre-installed in "
+#| "Linux Mint, so you can get started immediately with your daily routine on "
+#| "your desktop and the Internet."
+msgid ""
+"Most standard applications you are used to come pre-installed in Linux Mint, "
+"so you can get started immediately with your daily routine on your desktop "
+"and the Internet."
+msgstr ""
+"Lilnux Mint には Firefox や Thunderbird、OpenOffice.org、Xchat といったアプリ"
+"ケーションがあらかじめインストールされているため、デスクトップ環境やインター"
+"ネットをすぐに使って頂けます。"
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:7
+#, fuzzy
+#| msgid ""
+#| "Other popular applications such as Skype, Google Earth, Opera can be "
+#| "installed with a click of the mouse."
+msgid ""
+"Other popular applications such as Skype, Google Earth, Opera, and over "
+"30,000+ more can be installed with a click of the mouse."
+msgstr ""
+"Skype や Google Earth、Opera のような人気のあるアプリケーションも、クリック一"
+"つでインストールすることが可能です。"
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:8
+#, fuzzy
+#| msgid ""
+#| "Linux Mint is compatible with most popular file formats: zip, doc, xls, "
+#| "pdf, rar, mp3, wmv, mpg, mp4, mov ...etc"
+msgid ""
+"Linux Mint is compatible with most popular file formats: zip, doc, xls, pdf, "
+"rar, mp3, wmv, mpg, mp4, mov ..."
+msgstr ""
+"Linux Mint では、zip、doc、xls、pdf、rar、mp3、wmv、png、mp4、mov...など、多"
+"くの一般的なファイルフォーマットを扱うことが出来ます。"
+
+#. type: Content of: <h1>
+#: en/40_office.html:1
+msgid "Be productive"
+msgstr "仕事を効率的に"
+
+#. type: Content of: <div><div><ul><li>
+#: en/40_office.html:6
+msgid ""
+"Use LibreOffice to create professional documents, spreadsheets and "
+"presentations that are fully compatible with Microsoft Office. Share "
+"printers or access them remotely."
+msgstr ""
+"LibreOffice を使って Microsoft Office と完全な互換性のあるプロフェッショナル"
+"な文書、スプレッドシート、プレゼンテーションを作成しましょう。 共有プリンタを"
+"リモートから利用することもできます。"
+
+#. type: Content of: <h1>
+#: en/50_windows.html:1
+msgid "An alternative to mainstream operating systems"
+msgstr "主流のオペレーティングシステムを置き換えるもの"
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:6
+msgid "Linux Mint is easy to use, powerful and configurable."
+msgstr ""
+"Linux Mintは操作が簡単で、性能もよく、ユーザの要求に容易に順応できます。"
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:7
+msgid ""
+"Linux Mint can detect other operating systems and install itself beside "
+"them. You can choose which operating system to launch when you start the "
+"computer."
+msgstr ""
+"Linux Mintはご利用のコンピュータの他のOSを認識し、それらを消去することなくイ"
+"ンストールすることもできます。コンピュータを立ち上げる際に、利用したいOSを選"
+"択できます。"
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:8
+#, fuzzy
+#| msgid ""
+#| "Install Wine and run Windows software in Linux Mint. Or install "
+#| "Virtualbox, and run Windows itself within Linux Mint."
+msgid ""
+"Install Wine and run Windows software in Linux Mint. Or install VirtualBox, "
+"and run Windows itself within Linux Mint."
+msgstr ""
+"Wine をインストールすると Linux Mint 上で Windows のソフトウェアを実行するこ"
+"とができます。Virtualbox をインストールして Linux Mint 内で Windows 自体を動"
+"かすことも可能です。"
+
+#. type: Content of: <h1>
+#: en/60_safe.html:1
+msgid "Safe updates"
+msgstr "安全なアップデート"
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:6
+msgid ""
+"Linux Mint is safe and stable, you don't need an antivirus, an anti-spyware, "
+"a defragmentation tool or a registry cleaner."
+msgstr ""
+"Linux Mint は安全かつ安定しているため、アンチウイルスやアンチスパイウェア、デ"
+"フラグツール、レジストリクリーナーといったツールを導入する必要はありません。"
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:7
+msgid ""
+"Receive fixes and security updates all in one place, for the entire system, "
+"including the software you install."
+msgstr ""
+"あなたがインストールしたソフトも含む、システム全体の修正やセキュリティアップ"
+"デートすべてを、1 つのアプリケーションでダウンロードして適用することができま"
+"す。"
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:8
+msgid ""
+"The Linux Mint Update Manager sits discreetly in your system tray and lets "
+"you know when updates are available. You don't have to apply updates when "
+"you don't want to. The Update Manager won't pop up or annoy you in any way."
+msgstr ""
+"Linux Mintのアップデートマネージャはシステムトレイに常駐し、アップデートが入"
+"手可能な時にお知らせします。いつアップデートするかは自由であり、したくない時"
+"にする必要はありません。アップデートマネージャはポップアップなどは行わず邪魔"
+"になるようなことは一切ありません。"
+
+#. type: Content of: <h1>
+#: en/70_chat.html:1
+msgid "Stay connected"
+msgstr "つながり続ける"
+
+#. type: Content of: <div><div><ul><li>
+#: en/70_chat.html:6
+msgid ""
+"Keep in touch with your friends and contacts, by email, messenger or on your "
+"favorite social networks. Linux Mint provides all you need to interact with "
+"Twitter, Facebook, Google Hangouts, ICQ, IRC, AIM, Yahoo and many other "
+"networks."
+msgstr ""
+"E メールやメッセンジャー、お気に入りのソーシャルネットワークを使って、お友達"
+"やご家族、同僚の方といつでも連絡を取ることができます。Twitter、Facebook、"
+"Google Hangouts、ICQ、IRC、AIM、Yahoo、その他数多くのネットワークサービスを利"
+"用するのに必要なものがすべて Linux Mint にはそろっています。"
+
+#. type: Content of: <h1>
+#: en/80_community.html:1
+msgid "A great community"
+msgstr "素晴らしいコミュニティ"
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:6
+msgid ""
+"The Linux Mint community is one of the best on the Internet. Our users not "
+"only provide most of our funding, but also ideas, artwork, and sometimes "
+"even source code."
+msgstr ""
+"Linux Mint コミュニティはインターネット上でもっとも優れたコミュニティの一つで"
+"す。私たちの資金のほとんどは私たちのユーザによって提供されていますし、それだ"
+"けでなくアイデアやアートワーク、時にはソースコードなどもユーザから提供される"
+"ことがあります。"
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:7
+msgid ""
+"Linux Mint users are happy to share their passion, enthusiasm, and eagerness "
+"to help. Don't hesitate to ask questions in the forums or get involved with "
+"the community."
+msgstr ""
+"Linux Mint ユーザーは情熱と興奮を分かち合うことに幸せを感じていますし、助けの"
+"手を差し出すことを熱望しています。フォーラムで質問することや、コミュニティー"
+"に参加することを躊躇わないでください。"
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:8
+msgid ""
+"Send us your feedback and tell us about your experience. We'll listen to "
+"your ideas and use them to further improve Linux Mint."
+msgstr ""
+"使って頂いた感想や新しいアイデアを是非お聞かせ下さい。必ず耳を傾け、Linux "
+"Mint をさらに素晴らしいものにしていきます。"

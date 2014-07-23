@@ -14,6 +14,8 @@ sudo rm -rf /usr/share/live-installer-slideshow
 
 sudo cp -R usr /
 sudo cp -R etc /
-sudo cp -R slideshow/usr /
+mkdir -p /usr/share/live-installer/slideshow/
+sudo cp -R slideshow/{template.html,link,icons,en} /usr/share/live-installer/slideshow/
+sudo cp -R slideshow/translated/* /usr/share/live-installer/slideshow/
 
 live-installer --debug

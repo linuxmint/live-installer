@@ -1,0 +1,272 @@
+# Amharic translation for live-installer-slideshow
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the live-installer-slideshow package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: live-installer-slideshow\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2014-09-15 01:03+0300\n"
+"PO-Revision-Date: 2013-12-26 23:40+0000\n"
+"Last-Translator: samson <Unknown>\n"
+"Language-Team: Amharic <am@li.org>\n"
+"Language: am\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2014-05-03 20:44+0000\n"
+"X-Generator: Launchpad (build 16985)\n"
+
+#. type: Content of: <h1>
+#: en/10_welcome.html:1
+msgid "Welcome to Linux Mint Debian"
+msgstr "እንኳን ደህና መጡ"
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:6
+msgid "Thank you for choosing Linux Mint."
+msgstr "ሊነክስ ሚንትን በመምረጥዎ እናመሰግኖታለን!"
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:7
+msgid ""
+"We believe in sharing and being open-minded. Our vision of Freedom includes "
+"being able to do what you want with your computer, and the operating system "
+"should never stand in the way."
+msgstr ""
+"እምነታችን በማካፈል እና ክፍት በመሆን ነው ፡ የኛ የነጻነት አስተያየት በኮምፒዩተሮት የፈለጉትን መስራት እንዲችሉ ነው "
+"፡ የስርአት መተግበሪያውም ይህን እንዲያደርጉ መርዳት እና ማስቻል አለበት"
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:8
+msgid ""
+"We focus on ease of use, comfort, and elegance to make your experience with "
+"Linux Mint as enjoyable as possible."
+msgstr ""
+"አትኩሮታችን በዝግታ በመጠቀም ፡ የሊነክስ ሚንት ዴስክቶፕ ልምድዎ በደስታ እና በምቾት ያሸበረቀ እንዲሆን እና በደስታም "
+"እንዲቆዩ ነው"
+
+#. type: Content of: <div><div><p>
+#: en/10_welcome.html:11
+msgid ""
+"We hope you will have a wonderful time spent with Linux Mint, and that you "
+"will enjoy using it as much as we do developing it!"
+msgstr ""
+"ተስፋ እናደርጋለን በጣም ጥሩ ጊዜ እንዳሳለፉ በሊነክስ ሚንት ፡ እና ሲጠቀሙበትም እንደተደሰቱ ፤ እኛም ስናበለጽገው "
+"እንደተደስትነው"
+
+#. type: Content of: <h1>
+#: en/20_giants.html:1
+msgid "Standing on the shoulders of Giants"
+msgstr "የቆምነው በትልቅ ትከሻ ላይ ነው"
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:6
+#, fuzzy
+#| msgid ""
+#| "Linux Mint is a Debian-based GNU/Linux distribution derived from and "
+#| "compatible with Ubuntu."
+msgid "Linux Mint is a Debian-based GNU/Linux distribution."
+msgstr "ሊነክስ ሚንት ዴቢያንን-መሰረት ያደረገ የጂኤንዩ/ሊነክስ ስርጭት የመነጨው ተስማሚ ከሆነው ኡቡንቱ ጋር ነው"
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:7
+#, fuzzy
+#| msgid ""
+#| "Our innovations, the rapid development of Ubuntu and the huge Debian "
+#| "package selection make Linux Mint one of the most attractive desktop "
+#| "operating systems available to home users."
+msgid ""
+"Our innovations and the huge Debian package selection make Linux Mint one of "
+"the most attractive desktop operating systems available to home users."
+msgstr ""
+"ፈጠራችን እና ፈጣን የኡቡንቱ እድገት እንዲሁም ሰፊ ከሆነው የዴቢያን ጥቅል ምርጫዎች ሊነክስ ሚንትን በጣም ተወዳጅ እና "
+"ማራኪ የዴስክቶፕ ስርአት መተግበሪያ አድርጎታል ለቤት ተጠቃሚዎች በሞላ"
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:8
+#, fuzzy
+#| msgid ""
+#| "At home, Linux Mint is the 4th most widely used desktop operating system, "
+#| "behind Microsoft Windows, Apple OS X and Ubuntu."
+msgid ""
+"At home, GNU/Linux distributions like Linux Mint or Ubuntu are among the "
+"most widely used desktop operating systems, right next to Microsoft Windows "
+"and Apple OS X."
+msgstr ""
+"ሊነክስ ሚንት 4ኛ ደረጃ የያዘ የዴስክቶፕ የስርአት መተግበሪያ ነው ፡ ከማይክሮሶፍት ዊንዶውስ ፡ አፕል ማክ እና ኡቡንቱ "
+"የስርአት መተግበሪያዎች"
+
+#. type: Content of: <h1>
+#: en/30_desktop-ready.html:1
+msgid "Out of the box"
+msgstr "ከሳጥን እንደወጣ"
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:6
+#, fuzzy
+#| msgid ""
+#| "Firefox, Thunderbird, OpenOffice.org and Xchat come pre-installed in "
+#| "Linux Mint, so you can get started immediately with your daily routine on "
+#| "your desktop and the Internet."
+msgid ""
+"Most standard applications you are used to come pre-installed in Linux Mint, "
+"so you can get started immediately with your daily routine on your desktop "
+"and the Internet."
+msgstr ""
+"ፋየርፎክስ ፤ ተንደርበርድ ፤ ኦፕኖፊስ.ኦርግ እና ኤክስቻት ተገጥመው ነው የሚመጡት በሊነክስ ሚንት ስለዚህም ወዲያውኑ "
+"መስራት መጀመር ይችላሉ ዴስክቶፕ እና ኢንተርኔት"
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:7
+#, fuzzy
+#| msgid ""
+#| "Other popular applications such as Skype, Google Earth, Opera can be "
+#| "installed with a click of the mouse."
+msgid ""
+"Other popular applications such as Skype, Google Earth, Opera, and over "
+"30,000+ more can be installed with a click of the mouse."
+msgstr "ሌላ የታወቁ መተግበሪያዎች ለምሳሌ ስካይፕ ፤ ፒካሳ ፤ ጉግል መሬት ፤ ኦፕራ ፤ አይጥን በመጫን መግጠም ይችላሉ"
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:8
+#, fuzzy
+#| msgid ""
+#| "Linux Mint is compatible with most popular file formats: zip, doc, xls, "
+#| "pdf, rar, mp3, wmv, mpg, mp4, mov ...etc"
+msgid ""
+"Linux Mint is compatible with most popular file formats: zip, doc, xls, pdf, "
+"rar, mp3, wmv, mpg, mp4, mov ..."
+msgstr ""
+"ሊነክስ ሚንት ተስማሚ ነው ፤ በጣም ከታወቁ የፋይል አቀራረብ ጋር፤ ዚፕ ፤ ዶክመንት ፤ ኤክስኤልኤስ ፤ ፒዲኤፍ ፤ ራር "
+"፤ ኤምፒ3 ፤ ደብሊውኤምቪ ፤ ኤምፒጂ ፤ ኤምፒ4 ኤምኦቪ..ወዘተ"
+
+#. type: Content of: <h1>
+#: en/40_office.html:1
+msgid "Be productive"
+msgstr "አምራች ይሁኑ"
+
+#. type: Content of: <div><div><ul><li>
+#: en/40_office.html:6
+msgid ""
+"Use LibreOffice to create professional documents, spreadsheets and "
+"presentations that are fully compatible with Microsoft Office. Share "
+"printers or access them remotely."
+msgstr ""
+
+#. type: Content of: <h1>
+#: en/50_windows.html:1
+msgid "An alternative to mainstream operating systems"
+msgstr "አማራጭ ለዋናው የስርአት መተግበሪያዎች"
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:6
+msgid "Linux Mint is easy to use, powerful and configurable."
+msgstr "ሊነክስ ሚንት ለመጠቀም ቀላል ፡ ሀይለኛ እና በቀላሉ የሚዋቀር ነው"
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:7
+msgid ""
+"Linux Mint can detect other operating systems and install itself beside "
+"them. You can choose which operating system to launch when you start the "
+"computer."
+msgstr ""
+"ሊነክስ ሚንት ሌሎች የስርአት መተግበሪያዎችን ፈልጎ ያገኛል እና ራሱንም ከጎናቸው በማስቀመጥ ይገጥማል ፡ ኮምፒዩትሩን "
+"ሲያስነሱም መጠቀም የሚፈልጉትን የስርአት መተግበሪያ መርጠው ማስነሳት ይችላሉ።"
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:8
+#, fuzzy
+#| msgid ""
+#| "Install Wine and run Windows software in Linux Mint. Or install "
+#| "Virtualbox, and run Windows itself within Linux Mint."
+msgid ""
+"Install Wine and run Windows software in Linux Mint. Or install VirtualBox, "
+"and run Windows itself within Linux Mint."
+msgstr ""
+"በሊነክስ ሚንት ውስጥ ዋይንን ገጥመው የዊንዶው ሶፍትዌርን ያስኪዱ ወይም ቪርችዩአል ቦክስን ገጥመው ዊንዶን በሊነክስ "
+"ሚንት ውስጥ ያስኪዱ"
+
+#. type: Content of: <h1>
+#: en/60_safe.html:1
+msgid "Safe updates"
+msgstr "አስተማማኝ ማሻሻያዎች"
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:6
+msgid ""
+"Linux Mint is safe and stable, you don't need an antivirus, an anti-spyware, "
+"a defragmentation tool or a registry cleaner."
+msgstr ""
+"ሊነክስ ሚንት የሚያስተማምን እና ጽኑ ነው ፤ አንቲ ቫይረስ ወይም አንቲ ስፓይዌር አያስፈልገውም ፤ የዲፋግሪመንቴሽን "
+"መሳሪያ ወይም ሬጀስተሪ ማጽጃ አያስፈልገውም"
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:7
+msgid ""
+"Receive fixes and security updates all in one place, for the entire system, "
+"including the software you install."
+msgstr ""
+"ጥገና እና የደህንነት ማሻሻያዎችን ሁሉንም ከአንድ ቦታ አውርደው ይግጠሙ ለስርአቱ እንዲሁም ለተገጠሙ ሶፍትዌሮች በሙሉ"
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:8
+msgid ""
+"The Linux Mint Update Manager sits discreetly in your system tray and lets "
+"you know when updates are available. You don't have to apply updates when "
+"you don't want to. The Update Manager won't pop up or annoy you in any way."
+msgstr ""
+"የሊነክስ ሚንት ማሻሻያ አስተዳዳሪ በስርአቱ ሰአት ማሳያ አጠገብ ተቀምጦ ይገኛል። ማሻሻያ ሲኖርም ያሳውቆታል። ማሻሻል "
+"ካልፈለጉ ብቅ ጥልቅ እያለ አያስቸግሮትም።"
+
+#. type: Content of: <h1>
+#: en/70_chat.html:1
+msgid "Stay connected"
+msgstr "እንደተገናኙ ይቆዩ"
+
+#. type: Content of: <div><div><ul><li>
+#: en/70_chat.html:6
+msgid ""
+"Keep in touch with your friends and contacts, by email, messenger or on your "
+"favorite social networks. Linux Mint provides all you need to interact with "
+"Twitter, Facebook, Google Hangouts, ICQ, IRC, AIM, Yahoo and many other "
+"networks."
+msgstr ""
+"ከጓደኞቾ ጋር ይገናኙ እንዲሁም ከሌሎች ጋር በኢሜይል ፤ በመሴንጀር ወይም በሚወዱት የሕብረተሰብ ኔትዎርክ ፤ ሊነክስ "
+"ሚንት ዝግጁ ነው ሊያገናኞት ከትዊተር ፤ ክፌስቡክ ፤ ክኤምኤስኤን ፤ ክአይሲኪው ፤ ክጉግልቶክ ፤ ክኤይም ፤ ክያሁ "
+"እንዲሁም ከሌሎች ኔትዎርኮች ጋር"
+
+#. type: Content of: <h1>
+#: en/80_community.html:1
+msgid "A great community"
+msgstr "ትልቅ ሕብረተሰብ"
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:6
+msgid ""
+"The Linux Mint community is one of the best on the Internet. Our users not "
+"only provide most of our funding, but also ideas, artwork, and sometimes "
+"even source code."
+msgstr ""
+"የሊነክስ ሚንት ሕብረተሰብ ኢንተርኔት ላይ ካሉት ሁሉ ምርጥ ነው ፡ ተጠቃሚዎቻችን በገንዘብ ይረዱናል በተጨማሪም በሀሳብ "
+"እና በኪነ ጥበብ እንዲሁም ኮዶችን በማበርከት ይረዱናል"
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:7
+msgid ""
+"Linux Mint users are happy to share their passion, enthusiasm, and eagerness "
+"to help. Don't hesitate to ask questions in the forums or get involved with "
+"the community."
+msgstr ""
+"የሊነክስ ሚንት ተጠቃሚዎች ሁል ጊዜ ደስተኞች ናቸው ስሜታቸውን እና ፍላጎታቸውን ለማካፈል እና ለመርዳት። በፎረሙ ውስጥ "
+"ማናቸውንም ጥያቄ ከመጠየቅ ወደ ኋላ አይበሉ ወይንም በህብረተሰቡ ውስጥ ለመሳተፍ።"
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:8
+msgid ""
+"Send us your feedback and tell us about your experience. We'll listen to "
+"your ideas and use them to further improve Linux Mint."
+msgstr ""
+"አስተያየታችሁን ላኩልን እና ልምዳችሁንም አካፍሉን ፡ ሃሳባችሁን እንቀበላለን እና እንጠቀምባቸዋለን ሊነክስ ሚንትን "
+"የበለጠ የተሻሻለ ለማድረግ"

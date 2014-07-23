@@ -1,0 +1,275 @@
+# Hebrew translation for live-installer-slideshow
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the live-installer-slideshow package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: live-installer-slideshow\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2014-09-15 01:03+0300\n"
+"PO-Revision-Date: 2012-10-15 13:19+0000\n"
+"Last-Translator: Yaron <sh.yaron@gmail.com>\n"
+"Language-Team: Hebrew <he@li.org>\n"
+"Language: he\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2014-05-03 20:44+0000\n"
+"X-Generator: Launchpad (build 16985)\n"
+
+#. type: Content of: <h1>
+#: en/10_welcome.html:1
+msgid "Welcome to Linux Mint Debian"
+msgstr "ברוכים הבאים"
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:6
+msgid "Thank you for choosing Linux Mint."
+msgstr "תודה שבחרתם להשתמש ב-Linux Mint"
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:7
+msgid ""
+"We believe in sharing and being open-minded. Our vision of Freedom includes "
+"being able to do what you want with your computer, and the operating system "
+"should never stand in the way."
+msgstr ""
+"אנו מאמינים בשיתוף ובפתיחות. חזון החירות שלנו, הוא שכל משתמש יוכל לעשות עם "
+"המחשב שלו כרצונו, ושמערכת ההפעלה תעזור לו לעשות זאת."
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:8
+msgid ""
+"We focus on ease of use, comfort, and elegance to make your experience with "
+"Linux Mint as enjoyable as possible."
+msgstr ""
+"אנו מתמקדים בקלות שימוש, נוחות ואלגנטיות, כדי שחוויית השימוש ב-Linux Mint "
+"תהיה מהנה."
+
+#. type: Content of: <div><div><p>
+#: en/10_welcome.html:11
+msgid ""
+"We hope you will have a wonderful time spent with Linux Mint, and that you "
+"will enjoy using it as much as we do developing it!"
+msgstr "אנו מקווים שתהנו מהשימוש ב-Linux Mint, כפי שאנו נהנינו לפתח אותה!"
+
+#. type: Content of: <h1>
+#: en/20_giants.html:1
+msgid "Standing on the shoulders of Giants"
+msgstr "עומדים על כתפי ענקים"
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:6
+#, fuzzy
+#| msgid ""
+#| "Linux Mint is a Debian-based GNU/Linux distribution derived from and "
+#| "compatible with Ubuntu."
+msgid "Linux Mint is a Debian-based GNU/Linux distribution."
+msgstr ""
+"Linux Mint היא הפצה מבוססת דביאן GNU/Linux אשר נגזרת מאובונטו ותואמת אליה."
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:7
+#, fuzzy
+#| msgid ""
+#| "Our innovations, the rapid development of Ubuntu and the huge Debian "
+#| "package selection make Linux Mint one of the most attractive desktop "
+#| "operating systems available to home users."
+msgid ""
+"Our innovations and the huge Debian package selection make Linux Mint one of "
+"the most attractive desktop operating systems available to home users."
+msgstr ""
+"החדשנות שלנו, הפיתוח המהיר של אובנטו ומבחר ענק של חבילות לדביאן גורמים לכך ש־"
+"Linux Mint היא אחת המערכות ההפעלה השולחניות המפתות ביותר שזמינות למשתמשים "
+"ביתיים."
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:8
+#, fuzzy
+#| msgid ""
+#| "At home, Linux Mint is the 4th most widely used desktop operating system, "
+#| "behind Microsoft Windows, Apple OS X and Ubuntu."
+msgid ""
+"At home, GNU/Linux distributions like Linux Mint or Ubuntu are among the "
+"most widely used desktop operating systems, right next to Microsoft Windows "
+"and Apple OS X."
+msgstr ""
+"בבית, Linux Mint היא הרביעית מבין מערכות ההפעלה השולחניות שנעשה בהן השימוש "
+"הכי נרחב, אחרי Microsoft Windows, OS X X של Apple ואובונטו"
+
+#. type: Content of: <h1>
+#: en/30_desktop-ready.html:1
+msgid "Out of the box"
+msgstr "ישר מהקופסה"
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:6
+#, fuzzy
+#| msgid ""
+#| "Firefox, Thunderbird, OpenOffice.org and Xchat come pre-installed in "
+#| "Linux Mint, so you can get started immediately with your daily routine on "
+#| "your desktop and the Internet."
+msgid ""
+"Most standard applications you are used to come pre-installed in Linux Mint, "
+"so you can get started immediately with your daily routine on your desktop "
+"and the Internet."
+msgstr ""
+"Firefox, Thunderbird, Open Office ו־Xchat כבר מותקנים ב־Linux Mint, כך שניתן "
+"להתחיל מיד עם שולחן עבודה ואינטרנט."
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:7
+#, fuzzy
+#| msgid ""
+#| "Other popular applications such as Skype, Google Earth, Opera can be "
+#| "installed with a click of the mouse."
+msgid ""
+"Other popular applications such as Skype, Google Earth, Opera, and over "
+"30,000+ more can be installed with a click of the mouse."
+msgstr ""
+"יישומים נפוצים אחרים כגון Skype, Google Earth ו־Opera ניתנים להתקנה בלחיצת "
+"כפתור."
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:8
+#, fuzzy
+#| msgid ""
+#| "Linux Mint is compatible with most popular file formats: zip, doc, xls, "
+#| "pdf, rar, mp3, wmv, mpg, mp4, mov ...etc"
+msgid ""
+"Linux Mint is compatible with most popular file formats: zip, doc, xls, pdf, "
+"rar, mp3, wmv, mpg, mp4, mov ..."
+msgstr ""
+"Linux Mint תואמת לרוב סוגי הקבצים הפופולריים: zip, doc, xls, pdf, rar, mp3, "
+"wmv, mpg, mp4, mov וכו'..."
+
+#. type: Content of: <h1>
+#: en/40_office.html:1
+msgid "Be productive"
+msgstr "יעילות במיטבה"
+
+#. type: Content of: <div><div><ul><li>
+#: en/40_office.html:6
+msgid ""
+"Use LibreOffice to create professional documents, spreadsheets and "
+"presentations that are fully compatible with Microsoft Office. Share "
+"printers or access them remotely."
+msgstr ""
+
+#. type: Content of: <h1>
+#: en/50_windows.html:1
+msgid "An alternative to mainstream operating systems"
+msgstr "חלופה למערכות ההפעלה המקובלות"
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:6
+msgid "Linux Mint is easy to use, powerful and configurable."
+msgstr "Linux Mint קלה לשימוש, רבת־עוצמה וניתנת להגדרה."
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:7
+msgid ""
+"Linux Mint can detect other operating systems and install itself beside "
+"them. You can choose which operating system to launch when you start the "
+"computer."
+msgstr ""
+"Linux Mint יכולה לאתר מערכות הפעלה אחרות ולהתקין את עצמה לצדן. באפשרותך "
+"לבחור איזו מערכת הפעלה להריץ בהפעלת המחשב מחדש."
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:8
+#, fuzzy
+#| msgid ""
+#| "Install Wine and run Windows software in Linux Mint. Or install "
+#| "Virtualbox, and run Windows itself within Linux Mint."
+msgid ""
+"Install Wine and run Windows software in Linux Mint. Or install VirtualBox, "
+"and run Windows itself within Linux Mint."
+msgstr ""
+"התקינו Wine כדי להריץ תוכנות של Windows בתוך Linux Mint. לחלופין, ניתן "
+"להתקין Virtualbox ולהריץ את Windows עצמה בתוך Linux Mint."
+
+#. type: Content of: <h1>
+#: en/60_safe.html:1
+msgid "Safe updates"
+msgstr "עדכונים בטוחים"
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:6
+msgid ""
+"Linux Mint is safe and stable, you don't need an antivirus, an anti-spyware, "
+"a defragmentation tool or a registry cleaner."
+msgstr ""
+"Linux Mint היא בטוחה ויציבה. אין צורך באנטי־וירוס, תוכנה נגד רוגלות, כלי "
+"לאיחוי דיסק או ניקוי מערכת הרשומות."
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:7
+msgid ""
+"Receive fixes and security updates all in one place, for the entire system, "
+"including the software you install."
+msgstr ""
+"קבלו תיקונים ועדכוני אבטחה במקום אחד, עבור כל המערכת, כולל התוכנות שהתקנתם."
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:8
+msgid ""
+"The Linux Mint Update Manager sits discreetly in your system tray and lets "
+"you know when updates are available. You don't have to apply updates when "
+"you don't want to. The Update Manager won't pop up or annoy you in any way."
+msgstr ""
+"מנהל העדכונים של Linux Mint ממוקם ב\"מגש המערכת\" ומודיע כאשר עדכונים "
+"זמינים. אינכם חייבים לבצע עדכונים אם אינכם מעוניינים בהם. מנהל העדכונים לא "
+"יקפוץ או ינדנד לכם בשום אופן."
+
+#. type: Content of: <h1>
+#: en/70_chat.html:1
+msgid "Stay connected"
+msgstr "להישאר בקשר"
+
+#. type: Content of: <div><div><ul><li>
+#: en/70_chat.html:6
+msgid ""
+"Keep in touch with your friends and contacts, by email, messenger or on your "
+"favorite social networks. Linux Mint provides all you need to interact with "
+"Twitter, Facebook, Google Hangouts, ICQ, IRC, AIM, Yahoo and many other "
+"networks."
+msgstr ""
+"שמרו על קשר עם חבריכם בעזרת דואר אלקטרוני, מסרים מידיים ואתרי הרשתות "
+"החברתיות בהם אתם מנויים. Linux Mint מספקת את כל צורכיכם בהתקשרות עם טוויטר, "
+"פייסבוק, Google Hangouts, ICQ, גוגל, יאהו ורשתות רבות אחרות."
+
+#. type: Content of: <h1>
+#: en/80_community.html:1
+msgid "A great community"
+msgstr "קהילה נהדרת"
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:6
+msgid ""
+"The Linux Mint community is one of the best on the Internet. Our users not "
+"only provide most of our funding, but also ideas, artwork, and sometimes "
+"even source code."
+msgstr ""
+"קהילת Linux Mint היא אחת הטובות באינטרנט. המשתמשים שלנו מספקים את רוב המימון "
+"שלנו, אך גם רעיונות, עבודות אומנות ולפעמים אפילו קוד מקור."
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:7
+msgid ""
+"Linux Mint users are happy to share their passion, enthusiasm, and eagerness "
+"to help. Don't hesitate to ask questions in the forums or get involved with "
+"the community."
+msgstr ""
+"משתמשי Linux Mint בדרך כלל שמחים לחלוק את התשוקה וההתלהבות שלהם ולהוטים "
+"לעזור. אל תהססו לשאול שאלות בפורומים או להיות מעורבים בקהילה."
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:8
+msgid ""
+"Send us your feedback and tell us about your experience. We'll listen to "
+"your ideas and use them to further improve Linux Mint."
+msgstr ""
+"שלחו לנו משוב אודות החוויה שלכם. אנו נקשיב לרעיונות שלכם ונשתמש בהם בשיפור "
+"עתידי של Linux Mint."

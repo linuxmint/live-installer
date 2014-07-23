@@ -1,0 +1,280 @@
+# Romanian translation for live-installer-slideshow
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the live-installer-slideshow package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: live-installer-slideshow\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2014-09-15 01:03+0300\n"
+"PO-Revision-Date: 2013-10-31 18:46+0000\n"
+"Last-Translator: Flaviu <flaviu@gmx.com>\n"
+"Language-Team: Romanian <ro@li.org>\n"
+"Language: ro\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2014-05-03 20:44+0000\n"
+"X-Generator: Launchpad (build 16985)\n"
+
+#. type: Content of: <h1>
+#: en/10_welcome.html:1
+msgid "Welcome to Linux Mint Debian"
+msgstr "Bine ai venit"
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:6
+msgid "Thank you for choosing Linux Mint."
+msgstr "Îţi mulţumim că ai ales Linux Mint."
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:7
+msgid ""
+"We believe in sharing and being open-minded. Our vision of Freedom includes "
+"being able to do what you want with your computer, and the operating system "
+"should never stand in the way."
+msgstr ""
+"Noi credem în dorința de a împărtăși și de a fi deschişi. Viziunea noastră "
+"despre Libertate este aceea că trebuie să poţi să faci ce doreşti la "
+"calculatorul tău, iar sistemul de operare trebuie să te ajute în acest sens."
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:8
+msgid ""
+"We focus on ease of use, comfort, and elegance to make your experience with "
+"Linux Mint as enjoyable as possible."
+msgstr ""
+"Noi ne concentrăm asupra uşurinţei în utilizare, confortului și eleganței, "
+"astfel ca experiența ta cu Linux Mint să devină cât mai plăcută cu putinţă."
+
+#. type: Content of: <div><div><p>
+#: en/10_welcome.html:11
+msgid ""
+"We hope you will have a wonderful time spent with Linux Mint, and that you "
+"will enjoy using it as much as we do developing it!"
+msgstr ""
+"Sperăm că vei avea o experienţă minunată cu Linux Mint și că te vei simţi la "
+"fel de bine în utilizarea lui, precum ne-am simţit și noi pe parcursul "
+"dezvoltării acestui sistem de operare!"
+
+#. type: Content of: <h1>
+#: en/20_giants.html:1
+msgid "Standing on the shoulders of Giants"
+msgstr "Stă pe umerii Giganților"
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:6
+msgid "Linux Mint is a Debian-based GNU/Linux distribution."
+msgstr "Linux Mint este o distribuție GNU/Linux bazată pe Debian."
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:7
+msgid ""
+"Our innovations and the huge Debian package selection make Linux Mint one of "
+"the most attractive desktop operating systems available to home users."
+msgstr ""
+"Inovațiile noastre și selecția uriașă de pachete Debian permite ca Linux "
+"Mint să fie unul dintre cele mai atractive sisteme de operare disponibile "
+"utilizatorilor casnici."
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:8
+#, fuzzy
+#| msgid ""
+#| "At home, Linux Mint is the 4th most widely used desktop operating system, "
+#| "behind Microsoft Windows, Apple OS X and Ubuntu."
+msgid ""
+"At home, GNU/Linux distributions like Linux Mint or Ubuntu are among the "
+"most widely used desktop operating systems, right next to Microsoft Windows "
+"and Apple OS X."
+msgstr ""
+"După numărul de utilizatori casnici, Linux Mint ocupă locul 4, fiind "
+"întrecut de Microsoft Windows, Apple OS X și Ubuntu."
+
+#. type: Content of: <h1>
+#: en/30_desktop-ready.html:1
+msgid "Out of the box"
+msgstr "Complet funcţional"
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:6
+#, fuzzy
+#| msgid ""
+#| "Firefox, Thunderbird, OpenOffice.org and Xchat come pre-installed in "
+#| "Linux Mint, so you can get started immediately with your daily routine on "
+#| "your desktop and the Internet."
+msgid ""
+"Most standard applications you are used to come pre-installed in Linux Mint, "
+"so you can get started immediately with your daily routine on your desktop "
+"and the Internet."
+msgstr ""
+"În Linux Mint, aplicații precum Firefox, Thunderbird, OpenOffice.org și "
+"Xchat vin deja instalate, deci puteți începe imediat lucrul cu spaţiul de "
+"lucru și rețeaua Internet."
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:7
+#, fuzzy
+#| msgid ""
+#| "Other popular applications such as Skype, Google Earth, Opera can be "
+#| "installed with a click of the mouse."
+msgid ""
+"Other popular applications such as Skype, Google Earth, Opera, and over "
+"30,000+ more can be installed with a click of the mouse."
+msgstr ""
+"Alte aplicații populare cum ar fi Skype, Google Earth şi Opera pot fi "
+"instalate cu un singur clic de mouse."
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:8
+#, fuzzy
+#| msgid ""
+#| "Linux Mint is compatible with most popular file formats: zip, doc, xls, "
+#| "pdf, rar, mp3, wmv, mpg, mp4, mov ...etc"
+msgid ""
+"Linux Mint is compatible with most popular file formats: zip, doc, xls, pdf, "
+"rar, mp3, wmv, mpg, mp4, mov ..."
+msgstr ""
+"Linux Mint este compatibil cu cele mai populare formate de fişiere: zip, "
+"doc, xls, pdf, rar, mp3, wmv, mpg, mp4, mov ..."
+
+#. type: Content of: <h1>
+#: en/40_office.html:1
+msgid "Be productive"
+msgstr "Fii productiv"
+
+#. type: Content of: <div><div><ul><li>
+#: en/40_office.html:6
+msgid ""
+"Use LibreOffice to create professional documents, spreadsheets and "
+"presentations that are fully compatible with Microsoft Office. Share "
+"printers or access them remotely."
+msgstr ""
+"Folosește LibreOffice pentru a crea documente profesionale, foi de calcul și "
+"prezentări care sunt pe deplin compatibile cu Microsoft Office. Împarte "
+"imprimante sau accesează-le de la distanță."
+
+#. type: Content of: <h1>
+#: en/50_windows.html:1
+msgid "An alternative to mainstream operating systems"
+msgstr "O alternativă la sistemele de operare principale"
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:6
+msgid "Linux Mint is easy to use, powerful and configurable."
+msgstr "Linux Mint este uşor de folosit, puternic şi configurabil."
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:7
+msgid ""
+"Linux Mint can detect other operating systems and install itself beside "
+"them. You can choose which operating system to launch when you start the "
+"computer."
+msgstr ""
+"Linux Mint poate detecta alte sisteme de operare şi să se instaleze alături "
+"de acestea. La pornirea calculatorului vei putea alege sistemul de operare "
+"pe care doreşti să îl lansezi."
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:8
+#, fuzzy
+#| msgid ""
+#| "Install Wine and run Windows software in Linux Mint. Or install "
+#| "Virtualbox, and run Windows itself within Linux Mint."
+msgid ""
+"Install Wine and run Windows software in Linux Mint. Or install VirtualBox, "
+"and run Windows itself within Linux Mint."
+msgstr ""
+"Instalează Wine și folosește programe Windows în Linux Mint sau instalează "
+"VirtualBox și folosește chiar Windows din Linux Mint."
+
+#. type: Content of: <h1>
+#: en/60_safe.html:1
+msgid "Safe updates"
+msgstr "Actualizări sigure"
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:6
+msgid ""
+"Linux Mint is safe and stable, you don't need an antivirus, an anti-spyware, "
+"a defragmentation tool or a registry cleaner."
+msgstr ""
+"Linux Mint este sigur și stabil, fără să ai nevoie de un program antivirus, "
+"anti-spion sau instrumente pentru defragmentare şi curățare a regiştrilor."
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:7
+msgid ""
+"Receive fixes and security updates all in one place, for the entire system, "
+"including the software you install."
+msgstr ""
+"Primește actualizări și remedii de securitate într-un singur loc pentru "
+"întregul sistem, cu tot cu programele pe care le instalezi."
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:8
+msgid ""
+"The Linux Mint Update Manager sits discreetly in your system tray and lets "
+"you know when updates are available. You don't have to apply updates when "
+"you don't want to. The Update Manager won't pop up or annoy you in any way."
+msgstr ""
+"Administratorul de actualizări Linux Mint stă discret în tăviţa de sistem şi "
+"vă anunţă când sunt disponibile actualizări. Nu trebuie să instalezi "
+"actualizările atunci când nu vrei să le aplici. Administratorul de "
+"actualizări nu va deranja sau enerva în niciun fel."
+
+#. type: Content of: <h1>
+#: en/70_chat.html:1
+msgid "Stay connected"
+msgstr "Rămâi conectat"
+
+#. type: Content of: <div><div><ul><li>
+#: en/70_chat.html:6
+msgid ""
+"Keep in touch with your friends and contacts, by email, messenger or on your "
+"favorite social networks. Linux Mint provides all you need to interact with "
+"Twitter, Facebook, Google Hangouts, ICQ, IRC, AIM, Yahoo and many other "
+"networks."
+msgstr ""
+"Păstrează legătura cu prietenii și persoanele de contact prin e-mail, "
+"messenger sau pe rețelele tale sociale preferate. Linux Mint oferă tot ce ai "
+"nevoie pentru a interacționa cu Twitter, Facebook, Google Hangouts, ICQ, "
+"IRC, AIM, Yahoo și multe alte rețele."
+
+#. type: Content of: <h1>
+#: en/80_community.html:1
+msgid "A great community"
+msgstr "O mare comunitate"
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:6
+msgid ""
+"The Linux Mint community is one of the best on the Internet. Our users not "
+"only provide most of our funding, but also ideas, artwork, and sometimes "
+"even source code."
+msgstr ""
+"Comunitatea Linux Mint este una dintre cele mai bune în rețeaua Internet. "
+"Utilizatorii noștri ne asigură majoritatea finanţelor, dar ne oferă şi idei, "
+"creații de artă și uneori chiar cod sursă de programe."
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:7
+msgid ""
+"Linux Mint users are happy to share their passion, enthusiasm, and eagerness "
+"to help. Don't hesitate to ask questions in the forums or get involved with "
+"the community."
+msgstr ""
+"Utilizatorii Linux Mint sunt de obicei fericiţi să împărtăşească pasiunea şi "
+"entuziasmul lor şi sunt dornici să ajute. Nu ezita să pui întrebări pe "
+"forumuri sau să te implici în comunitate."
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:8
+msgid ""
+"Send us your feedback and tell us about your experience. We'll listen to "
+"your ideas and use them to further improve Linux Mint."
+msgstr ""
+"Spune-ne ce părere ai și povesteşte-ne despre experiența ta. Vom lua în "
+"considerare ideile tale și le vom folosi pentru a îmbunătăți Linux Mint în "
+"viitor."

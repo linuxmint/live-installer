@@ -1,0 +1,284 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: live-installer-slideshow\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-09-15 01:03+0300\n"
+"PO-Revision-Date: 2013-10-29 16:56+0000\n"
+"Last-Translator: kelebek333 <Unknown>\n"
+"Language-Team: Linux Mint Türkiye Çeviri Tayfası <hsngrms@ovi.com>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2014-05-03 20:44+0000\n"
+"X-Generator: Launchpad (build 16985)\n"
+"X-Poedit-Country: TURKEY\n"
+
+#. type: Content of: <h1>
+#: en/10_welcome.html:1
+msgid "Welcome to Linux Mint Debian"
+msgstr "Hoş Geldiniz"
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:6
+msgid "Thank you for choosing Linux Mint."
+msgstr "Linux Mint'i seçtiğiniz için teşekkür ederiz."
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:7
+msgid ""
+"We believe in sharing and being open-minded. Our vision of Freedom includes "
+"being able to do what you want with your computer, and the operating system "
+"should never stand in the way."
+msgstr ""
+"Açık olmaya ve paylaşıma inanıyoruz. Özgürlük vizyonumuz, bilgisayarınızla "
+"istediğinizi yapabilmeniz ve işletim sisteminizin bunu yaparken size "
+"yardımcı olmasıdır."
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:8
+msgid ""
+"We focus on ease of use, comfort, and elegance to make your experience with "
+"Linux Mint as enjoyable as possible."
+msgstr ""
+"Linux Mint masaüstü deneyiminizi olabildiğince eğlenceli kılmak için "
+"kullanım kolaylığı, rahatlık ve zerafet üzerine odaklanıyoruz."
+
+#. type: Content of: <div><div><p>
+#: en/10_welcome.html:11
+msgid ""
+"We hope you will have a wonderful time spent with Linux Mint, and that you "
+"will enjoy using it as much as we do developing it!"
+msgstr ""
+"Umarız Linux Mint ile harika vakit geçirir ve onu kullanırken en az bizim "
+"onu geliştirirken aldığımız kadar zevk alırsınız."
+
+#. type: Content of: <h1>
+#: en/20_giants.html:1
+msgid "Standing on the shoulders of Giants"
+msgstr "Devlerin omuzları üzerinde duruyor"
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:6
+#, fuzzy
+#| msgid ""
+#| "Linux Mint is a Debian-based GNU/Linux distribution derived from and "
+#| "compatible with Ubuntu."
+msgid "Linux Mint is a Debian-based GNU/Linux distribution."
+msgstr ""
+"Linux Mint, Ubuntu'dan türeyen ve onunla uyumlu Debian tabanlı bir GNU/Linux "
+"dağıtımıdır."
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:7
+#, fuzzy
+#| msgid ""
+#| "Our innovations, the rapid development of Ubuntu and the huge Debian "
+#| "package selection make Linux Mint one of the most attractive desktop "
+#| "operating systems available to home users."
+msgid ""
+"Our innovations and the huge Debian package selection make Linux Mint one of "
+"the most attractive desktop operating systems available to home users."
+msgstr ""
+"Yeniliklerimiz, Ubuntunun hızlı gelişimi ve Debian'ın devasa paket seçimi, "
+"Linux Mint'i ev kullanıcılarının edinebileceği en çekici masaüstü işletim "
+"sistemlerinden biri haline getirir."
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:8
+#, fuzzy
+#| msgid ""
+#| "At home, Linux Mint is the 4th most widely used desktop operating system, "
+#| "behind Microsoft Windows, Apple OS X and Ubuntu."
+msgid ""
+"At home, GNU/Linux distributions like Linux Mint or Ubuntu are among the "
+"most widely used desktop operating systems, right next to Microsoft Windows "
+"and Apple OS X."
+msgstr ""
+"Linux Mint, Microsoft Windows, Apple OS X ve Ubuntu'dan sonra ev ortamında "
+"4. en yaygın kullanılan masaüstü işletim sistemidir."
+
+#. type: Content of: <h1>
+#: en/30_desktop-ready.html:1
+msgid "Out of the box"
+msgstr "Her şeyi içinde"
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:6
+#, fuzzy
+#| msgid ""
+#| "Firefox, Thunderbird, OpenOffice.org and Xchat come pre-installed in "
+#| "Linux Mint, so you can get started immediately with your daily routine on "
+#| "your desktop and the Internet."
+msgid ""
+"Most standard applications you are used to come pre-installed in Linux Mint, "
+"so you can get started immediately with your daily routine on your desktop "
+"and the Internet."
+msgstr ""
+"Firefox, Thunderbird, OpenOffice.org ve Xchat yazılımları Linux Mint "
+"içerisinde kurulu hâlde gelmektedir. Böylelikle hemen internete erişebilir "
+"ve masaüstünüzde çalışmaya başlayabilirsiniz."
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:7
+#, fuzzy
+#| msgid ""
+#| "Other popular applications such as Skype, Google Earth, Opera can be "
+#| "installed with a click of the mouse."
+msgid ""
+"Other popular applications such as Skype, Google Earth, Opera, and over "
+"30,000+ more can be installed with a click of the mouse."
+msgstr ""
+"Skype, Google Earth, Opera gibi diğer popüler uygulamalar ise tek fare "
+"tıklaması ile kurulabilir."
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:8
+msgid ""
+"Linux Mint is compatible with most popular file formats: zip, doc, xls, pdf, "
+"rar, mp3, wmv, mpg, mp4, mov ..."
+msgstr ""
+"Linux Mint zip, doc, xls, pdf, rar, mp3, wmv, mpg, mp4, mov gibi çok bilinen "
+"dosya türleriyle uyumludur."
+
+#. type: Content of: <h1>
+#: en/40_office.html:1
+msgid "Be productive"
+msgstr "Yaratıcı olun"
+
+#. type: Content of: <div><div><ul><li>
+#: en/40_office.html:6
+msgid ""
+"Use LibreOffice to create professional documents, spreadsheets and "
+"presentations that are fully compatible with Microsoft Office. Share "
+"printers or access them remotely."
+msgstr ""
+"Microsoft Ofis ile tam uyumlu profesyonel belgeler, tablolar ve sunumlar "
+"üretmek için  LibreOffice kullanın. Yazıcıları paylaşabilir ve bunlara "
+"uzaktan erişebilirsiniz."
+
+#. type: Content of: <h1>
+#: en/50_windows.html:1
+msgid "An alternative to mainstream operating systems"
+msgstr "Önde gelen işletim sistemlerine bir alternatif"
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:6
+msgid "Linux Mint is easy to use, powerful and configurable."
+msgstr ""
+"Linux Mint kullanımı kolay, güçlü ve kolay yapılandırılabilir bir işletim "
+"sistemidir."
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:7
+msgid ""
+"Linux Mint can detect other operating systems and install itself beside "
+"them. You can choose which operating system to launch when you start the "
+"computer."
+msgstr ""
+"Linux Mint kurulu olan diğer işletim sistemlerini de tespit edip kendini "
+"onların yanına kurabilir. Bilgisayarı açarken hangi işletim sistemini "
+"başlatacağınızı seçebilirsiniz."
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:8
+#, fuzzy
+#| msgid ""
+#| "Install Wine and run Windows software in Linux Mint. Or install "
+#| "Virtualbox, and run Windows itself within Linux Mint."
+msgid ""
+"Install Wine and run Windows software in Linux Mint. Or install VirtualBox, "
+"and run Windows itself within Linux Mint."
+msgstr ""
+"Wine'ı kurun ve Linux Mint'te Windows yazılımlarını çalıştırın. Virtualbox "
+"ile Windows'un kendisini de Linux Mint içerisinde çalıştırabilirsiniz."
+
+#. type: Content of: <h1>
+#: en/60_safe.html:1
+msgid "Safe updates"
+msgstr "Güvenli güncelleştirmeler"
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:6
+msgid ""
+"Linux Mint is safe and stable, you don't need an antivirus, an anti-spyware, "
+"a defragmentation tool or a registry cleaner."
+msgstr ""
+"Linux Mint güvenli ve kararlıdır. Antivirüs, anti-spyware, disk birleştirme "
+"aracı ve kayıt defteri temizleyicisi gibi yazılımlara ihtiyacınız yoktur."
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:7
+msgid ""
+"Receive fixes and security updates all in one place, for the entire system, "
+"including the software you install."
+msgstr ""
+"Kurduğunuz programlar da dahil bütün güvenlik güncelleştirmelerini ve hata "
+"düzeltmelerini tek bir yerden alın."
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:8
+msgid ""
+"The Linux Mint Update Manager sits discreetly in your system tray and lets "
+"you know when updates are available. You don't have to apply updates when "
+"you don't want to. The Update Manager won't pop up or annoy you in any way."
+msgstr ""
+"Linux Mint Güncelleme Yöneticisi sistem tepsisinde sessizce durur ve yeni "
+"bir güncelleme hazır olduğunda sizi haberdar eder. İstemediğiniz taktirde "
+"güncellemeleri uygulamayabilirsiniz. Böyle bir durumda güncelleme yöneticisi "
+"karşınıza gelmeyecek ve sizi hiçbir şekilde rahatsız etmeyecektir."
+
+#. type: Content of: <h1>
+#: en/70_chat.html:1
+msgid "Stay connected"
+msgstr "Bağlı kalın"
+
+#. type: Content of: <div><div><ul><li>
+#: en/70_chat.html:6
+msgid ""
+"Keep in touch with your friends and contacts, by email, messenger or on your "
+"favorite social networks. Linux Mint provides all you need to interact with "
+"Twitter, Facebook, Google Hangouts, ICQ, IRC, AIM, Yahoo and many other "
+"networks."
+msgstr ""
+"Arkadaşlarınızla ve bağlantılarınızla; e-posta, anlık ileti ya da favori "
+"sosyal ağlarınız aracılığı ile iletişim halinde kalın. Linux Mint; Twitter, "
+"Facebook, Google Hangouts, ICQ, IRC, AIM, Yahoo ve diğer çok sayıdaki "
+"iletişim hizmetine erişebilmeniz için gerekli uygulamaları size sunar."
+
+#. type: Content of: <h1>
+#: en/80_community.html:1
+msgid "A great community"
+msgstr "Büyük Bir Topluluk"
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:6
+msgid ""
+"The Linux Mint community is one of the best on the Internet. Our users not "
+"only provide most of our funding, but also ideas, artwork, and sometimes "
+"even source code."
+msgstr ""
+"Linux Mint topluluğu internetteki en iyi topluluklardan birisidir. "
+"Kullanıcılarımız finansmanımızın büyük bir kısmını sağlarlar; ayrıca "
+"fikirler, çizimler ve hatta bazen kaynak kodları da sağlamaktadırlar."
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:7
+msgid ""
+"Linux Mint users are happy to share their passion, enthusiasm, and eagerness "
+"to help. Don't hesitate to ask questions in the forums or get involved with "
+"the community."
+msgstr ""
+"Linux Mint kullanıcıları tutku ve heyecanlarını paylaşmaktan her zaman "
+"mutludurlar ve yardım etmek için can atarlar. Topluluğa katılmak veya "
+"sorularınıza cevap bulmak için forumlarda soru sormaktan çekinmeyin."
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:8
+msgid ""
+"Send us your feedback and tell us about your experience. We'll listen to "
+"your ideas and use them to further improve Linux Mint."
+msgstr ""
+"Bize geri bildirimlerinizi gönderin ve deneyimlerinizi anlatın. "
+"Fikirlerinizi değerlendirip, onları Linux Mint'i daha da geliştirmek için "
+"kullanacağız."

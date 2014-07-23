@@ -1,0 +1,275 @@
+# Estonian translation for live-installer-slideshow
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the live-installer-slideshow package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: live-installer-slideshow\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2014-09-15 01:03+0300\n"
+"PO-Revision-Date: 2014-04-30 09:00+0000\n"
+"Last-Translator: Kristjan Vool <tictac7x@gmail.com>\n"
+"Language-Team: Estonian <et@li.org>\n"
+"Language: et\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2014-05-03 20:44+0000\n"
+"X-Generator: Launchpad (build 16985)\n"
+
+#. type: Content of: <h1>
+#: en/10_welcome.html:1
+msgid "Welcome to Linux Mint Debian"
+msgstr "Tere tulemast"
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:6
+msgid "Thank you for choosing Linux Mint."
+msgstr "Täname sind, et valisid Linux Mint'i."
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:7
+msgid ""
+"We believe in sharing and being open-minded. Our vision of Freedom includes "
+"being able to do what you want with your computer, and the operating system "
+"should never stand in the way."
+msgstr ""
+"Me usume jagamisse ja avatusse. Meie arusaam vabadusest on, et igaüks peaks "
+"saama teha täpselt seda, mida ta tahab, ning arvuti ja opsüsteem peaksid "
+"teda selle juures toetama."
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:8
+msgid ""
+"We focus on ease of use, comfort, and elegance to make your experience with "
+"Linux Mint as enjoyable as possible."
+msgstr ""
+"Me keskendume kasutuslihtsusele, mugavusele ja elegantsusele, et muuta Linux "
+"Mint'i töölaua kasutamine sinu jaoks võimalikult nauditavaks."
+
+#. type: Content of: <div><div><p>
+#: en/10_welcome.html:11
+msgid ""
+"We hope you will have a wonderful time spent with Linux Mint, and that you "
+"will enjoy using it as much as we do developing it!"
+msgstr ""
+"Loodame, et Linux Mint'iga veedetav aeg on sinu jaoks meeldiv ja sa naudid "
+"selle kasutamist nagu nautisime meie selle koostamist!"
+
+#. type: Content of: <h1>
+#: en/20_giants.html:1
+msgid "Standing on the shoulders of Giants"
+msgstr "Toetudes hiidude õlule"
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:6
+msgid "Linux Mint is a Debian-based GNU/Linux distribution."
+msgstr "Linux Mint on Debianil põhinev GNU/Linuxi distributsioon."
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:7
+msgid ""
+"Our innovations and the huge Debian package selection make Linux Mint one of "
+"the most attractive desktop operating systems available to home users."
+msgstr ""
+"Meie uuendused ja Debiani pakettide tohutu valik teeb Linux Minti üheks "
+"kõige ligitõmbavamaks kodukasutaja töölaua-opsüsteemiks."
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:8
+#, fuzzy
+#| msgid ""
+#| "At home, Linux Mint is the 4th most widely used desktop operating system, "
+#| "behind Microsoft Windows, Apple OS X and Ubuntu."
+msgid ""
+"At home, GNU/Linux distributions like Linux Mint or Ubuntu are among the "
+"most widely used desktop operating systems, right next to Microsoft Windows "
+"and Apple OS X."
+msgstr ""
+"Linux Mint on kodukasutuses olevate töölaua-opsüsteemide hulgas Microsoft "
+"Windowsi, Apple OS X-i ja Ubuntu järel kasutatavuselt neljandal kohal."
+
+#. type: Content of: <h1>
+#: en/30_desktop-ready.html:1
+msgid "Out of the box"
+msgstr "Mõtle ilma stampideta!"
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:6
+#, fuzzy
+#| msgid ""
+#| "Firefox, Thunderbird, OpenOffice.org and Xchat come pre-installed in "
+#| "Linux Mint, so you can get started immediately with your daily routine on "
+#| "your desktop and the Internet."
+msgid ""
+"Most standard applications you are used to come pre-installed in Linux Mint, "
+"so you can get started immediately with your daily routine on your desktop "
+"and the Internet."
+msgstr ""
+"Firefox, Thunderbird, OpenOffice.org ja XChat on Linux Mint'i juba "
+"paigaldatud, sa võid kasutada töölauda ja internetti kohe täisvõimsusel."
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:7
+#, fuzzy
+#| msgid ""
+#| "Other popular applications such as Skype, Google Earth, Opera can be "
+#| "installed with a click of the mouse."
+msgid ""
+"Other popular applications such as Skype, Google Earth, Opera, and over "
+"30,000+ more can be installed with a click of the mouse."
+msgstr ""
+"Teisi populaarseid rakendusi nagu Skype, Google Earth ja Opera saab "
+"paigaldada vaid mõne hiireklõpsuga."
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:8
+#, fuzzy
+#| msgid ""
+#| "Linux Mint is compatible with most popular file formats: zip, doc, xls, "
+#| "pdf, rar, mp3, wmv, mpg, mp4, mov ...etc"
+msgid ""
+"Linux Mint is compatible with most popular file formats: zip, doc, xls, pdf, "
+"rar, mp3, wmv, mpg, mp4, mov ..."
+msgstr ""
+"Linux Mint'ile sobivad kõik populaarsemad failivormingud: zip, doc, xls, "
+"pdf, rar, mp3, wmv, mpg, mp4, mov ..."
+
+#. type: Content of: <h1>
+#: en/40_office.html:1
+msgid "Be productive"
+msgstr "Ole produktiivne"
+
+#. type: Content of: <div><div><ul><li>
+#: en/40_office.html:6
+msgid ""
+"Use LibreOffice to create professional documents, spreadsheets and "
+"presentations that are fully compatible with Microsoft Office. Share "
+"printers or access them remotely."
+msgstr ""
+"Professionaalsete dokumentide, arvutustabelite ning võimsate esitluste "
+"loomiseks kasutage LibreOffice'it. Kõik failid on täielikult ühilduvad "
+"Microsoft Office'iga. Jaga printereid ning kasuta neid teistest arvutitest."
+
+#. type: Content of: <h1>
+#: en/50_windows.html:1
+msgid "An alternative to mainstream operating systems"
+msgstr "Alternatiiv peavoolu-opsüsteemidele"
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:6
+msgid "Linux Mint is easy to use, powerful and configurable."
+msgstr "Linux Mint'i on lihtne kasutada, ta on tõhus ja seadistatav."
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:7
+msgid ""
+"Linux Mint can detect other operating systems and install itself beside "
+"them. You can choose which operating system to launch when you start the "
+"computer."
+msgstr ""
+"Linux Mint tuvastab teised opsüsteemid ja paigaldab ennast nende kõrvale. "
+"Arvuti käivitamisel saad valida, mis süsteemi käivitada."
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:8
+#, fuzzy
+#| msgid ""
+#| "Install Wine and run Windows software in Linux Mint. Or install "
+#| "Virtualbox, and run Windows itself within Linux Mint."
+msgid ""
+"Install Wine and run Windows software in Linux Mint. Or install VirtualBox, "
+"and run Windows itself within Linux Mint."
+msgstr ""
+"Windowsi tarkvara, mis ei ühildu Linuxiga, on võimalik käivitada rakendusega "
+"- Wine. Kui sellest jääb sulle väheks, siis paigalda Virtualbox ning käivita "
+"Windows Linux Mintis."
+
+#. type: Content of: <h1>
+#: en/60_safe.html:1
+msgid "Safe updates"
+msgstr "Ohutud uuendused"
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:6
+msgid ""
+"Linux Mint is safe and stable, you don't need an antivirus, an anti-spyware, "
+"a defragmentation tool or a registry cleaner."
+msgstr ""
+"Linux Mint on ohutu ja stabiilne, sa ei vaja viirusetõrjet, nuhkvaratõrjet, "
+"defragmenteerimise tööriistu ega registri puhastajat."
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:7
+msgid ""
+"Receive fixes and security updates all in one place, for the entire system, "
+"including the software you install."
+msgstr ""
+"Kõikvõimalike tarkvara ning turvalisuse uuenduste paigaldamine on tehtud "
+"ülimalt lihtsaks, tuleb lihtsalt avada uuendamishaldur."
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:8
+msgid ""
+"The Linux Mint Update Manager sits discreetly in your system tray and lets "
+"you know when updates are available. You don't have to apply updates when "
+"you don't want to. The Update Manager won't pop up or annoy you in any way."
+msgstr ""
+"Linux Mint'i uuendustehaldur istub diskreetselt süsteemisalves ja teatab "
+"millal värskendused on saadaval. Uuendusi ei paigaldata, kui sa neid ei "
+"soovi. Uuendustehalduri hüpikaken ei saa sind mingil moel häirida."
+
+#. type: Content of: <h1>
+#: en/70_chat.html:1
+msgid "Stay connected"
+msgstr "Hoia kontakti"
+
+#. type: Content of: <div><div><ul><li>
+#: en/70_chat.html:6
+msgid ""
+"Keep in touch with your friends and contacts, by email, messenger or on your "
+"favorite social networks. Linux Mint provides all you need to interact with "
+"Twitter, Facebook, Google Hangouts, ICQ, IRC, AIM, Yahoo and many other "
+"networks."
+msgstr ""
+"Vestle oma sõprade ja kontaktidega e-maili, messengeri või muude "
+"sotsiaalsete ühendusteenustega. Linux Mint sisaldab kõike vajaminevat, et "
+"toimiksid Twitter, Facebook, Google Hangouts, ICQ, IRC, AIM, Yahoo ja paljud "
+"muud tuntud rakendused."
+
+#. type: Content of: <h1>
+#: en/80_community.html:1
+msgid "A great community"
+msgstr "Suurepärane kogukond"
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:6
+msgid ""
+"The Linux Mint community is one of the best on the Internet. Our users not "
+"only provide most of our funding, but also ideas, artwork, and sometimes "
+"even source code."
+msgstr ""
+"Linux Minti kogukond on üks parimaid internetis. Meie kasutajad mitte ainult "
+"ei toeta meid, vaid nad annavd ka ideid, uuendavad kujundust ja mõnikord "
+"kirjutavad isegi lähtekoodi."
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:7
+msgid ""
+"Linux Mint users are happy to share their passion, enthusiasm, and eagerness "
+"to help. Don't hesitate to ask questions in the forums or get involved with "
+"the community."
+msgstr ""
+"Linux Minti kasutajad on rõõmsad ja jagavad oma kirge ja entusiasmi ning on "
+"motiveeritud, et aidata. Ära karda küsida küsimusi foorumites või osaleda "
+"kogukonnas."
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:8
+msgid ""
+"Send us your feedback and tell us about your experience. We'll listen to "
+"your ideas and use them to further improve Linux Mint."
+msgstr ""
+"Saada meile tagasisidet ja räägi oma kogemustest. Me oleme huvitaud sinu "
+"ideedest ja nende kasutamisest Linux Minti edasi arendamiseks."

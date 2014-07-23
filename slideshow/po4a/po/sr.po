@@ -1,0 +1,272 @@
+# Serbian translation for live-installer-slideshow
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the live-installer-slideshow package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: live-installer-slideshow\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2014-09-15 01:03+0300\n"
+"PO-Revision-Date: 2014-01-10 11:26+0000\n"
+"Last-Translator: Иван Старчевић <ivanstar61@gmail.com>\n"
+"Language-Team: Serbian <sr@li.org>\n"
+"Language: sr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2014-05-03 20:44+0000\n"
+"X-Generator: Launchpad (build 16985)\n"
+
+#. type: Content of: <h1>
+#: en/10_welcome.html:1
+msgid "Welcome to Linux Mint Debian"
+msgstr "Dobrodošli"
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:6
+msgid "Thank you for choosing Linux Mint."
+msgstr "Hvala Vam što ste odabrali Linux Mint."
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:7
+msgid ""
+"We believe in sharing and being open-minded. Our vision of Freedom includes "
+"being able to do what you want with your computer, and the operating system "
+"should never stand in the way."
+msgstr ""
+"Mi verujemo u deljenje i otvorenost.Naša vizija je da svako ima slobodu da "
+"radi šta želi sa svojim kompjuterom, a operativni sistem treba da mu pomogne "
+"u ostvarenju toga."
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:8
+msgid ""
+"We focus on ease of use, comfort, and elegance to make your experience with "
+"Linux Mint as enjoyable as possible."
+msgstr ""
+"Mi se fokusiramo na lakoću upotrebe, komfor i eleganciju da bi vaše iskustvo "
+"sa Linux Mint-om učinili što prijatnijim."
+
+#. type: Content of: <div><div><p>
+#: en/10_welcome.html:11
+msgid ""
+"We hope you will have a wonderful time spent with Linux Mint, and that you "
+"will enjoy using it as much as we do developing it!"
+msgstr ""
+"Nadamo se da će te se lepo provesti koristeći Linux Mint i da ćete uživati "
+"koristeći ga, isto koliko smo mi uživali razvijajući ga!"
+
+#. type: Content of: <h1>
+#: en/20_giants.html:1
+msgid "Standing on the shoulders of Giants"
+msgstr "Stojeci na ramenima Dzinova"
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:6
+msgid "Linux Mint is a Debian-based GNU/Linux distribution."
+msgstr "Linux Mint je distro zasnovan na Debian GNU/Linux distribuciji."
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:7
+msgid ""
+"Our innovations and the huge Debian package selection make Linux Mint one of "
+"the most attractive desktop operating systems available to home users."
+msgstr ""
+"Nase inovacije i veliki izbor Debianovih paketa cini Linux Mint jedan od "
+"najatraktivnijih desktop operativnih sistema dostupnih kucnim korisnicima."
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:8
+#, fuzzy
+#| msgid ""
+#| "At home, Linux Mint is the 4th most widely used desktop operating system, "
+#| "behind Microsoft Windows, Apple OS X and Ubuntu."
+msgid ""
+"At home, GNU/Linux distributions like Linux Mint or Ubuntu are among the "
+"most widely used desktop operating systems, right next to Microsoft Windows "
+"and Apple OS X."
+msgstr ""
+"Linux Mint je cetvrti najvise korisceni desktop operativni sistem, odmah "
+"posle Microsoft Windows-a,Apple OS X-a i Ubuntua."
+
+#. type: Content of: <h1>
+#: en/30_desktop-ready.html:1
+msgid "Out of the box"
+msgstr "Odmah po instalaciji"
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:6
+#, fuzzy
+#| msgid ""
+#| "Firefox, Thunderbird, OpenOffice.org and Xchat come pre-installed in "
+#| "Linux Mint, so you can get started immediately with your daily routine on "
+#| "your desktop and the Internet."
+msgid ""
+"Most standard applications you are used to come pre-installed in Linux Mint, "
+"so you can get started immediately with your daily routine on your desktop "
+"and the Internet."
+msgstr ""
+"Firefox, Thunderbird, OpenOffice.org i Xchat dolaze vec instalirani u Linux "
+"Mint-u, tako da odmah mozete poceti sa njihovim koriscenjem i Internetom."
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:7
+#, fuzzy
+#| msgid ""
+#| "Other popular applications such as Skype, Google Earth, Opera can be "
+#| "installed with a click of the mouse."
+msgid ""
+"Other popular applications such as Skype, Google Earth, Opera, and over "
+"30,000+ more can be installed with a click of the mouse."
+msgstr ""
+"Ostali popularni programi kao sto su Skype,Google Earth, Opera mogu se "
+"instalirati sa samo jednim klikom misa."
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:8
+msgid ""
+"Linux Mint is compatible with most popular file formats: zip, doc, xls, pdf, "
+"rar, mp3, wmv, mpg, mp4, mov ..."
+msgstr ""
+"Linux Mint je kompatibilan sa vecinom popularnih fajl formata: zip, doc, "
+"xls, pdf, rar, mp3, wmv, mpg, mp4, mov ..."
+
+#. type: Content of: <h1>
+#: en/40_office.html:1
+msgid "Be productive"
+msgstr "Буди продуктиван"
+
+#. type: Content of: <div><div><ul><li>
+#: en/40_office.html:6
+msgid ""
+"Use LibreOffice to create professional documents, spreadsheets and "
+"presentations that are fully compatible with Microsoft Office. Share "
+"printers or access them remotely."
+msgstr ""
+"Користите LibreOffice за израду професионалних докумената, табела и "
+"презентација које су потпуно одговарајуће са Microsoft Office. Делите "
+"штампаче или им приступите на даљину."
+
+#. type: Content of: <h1>
+#: en/50_windows.html:1
+msgid "An alternative to mainstream operating systems"
+msgstr "Alternativa za najcesce korisceni operativni sistem."
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:6
+msgid "Linux Mint is easy to use, powerful and configurable."
+msgstr "Linux Mint je lagan za upotrebu, snazan i konfigurativan (prilagodiv)."
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:7
+msgid ""
+"Linux Mint can detect other operating systems and install itself beside "
+"them. You can choose which operating system to launch when you start the "
+"computer."
+msgstr ""
+"Linux Mint moze da pronadje druge operativne sisteme i instalira sam sebe "
+"pored istih. Korisnik moze da izabere koji operativni sistem zeli da se "
+"podigne pri ukljucivanju kompjutera."
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:8
+#, fuzzy
+#| msgid ""
+#| "Install Wine and run Windows software in Linux Mint. Or install "
+#| "Virtualbox, and run Windows itself within Linux Mint."
+msgid ""
+"Install Wine and run Windows software in Linux Mint. Or install VirtualBox, "
+"and run Windows itself within Linux Mint."
+msgstr ""
+"Инсталирај Wine и користи Windows-ове програме у Линукс Мин-у. Или "
+"инсталирај Virtualbox и покрени Виндоуз у Минт-у."
+
+#. type: Content of: <h1>
+#: en/60_safe.html:1
+msgid "Safe updates"
+msgstr "Sigurnosne zakrpe"
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:6
+msgid ""
+"Linux Mint is safe and stable, you don't need an antivirus, an anti-spyware, "
+"a defragmentation tool or a registry cleaner."
+msgstr ""
+"Linux Mint je siguran i stabilan, ne treba vam antivirus, anti-spyware, "
+"alatke za defragmentaciju ili cistac registra."
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:7
+msgid ""
+"Receive fixes and security updates all in one place, for the entire system, "
+"including the software you install."
+msgstr ""
+"Примајте поправке и безбедносне исправке на једном месту за читав систем, "
+"укључујући и програме које инсталирате"
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:8
+msgid ""
+"The Linux Mint Update Manager sits discreetly in your system tray and lets "
+"you know when updates are available. You don't have to apply updates when "
+"you don't want to. The Update Manager won't pop up or annoy you in any way."
+msgstr ""
+"Linux Mint Menadžer za ažuriranje, diskretno je postavljen u sistemskoj "
+"traci i obaveštava vas ukoliko postoje nove verzije softvera. Izmene ne "
+"morate prihvatiti ukoliko ne želite. Menadžer vas neće uznemiravati u bilo "
+"kom slučaju."
+
+#. type: Content of: <h1>
+#: en/70_chat.html:1
+msgid "Stay connected"
+msgstr "Останите повезани"
+
+#. type: Content of: <div><div><ul><li>
+#: en/70_chat.html:6
+msgid ""
+"Keep in touch with your friends and contacts, by email, messenger or on your "
+"favorite social networks. Linux Mint provides all you need to interact with "
+"Twitter, Facebook, Google Hangouts, ICQ, IRC, AIM, Yahoo and many other "
+"networks."
+msgstr ""
+"Останите у контакту са вашим пријатељима, преко електронске поште, месенџера "
+"или преко омиљене социјалне мреже. Линукс Минт Вам омогућава да комуницирате "
+"преко Twitter-а, Facebook-а, Google Hangouts-а, ICQ-а, IRC-а, AIM-а, Yahoo-а "
+"и многих других."
+
+#. type: Content of: <h1>
+#: en/80_community.html:1
+msgid "A great community"
+msgstr "Velika zajednica"
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:6
+msgid ""
+"The Linux Mint community is one of the best on the Internet. Our users not "
+"only provide most of our funding, but also ideas, artwork, and sometimes "
+"even source code."
+msgstr ""
+"Linux Mint zajednica je jedna od najboljih na Internetu.Nasi korisnici "
+"obezbedjuju vecinu nasih sredstava, ali isto tako i ideje,koncepte dizajna, "
+"a nekada i izvorne kodove."
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:7
+msgid ""
+"Linux Mint users are happy to share their passion, enthusiasm, and eagerness "
+"to help. Don't hesitate to ask questions in the forums or get involved with "
+"the community."
+msgstr ""
+"Korisnici Mint linuxa obično žele da podele svoju strast i entuzijazam sa "
+"nama, i žele da nam pomognu. Nemojte oklevati da postavite pitanje na našem "
+"forumu, ili da postanete član naše zajednice."
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:8
+msgid ""
+"Send us your feedback and tell us about your experience. We'll listen to "
+"your ideas and use them to further improve Linux Mint."
+msgstr ""
+"Saljite nam vase preporuke i kazite nam vase iskustvo sa Linux Mint-om.Mi "
+"cemo slusati vase ideje i koristiti ih da poboljsavamo i dalje Linux Mint."

@@ -1,0 +1,283 @@
+# translation of slideshow-mint_slideshow-mint-is.po to Icelandic
+# Icelandic translation for live-installer-slideshow
+# Copyright (c) 2010 Free Software Foundation 2010
+# This file is distributed under the same license as the live-installer-slideshow package.
+#
+# Sveinn í Felli <sveinki@nett.is>, 2010.
+msgid ""
+msgstr ""
+"Project-Id-Version: live-installer-slideshow\n"
+"Report-Msgid-Bugs-To: FULL NAME <translation-team-is@lists.sourceforge.net>\n"
+"POT-Creation-Date: 2014-09-15 01:03+0300\n"
+"PO-Revision-Date: 2013-11-20 09:38+0000\n"
+"Last-Translator: Sveinn í Felli <sv1@fellsnet.is>\n"
+"Language-Team: Icelandic <translation-team-is@lists.sourceforge.net>\n"
+"Language: is\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2014-05-03 20:44+0000\n"
+"X-Generator: Launchpad (build 16985)\n"
+
+#. type: Content of: <h1>
+#: en/10_welcome.html:1
+msgid "Welcome to Linux Mint Debian"
+msgstr "Velkomin(n)"
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:6
+msgid "Thank you for choosing Linux Mint."
+msgstr "Takk fyrir að velja Linux Mint."
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:7
+msgid ""
+"We believe in sharing and being open-minded. Our vision of Freedom includes "
+"being able to do what you want with your computer, and the operating system "
+"should never stand in the way."
+msgstr ""
+"Við höfum trú á opnum huga og miðlun þekkingar. Skilgreining okkar á Frelsi "
+"er að þú eigir að geta gert það sem þig langar til með tölvunni þinni og að "
+"stýrikerfið eigi að hjálpa þér til að gera einmitt það."
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:8
+msgid ""
+"We focus on ease of use, comfort, and elegance to make your experience with "
+"Linux Mint as enjoyable as possible."
+msgstr ""
+"Við stefnum að einfaldleika, þægindi og fegurð til að gera þína reynslu að "
+"Linux Mint eins góða og hægt er."
+
+#. type: Content of: <div><div><p>
+#: en/10_welcome.html:11
+msgid ""
+"We hope you will have a wonderful time spent with Linux Mint, and that you "
+"will enjoy using it as much as we do developing it!"
+msgstr ""
+"Við vonum að þú njótir þess að nota Linux Mint og skemmtir þér jafn mikið "
+"við það eins og við gerðum við að útbúa kerfið."
+
+#. type: Content of: <h1>
+#: en/20_giants.html:1
+msgid "Standing on the shoulders of Giants"
+msgstr "Stendur á herðum risa"
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:6
+#, fuzzy
+#| msgid ""
+#| "Linux Mint is a Debian-based GNU/Linux distribution derived from and "
+#| "compatible with Ubuntu."
+msgid "Linux Mint is a Debian-based GNU/Linux distribution."
+msgstr ""
+"Linux Mint er GNU/Linux dreifing með Debian-grunni og byggir á og er samhæfð "
+"Ubuntu."
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:7
+#, fuzzy
+#| msgid ""
+#| "Our innovations, the rapid development of Ubuntu and the huge Debian "
+#| "package selection make Linux Mint one of the most attractive desktop "
+#| "operating systems available to home users."
+msgid ""
+"Our innovations and the huge Debian package selection make Linux Mint one of "
+"the most attractive desktop operating systems available to home users."
+msgstr ""
+"Uppfinningar okkar, hröð þróun Ubuntu og gríðarlegt úrval Debian pakka gera "
+"Linux Mint að einu mest aðlaðandi skjáborðsstýrikerfinu sem venjulegum "
+"heimilisnotendum stendur til boða."
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:8
+#, fuzzy
+#| msgid ""
+#| "At home, Linux Mint is the 4th most widely used desktop operating system, "
+#| "behind Microsoft Windows, Apple OS X and Ubuntu."
+msgid ""
+"At home, GNU/Linux distributions like Linux Mint or Ubuntu are among the "
+"most widely used desktop operating systems, right next to Microsoft Windows "
+"and Apple OS X."
+msgstr ""
+"Til heimilisnota er Linux Mint 4. mest notaða skjáborðsstýrikerfið, á eftir "
+"Microsoft Windows, Apple OS X og Ubuntu."
+
+#. type: Content of: <h1>
+#: en/30_desktop-ready.html:1
+msgid "Out of the box"
+msgstr "Beint úr kassanum"
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:6
+#, fuzzy
+#| msgid ""
+#| "Firefox, Thunderbird, OpenOffice.org and Xchat come pre-installed in "
+#| "Linux Mint, so you can get started immediately with your daily routine on "
+#| "your desktop and the Internet."
+msgid ""
+"Most standard applications you are used to come pre-installed in Linux Mint, "
+"so you can get started immediately with your daily routine on your desktop "
+"and the Internet."
+msgstr ""
+"Firefox, Thunderbird, OpenOffice.org og Xchat koma for-uppsett í Linux Mint, "
+"þannig að þú getir byrjað strax að sýsla með skjáborðið og á netinu."
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:7
+#, fuzzy
+#| msgid ""
+#| "Other popular applications such as Skype, Google Earth, Opera can be "
+#| "installed with a click of the mouse."
+msgid ""
+"Other popular applications such as Skype, Google Earth, Opera, and over "
+"30,000+ more can be installed with a click of the mouse."
+msgstr ""
+"Önnur vinsæl forrit á borð við Skype, Google Earth, Opera er hægt að setja "
+"upp með örfáum músarsmellum."
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:8
+msgid ""
+"Linux Mint is compatible with most popular file formats: zip, doc, xls, pdf, "
+"rar, mp3, wmv, mpg, mp4, mov ..."
+msgstr ""
+"Linux Mint er samhæft mörgum algengum skráasniðum á borð við: zip, doc, xls, "
+"pdf, rar, mp3, wmv, mpg, mp4, mov ..."
+
+#. type: Content of: <h1>
+#: en/40_office.html:1
+msgid "Be productive"
+msgstr "Auktu afköstin"
+
+#. type: Content of: <div><div><ul><li>
+#: en/40_office.html:6
+msgid ""
+"Use LibreOffice to create professional documents, spreadsheets and "
+"presentations that are fully compatible with Microsoft Office. Share "
+"printers or access them remotely."
+msgstr ""
+"Notaðu LibreOffice til að búa til fagmannleg skjöl, töflureikna og kynningar "
+"sem eru vel samhæfð við gögn í Microsoft Office. Samnýttu prentara eða "
+"fjartengdu þá."
+
+#. type: Content of: <h1>
+#: en/50_windows.html:1
+msgid "An alternative to mainstream operating systems"
+msgstr "Annar valkostur en stóru algengu stýrikerfin"
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:6
+msgid "Linux Mint is easy to use, powerful and configurable."
+msgstr "Linux Mint er auðvelt í notkun, öflugt og aðlaganlegt."
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:7
+msgid ""
+"Linux Mint can detect other operating systems and install itself beside "
+"them. You can choose which operating system to launch when you start the "
+"computer."
+msgstr ""
+"Linux Mint getur skynjað önnur stýrikerfi og verið sett upp við hlið þeirra. "
+"Þannig geturðu valið hvaða stýrikerfi þú vilt ræsa með tölvunni."
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:8
+#, fuzzy
+#| msgid ""
+#| "Install Wine and run Windows software in Linux Mint. Or install "
+#| "Virtualbox, and run Windows itself within Linux Mint."
+msgid ""
+"Install Wine and run Windows software in Linux Mint. Or install VirtualBox, "
+"and run Windows itself within Linux Mint."
+msgstr ""
+"Settu upp Wine og keyrðu Windows forrit í Linux Mint. Eða settu upp "
+"Virtualbox og keyrðu sjálft Windows stýrikerfið innan í Linux Mint."
+
+#. type: Content of: <h1>
+#: en/60_safe.html:1
+msgid "Safe updates"
+msgstr "Öruggar uppfærslur"
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:6
+msgid ""
+"Linux Mint is safe and stable, you don't need an antivirus, an anti-spyware, "
+"a defragmentation tool or a registry cleaner."
+msgstr ""
+"Linux Mint er öruggt og stöðugt, þú þarft varla varnir við vírusum eða "
+"njósnaforritum, og alls ekki diskþjöppunar- eða stýriskráningarhreinsunartól."
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:7
+msgid ""
+"Receive fixes and security updates all in one place, for the entire system, "
+"including the software you install."
+msgstr ""
+"Náðu í viðbætur og öryggisuppfærslur á einum stað; fyrir allt kerfið, þar "
+"með talinn þann hugbúnað sem þú hefur sett upp."
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:8
+msgid ""
+"The Linux Mint Update Manager sits discreetly in your system tray and lets "
+"you know when updates are available. You don't have to apply updates when "
+"you don't want to. The Update Manager won't pop up or annoy you in any way."
+msgstr ""
+"The Linux Mint Update Manager sits discreetly in your system tray and lets "
+"you know when updates are available. You don't have to apply updates when "
+"you don't want to. The Update Manager won't pop up or annoy you in any way."
+
+#. type: Content of: <h1>
+#: en/70_chat.html:1
+msgid "Stay connected"
+msgstr "Vera í sambandi"
+
+#. type: Content of: <div><div><ul><li>
+#: en/70_chat.html:6
+msgid ""
+"Keep in touch with your friends and contacts, by email, messenger or on your "
+"favorite social networks. Linux Mint provides all you need to interact with "
+"Twitter, Facebook, Google Hangouts, ICQ, IRC, AIM, Yahoo and many other "
+"networks."
+msgstr ""
+"Vertu í sambandi við alla vini þína og vandamenn, með tölvupósti, "
+"smáskilaboðum, spjalli eða á uppáhalds samskiptavefjunum þínum. Linux Mint "
+"kemur með öllu því sem þarf til að nota Twitter, Facebook, Google Hangouts, "
+"ICQ, IRC, AIM, Yahoo og mörg önnur slík net."
+
+#. type: Content of: <h1>
+#: en/80_community.html:1
+msgid "A great community"
+msgstr "Frábært samfélag"
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:6
+msgid ""
+"The Linux Mint community is one of the best on the Internet. Our users not "
+"only provide most of our funding, but also ideas, artwork, and sometimes "
+"even source code."
+msgstr ""
+"Linux Mint samfélagið er eitt það besta á internetinu. Notendurnir skaffa "
+"mest af fjármagninu, en einnig hugmyndir, myndefni og stundum líka grunnkóða."
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:7
+msgid ""
+"Linux Mint users are happy to share their passion, enthusiasm, and eagerness "
+"to help. Don't hesitate to ask questions in the forums or get involved with "
+"the community."
+msgstr ""
+"Notendur Linux Mint eru jafnan glaðir með að deila ástríðum sínum með öðrum "
+"og eru ákaflega hjálpsamir. Ekki hika við að spyrja spurninga á "
+"spjallsvæðunum eða að taka þátt í samfélaginu."
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:8
+msgid ""
+"Send us your feedback and tell us about your experience. We'll listen to "
+"your ideas and use them to further improve Linux Mint."
+msgstr ""
+"Sendu okkur línu og segðu okkur frá þinni reynslu. Við hlustum á "
+"hugmyndirnar þínar og höfum þær til hliðsjónar þegar við höldum áfram að "
+"bæta Linux Mint."

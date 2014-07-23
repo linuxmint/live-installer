@@ -1,0 +1,287 @@
+# Malayalam translation for live-installer-slideshow
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the live-installer-slideshow package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: live-installer-slideshow\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2014-09-15 01:03+0300\n"
+"PO-Revision-Date: 2012-10-03 17:39+0000\n"
+"Last-Translator: praveenp <Unknown>\n"
+"Language-Team: Malayalam <ml@li.org>\n"
+"Language: ml\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2014-05-03 20:44+0000\n"
+"X-Generator: Launchpad (build 16985)\n"
+
+#. type: Content of: <h1>
+#: en/10_welcome.html:1
+msgid "Welcome to Linux Mint Debian"
+msgstr "സ്വാഗതം"
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:6
+msgid "Thank you for choosing Linux Mint."
+msgstr "ലിനക്സ്‌ മിന്റ് തിരഞ്ഞെടുത്തതിനു നന്ദി."
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:7
+msgid ""
+"We believe in sharing and being open-minded. Our vision of Freedom includes "
+"being able to do what you want with your computer, and the operating system "
+"should never stand in the way."
+msgstr ""
+"ഞങ്ങള്‍ പങ്കു വെക്കുന്നതിലും, തുറന്ന മനോഭാവത്തിലും വിശ്വസിക്കുന്നു. സ്വാതന്ത്ര്യത്തെക്കുറിച്ചുള്ള ഞങ്ങളുടെ "
+"കാഴ്ചപ്പാട്‌ എന്തെന്നാല്‍ നിങ്ങള്‍ക്ക് ആവശ്യമുള്ളതെല്ലാം ചെയ്യാന്‍ നിങ്ങളുടെ കംപ്യൂട്ടര്‍ ഉതകണം. "
+"നിങ്ങളുടെ ഓപ്പറേറ്റിംഗ്‌ സിസ്റ്റം നിങ്ങളെ അതിന്‌ സഹായിക്കുകയും വേണം."
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:8
+msgid ""
+"We focus on ease of use, comfort, and elegance to make your experience with "
+"Linux Mint as enjoyable as possible."
+msgstr ""
+"നിങ്ങളുടെ ലിനക്സ്‌ മിന്റ് ഡെസ്ക്ടോപ്പ് അനുഭവം കൂടുതല്‍ ആസ്വാദ്യകരം ആക്കാന്‍ വേണ്ടി ; അനായാസമായ "
+"ഉപയോഗം, സുഖസൌകര്യങ്ങള്‍, വൈശിഷ്ട്യം എന്നിവയില്‍ ഞങ്ങള്‍ ഊന്നല്‍ കൊടുക്കുന്നു."
+
+#. type: Content of: <div><div><p>
+#: en/10_welcome.html:11
+msgid ""
+"We hope you will have a wonderful time spent with Linux Mint, and that you "
+"will enjoy using it as much as we do developing it!"
+msgstr ""
+"ലിനക്സ്‌ മിന്റുമായി ഉള്ള നിങ്ങളുടെ അനുഭവം വളരെ മഹത്തരം ആയിരിക്കും എന്ന് ഞങ്ങള്‍ പ്രതീക്ഷിക്കുന്നു, "
+"മാത്രമല്ല ഇതിന്റെ രൂപികരണത്തില്‍ ഞങ്ങള്‍ ആസ്വദിച്ച പോലെ തന്നെ ഇതിന്റെ ഉപയോഗം നിങ്ങള്‍ക്കും "
+"ആസ്വാദ്യകരം ആയിരിക്കും എന്ന് പ്രതീക്ഷിക്കുന്നു."
+
+#. type: Content of: <h1>
+#: en/20_giants.html:1
+msgid "Standing on the shoulders of Giants"
+msgstr "മഹന്മാരുടെ തോളിലേറിക്കൊണ്ട്"
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:6
+#, fuzzy
+#| msgid ""
+#| "Linux Mint is a Debian-based GNU/Linux distribution derived from and "
+#| "compatible with Ubuntu."
+msgid "Linux Mint is a Debian-based GNU/Linux distribution."
+msgstr ""
+"ഉബുണ്ടുവില്‍ നിന്ന് ഉണ്ടായതും, ഉബുണ്ടുവിനോട് പൊരുത്തപ്പെടുന്നതുമായ ലിനക്സ് മിന്റ്‌, ഡെബിയന്‍ "
+"അടിസ്ഥാനമാക്കിയുള്ള ജിഎന്‍ യു ലിനക്സ് വിതരണമാണ്‌."
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:7
+#, fuzzy
+#| msgid ""
+#| "Our innovations, the rapid development of Ubuntu and the huge Debian "
+#| "package selection make Linux Mint one of the most attractive desktop "
+#| "operating systems available to home users."
+msgid ""
+"Our innovations and the huge Debian package selection make Linux Mint one of "
+"the most attractive desktop operating systems available to home users."
+msgstr ""
+"ഞങ്ങളുടെ നവരീതികളും, ദ്രുതഗതിയിലുള്ള ഉബുണ്ടുവിന്റെ പുരോഗതിയും, ഡെബിയന്റെ ബൃഹത്തായ പാക്കെജ്‌ "
+"തിരഞ്ഞെടുപ്പും ലിനക്സ് മിന്ടിനെ വീട്ടുപയോഗത്തിനു ലഭ്യമായ ഏറ്റവും ആകര്‍ഷകമായ ഡെസ്ക്ടോപ് ആപരേടിംഗ് "
+"സിസ്റ്റ്‌ങ്ങളില്‍ ഒന്ന് ആക്കുന്നു."
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:8
+#, fuzzy
+#| msgid ""
+#| "At home, Linux Mint is the 4th most widely used desktop operating system, "
+#| "behind Microsoft Windows, Apple OS X and Ubuntu."
+msgid ""
+"At home, GNU/Linux distributions like Linux Mint or Ubuntu are among the "
+"most widely used desktop operating systems, right next to Microsoft Windows "
+"and Apple OS X."
+msgstr ""
+"വീടുകളില്‍ ഏറ്റവും കൂടുതല്‍ ഉപയോഗിക്കപ്പെടുന്ന ആപരേടിംഗ് സിസ്റ്റ്‌ങ്ങളില്‍, മൈക്രോസാഫ്ട് വിന്‍ഡോസ്, മാക് "
+"ഒ എസ്, ഉബുണ്ടു എന്നിവക്ക്‌ പിന്നാലെ നാലാം സ്ഥാനത്താണ്‌ ലിനക്സ് മിന്റ്‌."
+
+#. type: Content of: <h1>
+#: en/30_desktop-ready.html:1
+msgid "Out of the box"
+msgstr "ഔട്ട് ഓഫ് ദ ബോക്സ്‌"
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:6
+#, fuzzy
+#| msgid ""
+#| "Firefox, Thunderbird, OpenOffice.org and Xchat come pre-installed in "
+#| "Linux Mint, so you can get started immediately with your daily routine on "
+#| "your desktop and the Internet."
+msgid ""
+"Most standard applications you are used to come pre-installed in Linux Mint, "
+"so you can get started immediately with your daily routine on your desktop "
+"and the Internet."
+msgstr ""
+"ഫയര്‍ഫോക്സ്, തണ്ടെര്‍ബേര്‍ഡ്, ഓപ്പണ്‍ഓഫീസ്.ഓര്‍ഗ്, എക്സ്ചാറ്റ് മുതലായവ ലിനക്സ്‌ മിന്റില്‍ "
+"ഉള്‍പ്പെടുത്തിയിരിക്കുന്നു; അതിനാല്‍ നിങ്ങള്‍ക്ക് ഉടനെ തന്നെ ടെസ്ക്ടോപും, ഇന്റര്‍നെറ്റും ഉപയോഗിച്ച് "
+"തുടങ്ങാവുന്നതാണ്."
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:7
+#, fuzzy
+#| msgid ""
+#| "Other popular applications such as Skype, Google Earth, Opera can be "
+#| "installed with a click of the mouse."
+msgid ""
+"Other popular applications such as Skype, Google Earth, Opera, and over "
+"30,000+ more can be installed with a click of the mouse."
+msgstr ""
+"മറ്റ് പ്രമുഖ അപ്പ്ളിക്കേഷനുകളായ സ്കൈപ്, പികാസ, ഗൂഗ്ള്‍ ഏര്‍ത്ത്‌, ഒപെറ എന്നിവ ഇന്‍സ്റ്റാള്‍ ചെയ്യാന്‍ "
+"മൌസില്‍ ഒന്നു വിരല്‍ അമര്‍ത്തുകയേ വേണ്ടൂ."
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:8
+#, fuzzy
+#| msgid ""
+#| "Linux Mint is compatible with most popular file formats: zip, doc, xls, "
+#| "pdf, rar, mp3, wmv, mpg, mp4, mov ...etc"
+msgid ""
+"Linux Mint is compatible with most popular file formats: zip, doc, xls, pdf, "
+"rar, mp3, wmv, mpg, mp4, mov ..."
+msgstr ""
+"അധികമായി പ്രചാരത്തിലുള്ള എല്ലാ തരം ഫയലുകളും ലിനക്സ് മിന്ടില് പ്രവര്‍ത്തിപ്പിക്കാവുന്നതാണ്: zip, "
+"doc, xls, pdf, rar, mp3, wmv, mpg, mp4, mov ... തുടങ്ങിയവ"
+
+#. type: Content of: <h1>
+#: en/40_office.html:1
+msgid "Be productive"
+msgstr "കർമ്മതല്പരത കൈമുതലാക്കുക"
+
+#. type: Content of: <div><div><ul><li>
+#: en/40_office.html:6
+msgid ""
+"Use LibreOffice to create professional documents, spreadsheets and "
+"presentations that are fully compatible with Microsoft Office. Share "
+"printers or access them remotely."
+msgstr ""
+
+#. type: Content of: <h1>
+#: en/50_windows.html:1
+msgid "An alternative to mainstream operating systems"
+msgstr "മുഖ്യധാരാ ഓപ്പറെട്ടിംഗ് സിസ്റ്റെങ്ങള്‍ക്ക് ഒരു പകരക്കാരന്‍."
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:6
+msgid "Linux Mint is easy to use, powerful and configurable."
+msgstr ""
+"ഉപയോഗിക്കാന്‍ എളുപ്പമായ ലിനക്സ് മിന്റ്‌, ശക്തവും പ്രത്യേക ആവശ്യങ്ങള്‍ക്ക് വേണ്ടി സജ്ജീകരിക്കാവുന്നതും "
+"ആണ്."
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:7
+msgid ""
+"Linux Mint can detect other operating systems and install itself beside "
+"them. You can choose which operating system to launch when you start the "
+"computer."
+msgstr ""
+"ലിനക്സ് മിന്‍ടിന് മറ്റ്‌ ഓപറെടിംഗ് സിസ്റ്റങ്ങളെ കണ്ടെത്തി അവയോടൊപ്പം തന്നെ സ്വയം വിന്യസിക്കാനുള്ള "
+"കഴിവുണ്ട്‌. കമ്പ്യൂട്ടര്‍ പ്രവര്‍ത്തിപ്പിച്ച് തുടങ്ങുമ്പോള്‍ ഏത് ഓപറെടിംഗ് സിസ്റ്റം തുടങ്ങണം എന്നത് നിങ്ങള്‍ക്ക് "
+"തിരഞ്ഞെടുക്കാം."
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:8
+#, fuzzy
+#| msgid ""
+#| "Install Wine and run Windows software in Linux Mint. Or install "
+#| "Virtualbox, and run Windows itself within Linux Mint."
+msgid ""
+"Install Wine and run Windows software in Linux Mint. Or install VirtualBox, "
+"and run Windows itself within Linux Mint."
+msgstr ""
+"വൈൻ ഇൻസ്റ്റോൾ ചെയ്ത് വിൻഡോസ് സോഫ്റ്റ്‌വേർ ലിനക്സ് മിന്റിൽ തന്നെ പ്രവർത്തിപ്പിക്കുക. അല്ലെങ്കിൽ "
+"വിർച്ച്വൽ ബോക്സ് ഇൻസ്റ്റോൾ ചെയ്ത് ലിനക്സ് മിന്റിനുള്ളിൽ തന്നെ വിൻഡോസ് പ്രവർത്തിപ്പിക്കുക."
+
+#. type: Content of: <h1>
+#: en/60_safe.html:1
+msgid "Safe updates"
+msgstr "സുരക്ഷിതമായ അപ്ഡേറ്റുകള്‍"
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:6
+msgid ""
+"Linux Mint is safe and stable, you don't need an antivirus, an anti-spyware, "
+"a defragmentation tool or a registry cleaner."
+msgstr ""
+"ലിനക്സ് മിന്റ്‌ സുരക്ഷിതവും അചഞ്ചലവുമാണ്. നിങ്ങള്‍ക്ക് ആന്റി വൈറസ്, ആന്റി സ്പൈവേര്‍, ഡീ "
+"ഫ്രാഗ്മെന്ടേഷന് ടൂള്‍, രജിസ്ട്രി ക്ലീനര്‍ എന്നിവയൊന്നും ആവശ്യമായി വരുന്നില്ല."
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:7
+msgid ""
+"Receive fixes and security updates all in one place, for the entire system, "
+"including the software you install."
+msgstr ""
+"താങ്കൾ ഇൻസ്റ്റോൾ ചെയ്ത സോഫ്റ്റ്‌വേറുകൾക്കടക്കം, താങ്കളുടെ മുഴുവൻ സിസ്റ്റത്തിനും, ഒരൊറ്റ സ്ഥലത്ത് "
+"ശരിയാക്കലുകളും സുരക്ഷാ അപ്‌ഡേറ്റുകളും ലഭിക്കുന്നതാണ്."
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:8
+msgid ""
+"The Linux Mint Update Manager sits discreetly in your system tray and lets "
+"you know when updates are available. You don't have to apply updates when "
+"you don't want to. The Update Manager won't pop up or annoy you in any way."
+msgstr ""
+"ലിനക്സ്‌ മിന്റ് അപ്ഡേറ്റ് മാനേജര്‍ നിങ്ങളുടെ സിസ്റ്റം ട്രേ യില്‍ ജാഗ്രതയോടെ ഇരിക്കുകയും അപ്ഡേറ്റുകള്‍ "
+"ലഭ്യമാകുന്ന മുറക്ക് നിങ്ങളെ അറിയിക്കുകയും ചെയ്യും. നിങ്ങള്‍ക്ക് ആവശ്യമില്ലാത്ത സമയത്ത് അപ്ഡേറ്റുകള്‍ "
+"പ്രയോഗിക്കേണ്ട്തില്ല. അപ്ഡേറ്റ് മാനേജര്‍ നിങ്ങളെ ഒരു തരത്തിലും ശല്യപ്പെടുത്തില്ല."
+
+#. type: Content of: <h1>
+#: en/70_chat.html:1
+msgid "Stay connected"
+msgstr "ലോകവുമായി ബന്ധപ്പെട്ടിരിക്കുക"
+
+#. type: Content of: <div><div><ul><li>
+#: en/70_chat.html:6
+msgid ""
+"Keep in touch with your friends and contacts, by email, messenger or on your "
+"favorite social networks. Linux Mint provides all you need to interact with "
+"Twitter, Facebook, Google Hangouts, ICQ, IRC, AIM, Yahoo and many other "
+"networks."
+msgstr ""
+"താങ്കളുടെ സുഹൃത്തുക്കളും സമ്പർക്കങ്ങളുമായി ഇമെയിൽ വഴി, മെസഞ്ചർ വഴി, അല്ലെങ്കിൽ താങ്കളുടെ "
+"പ്രിയപ്പെട്ട സോഷ്യൽ നെറ്റ്‌വർക്ക് വഴി ബന്ധപ്പെട്ടുകൊണ്ടിരിക്കുക. ലിനക്സ് മിന്റ് - റ്റ്വിറ്റർ, "
+"ഫേസ്ബുക്ക്, എം.എസ്.എൻ., ഐ.സി.ക്യു., ഗൂഗിൾടോക്ക്, എ.ഐ.എം., യാഹൂ തുടങ്ങി നിരവധി "
+"നെറ്റ്‌വർക്കുകളിൽ താങ്കൾക്ക് സമ്പർക്കം പുലർത്താനുള്ള സൗകര്യം ചെയ്യുന്നുണ്ട്."
+
+#. type: Content of: <h1>
+#: en/80_community.html:1
+msgid "A great community"
+msgstr "മഹത്തായ ഒരു കൂട്ടായ്മ"
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:6
+msgid ""
+"The Linux Mint community is one of the best on the Internet. Our users not "
+"only provide most of our funding, but also ideas, artwork, and sometimes "
+"even source code."
+msgstr ""
+"ലിനക്സ് മിന്റ് കൂട്ടായ്മ ഇന്റെര്‍നെറ്റിലെതന്നെ ഏറ്റവും നല്ലവയിലൊന്നാണ്. ഉപയോക്താക്കള്‍ തന്നെ "
+"മൂലധനവും, ആശയങ്ങളും, കലയും ചിലപ്പോള്‍ സോഴ്സ്കോഡ് തന്നെയും സമാഹരിക്കുന്നു"
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:7
+msgid ""
+"Linux Mint users are happy to share their passion, enthusiasm, and eagerness "
+"to help. Don't hesitate to ask questions in the forums or get involved with "
+"the community."
+msgstr ""
+"ലിനക്സ് മിന്റ് ഉപയോക്താക്കള്‍ സാധാരണയായി അവരുടെ ത്വരയും, അതിതല്പരതയും പങ്കുവെക്കുന്നതില്‍ ആനന്ദം "
+"കണ്ടെത്തുന്നവരും, സഹായക മനസ്ഥിതിയുള്ളവരും ആണ്. ഫോറങ്ങളില്‍ ചോദ്യങ്ങള്‍ ചോതിക്കുന്നതിനോ, "
+"കൂട്ടായ്മകളില്‍ പങ്കെടുക്കുന്നതിനോ ഒട്ടും ശങ്കിക്കേണ്ട്തില്ല."
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:8
+msgid ""
+"Send us your feedback and tell us about your experience. We'll listen to "
+"your ideas and use them to further improve Linux Mint."
+msgstr ""
+"നിങ്ങളുടെ അഭിപ്രായങ്ങളും നിര്‍ദേശങ്ങളും ഞങ്ങളെ അറിയിക്കുക. നിങ്ങളുടെ ആശയങ്ങളെ ഞങ്ങള്‍ "
+"വിലമതിക്കുന്നു മാത്രമല്ല അവ ലിനക്സ്‌ മിന്റ് മെച്ചപ്പെടുത്തുന്നതിനായി ഉപയോഗിക്കുകയും ചെയ്യുന്നു."
