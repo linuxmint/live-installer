@@ -45,7 +45,7 @@ class InstallerEngine:
         for partition in setup.partitions:                    
             if(partition.format_as is not None and partition.format_as != ""):                
                 # report it. should grab the total count of filesystems to be formatted ..
-                self.update_progress(total=4, current=1, pulse=True, message=_("Formatting %(partition)s as %(format)s..." % {'partition':partition.partition.path, 'format':partition.format_as}))
+                self.update_progress(total=4, current=1, pulse=True, message=_("Formatting %(partition)s as %(format)s ..." % {'partition':partition.partition.path, 'format':partition.format_as}))
                 
                 #Format it
                 if partition.format_as == "swap":
@@ -210,7 +210,7 @@ class InstallerEngine:
             our_current = 0
             # chroot
             print " --> Chrooting"
-            self.update_progress(total=our_total, current=our_current, message=_("Entering new system.."))            
+            self.update_progress(total=our_total, current=our_current, message=_("Entering the system ..."))
             os.system("mount --bind /dev/ /target/dev/")
             os.system("mount --bind /dev/shm /target/dev/shm")
             os.system("mount --bind /dev/pts /target/dev/pts")
@@ -251,7 +251,7 @@ class InstallerEngine:
             # add new user
             print " --> Adding new user"
             our_current += 1
-            self.update_progress(total=our_total, current=our_current, message=_("Adding user to system"))           
+            self.update_progress(total=our_total, current=our_current, message=_("Adding new user to the system"))
             self.do_run_in_chroot("useradd -s %s -c \'%s\' -G sudo,adm,dialout,audio,video,cdrom,floppy,dip,plugdev,lpadmin,sambashare -m %s" % ("/bin/bash", setup.real_name, setup.username))
             os.system("chroot /target/ /bin/bash -c \"shopt -s dotglob && cp -R /etc/skel/* /home/%s/\"" % setup.username)
             self.do_run_in_chroot("chown -R %s:%s /home/%s" % (setup.username, setup.username, setup.username))
@@ -291,7 +291,7 @@ class InstallerEngine:
             # write the /etc/fstab
             print " --> Writing fstab"
             our_current += 1
-            self.update_progress(total=our_total, current=our_current, message=_("Writing filesystem mount information"))
+            self.update_progress(total=our_total, current=our_current, message=_("Writing filesystem mount information to /etc/fstab"))
             # make sure fstab has default /proc and /sys entries
             if(not os.path.exists("/target/etc/fstab")):
                 os.system("echo \"#### Static Filesystem Table File\" > /target/etc/fstab")
