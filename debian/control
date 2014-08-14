@@ -2,12 +2,33 @@ Source: live-installer
 Section: admin
 Priority: optional
 Maintainer: Clement Lefebvre <root@linuxmint.com>
-Build-Depends: debhelper (>= 5)
-Standards-Version: 3.9.4
+Build-Depends: debhelper (>= 9), po4a
+X-Python-Version: >= 2.7
+Standards-Version: 3.9.5
+Vcs-Git: git://github.com/linuxmint/live-installer.git
+Vcs-Browser: https://github.com/linuxmint/live-installer
 
 Package: live-installer
 Architecture: all
-Depends: python (>= 2.4), python (<< 3), python-gtk2, python-glade2, python-parted, python-webkit, gparted, python-geoip, python-qt4, python-opencv, python-numpy, imagemagick, python-imaging, desktop-file-utils, shared-mime-info, sysv-rc, menu, gdisk
+Depends: ${misc:Depends}, ${python:Depends},
+  python (>= 2.7), python (<< 3),
+  python-gtk2,
+  python-glade2,
+  parted,
+  python-parted,
+  python-webkit,
+  gparted,
+  python-geoip,
+  python-qt4,
+  python-opencv,
+  python-numpy,
+  imagemagick,
+  python-imaging,
+  desktop-file-utils,
+  shared-mime-info,
+  sysv-rc,
+  menu,
+  gdisk
 Description: Live Installer
  A live installer
 

@@ -2,14 +2,12 @@ import os
 import subprocess
 import time
 import shutil
-import gettext
 import stat
 import commands
 import sys
 import parted
 from configobj import ConfigObj
 
-gettext.install("live-installer", "/usr/share/locale")
 
 class InstallerEngine:
     ''' This is central to the live installer '''
@@ -45,7 +43,7 @@ class InstallerEngine:
         for partition in setup.partitions:                    
             if(partition.format_as is not None and partition.format_as != ""):                
                 # report it. should grab the total count of filesystems to be formatted ..
-                self.update_progress(total=4, current=1, pulse=True, message=_("Formatting %(partition)s as %(format)s..." % {'partition':partition.partition.path, 'format':partition.format_as}))
+                self.update_progress(total=4, current=1, pulse=True, message=_("Formatting %(partition)s as %(format)s ..." % {'partition':partition.partition.path, 'format':partition.format_as}))
                 
                 #Format it
                 if partition.format_as == "swap":
@@ -210,7 +208,7 @@ class InstallerEngine:
             our_current = 0
             # chroot
             print " --> Chrooting"
-            self.update_progress(total=our_total, current=our_current, message=_("Entering new system.."))            
+            self.update_progress(total=our_total, current=our_current, message=_("Entering the system ..."))
             os.system("mount --bind /dev/ /target/dev/")
             os.system("mount --bind /dev/shm /target/dev/shm")
             os.system("mount --bind /dev/pts /target/dev/pts")
@@ -251,7 +249,7 @@ class InstallerEngine:
             # add new user
             print " --> Adding new user"
             our_current += 1
-            self.update_progress(total=our_total, current=our_current, message=_("Adding user to system"))           
+            self.update_progress(total=our_total, current=our_current, message=_("Adding new user to the system"))
             self.do_run_in_chroot("useradd -s %s -c \'%s\' -G sudo,adm,dialout,audio,video,cdrom,floppy,dip,plugdev,lpadmin,sambashare -m %s" % ("/bin/bash", setup.real_name, setup.username))
             os.system("chroot /target/ /bin/bash -c \"shopt -s dotglob && cp -R /etc/skel/* /home/%s/\"" % setup.username)
             self.do_run_in_chroot("chown -R %s:%s /home/%s" % (setup.username, setup.username, setup.username))
@@ -263,6 +261,21 @@ class InstallerEngine:
             self.do_run_in_chroot("cat /tmp/.passwd | chpasswd")
             os.system("rm -f /target/tmp/.passwd")            
             
+            # Set autologin for user if they so elected
+            if setup.autologin:
+                # LightDM
+                self.do_run_in_chroot(r"sed -i -r 's/^#?(autologin-user)\s*=.*/\1={user}/' /etc/lightdm/lightdm.conf".format(user=setup.username))
+                # MDM
+                self.do_run_in_chroot(r"sed -i -r -e '/^AutomaticLogin(Enable)?\s*=/d' -e 's/^(\[daemon\])/\1\nAutomaticLoginEnable=true\nAutomaticLogin={user}/' /etc/mdm/mdm.conf".format(user=setup.username))
+                # GDM3
+                self.do_run_in_chroot(r"sed -i -r -e '/^(#\s*)?AutomaticLogin(Enable)?\s*=/d' -e 's/^(\[daemon\])/\1\nAutomaticLoginEnable=true\nAutomaticLogin={user}/' /etc/gdm3/daemon.conf".format(user=setup.username))
+                # KDE4
+                self.do_run_in_chroot(r"sed -i -r -e 's/^#?(AutomaticLoginEnable)\s*=.*/\1=true/' -e 's/^#?(AutomaticLoginUser)\s*.*/\1={user}/' /etc/kde4/kdm/kdmrc".format(user=setup.username))
+                # LXDM
+                self.do_run_in_chroot(r"sed -i -r -e 's/^#?(autologin)\s*=.*/\1={user}/' /etc/lxdm/lxdm.conf".format(user=setup.username))
+                # SLiM
+                self.do_run_in_chroot(r"sed -i -r -e 's/^#?(default_user)\s.*/\1  {user}/' -e 's/^#?(auto_login)\s.*/\1  yes/' /etc/slim.conf".format(user=setup.username))
+
             # Add user's face
             os.system("cp /tmp/live-installer-face.png /target/home/%s/.face" % setup.username)
             self.do_run_in_chroot("chown %s:%s /home/%s/.face" % (setup.username, setup.username, setup.username))
@@ -276,7 +289,7 @@ class InstallerEngine:
             # write the /etc/fstab
             print " --> Writing fstab"
             our_current += 1
-            self.update_progress(total=our_total, current=our_current, message=_("Writing filesystem mount information"))
+            self.update_progress(total=our_total, current=our_current, message=_("Writing filesystem mount information to /etc/fstab"))
             # make sure fstab has default /proc and /sys entries
             if(not os.path.exists("/target/etc/fstab")):
                 os.system("echo \"#### Static Filesystem Table File\" > /target/etc/fstab")
@@ -569,6 +582,7 @@ class Setup(object):
     partitions = [] #Array of PartitionSetup objects
     username = None
     hostname = None
+    autologin = False
     password1 = None
     password2 = None
     real_name = None    
@@ -597,6 +611,7 @@ class Setup(object):
             print "timezone: %s (%s)" % (self.timezone, self.timezone_code)        
             print "keyboard: %s - %s (%s) - %s - %s (%s)" % (self.keyboard_model, self.keyboard_layout, self.keyboard_variant, self.keyboard_model_description, self.keyboard_layout_description, self.keyboard_variant_description)        
             print "user: %s (%s)" % (self.username, self.real_name)
+            print "autologin: ", self.autologin
             print "hostname: %s " % self.hostname
             print "passwords: %s - %s" % (self.password1, self.password2)        
             print "grub_device: %s " % self.grub_device
