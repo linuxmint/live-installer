@@ -1,35 +1,27 @@
 #!/usr/bin/env python
-import sys
-sys.path.append('/usr/lib/live-installer')
+
 from installer import InstallerEngine, Setup, PartitionSetup
-
-try:
-    import pygtk
-    pygtk.require("2.0")
-    import gtk
-    import gtk.glade
-    import glib
-    import gettext
-    import os
-    import commands
-    import subprocess
-    import sys
-    import math    
-    sys.path.append('/usr/lib/live-installer')
-    from PIL import Image
-    import pango
-    import threading
-    import gobject
-    import time
-    import webkit
-    import GeoIP
-    import urllib
-    import string
-    import parted    
-except Exception, detail:
-    print detail
-
 from slideshow import Slideshow
+
+import pygtk; pygtk.require("2.0")
+import gtk
+import gtk.glade
+import glib
+import gettext
+import os
+import commands
+import subprocess
+import sys
+import math
+from PIL import Image
+import threading
+import gobject
+import time
+import webkit
+import GeoIP
+import urllib
+import string
+import parted
 
 gettext.install("live-installer", "/usr/share/linuxmint/locale")
 gtk.gdk.threads_init()
@@ -1703,95 +1695,75 @@ body{background-color:#d6d6d6;} \
         self.wTree.get_widget("treeview_overview").set_model(model)
 
     def do_install(self):        
-        try:        
-            print " ## INSTALLATION "
-            ''' Actually perform the installation .. '''
-            inst = self.installer            
+        print " ## INSTALLATION "
+        ''' Actually perform the installation .. '''
+        inst = self.installer
 
-            if "--debug" in sys.argv:
-                print " ## DEBUG MODE - INSTALLATION PROCESS NOT LAUNCHED"            
-                sys.exit(0)
-                                   
-            inst.set_progress_hook(self.update_progress)
-            inst.set_error_hook(self.error_message)
+        if "--debug" in sys.argv:
+            print " ## DEBUG MODE - INSTALLATION PROCESS NOT LAUNCHED"
+            sys.exit(0)
 
-            # do we dare? ..
-            self.critical_error_happened = False
+        inst.set_progress_hook(self.update_progress)
+        inst.set_error_hook(self.error_message)
 
-            # Now it's time to load the slide show
-            if os.path.exists(self.slideshow_path):                        
-                slideThr = Slideshow(self.slideshow_browser, self.slideshow_path, self.setup.language)
-                # Let the slide-thread die when the parent thread dies
-                slideThr.daemon = True
-                slideThr.start()
+        # do we dare? ..
+        self.critical_error_happened = False
 
-            # Start installing
-            do_try_finish_install = True
-            
-            try:
-                inst.init_install(self.setup)
-            except Exception, detail1:
-                print detail1
-                do_try_finish_install = False
-                try:
-                    gtk.gdk.threads_enter()
-                    MessageDialog(_("Installation error"), str(detail1), gtk.MESSAGE_ERROR, self.window).show()
-                    gtk.gdk.threads_leave()
-                except Exception, detail2:
-                    print detail2
+        # Now it's time to load the slide show
+        slideThr = Slideshow(self.slideshow_browser, self.setup.language)
+        slideThr.daemon = True  # let the slide-thread die with the parent
+        slideThr.start()
 
-            if self.critical_error_happened:
-                gtk.gdk.threads_enter()
+        # Start installing
+        do_try_finish_install = True
+
+        try:
+            inst.init_install(self.setup)
+        except Exception, detail1:
+            print detail1
+            do_try_finish_install = False
+            with gtk.gdk.lock:
+                MessageDialog(_("Installation error"), str(detail1), gtk.MESSAGE_ERROR, self.window).show()
+
+        if self.critical_error_happened:
+            with gtk.gdk.lock:
                 MessageDialog(_("Installation error"), self.critical_error_message, gtk.MESSAGE_ERROR, self.window).show()
-                gtk.gdk.threads_leave()
-                do_try_finish_install = False
+            do_try_finish_install = False
 
-            if do_try_finish_install:
-                if(self.setup.skip_mount):
-                    gtk.gdk.threads_enter()
+        if do_try_finish_install:
+            if(self.setup.skip_mount):
+                with gtk.gdk.lock:
                     self.paused = True
                     self.activate_page(self.PAGE_CUSTOMPAUSED)
                     self.wTree.get_widget("button_next").show()
                     MessageDialog(_("Installation paused"), _("Installation is now paused. Please read the instructions on the page carefully before clicking Forward to finish the installation."), gtk.MESSAGE_INFO, self.window).show()
-                    gtk.gdk.threads_leave()
                     self.wTree.get_widget("button_next").set_sensitive(True)
 
-                    while(self.paused):
-                        time.sleep(0.1)
-
-                try:
-                    inst.finish_install(self.setup)
-                except Exception, detail1:
-                    print detail1
-                    try:
-                        gtk.gdk.threads_enter()
-                        MessageDialog(_("Installation error"), str(detail1), gtk.MESSAGE_ERROR, self.window).show()
-                        gtk.gdk.threads_leave()
-                    except Exception, detail2:
-                        print detail2
-
-                # show a message dialog thingum
-                while(not self.done):
+                while(self.paused):
                     time.sleep(0.1)
-            
+
+            try:
+                inst.finish_install(self.setup)
+            except Exception, detail1:
+                print detail1
+                with gtk.gdk.lock:
+                    MessageDialog(_("Installation error"), str(detail1), gtk.MESSAGE_ERROR, self.window).show()
+
+            # show a message dialog thingum
+            while(not self.done):
+                time.sleep(0.1)
+
+            with gtk.gdk.lock:
                 if self.critical_error_happened:
-                    gtk.gdk.threads_enter()
                     MessageDialog(_("Installation error"), self.critical_error_message, gtk.MESSAGE_ERROR, self.window).show()
-                    gtk.gdk.threads_leave()                
                 else:
-                    gtk.gdk.threads_enter()                    
                     dialog = QuestionDialog(_("Installation finished"), _("Installation is now complete. Do you want to restart your computer to use the new system?"), self.window)
                     if (dialog.show()):
                         # Reboot now
                         os.system('reboot')
-                    gtk.gdk.threads_leave()
-                
-                print " ## INSTALLATION COMPLETE "
-            
-        except Exception, detail:
-            print "!!!! General exception"
-            print detail
-            
+
+            print " ## INSTALLATION COMPLETE "
+
         # safe??
         gtk.main_quit()
         # you are now..
