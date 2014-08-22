@@ -1330,25 +1330,9 @@ body{background-color:#d6d6d6;} \
     def build_kb_lists(self):
         ''' Do some xml kung-fu and load the keyboard stuffs '''
 
-        # firstly we'll determine the layouts in use
-        p = subprocess.Popen("setxkbmap -print",shell=True,stdout=subprocess.PIPE)
-        for line in p.stdout:
-            # strip it
-            line = line.rstrip("\r\n")
-            line = line.replace("{","")
-            line = line.replace("}","")
-            line = line.replace(";","")
-            if("xkb_symbols" in line):
-                # decipher the layout in use
-                section = line.split("\"")[1] # split by the " mark
-                self.setup.keyboard_layout = section.split("+")[1]
-            if("xkb_geometry" in line):
-                first_bracket = line.index("(") +1
-                substr = line[first_bracket:]
-                last_bracket = substr.index(")")
-                substr = substr[0:last_bracket]
-                keyboard_geom = substr
-        p.poll()
+        # Determine the layouts in use
+        (keyboard_geom,
+         self.setup.keyboard_layout) = commands.getoutput("setxkbmap -query | awk '/^(model|layout)/{print $2}'").split()
 
         xml_file = '/usr/share/X11/xkb/rules/xorg.xml'
         model_models = gtk.ListStore(str,str)
@@ -1403,19 +1387,8 @@ body{background-color:#d6d6d6;} \
             combo.set_active_iter(set_keyboard_model)            
             
     def build_kb_variant_lists(self):
-        # firstly we'll determine the layouts in use
-        p = subprocess.Popen("setxkbmap -print",shell=True,stdout=subprocess.PIPE)
-        for line in p.stdout:
-            # strip it
-            line = line.rstrip("\r\n")
-            line = line.replace("{","")
-            line = line.replace("}","")
-            line = line.replace(";","")
-            if("xkb_symbols" in line):
-                # decipher the layout in use
-                section = line.split("\"")[1] # split by the " mark
-                self.setup.keyboard_layout = section.split("+")[1]
-        p.poll()
+        # Determine the layouts in use
+        self.setup.keyboard_layout = commands.getoutput("setxkbmap -query | awk '/layout/{print $2}'")
 
         xml_file = '/usr/share/X11/xkb/rules/xorg.xml'      
         model_variants = gtk.ListStore(str,str)
