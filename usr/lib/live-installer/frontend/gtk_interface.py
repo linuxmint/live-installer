@@ -239,7 +239,7 @@ class InstallerWindow:
         self.wizard_pages[self.PAGE_USER] = WizardPage(_("User info"), "user.png")
         self.wizard_pages[self.PAGE_HDD] = WizardPage(_("Hard drive"), "hdd.svg")
         self.wizard_pages[self.PAGE_PARTITIONS] = WizardPage(_("Partitioning"), "hdd.svg")
-        self.wizard_pages[self.PAGE_CUSTOMWARNING] = WizardPage(_("Please make sure you wish to manually manage partitions"), "hdd.svg")
+        self.wizard_pages[self.PAGE_CUSTOMWARNING] = WizardPage(_("Please make sure you wish to manage partitions manually"), "hdd.svg")
         self.wizard_pages[self.PAGE_ADVANCED] = WizardPage(_("Advanced options"), "advanced.png")
         self.wizard_pages[self.PAGE_OVERVIEW] = WizardPage(_("Summary"), "summary.png")
         self.wizard_pages[self.PAGE_INSTALL] = WizardPage(_("Installing Linux Mint..."), "install.png")
@@ -279,10 +279,10 @@ class InstallerWindow:
             print detail
 
         if webcam_detected:
-            self.wTree.get_widget("face_take_picture_button").set_tooltip_text(_("Click this button to take a new picture of yourself with the webcam"))
+            self.wTree.get_widget("face_take_picture_button").set_tooltip_text(_("Click this button to take a new picture of yourself with the webcam."))
         else:
             self.wTree.get_widget("face_take_picture_button").set_sensitive(False)
-            self.wTree.get_widget("face_take_picture_button").set_tooltip_text(_("The installer did not detect any webcam"))
+            self.wTree.get_widget("face_take_picture_button").set_tooltip_text(_("The installer did not detect any webcams."))
         
         # build the language list
         self.build_lang_list()        
@@ -391,7 +391,7 @@ class InstallerWindow:
         self.column12.add_attribute(ren, "markup", 0)
         self.wTree.get_widget("treeview_overview").append_column(self.column12)
         # install page
-        self.wTree.get_widget("label_install_progress").set_markup("<i>%s</i>" % _("Calculating file indexes..."))
+        self.wTree.get_widget("label_install_progress").set_markup("<i>%s</i>" % _("Calculating file indexes ..."))
     
         #i18n
         self.i18n()
@@ -544,13 +544,13 @@ class InstallerWindow:
     def i18n(self):
         # about you
         self.wTree.get_widget("label_your_name").set_markup("<b>%s</b>" % _("Your full name"))
-        self.wTree.get_widget("label_your_name_help").set_markup("<span fgcolor='#3C3C3C'><sub><i>%s</i></sub></span>" % _("This will be shown in the About Me application"))
+        self.wTree.get_widget("label_your_name_help").set_markup("<span fgcolor='#3C3C3C'><sub><i>%s</i></sub></span>" % _("This will be shown in the About Me application."))
         self.wTree.get_widget("label_username").set_markup("<b>%s</b>" % _("Your username"))
-        self.wTree.get_widget("label_username_help").set_markup("<span fgcolor='#3C3C3C'><sub><i>%s</i></sub></span>" % _("This is the name you will use to log in to your computer"))
+        self.wTree.get_widget("label_username_help").set_markup("<span fgcolor='#3C3C3C'><sub><i>%s</i></sub></span>" % _("This is the name you will use to log in to your computer."))
         self.wTree.get_widget("label_choose_pass").set_markup("<b>%s</b>" % _("Your password"))
-        self.wTree.get_widget("label_pass_help").set_markup("<span fgcolor='#3C3C3C'><sub><i>%s</i></sub></span>" % _("Please enter your password twice to ensure it is correct"))
+        self.wTree.get_widget("label_pass_help").set_markup("<span fgcolor='#3C3C3C'><sub><i>%s</i></sub></span>" % _("Please enter your password twice to ensure it is correct."))
         self.wTree.get_widget("label_hostname").set_markup("<b>%s</b>" % _("Hostname"))
-        self.wTree.get_widget("label_hostname_help").set_markup("<span fgcolor='#3C3C3C'><sub><i>%s</i></sub></span>" % _("This hostname will be the computers name on the network"))
+        self.wTree.get_widget("label_hostname_help").set_markup("<span fgcolor='#3C3C3C'><sub><i>%s</i></sub></span>" % _("This hostname will be the computer's name on the network."))
         self.wTree.get_widget("label_autologin").set_markup("<b>%s</b>" % _("Automatic login"))
         self.wTree.get_widget("label_autologin_help").set_markup("<span fgcolor='#3C3C3C'><sub><i>%s</i></sub></span>" % _("If enabled, the login screen is skipped when the system starts, and you are signed into your desktop session automatically."))
         self.wTree.get_widget("checkbutton_autologin").set_label(_("Log in automatically on system boot"))
@@ -561,7 +561,7 @@ class InstallerWindow:
         self.wTree.get_widget("face_take_picture_button").set_label(_("Take a photo"))        
         
         self.wTree.get_widget("face_select_picture_button").set_label(_("Select a picture"))
-        self.wTree.get_widget("face_select_picture_button").set_tooltip_text(_("Click this button to choose a picture for your account"))
+        self.wTree.get_widget("face_select_picture_button").set_tooltip_text(_("Click this button to choose a picture from the hard disk."))
                 
         # timezones
         self.wTree.get_widget("label_timezones").set_label(_("Selected timezone:"))
@@ -569,22 +569,22 @@ class InstallerWindow:
         # grub
         self.wTree.get_widget("label_grub").set_markup("<b>%s</b>" % _("Bootloader"))
         self.wTree.get_widget("checkbutton_grub").set_label(_("Install GRUB"))
-        self.wTree.get_widget("label_grub_help").set_label(_("GRUB is a bootloader used to load the Linux kernel"))
+        self.wTree.get_widget("label_grub_help").set_label(_("GRUB is a bootloader used to load the Linux kernel."))
         
         # keyboard page
-        self.wTree.get_widget("label_test_kb").set_label(_("Use this box to test your keyboard layout"))
+        self.wTree.get_widget("label_test_kb").set_label(_("Use this box to test your keyboard layout."))
         self.wTree.get_widget("label_kb_model").set_label(_("Model"))        
         
         # custom install warning
         self.wTree.get_widget("label_custom_install_directions_1").set_label(_("You have selected to manage your partitions manually, this feature is for ADVANCED USERS ONLY."))
         self.wTree.get_widget("label_custom_install_directions_2").set_label(_("Before continuing, please mount your target filesystem(s) at /target."))
         self.wTree.get_widget("label_custom_install_directions_3").set_label(_("Do NOT mount virtual devices such as /dev, /proc, /sys, etc on /target/."))
-        self.wTree.get_widget("label_custom_install_directions_4").set_label(_("During the install, you will be given time to chroot into /target and install any pacakges that will be needed to boot your new system."))
+        self.wTree.get_widget("label_custom_install_directions_4").set_label(_("During the install, you will be given time to chroot into /target and install any packages that will be needed to boot your new system."))
         self.wTree.get_widget("label_custom_install_directions_5").set_label(_("During the install, you will be required to write your own /etc/fstab."))
         self.wTree.get_widget("label_custom_install_directions_6").set_label(_("If you aren't sure what any of this means, please go back and deselect manual partition management."))
 
         # custom install installation paused directions
-        self.wTree.get_widget("label_custom_install_paused_1").set_label(_("Please do the following and then click Forward to finish Installation:"))
+        self.wTree.get_widget("label_custom_install_paused_1").set_label(_("Please do the following and then click Forward to finish installation:"))
         self.wTree.get_widget("label_custom_install_paused_2").set_label(_("Create /target/etc/fstab for the filesystems as they will be mounted in your new system, matching those currently mounted at /target (without using the /target prefix in the mount paths themselves)."))
         self.wTree.get_widget("label_custom_install_paused_3").set_label(_("Install any packages that may be needed for first boot (mdadm, cryptsetup, dmraid, etc) by calling \"sudo chroot /target\" followed by the relevant apt-get/aptitude installations."))
         self.wTree.get_widget("label_custom_install_paused_4").set_label(_("Note that in order for update-initramfs to work properly in some cases (such as dm-crypt), you may need to have drives currently mounted using the same block device name as they appear in /target/etc/fstab."))
@@ -1076,7 +1076,7 @@ class InstallerWindow:
                 try:
                     disk = parted.Disk(device)
                 except Exception:
-                    dialog = QuestionDialog(_("Installation Tool"), _("No partition table was found on the hard drive. Do you want the installer to create a set of partitions for you? Note: This will erase any data present on the disk."), self.window)
+                    dialog = QuestionDialog(_("Installation Tool"), _("No partition table was found on the hard drive. Do you want the installer to create a set of partitions for you? Note: This will ERASE ALL DATA present on the disk."), self.window)
                     if (dialog.show()):
                         # Create a default partition set up
                         # try to load efivars
@@ -1510,10 +1510,10 @@ body{background-color:#d6d6d6;} \
             self.wTree.get_widget("label_mismatch").show()
         if(self.setup.password1 != self.setup.password2):
             self.wTree.get_widget("image_mismatch").set_from_stock(gtk.STOCK_NO, gtk.ICON_SIZE_BUTTON)            
-            self.wTree.get_widget("label_mismatch").set_label(_("Passwords do not match"))            
+            self.wTree.get_widget("label_mismatch").set_label(_("Passwords do not match."))
         else:
             self.wTree.get_widget("image_mismatch").set_from_stock(gtk.STOCK_OK, gtk.ICON_SIZE_BUTTON)            
-            self.wTree.get_widget("label_mismatch").set_label(_("Passwords match"))                    
+            self.wTree.get_widget("label_mismatch").set_label(_("Passwords match."))
         self.setup.print_setup()
         
     def activate_page(self, index):
@@ -1525,7 +1525,8 @@ body{background-color:#d6d6d6;} \
     def wizard_cb(self, widget, goback, data=None):
         ''' wizard buttons '''
         sel = self.wTree.get_widget("notebook1").get_current_page()
-        self.wTree.get_widget("button_next").set_label(_("Forward"))
+        self.wTree.get_widget("button_next").set_label(gtk.STOCK_GO_FORWARD)
+        self.wTree.get_widget("button_next").set_use_stock(True)
         self.wTree.get_widget("button_back").set_sensitive(True)
         
         # check each page for errors
@@ -1571,37 +1572,37 @@ body{background-color:#d6d6d6;} \
                                 
                 if(self.setup.real_name is None or self.setup.real_name == ""):
                     errorFound = True
-                    errorMessage = _("Please provide your full name")
+                    errorMessage = _("Please provide your full name.")
                 elif(self.setup.username is None or self.setup.username == ""):
                     errorFound = True
-                    errorMessage = _("Please provide a username")                
+                    errorMessage = _("Please provide a username.")
                 elif(self.setup.password1 is None or self.setup.password1 == ""):
                     errorFound = True
-                    errorMessage = _("Please provide a password for your user account")
+                    errorMessage = _("Please provide a password for your user account.")
                 elif(self.setup.password1 != self.setup.password2):
                     errorFound = True
-                    errorMessage = _("Your passwords do not match")
+                    errorMessage = _("Your passwords do not match.")
                 elif(self.setup.hostname is None or self.setup.hostname == ""):
                     errorFound = True
-                    errorMessage = _("Please provide a hostname")
+                    errorMessage = _("Please provide a hostname.")
                 else:
                     for char in self.setup.username:
                         if(char.isupper()):
                             errorFound = True
-                            errorMessage = _("Your username must be lower case")
+                            errorMessage = _("Your username must be lower case.")
                             break
                         elif(char.isspace()):
                             errorFound = True
-                            errorMessage = _("Your username may not contain whitespace")
+                            errorMessage = _("Your username may not contain whitespace characters.")
                     
                     for char in self.setup.hostname:
                         if(char.isupper()):
                             errorFound = True
-                            errorMessage = _("Your hostname must be lower case")
+                            errorMessage = _("The hostname must be lower case.")
                             break
                         elif(char.isspace()):
                             errorFound = True
-                            errorMessage = _("Your hostname may not contain whitespace")
+                            errorMessage = _("The hostname may not contain whitespace characters.")
                     
                 if (errorFound):
                     MessageDialog(_("Installation Tool"), errorMessage, gtk.MESSAGE_WARNING, self.window).show()
@@ -1622,10 +1623,10 @@ body{background-color:#d6d6d6;} \
                     if(partition.mount_as == "/"):
                         found_root_partition = True
                         if partition.format_as is None or partition.format_as == "":                            
-                            MessageDialog(_("Installation Tool"), _("Please indicate a filesystem to format the root (/) partition before proceeding"), gtk.MESSAGE_ERROR, self.window).show()
+                            MessageDialog(_("Installation Tool"), _("Please indicate a filesystem to format the root (/) partition with before proceeding."), gtk.MESSAGE_ERROR, self.window).show()
                             return
                 if not found_root_partition:
-                    MessageDialog(_("Installation Tool"), _("<b>Please select a root partition</b>"), gtk.MESSAGE_ERROR, self.window, _("A root partition is needed to install Linux Mint.\n\n - Mount point: /\n - Recommended size: Larger than 10GB\n - Recommended format: ext4\n ")).show()
+                    MessageDialog(_("Installation Tool"), _("<b>Please select a root (/) partition.</b>"), gtk.MESSAGE_ERROR, self.window, _("A root partition is needed to install Linux Mint on.\n\n - Mount point: /\n - Recommended size: 30GB\n - Recommended filesystem format: ext4\n ")).show()
                     return
 
                 if self.setup.gptonefi:
@@ -1651,7 +1652,7 @@ body{background-color:#d6d6d6;} \
                                     return
                             
                     if not found_efi_partition:
-                        MessageDialog(_("Installation Tool"), _("<b>Please select an EFI partition</b>"), gtk.MESSAGE_ERROR, self.window, _("An EFI system partition is needed with the following requirements:\n\n - Mount point: /boot/efi\n - Partition flags: Bootable\n - Size: Larger than 100MB\n - Format: vfat or fat32\n\nTo ensure compatibility with Windows we recommend you use the first partition of the disk as the EFI system partition.\n ")).show()
+                        MessageDialog(_("Installation Tool"), _("<b>Please select an EFI partition.</b>"), gtk.MESSAGE_ERROR, self.window, _("An EFI system partition is needed with the following requirements:\n\n - Mount point: /boot/efi\n - Partition flags: Bootable\n - Size: Larger than 100MB\n - Format: vfat or fat32\n\nTo ensure compatibility with Windows we recommend you use the first partition of the disk as the EFI system partition.\n ")).show()
                         return
 
                 self.build_grub_partitions()
@@ -1664,7 +1665,7 @@ body{background-color:#d6d6d6;} \
                 self.activate_page(self.PAGE_OVERVIEW)
                 self.show_overview()
                 self.wTree.get_widget("treeview_overview").expand_all()
-                self.wTree.get_widget("button_next").set_label(_("Install"))
+                self.wTree.get_widget("button_next").set_label(gtk.STOCK_APPLY)
             elif(sel == self.PAGE_OVERVIEW):
                 self.activate_page(self.PAGE_INSTALL)
                 # do install
@@ -1725,7 +1726,7 @@ body{background-color:#d6d6d6;} \
         model.set(iter, 0, _("Hostname: ") + "<b>%s</b>" % self.setup.hostname)       
         iter = model.append(top)
         if(self.setup.grub_device is not None):
-            model.set(iter, 0, _("Install bootloader in %s") % ("<b>%s</b>" % self.setup.grub_device))
+            model.set(iter, 0, _("Install bootloader on %s") % ("<b>%s</b>" % self.setup.grub_device))
         else:
             model.set(iter, 0, _("Do not install bootloader"))
         top = model.append(None)
@@ -1796,7 +1797,7 @@ body{background-color:#d6d6d6;} \
                     self.paused = True
                     self.activate_page(self.PAGE_CUSTOMPAUSED)
                     self.wTree.get_widget("button_next").show()
-                    MessageDialog(_("Installation Paused"), _("Installation is now paused. Please read the instructions on the page carefully and click Forward to finish installation."), gtk.MESSAGE_INFO, self.window).show()
+                    MessageDialog(_("Installation paused"), _("Installation is now paused. Please read the instructions on the page carefully before clicking Forward to finish the installation."), gtk.MESSAGE_INFO, self.window).show()
                     gtk.gdk.threads_leave()
                     self.wTree.get_widget("button_next").set_sensitive(True)
 
