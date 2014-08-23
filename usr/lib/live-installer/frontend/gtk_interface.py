@@ -1373,15 +1373,6 @@ body{background-color:#d6d6d6;} \
             treeview.set_cursor(path)
             treeview.scroll_to_cell(path)
         except NameError: pass  # set_keyboard_layout not set
-            
-    def build_kb_variant_lists(self):
-        # Determine the layouts in use
-        self.setup.keyboard_layout = commands.getoutput("setxkbmap -query | awk '/layout/{print $2}'")
-        # Set the model
-        model = self.layout_variants[self.setup.keyboard_layout]
-        self.wTree.get_widget("treeview_variants").set_model(model)
-        # Select the first item (standard variant layout)
-        self.wTree.get_widget("treeview_variants").set_cursor(model.get_path(model.get_iter_first()))
 
     def assign_language(self, treeview, data=None):
         ''' Called whenever someone updates the language '''
@@ -1446,49 +1437,37 @@ body{background-color:#d6d6d6;} \
             self.setup.grub_device = row[0]  
         self.setup.print_setup()
        
-    def assign_keyboard_model(self, combobox, data=None):
+    def assign_keyboard_model(self, combobox):
         ''' Called whenever someone updates the keyboard model '''
         model = combobox.get_model()
         active = combobox.get_active()
-        if(active > -1):
-            row = model[active]
-            os.system("setxkbmap -model %s" % row[1])
-            self.setup.keyboard_model = row[1]
-            self.setup.keyboard_model_description = row[0]
+        (self.setup.keyboard_model_description,
+         self.setup.keyboard_model) = model[active]
+        os.system('setxkbmap -model ' + self.setup.keyboard_model)
         self.setup.print_setup()
 
-    def assign_keyboard_layout(self, treeview, data=None):
+    def assign_keyboard_layout(self, treeview):
         ''' Called whenever someone updates the keyboard layout '''
-        model = treeview.get_model()
-        active = treeview.get_selection().get_selected_rows()
-        if(len(active) < 1):
-            return
-        active = active[1][0]
-        if(active is None):
-            return
-        row = model[active]
-        os.system("setxkbmap -layout %s" % row[1])
-        self.setup.keyboard_layout = row[1]
-        self.setup.keyboard_layout_description = row[0]
-        self.build_kb_variant_lists()
-        self.setup.print_setup()
+        model, active = treeview.get_selection().get_selected_rows()
+        if not active: return
+        (self.setup.keyboard_layout_description,
+         self.setup.keyboard_layout) = model[active[0]]
+        # Set the correct variant list model ...
+        model = self.layout_variants[self.setup.keyboard_layout]
+        self.wTree.get_widget("treeview_variants").set_model(model)
+        # ... and select the first variant (standard)
+        self.wTree.get_widget("treeview_variants").set_cursor(0)
 
-    def assign_keyboard_variant(self, treeview, data=None):
-        ''' Called whenever someone updates the keyboard layout '''
-        model = treeview.get_model()
-        active = treeview.get_selection().get_selected_rows()
-        if(len(active) < 1):
-            return
-        active = active[1][0]
-        if(active is None):
-            return
-        row = model[active]
-        if (row[1] is None):
-            os.system("setxkbmap -layout %s" % self.setup.keyboard_layout)
+    def assign_keyboard_variant(self, treeview):
+        ''' Called whenever someone updates the keyboard layout or variant '''
+        model, active = treeview.get_selection().get_selected_rows()
+        if not active: return
+        (self.setup.keyboard_variant_description,
+         self.setup.keyboard_variant) = model[active[0]]
+        if self.setup.keyboard_variant:
+            os.system('setxkbmap -variant ' + self.setup.keyboard_variant)
         else:
-            os.system("setxkbmap -variant %s" % row[1])
-        self.setup.keyboard_variant = row[1]
-        self.setup.keyboard_variant_description = row[0]
+            os.system('setxkbmap -layout ' + self.setup.keyboard_layout)
         self.setup.print_setup()
         
         filename = "/tmp/live-install-keyboard-layout.png"
