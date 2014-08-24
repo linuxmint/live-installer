@@ -112,7 +112,8 @@ class InstallerEngine:
             # find the squashfs..
             if(not os.path.exists(self.media)):
                 print "Base filesystem does not exist! Critical error (exiting)."
-                sys.exit(1) # change to report
+                self.error_message(message=_("ERROR: Something is wrong with the installation medium! This is usually caused by burning tools which are not compatible with LMDE (YUMI or other multiboot tools). Please burn the ISO image to DVD/USB using a different tool."))
+                return
 
             try:
                 os.system("umount --force /target/dev/shm")
