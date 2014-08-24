@@ -8,6 +8,7 @@ try:
     pygtk.require("2.0")
     import gtk
     import gtk.glade
+    import glib
     import gettext
     import os
     import commands
@@ -41,6 +42,8 @@ INDEX_PARTITION_MOUNT_AS=4
 INDEX_PARTITION_SIZE=5
 INDEX_PARTITION_FREE_SPACE=6
 INDEX_PARTITION_OBJECT=7
+
+LOADING_ANIMATION = '/usr/share/live-installer/loading.gif'
 
 class ProgressDialog:
     
@@ -191,6 +194,10 @@ class Timezone:
         return (int(x), int(y))        
         
 class InstallerWindow:
+    # Cancelable timeout for keyboard preview generation, which is
+    # quite expensive, so avoid drawing it if only scrolling through
+    # the keyboard layout list
+    kbd_preview_generation = -1
 
     def __init__(self, fullscreen=False):
         
@@ -1460,6 +1467,7 @@ body{background-color:#d6d6d6;} \
 
     def assign_keyboard_variant(self, treeview):
         ''' Called whenever someone updates the keyboard layout or variant '''
+        glib.source_remove(self.kbd_preview_generation)  # stop previous preview generation, if any
         model, active = treeview.get_selection().get_selected_rows()
         if not active: return
         (self.setup.keyboard_variant_description,
@@ -1469,10 +1477,15 @@ body{background-color:#d6d6d6;} \
         else:
             os.system('setxkbmap -layout ' + self.setup.keyboard_layout)
         self.setup.print_setup()
-        
+        # Set preview image
+        self.wTree.get_widget("image_keyboard").set_from_file(LOADING_ANIMATION)
+        self.kbd_preview_generation = glib.timeout_add(500, self._generate_keyboard_layout_preview)
+
+    def _generate_keyboard_layout_preview(self):
         filename = "/tmp/live-install-keyboard-layout.png"
         os.system("python /usr/lib/live-installer/frontend/generate_keyboard_layout.py %s %s %s" % (self.setup.keyboard_layout, self.setup.keyboard_variant, filename))
-        self.wTree.get_widget("image_keyboard").set_from_file(filename)        
+        self.wTree.get_widget("image_keyboard").set_from_file(filename)
+        return False
 
     def assign_password(self, widget):
         ''' Someone typed into the entry '''
