@@ -711,14 +711,18 @@ class InstallerWindow:
     def build_lang_list(self):
 
         #Try to find out where we're located...
-        cur_country_code = None
+        cur_country_code, cur_timezone = None, None
         try:
             whatismyip = 'http://www.linuxmint.com/installer/show_my_ip.php'
             ip = urllib.urlopen(whatismyip).readlines()[0]
-            gi = GeoIP.new(GeoIP.GEOIP_MEMORY_CACHE)
-            cur_country_code = gi.country_code_by_addr(ip)
+            gi = GeoIP.open('/usr/share/GeoIP/GeoIPCity.dat', GeoIP.GEOIP_STANDARD)
+            gir = gi.record_by_addr(ip)
+            cur_country_code, cur_timezone = gir['country_code'], gir['time_zone']
         except:
             pass #best effort, we get here if we're not connected to the Internet            
+
+        self.cur_country_code = cur_country_code
+        self.cur_timezone = cur_timezone
 
         #Plan B... find out what locale we're in (i.e. USA on the live session)
         cur_lang = os.environ['LANG']
@@ -1620,9 +1624,9 @@ body{background-color:#d6d6d6;} \
                 model = combo.get_model()
                 iter = model.get_iter_first()
                 while iter is not None:
-                    iter_country_code = model.get_value(iter, 1).country_code
-                    if iter_country_code == country_code:
-                        combo.set_active_iter(iter)                        
+                    iter_timezone = model.get_value(iter, 0)
+                    if iter_timezone == self.cur_timezone:
+                        combo.set_active_iter(iter)
                         break
                     iter = model.iter_next(iter)
                 self.activate_page(self.PAGE_TIMEZONE)
