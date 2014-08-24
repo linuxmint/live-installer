@@ -8,6 +8,7 @@ try:
     pygtk.require("2.0")
     import gtk
     import gtk.glade
+    import glib
     import gettext
     import os
     import commands
@@ -18,8 +19,6 @@ try:
     from PIL import Image
     import pango
     import threading
-    import xml.dom.minidom
-    from xml.dom.minidom import parse
     import gobject
     import time
     import webkit
@@ -43,6 +42,8 @@ INDEX_PARTITION_MOUNT_AS=4
 INDEX_PARTITION_SIZE=5
 INDEX_PARTITION_FREE_SPACE=6
 INDEX_PARTITION_OBJECT=7
+
+LOADING_ANIMATION = '/usr/share/live-installer/loading.gif'
 
 class ProgressDialog:
     
@@ -193,6 +194,10 @@ class Timezone:
         return (int(x), int(y))        
         
 class InstallerWindow:
+    # Cancelable timeout for keyboard preview generation, which is
+    # quite expensive, so avoid drawing it if only scrolling through
+    # the keyboard layout list
+    kbd_preview_generation = -1
 
     def __init__(self, fullscreen=False):
         
@@ -1337,136 +1342,52 @@ body{background-color:#d6d6d6;} \
 
     def build_kb_lists(self):
         ''' Do some xml kung-fu and load the keyboard stuffs '''
-
-        # firstly we'll determine the layouts in use
-        p = subprocess.Popen("setxkbmap -print",shell=True,stdout=subprocess.PIPE)
-        for line in p.stdout:
-            # strip it
-            line = line.rstrip("\r\n")
-            line = line.replace("{","")
-            line = line.replace("}","")
-            line = line.replace(";","")
-            if("xkb_symbols" in line):
-                # decipher the layout in use
-                section = line.split("\"")[1] # split by the " mark
-                self.setup.keyboard_layout = section.split("+")[1]
-            if("xkb_geometry" in line):
-                first_bracket = line.index("(") +1
-                substr = line[first_bracket:]
-                last_bracket = substr.index(")")
-                substr = substr[0:last_bracket]
-                keyboard_geom = substr
-        p.poll()
-
-        xml_file = '/usr/share/X11/xkb/rules/xorg.xml'
-        model_models = gtk.ListStore(str,str)
-        model_models.set_sort_column_id(0, gtk.SORT_ASCENDING)
-        model_layouts = gtk.ListStore(str,str)
-        model_layouts.set_sort_column_id(0, gtk.SORT_ASCENDING)        
-        dom = parse(xml_file)
-
-        # if we find the users keyboard info we can set it in the list
-        set_keyboard_model = None
-        set_keyboard_layout = None
-        set_keyboard_variant = None
-
-        # grab the root element
-        root = dom.getElementsByTagName('xkbConfigRegistry')[0]
-        # build the list of models
-        root_models = root.getElementsByTagName('modelList')[0]
-        for element in root_models.getElementsByTagName('model'):
-            conf = element.getElementsByTagName('configItem')[0]
-            name = conf.getElementsByTagName('name')[0]
-            desc = conf.getElementsByTagName('description')[0]
-            #vendor = conf.getElementsByTagName('vendor')[0] # presently unused..
-            iter_model = model_models.append([self.getText(desc.childNodes), self.getText(name.childNodes)])
-            item = self.getText(name.childNodes)
-            if(item == keyboard_geom):
-                set_keyboard_model = iter_model
-        root_layouts = root.getElementsByTagName('layoutList')[0]
-        for element in root_layouts.getElementsByTagName('layout'):
-            conf = element.getElementsByTagName('configItem')[0]
-            name = conf.getElementsByTagName('name')[0]
-            desc = conf.getElementsByTagName('description')[0]
-            iter_layout = model_layouts.append([self.getText(desc.childNodes), self.getText(name.childNodes)])
-            item = self.getText(name.childNodes)
-            if(item == self.setup.keyboard_layout):
-                set_keyboard_layout = iter_layout
-        # now set the model        
-        self.wTree.get_widget("combobox_kb_model").set_model(model_models)
-        self.wTree.get_widget("treeview_layouts").set_model(model_layouts)
-
-        if(set_keyboard_layout is not None):
-            # show it in the list
+        # Determine the layouts in use
+        (keyboard_geom,
+         self.setup.keyboard_layout) = commands.getoutput("setxkbmap -query | awk '/^(model|layout)/{print $2}'").split()
+        # Build the models
+        from collections import defaultdict
+        def _ListStore_factory():
+            model = gtk.ListStore(str, str)
+            model.set_sort_column_id(0, gtk.SORT_ASCENDING)
+            return model
+        models = _ListStore_factory()
+        layouts = _ListStore_factory()
+        variants = defaultdict(_ListStore_factory)
+        try:
+            import xml.etree.cElementTree as ET
+        except ImportError:
+            import xml.etree.ElementTree as ET
+        xml = ET.parse('/usr/share/X11/xkb/rules/xorg.xml')
+        for node in xml.iterfind('.//modelList/model/configItem'):
+            name, desc = node.find('name').text, node.find('description').text
+            iterator = models.append((desc, name))
+            if name == keyboard_geom:
+                set_keyboard_model = iterator
+        for node in xml.iterfind('.//layoutList/layout'):
+            name, desc = node.find('configItem/name').text, node.find('configItem/description').text
+            variants[name].append((desc, None))
+            for variant in node.iterfind('variantList/variant/configItem'):
+                var_name, var_desc = variant.find('name').text, variant.find('description').text
+                var_desc = var_desc if var_desc.startswith(desc) else '{} - {}'.format(desc, var_desc)
+                variants[name].append((var_desc, var_name))
+            iterator = layouts.append((desc, name))
+            if name == self.setup.keyboard_layout:
+                set_keyboard_layout = iterator
+        # Set the models
+        self.wTree.get_widget("combobox_kb_model").set_model(models)
+        self.wTree.get_widget("treeview_layouts").set_model(layouts)
+        self.layout_variants = variants
+        # Preselect currently active keyboard info
+        try:
+            self.wTree.get_widget("combobox_kb_model").set_active_iter(set_keyboard_model)
+        except NameError: pass  # set_keyboard_model not set
+        try:
             treeview = self.wTree.get_widget("treeview_layouts")
-            model = treeview.get_model()
-            column = treeview.get_column(0)
-            path = model.get_path(set_keyboard_layout)
-            treeview.set_cursor(path, focus_column=column)
-            treeview.scroll_to_cell(path, column=column)
-        if(set_keyboard_model is not None):         
-             # show it in the combo
-            combo = self.wTree.get_widget("combobox_kb_model")
-            model = combo.get_model()                    
-            combo.set_active_iter(set_keyboard_model)            
-            
-    def build_kb_variant_lists(self):
-        # firstly we'll determine the layouts in use
-        p = subprocess.Popen("setxkbmap -print",shell=True,stdout=subprocess.PIPE)
-        for line in p.stdout:
-            # strip it
-            line = line.rstrip("\r\n")
-            line = line.replace("{","")
-            line = line.replace("}","")
-            line = line.replace(";","")
-            if("xkb_symbols" in line):
-                # decipher the layout in use
-                section = line.split("\"")[1] # split by the " mark
-                self.setup.keyboard_layout = section.split("+")[1]
-        p.poll()
-
-        xml_file = '/usr/share/X11/xkb/rules/xorg.xml'      
-        model_variants = gtk.ListStore(str,str)
-        model_variants.set_sort_column_id(0, gtk.SORT_ASCENDING)        
-        dom = parse(xml_file)
-        
-        # grab the root element
-        root = dom.getElementsByTagName('xkbConfigRegistry')[0]
-        # build the list of variants       
-        root_layouts = root.getElementsByTagName('layoutList')[0]
-        for layout in root_layouts.getElementsByTagName('layout'):
-            conf = layout.getElementsByTagName('configItem')[0]
-            layout_name = self.getText(conf.getElementsByTagName('name')[0].childNodes)            
-            layout_description = self.getText(conf.getElementsByTagName('description')[0].childNodes)            
-            if (layout_name == self.setup.keyboard_layout):
-                iter_variant = model_variants.append([layout_description, None])  
-                variants_list = layout.getElementsByTagName('variantList')
-                if len(variants_list) > 0:
-                    root_variants = layout.getElementsByTagName('variantList')[0]   
-                    for variant in root_variants.getElementsByTagName('variant'):                    
-                        variant_conf = variant.getElementsByTagName('configItem')[0]
-                        variant_name = self.getText(variant_conf.getElementsByTagName('name')[0].childNodes)
-                        variant_description = "%s - %s" % (layout_description, self.getText(variant_conf.getElementsByTagName('description')[0].childNodes))
-                        iter_variant = model_variants.append([variant_description, variant_name])                                                    
-                break
-                                                                                
-        # now set the model        
-        self.wTree.get_widget("treeview_variants").set_model(model_variants)
-        
-        # select the first item (standard variant layout)
-        treeview = self.wTree.get_widget("treeview_variants")
-        model = treeview.get_model()
-        column = treeview.get_column(0)
-        path = model.get_path(model.get_iter_first())
-        treeview.set_cursor(path, focus_column=column)
-
-    def getText(self, nodelist):
-        rc = []
-        for node in nodelist:
-            if node.nodeType == node.TEXT_NODE:
-                rc.append(node.data)
-        return ''.join(rc)
-    
+            path = layouts.get_path(set_keyboard_layout)
+            treeview.set_cursor(path)
+            treeview.scroll_to_cell(path)
+        except NameError: pass  # set_keyboard_layout not set
 
     def assign_language(self, treeview, data=None):
         ''' Called whenever someone updates the language '''
@@ -1534,54 +1455,48 @@ body{background-color:#d6d6d6;} \
             self.setup.grub_device = row[0]  
         self.setup.print_setup()
        
-    def assign_keyboard_model(self, combobox, data=None):
+    def assign_keyboard_model(self, combobox):
         ''' Called whenever someone updates the keyboard model '''
         model = combobox.get_model()
         active = combobox.get_active()
-        if(active > -1):
-            row = model[active]
-            os.system("setxkbmap -model %s" % row[1])
-            self.setup.keyboard_model = row[1]
-            self.setup.keyboard_model_description = row[0]
+        (self.setup.keyboard_model_description,
+         self.setup.keyboard_model) = model[active]
+        os.system('setxkbmap -model ' + self.setup.keyboard_model)
         self.setup.print_setup()
 
-    def assign_keyboard_layout(self, treeview, data=None):
+    def assign_keyboard_layout(self, treeview):
         ''' Called whenever someone updates the keyboard layout '''
-        model = treeview.get_model()
-        active = treeview.get_selection().get_selected_rows()
-        if(len(active) < 1):
-            return
-        active = active[1][0]
-        if(active is None):
-            return
-        row = model[active]
-        os.system("setxkbmap -layout %s" % row[1])
-        self.setup.keyboard_layout = row[1]
-        self.setup.keyboard_layout_description = row[0]
-        self.build_kb_variant_lists()
-        self.setup.print_setup()
+        model, active = treeview.get_selection().get_selected_rows()
+        if not active: return
+        (self.setup.keyboard_layout_description,
+         self.setup.keyboard_layout) = model[active[0]]
+        # Set the correct variant list model ...
+        model = self.layout_variants[self.setup.keyboard_layout]
+        self.wTree.get_widget("treeview_variants").set_model(model)
+        # ... and select the first variant (standard)
+        self.wTree.get_widget("treeview_variants").set_cursor(0)
 
-    def assign_keyboard_variant(self, treeview, data=None):
-        ''' Called whenever someone updates the keyboard layout '''
-        model = treeview.get_model()
-        active = treeview.get_selection().get_selected_rows()
-        if(len(active) < 1):
-            return
-        active = active[1][0]
-        if(active is None):
-            return
-        row = model[active]
-        if (row[1] is None):
-            os.system("setxkbmap -layout %s" % self.setup.keyboard_layout)
+    def assign_keyboard_variant(self, treeview):
+        ''' Called whenever someone updates the keyboard layout or variant '''
+        glib.source_remove(self.kbd_preview_generation)  # stop previous preview generation, if any
+        model, active = treeview.get_selection().get_selected_rows()
+        if not active: return
+        (self.setup.keyboard_variant_description,
+         self.setup.keyboard_variant) = model[active[0]]
+        if self.setup.keyboard_variant:
+            os.system('setxkbmap -variant ' + self.setup.keyboard_variant)
         else:
-            os.system("setxkbmap -variant %s" % row[1])
-        self.setup.keyboard_variant = row[1]
-        self.setup.keyboard_variant_description = row[0]
+            os.system('setxkbmap -layout ' + self.setup.keyboard_layout)
         self.setup.print_setup()
-        
+        # Set preview image
+        self.wTree.get_widget("image_keyboard").set_from_file(LOADING_ANIMATION)
+        self.kbd_preview_generation = glib.timeout_add(500, self._generate_keyboard_layout_preview)
+
+    def _generate_keyboard_layout_preview(self):
         filename = "/tmp/live-install-keyboard-layout.png"
         os.system("python /usr/lib/live-installer/frontend/generate_keyboard_layout.py %s %s %s" % (self.setup.keyboard_layout, self.setup.keyboard_variant, filename))
-        self.wTree.get_widget("image_keyboard").set_from_file(filename)        
+        self.wTree.get_widget("image_keyboard").set_from_file(filename)
+        return False
 
     def assign_password(self, widget):
         ''' Someone typed into the entry '''
