@@ -739,13 +739,9 @@ class InstallerWindow:
 
         #Load countries into memory
         countries = {}
-        file = open(os.path.join(self.resource_dir, 'countries'), "r")
-        for line in file:
-            line = line.strip()
-            split = line.split("=")
-            if len(split) == 2:
-                countries[split[0]] = split[1]
-        file.close()
+        for line in commands.getoutput("isoquery --iso 3166 | cut -f1,4-").split('\n'):
+            ccode, cname = line.split(None, 1)
+            countries[ccode.lower()] = cname
 
         #Load languages into memory
         languages = {}
