@@ -745,13 +745,9 @@ class InstallerWindow:
 
         #Load languages into memory
         languages = {}
-        file = open(os.path.join(self.resource_dir, 'languages'), "r")
-        for line in file:
-            line = line.strip()
-            split = line.split("=")
-            if len(split) == 2:
-                languages[split[0]] = split[1]
-        file.close()
+        for line in commands.getoutput("isoquery --iso 639").split('\n'):
+            _, code3, code2, language = line.split('\t')
+            languages[code2 or code3] = language
 
         path = os.path.join(self.resource_dir, 'locales')
         locales = open(path, "r")
