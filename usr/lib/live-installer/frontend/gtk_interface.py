@@ -1531,16 +1531,18 @@ body{background-color:#d6d6d6;} \
         # check each page for errors
         if(not goback):
             if(sel == self.PAGE_LANGUAGE):
-                if ("_" in self.setup.language):
-                    country_code = self.setup.language.split("_")[1]                    
-                else:
-                    country_code = self.setup.language
+                lang_country_code = self.setup.language.split('_')[-1]
                 combo = self.wTree.get_widget("combo_timezones")
                 model = combo.get_model()
+                if self.cur_timezone:  # timezone guessed from IP
+                    want_selected = lambda iter: self.cur_timezone == model.get_value(iter, 0)
+                elif self.cur_country_code:  # otherwise pick country from IP
+                    want_selected = lambda iter: self.cur_country_code == model.get_value(iter, 1).country_code
+                else:  # otherwise just use country from language selection
+                    want_selected = lambda iter: lang_country_code == model.get_value(iter, 1).country_code
                 iter = model.get_iter_first()
-                while iter is not None:
-                    iter_timezone = model.get_value(iter, 0)
-                    if iter_timezone == self.cur_timezone:
+                while iter:
+                    if want_selected(iter):
                         combo.set_active_iter(iter)
                         break
                     iter = model.iter_next(iter)
