@@ -726,13 +726,8 @@ class InstallerWindow:
         except:
             pass #best effort, we get here if we're not connected to the Internet            
 
-        self.cur_country_code = cur_country_code
+        self.cur_country_code = cur_country_code or os.environ.get('LANG', 'US').split('.')[0].split('_')[-1]  # fallback to LANG location or 'US'
         self.cur_timezone = cur_timezone
-
-        #Plan B... find out what locale we're in (i.e. USA on the live session)
-        cur_lang = os.environ['LANG']
-        if("." in cur_lang):
-            cur_lang = cur_lang.split(".")[0]
 
         model = gtk.ListStore(str,str,gtk.gdk.Pixbuf)
         model.set_sort_column_id(0, gtk.SORT_ASCENDING)
@@ -741,7 +736,7 @@ class InstallerWindow:
         countries = {}
         for line in commands.getoutput("isoquery --iso 3166 | cut -f1,4-").split('\n'):
             ccode, cname = line.split(None, 1)
-            countries[ccode.lower()] = cname
+            countries[ccode] = cname
 
         #Load languages into memory
         languages = {}
@@ -749,68 +744,30 @@ class InstallerWindow:
             _, code3, code2, language = line.split('\t')
             languages[code2 or code3] = language
 
-        path = os.path.join(self.resource_dir, 'locales')
-        locales = open(path, "r")
-        cur_index = -1 # find the locale :P
-        set_index = None
-        for line in locales:
-            cur_index += 1
-            if "UTF-8" in line:
-                locale_code = line.replace("UTF-8", "")
-                locale_code = locale_code.replace(".", "")
-                locale_code = locale_code.strip()
-                if "_" in locale_code:
-                    split = locale_code.split("_")
-                    if len(split) == 2:
-                        language_code = split[0]
-                        if language_code in languages:
-                            language = languages[language_code]
-                        else:
-                            language = language_code
+        # Construct language selection model
+        set_iter = None
+        flag_path = lambda ccode: self.resource_dir + '/flags/16/' + ccode.lower() + '.png'
+        from utils import memoize
+        flag = memoize(lambda ccode: gtk.gdk.pixbuf_new_from_file(flag_path(ccode)))
+        for locale in commands.getoutput("awk -F'[@ \.]' '/UTF-8/{ print $1 }' /usr/share/i18n/SUPPORTED | uniq").split('\n'):
+            try: lang, ccode = locale.split('_')
+            except ValueError: continue  # skip Esperanto and Interlingua
+            try: language_label = '{} ({})'.format(languages[lang], countries[ccode])
+            except KeyError: continue  # skip old codes for languages (iw), or minor disputed languages yet missing (nan)
+            iter = model.append((language_label, locale, flag(ccode)))
+            if (ccode == cur_country_code and
+                (not set_iter or
+                 set_iter and lang == 'en' or  # prefer English, or
+                 set_iter and lang == ccode.lower())):  # fuzzy: lang matching ccode (fr_FR, de_DE, es_ES, ...)
+                set_iter = iter
 
-                        country_code = split[1].lower()
-                        if country_code in countries:
-                            country = countries[country_code]
-                        else:
-                            country = country_code
-
-                        language_label = "%s (%s)" % (language, country)
-                        #language_label = "%s - %s" % (country, language)
-
-                        iter = model.append()
-                        model.set_value(iter, 0, language_label)
-                        model.set_value(iter, 1, locale_code)
-                        flag_path = self.resource_dir + '/flags/16/' + country_code + '.png'
-                        if os.path.exists(flag_path):
-                            model.set_value(iter, 2, gtk.gdk.pixbuf_new_from_file(flag_path))
-                        else:
-                            flag_path = self.resource_dir + '/flags/16/generic.png'
-                            model.set_value(iter, 2, gtk.gdk.pixbuf_new_from_file(flag_path))
-                        # If it's matching our country code, that's our language right there.. 
-                        if ((cur_country_code is not None) and (cur_country_code.lower() == country_code)):                            
-                            if (set_index is None):
-                                set_index = iter                                
-                            else:
-                                # If we find more than one language for a particular country, one of them being English, go for English by default.
-                                if (language_code == "en"):
-                                    set_index = iter                 
-                                # Guesswork... handy for countries which have their own language (fr_FR, de_DE, es_ES.. etc. )
-                                elif (country_code == language_code):
-                                    set_index = iter
-                                    
-                        # as a plan B... use the locale (USA)
-                        if((set_index is None) and (locale_code == cur_lang)):
-                            set_index = iter
-                            #print "Set via locale: " + cur_lang
-
+        # Set the model and pre-select the correct language
         treeview = self.wTree.get_widget("treeview_language_list")
         treeview.set_model(model)
-        if(set_index is not None):
-            column = treeview.get_column(0)
-            path = model.get_path(set_index)
-            treeview.set_cursor(path, focus_column=column)
-            treeview.scroll_to_cell(path, column=column)
-        treeview.set_search_column(0)
+        if set_iter:
+            path = model.get_path(set_iter)
+            treeview.set_cursor(path)
+            treeview.scroll_to_cell(path)
 
     def build_timezones(self):
         
