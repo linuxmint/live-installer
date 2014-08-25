@@ -6,12 +6,23 @@ import commands
 def uncaught_excepthook(*args):
     sys.__excepthook__(*args)
     if __debug__:
-        try:
-            import ipdb as pdb  # try to import the IPython debugger
-        except ImportError:
-            import pdb
-        print '\nStarting interactive debug prompt ...'
-        pdb.pm()
+        from pprint import pprint
+        from types import BuiltinFunctionType, ClassType, ModuleType, TypeType
+        tb = sys.last_traceback
+        while tb.tb_next: tb = tb.tb_next
+        print('\nDumping locals() ...')
+        pprint({k:v for k,v in tb.tb_frame.f_locals.items()
+                    if not k.startswith('_') and
+                       not isinstance(v, (BuiltinFunctionType,
+                                          ClassType, ModuleType, TypeType))})
+        if sys.stdin.isatty() and (sys.stdout.isatty() or sys.stderr.isatty()):
+            try:
+                import ipdb as pdb  # try to import the IPython debugger
+            except ImportError:
+                import pdb as pdb
+            print '\nStarting interactive debug prompt ...'
+            pdb.pm()
+    sys.exit(1)
 
 sys.excepthook = uncaught_excepthook
 
