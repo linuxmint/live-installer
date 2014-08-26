@@ -250,15 +250,15 @@ class InstallerWindow:
         self.wTree.get_widget("button_back").connect("clicked", self.wizard_cb, True)
         self.wTree.get_widget("button_quit").connect("clicked", self.quit_cb)
 
-        ren = gtk.CellRendererPixbuf()
-        column = gtk.TreeViewColumn("Flags", ren)
-        column.add_attribute(ren, "pixbuf", 2)
-        self.wTree.get_widget("treeview_language_list").append_column(column)
-
+        col = gtk.TreeViewColumn("", gtk.CellRendererPixbuf(), pixbuf=2)
+        self.wTree.get_widget("treeview_language_list").append_column(col)
         ren = gtk.CellRendererText()
-        column = gtk.TreeViewColumn("Languages", ren)
-        column.add_attribute(ren, "text", 0)
-        self.wTree.get_widget("treeview_language_list").append_column(column)
+        col = gtk.TreeViewColumn(_("Language"), ren, text=0)
+        col.set_sort_column_id(0)
+        self.wTree.get_widget("treeview_language_list").append_column(col)
+        col = gtk.TreeViewColumn(_("Country"), ren, text=1)
+        col.set_sort_column_id(1)
+        self.wTree.get_widget("treeview_language_list").append_column(col)
         self.wTree.get_widget("treeview_language_list").connect("cursor-changed", self.assign_language)
 
         # build user info page
@@ -729,7 +729,7 @@ class InstallerWindow:
         self.cur_country_code = cur_country_code or os.environ.get('LANG', 'US').split('.')[0].split('_')[-1]  # fallback to LANG location or 'US'
         self.cur_timezone = cur_timezone
 
-        model = gtk.ListStore(str,str,gtk.gdk.Pixbuf)
+        model = gtk.ListStore(str, str, gtk.gdk.Pixbuf, str)
         model.set_sort_column_id(0, gtk.SORT_ASCENDING)
 
         #Load countries into memory
@@ -752,10 +752,10 @@ class InstallerWindow:
         for locale in commands.getoutput("awk -F'[@ \.]' '/UTF-8/{ print $1 }' /usr/share/i18n/SUPPORTED | uniq").split('\n'):
             try: lang, ccode = locale.split('_')
             except ValueError: continue  # skip languages without a location
-            try: language_label = '{} ({})'.format(languages[lang], countries[ccode])
+            try: language, country = languages[lang], countries[ccode]
             except KeyError: continue  # skip old codes for languages (iw), or minor disputed languages yet missing (nan)
             pixbuf = flag(ccode) if not lang in 'eo ia' else flag('_' + lang)
-            iter = model.append((language_label, locale, pixbuf))
+            iter = model.append((language, country, pixbuf, locale))
             if (ccode == cur_country_code and
                 (not set_iter or
                  set_iter and lang == 'en' or  # prefer English, or
@@ -1349,7 +1349,7 @@ body{background-color:#d6d6d6;} \
         if(active is None):
             return
         row = model[active]
-        self.setup.language = row[1]
+        self.setup.language = row[-1]
         self.setup.print_setup()
         try:            
             self.translation = gettext.translation('live-installer', "/usr/share/linuxmint/locale", languages=[self.setup.language])
