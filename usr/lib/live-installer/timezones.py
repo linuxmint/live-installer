@@ -4,7 +4,9 @@ from __future__ import division
 import math
 import re
 import gtk
+import glib
 from commands import getoutput
+from datetime import datetime, timedelta
 from PIL import Image
 
 TIMEZONE_RESOURCES = '/usr/share/live-installer/timezone/'
@@ -33,8 +35,15 @@ def pixel_position(lat, lon):
 TZ_SPLIT_COORDS = re.compile('([+-][0-9]+)([+-][0-9]+)')
 
 def build_timezones(_installer):
-    global installer
+    global installer, time_label, time_label_box
     installer = _installer
+    # Add the label displaying current time
+    time_label = installer.wTree.get_widget("label_time")
+    time_label_box = time_label.get_parent()
+    time_label_box.modify_bg(gtk.STATE_NORMAL, gtk.gdk.Color('#000'))
+    time_label.modify_fg(gtk.STATE_NORMAL, gtk.gdk.Color('#fff'))
+    glib.timeout_add(200, update_local_time_label)
+    # Populate timezones model
     installer.wTree.get_widget("image_timezones").set_from_file(TIMEZONE_RESOURCES + 'bg.png')
     model = gtk.ListStore(str, str, int, int)
     for line in getoutput("awk '/^[^#]/{ print $1,$2,$3 }' /usr/share/zoneinfo/zone.tab | sort -k3").split('\n'):
@@ -45,12 +54,22 @@ def build_timezones(_installer):
         model.append((timezone, ccode, x, y))
     return model
 
+adjust_time = timedelta(0)
+
+def update_local_time_label():
+    now = datetime.utcnow() + adjust_time
+    time_label.set_label(now.strftime('%X'))
+    return True
+
 def cb_combo_changed(combobox, model):
     row = combobox.get_active()
     if row: select_timezone(model[row])
 
 def cb_map_clicked(widget, event, model):
     x, y = event.x, event.y
+    if event.window != installer.wTree.get_widget("event_timezones").get_window():
+        dx, dy = event.window.get_position()
+        x, y = x + dx, y + dy
     print "Coords: %d %d" % (x, y)
     closest_timezone = min(model, key=lambda row: math.sqrt((x - row[2])**2 + (y - row[3])**2))
     print "Closest timezone %s" % closest_timezone[0]
@@ -99,8 +118,16 @@ TIMEZONE_COLORS = {
     "fc5598": "13.0",
 }
 
+ADJUST_HOURS_MINUTES = re.compile('([+-])([0-9][0-9])([0-9][0-9])')
+
 def select_timezone(timezone):
     timezone, _cc, x, y = timezone
+    # Adjust time preview to current timezone (using `date` removes need for pytz package)
+    offset = getoutput('TZ={} date +%z'.format(timezone))
+    tzadj = ADJUST_HOURS_MINUTES.search(offset).groups()
+    global adjust_time
+    adjust_time = timedelta(hours=int(tzadj[0] + tzadj[1]),
+                            minutes=int(tzadj[0] + tzadj[2]))
     def _get_image(overlay):
         """Superpose the picture of the timezone on the map"""
         im = BACK_IM.copy()
@@ -120,3 +147,8 @@ def select_timezone(timezone):
     else:
         installer.wTree.get_widget("image_timezones").set_from_pixbuf(_get_image(overlay))
     installer.setup.timezone = timezone
+    # Move the current time label to appropriate position
+    left, top, width, height = time_label_box.get_allocation()
+    if x + width + 4 > MAP_SIZE[0]: x -= width
+    if y + height + 4 > MAP_SIZE[1]: y -= height
+    installer.wTree.get_widget("fixed_timezones").move(time_label_box, x, y)
