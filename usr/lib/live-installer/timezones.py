@@ -17,7 +17,7 @@ def to_float(position, wholedigits):
     assert position and len(position) > 4 and wholedigits < 9
     return float(position[:wholedigits + 1] + '.' + position[wholedigits + 1:])
 
-MAP_CENTER = (373, 263)  # pixel center of where equatorial line and 0th meridian cross on our bg map
+MAP_CENTER = (373, 263)  # pixel center of where equatorial line and 0th meridian cross on our bg map; WARNING: cc.png relies on this exactly!
 MAP_SIZE = BACK_IM.size  # size of the map image
 assert MAP_SIZE == (800, 409), 'MAP_CENTER (et al.?) calculations depend on this size'
 
@@ -61,7 +61,7 @@ def cb_map_clicked(widget, event, model):
 TIMEZONE_COLORS = {
     "2b0000": "-11.0",
     "550000": "-10.0",
-    "66ff00": "-9.5",
+    "66ff05": "-9.5",
     "800000": "-9.0",
     "aa0000": "-8.0",
     "d40000": "-7.0",
@@ -89,7 +89,7 @@ TIMEZONE_COLORS = {
     "ff9955": "7.0",
     "ffb380": "8.0",
     "ffccaa": "9.0",
-    "a90345": "9.5",
+    "aa0044": "9.5",
     "ffe6d5": "10.0",
     "d10255": "10.5",
     "d4aa00": "11.0",
@@ -97,45 +97,6 @@ TIMEZONE_COLORS = {
     "ffcc00": "12.0",
     "fd2c80": "12.75",
     "fc5598": "13.0",
-    # Add timezones for cities which located on borders (for which
-    # the color doesn't match the color of the rest of the timezone)
-    "9d0000": "-9.0",  # Metlakatla, Alaska/USA
-    "fd0000": "-7.0",  # Bahia_Banderas, Mexico
-    "ff0000": "-6.0",  # Belize
-    "ff2020": "-5.0",  # Monticello, USA
-    "ff2525": "-5.0",  # Marengo, USA
-    "ff3f3f": "-4.0",  # Rio Branco, Brazil
-    "d29130": "-4.0",  # Aruba
-    "e56347": "-4.0",  # Curacao
-    "ff2b2b": "-4.0",  # Thule, Greenland
-    "11f709": "-3.5",  # St Johns, Canada
-    "ff9898": "-3.0",  # Maceio, Brazil
-    "ff7b7b": "-3.0",  # Buenos Aires, Argentina
-    "ff7f7f": "-3.0",  # Rio Gallegos, Argentina
-    "2f1300": "0.0",   # Guernsey. UK
-    "cea7a3": "0.0",   # Danmarkshavn, Greenland
-    "79594e": "0.0",   # Banjul, Gambia
-    "c7a19d": "0.0",   # Conakry, Guinea
-    "5b3e31": "0.0",   # Bissau, Guinea-Bissau
-    "3f2314": "0.0",   # Monrovia, Liberia
-    "351500": "1.0",   # Lagos, Nigeria
-    "3c1800": "1.0",   # Benin; Porto Novo
-    "913a00": "2.0",   # Kigali, Rwanda
-    "6a2a00": "2.0",   # Sofia, Bulgaria
-    "ee5f00": "4.0",   # Baku, Azerbaidjan
-    "cd5200": "4.0",   # Tbilisi, Georgia
-    "6771a9": "5.5",   # Calcutta, India
-    "ff802c": "6.0",   # Thimphu, Bhutan
-    "d515db": "6.5",   # Rangoon, Myanmar
-    "ffb37f": "8.0",   # Kuching, Malaysia
-    "ffb17d": "8.0",   # Singapore
-    "ddb6b3": "0.0",   # Freetown, Sierra Leone
-    "ffb482": "9.0",   # Dili, East Timor
-    "b71f54": "10.5",  # Adelaide, Australia
-    "d45c27": "11.0",  # Lord Howe, Australia
-    "ff0066": "11.5",  # Norfolk
-    "ff8935": "12.75", # Chatham, New Zealand
-    "ff5599": "13.0",  # Tongatapu, Tonga
 }
 
 def select_timezone(timezone):
