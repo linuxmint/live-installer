@@ -6,11 +6,11 @@ import re
 import gtk
 import glib
 from commands import getoutput
+from collections import defaultdict, namedtuple
 from datetime import datetime, timedelta
 from PIL import Image
 
 TIMEZONE_RESOURCES = '/usr/share/live-installer/timezone/'
-
 CC_IM = Image.open(TIMEZONE_RESOURCES + 'cc.png').convert('RGB')
 BACK_IM = Image.open(TIMEZONE_RESOURCES + 'bg.png').convert('RGB')
 DOT_IM = Image.open(TIMEZONE_RESOURCES + 'dot.png').convert('RGBA')
@@ -34,8 +34,12 @@ def pixel_position(lat, lon):
 
 TZ_SPLIT_COORDS = re.compile('([+-][0-9]+)([+-][0-9]+)')
 
+timezones = []
+
+Timezone = namedtuple('Timezone', 'name ccode x y'.split())
+
 def build_timezones(_installer):
-    global installer, time_label, time_label_box
+    global installer, time_label, time_label_box, timezone
     installer = _installer
     # Add the label displaying current time
     time_label = installer.wTree.get_widget("label_time")
@@ -45,14 +49,37 @@ def build_timezones(_installer):
     glib.timeout_add(200, update_local_time_label)
     # Populate timezones model
     installer.wTree.get_widget("image_timezones").set_from_file(TIMEZONE_RESOURCES + 'bg.png')
-    model = gtk.ListStore(str, str, int, int)
+    def autovivified():
+        return defaultdict(autovivified)
+    hierarchy = autovivified()
     for line in getoutput("awk '/^[^#]/{ print $1,$2,$3 }' /usr/share/zoneinfo/zone.tab | sort -k3").split('\n'):
-        ccode, coords, timezone = line.split()
+        ccode, coords, name = line.split()
         lat, lon = TZ_SPLIT_COORDS.search(coords).groups()
         x, y = pixel_position(to_float(lat, 2), to_float(lon, 3))
         if x < 0: x = MAP_SIZE[0] + x
-        model.append((timezone, ccode, x, y))
-    return model
+        tup = Timezone(name, ccode, x, y)
+        submenu = hierarchy
+        parts = name.split('/')
+        for i, part in enumerate(parts, 1):
+            if i != len(parts): submenu = submenu[part]
+            else: submenu[part] = tup
+        timezones.append(tup)
+    def _build_menu(d):
+        menu = gtk.Menu()
+        for k in sorted(d):
+            v = d[k]
+            item = gtk.MenuItem(k)
+            item.show()
+            if isinstance(v, dict):
+                item.set_submenu(_build_menu(v))
+            else:
+                item.connect('activate', cb_menu_selected, v)
+            menu.append(item)
+        menu.show()
+        return menu
+    tz_menu = _build_menu(hierarchy)
+    tz_menu.show()
+    installer.wTree.get_widget('button_timezones').connect('event', cb_button_timezoens, tz_menu)
 
 adjust_time = timedelta(0)
 
@@ -61,19 +88,23 @@ def update_local_time_label():
     time_label.set_label(now.strftime('%X'))
     return True
 
-def cb_combo_changed(combobox, model):
-    row = combobox.get_active()
-    if row: select_timezone(model[row])
+def cb_button_timezoens(button, event, menu):
+    if event.type == gtk.gdk.BUTTON_PRESS:
+        menu.popup(None, None, None, event.button, event.time)
+        return True
+    return False
+
+def cb_menu_selected(widget, timezone):
+    select_timezone(timezone)
 
 def cb_map_clicked(widget, event, model):
     x, y = event.x, event.y
     if event.window != installer.wTree.get_widget("event_timezones").get_window():
         dx, dy = event.window.get_position()
         x, y = x + dx, y + dy
-    print "Coords: %d %d" % (x, y)
-    closest_timezone = min(model, key=lambda row: math.sqrt((x - row[2])**2 + (y - row[3])**2))
-    print "Closest timezone %s" % closest_timezone[0]
-    installer.wTree.get_widget("combo_timezones").set_active_iter(closest_timezone.iter)
+    print "Click: (%d, %d)" % (x, y)
+    closest_timezone = min(timezones, key=lambda tz: math.sqrt((x - tz.x)**2 + (y - tz.y)**2))
+    select_timezone(closest_timezone)
 
 # Timezone offsets color coded in cc.png
 # If someone can make this more robust (maintainable), I buy you lunch!
@@ -120,35 +151,37 @@ TIMEZONE_COLORS = {
 
 ADJUST_HOURS_MINUTES = re.compile('([+-])([0-9][0-9])([0-9][0-9])')
 
-def select_timezone(timezone):
-    timezone, _cc, x, y = timezone
+def select_timezone(tz):
     # Adjust time preview to current timezone (using `date` removes need for pytz package)
-    offset = getoutput('TZ={} date +%z'.format(timezone))
+    offset = getoutput('TZ={} date +%z'.format(tz.name))
     tzadj = ADJUST_HOURS_MINUTES.search(offset).groups()
     global adjust_time
     adjust_time = timedelta(hours=int(tzadj[0] + tzadj[1]),
                             minutes=int(tzadj[0] + tzadj[2]))
-    def _get_image(overlay):
+    print "Timezone: {tz.name} (UTC{offset}) ({tz.x}, {tz.y})".format(tz=tz, offset=offset)
+    def _get_image(overlay, tz):
         """Superpose the picture of the timezone on the map"""
         im = BACK_IM.copy()
         if overlay:
-            overlay_im = Image.open(TIMEZONE_RESOURCES + overlay).convert('RGBA')
-            im.paste(overlay_im, (0, 0), overlay_im)
-            im.paste(DOT_IM, (int(x - DOT_IM.size[1]/2), int(y - DOT_IM.size[0]/2)), DOT_IM)
-        return gtk.gdk.pixbuf_new_from_data(im.tostring(), gtk.gdk.COLORSPACE_RGB,
+            overlay_im = Image.open(TIMEZONE_RESOURCES + overlay)
+            im.paste(overlay_im, overlay_im)
+            im.paste(DOT_IM, (int(tz.x - DOT_IM.size[1]/2), int(tz.y - DOT_IM.size[0]/2)), DOT_IM)
+        return gtk.gdk.pixbuf_new_from_data(im.tobytes(), gtk.gdk.COLORSPACE_RGB,
                                             False, 8, im.size[0], im.size[1], im.size[0] * 3)
     try:
-        hexcolor = '{:02x}{:02x}{:02x}'.format(*CC_IM.getpixel((x, y)))
-        print "Color: #%s" % hexcolor,
+        hexcolor = '{:02x}{:02x}{:02x}'.format(*CC_IM.getpixel((tz.x, tz.y)))
+        print "Color: #%s," % hexcolor,
         overlay = 'timezone_{}.png'.format(TIMEZONE_COLORS[hexcolor])
         print "Image: %s" % overlay
     except (IndexError, KeyError):
-        installer.wTree.get_widget("image_timezones").set_from_pixbuf(_get_image(None))
+        installer.wTree.get_widget("image_timezones").set_from_pixbuf(_get_image(None, None))
     else:
-        installer.wTree.get_widget("image_timezones").set_from_pixbuf(_get_image(overlay))
-    installer.setup.timezone = timezone
+        installer.wTree.get_widget("image_timezones").set_from_pixbuf(_get_image(overlay, tz))
+    installer.setup.timezone = tz.name
+    installer.wTree.get_widget("button_timezones").set_label(tz.name)
     # Move the current time label to appropriate position
     left, top, width, height = time_label_box.get_allocation()
+    x, y = tz.x, tz.y
     if x + width + 4 > MAP_SIZE[0]: x -= width
     if y + height + 4 > MAP_SIZE[1]: y -= height
     installer.wTree.get_widget("fixed_timezones").move(time_label_box, x, y)

@@ -212,11 +212,7 @@ class InstallerWindow:
 
         # build timezones
         model = timezones.build_timezones(self)
-        self.wTree.get_widget("combo_timezones").set_model(model)
-        cell = gtk.CellRendererText()
-        self.wTree.get_widget("combo_timezones").pack_start(cell, expand=True)
-        self.wTree.get_widget("combo_timezones").add_attribute(cell, 'text', 0)
-        self.wTree.get_widget("combo_timezones").connect('changed', timezones.cb_combo_changed, model)
+        self.wTree.get_widget("button_timezones").set_label(_('Select timezone'))
         self.wTree.get_widget("event_timezones").connect('button-release-event', timezones.cb_map_clicked, model)
 
         # disk view
@@ -1240,14 +1236,13 @@ body{background-color:#d6d6d6;} \
         if(not goback):
             if(sel == self.PAGE_LANGUAGE):
                 lang_country_code = self.setup.language.split('_')[-1]
-                combo = self.wTree.get_widget("combo_timezones")
                 for value in (self.cur_timezone,      # timezone guessed from IP
                               self.cur_country_code,  # otherwise pick country from IP
                               lang_country_code):     # otherwise use country from language selection
                     if not value: continue
-                    for row in combo.get_model():
+                    for row in timezones.timezones:
                         if value in row:
-                            combo.set_active_iter(row.iter)
+                            timezones.select_timezone(row)
                             break
                     break
                 self.activate_page(self.PAGE_TIMEZONE)
