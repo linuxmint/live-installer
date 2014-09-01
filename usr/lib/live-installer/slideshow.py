@@ -11,7 +11,6 @@ pages = [
 'welcome.html',
 'giants.html',
 'desktop-ready.html',
-'office.html',
 'windows.html',
 'safe.html',
 'community.html'
