@@ -1672,6 +1672,8 @@ body{background-color:#d6d6d6;} \
         model.set(iter, 0, _("Real name: ") + "<b>%s</b>" % self.setup.real_name)        
         iter = model.append(top)
         model.set(iter, 0, _("Username: ") + "<b>%s</b>" % self.setup.username)
+        iter = model.append(top)
+        model.set(iter, 0, _("Automatic login: ") + "<b>%s</b>" % (_("enabled") if self.setup.autologin else _("disabled")))
         top = model.append(None)
         model.set(top, 0, _("System settings"))
         iter = model.append(top)
