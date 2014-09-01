@@ -1687,7 +1687,7 @@ body{background-color:#d6d6d6;} \
         model.set(top, 0, _("Filesystem operations"))  
         if(self.setup.skip_mount):
             iter = model.append(top)
-            model.set(iter, 0, "<b>Use already-mounted /target.</b>")
+            model.set(iter, 0, "<b>%s</b>" % _("Use already-mounted /target."))
         else:      
             for partition in self.setup.partitions:
                 if(partition.format_as is not None and partition.format_as != ""):
