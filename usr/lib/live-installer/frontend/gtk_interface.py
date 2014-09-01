@@ -1387,6 +1387,7 @@ body{background-color:#d6d6d6;} \
         
     def assign_autologin(self, checkbox, data=None):
         self.setup.autologin = checkbox.get_active()
+        self.setup.print_setup()
 
     def assign_grub_install(self, checkbox, grub_box, data=None):
         grub_box.set_sensitive(checkbox.get_active())
