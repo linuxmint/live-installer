@@ -588,7 +588,7 @@ class Setup(object):
     keyboard_variant_description = None
     
     def print_setup(self):
-        if "--debug" in sys.argv:  
+        if __debug__:
             print "-------------------------------------------------------------------------"
             print "language: %s" % self.language
             print "timezone: %s (%s)" % (self.timezone, self.timezone_code)        

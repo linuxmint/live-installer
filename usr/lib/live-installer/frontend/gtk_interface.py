@@ -216,10 +216,7 @@ class InstallerWindow:
         DISTRIBUTION_NAME = self.installer.get_distribution_name()
         # load the window object
         self.window = self.wTree.get_widget("main_window")
-        if "--debug" in sys.argv:
-            self.window.set_title((_("%s Installer") % DISTRIBUTION_NAME) + " (debug)")
-        else:
-            self.window.set_title(_("%s Installer") % DISTRIBUTION_NAME)
+        self.window.set_title((_("%s Installer") % DISTRIBUTION_NAME) + ' (debug)' if __debug__ else '')
         self.window.connect("destroy", self.quit_cb)
 
         # Wizard pages
@@ -1696,9 +1693,10 @@ body{background-color:#d6d6d6;} \
         ''' Actually perform the installation .. '''
         inst = self.installer
 
-        if "--debug" in sys.argv:
+        if __debug__:
             print " ## DEBUG MODE - INSTALLATION PROCESS NOT LAUNCHED"
-            sys.exit(0)
+            with gtk.gdk.lock:
+                return gtk.main_quit()
 
         inst.set_progress_hook(self.update_progress)
         inst.set_error_hook(self.error_message)
