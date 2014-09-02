@@ -216,7 +216,10 @@ class InstallerWindow:
         DISTRIBUTION_NAME = self.installer.get_distribution_name()
         # load the window object
         self.window = self.wTree.get_widget("main_window")
-        self.window.set_title((_("%s Installer") % DISTRIBUTION_NAME) + ' (debug)' if __debug__ else '')
+        if __debug__:
+            self.window.set_title((_("%s Installer") % DISTRIBUTION_NAME) + ' (debug)')
+        else:
+            self.window.set_title((_("%s Installer") % DISTRIBUTION_NAME))
         self.window.connect("destroy", self.quit_cb)
 
         # Wizard pages
