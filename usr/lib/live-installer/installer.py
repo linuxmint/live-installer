@@ -11,17 +11,31 @@ from configobj import ConfigObj
 
 gettext.install("live-installer", "/usr/share/locale")
 
+CONFIG_FILE = '/etc/live-installer/live-installer.conf'
+
 class InstallerEngine:
     ''' This is central to the live installer '''
 
     def __init__(self):
-        self.conf_file = '/etc/live-installer/install.conf'
-        configuration = ConfigObj(self.conf_file)
-        self.distribution_name = configuration['distribution']['DISTRIBUTION_NAME']
-        self.distribution_version = configuration['distribution']['DISTRIBUTION_VERSION']        
-        self.live_user = configuration['install']['LIVE_USER_NAME']
-        self.media = configuration['install']['LIVE_MEDIA_SOURCE']
-        self.media_type = configuration['install']['LIVE_MEDIA_TYPE']  
+        # Set distribution name and version
+        def _get_distro_info_from(file, section, name, version):
+            config = ConfigObj(file, file_error=True)
+            if section:
+                return config[section][name], config[section][version]
+            return config[name], config[version]
+        for args in (('/etc/os-release', '', 'PRETTY_NAME', 'VERSION'),
+                     ('/etc/lsb-release', '', 'DISTRIB_DESCRIPTION', 'DISTRIB_RELEASE'),
+                     (CONFIG_FILE, 'distribution', 'DISTRIBUTION_NAME', 'DISTRIBUTION_VERSION')):
+            try: name, version = _get_distro_info_from(*args)
+            except (IOError, KeyError, TypeError): continue
+            else: break
+        else: name, version = 'Unknown GNU/Linux', '1.0'
+        self.distribution_name, self.distribution_version = name, version
+        # Set other configuration
+        config = ConfigObj(CONFIG_FILE)
+        self.live_user = config.get('install', {}).get('live_user', 'user')
+        self.media = config.get('install', {}).get('live_media_source', '/lib/live/mount/medium/live/filesystem.squashfs')
+        self.media_type = config.get('install', {}).get('live_media_type', 'squashfs')
         # Flush print when it's called    
         sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
 
