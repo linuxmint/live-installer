@@ -251,6 +251,7 @@ class InstallerWindow:
         col = gtk.TreeViewColumn(_("Country"), ren, text=1)
         col.set_sort_column_id(1)
         self.wTree.get_widget("treeview_language_list").append_column(col)
+
         self.wTree.get_widget("treeview_language_list").connect("cursor-changed", self.assign_language)
 
         # build user info page
@@ -722,7 +723,7 @@ class InstallerWindow:
         self.cur_timezone = cur_timezone
 
         model = gtk.ListStore(str, str, gtk.gdk.Pixbuf, str)
-        model.set_sort_column_id(0, gtk.SORT_ASCENDING)
+        model.set_sort_column_id(1, gtk.SORT_ASCENDING)
 
         #Load countries into memory
         countries = {}
