@@ -1347,6 +1347,7 @@ body{background-color:#d6d6d6;} \
             gettext.translation('live-installer', "/usr/share/linuxmint/locale", languages=[self.setup.language]).install()
         except Exception, detail:
             print "No translation found, using default"
+            gettext.translation('live-installer', "/usr/share/linuxmint/locale", languages=['en']).install()
         try:
             self.i18n()
         except:
