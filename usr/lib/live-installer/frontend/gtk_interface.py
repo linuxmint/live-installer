@@ -743,10 +743,17 @@ class InstallerWindow:
         from utils import memoize
         flag = memoize(lambda ccode: gtk.gdk.pixbuf_new_from_file(flag_path(ccode)))
         for locale in commands.getoutput("awk -F'[@ \.]' '/UTF-8/{ print $1 }' /usr/share/i18n/SUPPORTED | uniq").split('\n'):
-            try: lang, ccode = locale.split('_')
-            except ValueError: continue  # skip languages without a location
-            try: language, country = languages[lang], countries[ccode]
-            except KeyError: continue  # skip old codes for languages (iw), or minor disputed languages yet missing (nan)
+            try:
+                if '_' in locale:
+                    lang, ccode = locale.split('_')
+                    language, country = languages[lang], countries[ccode]
+                else:
+                    lang = locale
+                    language = languages[lang]
+                    country = ''
+            except:
+                print "Error adding locale '%s'" % locale
+                continue
             pixbuf = flag(ccode) if not lang in 'eo ia' else flag('_' + lang)
             iter = model.append((language, country, pixbuf, locale))
             if (ccode == cur_country_code and
