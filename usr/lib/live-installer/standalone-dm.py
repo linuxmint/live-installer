@@ -1,8 +1,7 @@
 #!/usr/bin/env python
+from utils import shell_exec, getoutput
 import os
 import sys
-import commands
-import subprocess
 
 # This allows the installer to run without the need for a desktop,
 # i.e. for those who do not wish to run the LiveCD or are restrained
@@ -37,12 +36,12 @@ class StandaloneDM:
 		
 	def pid_open(self, proc, wait=False):
 		''' open a process and return its pid '''
-		p = subprocess.Popen(proc, shell=True)
+		p = shell_exec(proc)
 		if(wait):
 			p.wait()
 		return p.pid
 		
 # main entry point
 if __name__ == "__main__":
-	if "install" in commands.getoutput("cat /proc/cmdline"):
+	if "install" in getoutput("cat /proc/cmdline"):
 		dm = StandaloneDM()

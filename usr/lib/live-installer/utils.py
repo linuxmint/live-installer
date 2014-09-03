@@ -1,4 +1,14 @@
 
+from subprocess import Popen, PIPE
+
+def shell_exec(command, **kwargs):
+    print 'Executing:', command
+    return Popen(command, shell=True, stdout=PIPE, **kwargs)
+
+def getoutput(command, **kwargs):
+    """Return stdout of command."""
+    return shell_exec(command, **kwargs).communicate()[0].strip()
+
 def memoize(func):
     """ Caches expensive function calls.
 

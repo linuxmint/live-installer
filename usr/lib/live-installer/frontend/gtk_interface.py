@@ -6,6 +6,7 @@ from dialogs import MessageDialog, QuestionDialog, ErrorDialog, WarningDialog
 import timezones
 import partitioning
 from widgets import PictureChooserButton
+from utils import shell_exec, getoutput
 
 import pygtk; pygtk.require("2.0")
 import gtk
@@ -14,8 +15,6 @@ import glib
 import gettext
 import os
 import re
-import commands
-import subprocess
 import sys
 import math
 import PIL
@@ -508,14 +507,14 @@ class InstallerWindow:
 
         #Load countries into memory
         countries = {}
-        for line in commands.getoutput("isoquery --iso 3166 | cut -f1,4-").split('\n'):
-            ccode, cname = line.split(None, 1)
+        for line in shell_exec("isoquery --iso 3166 | cut -f1,4-").stdout:
+            ccode, cname = line.strip().split(None, 1)
             countries[ccode] = cname
 
         #Load languages into memory
         languages = {}
-        for line in commands.getoutput("isoquery --iso 639").split('\n'):
-            _, code3, code2, language = line.split('\t')
+        for line in shell_exec("isoquery --iso 639").stdout:
+            _, code3, code2, language = line.strip().split('\t')
             languages[code2 or code3] = language
 
         # Construct language selection model
@@ -524,7 +523,8 @@ class InstallerWindow:
         flag_path = lambda ccode: self.resource_dir + '/flags/16/' + ccode.lower() + '.png'
         from utils import memoize
         flag = memoize(lambda ccode: gtk.gdk.pixbuf_new_from_file(flag_path(ccode)))
-        for locale in commands.getoutput("awk -F'[@ \.]' '/UTF-8/{ print $1 }' /usr/share/i18n/SUPPORTED | uniq").split('\n'):
+        for locale in shell_exec("awk -F'[@ \.]' '/UTF-8/{ print $1 }' /usr/share/i18n/SUPPORTED | uniq").stdout:
+            locale = locale.strip()
             try:
                 if '_' in locale:
                     lang, ccode = locale.split('_')
@@ -737,7 +737,7 @@ class InstallerWindow:
         ''' Do some xml kung-fu and load the keyboard stuffs '''
         # Determine the layouts in use
         (keyboard_geom,
-         self.setup.keyboard_layout) = commands.getoutput("setxkbmap -query | awk '/^(model|layout)/{print $2}'").split()
+         self.setup.keyboard_layout) = getoutput("setxkbmap -query | awk '/^(model|layout)/{print $2}'").split()
         # Build the models
         from collections import defaultdict
         def _ListStore_factory():
