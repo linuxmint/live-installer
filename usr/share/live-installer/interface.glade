@@ -1640,7 +1640,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="xalign">0</property>
-                        <property name="label" translatable="yes">During the install, you will be given time to chroot into /target and install any pacakges that will be needed to boot your new system.</property>
+                        <property name="label" translatable="yes">During the install, you will be given time to chroot into /target and install any packages that will be needed to boot your new system.</property>
                         <property name="wrap">True</property>
                       </widget>
                       <packing>
@@ -1670,7 +1670,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="xalign">0</property>
-                        <property name="label" translatable="yes">If you arent sure what any of this means, please go back and deselect manual partition management.</property>
+                        <property name="label" translatable="yes">If you aren't sure what any of this means, please go back and deselect manual partition management.</property>
                         <property name="wrap">True</property>
                       </widget>
                       <packing>
