@@ -9,6 +9,10 @@ def getoutput(command, **kwargs):
     """Return stdout of command."""
     return shell_exec(command, **kwargs).communicate()[0].strip()
 
+def chroot_exec(command):
+    command = command.replace('"', "'").strip()  # FIXME
+    return shell_exec('chroot /target/ /bin/sh -c "%s"' % command)
+
 def memoize(func):
     """ Caches expensive function calls.
 
