@@ -722,9 +722,6 @@ class InstallerWindow:
         self.cur_country_code = cur_country_code or os.environ.get('LANG', 'US').split('.')[0].split('_')[-1]  # fallback to LANG location or 'US'
         self.cur_timezone = cur_timezone
 
-        model = gtk.ListStore(str, str, gtk.gdk.Pixbuf, str)
-        model.set_sort_column_id(1, gtk.SORT_ASCENDING)
-
         #Load countries into memory
         countries = {}
         for line in commands.getoutput("isoquery --iso 3166 | cut -f1,4-").split('\n'):
@@ -738,6 +735,7 @@ class InstallerWindow:
             languages[code2 or code3] = language
 
         # Construct language selection model
+        model = gtk.ListStore(str, str, gtk.gdk.Pixbuf, str)
         set_iter = None
         flag_path = lambda ccode: self.resource_dir + '/flags/16/' + ccode.lower() + '.png'
         from utils import memoize
@@ -762,6 +760,9 @@ class InstallerWindow:
                  set_iter and lang == ccode.lower())):  # fuzzy: lang matching ccode (fr_FR, de_DE, es_ES, ...)
                 set_iter = iter
 
+        # Sort by Country, then by Language
+        model.set_sort_column_id(0, gtk.SORT_ASCENDING)
+        model.set_sort_column_id(1, gtk.SORT_ASCENDING)
         # Set the model and pre-select the correct language
         treeview = self.wTree.get_widget("treeview_language_list")
         treeview.set_model(model)
