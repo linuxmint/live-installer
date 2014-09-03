@@ -1351,11 +1351,9 @@ body{background-color:#d6d6d6;} \
         row = model[active]
         self.setup.language = row[-1]
         self.setup.print_setup()
-        try:            
-            gettext.translation('live-installer', "/usr/share/linuxmint/locale", languages=[self.setup.language]).install()
-        except Exception, detail:
-            print "No translation found, using default"
-            gettext.translation('live-installer', "/usr/share/linuxmint/locale", languages=['en']).install()
+        gettext.translation('live-installer', "/usr/share/linuxmint/locale",
+                            languages=[self.setup.language, self.setup.language.split('_')[0]],
+                            fallback=True).install()  # Try e.g. zh_CN, zh, or fallback to hardcoded English
         try:
             self.i18n()
         except:
