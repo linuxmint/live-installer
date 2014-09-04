@@ -8,11 +8,16 @@ import glib
 from commands import getoutput
 from collections import defaultdict, namedtuple
 from datetime import datetime, timedelta
-from PIL import Image
+from PIL import Image, ImageEnhance
+
 
 TIMEZONE_RESOURCES = '/usr/share/live-installer/timezone/'
 CC_IM = Image.open(TIMEZONE_RESOURCES + 'cc.png').convert('RGB')
 BACK_IM = Image.open(TIMEZONE_RESOURCES + 'bg.png').convert('RGB')
+BACK_ENHANCED_IM = reduce(lambda im, mod: mod[0](im).enhance(mod[1]),
+                          ((ImageEnhance.Color, 2),
+                           (ImageEnhance.Contrast, 1.3),
+                           (ImageEnhance.Brightness, 0.7)), BACK_IM)
 DOT_IM = Image.open(TIMEZONE_RESOURCES + 'dot.png').convert('RGBA')
 
 def to_float(position, wholedigits):
@@ -164,7 +169,7 @@ def select_timezone(tz):
         im = BACK_IM.copy()
         if overlay:
             overlay_im = Image.open(TIMEZONE_RESOURCES + overlay)
-            im.paste(overlay_im, overlay_im)
+            im.paste(BACK_ENHANCED_IM, overlay_im)
             im.paste(DOT_IM, (int(tz.x - DOT_IM.size[1]/2), int(tz.y - DOT_IM.size[0]/2)), DOT_IM)
         return gtk.gdk.pixbuf_new_from_data(im.tobytes(), gtk.gdk.COLORSPACE_RGB,
                                             False, 8, im.size[0], im.size[1], im.size[0] * 3)
