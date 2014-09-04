@@ -22,6 +22,12 @@ def uncaught_excepthook(*args):
                 import pdb as pdb
             print '\nStarting interactive debug prompt ...'
             pdb.pm()
+    else:
+        import traceback
+        from dialogs import ErrorDialog
+        ErrorDialog(_('Unexpected error'),
+                    _('<b>The installer has failed with the following unexpected error. Please submit a bug report!</b>'),
+                    '<tt>' + '\n'.join(traceback.format_exception(*args)) + '</tt>')
     sys.exit(1)
 
 sys.excepthook = uncaught_excepthook
