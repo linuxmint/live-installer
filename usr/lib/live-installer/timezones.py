@@ -8,7 +8,7 @@ import glib
 from commands import getoutput
 from collections import defaultdict, namedtuple
 from datetime import datetime, timedelta
-from PIL import Image, ImageEnhance
+from PIL import Image, ImageEnhance, ImageChops, ImageOps
 
 
 TIMEZONE_RESOURCES = '/usr/share/live-installer/timezone/'
@@ -18,6 +18,8 @@ BACK_ENHANCED_IM = reduce(lambda im, mod: mod[0](im).enhance(mod[1]),
                           ((ImageEnhance.Color, 2),
                            (ImageEnhance.Contrast, 1.3),
                            (ImageEnhance.Brightness, 0.7)), BACK_IM)
+NIGHT_IM = Image.open(TIMEZONE_RESOURCES + 'night.png').convert('RGBA')
+LIGHTS_IM = Image.open(TIMEZONE_RESOURCES + 'lights.png').convert('RGBA')
 DOT_IM = Image.open(TIMEZONE_RESOURCES + 'dot.png').convert('RGBA')
 
 def to_float(position, wholedigits):
@@ -156,6 +158,8 @@ TIMEZONE_COLORS = {
 
 ADJUST_HOURS_MINUTES = re.compile('([+-])([0-9][0-9])([0-9][0-9])')
 
+IS_WINTER = datetime.now().timetuple().tm_yday not in range(80, 264)  # today is between Mar 20 and Sep 20
+
 def select_timezone(tz):
     # Adjust time preview to current timezone (using `date` removes need for pytz package)
     offset = getoutput('TZ={} date +%z'.format(tz.name))
@@ -164,13 +168,19 @@ def select_timezone(tz):
     adjust_time = timedelta(hours=int(tzadj[0] + tzadj[1]),
                             minutes=int(tzadj[0] + tzadj[2]))
     print "Timezone: {tz.name} (UTC{offset}) ({tz.x}, {tz.y})".format(tz=tz, offset=offset)
-    def _get_image(overlay, tz):
+    def _get_image(overlay, x, y):
         """Superpose the picture of the timezone on the map"""
+        def _get_x_offset():
+            now = datetime.utcnow().timetuple()
+            return - int((now.tm_hour*60 + now.tm_min - 12*60) / (24*60) * MAP_SIZE[0])  # night is centered at UTC noon (12)
         im = BACK_IM.copy()
         if overlay:
             overlay_im = Image.open(TIMEZONE_RESOURCES + overlay)
             im.paste(BACK_ENHANCED_IM, overlay_im)
-            im.paste(DOT_IM, (int(tz.x - DOT_IM.size[1]/2), int(tz.y - DOT_IM.size[0]/2)), DOT_IM)
+        night_im = ImageChops.offset(NIGHT_IM, _get_x_offset(), 0).crop(im.getbbox())
+        if IS_WINTER: night_im = ImageOps.flip(night_im)
+        im.paste(Image.alpha_composite(night_im, LIGHTS_IM), night_im)
+        im.paste(DOT_IM, (int(x - DOT_IM.size[1]/2), int(y - DOT_IM.size[0]/2)), DOT_IM)
         return gtk.gdk.pixbuf_new_from_data(im.tobytes(), gtk.gdk.COLORSPACE_RGB,
                                             False, 8, im.size[0], im.size[1], im.size[0] * 3)
     try:
@@ -179,9 +189,9 @@ def select_timezone(tz):
         overlay = 'timezone_{}.png'.format(TIMEZONE_COLORS[hexcolor])
         print "Image: %s" % overlay
     except (IndexError, KeyError):
-        installer.wTree.get_widget("image_timezones").set_from_pixbuf(_get_image(None, None))
+        installer.wTree.get_widget("image_timezones").set_from_pixbuf(_get_image(None, min(tz.x, MAP_SIZE[0]), min(tz.y, MAP_SIZE[1])))
     else:
-        installer.wTree.get_widget("image_timezones").set_from_pixbuf(_get_image(overlay, tz))
+        installer.wTree.get_widget("image_timezones").set_from_pixbuf(_get_image(overlay, tz.x, tz.y))
     installer.setup.timezone = tz.name
     installer.wTree.get_widget("button_timezones").set_label(tz.name)
     # Move the current time label to appropriate position
