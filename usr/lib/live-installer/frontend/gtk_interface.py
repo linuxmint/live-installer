@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 from installer import InstallerEngine, Setup
-from partitioning import PartitionSetup, PartitionDialog
 from slideshow import Slideshow
+import partitioning
 
 import pygtk; pygtk.require("2.0")
 import gtk
@@ -25,15 +25,6 @@ import parted
 
 gettext.install("live-installer", "/usr/share/linuxmint/locale")
 gtk.gdk.threads_init()
-
-INDEX_PARTITION_PATH=0
-INDEX_PARTITION_TYPE=1
-INDEX_PARTITION_DESCRIPTION=2
-INDEX_PARTITION_FORMAT_AS=3
-INDEX_PARTITION_MOUNT_AS=4
-INDEX_PARTITION_SIZE=5
-INDEX_PARTITION_FREE_SPACE=6
-INDEX_PARTITION_OBJECT=7
 
 LOADING_ANIMATION = '/usr/share/live-installer/loading.gif'
 
@@ -294,47 +285,21 @@ class InstallerWindow:
         self.wTree.get_widget("label_edit_partitions").set_label(_("_Edit partitions"))
         self.wTree.get_widget("label_custommount").set_label(_("_Expert mode"))
         self.wTree.get_widget("button_custommount").connect("clicked", self.show_customwarning)
-        self.wTree.get_widget("button_edit").connect("clicked", self.edit_partitions)        
-        self.wTree.get_widget("button_refresh").connect("clicked", self.refresh_partitions)
-        self.wTree.get_widget("treeview_disks").get_selection().connect("changed", self.update_html_preview)
-        self.wTree.get_widget("treeview_disks").connect("row_activated", self.assign_partition)
-        self.wTree.get_widget("treeview_disks").connect("button-release-event", self.partitions_popup_menu)
-        
-        # device
-        ren = gtk.CellRendererText()
-        self.column3 = gtk.TreeViewColumn(_("Device"), ren)
-        self.column3.add_attribute(ren, "markup", INDEX_PARTITION_PATH)
-        self.wTree.get_widget("treeview_disks").append_column(self.column3)
-        # Type
-        ren = gtk.CellRendererText()
-        self.column4 = gtk.TreeViewColumn(_("Type"), ren)
-        self.column4.add_attribute(ren, "markup", INDEX_PARTITION_TYPE)
-        self.wTree.get_widget("treeview_disks").append_column(self.column4)
-        # description
-        ren = gtk.CellRendererText()
-        self.column5 = gtk.TreeViewColumn(_("Description"), ren)
-        self.column5.add_attribute(ren, "markup", INDEX_PARTITION_DESCRIPTION)
-        self.wTree.get_widget("treeview_disks").append_column(self.column5)        
-        # mount point
-        ren = gtk.CellRendererText()
-        self.column6 = gtk.TreeViewColumn(_("Mount point"), ren)
-        self.column6.add_attribute(ren, "markup", INDEX_PARTITION_MOUNT_AS)
-        self.wTree.get_widget("treeview_disks").append_column(self.column6)
-        # format
-        ren = gtk.CellRendererText()
-        self.column7 = gtk.TreeViewColumn(_("Format as"), ren)
-        self.column7.add_attribute(ren, "markup", INDEX_PARTITION_FORMAT_AS)        
-        self.wTree.get_widget("treeview_disks").append_column(self.column7)
-        # size
-        ren = gtk.CellRendererText()
-        self.column8 = gtk.TreeViewColumn(_("Size"), ren)
-        self.column8.add_attribute(ren, "markup", INDEX_PARTITION_SIZE)
-        self.wTree.get_widget("treeview_disks").append_column(self.column8)
-        # Used space
-        ren = gtk.CellRendererText()
-        self.column9 = gtk.TreeViewColumn(_("Free space"), ren)
-        self.column9.add_attribute(ren, "markup", INDEX_PARTITION_FREE_SPACE)
-        self.wTree.get_widget("treeview_disks").append_column(self.column9)
+        self.wTree.get_widget("button_edit").connect("clicked", partitioning.manually_edit_partitions)
+        self.wTree.get_widget("button_refresh").connect("clicked", lambda _: partitioning.build_partitions(self))
+        self.wTree.get_widget("treeview_disks").get_selection().connect("changed", partitioning.update_html_preview)
+        self.wTree.get_widget("treeview_disks").connect("row_activated", partitioning.edit_partition_dialog)
+        self.wTree.get_widget("treeview_disks").connect("button-release-event", partitioning.partitions_popup_menu)
+        text = gtk.CellRendererText()
+        for i in (partitioning.IDX_PART_PATH,
+                  partitioning.IDX_PART_TYPE,
+                  partitioning.IDX_PART_DESCRIPTION,
+                  partitioning.IDX_PART_MOUNT_AS,
+                  partitioning.IDX_PART_FORMAT_AS,
+                  partitioning.IDX_PART_SIZE,
+                  partitioning.IDX_PART_FREE_SPACE):
+            col = gtk.TreeViewColumn("", text, markup=i)  # real title is set in i18n()
+            self.wTree.get_widget("treeview_disks").append_column(col)
 
         self.wTree.get_widget("entry_your_name").connect("notify::text", self.assign_realname)        
         self.wTree.get_widget("entry_username").connect("notify::text", self.assign_username)    
@@ -435,12 +400,12 @@ class InstallerWindow:
             self.wTree.get_widget("vbox_install").add(self.slideshow_browser)
             self.wTree.get_widget("vbox_install").show_all()                                                            
         
-        self.browser = webkit.WebView()
-        s = self.browser.get_settings()
+        self.partitions_browser = webkit.WebView()
+        s = self.partitions_browser.get_settings()
         s.set_property('enable-file-access-from-file-uris', True)
-        s.set_property('enable-default-context-menu', False)     
-        self.browser.set_transparent(True)
-        self.wTree.get_widget("scrolled_partitions").add(self.browser)   
+        s.set_property('enable-default-context-menu', False)
+        self.partitions_browser.set_transparent(True)
+        self.wTree.get_widget("scrolled_partitions").add(self.partitions_browser)
         
         self.window.show_all()
 
@@ -581,14 +546,17 @@ class InstallerWindow:
         self.wTree.get_widget("label_custom_install_paused_4").set_label(_("Note that in order for update-initramfs to work properly in some cases (such as dm-crypt), you may need to have drives currently mounted using the same block device name as they appear in /target/etc/fstab."))
         self.wTree.get_widget("label_custom_install_paused_5").set_label(_("Double-check that your /target/etc/fstab is correct, matches what your new system will have at first boot, and matches what is currently mounted at /target."))
 
-        #Columns
-        self.column3.set_title(_("Device")) 
-        self.column4.set_title(_("Type")) 
-        self.column5.set_title(_("Operating system")) 
-        self.column6.set_title(_("Mount point")) 
-        self.column7.set_title(_("Format?")) 
-        self.column8.set_title(_("Size")) 
-        self.column9.set_title(_("Free space")) 
+        # Columns
+        for col, title in zip(self.wTree.get_widget("treeview_disks").get_columns(),
+                              (_("Device"),
+                               _("Type"),
+                               _("Operating system"),
+                               _("Mount point"),
+                               _("Format as"),
+                               _("Size"),
+                               _("Free space"))):
+            col.set_title(title)
+
         self.column10.set_title(_("Layout")) 
         self.column11.set_title(_("Variant")) 
         self.column12.set_title(_("Overview")) 
@@ -617,91 +585,6 @@ class InstallerWindow:
 
     def show_customwarning(self, widget):
         self.activate_page(self.PAGE_CUSTOMWARNING)
-
-    def assign_partition(self, widget, data=None, data2=None):
-        ''' assign the partition ... '''
-        model, iter = self.wTree.get_widget("treeview_disks").get_selection().get_selected()
-        if iter is not None:
-            row = model[iter]
-            partition = row[INDEX_PARTITION_OBJECT]            
-            if (partition.partition.type != parted.PARTITION_EXTENDED and
-                partition.partition.number != -1):
-                dlg = PartitionDialog(row[INDEX_PARTITION_PATH],
-                                      row[INDEX_PARTITION_MOUNT_AS],
-                                      row[INDEX_PARTITION_FORMAT_AS],
-                                      row[INDEX_PARTITION_TYPE])
-                (mount_as, format_as) = dlg.show()                
-                self.assign_mount_point(partition, mount_as, format_as)
-
-    def partitions_popup_menu( self, widget, event ):
-        if event.button == 3:
-            model, iter = self.wTree.get_widget("treeview_disks").get_selection().get_selected()
-            if iter is not None:
-                partition = model.get_value(iter, INDEX_PARTITION_OBJECT)
-                if not partition: return
-                partition_type = model.get_value(iter, INDEX_PARTITION_TYPE)
-                if not partition.partition.type == parted.PARTITION_EXTENDED and not partition.partition.number == -1 and "swap" not in partition_type:
-                    menu = gtk.Menu()
-                    menuItem = gtk.MenuItem(_("Edit"))
-                    menuItem.connect( "activate", self.assign_partition, partition)
-                    menu.append(menuItem)
-                    menuItem = gtk.SeparatorMenuItem()
-                    menu.append(menuItem)
-                    menuItem = gtk.MenuItem(_("Assign to /"))
-                    menuItem.connect( "activate", self.assign_mount_point_context_menu_wrapper, partition, "/", "ext4")
-                    menu.append(menuItem)
-                    menuItem = gtk.MenuItem(_("Assign to /home"))
-                    menuItem.connect( "activate", self.assign_mount_point_context_menu_wrapper, partition, "/home", "")
-                    menu.append(menuItem)
-
-                    if self.setup.gptonefi:
-                        menuItem = gtk.SeparatorMenuItem()
-                        menu.append(menuItem)
-                        menuItem = gtk.MenuItem(_("Assign to /boot/efi"))
-                        menuItem.connect( "activate", self.assign_mount_point_context_menu_wrapper, partition, "/boot/efi", "")
-                        menu.append(menuItem)
-
-                    menu.show_all()
-                    menu.popup( None, None, None, event.button, event.time )
-
-    def assign_mount_point_context_menu_wrapper(self, menu, partition, mount_point, filesystem):
-        self.assign_mount_point(partition, mount_point, filesystem)
-
-    def assign_mount_point(self, partition, mount_point, filesystem):
-        # Assign it in the treeview
-        model = self.wTree.get_widget("treeview_disks").get_model()
-        diskiter = model.get_iter_first()
-        while diskiter:
-            partiter = model.iter_children(diskiter)
-            while partiter:
-                if partition == model.get_value(partiter, INDEX_PARTITION_OBJECT):
-                    model.set_value(partiter, INDEX_PARTITION_MOUNT_AS, mount_point)
-                    model.set_value(partiter, INDEX_PARTITION_FORMAT_AS, filesystem)
-                else:
-                    if mount_point == model.get_value(partiter, INDEX_PARTITION_MOUNT_AS):
-                        model.set_value(partiter, INDEX_PARTITION_MOUNT_AS, "")
-                        model.set_value(partiter, INDEX_PARTITION_FORMAT_AS, "")
-                partiter = model.iter_next(partiter)
-            diskiter = model.iter_next(diskiter)
-        # Assign it in our setup
-        for part in self.setup.partitions:
-            if part == partition:
-                partition.mount_as, partition.format_as = mount_point, filesystem
-            elif part.mount_as == mount_point:
-                part.mount_as, part.format_as = '', ''
-        self.setup.print_setup()
-
-    def refresh_partitions(self, widget, data=None):
-        ''' refresh the partitions ... '''
-        self.build_partitions()
-
-    def edit_partitions(self, widget, data=None):
-        """ Edit only known disks in gparted, selected one first """
-        model, iter = self.wTree.get_widget("treeview_disks").get_selection().get_selected()
-        preferred = model[iter][-1] if iter else ''  # prefer disk currently selected and show it first in gparted
-        disks = ' '.join(sorted((disk for disk,desc in model.disks), key=lambda disk: disk != preferred))
-        os.system('umount ' + disks)  # umount disks (if possible) so gparted works out-of-the-box
-        os.popen('gparted {} &'.format(disks))
 
     def build_lang_list(self):
 
@@ -945,38 +828,6 @@ class InstallerWindow:
         # Save the selection
         self.setup.timezone = timezone.name
         self.setup.timezone_code = timezone.name
-
-    def build_grub_partitions(self):
-        grub_model = gtk.ListStore(str)
-        try: preferred = [p.partition.disk.device.path for p in self.setup.partitions if p.mount_as == '/'][0]
-        except IndexError: preferred = ''
-        devices = sorted(list(d[0] for d in self.setup.partition_setup.disks) +
-                         list(filter(None, (p.name for p in self.setup.partitions))),
-                         key=lambda path: path != preferred and path)
-        for p in devices: grub_model.append([p])
-        self.wTree.get_widget("combobox_grub").set_model(grub_model)
-        self.wTree.get_widget("combobox_grub").set_active(0)
-
-    def update_html_preview(self, selection, data=None):
-        model, row = selection.get_selected()
-        try: disk = model[row][-1]
-        except TypeError, IndexError: return  # no disk is selected or no disk available
-        if disk != self._selected_disk:
-            self._selected_disk = disk
-            self.browser.load_html_string(model.get_html(self._selected_disk), "file:///")
-
-    def build_partitions(self):        
-        self.window.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))  # "busy" cursor
-        self.window.set_sensitive(False)
-        partition_setup = PartitionSetup(self)
-        if partition_setup.disks:
-            self._selected_disk = partition_setup.disks[0][0]
-            self.browser.load_html_string(partition_setup.get_html(self._selected_disk), "file:///")
-        self.wTree.get_widget("scrolled_partitions").show_all()
-        self.wTree.get_widget("treeview_disks").set_model(partition_setup)
-        self.wTree.get_widget("treeview_disks").expand_all()
-        self.window.window.set_cursor(None)
-        self.window.set_sensitive(True)
 
     def build_kb_lists(self):
         ''' Do some xml kung-fu and load the keyboard stuffs '''
@@ -1228,7 +1079,7 @@ class InstallerWindow:
                     MessageDialog(_("Installation Tool"), errorMessage, gtk.MESSAGE_WARNING, self.window).show()
                 else:
                     self.activate_page(self.PAGE_PARTITIONS)
-                    self.build_partitions()
+                    partitioning.build_partitions(self)
             elif(sel == self.PAGE_PARTITIONS):                
                 model = self.wTree.get_widget("treeview_disks").get_model()
 
@@ -1270,11 +1121,11 @@ class InstallerWindow:
                         MessageDialog(_("Installation Tool"), _("<b>Please select an EFI partition.</b>"), gtk.MESSAGE_ERROR, self.window, _("An EFI system partition is needed with the following requirements:\n\n - Mount point: /boot/efi\n - Partition flags: Bootable\n - Size: Larger than 100MB\n - Format: vfat or fat32\n\nTo ensure compatibility with Windows we recommend you use the first partition of the disk as the EFI system partition.\n ")).show()
                         return
 
-                self.build_grub_partitions()
+                partitioning.build_grub_partitions()
                 self.activate_page(self.PAGE_ADVANCED)
 
             elif(sel == self.PAGE_CUSTOMWARNING):
-                self.build_grub_partitions()
+                partitioning.build_grub_partitions()
                 self.activate_page(self.PAGE_ADVANCED)
             elif(sel == self.PAGE_ADVANCED):
                 self.activate_page(self.PAGE_OVERVIEW)

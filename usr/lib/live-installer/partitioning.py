@@ -18,6 +18,16 @@ def shell_exec(command):
 def getoutput(command):
     return shell_exec(command).stdout.read().strip()
 
+(IDX_PART_PATH,
+ IDX_PART_TYPE,
+ IDX_PART_DESCRIPTION,
+ IDX_PART_FORMAT_AS,
+ IDX_PART_MOUNT_AS,
+ IDX_PART_SIZE,
+ IDX_PART_FREE_SPACE,
+ IDX_PART_OBJECT,
+ IDX_PART_DISK) = range(9)
+
 def is_efi_supported():
     # Are we running under with efi ?
     os.system("modprobe efivars >/dev/null 2>&1")
@@ -43,8 +53,118 @@ with open(RESOURCE_DIR + 'disk-partitions.html') as f:
     DISK_TEMPLATE = re.sub('<style>[\s\S]+?</style>', lambda match: match.group().replace('{', '{{').replace('}', '}}'), DISK_TEMPLATE)
 
 
+def build_partitions(_installer):
+    global installer
+    installer = _installer
+    installer.window.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))  # "busy" cursor
+    installer.window.set_sensitive(False)
+    partition_setup = PartitionSetup()
+    if partition_setup.disks:
+        installer._selected_disk = partition_setup.disks[0][0]
+        installer.partitions_browser.load_string(partition_setup.get_html(installer._selected_disk),
+                                                 'text/html', 'UTF-8', 'file:///')
+    installer.wTree.get_widget("scrolled_partitions").show_all()
+    installer.wTree.get_widget("treeview_disks").set_model(partition_setup)
+    installer.wTree.get_widget("treeview_disks").expand_all()
+    installer.window.window.set_cursor(None)
+    installer.window.set_sensitive(True)
+
+def update_html_preview(selection):
+    model, row = selection.get_selected()
+    try: disk = model[row][IDX_PART_DISK]
+    except TypeError, IndexError: return  # no disk is selected or no disk available
+    if disk != installer._selected_disk:
+        installer._selected_disk = disk
+        installer.partitions_browser.load_string(model.get_html(disk),
+                                                 'text/html', 'UTF-8', 'file:///')
+
+def edit_partition_dialog(widget, path, viewcol):
+    ''' assign the partition ... '''
+    model, iter = installer.wTree.get_widget("treeview_disks").get_selection().get_selected()
+    if not iter: return
+    row = model[iter]
+    partition = row[IDX_PART_OBJECT]
+    if (partition.partition.type != parted.PARTITION_EXTENDED and
+        partition.partition.number != -1):
+        dlg = PartitionDialog(row[IDX_PART_PATH],
+                              row[IDX_PART_MOUNT_AS],
+                              row[IDX_PART_FORMAT_AS],
+                              row[IDX_PART_TYPE])
+        mount_as, format_as = dlg.show()
+        assign_mount_point(partition, mount_as, format_as)
+
+def assign_mount_point(partition, mount_point, filesystem):
+    # Assign it in the treeview
+    model = installer.wTree.get_widget("treeview_disks").get_model()
+    for disk in model:
+        for part in disk.iterchildren():
+            if partition == part[IDX_PART_OBJECT]:
+                part[IDX_PART_MOUNT_AS] = mount_point
+                part[IDX_PART_FORMAT_AS] = filesystem
+            elif mount_point == part[IDX_PART_MOUNT_AS]:
+                part[IDX_PART_MOUNT_AS] = ""
+                part[IDX_PART_FORMAT_AS] = ""
+    # Assign it in our setup
+    for part in installer.setup.partitions:
+        if part == partition:
+            partition.mount_as, partition.format_as = mount_point, filesystem
+        elif part.mount_as == mount_point:
+            part.mount_as, part.format_as = '', ''
+    installer.setup.print_setup()
+
+def partitions_popup_menu(widget, event):
+    if event.button != 3: return
+    model, iter = installer.wTree.get_widget("treeview_disks").get_selection().get_selected()
+    if not iter: return
+    partition = model.get_value(iter, IDX_PART_OBJECT)
+    if not partition: return
+    partition_type = model.get_value(iter, IDX_PART_TYPE)
+    if (partition.partition.type == parted.PARTITION_EXTENDED or
+        partition.partition.number == -1 or
+        "swap" in partition_type):
+        return
+    menu = gtk.Menu()
+    menuItem = gtk.MenuItem(_("Edit"))
+    menuItem.connect("activate", edit_partition_dialog, None, None)
+    menu.append(menuItem)
+    menuItem = gtk.SeparatorMenuItem()
+    menu.append(menuItem)
+    menuItem = gtk.MenuItem(_("Assign to /"))
+    menuItem.connect("activate", lambda w: assign_mount_point(partition, '/', 'ext4'))
+    menu.append(menuItem)
+    menuItem = gtk.MenuItem(_("Assign to /home"))
+    menuItem.connect("activate", lambda w: assign_mount_point(partition, '/home', ''))
+    menu.append(menuItem)
+    if installer.setup.gptonefi:
+        menuItem = gtk.SeparatorMenuItem()
+        menu.append(menuItem)
+        menuItem = gtk.MenuItem(_("Assign to /boot/efi"))
+        menuItem.connect("activate", lambda w: assign_mount_point(partition, EFI_MOUNT_POINT, ''))
+        menu.append(menuItem)
+    menu.show_all()
+    menu.popup(None, None, None, event.button, event.time)
+
+def manually_edit_partitions(widget):
+    """ Edit only known disks in gparted, selected one first """
+    model, iter = installer.wTree.get_widget("treeview_disks").get_selection().get_selected()
+    preferred = model[iter][-1] if iter else ''  # prefer disk currently selected and show it first in gparted
+    disks = ' '.join(sorted((disk for disk,desc in model.disks), key=lambda disk: disk != preferred))
+    os.system('umount ' + disks)  # umount disks (if possible) so gparted works out-of-the-box
+    os.popen('gparted {} &'.format(disks))
+
+def build_grub_partitions():
+    grub_model = gtk.ListStore(str)
+    try: preferred = [p.partition.disk.device.path for p in installer.setup.partitions if p.mount_as == '/'][0]
+    except IndexError: preferred = ''
+    devices = sorted(list(d[0] for d in installer.setup.partition_setup.disks) +
+                     list(filter(None, (p.name for p in installer.setup.partitions))),
+                     key=lambda path: path != preferred and path)
+    for p in devices: grub_model.append([p])
+    installer.wTree.get_widget("combobox_grub").set_model(grub_model)
+    installer.wTree.get_widget("combobox_grub").set_active(0)
+
 class PartitionSetup(gtk.TreeStore):
-    def __init__(self, installer):
+    def __init__(self):
         super(PartitionSetup, self).__init__(str,  # path
                                              str,  # type (fs)
                                              str,  # description (OS)
@@ -88,7 +208,7 @@ class PartitionSetup(gtk.TreeStore):
                                         installer.window)
                 if not dialog.show(): continue  # the user said No, skip this disk
                 installer.window.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
-                assign_mount_format = self.full_disk_format(installer, disk_device)
+                assign_mount_format = self.full_disk_format(disk_device)
                 installer.window.window.set_cursor(None)
                 disk = parted.Disk(disk_device)
             disk_iter = self.append(None, (disk_description, '', '', '', '', '', '', None, disk_path))
@@ -125,7 +245,7 @@ class PartitionSetup(gtk.TreeStore):
     def get_html(self, disk):
         return self.html_disks[disk]
 
-    def full_disk_format(self, installer, device):
+    def full_disk_format(self, device):
         # Create a default partition set up
         disk_label = ('gpt' if device.getLength('B') > 2**32*.9 * device.sectorSize  # size of disk > ~2TB
                                or installer.setup.gptonefi
