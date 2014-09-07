@@ -141,22 +141,12 @@ class InstallerWindow:
 
         self.face_button.add_separator()
 
-        webcam_detected = False
-        try:
-            import cv
-            capture = cv.CaptureFromCAM(-1)
-            for i in range(10):
-                img = cv.QueryFrame(capture)
-                if img != None:
-                    webcam_detected = True
-        except Exception, detail:
-            print detail
+        # if the command fails, we don't have a webcam
+        webcam_detected = (0 == os.system('streamer -o /tmp/live-installer-face07.jpeg'))
 
-        if (webcam_detected):
+        if webcam_detected:
             self.face_button.add_menuitem(self.face_photo_menuitem)
-            self.face_button.add_menuitem(self.face_browse_menuitem)
-        else:
-            self.face_button.add_menuitem(self.face_browse_menuitem)
+        self.face_button.add_menuitem(self.face_browse_menuitem)
 
         self.face_button.set_picture_from_file("/tmp/live-installer-face.png")
 
@@ -364,17 +354,12 @@ class InstallerWindow:
         return
 
     def _on_face_take_picture_button_clicked(self, menuitem):
-        try:
-            import cv
-            capture = cv.CaptureFromCAM(-1)
-            for i in range(10):
-                img = cv.QueryFrame(capture)
-                if img != None:
-                    cv.SaveImage("/tmp/live-installer-webcam.png", img)
-                    os.system("convert /tmp/live-installer-webcam.png -resize x96 /tmp/live-installer-face.png")
-                    self.face_button.set_picture_from_file("/tmp/live-installer-face.png")
-        except Exception, detail:
-            print detail
+        # streamer takes -t photos
+        if 0 != os.system('streamer -j90 -t8 -s800x600 -o /tmp/live-installer-face00.jpeg'):
+            return  # Error, no webcam
+        # Convert and resize the 7th frame (the webcam takes a few frames to "lighten up")
+        os.system('convert /tmp/live-installer-face07.jpeg -resize x96 /tmp/live-installer-face.png')
+        self.face_button.set_picture_from_file("/tmp/live-installer-face.png")
 
     def fix_text_wrap(self):
         while gtk.events_pending():

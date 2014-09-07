@@ -18,8 +18,8 @@ Depends: ${misc:Depends}, ${python:Depends}
   , python-webkit
   , python-parted, parted, gparted
   , python-qt4
-  , python-opencv
   , python-imaging
+  , streamer
   , imagemagick
   , isoquery
   , desktop-file-utils
