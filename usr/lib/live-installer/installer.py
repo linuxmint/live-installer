@@ -303,49 +303,17 @@ class InstallerEngine:
         print " --> Writing fstab"
         our_current += 1
         self.update_progress(total=our_total, current=our_current, message=_("Writing filesystem mount information to /etc/fstab"))
-        # make sure fstab has default /proc and /sys entries
-        if(not os.path.exists("/target/etc/fstab")):
-            os.system("echo \"#### Static Filesystem Table File\" > /target/etc/fstab")
-        fstab = open("/target/etc/fstab", "a")
-        fstab.write("proc\t/proc\tproc\tdefaults\t0\t0\n")
-        if(not setup.skip_mount):
-            for partition in setup.partitions:
-                if (partition.mount_as is not None and partition.mount_as != "None"):
-                    partition_uuid = partition.partition.path # If we can't find the UUID we use the path
-                    blkid = commands.getoutput('blkid').split('\n')
-                    for blkid_line in blkid:
-                        blkid_elements = blkid_line.split(':')
-                        if blkid_elements[0] == partition.partition.path:
-                            blkid_mini_elements = blkid_line.split()
-                            for blkid_mini_element in blkid_mini_elements:
-                                if "UUID=" in blkid_mini_element:
-                                    partition_uuid = blkid_mini_element.replace('"', '').strip()
-                                    break
-                            break
-
-                    fstab.write("# %s\n" % (partition.partition.path))
-
-                    if(partition.mount_as == "/"):
-                        fstab_fsck_option = "1"
-                    else:
-                        fstab_fsck_option = "0"
-
-                    if("ext" in partition.type):
-                        fstab_mount_options = "rw,errors=remount-ro"
-                    else:
-                        fstab_mount_options = "defaults"
-
-                    if partition.type == "fat16" or partition.type == "fat32":
-                        fs = "vfat"
-                    else:
-                        fs = partition.type
-
-                    if(fs == "swap"):
-                        fstab.write("%s\tswap\tswap\tsw\t0\t0\n" % partition_uuid)
-                    else:
-                        fstab.write("%s\t%s\t%s\t%s\t%s\t%s\n" % (partition_uuid, partition.mount_as, fs, fstab_mount_options, "0", fstab_fsck_option))
-        fstab.close()
-
+        if not os.path.exists("/target/etc/fstab"):
+            os.system("echo '#### Static Filesystem Table File' > /target/etc/fstab")
+        if not setup.skip_mount:
+            with open("/target/etc/fstab", "a") as fstab:
+                for part in setup.partitions:
+                    if not part.mount_as: continue
+                    uuid = getoutput('blkid -s UUID -o export ' + part.partition.path) or part.partition.path
+                    fsck = 0 if part.type in ('ntfs', 'swap') else 1 if part.mount_as == '/' else 2
+                    opts = 'rw,errors=remount-ro' if 'ext' in part.type else 'defaults'
+                    fs = 'vfat' if part.type.startswith('fat') else part.type
+                    fstab.write('{uuid}\t{part.mount_as}\t{fs}\t{opts}\t0\t{fsck}\n'.format(**locals()))
 
     def finish_install(self, setup):
         # Steps:
