@@ -1651,53 +1651,32 @@ body{background-color:#d6d6d6;} \
                 self.activate_page(self.PAGE_LANGUAGE)                
 
     def show_overview(self):
-        ''' build the summary page '''
-        model = gtk.TreeStore(str)        
-        top = model.append(None)
-        model.set(top, 0, _("Localization"))
-        iter = model.append(top)
-        model.set(iter, 0, _("Language: ") + "<b>%s</b>" % self.setup.language)        
-        iter = model.append(top)
-        model.set(iter, 0, _("Timezone: ") + "<b>%s</b>" % self.setup.timezone)        
-        iter = model.append(top)
-        if (self.setup.keyboard_variant_description is None):
-            model.set(iter, 0, _("Keyboard layout: ") + "<b>%s - %s</b>" % (self.setup.keyboard_model_description, self.setup.keyboard_layout_description))       
-        else:
-            model.set(iter, 0, _("Keyboard layout: ") + "<b>%s - %s (%s)</b>" % (self.setup.keyboard_model_description, self.setup.keyboard_layout_description, self.setup.keyboard_variant_description))
-        top = model.append(None)
-        model.set(top, 0, _("User settings"))       
-        iter = model.append(top)
-        model.set(iter, 0, _("Real name: ") + "<b>%s</b>" % self.setup.real_name)        
-        iter = model.append(top)
-        model.set(iter, 0, _("Username: ") + "<b>%s</b>" % self.setup.username)
-        iter = model.append(top)
-        model.set(iter, 0, _("Automatic login: ") + "<b>%s</b>" % (_("enabled") if self.setup.autologin else _("disabled")))
-        top = model.append(None)
-        model.set(top, 0, _("System settings"))
-        iter = model.append(top)
-        model.set(iter, 0, _("Hostname: ") + "<b>%s</b>" % self.setup.hostname)       
-        iter = model.append(top)
-        if(self.setup.grub_device is not None):
-            model.set(iter, 0, _("Install bootloader on %s") % ("<b>%s</b>" % self.setup.grub_device))
-        else:
-            model.set(iter, 0, _("Do not install bootloader"))
-        top = model.append(None)
-        model.set(top, 0, _("Filesystem operations"))  
-        if(self.setup.skip_mount):
-            iter = model.append(top)
-            model.set(iter, 0, "<b>%s</b>" % _("Use already-mounted /target."))
-        else:      
-            for partition in self.setup.partitions:
-                if(partition.format_as is not None and partition.format_as != ""):
-                    # format it
-                    iter = model.append(top)
-                    model.set(iter, 0, "<b>%s</b>" % (_("Format %(partition)s as %(format)s") % {'partition':partition.partition.path, 'format':partition.format_as}))
-            for partition in self.setup.partitions:
-                if(partition.mount_as is not None and partition.mount_as != ""):
-                    # mount point
-                    iter = model.append(top)
-                    model.set(iter, 0, "<b>%s</b>" % (_("Mount %(partition)s as %(mountpoint)s") % {'partition':partition.partition.path, 'mountpoint':partition.mount_as}))
+        bold = lambda str: '<b>' + str + '</b>'
+        model = gtk.TreeStore(str)
         self.wTree.get_widget("treeview_overview").set_model(model)
+        top = model.append(None, (_("Localization"),))
+        model.append(top, (_("Language: ") + bold(self.setup.language),))
+        model.append(top, (_("Timezone: ") + bold(self.setup.timezone),))
+        model.append(top, (_("Keyboard layout: ") +
+                           "<b>%s - %s %s</b>" % (self.setup.keyboard_model_description, self.setup.keyboard_layout_description,
+                                                  '(%s)' % self.setup.keyboard_variant_description if self.setup.keyboard_variant_description else ''),))
+        top = model.append(None, (_("User settings"),))
+        model.append(top, (_("Real name: ") + bold(self.setup.real_name),))
+        model.append(top, (_("Username: ") + bold(self.setup.username),))
+        model.append(top, (_("Automatic login: ") + bold(_("enabled") if self.setup.autologin else _("disabled")),))
+        top = model.append(None, (_("System settings"),))
+        model.append(top, (_("Hostname: ") + bold(self.setup.hostname),))
+        top = model.append(None, (_("Filesystem operations"),))
+        model.append(top, (bold(_("Install bootloader on %s") % self.setup.grub_device) if self.setup.grub_device else _("Do not install bootloader"),))
+        if self.setup.skip_mount:
+            model.append(top, (bold(_("Use already-mounted /target.")),))
+            return
+        for p in self.setup.partitions:
+            if p.format_as:
+                model.append(top, (bold(_("Format %s as %s") % (p.partition.path, p.format_as)),))
+        for p in self.setup.partitions:
+            if p.mount_as:
+                model.append(top, (bold(_("Mount %s as %s") % (p.partition.path, p.mount_as)),))
 
     def do_install(self):        
         print " ## INSTALLATION "
