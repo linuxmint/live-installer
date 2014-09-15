@@ -1,4 +1,5 @@
 import os
+import re
 import subprocess
 import time
 import shutil
@@ -7,7 +8,6 @@ import stat
 import commands
 import sys
 import parted
-from configobj import ConfigObj
 
 gettext.install("live-installer", "/usr/share/locale")
 
@@ -18,24 +18,31 @@ class InstallerEngine:
 
     def __init__(self):
         # Set distribution name and version
-        def _get_distro_info_from(file, section, name, version):
-            config = ConfigObj(file, file_error=True)
-            if section:
-                return config[section][name], config[section][version]
-            return config[name], config[version]
-        for args in (('/etc/os-release', '', 'PRETTY_NAME', 'VERSION'),
-                     ('/etc/lsb-release', '', 'DISTRIB_DESCRIPTION', 'DISTRIB_RELEASE'),
-                     (CONFIG_FILE, 'distribution', 'DISTRIBUTION_NAME', 'DISTRIBUTION_VERSION')):
-            try: name, version = _get_distro_info_from(*args)
-            except (IOError, KeyError, TypeError): continue
+        def _get_config_dict(file, key_value=re.compile(r'^\s*(\w+)\s*=\s*["\']?(.*?)["\']?\s*(#.*)?$')):
+            """Returns POSIX config file (key=value, no sections) as dict.
+            Assumptions: no multiline values, no value contains '#'. """
+            d = {}
+            with open(file) as f:
+                for line in f:
+                    try: key, value, _ = key_value.match(line).groups()
+                    except AttributeError: continue
+                    d[key] = value
+            return d
+        for f, n, v in (('/etc/os-release', 'PRETTY_NAME', 'VERSION'),
+                        ('/etc/lsb-release', 'DISTRIB_DESCRIPTION', 'DISTRIB_RELEASE'),
+                        (CONFIG_FILE, 'DISTRIBUTION_NAME', 'DISTRIBUTION_VERSION')):
+            try:
+                config = _get_config_dict(f)
+                name, version = config[n], config[v]
+            except (IOError, KeyError): continue
             else: break
         else: name, version = 'Unknown GNU/Linux', '1.0'
         self.distribution_name, self.distribution_version = name, version
         # Set other configuration
-        config = ConfigObj(CONFIG_FILE)
-        self.live_user = config.get('install', {}).get('live_user', 'user')
-        self.media = config.get('install', {}).get('live_media_source', '/lib/live/mount/medium/live/filesystem.squashfs')
-        self.media_type = config.get('install', {}).get('live_media_type', 'squashfs')
+        config = _get_config_dict(CONFIG_FILE)
+        self.live_user = config.get('live_user', 'user')
+        self.media = config.get('live_media_source', '/lib/live/mount/medium/live/filesystem.squashfs')
+        self.media_type = config.get('live_media_type', 'squashfs')
         # Flush print when it's called    
         sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
 
