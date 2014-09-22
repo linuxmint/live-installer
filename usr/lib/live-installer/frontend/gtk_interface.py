@@ -25,6 +25,7 @@ import parted
 
 gettext.install("live-installer", "/usr/share/linuxmint/locale")
 gtk.gdk.threads_init()
+gtk.gdk.threads_enter()
 
 INDEX_PARTITION_PATH=0
 INDEX_PARTITION_TYPE=1
