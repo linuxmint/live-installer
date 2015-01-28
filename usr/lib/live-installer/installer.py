@@ -390,7 +390,7 @@ class InstallerEngine:
 
         # set the timezone
         print " --> Setting the timezone"
-        os.system("echo \"%s\" > /target/etc/timezone" % setup.timezone_code)
+        os.system("echo \"%s\" > /target/etc/timezone" % setup.timezone)
         os.system("cp /target/usr/share/zoneinfo/%s /target/etc/localtime" % setup.timezone)
 
         # localizing
@@ -579,7 +579,6 @@ class InstallerEngine:
 class Setup(object):
     language = None
     timezone = None
-    timezone_code = None
     keyboard_model = None    
     keyboard_layout = None    
     keyboard_variant = None    
@@ -612,7 +611,7 @@ class Setup(object):
         if __debug__:
             print "-------------------------------------------------------------------------"
             print "language: %s" % self.language
-            print "timezone: %s (%s)" % (self.timezone, self.timezone_code)        
+            print "timezone: %s" % self.timezone
             print "keyboard: %s - %s (%s) - %s - %s (%s)" % (self.keyboard_model, self.keyboard_layout, self.keyboard_variant, self.keyboard_model_description, self.keyboard_layout_description, self.keyboard_variant_description)        
             print "user: %s (%s)" % (self.username, self.real_name)
             print "autologin: ", self.autologin
