@@ -2,6 +2,7 @@
 
 from installer import InstallerEngine, Setup, PartitionSetup
 from slideshow import Slideshow
+from dialogs import MessageDialog, QuestionDialog, ErrorDialog, WarningDialog
 
 import pygtk; pygtk.require("2.0")
 import gtk
@@ -35,77 +36,6 @@ INDEX_PARTITION_FREE_SPACE=6
 INDEX_PARTITION_OBJECT=7
 
 LOADING_ANIMATION = '/usr/share/live-installer/loading.gif'
-
-class ProgressDialog:
-    
-    def __init__(self):
-        self.glade = '/usr/share/live-installer/interface.glade'
-        self.dTree = gtk.glade.XML(self.glade, 'progress_window')
-        self.window = self.dTree.get_widget('progress_window')
-        self.progressbar = self.dTree.get_widget('progressbar_operation')
-        self.label = self.dTree.get_widget('label_operation')
-        self.should_pulse = False
-        
-    def show(self, label=None, title=None):
-        def pbar_pulse():
-            if(not self.should_pulse):
-                return False
-            self.progressbar.pulse()
-            return self.should_pulse
-        if(label is not None):
-            self.label.set_markup(label)
-        if(title is not None):
-            self.window.set_title(title)
-        self.should_pulse = True
-        self.window.show_all()
-        gobject.timeout_add(100, pbar_pulse)
-        
-    def hide(self):
-        self.should_pulse = False
-        self.window.hide()  
-
-''' Handy. Makes message dialogs easy :D '''
-class MessageDialog(object):
-
-    def __init__(self, title, message, style, parent=None, secondary_message=None):
-        self.title = title
-        self.message = message
-        self.style = style
-        self.parent = parent
-        self.secondary_message = secondary_message
-
-    ''' Show me on screen '''
-    def show(self):
-
-        dialog = gtk.MessageDialog(self.parent, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT, self.style, gtk.BUTTONS_OK, self.message)
-        dialog.set_title(self.title)
-        dialog.set_position(gtk.WIN_POS_CENTER)
-        dialog.set_icon_from_file("/usr/share/icons/live-installer.png")
-        dialog.set_markup(self.message)
-        if self.secondary_message is not None:
-            dialog.format_secondary_markup(self.secondary_message)
-        dialog.run()
-        dialog.destroy()
-        
-class QuestionDialog(object):
-    def __init__(self, title, message, parent=None):
-        self.title = title
-        self.message = message       
-        self.parent = parent
-
-    ''' Show me on screen '''
-    def show(self):    
-        dialog = gtk.MessageDialog(self.parent, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_QUESTION, gtk.BUTTONS_YES_NO, self.message)
-        dialog.set_title(self.title)
-        dialog.set_position(gtk.WIN_POS_CENTER)
-        dialog.set_icon_from_file("/usr/share/icons/live-installer.png")
-        answer = dialog.run()
-        if answer==gtk.RESPONSE_YES:
-            return_value = True
-        else:
-            return_value = False
-        dialog.destroy()
-        return return_value    
 
 class WizardPage:
 
@@ -622,8 +552,9 @@ class InstallerWindow:
         self.setup.print_setup()
         
     def quit_cb(self, widget, data=None):
-        ''' ask whether we should quit. because touchpads do happen '''
-        gtk.main_quit()
+        if QuestionDialog(_("Quit?"), _("Are you sure you want to quit the installer?")):
+            gtk.main_quit()
+        return True
 
     def assign_partition(self, widget, data=None, data2=None):
         ''' assign the partition ... '''
@@ -1029,8 +960,8 @@ class InstallerWindow:
                 try:
                     disk = parted.Disk(device)
                 except Exception:
-                    dialog = QuestionDialog(_("Installation Tool"), _("No partition table was found on the hard drive. Do you want the installer to create a set of partitions for you? Note: This will ERASE ALL DATA present on the disk."), self.window)
-                    if (dialog.show()):
+                    erase = QuestionDialog(_("Installation Tool"), _("No partition table was found on the hard drive. Do you want the installer to create a set of partitions for you? Note: This will ERASE ALL DATA present on the disk."))
+                    if erase:
                         # Create a default partition set up
                         # try to load efivars
                         os.system("modprobe efivars >/dev/null 2>&1")
@@ -1557,7 +1488,7 @@ body{background-color:#d6d6d6;} \
                             errorMessage = _("The hostname may not contain whitespace characters.")
                     
                 if (errorFound):
-                    MessageDialog(_("Installation Tool"), errorMessage, gtk.MESSAGE_WARNING, self.window).show()
+                    WarningDialog(_("Whoops!"), errorMessage)
                 else:
                     self.activate_page(self.PAGE_HDD)                
             elif(sel == self.PAGE_HDD):
@@ -1575,10 +1506,10 @@ body{background-color:#d6d6d6;} \
                     if(partition.mount_as == "/"):
                         found_root_partition = True
                         if partition.format_as is None or partition.format_as == "":                            
-                            MessageDialog(_("Installation Tool"), _("Please indicate a filesystem to format the root (/) partition with before proceeding."), gtk.MESSAGE_ERROR, self.window).show()
+                            ErrorDialog(_("Installation Tool"), _("Please indicate a filesystem to format the root (/) partition with before proceeding."))
                             return
                 if not found_root_partition:
-                    MessageDialog(_("Installation Tool"), _("<b>Please select a root (/) partition.</b>"), gtk.MESSAGE_ERROR, self.window, _("A root partition is needed to install Linux Mint on.\n\n - Mount point: /\n - Recommended size: 30GB\n - Recommended filesystem format: ext4\n ")).show()
+                    ErrorDialog(_("Installation Tool"), _("<b>Please select a root (/) partition.</b>"), _("A root partition is needed to install Linux Mint on.\n\n - Mount point: /\n - Recommended size: 30GB\n - Recommended filesystem format: ext4\n "))
                     return
 
                 if self.setup.gptonefi:
@@ -1588,23 +1519,23 @@ body{background-color:#d6d6d6;} \
                         if(partition.mount_as == "/boot/efi"):
                             found_efi_partition = True
                             if not partition.partition.getFlag(parted.PARTITION_BOOT):
-                                MessageDialog(_("Installation Tool"), _("The EFI partition is not bootable. Please edit the partition flags."), gtk.MESSAGE_ERROR, self.window).show()
+                                ErrorDialog(_("Installation Tool"), _("The EFI partition is not bootable. Please edit the partition flags."))
                                 return
                             if int(float(partition.size)) < 100:
-                                MessageDialog(_("Installation Tool"), _("The EFI partition is too small. It must be at least 100MB."), gtk.MESSAGE_ERROR, self.window).show()
+                                ErrorDialog(_("Installation Tool"), _("The EFI partition is too small. It must be at least 100MB."))
                                 return
                             if partition.format_as == None or partition.format_as == "":
                                 # No partitioning
                                 if partition.type != "vfat" and partition.type != "fat32" and partition.type != "fat16":
-                                    MessageDialog(_("Installation Tool"), _("The EFI partition must be formatted as vfat."), gtk.MESSAGE_ERROR, self.window).show()
+                                    ErrorDialog(_("Installation Tool"), _("The EFI partition must be formatted as vfat."))
                                     return
                             else:
                                 if partition.format_as != "vfat":
-                                    MessageDialog(_("Installation Tool"), _("The EFI partition must be formatted as vfat."), gtk.MESSAGE_ERROR, self.window).show()
+                                    ErrorDialog(_("Installation Tool"), _("The EFI partition must be formatted as vfat."))
                                     return
                             
                     if not found_efi_partition:
-                        MessageDialog(_("Installation Tool"), _("<b>Please select an EFI partition.</b>"), gtk.MESSAGE_ERROR, self.window, _("An EFI system partition is needed with the following requirements:\n\n - Mount point: /boot/efi\n - Partition flags: Bootable\n - Size: Larger than 100MB\n - Format: vfat or fat32\n\nTo ensure compatibility with Windows we recommend you use the first partition of the disk as the EFI system partition.\n ")).show()
+                        ErrorDialog(_("Installation Tool"), _("<b>Please select an EFI partition.</b>"),_("An EFI system partition is needed with the following requirements:\n\n - Mount point: /boot/efi\n - Partition flags: Bootable\n - Size: Larger than 100MB\n - Format: vfat or fat32\n\nTo ensure compatibility with Windows we recommend you use the first partition of the disk as the EFI system partition.\n "))
                         return
 
                 self.build_grub_partitions()
@@ -1710,11 +1641,11 @@ body{background-color:#d6d6d6;} \
             print detail1
             do_try_finish_install = False
             with gtk.gdk.lock:
-                MessageDialog(_("Installation error"), str(detail1), gtk.MESSAGE_ERROR, self.window).show()
+                ErrorDialog(_("Installation error"), str(detail1))
 
         if self.critical_error_happened:
             with gtk.gdk.lock:
-                MessageDialog(_("Installation error"), self.critical_error_message, gtk.MESSAGE_ERROR, self.window).show()
+                ErrorDialog(_("Installation error"), self.critical_error_message)
             do_try_finish_install = False
 
         if do_try_finish_install:
@@ -1723,7 +1654,7 @@ body{background-color:#d6d6d6;} \
                     self.paused = True
                     self.activate_page(self.PAGE_CUSTOMPAUSED)
                     self.wTree.get_widget("button_next").show()
-                    MessageDialog(_("Installation paused"), _("Installation is now paused. Please read the instructions on the page carefully before clicking Forward to finish the installation."), gtk.MESSAGE_INFO, self.window).show()
+                    MessageDialog(_("Installation paused"), _("Installation is now paused. Please read the instructions on the page carefully before clicking Forward to finish the installation."))
                     self.wTree.get_widget("button_next").set_sensitive(True)
 
                 while(self.paused):
@@ -1734,7 +1665,7 @@ body{background-color:#d6d6d6;} \
             except Exception, detail1:
                 print detail1
                 with gtk.gdk.lock:
-                    MessageDialog(_("Installation error"), str(detail1), gtk.MESSAGE_ERROR, self.window).show()
+                    ErrorDialog(_("Installation error"), str(detail1))
 
             # show a message dialog thingum
             while(not self.done):
@@ -1742,11 +1673,10 @@ body{background-color:#d6d6d6;} \
 
             with gtk.gdk.lock:
                 if self.critical_error_happened:
-                    MessageDialog(_("Installation error"), self.critical_error_message, gtk.MESSAGE_ERROR, self.window).show()
+                    ErrorDialog(_("Installation error"), self.critical_error_message)
                 else:
-                    dialog = QuestionDialog(_("Installation finished"), _("Installation is now complete. Do you want to restart your computer to use the new system?"), self.window)
-                    if (dialog.show()):
-                        # Reboot now
+                    reboot = QuestionDialog(_("Installation finished"), _("Installation is now complete. Do you want to restart your computer to use the new system?"))
+                    if reboot:
                         os.system('reboot')
 
             print " ## INSTALLATION COMPLETE "
