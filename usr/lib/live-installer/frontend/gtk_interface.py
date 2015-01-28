@@ -149,7 +149,7 @@ class InstallerWindow:
             self.window.set_title((_("%s Installer") % DISTRIBUTION_NAME) + ' (debug)')
         else:
             self.window.set_title((_("%s Installer") % DISTRIBUTION_NAME))
-        self.window.connect("destroy", self.quit_cb)
+        self.window.connect("delete-event", self.quit_cb)
 
         # Wizard pages
         [self.PAGE_LANGUAGE, self.PAGE_PARTITIONS, self.PAGE_USER, self.PAGE_ADVANCED, self.PAGE_KEYBOARD, self.PAGE_OVERVIEW, self.PAGE_INSTALL, self.PAGE_TIMEZONE, self.PAGE_HDD, self.PAGE_CUSTOMWARNING, self.PAGE_CUSTOMPAUSED] = range(11)
@@ -554,7 +554,9 @@ class InstallerWindow:
     def quit_cb(self, widget, data=None):
         if QuestionDialog(_("Quit?"), _("Are you sure you want to quit the installer?")):
             gtk.main_quit()
-        return True
+            return False
+        else:
+            return True
 
     def assign_partition(self, widget, data=None, data2=None):
         ''' assign the partition ... '''
