@@ -1488,7 +1488,7 @@ body{background-color:#d6d6d6;} \
                             errorMessage = _("The hostname may not contain whitespace characters.")
                     
                 if (errorFound):
-                    WarningDialog(_("Whoops!"), errorMessage)
+                    WarningDialog(_("Installation Tool"), errorMessage)
                 else:
                     self.activate_page(self.PAGE_HDD)                
             elif(sel == self.PAGE_HDD):
