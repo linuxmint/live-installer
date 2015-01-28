@@ -18,8 +18,6 @@ import threading
 import gobject
 import time
 import webkit
-import GeoIP
-import urllib
 import string
 import parted
 
@@ -708,16 +706,19 @@ class InstallerWindow:
 
     def build_lang_list(self):
 
-        #Try to find out where we're located...
-        cur_country_code, cur_timezone = None, None
+        # Try to find out where we're located...
         try:
-            whatismyip = 'http://www.linuxmint.com/installer/show_my_ip.php'
-            ip = urllib.urlopen(whatismyip).readlines()[0]
-            gi = GeoIP.open('/usr/share/GeoIP/GeoIPCity.dat', GeoIP.GEOIP_STANDARD)
-            gir = gi.record_by_addr(ip)
-            cur_country_code, cur_timezone = gir['country_code'], gir['time_zone']
+            from urllib import urlopen
+        except ImportError:  # py3
+            from urllib.request import urlopen
+        try:
+            lookup = str(urlopen('http://geoip.ubuntu.com/lookup').read())
+            cur_country_code = re.search('<CountryCode>(.*)</CountryCode>', lookup).group(1)
+            cur_timezone = re.search('<TimeZone>(.*)</TimeZone>', lookup).group(1)
+            if cur_country_code == 'None': cur_country_code = None
+            if cur_timezone == 'None': cur_timezone = None
         except:
-            pass #best effort, we get here if we're not connected to the Internet            
+            cur_country_code, cur_timezone = None, None  # no internet connection
 
         self.cur_country_code = cur_country_code or os.environ.get('LANG', 'US').split('.')[0].split('_')[-1]  # fallback to LANG location or 'US'
         self.cur_timezone = cur_timezone
