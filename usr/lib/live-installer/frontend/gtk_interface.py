@@ -9,6 +9,7 @@ import gtk.glade
 import glib
 import gettext
 import os
+import re
 import commands
 import subprocess
 import sys

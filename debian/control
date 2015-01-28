@@ -22,6 +22,7 @@ Depends: ${misc:Depends}, ${python:Depends}
   , python-opencv
   , python-imaging
   , imagemagick
+  , isoquery
   , desktop-file-utils
   , shared-mime-info
   , sysv-rc
