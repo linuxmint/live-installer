@@ -188,6 +188,7 @@ class PartitionSetup(gtk.TreeStore):
                     device = "/dev/" + device
                     # convert size to manufacturer's size for show, e.g. in GB, not GiB!
                     size = str(int(float(size[:-1]) * (1024/1000)**'BkMGTPEZY'.index(size[-1]))) + size[-1]
+                    model = model.replace("\\x20", " ")
                     description = '{} ({}B)'.format(model.strip(), size)
                     if int(removable):
                         description = _('Removable:') + ' ' + description
