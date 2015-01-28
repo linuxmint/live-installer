@@ -321,15 +321,19 @@ class Partition(object):
                 parted.PARTITION_FREESPACE: 'freespace',
             }.get(partition.type, '')
 
-        if "swap" in self.type: self.mount_as = SWAP_MOUNT_POINT
+        if "swap" in self.type:
+            self.mount_as = SWAP_MOUNT_POINT
 
         # identify partition's description and used space
         try:
             os.system('mount --read-only {} {}'.format(partition.path, TMP_MOUNTPOINT))
             size, free, self.used_percent, mount_point = getoutput("df {0} | grep '^{0}' | awk '{{print $2,$4,$5,$6}}' | tail -1".format(partition.path)).split(None, 3)
-        except ValueError:
-            print 'WARNING: Partition {} or type {} failed to mount!'.format(partition.path, partition.type)
-            self.os_fs_info, self.description, self.free_space, self.used_percent = ': '+self.type, '', '', 0
+        except ValueError:            
+            if "swap" in self.type:
+                self.os_fs_info, self.description, self.free_space, self.used_percent = ': '+self.type, 'swap', '', 0
+            else:
+                print 'WARNING: Partition {} or type {} failed to mount!'.format(partition.path, partition.type)
+                self.os_fs_info, self.description, self.free_space, self.used_percent = ': '+self.type, '', '', 0
         else:
             self.size = to_human_readable(int(size)*1024)  # for mountable partitions, more accurate than the getLength size above
             self.free_space = to_human_readable(int(free)*1024)  # df returns values in 1024B-blocks by default
@@ -337,7 +341,7 @@ class Partition(object):
             description = ''
             if path_exists(mount_point, 'etc/'):
                 description = getoutput("su -c '{{ . {0}/etc/lsb-release && echo $DISTRIB_DESCRIPTION; }} || \
-                                                {{ . {0}/etc/os-release && echo $PRETTY_NAME; }}' nobody".format(mount_point)) or 'Unix'
+                                                {{ . {0}/etc/os-release && echo $PRETTY_NAME; }}' mint".format(mount_point)) or 'Unix'
             if path_exists(mount_point, 'Windows/servicing/Version'):
                 description = 'Windows ' + {
                     '6.4':'10',
@@ -356,6 +360,8 @@ class Partition(object):
                 description = 'Windows bootloader/recovery'
             elif path_exists(mount_point, 'Windows/System32'):
                 description = 'Windows'
+            if path_exists(mount_point, 'etc/linuxmint/info'):
+                description = getoutput("cat %s/etc/linuxmint/info | grep GRUB_TITLE" % mount_point).replace('GRUB_TITLE', '').replace('=', '').replace('"', '').strip()
             if getoutput("/sbin/gdisk -l {} | awk '/ EF00 /{{print $1}}'".format(partition.disk.device.path)) == str(partition.number):
                 description = 'EFI System Partition'
                 self.mount_as = EFI_MOUNT_POINT
@@ -366,23 +372,23 @@ class Partition(object):
 
         self.color = {
             # colors approximately from gparted (find matching set in usr/share/disk-partitions.html)
-            'btrfs': '#f95',
-            'exfat': '#070',
-            'ext2':  '#39f',
-            'ext3':  '#09f',
-            'ext4':  '#36f',
-            'fat16': '#0f0',
-            'fat32': '#0c0',
-            'hfs':   '#c69',
-            'jfs':   '#ff6',
-            'swap':  '#730',
-            'ntfs':  '#396',
-            'reiserfs': '#c30',
-            'ufs':   '#960',
-            'xfs':   '#ed8',
-            'zfs':   '#c0c',
-            parted.PARTITION_EXTENDED: '#bbb',
-        }.get(self.type, '#bbb')
+            'btrfs': '#636363',
+            'exfat': '#47872a',
+            'ext2':  '#2582a0',
+            'ext3':  '#2582a0',
+            'ext4':  '#21619e',
+            'fat16': '#47872a',
+            'fat32': '#47872a',
+            'hfs':   '#636363',
+            'jfs':   '#636363',
+            'swap':  '#be3a37',
+            'ntfs':  '#66a6a8',
+            'reiserfs': '#636363',
+            'ufs':   '#636363',
+            'xfs':   '#636363',
+            'zfs':   '#636363',
+            parted.PARTITION_EXTENDED: '#a9a9a9',
+        }.get(self.type, '#a9a9a9')
 
     def print_partition(self):
         print "Device: %s, format as: %s, mount as: %s" % (self.partition.path, self.format_as, self.mount_as)
