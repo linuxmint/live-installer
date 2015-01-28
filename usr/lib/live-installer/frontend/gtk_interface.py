@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
-from installer import InstallerEngine, Setup, PartitionSetup
+from installer import InstallerEngine, Setup
 from slideshow import Slideshow
 from dialogs import MessageDialog, QuestionDialog, ErrorDialog, WarningDialog
 import timezones
+import partitioning
 
 import pygtk; pygtk.require("2.0")
 import gtk
@@ -26,15 +27,6 @@ import parted
 
 gettext.install("live-installer", "/usr/share/linuxmint/locale")
 gtk.gdk.threads_init()
-
-INDEX_PARTITION_PATH=0
-INDEX_PARTITION_TYPE=1
-INDEX_PARTITION_DESCRIPTION=2
-INDEX_PARTITION_FORMAT_AS=3
-INDEX_PARTITION_MOUNT_AS=4
-INDEX_PARTITION_SIZE=5
-INDEX_PARTITION_FREE_SPACE=6
-INDEX_PARTITION_OBJECT=7
 
 LOADING_ANIMATION = '/usr/share/live-installer/loading.gif'
 
@@ -82,13 +74,21 @@ class InstallerWindow:
         self.window.connect("delete-event", self.quit_cb)
 
         # Wizard pages
-        [self.PAGE_LANGUAGE, self.PAGE_PARTITIONS, self.PAGE_USER, self.PAGE_ADVANCED, self.PAGE_KEYBOARD, self.PAGE_OVERVIEW, self.PAGE_INSTALL, self.PAGE_TIMEZONE, self.PAGE_HDD, self.PAGE_CUSTOMWARNING, self.PAGE_CUSTOMPAUSED] = range(11)
-        self.wizard_pages = range(11)
+        (self.PAGE_LANGUAGE,
+         self.PAGE_PARTITIONS,
+         self.PAGE_USER,
+         self.PAGE_ADVANCED,
+         self.PAGE_KEYBOARD,
+         self.PAGE_OVERVIEW,
+         self.PAGE_INSTALL,
+         self.PAGE_TIMEZONE,
+         self.PAGE_CUSTOMWARNING,
+         self.PAGE_CUSTOMPAUSED) = range(10)
+        self.wizard_pages = range(10)
         self.wizard_pages[self.PAGE_LANGUAGE] = WizardPage(_("Language"), "locales.png")
         self.wizard_pages[self.PAGE_TIMEZONE] = WizardPage(_("Timezone"), "time.png")
         self.wizard_pages[self.PAGE_KEYBOARD] = WizardPage(_("Keyboard layout"), "keyboard.png")
         self.wizard_pages[self.PAGE_USER] = WizardPage(_("User info"), "user.png")
-        self.wizard_pages[self.PAGE_HDD] = WizardPage(_("Hard drive"), "hdd.svg")
         self.wizard_pages[self.PAGE_PARTITIONS] = WizardPage(_("Partitioning"), "hdd.svg")
         self.wizard_pages[self.PAGE_CUSTOMWARNING] = WizardPage(_("Please make sure you wish to manage partitions manually"), "hdd.svg")
         self.wizard_pages[self.PAGE_ADVANCED] = WizardPage(_("Advanced options"), "advanced.png")
@@ -144,62 +144,25 @@ class InstallerWindow:
         self.wTree.get_widget("button_timezones").set_label(_('Select timezone'))
         self.wTree.get_widget("event_timezones").connect('button-release-event', timezones.cb_map_clicked, model)
 
-        # disk view
-        ren = gtk.CellRendererText()
-        self.column1 = gtk.TreeViewColumn("Hard drive", ren)
-        self.column1.add_attribute(ren, "text", 0)
-        self.wTree.get_widget("treeview_hdds").append_column(self.column1)
-        self.column2 = gtk.TreeViewColumn("Description", ren)
-        self.column2.add_attribute(ren, "text", 1)
-        self.wTree.get_widget("treeview_hdds").append_column(self.column2)
-        self.wTree.get_widget("treeview_hdds").connect("cursor-changed", self.assign_hdd)
-        self.build_hdds()
-        #self.build_grub_partitions()
-
-        self.wTree.get_widget("radio_hdd").set_group(self.wTree.get_widget("radio_custom"))
-        self.wTree.get_widget("radio_hdd").connect("toggled", self.hdd_pane_toggled)
-        self.wTree.get_widget("radio_hdd").set_active(True)
-        
-        self.wTree.get_widget("button_edit").connect("clicked", self.edit_partitions)        
-        self.wTree.get_widget("button_refresh").connect("clicked", self.refresh_partitions)
-        self.wTree.get_widget("treeview_disks").connect("row_activated", self.assign_partition)
-        self.wTree.get_widget("treeview_disks").connect( "button-release-event", self.partitions_popup_menu)
-        
-        # device
-        ren = gtk.CellRendererText()
-        self.column3 = gtk.TreeViewColumn(_("Device"), ren)
-        self.column3.add_attribute(ren, "markup", INDEX_PARTITION_PATH)
-        self.wTree.get_widget("treeview_disks").append_column(self.column3)
-        # Type
-        ren = gtk.CellRendererText()
-        self.column4 = gtk.TreeViewColumn(_("Type"), ren)
-        self.column4.add_attribute(ren, "markup", INDEX_PARTITION_TYPE)
-        self.wTree.get_widget("treeview_disks").append_column(self.column4)
-        # description
-        ren = gtk.CellRendererText()
-        self.column5 = gtk.TreeViewColumn(_("Operating system"), ren)
-        self.column5.add_attribute(ren, "markup", INDEX_PARTITION_DESCRIPTION)
-        self.wTree.get_widget("treeview_disks").append_column(self.column5)        
-        # mount point
-        ren = gtk.CellRendererText()
-        self.column6 = gtk.TreeViewColumn(_("Mount point"), ren)
-        self.column6.add_attribute(ren, "markup", INDEX_PARTITION_MOUNT_AS)
-        self.wTree.get_widget("treeview_disks").append_column(self.column6)
-        # format
-        ren = gtk.CellRendererText()
-        self.column7 = gtk.TreeViewColumn(_("Format?"), ren)
-        self.column7.add_attribute(ren, "markup", INDEX_PARTITION_FORMAT_AS)        
-        self.wTree.get_widget("treeview_disks").append_column(self.column7)
-        # size
-        ren = gtk.CellRendererText()
-        self.column8 = gtk.TreeViewColumn(_("Size"), ren)
-        self.column8.add_attribute(ren, "markup", INDEX_PARTITION_SIZE)
-        self.wTree.get_widget("treeview_disks").append_column(self.column8)
-        # Used space
-        ren = gtk.CellRendererText()
-        self.column9 = gtk.TreeViewColumn(_("Free space"), ren)
-        self.column9.add_attribute(ren, "markup", INDEX_PARTITION_FREE_SPACE)
-        self.wTree.get_widget("treeview_disks").append_column(self.column9)
+        # partitions
+        self.wTree.get_widget("label_edit_partitions").set_label(_("_Edit partitions"))
+        self.wTree.get_widget("label_custommount").set_label(_("_Expert mode"))
+        self.wTree.get_widget("button_custommount").connect("clicked", self.show_customwarning)
+        self.wTree.get_widget("button_edit").connect("clicked", partitioning.manually_edit_partitions)
+        self.wTree.get_widget("button_refresh").connect("clicked", lambda _: partitioning.build_partitions(self))
+        self.wTree.get_widget("treeview_disks").get_selection().connect("changed", partitioning.update_html_preview)
+        self.wTree.get_widget("treeview_disks").connect("row_activated", partitioning.edit_partition_dialog)
+        self.wTree.get_widget("treeview_disks").connect("button-release-event", partitioning.partitions_popup_menu)
+        text = gtk.CellRendererText()
+        for i in (partitioning.IDX_PART_PATH,
+                  partitioning.IDX_PART_TYPE,
+                  partitioning.IDX_PART_DESCRIPTION,
+                  partitioning.IDX_PART_MOUNT_AS,
+                  partitioning.IDX_PART_FORMAT_AS,
+                  partitioning.IDX_PART_SIZE,
+                  partitioning.IDX_PART_FREE_SPACE):
+            col = gtk.TreeViewColumn("", text, markup=i)  # real title is set in i18n()
+            self.wTree.get_widget("treeview_disks").append_column(col)
 
         self.wTree.get_widget("entry_your_name").connect("notify::text", self.assign_realname)        
         self.wTree.get_widget("entry_username").connect("notify::text", self.assign_username)    
@@ -212,7 +175,7 @@ class InstallerWindow:
         # link the checkbutton to the combobox
         grub_check = self.wTree.get_widget("checkbutton_grub")
         grub_box = self.wTree.get_widget("combobox_grub")
-        grub_check.connect("clicked", self.assign_grub_install, grub_box)        
+        grub_check.connect("toggled", self.assign_grub_install, grub_box)
         grub_box.connect("changed", self.assign_grub_device)
 
         # Install Grub by default
@@ -300,11 +263,12 @@ class InstallerWindow:
             self.wTree.get_widget("vbox_install").add(self.slideshow_browser)
             self.wTree.get_widget("vbox_install").show_all()                                                            
         
-        self.browser = webkit.WebView()
-        s = self.browser.get_settings()
+        self.partitions_browser = webkit.WebView()
+        s = self.partitions_browser.get_settings()
         s.set_property('enable-file-access-from-file-uris', True)
-        s.set_property('enable-default-context-menu', False)     
-        self.wTree.get_widget("scrolled_partitions").add(self.browser)   
+        s.set_property('enable-default-context-menu', False)
+        self.partitions_browser.set_transparent(True)
+        self.wTree.get_widget("scrolled_partitions").add(self.partitions_browser)
         
         self.window.show_all()
 
@@ -445,26 +409,20 @@ class InstallerWindow:
         self.wTree.get_widget("label_custom_install_paused_4").set_label(_("Note that in order for update-initramfs to work properly in some cases (such as dm-crypt), you may need to have drives currently mounted using the same block device name as they appear in /target/etc/fstab."))
         self.wTree.get_widget("label_custom_install_paused_5").set_label(_("Double-check that your /target/etc/fstab is correct, matches what your new system will have at first boot, and matches what is currently mounted at /target."))
 
-        # hdd page
-        self.wTree.get_widget("label_radio_hdd").set_label(_("Install Linux Mint on the selected drive:"))
-        self.wTree.get_widget("label_radio_custom").set_label(_("Manually mount partitions (ADVANCED USERS ONLY)."))
-        
-        #Columns
-        self.column1.set_title(_("Hard drive")) 
-        self.column2.set_title(_("Description")) 
-        self.column3.set_title(_("Device")) 
-        self.column4.set_title(_("Type")) 
-        self.column5.set_title(_("Operating system")) 
-        self.column6.set_title(_("Mount point")) 
-        self.column7.set_title(_("Format?")) 
-        self.column8.set_title(_("Size")) 
-        self.column9.set_title(_("Free space")) 
+        # Columns
+        for col, title in zip(self.wTree.get_widget("treeview_disks").get_columns(),
+                              (_("Device"),
+                               _("Type"),
+                               _("Operating system"),
+                               _("Mount point"),
+                               _("Format as"),
+                               _("Size"),
+                               _("Free space"))):
+            col.set_title(title)
+
         self.column10.set_title(_("Layout")) 
         self.column11.set_title(_("Variant")) 
         self.column12.set_title(_("Overview")) 
-        
-        #Partitions
-        self.wTree.get_widget("label_edit_partitions").set_label(_("Edit partitions"))
 
     def assign_realname(self, entry, prop):
         self.setup.real_name = entry.props.text
@@ -491,85 +449,8 @@ class InstallerWindow:
         else:
             return True
 
-    def assign_partition(self, widget, data=None, data2=None):
-        ''' assign the partition ... '''
-        model, iter = self.wTree.get_widget("treeview_disks").get_selection().get_selected()
-        if iter is not None:
-            row = model[iter]
-            partition = row[INDEX_PARTITION_OBJECT]            
-            if not partition.partition.type == parted.PARTITION_EXTENDED and not partition.partition.number == -1:            
-                dlg = PartitionDialog(row[INDEX_PARTITION_PATH], row[INDEX_PARTITION_MOUNT_AS], row[INDEX_PARTITION_FORMAT_AS], row[INDEX_PARTITION_TYPE])
-                (mount_as, format_as) = dlg.show()                
-                self.assign_mount_point(partition, mount_as, format_as)
-                
-    def partitions_popup_menu( self, widget, event ):
-        if event.button == 3:
-            model, iter = self.wTree.get_widget("treeview_disks").get_selection().get_selected()
-            if iter is not None:
-                partition = model.get_value(iter, INDEX_PARTITION_OBJECT)
-                partition_type = model.get_value(iter, INDEX_PARTITION_TYPE)
-                if not partition.partition.type == parted.PARTITION_EXTENDED and not partition.partition.number == -1 and "swap" not in partition_type:
-                    menu = gtk.Menu()
-                    menuItem = gtk.MenuItem(_("Edit"))
-                    menuItem.connect( "activate", self.assign_partition, partition)
-                    menu.append(menuItem)
-                    menuItem = gtk.SeparatorMenuItem()
-                    menu.append(menuItem)
-                    menuItem = gtk.MenuItem(_("Assign to /"))
-                    menuItem.connect( "activate", self.assign_mount_point_context_menu_wrapper, partition, "/", "ext4")
-                    menu.append(menuItem)
-                    menuItem = gtk.MenuItem(_("Assign to /home"))
-                    menuItem.connect( "activate", self.assign_mount_point_context_menu_wrapper, partition, "/home", "")
-                    menu.append(menuItem)
-
-                    if self.setup.gptonefi:
-                        menuItem = gtk.SeparatorMenuItem()
-                        menu.append(menuItem)
-                        menuItem = gtk.MenuItem(_("Assign to /boot/efi"))
-                        menuItem.connect( "activate", self.assign_mount_point_context_menu_wrapper, partition, "/boot/efi", "")
-                        menu.append(menuItem)
-
-                    menu.show_all()
-                    menu.popup( None, None, None, event.button, event.time )
-
-    def assign_mount_point_context_menu_wrapper(self, menu, partition, mount_point, filesystem):
-        self.assign_mount_point(partition, mount_point, filesystem)
-
-    def assign_mount_point(self, partition, mount_point, filesystem):
-        
-        #Assign it in the treeview
-        model = self.wTree.get_widget("treeview_disks").get_model()
-        iter = model.get_iter_first()
-        while iter is not None:
-            iter_partition = model.get_value(iter, INDEX_PARTITION_OBJECT)
-            if iter_partition == partition:
-                model.set_value(iter, INDEX_PARTITION_MOUNT_AS, mount_point)         
-                model.set_value(iter, INDEX_PARTITION_FORMAT_AS, filesystem)
-            else:
-                mountpoint = model.get_value(iter, INDEX_PARTITION_MOUNT_AS)
-                if mountpoint == mount_point:
-                    model.set_value(iter, INDEX_PARTITION_MOUNT_AS, "")
-                    model.set_value(iter, INDEX_PARTITION_FORMAT_AS, "")
-            iter = model.iter_next(iter)
-        #Assign it in our setup
-        for apartition in self.setup.partitions:
-            if (apartition.partition.path == partition.partition.path):
-                apartition.mount_as = mount_point
-                apartition.format_as = filesystem
-            else:                
-                if apartition.mount_as == mount_point:
-                    apartition.mount_as = None
-                    apartition.format_as = None
-        self.setup.print_setup()
-                
-
-    def refresh_partitions(self, widget, data=None):
-        ''' refresh the partitions ... '''
-        self.build_partitions()
-
-    def edit_partitions(self, widget, data=None):
-        ''' edit the partitions ... '''
-        os.popen("gparted &")
+    def show_customwarning(self, widget):
+        self.activate_page(self.PAGE_CUSTOMWARNING)
 
     def build_lang_list(self):
 
@@ -637,349 +518,185 @@ class InstallerWindow:
         if set_iter:
             path = model.get_path(set_iter)
             treeview.set_cursor(path)
-            treeview.scroll_to_cell(path)
+            treeview.scroll_to_cell(path)       
 
-    def build_hdds(self):
-        self.setup.disks = []
-        model = gtk.ListStore(str, str)            
-        output = subprocess.Popen("lsblk -nrdo TYPE,NAME,SIZE,RM | grep ^disk", shell=True, stdout=subprocess.PIPE)
-        for line in output.stdout:
-            line = line.rstrip("\r\n")
-            sections = line.split(" ")
-            if len(sections) == 4:
-                dev_name = sections[1]
-                dev_size = sections[2]
-                dev_removable = sections[3]
-                dev_path = "/dev/%s" % dev_name
-                dev_model = commands.getoutput("lsblk -nrdo MODEL %s" % dev_path)
-                self.setup.disks.append(dev_path)
-                description = "%s (%s)" % (dev_model, dev_size)
-                if dev_removable == "1":
-                    description = _("Removable device:") + " " + description
-                iter = model.append([dev_path, description]);
-            else:
-                print "WARNING, erroneous info collected for disks. Please show this to the development team: %s" % line
-                
-        self.wTree.get_widget("treeview_hdds").set_model(model)
+    def build_timezones(self):
         
-        if(len(self.setup.disks) > 0):
-            # select the first HDD
-            treeview = self.wTree.get_widget("treeview_hdds")            
-            column = treeview.get_column(0)
-            path = model.get_path(model.get_iter_first())
-            treeview.set_cursor(path, focus_column=column)
-            treeview.scroll_to_cell(path, column=column)
-            self.setup.target_disk = model.get_value(model.get_iter_first(), 0) 
+        self.combo_timezones = self.wTree.get_widget("combo_timezones")
+        self.combo_timezones.connect('changed', self.timezone_combo_selected)
+        
+        self.timezone_colors = {}
+        self.timezone_colors["2b0000"] = "-11.0"
+        self.timezone_colors["550000"] = "-10.0"
+        self.timezone_colors["66ff00"] = "-9.5"
+        self.timezone_colors["800000"] = "-9.0"
+        self.timezone_colors["aa0000"] = "-8.0"
+        self.timezone_colors["d40000"] = "-7.0"
+        self.timezone_colors["ff0001"] = "-6.0"
+        self.timezone_colors["66ff00"] = "-5.5"
+        self.timezone_colors["ff2a2a"] = "-5.0"
+        self.timezone_colors["c0ff00"] = "-4.5"
+        self.timezone_colors["ff5555"] = "-4.0"
+        self.timezone_colors["00ff00"] = "-3.5"
+        self.timezone_colors["ff8080"] = "-3.0"
+        self.timezone_colors["ffaaaa"] = "-2.0"
+        self.timezone_colors["ffd5d5"] = "-1.0"
+        self.timezone_colors["2b1100"] = "0.0"
+        self.timezone_colors["552200"] = "1.0"
+        self.timezone_colors["803300"] = "2.0"
+        self.timezone_colors["aa4400"] = "3.0"
+        self.timezone_colors["00ff66"] = "3.5"
+        self.timezone_colors["d45500"] = "4.0"
+        self.timezone_colors["00ccff"] = "4.5"
+        self.timezone_colors["ff6600"] = "5.0"
+        self.timezone_colors["0066ff"] = "5.5"        
+        self.timezone_colors["00ffcc"] = "5.75"
+        self.timezone_colors["ff7f2a"] = "6.0"
+        self.timezone_colors["cc00ff"] = "6.5"
+        self.timezone_colors["ff9955"] = "7.0"
+        self.timezone_colors["ffb380"] = "8.0"
+        self.timezone_colors["ffccaa"] = "9.0"
+        self.timezone_colors["a90345"] = "9.5"
+        self.timezone_colors["ffe6d5"] = "10.0"
+        self.timezone_colors["d10255"] = "10.5"
+        self.timezone_colors["d4aa00"] = "11.0"
+        self.timezone_colors["fc0266"] = "11.5"
+        self.timezone_colors["ffcc00"] = "12.0"
+        self.timezone_colors["fd2c80"] = "12.75"
+        self.timezone_colors["fc5598"] = "13.0"
+        
+        #Add some timezones for cities which are located on borders (for which the color doesn't match the color of the rest of the timezone)
+        self.timezone_colors["6771a9"] = "5.5" # Calcutta, India
+        self.timezone_colors["ff7b7b"] = "-3.0" # Buenos Aires, Argentina
+        self.timezone_colors["ff7f7f"] = "-3.0" # Rio Gallegos, Argentina
+        self.timezone_colors["d45c27"] = "11.0" # Lord Howe, Australia
+        self.timezone_colors["b71f54"] = "10.5" # Adelaide, Australia        
+        self.timezone_colors["d29130"] = "-4.0" # Aruba
+        self.timezone_colors["ee5f00"] = "4.0" # Baku, Azerbaidjan
+        self.timezone_colors["6a2a00"] = "2.0" # Sofia, Bulgaria
+        self.timezone_colors["3c1800"] = "" # Porto Novo
+        self.timezone_colors["3c1800"] = "1.0" # Benin
+        self.timezone_colors["ff9898"] = "-3.0" # Maceio, Brazil
+        self.timezone_colors["ff3f3f"] = "-4.0" # Rio Branco, Brazil
+        self.timezone_colors["ff802c"] = "6.0" # Thimphu, Bhutan
+        self.timezone_colors["ff0000"] = "-6.0" # Belize
+        self.timezone_colors["11f709"] = "-3.5" # St Johns, Canada
+        self.timezone_colors["e56347"] = "-4.0" # Curacao
+        self.timezone_colors["cd5200"] = "4.0" # Tbilisi, Georgia
+        self.timezone_colors["2f1300"] = "0.0" # Guernsey. UK
+        self.timezone_colors["cea7a3"] = "0.0" # Danmarkshavn, Greenland
+        self.timezone_colors["ff2b2b"] = "-4.0" # Thule, Greenland
+        self.timezone_colors["79594e"] = "0.0" # Banjul, Gambia
+        self.timezone_colors["c7a19d"] = "0.0" # Conakry, Guinea
+        self.timezone_colors["5b3e31"] = "0.0" # Bissau, Guinea-Bissau
+        self.timezone_colors["3f2314"] = "0.0" # Monrovia, Liberia
+        self.timezone_colors["d515db"] = "6.5" # Rangoon, Myanmar
+        self.timezone_colors["fd0000"] = "-7.0" # Bahia_Banderas, Mexico
+        self.timezone_colors["ffb37f"] = "8.0" # Kuching, Malaysia
+        self.timezone_colors["ff0066"] = "11.5" # Norfolk
+        self.timezone_colors["351500"] = "1.0" # Lagos, Nigeria
+        self.timezone_colors["ff8935"] = "12.75" # Chatham, New Zealand
+        self.timezone_colors["913a00"] = "2.0" # Kigali, Rwanda
+        self.timezone_colors["ffb17d"] = "8.0" # Singapore
+        self.timezone_colors["ddb6b3"] = "0.0" # Freetown, Sierra Leone
+        self.timezone_colors["ffb482"] = "9.0" # Dili, East Timor
+        self.timezone_colors["ff5599"] = "13.0" # Tongatapu, Tonga
+        self.timezone_colors["ff2020"] = "-5.0" # Monticello, USA        
+        self.timezone_colors["ff2525"] = "-5.0" # Marengo, USA
+        self.timezone_colors["9d0000"] = "-9.0" # Metlakatla, Alaska/USA
+        
+        self.timezones = []        
+        model = gtk.ListStore(str, object)
+        model.set_sort_column_id(0, gtk.SORT_ASCENDING)                   
+        timezones = open("/usr/share/zoneinfo/zone.tab", "r")
+        for line in timezones:
+            if not line.strip().startswith("#"):                
+                content = line.strip().split("\t")
+                if len(content) >= 2:                    
+                    country_code = content[0]
+                    coordinates = content[1]
+                    timezone = content[2]
+                    tz = Timezone(timezone, country_code, coordinates)
+                    self.timezones.append(tz)
+                    iter = model.append()
+                    model.set_value(iter, 0, timezone)
+                    model.set_value(iter, 1, tz)  
+
+                    # Uncomment the code below to check that each timezone has a corresponding color code (the code is here for debugging only)
+                    #print "Timezone: %s, X: %s, Y: %s" % (tz.name, tz.x, tz.y)
+                    #if (tz.x <= 800 and tz.y <= 409):
+                    #    im = Image.open('/usr/share/live-installer/timezone/cc.png')
+                    #    rgb_im = im.convert('RGB')                    
+                    #    hexcolor = '%02x%02x%02x' % rgb_im.getpixel((tz.x, tz.y))
+                    #    print " Color: #%s" % (hexcolor)
+                    #    image = "/usr/share/live-installer/timezone/timezone_%s.png" % self.timezone_colors[hexcolor]
+                    #    print "Image: %s" % image
+            
+        cell = gtk.CellRendererText()
+        self.combo_timezones.pack_start(cell, True)
+        self.combo_timezones.add_attribute(cell, 'text', 0)
+        
+        self.combo_timezones.set_model(model)
+        self.timezone_map = self.wTree.get_widget("image_timezones")
+        timezone_event = self.wTree.get_widget("event_timezones")
+        self.timezone_map.set_from_file("/usr/share/live-installer/timezone/bg.png")
+        timezone_event.connect("button-release-event", self.timezone_map_clicked)   
+                     
+    def timezone_combo_selected(self, combobox):
+        model = combobox.get_model()
+        index = combobox.get_active()
+        if index:
+            timezone = model[index][1]
+            self.timezone_select(timezone)            
     
-    def build_grub_partitions(self):
-        grub_model = gtk.ListStore(str)
-        # Add disks
-        for disk in self.setup.disks:
-            grub_model.append([disk])
-        # Add partitions
-        output = commands.getoutput("lsblk -nrbo TYPE,NAME | grep ^part").split("\n")
-        for line in output:
-            line = line.strip()
-            sections = line.split(" ")
-            if len(sections) == 2:
-                partition = sections[1]
-                grub_model.append(["/dev/%s" % partition])
-            else:
-                print "WARNING, erroneous info collected for partitions. Please show this to the development team: %s" % line            
-        self.wTree.get_widget("combobox_grub").set_model(grub_model)
-        self.wTree.get_widget("combobox_grub").set_active(0)
-  
-    def build_partitions(self):        
-        self.window.set_sensitive(False)
-        # "busy" cursor.
-        cursor = gtk.gdk.Cursor(gtk.gdk.WATCH)
-        self.window.window.set_cursor(cursor)        
+    def timezone_map_clicked(self, widget, event):
+        x = event.x
+        y = event.y
+        print "Coords: %s %s" % (x, y)
         
-        os.popen('mkdir -p /tmp/live-installer/tmpmount')
+        min_distance = 1000 # Looking for min, starting with a large number
+        closest_timezone = None
+        for timezone in self.timezones:
+            distance = abs(x - timezone.x) + abs(y - timezone.y)
+            if distance < min_distance:
+                min_distance = distance
+                closest_timezone = timezone
         
-        try:                                                                                            
-            #grub_model = gtk.ListStore(str)
-            self.setup.partitions = []
-            
-            html_partitions = ""        
-            model = gtk.ListStore(str,str,str,str,str,str,str, object, bool, str, str, bool)
-            model2 = gtk.ListStore(str)
-            
-            swap_found = False
-            os.system("modprobe efivars >/dev/null 2>&1")
-            # Are we running under with efi ?
-            if os.path.exists("/proc/efi") or os.path.exists("/sys/firmware/efi"):
-                self.setup.gptonefi = True
-            if self.setup.target_disk is not None:
-                path =  self.setup.target_disk # i.e. /dev/sda
-                #grub_model.append([path])
-                device = parted.getDevice(path)                
-                try:
-                    disk = parted.Disk(device)
-                except Exception:
-                    erase = QuestionDialog(_("Installation Tool"), _("No partition table was found on the hard drive. Do you want the installer to create a set of partitions for you? Note: This will ERASE ALL DATA present on the disk."))
-                    if erase:
-                        # Create a default partition set up
-                        # try to load efivars
-                        os.system("modprobe efivars >/dev/null 2>&1")
-                        # Are we running under with efi ?
-                        if (self.setup.gptonefi):
-                            disk = parted.freshDisk(device, 'gpt')
-                        else:
-                            disk = parted.freshDisk(device, 'msdos')
-                        disk.commit()
-                        post_partition_gap = parted.sizeToSectors(512, "KiB", device.sectorSize)
-                        post_mbr_gap = parted.sizeToSectors(1, "MiB", device.sectorSize) # Grub2 requires a post-MBR gap
-                        start = post_mbr_gap  
-                        #efi                        
-                        regions = disk.getFreeSpaceRegions()
-                        if ((len(regions) > 0) and (self.setup.gptonefi)):
-                                region = regions[-1]                                                                                                                                  
-                                root_size = 419430
-                                num_sectors = parted.sizeToSectors(root_size, "KiB", device.sectorSize)
-                                end = start + num_sectors                                
-                                cylinder = device.endSectorToCylinder(end)
-                                end = device.endCylinderToSector(cylinder)
-                                geometry = parted.Geometry(device=device, start=start, end=end)
-                                if end < region.length:
-                                    partition = parted.Partition(disk=disk, type=parted.PARTITION_NORMAL, geometry=geometry)
-                                    constraint = parted.Constraint(exactGeom=geometry)
-                                    disk.addPartition(partition=partition, constraint=constraint)
-                                    partition.setFlag(parted.PARTITION_BOOT)
-                                    
-                                    disk.commit()
-                                    os.system("mkfs.vfat %s -F 32 " % partition.path)
-                                    start = end + post_partition_gap
-                        #Swap
-                        regions = disk.getFreeSpaceRegions()
-                        if len(regions) > 0:
-                            region = regions[-1]    
-                            ram_size = int(commands.getoutput("cat /proc/meminfo | grep MemTotal | awk {'print $2'}")) # in KiB
-                            ram_size = ram_size * 1.5 # Give 1.5 times the amount of RAM                            
-                            if ram_size > 2097152:
-                                ram_size = 2097152 # But no more than 2GB
-                            num_sectors = parted.sizeToSectors(ram_size, "KiB", device.sectorSize)
-                            end = start + num_sectors
-                            cylinder = device.endSectorToCylinder(end)
-                            end = device.endCylinderToSector(cylinder)
-                            geometry = parted.Geometry(device=device, start=start, end=end)
-                            if end < region.length:
-                                partition = parted.Partition(disk=disk, type=parted.PARTITION_NORMAL, geometry=geometry)
-                                constraint = parted.Constraint(exactGeom=geometry)
-                                disk.addPartition(partition=partition, constraint=constraint)
-                                disk.commit()
-                                os.system("mkswap %s" % partition.path)                     
-                        
-                        #Root
-                        regions = disk.getFreeSpaceRegions()
-                        if len(regions) > 0:
-                            region = regions[-1]
-                            start = end + post_partition_gap
-                            end = start + region.length - parted.sizeToSectors(1, "MiB", device.sectorSize)
-                            geometry = parted.Geometry(device=device, start=start, end=end)
-                            partition = parted.Partition(disk=disk, type=parted.PARTITION_NORMAL, geometry=geometry)
-                            constraint = parted.Constraint(exactGeom=geometry)
-                            disk.addPartition(partition=partition, constraint=constraint)
-                            disk.commit()                            
-                            os.system("mkfs.ext4 %s" % partition.path)
-                            
-                        self.build_partitions()
-                        return
-                    else:
-                        # Do nothing... just get out of here..
-                        raise
-                partition = disk.getFirstPartition()
-                last_added_partition = PartitionSetup(partition)
-                #self.setup.partitions.append(last_added_partition)
-                partition = partition.nextPartition()
-                html_partitions = html_partitions + "<table width='100%'><tr>"
-                while (partition is not None):
-                    if last_added_partition.partition.number == -1 and partition.number == -1:
-                        last_added_partition.add_partition(partition)
-                    else:                        
-                        last_added_partition = PartitionSetup(partition)                       
-                        
-                        if "swap" in last_added_partition.type:
-                            last_added_partition.type = "swap"
-                            last_added_partition.description = "swap"
-
-                        if partition.number != -1 and "swap" not in last_added_partition.type and partition.type != parted.PARTITION_EXTENDED:
-                            
-                            #grub_model.append([partition.path])
-
-                            #Umount temp folder
-                            if ('/tmp/live-installer/tmpmount' in commands.getoutput('mount')):
-                                os.popen('umount /tmp/live-installer/tmpmount')
-
-                            #Mount partition if not mounted
-                            if (partition.path not in commands.getoutput('mount')):                                
-                                os.system("mount %s /tmp/live-installer/tmpmount" % partition.path)
-
-                            #Identify partition's description and used space
-                            if (partition.path in commands.getoutput('mount')):
-                                df_lines = commands.getoutput("df 2>/dev/null | grep %s" % partition.path).split('\n')
-                                for df_line in df_lines:
-                                    df_elements = df_line.split()
-                                    if df_elements[0] == partition.path:
-                                        last_added_partition.used_space = df_elements[4]  
-                                        mount_point = df_elements[5]                              
-                                        if "%" in last_added_partition.used_space:
-                                            used_space_pct = int(last_added_partition.used_space.replace("%", "").strip())
-                                            last_added_partition.free_space = int(float(last_added_partition.size) * (float(100) - float(used_space_pct)) / float(100))                                            
-                                                                            
-                                        if os.path.exists(os.path.join(mount_point, 'etc/lsb-release')):
-                                            last_added_partition.description = commands.getoutput("cat " + os.path.join(mount_point, 'etc/lsb-release') + " | grep DISTRIB_DESCRIPTION").replace('DISTRIB_DESCRIPTION', '').replace('=', '').replace('"', '').strip()
-                                        if os.path.exists(os.path.join(mount_point, 'etc/issue')):
-                                            last_added_partition.description = commands.getoutput("cat " + os.path.join(mount_point, 'etc/issue')).replace('\\n', '').replace('\l', '').strip()
-                                        if os.path.exists(os.path.join(mount_point, 'etc/linuxmint/info')):
-                                            last_added_partition.description = commands.getoutput("cat " + os.path.join(mount_point, 'etc/linuxmint/info') + " | grep GRUB_TITLE").replace('GRUB_TITLE', '').replace('=', '').replace('"', '').strip()
-                                        if commands.getoutput("/sbin/gdisk -l %s | grep EF00 | awk {'print $1;'}" % self.setup.target_disk) == str(partition.number):                                            
-                                            last_added_partition.description = "EFI System Partition"
-                                        if os.path.exists(os.path.join(mount_point, 'Windows/servicing/Version')):
-                                            version = commands.getoutput("ls %s" % os.path.join(mount_point, 'Windows/servicing/Version'))                                    
-                                            if version.startswith("6.1"):
-                                                last_added_partition.description = "Windows 7"
-                                            elif version.startswith("6.0"):
-                                                last_added_partition.description = "Windows Vista"
-                                            elif version.startswith("5.1") or version.startswith("5.2"):
-                                                last_added_partition.description = "Windows XP"
-                                            elif version.startswith("5.0"):
-                                                last_added_partition.description = "Windows 2000"
-                                            elif version.startswith("4.90"):
-                                                last_added_partition.description = "Windows Me"
-                                            elif version.startswith("4.1"):
-                                                last_added_partition.description = "Windows 98"
-                                            elif version.startswith("4.0.1381"):
-                                                last_added_partition.description = "Windows NT"
-                                            elif version.startswith("4.0.950"):
-                                                last_added_partition.description = "Windows 95"
-                                        elif os.path.exists(os.path.join(mount_point, 'Boot/BCD')):
-                                            if os.system("grep -qs \"V.i.s.t.a\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
-                                                last_added_partition.description = "Windows Vista bootloader"
-                                            elif os.system("grep -qs \"W.i.n.d.o.w.s. .7\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
-                                                last_added_partition.description = "Windows 7 bootloader"
-                                            elif os.system("grep -qs \"W.i.n.d.o.w.s. .R.e.c.o.v.e.r.y. .E.n.v.i.r.o.n.m.e.n.t\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
-                                                last_added_partition.description = "Windows recovery"
-                                            elif os.system("grep -qs \"W.i.n.d.o.w.s. .S.e.r.v.e.r. .2.0.0.8\" " + os.path.join(mount_point, 'Boot/BCD')) == 0:
-                                                last_added_partition.description = "Windows Server 2008 bootloader"
-                                            else:
-                                                last_added_partition.description = "Windows bootloader"
-                                        elif os.path.exists(os.path.join(mount_point, 'Windows/System32')):
-                                            last_added_partition.description = "Windows"
-                                        break
-                            else:
-                                print "Failed to mount %s" % partition.path
-
-                            
-                            #Umount temp folder
-                            if ('/tmp/live-installer/tmpmount' in commands.getoutput('mount')):
-                                os.popen('umount /tmp/live-installer/tmpmount')
-                                
-                    if last_added_partition.size > 1.0:
-                        if last_added_partition.partition.type == parted.PARTITION_LOGICAL:
-                            display_name = "  " + last_added_partition.name
-                        else:
-                            display_name = last_added_partition.name
-
-                        iter = model.append([display_name, last_added_partition.type, last_added_partition.description, "", "", '%.0f' % round(last_added_partition.size, 0), last_added_partition.free_space, last_added_partition, False, last_added_partition.start, last_added_partition.end, False]);
-                        if last_added_partition.partition.number == -1:                     
-                            model.set_value(iter, INDEX_PARTITION_TYPE, "<span foreground='#a9a9a9'>%s</span>" % last_added_partition.type)                                    
-                        elif last_added_partition.partition.type == parted.PARTITION_EXTENDED:                    
-                            model.set_value(iter, INDEX_PARTITION_TYPE, "<span foreground='#a9a9a9'>%s</span>" % _("Extended"))  
-                        else:                                        
-                            if last_added_partition.type == "ntfs":
-                                color = "#66a6a8"
-                                style = "ntfs"
-                            elif last_added_partition.type == "fat32" or last_added_partition.type == "fat16":
-                                color = "#47872a"
-                                style = "fat"
-                                if last_added_partition.description == "EFI System Partition":
-                                    last_added_partition.mount_as = "/boot/efi"
-                                    model.set_value(iter, INDEX_PARTITION_MOUNT_AS, "/boot/efi")
-                            elif last_added_partition.type == "ext4":
-                                color = "#21619e"
-                                style = "ext4"
-                            elif last_added_partition.type == "ext3":
-                                color = "#2582a0"
-                                style = "ext"
-                            elif last_added_partition.type == "ext2":
-                                color = "#2582a0"
-                                style = "ext"
-                            elif last_added_partition.type in ["linux-swap", "swap"]:
-                                color = "#be3a37"
-                                style = "swap"
-                                last_added_partition.mount_as = "swap"
-                                model.set_value(iter, INDEX_PARTITION_MOUNT_AS, "swap")
-                            else:
-                                color = "#636363"
-                                style = "unknown"
-                            model.set_value(iter, INDEX_PARTITION_TYPE, "<span foreground='%s'>%s</span>" % (color, last_added_partition.type))                                            
-                            html_partition = "<td class='partition-cell' title='$title' width='$space%'><div class='partition " + style + "'>\n  <div class='shine' style='width: $usage; height: 50px'></div>\n <div class='partition-text'>$path</div><div class='partition-os'>$OS</div>\n</div>\n</td>"
-                            deviceSize = float(device.getSize()) * float(0.9) # Hack.. reducing the real size to 90% of what it is, to make sure our partitions fit..
-                            space = int((float(partition.getSize()) / deviceSize) * float(80))                            
-                            subs = {}
-                            subs['OS'] = last_added_partition.description
-                            subs['path'] = display_name.replace("/dev/", "")
-                            if (space < 10 and len(last_added_partition.description) > 5):
-                                subs['OS'] = "%s..." % last_added_partition.description[0:5]
-                            if (space < 5):
-                                #Not enough space, don't write the name
-                                subs['path'] = ""                          
-                                subs['OS'] = ""
-
-                            subs['color'] = color                            
-                            if (space == 0):
-                                space = 1
-                            subs['space'] = space
-                            subs['title'] = display_name + "\n" + last_added_partition.description
-                            if "%" in last_added_partition.used_space:               
-                                subs['usage'] = last_added_partition.used_space.strip()
-                            else:
-                                subs['usage'] = "0"
-                            html_partition = string.Template(html_partition).safe_substitute(subs)                     
-                            html_partitions = html_partitions + html_partition
-                            self.setup.partitions.append(last_added_partition)
-                            
-                    partition = partition.nextPartition()
-                html_partitions = html_partitions + "</tr></table>"
-            #self.wTree.get_widget("combobox_grub").set_model(grub_model)
-            #self.wTree.get_widget("combobox_grub").set_active(0)
-                        
-            import tempfile            
-            html_header = "<html><head><style> \
-body{background-color:#d6d6d6;} \
-.partition{position:relative;width:100%;float: left;background: white;border-radius: 3px;} \
-.partition-cell{position:relative;margin: 2px 5px 2px 0;padding: 1px;float: left;background: #9c9c9c;border-radius: 3px;} \
-.partition-text{position:absolute;top:10;text-align: center;width=100px;left: 0;right: 0;margin: 0 auto;font-size:12px;font-weight: bold;color:#ffffff;text-shadow: 1px 1px 1px #000;} \
-.partition-os{position:absolute;top:30;text-align: center;width=100px;left: 0;right: 0;margin: 0 auto;font-size:10px;color:#ffffff;text-shadow: 1px 1px 1px #000;} \
-.fat {background-color: #b4d59b;background-image: -webkit-gradient(linear, left top, left bottom, from(#b4d59b), to(#47872a));background-image: -webkit-linear-gradient(top, #b4d59b, #47872a);background-image: -moz-linear-gradient(top, #b4d59b, #47872a);} \
-.ntfs {background-color: #c9e3e4;background-image: -webkit-gradient(linear, left top, left bottom, from(#c9e3e4), to(#66a6a8));background-image: -webkit-linear-gradient(top,#c9e3e4, #66a6a8);background-image: -moz-linear-gradient(top, #c9e3e4, #66a6a8);} \
-.ext {background-color: #98d4e0;background-image: -webkit-gradient(linear, left top, left bottom, from(#98d4e0), to(#2582a0));background-image: -webkit-linear-gradient(top, #98d4e0, #2582a0);background-image: -moz-linear-gradient(top, #98d4e0, #2582a0);} \
-.ext4 {background-color: #95c4de;background-image: -webkit-gradient(linear, left top, left bottom, from(#95c4de), to(#21619e));background-image: -webkit-linear-gradient(top, #95c4de, #21619e);background-image: -moz-linear-gradient(top, #95c4de, #21619e);} \
-.swap {background-color: #eaaca9;background-image: -webkit-gradient(linear, left top, left bottom, from(#eaaca9), to(#be3a37));background-image: -webkit-linear-gradient(top, #eaaca9, #be3a37);background-image: -moz-linear-gradient(top, #eaaca9, #be3a37);} \
-.unknown {background-color: #c8c8c8;background-image: -webkit-gradient(linear, left top, left bottom, from(#c8c8c8), to(#636363));background-image: -webkit-linear-gradient(top, #c8c8c8, #636363);background-image: -moz-linear-gradient(top, #c8c8c8, #636363);} \
-.shine {position: relative;opacity: .2; top: 0;right: 0;bottom: 0;left: 0;background: #fff;-moz-border-radius: 0px;-webkit-border-radius: 0px;border-radius: 0px;margin:1px;} \
-</style></head><body>"
-            html_footer = "</body></html>"
-            html = html_header + html_partitions + html_footer
-           
-            # create temporary file
-            f = tempfile.NamedTemporaryFile(delete=False)
-            f.write(html)
-            f.close()  
-       
-            self.browser.open(f.name)            
-            #browser.load_html_string(html, "file://")                 
-            self.wTree.get_widget("scrolled_partitions").show_all()                                                                        
-            self.wTree.get_widget("treeview_disks").set_model(model)                                
-            
-            
-        except Exception, detail:
-            print detail  
+        print "Closest timezone %s" % closest_timezone.name
+        self.timezone_select(closest_timezone)
                 
-        self.window.set_sensitive(True)
-        self.window.window.set_cursor(None)        
+        model = self.combo_timezones.get_model()
+        iter = model.get_iter_first()
+        while iter is not None:            
+            if closest_timezone.name == model.get_value(iter, 1).name:
+                self.combo_timezones.set_active_iter(iter)
+                break
+            iter = model.iter_next(iter)
         
+    def timezone_select(self, timezone):        
+        im = Image.open('/usr/share/live-installer/timezone/cc.png')
+        rgb_im = im.convert('RGB')
+        hexcolor = '%02x%02x%02x' % rgb_im.getpixel((timezone.x, timezone.y))
+        print "Color: #%s" % (hexcolor)
+        
+        overlay_path = "/usr/share/live-installer/timezone/timezone_%s.png" % self.timezone_colors[hexcolor]
+        print "Image: %s" % overlay_path
+        
+        # Superpose the picture of the timezone on the map
+        background = Image.open("/usr/share/live-installer/timezone/bg.png")
+        dot = Image.open("/usr/share/live-installer/timezone/dot.png")
+        overlay = Image.open(overlay_path)
+        background = background.convert("RGBA")
+        overlay = overlay.convert("RGBA")
+        dot = dot.convert("RGBA")
+        background.paste(overlay, (0,0), overlay)
+        background.paste(dot, (timezone.x-3, timezone.y-3), dot)
+        background.save("/tmp/live-installer-map.png","PNG")
+        self.timezone_map.set_from_file("/tmp/live-installer-map.png")
+        
+        # Save the selection
+        self.setup.timezone = timezone.name
+        self.setup.timezone_code = timezone.name
 
     def build_kb_lists(self):
         ''' Do some xml kung-fu and load the keyboard stuffs '''
@@ -1050,28 +767,6 @@ body{background-color:#d6d6d6;} \
         except:
             pass # Best effort. Fails the first time as self.column1 doesn't exist yet.
 
-    def assign_hdd(self, treeview, data=None):
-        ''' Called whenever someone updates the HDD '''
-        model = treeview.get_model()
-        active = treeview.get_selection().get_selected_rows()
-        if(len(active) < 1):
-            return
-        active = active[1][0]
-        if(active is None):
-            return
-        row = model[active]
-        self.setup.target_disk = row[0] 
-
-    def hdd_pane_toggled(self, hdd_button):
-        ''' Called whenever the radio buttons on the hdd page toggle ''' 
-        if(hdd_button.get_active()):
-            self.wTree.get_widget("treeview_hdds").set_sensitive(True)
-            self.setup.skip_mount = False
-        else:
-            self.wTree.get_widget("treeview_hdds").set_sensitive(False)
-            self.setup.skip_mount = True
-        self.setup.print_setup()
-        
     def assign_autologin(self, checkbox, data=None):
         self.setup.autologin = checkbox.get_active()
         self.setup.print_setup()
@@ -1159,6 +854,11 @@ body{background-color:#d6d6d6;} \
         self.wTree.get_widget("help_label").set_markup("<big><b>%s</b></big>" % help_text)
         self.wTree.get_widget("help_icon").set_from_file("/usr/share/live-installer/icons/%s" % self.wizard_pages[index].icon)
         self.wTree.get_widget("notebook1").set_current_page(index)
+        # TODO: move other page-depended actions from the wizard_cb into here below
+        if index == self.PAGE_PARTITIONS:
+            self.setup.skip_mount = False
+        if index == self.PAGE_CUSTOMWARNING:
+            self.setup.skip_mount = True
 
     def wizard_cb(self, widget, goback, data=None):
         ''' wizard buttons '''
@@ -1242,13 +942,8 @@ body{background-color:#d6d6d6;} \
                 if (errorFound):
                     WarningDialog(_("Installation Tool"), errorMessage)
                 else:
-                    self.activate_page(self.PAGE_HDD)                
-            elif(sel == self.PAGE_HDD):
-                if (self.setup.skip_mount):
-                    self.activate_page(self.PAGE_CUSTOMWARNING)
-                else:
                     self.activate_page(self.PAGE_PARTITIONS)
-                    self.build_partitions()
+                    partitioning.build_partitions(self)
             elif(sel == self.PAGE_PARTITIONS):                
                 model = self.wTree.get_widget("treeview_disks").get_model()
 
@@ -1290,11 +985,11 @@ body{background-color:#d6d6d6;} \
                         ErrorDialog(_("Installation Tool"), _("<b>Please select an EFI partition.</b>"),_("An EFI system partition is needed with the following requirements:\n\n - Mount point: /boot/efi\n - Partition flags: Bootable\n - Size: Larger than 100MB\n - Format: vfat or fat32\n\nTo ensure compatibility with Windows we recommend you use the first partition of the disk as the EFI system partition.\n "))
                         return
 
-                self.build_grub_partitions()
+                partitioning.build_grub_partitions()
                 self.activate_page(self.PAGE_ADVANCED)
 
             elif(sel == self.PAGE_CUSTOMWARNING):
-                self.build_grub_partitions()
+                partitioning.build_grub_partitions()
                 self.activate_page(self.PAGE_ADVANCED)
             elif(sel == self.PAGE_ADVANCED):
                 self.activate_page(self.PAGE_OVERVIEW)
@@ -1323,10 +1018,8 @@ body{background-color:#d6d6d6;} \
                 else:
                     self.activate_page(self.PAGE_PARTITIONS)              
             elif(sel == self.PAGE_CUSTOMWARNING):
-                self.activate_page(self.PAGE_HDD)
+                self.activate_page(self.PAGE_PARTITIONS)
             elif(sel == self.PAGE_PARTITIONS):
-                self.activate_page(self.PAGE_HDD)
-            elif(sel == self.PAGE_HDD):
                 self.activate_page(self.PAGE_USER)
             elif(sel == self.PAGE_USER):
                 self.activate_page(self.PAGE_KEYBOARD)  
@@ -1490,66 +1183,3 @@ body{background-color:#d6d6d6;} \
             # asssume we're "pulsing" already
             self.should_pulse = True
             pbar_pulse()
-
-class PartitionDialog:
-
-    def __init__(self, path, mount_as, format_as, type):
-        self.resource_dir = '/usr/share/live-installer/'
-        self.glade = os.path.join(self.resource_dir, 'interface.glade')
-        self.dTree = gtk.glade.XML(self.glade, 'dialog')
-        self.window = self.dTree.get_widget("dialog")
-        self.window.set_title(_("Edit partition"))
-               
-        ''' Build supported filesystems list '''
-        model = gtk.ListStore(str)        
-        model.append([""])
-        if "swap" in type:        
-            model.append(["swap"])
-        else:
-            try:
-                for item in os.listdir("/sbin"):
-                    if(item.startswith("mkfs.")):
-                        fstype = item.split(".")[1]
-                        model.append([fstype])
-            except Exception, detail:
-                print detail
-                print _("Could not build supported filesystems list!")
-        self.dTree.get_widget("combobox_use_as").set_model(model)
-        
-        if "swap" in type:
-            mounts = ["", "swap"]
-        else:
-            mounts = ["", "/", "/boot", "/boot/efi", "/tmp", "/home", "/srv"]
-        model = gtk.ListStore(str)
-        for mount in mounts:
-            model.append([mount])
-        self.dTree.get_widget("comboboxentry_mount_point").set_model(model)  
-                
-        # i18n
-        self.dTree.get_widget("label_partition").set_markup("<b>%s</b>" % _("Device:"))
-        self.dTree.get_widget("label_partition_value").set_label(path)        
-        
-        self.dTree.get_widget("label_use_as").set_markup(_("Format as:"))        
-        cur = -1
-        model = self.dTree.get_widget("combobox_use_as").get_model()
-        for item in model:
-            cur += 1
-            if(item[0] == format_as):
-                self.dTree.get_widget("combobox_use_as").set_active(cur)
-                break
-                
-        self.dTree.get_widget("label_mount_point").set_markup(_("Mount point:"))
-        self.dTree.get_widget("comboboxentry_mount_point").child.set_text(mount_as)         
-
-    def show(self):
-        self.window.run()
-        self.window.hide()
-        w = self.dTree.get_widget("comboboxentry_mount_point")
-        w.child.get_text().replace(" ","")
-        mount_as = w.child.get_text()
-        w = self.dTree.get_widget("combobox_use_as")
-        # find filesystem ..
-        active = w.get_active()
-        model = w.get_model()[active]
-        format_as = model[0]
-        return (mount_as, format_as)
