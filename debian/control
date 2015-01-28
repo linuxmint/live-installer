@@ -28,7 +28,6 @@ Depends: ${misc:Depends}, ${python:Depends}
   , menu
   , gdisk
   , isoquery, iso-codes, locales
-  , python-configobj
 Description: Live Installer
  A live installer
 
