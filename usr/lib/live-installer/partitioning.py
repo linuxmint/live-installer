@@ -206,8 +206,8 @@ class PartitionSetup(gtk.TreeStore):
                 from frontend.gtk_interface import QuestionDialog
                 dialog = QuestionDialog(_("Installation Tool"),
                                         _("No partition table was found on the hard drive: {disk_description}. Do you want the installer to create a set of partitions for you? Note: This will ERASE ALL DATA present on this disk.").format(**locals()),
-                                        installer.window)
-                if not dialog.show(): continue  # the user said No, skip this disk
+                                        None, installer.window)
+                if not dialog: continue  # the user said No, skip this disk
                 installer.window.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
                 assign_mount_format = self.full_disk_format(disk_device)
                 installer.window.window.set_cursor(None)
