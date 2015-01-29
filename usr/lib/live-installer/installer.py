@@ -239,7 +239,15 @@ class InstallerEngine:
 
         kernelversion= commands.getoutput("uname -r")
         os.system("cp /lib/live/mount/medium/live/vmlinuz /target/boot/vmlinuz-%s" % kernelversion)
-        os.system("cp /lib/live/mount/medium/live/initrd.img /target/boot/initrd.img-%s" % kernelversion)
+        found_initrd = False
+        for initrd in ["/lib/live/mount/medium/live/initrd.img", "/lib/live/mount/medium/live/initrd.lz"]:
+            if os.path.exists(initrd):
+                os.system("cp %s /target/boot/initrd.img-%s" % (initrd, kernelversion))
+                found_initrd = True
+                break
+
+        if not found_initrd:
+            print "WARNING: No initrd found!!"
 
         if (setup.gptonefi):
             os.system("mkdir -p /target/boot/efi/EFI/linuxmint")
