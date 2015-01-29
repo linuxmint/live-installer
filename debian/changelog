@@ -1,3 +1,64 @@
+live-installer (2015.01.29) betsy; urgency=medium
+
+  [ Kernc ]
+  * Grammar & style of i18n labels
+  * Use isoquery for countries list
+  * Use isoquery for languages list
+  * Use system supported locales for language selection screen
+  * Use custom flags for Esperanto and Interlingua
+  * Make language selection list sortable by columns
+  * Bump debian directory
+  * Better debug and exception handling
+  * Print locals() before entering pdb
+  * HACK: Fix gettext line so that installer runs
+  * Use __debug__ variable to check if --debug
+  * Stop tracking ConfigObj and instead rely on Debian's
+  * Sort first by Country, then by Language
+  * Install gettext.translation based on locale else lang else English
+  * Simplified timezone map pixel calculation
+  * Gtk dialogs in a separate module
+  * Show ErrorDialog on unhandled exception
+  * Everything timezone in a separate module
+  * Fixed many timezone cc.png colors
+  * Replaced useradd with adduser, added more default groups
+  * Replaced map radio-button-style dot with a red "maps" pin
+  * Fixed wrong click-selection on tz map when installer resized
+  * Preview current local time on timezone selection screen
+  * Replace combobox with button and menus for timezone selection
+  * New timezones background is a satellite image
+  * Timezone map daylight overlay
+  * More concise overview screen
+  * Drop configobj dependency
+  * Use geoip.ubuntu.com/lookup for country/timezone lookup
+  * Allow installation to more than one drive
+  * Moved everything partitioning related into partitioning module
+
+  [ monsta ]
+  * Slideshow: remove reference to non-existing file
+  * Show autologin option value in the overview
+  * Improve l10n a bit
+  * Debug printing on autologin setting change (for consistency)
+  * Build-depends on python to make lintian happy
+
+  [ Clement Lefebvre ]
+  * Fixed title in non-debug mode
+  * Updated flags
+  * Added flags for cw and ss
+  * Language selection: when no translations are found, revert to English
+  * Language selection: Sort by country by default
+  * Language selection: Added support for countryless locales (Esperanto is now 'eo' for instance, no longer 'eo_US')
+  * Fix small issues after latest merges
+  * Small revert on a string in previous merge
+  * Fixed confirmation dialog when closing the window
+  * Replace \x20 with spaces in HDD names (output from lsblk)
+  * UI improvements/fixes
+  * Support LZMA compressed initrd
+
+  [ Asier Iturralde Sarasola ]
+  * Fixed a pair of typos
+
+ -- Clement Lefebvre <root@linuxmint.com>  Thu, 29 Jan 2015 14:22:18 +0100
+
 live-installer (2014.02.27) debian; urgency=low
 
   * numerous fixes
