@@ -1004,7 +1004,7 @@ class InstallerWindow:
                             if not partition.partition.getFlag(parted.PARTITION_BOOT):
                                 ErrorDialog(_("Installation Tool"), _("The EFI partition is not bootable. Please edit the partition flags."))
                                 return
-                            if int(float(partition.size)) < 100:
+                            if int(float(partition.partition.getLength('MB'))) < 100:
                                 ErrorDialog(_("Installation Tool"), _("The EFI partition is too small. It must be at least 100MB."))
                                 return
                             if partition.format_as == None or partition.format_as == "":

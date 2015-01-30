@@ -183,8 +183,8 @@ class PartitionSetup(gtk.TreeStore):
             live_device = commands.getoutput("findmnt -n -o source /lib/live/mount/medium").split('\n')[0]
             live_device = re.sub('[0-9]+$', '', live_device) # remove partition numbers if any
             if live_device is not None and live_device.startswith('/dev/'):
-            	exclude_devices.append(live_device)
-            	print "Excluding %s (detected as the live device)" % live_device
+                exclude_devices.append(live_device)
+                print "Excluding %s (detected as the live device)" % live_device
             lsblk = shell_exec('lsblk -rindo TYPE,NAME,RM,SIZE,MODEL | sort -k3,2')
             for line in lsblk.stdout:
                 type, device, removable, size, model = line.split(" ", 4)
@@ -203,6 +203,7 @@ class PartitionSetup(gtk.TreeStore):
         installer.setup.gptonefi = is_efi_supported()
         self.disks = _get_attached_disks()
         print 'Disks: ', self.disks
+        already_done_full_disk_format = False
         for disk_path, disk_description in self.disks:
             disk_device = parted.getDevice(disk_path)
             try: disk = parted.Disk(disk_device)
@@ -213,7 +214,11 @@ class PartitionSetup(gtk.TreeStore):
                                         None, installer.window)
                 if not dialog: continue  # the user said No, skip this disk
                 installer.window.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
-                assign_mount_format = self.full_disk_format(disk_device)
+                if not already_done_full_disk_format:
+                    assign_mount_format = self.full_disk_format(disk_device)
+                    already_done_full_disk_format = True
+                else:
+                    self.full_disk_format(disk_device) # Format but don't assign mount points
                 installer.window.window.set_cursor(None)
                 disk = parted.Disk(disk_device)
             disk_iter = self.append(None, (disk_description, '', '', '', '', '', '', None, disk_path))
@@ -257,23 +262,33 @@ class PartitionSetup(gtk.TreeStore):
                             else 'msdos')
         separate_home_partition = device.getLength('GB') > 61
         mkpart = (
-            # (condition, mount_as, format_as, size_mb)
+            # (condition, mount_as, format_as, mkfs command, size_mb)
             # EFI
-            (installer.setup.gptonefi, EFI_MOUNT_POINT, 'vfat', 300),
+            (installer.setup.gptonefi, EFI_MOUNT_POINT, 'vfat', 'mkfs.vfat {} -F 32 ', 300),
             # swap - equal to RAM for hibernate to work well (but capped at ~8GB)
-            (True, SWAP_MOUNT_POINT, 'swap', min(8800, int(round(1.1/1024 * int(getoutput("awk '/^MemTotal/{ print $2 }' /proc/meminfo")), -2)))),
+            (True, SWAP_MOUNT_POINT, 'swap', 'mkswap {}', min(8800, int(round(1.1/1024 * int(getoutput("awk '/^MemTotal/{ print $2 }' /proc/meminfo")), -2)))),
             # root
-            (True, '/', 'ext4', 30000 if separate_home_partition else 0),
+            (True, '/', 'ext4', 'mkfs.ext4 -F {}', 30000 if separate_home_partition else 0),
             # home
-            (separate_home_partition, '/home', 'ext4', 0),
+            (separate_home_partition, '/home', 'ext4', 'mkfs.ext4 -F {}', 0),
         )
         run_parted = lambda cmd: os.system('parted --script --align optimal {} {} ; sync'.format(device.path, cmd))
         run_parted('mklabel ' + disk_label)
         start_mb = 2
-        for size_mb in map(lambda x: x[-1], filter(lambda x: x[0], mkpart)):
-            end = '{}MB'.format(start_mb + size_mb) if size_mb else '100%'
-            run_parted('mkpart primary {}MB {}'.format(start_mb, end))
-            start_mb += size_mb + 1
+        partition_number = 0
+        for partition in mkpart:
+            if partition[0]:
+                partition_number = partition_number + 1
+                mkfs = partition[3]
+                size_mb = partition[4]
+                end = '{}MB'.format(start_mb + size_mb) if size_mb else '100%'
+                mkpart_cmd = 'mkpart primary {}MB {}'.format(start_mb, end)
+                print mkpart_cmd
+                run_parted(mkpart_cmd)
+                mkfs = mkfs.format("%s%d" % (device.path, partition_number))
+                print mkfs
+                os.system(mkfs)
+                start_mb += size_mb + 1
         if installer.setup.gptonefi:
             run_parted('set 1 boot on')
         return ((i[1], i[2]) for i in mkpart if i[0])
@@ -365,7 +380,7 @@ class Partition(object):
             elif path_exists(mount_point, 'Windows/System32'):
                 description = 'Windows'
             elif path_exists(mount_point, 'System/Library/CoreServices/SystemVersion.plist'):
-            	description = 'Mac OS X'
+                description = 'Mac OS X'
             if path_exists(mount_point, 'etc/linuxmint/info'):
                 description = getoutput("cat %s/etc/linuxmint/info | grep GRUB_TITLE" % mount_point).replace('GRUB_TITLE', '').replace('=', '').replace('"', '').strip()
             if getoutput("/sbin/gdisk -l {} | awk '/ EF00 /{{print $1}}'".format(partition.disk.device.path)) == str(partition.number):
