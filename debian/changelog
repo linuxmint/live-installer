@@ -1,3 +1,17 @@
+live-installer (2015.01.30) betsy; urgency=medium
+
+  * Fixed regressions
+  * Exclude live device in partitioning step
+  * Added detection of Mac OS X
+  * Fixed partition rendering not fitting horizontally
+  * Give realname entry focus when switching to the user page
+  * UI: Always center window / non-resizable, and get rid of the custom colors in the toolbar.
+  * Updated path to penguin avatar
+  * Replaced avatar selection with a PictureChooserButton
+  * Install broadcom drivers when appropriate
+
+ -- Clement Lefebvre <root@linuxmint.com>  Fri, 30 Jan 2015 16:19:11 +0100
+
 live-installer (2015.01.29) betsy; urgency=medium
 
   [ Kernc ]
