@@ -80,7 +80,7 @@ class InstallerEngine:
                         cmd = "mkfs.%s %s -F 32" % (partition.format_as, partition.partition.path)
                     else:
                         cmd = "mkfs.%s %s" % (partition.format_as, partition.partition.path) # works with bfs, btrfs, ext2, ext3, ext4, minix, msdos, ntfs, vfat
-					
+                    
                 print "EXECUTING: '%s'" % cmd
                 self.exec_cmd(cmd)
                 partition.type = partition.format_as
@@ -255,6 +255,7 @@ class InstallerEngine:
             os.system("mkdir -p /target/debs")
             os.system("cp /lib/live/mount/medium/pool/main/g/grub2/grub-efi* /target/debs/")
             os.system("cp /lib/live/mount/medium/pool/main/e/efibootmgr/efibootmgr* /target/debs/")
+            os.system("cp /lib/live/mount/medium/pool/main/e/efivar/* /target/debs/")
             self.do_run_in_chroot("dpkg -i /debs/*")
             os.system("rm -rf /target/debs")
 
