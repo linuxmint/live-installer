@@ -69,7 +69,7 @@ class InstallerWindow:
         self.window = self.wTree.get_widget("main_window")
         self.window.set_position(gtk.WIN_POS_CENTER_ALWAYS)
         self.window.set_resizable(False)
-        
+
         if __debug__:
             self.window.set_title((_("%s Installer") % DISTRIBUTION_NAME) + ' (debug)')
         else:
@@ -119,7 +119,7 @@ class InstallerWindow:
         # build user info page
         self.wTree.get_widget("face_select_picture_button").connect( "button-release-event", self.face_select_picture_button_clicked)        
         self.wTree.get_widget("face_take_picture_button").connect( "button-release-event", self.face_take_picture_button_clicked)           
-        os.system("convert /usr/share/pixmaps/faces/t9penguino_trans.png -resize x96 /tmp/live-installer-face.png")
+        os.system("convert /usr/share/pixmaps/faces/7_penguin.png -resize x96 /tmp/live-installer-face.png")
         self.wTree.get_widget("face_image").set_from_file("/tmp/live-installer-face.png")   
         
         webcam_detected = False
