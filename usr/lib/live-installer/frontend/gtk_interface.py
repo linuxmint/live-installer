@@ -5,6 +5,7 @@ from slideshow import Slideshow
 from dialogs import MessageDialog, QuestionDialog, ErrorDialog, WarningDialog
 import timezones
 import partitioning
+from widgets import PictureChooserButton
 
 import pygtk; pygtk.require("2.0")
 import gtk
@@ -17,7 +18,7 @@ import commands
 import subprocess
 import sys
 import math
-from PIL import Image
+import PIL
 import threading
 import gobject
 import time
@@ -33,8 +34,8 @@ LOADING_ANIMATION = '/usr/share/live-installer/loading.gif'
 class WizardPage:
 
     def __init__(self, help_text, icon):
-        self.help_text = help_text    
-        self.icon = icon    
+        self.help_text = help_text
+        self.icon = icon
 
 class InstallerWindow:
     # Cancelable timeout for keyboard preview generation, which is
@@ -43,14 +44,14 @@ class InstallerWindow:
     kbd_preview_generation = -1
 
     def __init__(self, fullscreen=False):
-        
+
         #Disable the screensaver to prevent a segfault situation in GTK2
         os.system("sudo -u mint gsettings set org.cinnamon.desktop.screensaver lock-enabled false 2> /dev/null")
         os.system("sudo -u mint gsettings set org.mate.screensaver lock-enabled false 2> /dev/null")
-        
+
         #Build the Setup object (where we put all our choices)
         self.setup = Setup()
-        
+
         self.resource_dir = '/usr/share/live-installer/'
         #self.glade = 'interface.glade'
         self.glade = os.path.join(self.resource_dir, 'interface.glade')
@@ -98,7 +99,7 @@ class InstallerWindow:
         self.wizard_pages[self.PAGE_OVERVIEW] = WizardPage(_("Summary"), "summary.png")
         self.wizard_pages[self.PAGE_INSTALL] = WizardPage(_("Installing Linux Mint..."), "install.png")
         self.wizard_pages[self.PAGE_CUSTOMPAUSED] = WizardPage(_("Installation is paused: please finish the custom installation"), "install.png")
-        
+
         # set the button events (wizard_cb)
         self.wTree.get_widget("button_next").connect("clicked", self.wizard_cb, False)
         self.wTree.get_widget("button_back").connect("clicked", self.wizard_cb, True)
@@ -117,30 +118,52 @@ class InstallerWindow:
         self.wTree.get_widget("treeview_language_list").connect("cursor-changed", self.assign_language)
 
         # build user info page
-        self.wTree.get_widget("face_select_picture_button").connect( "button-release-event", self.face_select_picture_button_clicked)        
-        self.wTree.get_widget("face_take_picture_button").connect( "button-release-event", self.face_take_picture_button_clicked)           
         os.system("convert /usr/share/pixmaps/faces/7_penguin.png -resize x96 /tmp/live-installer-face.png")
-        self.wTree.get_widget("face_image").set_from_file("/tmp/live-installer-face.png")   
-        
+
+        pic_box = self.wTree.get_widget("hbox8")
+        self.face_button = PictureChooserButton(num_cols=4, button_picture_size=96, menu_pictures_size=64)
+        self.face_button.set_alignment(0.0, 0.5)
+        self.face_button.set_tooltip_text(_("Click to change your picture"))
+
+        self.face_photo_menuitem = gtk.MenuItem(_("Take a photo..."))
+        self.face_photo_menuitem.connect('activate', self._on_face_take_picture_button_clicked)
+
+        self.face_browse_menuitem = gtk.MenuItem(_("Browse for more pictures..."))
+        self.face_browse_menuitem.connect('activate', self._on_face_browse_menuitem_activated)
+
+        face_dirs = ["/usr/share/pixmaps/faces"]
+        for face_dir in face_dirs:
+            if os.path.exists(face_dir):
+                pictures = sorted(os.listdir(face_dir))
+                for picture in pictures:
+                    path = os.path.join(face_dir, picture)
+                    self.face_button.add_picture(path, self._on_face_menuitem_activated)
+
+        self.face_button.add_separator()
+
         webcam_detected = False
         try:
             import cv
-            capture = cv.CaptureFromCAM(-1) 
+            capture = cv.CaptureFromCAM(-1)
             for i in range(10):
-                img = cv.QueryFrame(capture)        
-                if img != None:                    
-                    webcam_detected = True   
+                img = cv.QueryFrame(capture)
+                if img != None:
+                    webcam_detected = True
         except Exception, detail:
             print detail
 
-        if webcam_detected:
-            self.wTree.get_widget("face_take_picture_button").set_tooltip_text(_("Click this button to take a new picture of yourself with the webcam."))
+        if (webcam_detected):
+            self.face_button.add_menuitem(self.face_photo_menuitem)
+            self.face_button.add_menuitem(self.face_browse_menuitem)
         else:
-            self.wTree.get_widget("face_take_picture_button").set_sensitive(False)
-            self.wTree.get_widget("face_take_picture_button").set_tooltip_text(_("The installer did not detect any webcams."))
-        
+            self.face_button.add_menuitem(self.face_browse_menuitem)
+
+        self.face_button.set_picture_from_file("/tmp/live-installer-face.png")
+
+        pic_box.pack_start(self.face_button, True, False, 6)
+
         # build the language list
-        self.build_lang_list()        
+        self.build_lang_list()
 
         # build timezones
         model = timezones.build_timezones(self)
@@ -267,41 +290,64 @@ class InstallerWindow:
 
         # fix text wrap
         self.fix_text_wrap()
-        
-    def face_select_picture_button_clicked(self, widget, event):
-        image = gtk.Image()
-        preview = gtk.ScrolledWindow()
-        preview.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        preview.set_size_request(150, 150)
-        preview.add_with_viewport(image)
-        image.show()
-        preview.show()
-        chooser = gtk.FileChooserDialog(title=None, parent=self.window,
-                                        action=gtk.FILE_CHOOSER_ACTION_OPEN,
-                                        buttons=(gtk.STOCK_CANCEL,
-                                                 gtk.RESPONSE_CANCEL,
-                                                 gtk.STOCK_OPEN,
-                                                 gtk.RESPONSE_OK),
-                                        backend=None)
-        chooser.set_default_response(gtk.RESPONSE_OK)
-        chooser.set_current_folder("/usr/share/pixmaps/faces")
+
+    def update_preview_cb (self, dialog, preview):
+        filename = dialog.get_preview_filename()        
+        dialog.set_preview_widget_active(False)
+        if filename is not None and os.path.isfile(filename):
+            try:
+                pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(filename, 128, 128)
+                if pixbuf is not None:      
+                    preview.set_from_pixbuf (pixbuf)      
+                    dialog.set_preview_widget_active(True)                            
+            except:
+                pass
+
+    def _on_face_browse_menuitem_activated(self, menuitem):
+        dialog = gtk.FileChooserDialog(None, None, gtk.FILE_CHOOSER_ACTION_OPEN, (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_OPEN, gtk.RESPONSE_OK))
 
         filter = gtk.FileFilter()
-        filter.set_name(_('Images'))
-        filter.add_mime_type('image/png')
-        filter.add_mime_type('image/jpeg')
-        filter.add_mime_type('image/gif')
-        filter.add_mime_type('bitmap/bmp')        
-        chooser.add_filter(filter)        
-        chooser.set_preview_widget(preview)
-        chooser.connect("update-preview", self.update_preview_cb, preview)
-        response = chooser.run()
+        filter.set_name(_("Images"))
+        filter.add_mime_type("image/*")
+        dialog.add_filter(filter)
+
+        preview = gtk.Image()
+        dialog.set_preview_widget(preview);
+        dialog.connect("update-preview", self.update_preview_cb, preview)
+        dialog.set_use_preview_label(False)
+
+        response = dialog.run()
         if response == gtk.RESPONSE_OK:
-            filename = chooser.get_filename()
-            os.system("convert '%s' -resize x96 /tmp/live-installer-face.png" % filename)
-            self.wTree.get_widget("face_image").set_from_file("/tmp/live-installer-face.png")
-        chooser.destroy()
-    
+            path = dialog.get_filename()
+            image = PIL.Image.open(path)
+            width, height = image.size
+            if width > height:
+                new_width = height
+                new_height = height
+            elif height > width:
+                new_width = width
+                new_height = width
+            else:
+                new_width = width
+                new_height = height
+            left = (width - new_width)/2
+            top = (height - new_height)/2
+            right = (width + new_width)/2
+            bottom = (height + new_height)/2
+            image = image.crop((left, top, right, bottom))
+            image.thumbnail((96, 96), PIL.Image.ANTIALIAS)
+            face_path = "/tmp/live-installer-face.png"
+            image.save(face_path, "png")
+            self.face_button.set_picture_from_file(face_path)
+
+        dialog.destroy()
+
+    def _on_face_menuitem_activated(self, path):
+        if os.path.exists(path):
+            os.system("cp %s /tmp/live-installer-face.png" % path)
+            print path
+            return True
+
     def update_preview_cb(self, file_chooser, preview):
         filename = file_chooser.get_preview_filename()
         try:
@@ -315,18 +361,18 @@ class InstallerWindow:
             #print e
             have_preview = False
         file_chooser.set_preview_widget_active(have_preview)
-        return  
-            
-    def face_take_picture_button_clicked(self, widget, event):
+        return
+
+    def _on_face_take_picture_button_clicked(self, menuitem):
         try:
             import cv
-            capture = cv.CaptureFromCAM(-1) 
+            capture = cv.CaptureFromCAM(-1)
             for i in range(10):
-                img = cv.QueryFrame(capture)        
+                img = cv.QueryFrame(capture)
                 if img != None:
                     cv.SaveImage("/tmp/live-installer-webcam.png", img)
                     os.system("convert /tmp/live-installer-webcam.png -resize x96 /tmp/live-installer-face.png")
-                    self.wTree.get_widget("face_image").set_from_file("/tmp/live-installer-face.png")
+                    self.face_button.set_picture_from_file("/tmp/live-installer-face.png")
         except Exception, detail:
             print detail
 
@@ -370,11 +416,7 @@ class InstallerWindow:
                 
         self.wTree.get_widget("face_label").set_markup("<b>%s</b>" % _("Your picture"))
         self.wTree.get_widget("face_description").set_markup("<span fgcolor='#3C3C3C'><sub><i>%s</i></sub></span>" % _("This picture represents your user account. It is used in the login screen and a few other places."))
-        self.wTree.get_widget("face_take_picture_button").set_label(_("Take a photo"))        
-        
-        self.wTree.get_widget("face_select_picture_button").set_label(_("Select a picture"))
-        self.wTree.get_widget("face_select_picture_button").set_tooltip_text(_("Click this button to choose a picture from the hard disk."))
-                
+
         # timezones
         self.wTree.get_widget("label_timezones").set_label(_("Selected timezone:"))
         
