@@ -67,6 +67,9 @@ class InstallerWindow:
         DISTRIBUTION_NAME = self.installer.get_distribution_name()
         # load the window object
         self.window = self.wTree.get_widget("main_window")
+        self.window.set_position(gtk.WIN_POS_CENTER_ALWAYS)
+        self.window.set_resizable(False)
+        
         if __debug__:
             self.window.set_title((_("%s Installer") % DISTRIBUTION_NAME) + ' (debug)')
         else:
@@ -220,18 +223,8 @@ class InstallerWindow:
         # make sure we're on the right page (no pun.)
         self.activate_page(0)
 
-        # this is a hack atm to steal the menubar's background color
-        self.wTree.get_widget("menubar").realize()
-        style = self.wTree.get_widget("menubar").style.copy()
         self.wTree.get_widget("menubar").hide()
-        # apply to the header       
-        self.title_box = self.wTree.get_widget("title_eventbox")
-        self.title_box.set_border_width(6);
-        bgColor = gtk.gdk.color_parse('#585858')
-        self.title_box.modify_bg(gtk.STATE_NORMAL, bgColor)
-        fgColor = gtk.gdk.color_parse('#FFFFFF')
-        self.help_label = self.wTree.get_widget("help_label")
-        self.help_label.modify_fg(gtk.STATE_NORMAL, fgColor)            
+
         if(fullscreen):
             # dedicated installer mode thingum
             self.window.maximize()
