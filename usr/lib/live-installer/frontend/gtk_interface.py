@@ -901,6 +901,7 @@ class InstallerWindow:
                 self.activate_page(self.PAGE_KEYBOARD)
             elif(sel == self.PAGE_KEYBOARD):
                 self.activate_page(self.PAGE_USER)
+                self.wTree.get_widget("entry_your_name").grab_focus()
             elif(sel == self.PAGE_USER):
                 errorFound = False
                 errorMessage = ""
