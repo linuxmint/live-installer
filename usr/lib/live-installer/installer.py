@@ -415,6 +415,21 @@ class InstallerEngine:
             self.do_run_in_chroot("dpkg -i /debs/*")
             os.system("rm -rf /target/debs")
 
+        if os.path.exists("/etc/linuxmint/info"):
+            # drivers
+            print " --> Installing drivers"
+            self.update_progress(total=our_total, current=our_current, message=_("Installing drivers"))
+            drivers = commands.getoutput("mint-drivers")
+            if "broadcom-sta-dkms" in drivers:
+                try:
+                    os.system("mkdir -p /target/debs")
+                    os.system("cp /lib/live/mount/medium/pool/non-free/b/broadcom-sta/*.deb /target/debs/")
+                    self.do_run_in_chroot("dpkg -i /debs/*")
+                    self.do_run_in_chroot("modprobe wl")
+                    os.system("rm -rf /target/debs")
+                except:
+                    print "Failed to install Broadcom drivers"
+
         # set the keyboard options..
         print " --> Setting the keyboard"
         our_current += 1
