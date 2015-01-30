@@ -366,6 +366,8 @@ class Partition(object):
                 description = 'Windows bootloader/recovery'
             elif path_exists(mount_point, 'Windows/System32'):
                 description = 'Windows'
+            elif path_exists(mount_point, 'System/Library/CoreServices/SystemVersion.plist'):
+            	description = 'Mac OS X'
             if path_exists(mount_point, 'etc/linuxmint/info'):
                 description = getoutput("cat %s/etc/linuxmint/info | grep GRUB_TITLE" % mount_point).replace('GRUB_TITLE', '').replace('=', '').replace('"', '').strip()
             if getoutput("/sbin/gdisk -l {} | awk '/ EF00 /{{print $1}}'".format(partition.disk.device.path)) == str(partition.number):
