@@ -25,6 +25,8 @@ body {
   top:10;
   text-align: center;
   width=100px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   left: 0;
   right: 0;
   margin: 0 auto;
@@ -38,6 +40,8 @@ body {
   top:30;
   text-align: center;
   width=100px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   left: 0;
   right: 0;
   margin: 0 auto;
@@ -109,8 +113,8 @@ body {
 <td class='partition-cell' title='{0.name}{0.os_fs_info}' width='{0.size_percent}%'>
   <div class='partition {0.style}'> 
     <div class='shine' style='width: {0.used_percent}%; height: 50px'></div> 
-    <div class='partition-text'>{0.short_name}</div>
-    <div class='partition-os'>{0.description}</div>
+    <div class='partition-text'>{0.html_name}</div>
+    <div class='partition-os'>{0.html_description}</div>
   </div>
 </td>
 

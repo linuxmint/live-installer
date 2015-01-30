@@ -62,8 +62,7 @@ def build_partitions(_installer):
     partition_setup = PartitionSetup()
     if partition_setup.disks:
         installer._selected_disk = partition_setup.disks[0][0]
-        installer.partitions_browser.load_string(partition_setup.get_html(installer._selected_disk),
-                                                 'text/html', 'UTF-8', 'file:///')
+        installer.partitions_browser.load_string(partition_setup.get_html(installer._selected_disk), 'text/html', 'UTF-8', 'file:///')
     installer.wTree.get_widget("scrolled_partitions").show_all()
     installer.wTree.get_widget("treeview_disks").set_model(partition_setup)
     installer.wTree.get_widget("treeview_disks").expand_all()
@@ -76,8 +75,7 @@ def update_html_preview(selection):
     except TypeError, IndexError: return  # no disk is selected or no disk available
     if disk != installer._selected_disk:
         installer._selected_disk = disk
-        installer.partitions_browser.load_string(model.get_html(disk),
-                                                 'text/html', 'UTF-8', 'file:///')
+        installer.partitions_browser.load_string(model.get_html(disk), 'text/html', 'UTF-8', 'file:///')
 
 def edit_partition_dialog(widget, path, viewcol):
     ''' assign the partition ... '''
@@ -297,12 +295,12 @@ class Partition(object):
 
         self.partition = partition
         self.length = partition.getLength()
-        self.size_percent = max(1, round(100*self.length/partition.disk.device.getLength(), 1))
+        self.size_percent = max(1, round(80*self.length/partition.disk.device.getLength(), 1))
         self.size = to_human_readable(partition.getLength('B'))
 
         # if not normal partition with /dev/sdXN path, set its name to '' and discard it from model
         self.name = partition.path if partition.number != -1 else ''
-        self.short_name = self.name.split('/')[-1]
+        
         try:
             self.type = partition.fileSystem.type
             for fs in ('swap', 'hfs', 'ufs'):  # normalize fs variations (parted.filesystem.fileSystemType.keys())
@@ -377,6 +375,15 @@ class Partition(object):
             self.os_fs_info = ': {0.description} ({0.type}; {0.size}; {0.free_space})'.format(self) if description else ': ' + self.type
         finally:
             os.system('umount ' + TMP_MOUNTPOINT + ' 2>/dev/null')
+
+        self.html_name = self.name.split('/')[-1]
+        self.html_description = self.description
+        if (self.size_percent < 10 and len(self.description) > 5):
+            self.html_description = "%s..." % self.description[0:5]
+        if (self.size_percent < 5):
+            #Not enough space, don't write the name
+            self.html_name = ""                          
+            self.html_description = ""
 
         self.color = {
             # colors approximately from gparted (find matching set in usr/share/disk-partitions.html)
