@@ -11,6 +11,7 @@ from collections import defaultdict
 
 import gtk
 import parted
+import commands
 
 def shell_exec(command):
     return subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
@@ -180,12 +181,17 @@ class PartitionSetup(gtk.TreeStore):
 
         def _get_attached_disks():
             disks = []
-            exclude_devices = '/dev/sr0 /dev/sr1 /dev/cdrom /dev/dvd'.split()
+            exclude_devices = ['/dev/sr0', '/dev/sr1', '/dev/cdrom', '/dev/dvd']
+            live_device = commands.getoutput("findmnt -n -o source /lib/live/mount/medium").split('\n')[0]
+            live_device = re.sub('[0-9]+$', '', live_device) # remove partition numbers if any
+            if live_device is not None and live_device.startswith('/dev/'):
+            	exclude_devices.append(live_device)
+            	print "Excluding %s (detected as the live device)" % live_device
             lsblk = shell_exec('lsblk -rindo TYPE,NAME,RM,SIZE,MODEL | sort -k3,2')
             for line in lsblk.stdout:
                 type, device, removable, size, model = line.split(" ", 4)
+                device = "/dev/" + device
                 if type == "disk" and device not in exclude_devices:
-                    device = "/dev/" + device
                     # convert size to manufacturer's size for show, e.g. in GB, not GiB!
                     size = str(int(float(size[:-1]) * (1024/1000)**'BkMGTPEZY'.index(size[-1]))) + size[-1]
                     model = model.replace("\\x20", " ")
