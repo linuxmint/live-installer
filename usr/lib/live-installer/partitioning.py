@@ -185,7 +185,7 @@ class PartitionSetup(gtk.TreeStore):
             if live_device is not None and live_device.startswith('/dev/'):
                 exclude_devices.append(live_device)
                 print "Excluding %s (detected as the live device)" % live_device
-            lsblk = shell_exec('lsblk -rindo TYPE,NAME,RM,SIZE,MODEL | sort -k3,2')
+            lsblk = shell_exec('LC_ALL=en_US.UTF-8 lsblk -rindo TYPE,NAME,RM,SIZE,MODEL | sort -k3,2')
             for line in lsblk.stdout:
                 type, device, removable, size, model = line.split(" ", 4)
                 device = "/dev/" + device
