@@ -1,3 +1,12 @@
+live-installer (2015.01.31) betsy; urgency=medium
+
+  * Fixed bugs detected in EFI/GPT mode and/or with blank HDDs
+  * EFI: Fixed missing libefivar0 dependency on efibootmgr
+  * Fixed an issue in debug mode (litterals can contain , instead of . chars in some locales)
+  * Removed border around keyboard layout picture
+
+ -- Clement Lefebvre <root@linuxmint.com>  Sat, 31 Jan 2015 17:56:50 +0100
+
 live-installer (2015.01.30) betsy; urgency=medium
 
   * Fixed regressions
