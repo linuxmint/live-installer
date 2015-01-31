@@ -92,7 +92,7 @@ class Keyboard(QWidget):
         p.setRenderHint(QPainter.Antialiasing)
 
         p.setBrush(QColor(0xd6, 0xd6, 0xd6))
-        p.drawRect(0,0,640,640)
+        p.drawRect(-1,-1,740,740)
 
         pen = QPen()
         pen.setWidth(1)
@@ -122,7 +122,6 @@ class Keyboard(QWidget):
                     rect.setWidth(rw)
 
                 p.drawRoundedRect(rect, rx, rx)
-                                
 
                 rect.adjust(5,1, 0, 0)
 
@@ -265,7 +264,7 @@ if __name__ == "__main__":
     from PyQt4.QtGui import QApplication, QVBoxLayout
 
     app = QApplication(sys.argv)
-    
+
     layout=sys.argv[1]
     variant = sys.argv[2]
     filename = sys.argv[3]
