@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 
-from installer import InstallerEngine, Setup
-from slideshow import Slideshow
-from dialogs import MessageDialog, QuestionDialog, ErrorDialog, WarningDialog
-import timezones
-import partitioning
-from widgets import PictureChooserButton
+from .installer import InstallerEngine, Setup
+from .slideshow import Slideshow
+from .dialogs import MessageDialog, QuestionDialog, ErrorDialog, WarningDialog
+from . import timezones, partitioning
+from .widgets import PictureChooserButton
 
 import pygtk; pygtk.require("2.0")
 import gtk
@@ -669,7 +668,7 @@ class InstallerWindow:
 
     def _generate_keyboard_layout_preview(self):
         filename = "/tmp/live-install-keyboard-layout.png"
-        os.system("python /usr/lib/live-installer/frontend/generate_keyboard_layout.py %s %s %s" % (self.setup.keyboard_layout, self.setup.keyboard_variant, filename))
+        os.system("python /usr/lib/live-installer/generate_keyboard_layout.py %s %s %s" % (self.setup.keyboard_layout, self.setup.keyboard_variant, filename))
         self.wTree.get_widget("image_keyboard").set_from_file(filename)
         return False
 

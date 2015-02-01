@@ -208,7 +208,7 @@ class PartitionSetup(gtk.TreeStore):
             disk_device = parted.getDevice(disk_path)
             try: disk = parted.Disk(disk_device)
             except Exception:
-                from frontend.gtk_interface import QuestionDialog
+                from .gtk_interface import QuestionDialog
                 dialog = QuestionDialog(_("Installation Tool"),
                                         _("No partition table was found on the hard drive: {disk_description}. Do you want the installer to create a set of partitions for you? Note: This will ERASE ALL DATA present on this disk.").format(**locals()),
                                         None, installer.window)
