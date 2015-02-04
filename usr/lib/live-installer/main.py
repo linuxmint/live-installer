@@ -24,7 +24,7 @@ def uncaught_excepthook(*args):
             pdb.pm()
     else:
         import traceback
-        from dialogs import ErrorDialog
+        from .dialogs import ErrorDialog
         ErrorDialog(_('Unexpected error'),
                     _('<b>The installer has failed with the following unexpected error. Please submit a bug report!</b>'),
                     '<tt>' + '\n'.join(traceback.format_exception(*args)) + '</tt>')
@@ -32,8 +32,7 @@ def uncaught_excepthook(*args):
 
 sys.excepthook = uncaught_excepthook
 
-sys.path.insert(1, '/usr/lib/live-installer')
-from frontend.gtk_interface import InstallerWindow
+from .gtk_interface import InstallerWindow
 
 import pygtk
 pygtk.require("2.0")
