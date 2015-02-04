@@ -291,17 +291,17 @@ class InstallerWindow:
         # fix text wrap
         self.fix_text_wrap()
 
-    def update_preview_cb (self, dialog, preview):
+    def update_preview_cb(self, dialog, preview):
         filename = dialog.get_preview_filename()        
         dialog.set_preview_widget_active(False)
-        if filename is not None and os.path.isfile(filename):
-            try:
+        try:
+            if os.path.isfile(filename):
                 pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(filename, 128, 128)
-                if pixbuf is not None:      
-                    preview.set_from_pixbuf (pixbuf)      
+                if pixbuf:      
+                    preview.set_from_pixbuf(pixbuf)      
                     dialog.set_preview_widget_active(True)                            
-            except:
-                pass
+        except Exception:
+            pass
 
     def _on_face_browse_menuitem_activated(self, menuitem):
         dialog = gtk.FileChooserDialog(None, None, gtk.FILE_CHOOSER_ACTION_OPEN, (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_OPEN, gtk.RESPONSE_OK))
@@ -347,21 +347,6 @@ class InstallerWindow:
             os.system("cp %s /tmp/live-installer-face.png" % path)
             print path
             return True
-
-    def update_preview_cb(self, file_chooser, preview):
-        filename = file_chooser.get_preview_filename()
-        try:
-            if filename:
-                pixbuf = gtk.gdk.pixbuf_new_from_file(filename)
-                preview.child.child.set_from_pixbuf(pixbuf)
-                have_preview = True
-            else:
-                have_preview = False
-        except Exception, e:
-            #print e
-            have_preview = False
-        file_chooser.set_preview_widget_active(have_preview)
-        return
 
     def _on_face_take_picture_button_clicked(self, menuitem):
         try:
