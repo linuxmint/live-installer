@@ -1,0 +1,286 @@
+# Korean translation for live-installer-slideshow
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the live-installer-slideshow package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: live-installer-slideshow\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2014-09-15 01:03+0300\n"
+"PO-Revision-Date: 2011-07-10 02:41+0000\n"
+"Last-Translator: Seung Soo, Ha <sungsuha@gmail.com>\n"
+"Language-Team: Korean <ko@li.org>\n"
+"Language: ko\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2014-05-03 20:44+0000\n"
+"X-Generator: Launchpad (build 16985)\n"
+
+#. type: Content of: <h1>
+#: en/10_welcome.html:1
+msgid "Welcome to Linux Mint Debian"
+msgstr "환영합니다"
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:6
+msgid "Thank you for choosing Linux Mint."
+msgstr "리눅스 민트를 선택해주셔서 감사합니다."
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:7
+msgid ""
+"We believe in sharing and being open-minded. Our vision of Freedom includes "
+"being able to do what you want with your computer, and the operating system "
+"should never stand in the way."
+msgstr ""
+"리눅스 민트는 공유와 개방을 추구합니다. 저희가 생각하는 '자유'란, '사용자는 "
+"컴퓨터를 이용해 무엇이든 할 수 있어야 하고, 운영 체제는 사용자가 원하는 것을 "
+"최대한 실현할 수 있도록 도와야 한다'는 것입니다."
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:8
+msgid ""
+"We focus on ease of use, comfort, and elegance to make your experience with "
+"Linux Mint as enjoyable as possible."
+msgstr ""
+"리눅스 민트는 사용의 용이함과 편안함, 우아함을 동시에 추구합니다. 이는 여러분"
+"이 리눅스 민트를 최대한 즐길 수 있도록 배려하기 위함입니다."
+
+#. type: Content of: <div><div><p>
+#: en/10_welcome.html:11
+msgid ""
+"We hope you will have a wonderful time spent with Linux Mint, and that you "
+"will enjoy using it as much as we do developing it!"
+msgstr ""
+"저희가 개발하면서 그랬던 것처럼, 여러분도 리눅스 민트와 함께 좋은 시간을 보내"
+"시길 바랍니다!"
+
+#. type: Content of: <h1>
+#: en/20_giants.html:1
+msgid "Standing on the shoulders of Giants"
+msgstr "거인의 어깨 위에 서다"
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:6
+#, fuzzy
+#| msgid ""
+#| "Linux Mint is a Debian-based GNU/Linux distribution derived from and "
+#| "compatible with Ubuntu."
+msgid "Linux Mint is a Debian-based GNU/Linux distribution."
+msgstr "리눅스 민트는 데비안 기반의 GNU/리눅스로, 우분투로부터 파생되었습니다."
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:7
+#, fuzzy
+#| msgid ""
+#| "Our innovations, the rapid development of Ubuntu and the huge Debian "
+#| "package selection make Linux Mint one of the most attractive desktop "
+#| "operating systems available to home users."
+msgid ""
+"Our innovations and the huge Debian package selection make Linux Mint one of "
+"the most attractive desktop operating systems available to home users."
+msgstr ""
+"리눅스 민트 커뮤니티의 혁신과 우분투의 빠른 개발 능력, 그리고 데비안의 방대"
+"한 양의 패키지. 이 세 가지가 어우러져 리눅스 민트라는 매력적인 운영체제가 탄"
+"생하였습니다."
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:8
+#, fuzzy
+#| msgid ""
+#| "At home, Linux Mint is the 4th most widely used desktop operating system, "
+#| "behind Microsoft Windows, Apple OS X and Ubuntu."
+msgid ""
+"At home, GNU/Linux distributions like Linux Mint or Ubuntu are among the "
+"most widely used desktop operating systems, right next to Microsoft Windows "
+"and Apple OS X."
+msgstr ""
+"리눅스 민트는 가정에서 마이크로소프트 윈도, 애플 맥 오에스, 우분투에 이어 네"
+"번째로 많이 쓰이는 운영 체제입니다."
+
+#. type: Content of: <h1>
+#: en/30_desktop-ready.html:1
+msgid "Out of the box"
+msgstr "복잡한 절차 없이 간편하게!"
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:6
+#, fuzzy
+#| msgid ""
+#| "Firefox, Thunderbird, OpenOffice.org and Xchat come pre-installed in "
+#| "Linux Mint, so you can get started immediately with your daily routine on "
+#| "your desktop and the Internet."
+msgid ""
+"Most standard applications you are used to come pre-installed in Linux Mint, "
+"so you can get started immediately with your daily routine on your desktop "
+"and the Internet."
+msgstr ""
+"리눅스 민트에는 웹 브라우저나 워드 프로세서, 메신저, 동영상 플레이어 등 기본"
+"적으로 필요한 프로그램이 이미 설치 되어 있어, 설치 후 별다른 설정 없이도 곧바"
+"로 컴퓨터와 인터넷을 사용할 수 있습니다."
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:7
+#, fuzzy
+#| msgid ""
+#| "Other popular applications such as Skype, Google Earth, Opera can be "
+#| "installed with a click of the mouse."
+msgid ""
+"Other popular applications such as Skype, Google Earth, Opera, and over "
+"30,000+ more can be installed with a click of the mouse."
+msgstr ""
+"여러분은 스카이프(무료 인터넷 전화), 피카사(사진 관리), 구글 어스(위성 사"
+"진), 오페라(웹 브라우저)와 같은 인기있는 응용 프로그램들도 마우스 클릭 한 번"
+"으로 설치할 수 있습니다."
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:8
+#, fuzzy
+#| msgid ""
+#| "Linux Mint is compatible with most popular file formats: zip, doc, xls, "
+#| "pdf, rar, mp3, wmv, mpg, mp4, mov ...etc"
+msgid ""
+"Linux Mint is compatible with most popular file formats: zip, doc, xls, pdf, "
+"rar, mp3, wmv, mpg, mp4, mov ..."
+msgstr ""
+"리눅스 민트는 널리 쓰이는 파일 형식들을 기본적으로 지원합니다. 여러분은 별도"
+"의 설정 없이 압축, 문서, 음악 및 동영상 파일을 사용하실 수 있습니다."
+
+#. type: Content of: <h1>
+#: en/40_office.html:1
+msgid "Be productive"
+msgstr "높은 생산성"
+
+#. type: Content of: <div><div><ul><li>
+#: en/40_office.html:6
+msgid ""
+"Use LibreOffice to create professional documents, spreadsheets and "
+"presentations that are fully compatible with Microsoft Office. Share "
+"printers or access them remotely."
+msgstr ""
+
+#. type: Content of: <h1>
+#: en/50_windows.html:1
+msgid "An alternative to mainstream operating systems"
+msgstr "주류 운영 체제에 대한 대한"
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:6
+msgid "Linux Mint is easy to use, powerful and configurable."
+msgstr ""
+"리눅스 민트는 사용하기 쉽고, 강력하며, 얼마든지 여러분의 입맛에 맞게 설정할 "
+"수 있습니다."
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:7
+msgid ""
+"Linux Mint can detect other operating systems and install itself beside "
+"them. You can choose which operating system to launch when you start the "
+"computer."
+msgstr ""
+"리눅스 민트는 이미 설치된 다른 운영 체제에 영향을 주지 않습니다. 여러분은 컴"
+"퓨터를 시작할 때마다 어떤 운영 체제를 사용할지 선택할 수 있습니다."
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:8
+#, fuzzy
+#| msgid ""
+#| "Install Wine and run Windows software in Linux Mint. Or install "
+#| "Virtualbox, and run Windows itself within Linux Mint."
+msgid ""
+"Install Wine and run Windows software in Linux Mint. Or install VirtualBox, "
+"and run Windows itself within Linux Mint."
+msgstr ""
+"Wine을 이용하여 윈도우즈 소프트웨어를 리눅스 민트에서 실행할 수 있습다. 또는 "
+"VirtualBox를 이용하여 윈도우를 리눅스 민트 안에서 실행할 수 있습니다."
+
+#. type: Content of: <h1>
+#: en/60_safe.html:1
+msgid "Safe updates"
+msgstr "안전한 업데이트"
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:6
+msgid ""
+"Linux Mint is safe and stable, you don't need an antivirus, an anti-spyware, "
+"a defragmentation tool or a registry cleaner."
+msgstr ""
+"리눅스 민트는 안전하고 안정적입니다. 사용자는 바이러스와 스파이웨어로부터 자"
+"유로우며, 조각모음이나 레지스트리 청소같은 복잡한 관리작업을 수행 할 필요가 "
+"없습니다."
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:7
+msgid ""
+"Receive fixes and security updates all in one place, for the entire system, "
+"including the software you install."
+msgstr ""
+"설치된 소프트웨어를 포함한 전체 시스템의 최신 패치와 보안 업데이트를 한 곳에"
+"서 관리합니다."
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:8
+msgid ""
+"The Linux Mint Update Manager sits discreetly in your system tray and lets "
+"you know when updates are available. You don't have to apply updates when "
+"you don't want to. The Update Manager won't pop up or annoy you in any way."
+msgstr ""
+"리눅스 민트 업데이트 관리자는 시스템 트레이에 조용히 상주하며 업데이트 가능 "
+"여부를 알려줍니다. 사용자는 원하는 때에 업데이트를 실행 할 수 있습니다. 업데"
+"이트 관리자는 절대로 사용자를 자극하거나 귀찮게하지 않습니다."
+
+#. type: Content of: <h1>
+#: en/70_chat.html:1
+msgid "Stay connected"
+msgstr "소셜 네트워킹"
+
+#. type: Content of: <div><div><ul><li>
+#: en/70_chat.html:6
+msgid ""
+"Keep in touch with your friends and contacts, by email, messenger or on your "
+"favorite social networks. Linux Mint provides all you need to interact with "
+"Twitter, Facebook, Google Hangouts, ICQ, IRC, AIM, Yahoo and many other "
+"networks."
+msgstr ""
+"즐겨쓰는 소셜 네트워크, 메신져, 이메일을 통해 친구들과 연락하세요. 리눅스 민"
+"트는 트위터, 페이스북, Google Hangouts, ICQ, 구글 토크, AIM, 야후 등을 지원합"
+"니다."
+
+#. type: Content of: <h1>
+#: en/80_community.html:1
+msgid "A great community"
+msgstr "막강한 커뮤니티"
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:6
+msgid ""
+"The Linux Mint community is one of the best on the Internet. Our users not "
+"only provide most of our funding, but also ideas, artwork, and sometimes "
+"even source code."
+msgstr ""
+"리눅스 민트 커뮤니티는 인터넷에서 가장 훌륭한 커뮤니티 중 하나입니다. 리눅스 "
+"민트 커뮤니티 구성원들은 프로젝트 자금의 대부분을 충당하고 있으며, 가끔씩 좋"
+"은 아이디어나 삽화, 심지어는 소스 코드까지 제공하기도 합니다."
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:7
+msgid ""
+"Linux Mint users are happy to share their passion, enthusiasm, and eagerness "
+"to help. Don't hesitate to ask questions in the forums or get involved with "
+"the community."
+msgstr ""
+"리눅스 민트 커뮤니티 구성원들은 리눅스 민트에 대한 서로의 열정과 의욕을 매우 "
+"높이 평가하며, 언제나 다른 사용자들을 도와주고 싶어합니다. 만약 리눅스 민트"
+"에 대한 질문이 있거나, 커뮤니티에 참여하고 싶으시다면 언제든지 리눅스 민트 커"
+"뮤니티를 방문해주시기 바랍니다."
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:8
+msgid ""
+"Send us your feedback and tell us about your experience. We'll listen to "
+"your ideas and use them to further improve Linux Mint."
+msgstr ""
+"리눅스 민트를 사용하시면서 의견이 있다면 저희 개발팀에게 알려주십시오. 여러분"
+"의 의견은 리눅스 민트가 발전하는 밑거름이 됩니다."

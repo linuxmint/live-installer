@@ -1,0 +1,689 @@
+# Thai translation for linuxmint
+# Copyright (c) 2012 Rosetta Contributors and Canonical Ltd 2012
+# This file is distributed under the same license as the linuxmint package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2012.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: linuxmint\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2014-06-03 11:32+0100\n"
+"PO-Revision-Date: 2014-06-05 10:34+0000\n"
+"Last-Translator: Rockworld <sumoisrock@gmail.com>\n"
+"Language-Team: Thai <th@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2014-09-11 21:49+0000\n"
+"X-Generator: Launchpad (build 17196)\n"
+
+#: usr/lib/live-installer/installer.py:48
+#, python-format
+msgid "Formatting %(partition)s as %(format)s..."
+msgstr "กำลังฟอร์แมต %(partition)s เป็น %(format)s..."
+
+#: usr/lib/live-installer/installer.py:70
+#: usr/lib/live-installer/installer.py:81
+#, python-format
+msgid "Mounting %(partition)s on %(mountpoint)s"
+msgstr "กำลังเมานท์ %(partition)s บน %(mountpoint)s"
+
+#: usr/lib/live-installer/installer.py:107
+msgid ""
+"ERROR: You must first manually mount your target filesystem(s) at /target to "
+"do a custom install!"
+msgstr ""
+"ข้อผิดพลาด: คุณต้องเมานต์เป้าหมายระบบแฟ้มของคุณที่ /target "
+"ด้วยตัวเองก่อนจึงจะทำการติดตั้งกำหนดเองได้!"
+
+#: usr/lib/live-installer/installer.py:141
+msgid "Indexing files to be copied.."
+msgstr "กำลังทำสารบัญแฟ้มที่จะคัดลอก..."
+
+#: usr/lib/live-installer/installer.py:161
+#, python-format
+msgid "Copying %s"
+msgstr "กำลังคัดลอก %s"
+
+#: usr/lib/live-installer/installer.py:203
+#, python-format
+msgid "Restoring meta-information on %s"
+msgstr "เรียกคืนข้อมูล meta บน %s"
+
+#: usr/lib/live-installer/installer.py:213
+msgid "Entering new system.."
+msgstr "กำลังเข้าสู่ระบบใหม่..."
+
+#: usr/lib/live-installer/installer.py:246
+msgid "Removing live configuration (packages)"
+msgstr "กำลังลบการตั้งค่าแบบ live (แพคเกจ)"
+
+#: usr/lib/live-installer/installer.py:254
+msgid "Adding user to system"
+msgstr "กำลังเพื่มผู้ใช้งานไปยังระบบ"
+
+#: usr/lib/live-installer/installer.py:279
+msgid "Writing filesystem mount information"
+msgstr "กำลังเขียนข้อมูลการ mount ระบบไฟล์"
+
+#: usr/lib/live-installer/installer.py:340
+msgid "Setting hostname"
+msgstr "ตั้งค่าโฮสต์เนม"
+
+#: usr/lib/live-installer/installer.py:359
+msgid "Setting locale"
+msgstr "กำลังตั้งค่าตำแหน่งที่ตั้ง"
+
+#: usr/lib/live-installer/installer.py:373
+msgid "Localizing packages"
+msgstr "แพกเกจความเป็นท้องถิ่น"
+
+#: usr/lib/live-installer/installer.py:388
+msgid "Setting keyboard options"
+msgstr "กำลังตั้งค่าคีย์บอร์ด"
+
+#: usr/lib/live-installer/installer.py:427
+msgid "Installing bootloader"
+msgstr "กำลังติดตั้ง bootloader"
+
+#: usr/lib/live-installer/installer.py:436
+msgid ""
+"WARNING: The grub bootloader was not configured properly! You need to "
+"configure it manually."
+msgstr ""
+"คำเตือน : grub bootloader ไม่ได้ตั้งค่าอย่างถูกต้อง "
+"คุณต้องตั้งค่ามันด้วยตนเอง"
+
+#: usr/lib/live-installer/installer.py:449
+msgid "Cleaning APT"
+msgstr "ล้าง APT"
+
+#: usr/lib/live-installer/installer.py:477
+#: usr/lib/live-installer/frontend/gtk_interface.py:1901
+msgid "Installation finished"
+msgstr "การติดตั้งเสร็จสิ้น"
+
+#: usr/lib/live-installer/installer.py:491
+msgid "Configuring bootloader"
+msgstr "ตั้งค่า bootloader"
+
+#: usr/lib/live-installer/installer.py:500
+msgid "Checking bootloader"
+msgstr "กำลังตรวจสอบ bootloader"
+
+#: usr/lib/live-installer/installer.py:663
+msgid "unallocated"
+msgstr "ไม่ได้ใช้งาน"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:223
+#: usr/lib/live-installer/frontend/gtk_interface.py:225
+#, python-format
+msgid "%s Installer"
+msgstr "ตัวติดตั้ง %s"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:231
+msgid "Language"
+msgstr "ภาษา"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:232
+msgid "Timezone"
+msgstr "เขตเวลา"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:233
+msgid "Keyboard layout"
+msgstr "ผังแป้นพิมพ์"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:234
+msgid "User info"
+msgstr "ข้อมูลผู้ใช้"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:235
+#: usr/lib/live-installer/frontend/gtk_interface.py:589
+msgid "Hard drive"
+msgstr "ฮาร์ดไดรฟ์"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:236
+msgid "Partitioning"
+msgstr "การจัดพาร์ทิชัน"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:237
+msgid "Please make sure you wish to manually manage partitions"
+msgstr "กรุณาตรวจสอบให้แน่ใจว่าคุณต้องการที่จะจัดการพาร์ทิชันด้วยตนเอง"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:238
+msgid "Advanced options"
+msgstr "ตัวเลือกขั้นสูง"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:239
+msgid "Summary"
+msgstr "สรุป"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:240
+msgid "Installing Linux Mint..."
+msgstr "กำลังติดตั้งลินุกซ์มินต์..."
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:241
+msgid "Installation is Paused: Please finish the custom installation"
+msgstr "การติดตั้งถูกพักชั่วคราว: กรุณาทำการติดตั้งกำหนดเองให้เสร็จสิ้นก่อน"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:277
+msgid "Click this button to take a new picture of yourself with the webcam"
+msgstr "คลิกปุ่มนี้เพื่อถ่ายรูปของคุณด้วยเว็บแคม"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:280
+msgid "The installer did not detect any webcam"
+msgstr "โปรแกรมติดตั้งไม่พบเว็บแคมใด ๆ เลย"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:310
+#: usr/lib/live-installer/frontend/gtk_interface.py:591
+msgid "Device"
+msgstr "อุปกรณ์"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:315
+#: usr/lib/live-installer/frontend/gtk_interface.py:592
+msgid "Type"
+msgstr "ประเภท"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:320
+#: usr/lib/live-installer/frontend/gtk_interface.py:593
+msgid "Operating system"
+msgstr "ระบบปฏิบัติการ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:325
+#: usr/lib/live-installer/frontend/gtk_interface.py:594
+msgid "Mount point"
+msgstr "จุดเมานท์"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:330
+#: usr/lib/live-installer/frontend/gtk_interface.py:595
+msgid "Format?"
+msgstr "ต้องการฟอร์แมตหรือไม่?"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:335
+#: usr/lib/live-installer/frontend/gtk_interface.py:596
+msgid "Size"
+msgstr "ขนาด"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:340
+#: usr/lib/live-installer/frontend/gtk_interface.py:597
+msgid "Free space"
+msgstr "พื้นที่ว่าง"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:370
+#: usr/lib/live-installer/frontend/gtk_interface.py:598
+msgid "Layout"
+msgstr "ผัง"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:376
+#: usr/lib/live-installer/frontend/gtk_interface.py:599
+msgid "Variant"
+msgstr "แบบย่อย"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:385
+#: usr/lib/live-installer/frontend/gtk_interface.py:600
+msgid "Overview"
+msgstr "ภาพรวม"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:389
+msgid "Calculating file indexes..."
+msgstr "กำลังคำนวณสารบัญไฟล์"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:473
+msgid "Images"
+msgstr "รูปภาพ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:541
+msgid "Your full name"
+msgstr "ชื่อเต็มของคุณ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:542
+msgid "This will be shown in the About Me application"
+msgstr "นี่จะแสดงในแอพลิเคชั่นเกี่ยวกับคุณ (About Me)"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:543
+msgid "Your username"
+msgstr "ชื่อผู้ใช้ของคุณ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:544
+msgid "This is the name you will use to log in to your computer"
+msgstr "นี่เป็นชื่อที่คุณจะใช้เข้าระบบคอมพิวเตอร์ของคุณ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:545
+msgid "Your password"
+msgstr "รหัสผ่านของคุณ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:546
+msgid "Please enter your password twice to ensure it is correct"
+msgstr "กรุณาใส่รหัสผ่านของคุณ ๒ ครั้งเพื่อตรวจสอบความถูกต้อง"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:547
+msgid "Hostname"
+msgstr "ชื่อโฮสต์"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:548
+msgid "This hostname will be the computers name on the network"
+msgstr "ชื่อโฮสต์จะเป็นชื่อคอมพิวเตอร์ของคุณบนเครือข่าย"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:550
+msgid "Your picture"
+msgstr "รูปภาพของคุณ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:551
+msgid ""
+"This picture represents your user account. It is used in the login screen "
+"and a few other places."
+msgstr ""
+"รูปภาพนี้แสดงให้เห็นถึงบัญชีผู้ใช้ของคุณ "
+"มันจะถูกใช้ในหน้าจอเข้าสู่ระบบและบางที่อื่น ๆ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:552
+msgid "Take a photo"
+msgstr "ถ่ายภาพ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:554
+msgid "Select a picture"
+msgstr "เลือกภาพ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:555
+msgid "Click this button to choose a picture for your account"
+msgstr "คลิกปุ่มนี้เพื่อเลือกภาพให้บัญชีผู้ใช้ของคุณ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:558
+msgid "Selected timezone:"
+msgstr "เขตเวลาที่เลือกไว้:"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:561
+msgid "Bootloader"
+msgstr "โปรแกรมช่วยเริ่มระบบ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:562
+msgid "Install GRUB"
+msgstr "ติดตั้ง GRUB"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:563
+msgid "GRUB is a bootloader used to load the Linux kernel"
+msgstr "GRUB เป็นบูตโหลดเดอร์ที่ใช้สำหรับโหลดลีนุกซ์เคอร์เนล"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:566
+msgid "Use this box to test your keyboard layout"
+msgstr "ใช่ช่องนี้เพื่อทดสอบแบบคีย์บอร์ด"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:567
+msgid "Model"
+msgstr "รุ่น"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:570
+msgid ""
+"You have selected to manage your partitions manually, this feature is for "
+"ADVANCED USERS ONLY."
+msgstr ""
+"คุณได้เลือกรูปภาพที่จะจัดการพาร์ทิชันของคุณด้วยตัวเองแล้ว "
+"คุณสมบัตินี้ทำได้เฉพาะผู้ใช้ขั้นสูงเท่านั้น"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:571
+msgid "Before continuing, please mount your target filesystem(s) at /target."
+msgstr "ก่อนดำเนินการต่อไป กรุณาเมานต์ระบบแฟ้มเป้าหมายของคุณที่ /target ก่อน"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:572
+msgid ""
+"Do NOT mount virtual devices such as /dev, /proc, /sys, etc on /target/."
+msgstr ""
+"ห้ามเมานต์โปรแกรมรองรับอุปกรณ์เสมือนในตำแหน่งดังนี้ /dev, /proc, /sys, etc "
+"และบน /target/"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:573
+msgid ""
+"During the install, you will be given time to chroot into /target and "
+"install any pacakges that will be needed to boot your new system."
+msgstr ""
+"ระหว่างติดตั้ง คุณจะมีเวลาที่จะทำการ chroot ให้ /target "
+"และติดตั้งแพกเกจที่จะต้องใช้เริ่มระบบใหม่ของคุณ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:574
+msgid ""
+"During the install, you will be required to write your own /etc/fstab."
+msgstr "ระหว่างติดตั้ง คุณจะต้องเขียน /etc/fstab ด้วยตนเอง"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:575
+msgid ""
+"If you arent sure what any of this means, please go back and deselect manual "
+"partition management."
+msgstr ""
+"หากคุณไม่แน่ใจว่านี่หมายถึงอะไร "
+"กรุณากลับไปเลิกเลือกการจัดการพาร์ทิชันด้วยตนเอง"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:578
+msgid ""
+"Please do the following and then click Forward to finish Installation:"
+msgstr ""
+"กรุณาทำสิ่งต่าง ๆ ดังต่อไปนี้และคลิก เดินหน้า เพื่อสิ้นสุดการติดตั้ง:"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:579
+msgid ""
+"Create /target/etc/fstab for the filesystems as they will be mounted in your "
+"new system, matching those currently mounted at /target (without using the "
+"/target prefix in the mount paths themselves)."
+msgstr ""
+"สร้าง /target/etc/fstab "
+"ให้ระบบแฟ้มซึ่งมันจะถูกเมานต์ในระบบใหม่ของคุณคู่กับสิ่งเหล่านั้นที่เมานต์ไว้แ"
+"ล้วที่ /target โดยไม่ใช้ /target นำหน้าเส้นทางการเมานต์ด้วยตัวมันเอง"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:580
+msgid ""
+"Install any packages that may be needed for first boot (mdadm, cryptsetup, "
+"dmraid, etc) by calling \"sudo chroot /target\" followed by the relevant apt-"
+"get/aptitude installations."
+msgstr ""
+"ติดตั้งแพกเกจที่จะต้องใช้เมื่อเริ่มระบบเป็นครั้งแรก (mdadm, cryptsetup, "
+"dmraid และอื่น ๆ) โดยเรียกใช้คำสั่ง \"sudo chroot /target\" ตามการติดตั้ง "
+"apt-get/aptitude ที่เกี่ยวข้อง"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:581
+msgid ""
+"Note that in order for update-initramfs to work properly in some cases (such "
+"as dm-crypt), you may need to have drives currently mounted using the same "
+"block device name as they appear in /target/etc/fstab."
+msgstr ""
+"กรุณาจำไว้ว่าหากต้องการให้ update-initramfs ทำงานถูกต้องในบางกรณี เช่น dm-"
+"crypt เป็นต้น "
+"คุณจะต้องมีไดรว์ที่เมานต์ไว้แล้วที่ใช้ชื่ออุปกรณ์ที่ถูกบล็อกไว้เหมือนกันซึ่งจ"
+"ะปรากฏอยู่ใน /target/etc/fstab"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:582
+msgid ""
+"Double-check that your /target/etc/fstab is correct, matches what your new "
+"system will have at first boot, and matches what is currently mounted at "
+"/target."
+msgstr ""
+"ตรวจสอบสองครั้งว่า /target/etc/fstab ของคุณถูกต้องแล้ว "
+"คู่กับสิ่งที่ระบบใหม่ของคุณจะต้องมีเมื่อเริ่มระบบเป็นครั้งแรก "
+"และคู่กับสิ่งที่เมานต์ไว้แล้วที่ /target"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:585
+msgid "Install Linux Mint on the selected drive:"
+msgstr "ติดตั้งลินุกซ์มินต์บนไดรว์ที่เลือกไว้แล้ว:"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:586
+msgid "Manually mount partitions (ADVANCED USERS ONLY)."
+msgstr "เมานต์พาร์ทิชันด้วยตนเอง (เฉพาะผู้ใช้ขั้นสูงเท่านั้น)"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:590
+msgid "Description"
+msgstr "คำอธิบาย"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:603
+msgid "Edit partitions"
+msgstr "แก้ไขพาร์ทิชัน"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:646
+msgid "Edit"
+msgstr "แก้ไข"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:651
+msgid "Assign to /"
+msgstr "กำหนดเป็น /"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:654
+msgid "Assign to /home"
+msgstr "กำหนดเป็น /home"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:661
+msgid "Assign to /boot/efi"
+msgstr "กำหนดเป็น /boot/efi"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1004
+msgid "Removable device:"
+msgstr "อุปกรณ์ถอดเสียบ:"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1066
+#: usr/lib/live-installer/frontend/gtk_interface.py:1681
+#: usr/lib/live-installer/frontend/gtk_interface.py:1699
+#: usr/lib/live-installer/frontend/gtk_interface.py:1702
+#: usr/lib/live-installer/frontend/gtk_interface.py:1712
+#: usr/lib/live-installer/frontend/gtk_interface.py:1715
+#: usr/lib/live-installer/frontend/gtk_interface.py:1720
+#: usr/lib/live-installer/frontend/gtk_interface.py:1724
+#: usr/lib/live-installer/frontend/gtk_interface.py:1728
+msgid "Installation Tool"
+msgstr "เครื่องมือสำหรับการติดตั้ง"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1066
+msgid ""
+"No partition table was found on the hard drive. Do you want the installer to "
+"create a set of partitions for you? Note: This will erase any data present "
+"on the disk."
+msgstr ""
+"ไม่มีตารางพาร์ทิชันที่พบในฮาร์ดไดร์ฟ "
+"คุณต้องการให้ตัวติดตั้งสร้างชุดของพาร์ทิชันให้คุณหรือไม่\r\n"
+"หมายเหตุ : การกระทำนี้จะลบข้อมูลทั้งหมดที่ปรากฎบนดิสก์ในปัจจุบัน"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1234
+msgid "Extended"
+msgstr "ขยาย"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1587
+msgid "Passwords do not match"
+msgstr "รหัสผ่านไม่ตรงกัน"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1590
+msgid "Passwords match"
+msgstr "รหัสผ่านตรงกัน"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1602
+msgid "Forward"
+msgstr "ถัดไป"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1648
+msgid "Please provide your full name"
+msgstr "กรุณาใส่ชื่อเต็มของคุณ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1651
+msgid "Please provide a username"
+msgstr "กรุณาใส่ชื่อผู้ใช้"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1654
+msgid "Please provide a password for your user account"
+msgstr "กรุณาใส่รหัสผ่านสำหรับบัญชีผู้ใช้ของคุณ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1657
+msgid "Your passwords do not match"
+msgstr "รหัสผ่านของคุณไม่ตรง"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1660
+msgid "Please provide a hostname"
+msgstr "กรุณาใส่ชื่อโฮสต์"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1665
+msgid "Your username must be lower case"
+msgstr "ชื่อผู้ใช้ของคุณต้องใช้ตัวอักษรตัวเล็กเท่านั้น"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1669
+msgid "Your username may not contain whitespace"
+msgstr "ชื่อผู้ใช้ของคุณต้องไม่มีช่องว่าง"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1674
+msgid "Your hostname must be lower case"
+msgstr "ชื่อโฮสต์ต้องเป็นตัวอักษรตัวเล็ก"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1678
+msgid "Your hostname may not contain whitespace"
+msgstr "ชื่อโฮสต์ต้องไม่มีช่องว่าง"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1699
+msgid ""
+"Please indicate a filesystem to format the root (/) partition before "
+"proceeding"
+msgstr ""
+"กรุณาระบุตำแหน่งของระบบไฟล์ที่จะฟอร์แมตที่พาร์ทิชัน root (/) ก่อนดำเนินการต่อ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1702
+msgid "<b>Please select a root partition</b>"
+msgstr "<b>กรุณาเลือกพาร์ทิชันราก</b>"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1702
+msgid ""
+"A root partition is needed to install Linux Mint.\n"
+"\n"
+" - Mount point: /\n"
+" - Recommended size: Larger than 10GB\n"
+" - Recommended format: ext4\n"
+" "
+msgstr ""
+"ต้องมีพาร์ทิชันรากจึงจะสามารถติดตั้งลินุกซ์มินต์ได้\n"
+"\n"
+" - จุดเมานต์: /\n"
+" - ขนาดที่แนะนำ: มากกว่า 10GB\n"
+" - รูปแบบที่แนะนำ: ext4\n"
+" "
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1712
+msgid "The EFI partition is not bootable. Please edit the partition flags."
+msgstr "พาร์ทิชัน EFI ใช้เริ่มระบบไม่ได้ กรุณาแก้ไขสถานะของพาร์ทิชัน"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1715
+msgid "The EFI partition is too small. It must be at least 100MB."
+msgstr "พาร์ทิชัน EFI เล็กเกินไป ขนาดต้องไม่ต่ำกว่า 100MB"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1720
+#: usr/lib/live-installer/frontend/gtk_interface.py:1724
+msgid "The EFI partition must be formatted as vfat."
+msgstr "พาร์ทิชัน EFI ต้องฟอร์แมตเป็น vfat"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1728
+msgid "<b>Please select an EFI partition</b>"
+msgstr "<b>กรุณาเลือกพาร์ทิชัน EFI</b>"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1728
+msgid ""
+"An EFI system partition is needed with the following requirements:\n"
+"\n"
+" - Mount point: /boot/efi\n"
+" - Partition flags: Bootable\n"
+" - Size: Larger than 100MB\n"
+" - Format: vfat or fat32\n"
+"\n"
+"To ensure compatibility with Windows we recommend you use the first "
+"partition of the disk as the EFI system partition.\n"
+" "
+msgstr ""
+"ต้องมีพาร์ทิชันระบบ EFI พร้อมทั้งความต้องการขั้นต่ำดังต่อไปนี้:\n"
+"\n"
+" - จุดเมานต์: /boot/efi\n"
+" - สถานะพาร์ทิชัน: ใช้เริ่มระบบได้\n"
+" - ขนาด: ใหญ่กว่า 100MB\n"
+" - รูปแบบ: vfat หรือ fat32\n"
+"\n"
+"เพื่อรับรองความเข้ากันได้กับ Windows "
+"เราแนะนำให้คุณใช้พาร์ทิชันแรกของดิสก์เป็นพาร์ทิชันระบบ EFI\n"
+" "
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1741
+msgid "Install"
+msgstr "ติดตั้ง"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1780
+msgid "Localization"
+msgstr "ความเป็นท้องถิ่น"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1782
+msgid "Language: "
+msgstr "ภาษา: "
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1784
+msgid "Timezone: "
+msgstr "เขตเวลา: "
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1787
+#: usr/lib/live-installer/frontend/gtk_interface.py:1789
+msgid "Keyboard layout: "
+msgstr "แบบคีย์บอร์ด: "
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1791
+msgid "User settings"
+msgstr "การตั้งค่าผู้ใช้"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1793
+msgid "Real name: "
+msgstr "ชื่อจริง: "
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1795
+msgid "Username: "
+msgstr "ชื่อผู้ใช้: "
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1797
+msgid "System settings"
+msgstr "ตั้งค่าระบบ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1799
+msgid "Hostname: "
+msgstr "ชื่อโฮสต์: "
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1802
+#, python-format
+msgid "Install bootloader in %s"
+msgstr "กำลังติดตั้ง bootloader ใน %s"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1804
+msgid "Do not install bootloader"
+msgstr "อย่าติดตั้ง bootloader"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1806
+msgid "Filesystem operations"
+msgstr "การปฏิบัติการกับระบบไฟล์"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1815
+#, python-format
+msgid "Format %(partition)s as %(format)s"
+msgstr "ฟอร์แมต %(partition)s เป็น %(format)s"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1820
+#, python-format
+msgid "Mount %(partition)s as %(mountpoint)s"
+msgstr "Mount %(partition)s เป็น %(mountpoint)s"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1856
+#: usr/lib/live-installer/frontend/gtk_interface.py:1863
+#: usr/lib/live-installer/frontend/gtk_interface.py:1886
+#: usr/lib/live-installer/frontend/gtk_interface.py:1897
+msgid "Installation error"
+msgstr "การติดตั้งเกิดความผิดพลาด"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1873
+msgid "Installation Paused"
+msgstr "การติตดั้งถูกหยุดพักชั่วคราว"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1873
+msgid ""
+"Installation is now paused. Please read the instructions on the page "
+"carefully and click Forward to finish installation."
+msgstr ""
+"การติดตั้งถูกหยุดพักชั่วคราว กรุณาอ่านข้อแนะนำอย่างระมัดระวังและคลิก "
+"เดินหน้า เพื่อสิ้นสุดการติดตั้ง"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1901
+msgid ""
+"Installation is now complete. Do you want to restart your computer to use "
+"the new system?"
+msgstr ""
+"การติดตั้งเสร็จสิ้นแล้ว "
+"คุณต้องการเริ่มระบบของคอมพิวเตอร์ใหม่เพื่อใช้ระบบใหม่เลยหรือไม่?"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1978
+msgid "Edit partition"
+msgstr "แก้ไขพาร์ทิชัน"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1993
+msgid "Could not build supported filesystems list!"
+msgstr "ไม่สามารถสร้างรายการระบบไฟล์ที่สนับสนุน"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:2006
+msgid "Device:"
+msgstr "อุปกรณ์:"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:2009
+msgid "Format as:"
+msgstr "ฟอร์แมตเป็น:"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:2018
+msgid "Mount point:"
+msgstr "จุดเมานท์:"

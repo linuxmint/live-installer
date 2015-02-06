@@ -2,8 +2,10 @@ Source: live-installer
 Section: admin
 Priority: optional
 Maintainer: Clement Lefebvre <root@linuxmint.com>
-Build-Depends: debhelper (>= 9),
-               python
+Build-Depends: debhelper (>= 9)
+  , python
+  , po4a
+  , intltool
 X-Python-Version: >= 2.7
 Standards-Version: 3.9.5
 Vcs-Git: git://github.com/linuxmint/live-installer.git

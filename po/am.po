@@ -1,0 +1,644 @@
+# Amharic translation for linuxmint
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the linuxmint package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: linuxmint\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2014-06-03 11:32+0100\n"
+"PO-Revision-Date: 2014-08-09 16:46+0000\n"
+"Last-Translator: samson <Unknown>\n"
+"Language-Team: Amharic <am@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2014-09-11 21:48+0000\n"
+"X-Generator: Launchpad (build 17196)\n"
+
+#: usr/lib/live-installer/installer.py:48
+#, python-format
+msgid "Formatting %(partition)s as %(format)s..."
+msgstr "ፎርማት በማድረግ ላይ %(partition)s እንደ %(format)s..."
+
+#: usr/lib/live-installer/installer.py:70
+#: usr/lib/live-installer/installer.py:81
+#, python-format
+msgid "Mounting %(partition)s on %(mountpoint)s"
+msgstr "በመጫን ላይ %(partition)s በ %(mountpoint)s"
+
+#: usr/lib/live-installer/installer.py:107
+msgid ""
+"ERROR: You must first manually mount your target filesystem(s) at /target to "
+"do a custom install!"
+msgstr ""
+
+#: usr/lib/live-installer/installer.py:141
+msgid "Indexing files to be copied.."
+msgstr "ኮፒ የሚደረጉ ፋይሎች ማውጫ በማሰናዳት ላይ"
+
+#: usr/lib/live-installer/installer.py:161
+#, python-format
+msgid "Copying %s"
+msgstr "ኮፒ በማድረግ ላይ %s"
+
+#: usr/lib/live-installer/installer.py:203
+#, python-format
+msgid "Restoring meta-information on %s"
+msgstr "እንደነበር በመመለስ ላይ ስለ-መረጃ በ %s"
+
+#: usr/lib/live-installer/installer.py:213
+msgid "Entering new system.."
+msgstr "ወደ አዲሱ ስርአት በመግባት ላይ"
+
+#: usr/lib/live-installer/installer.py:246
+msgid "Removing live configuration (packages)"
+msgstr "በማስወገድ ላይ ላይሽ ማዋቀሪያን (ለጥቅሎች)"
+
+#: usr/lib/live-installer/installer.py:254
+msgid "Adding user to system"
+msgstr "ተጠቃሚ ወደ ስርአቱ በመጨመር ላይ"
+
+#: usr/lib/live-installer/installer.py:279
+msgid "Writing filesystem mount information"
+msgstr "የፋይል ስርአት መጫኛ መረጃ በመጻፍ ላይ"
+
+#: usr/lib/live-installer/installer.py:340
+msgid "Setting hostname"
+msgstr "የጋባዥ ስም በማሰናዳት ላይ"
+
+#: usr/lib/live-installer/installer.py:359
+msgid "Setting locale"
+msgstr "አካባቢን በማሰናዳት ላይ"
+
+#: usr/lib/live-installer/installer.py:373
+msgid "Localizing packages"
+msgstr "የ ጥቅሎች አቀማመጥ"
+
+#: usr/lib/live-installer/installer.py:388
+msgid "Setting keyboard options"
+msgstr "የፊደል ገበታ አቀማመጥ ምርጫዎች"
+
+#: usr/lib/live-installer/installer.py:427
+msgid "Installing bootloader"
+msgstr "ቡትሎደር በመግጠም ላይ"
+
+#: usr/lib/live-installer/installer.py:436
+msgid ""
+"WARNING: The grub bootloader was not configured properly! You need to "
+"configure it manually."
+msgstr "ማስጠንቀቂያ : የ grub ማስነሻ መጫኛው በሚገባ አልተዋቀረም! እርስዎ በእጅ ያዋቅሩት"
+
+#: usr/lib/live-installer/installer.py:449
+msgid "Cleaning APT"
+msgstr "ኤፒትን በማጽዳት ላይ"
+
+#: usr/lib/live-installer/installer.py:477
+#: usr/lib/live-installer/frontend/gtk_interface.py:1901
+msgid "Installation finished"
+msgstr "መግጠሙ ተጠናቋል"
+
+#: usr/lib/live-installer/installer.py:491
+msgid "Configuring bootloader"
+msgstr "ማስነሻ መጫኛውን በማዋቀር ላይ"
+
+#: usr/lib/live-installer/installer.py:500
+msgid "Checking bootloader"
+msgstr "ማስነሻ መጫኛውን በመመርመር ላይ"
+
+#: usr/lib/live-installer/installer.py:663
+msgid "unallocated"
+msgstr "ያልተመደበ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:223
+#: usr/lib/live-installer/frontend/gtk_interface.py:225
+#, python-format
+msgid "%s Installer"
+msgstr "%s ገጣሚ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:231
+msgid "Language"
+msgstr "ቋንቋ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:232
+msgid "Timezone"
+msgstr "የሰዓት ክልል"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:233
+msgid "Keyboard layout"
+msgstr "የፊደል ገበታ አቀማመጥ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:234
+msgid "User info"
+msgstr "የተጠቃሚ መረጃ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:235
+#: usr/lib/live-installer/frontend/gtk_interface.py:589
+msgid "Hard drive"
+msgstr "ሀርድ ድራይቭ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:236
+msgid "Partitioning"
+msgstr "በመከፋፈል ላይ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:237
+msgid "Please make sure you wish to manually manage partitions"
+msgstr "እባክዎን እጅግ በጣም እርግጠኛ ይሁኑ ከፍልፋዮችን በእጅዎ ለመፍጠር"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:238
+msgid "Advanced options"
+msgstr "የረቀቁ ምርጫዎች"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:239
+msgid "Summary"
+msgstr "ማጠቃለያ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:240
+msgid "Installing Linux Mint..."
+msgstr "ሊነክስ ሚንትን በመግጠም ላይ..."
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:241
+msgid "Installation is Paused: Please finish the custom installation"
+msgstr "መግጠሙ ተቋርጧል: እባክዎን የ custom አገጣጠሙን ይጨርሱ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:277
+msgid "Click this button to take a new picture of yourself with the webcam"
+msgstr "እዚህ ቁልፍ ላይ ይጫኑ የ እርስዎን አዲስ ፎቶ በ ዌብካም ለማንሳት"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:280
+msgid "The installer did not detect any webcam"
+msgstr "መግጠሚያው የዌብ ካሜራ አላገኘም"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:310
+#: usr/lib/live-installer/frontend/gtk_interface.py:591
+msgid "Device"
+msgstr "አካል"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:315
+#: usr/lib/live-installer/frontend/gtk_interface.py:592
+msgid "Type"
+msgstr "አይነት"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:320
+#: usr/lib/live-installer/frontend/gtk_interface.py:593
+msgid "Operating system"
+msgstr "የስርአት መተግበሪያ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:325
+#: usr/lib/live-installer/frontend/gtk_interface.py:594
+msgid "Mount point"
+msgstr "መጫኛ ጣቢያ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:330
+#: usr/lib/live-installer/frontend/gtk_interface.py:595
+msgid "Format?"
+msgstr "ፎርማት ላድርግ?"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:335
+#: usr/lib/live-installer/frontend/gtk_interface.py:596
+msgid "Size"
+msgstr "መጠን"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:340
+#: usr/lib/live-installer/frontend/gtk_interface.py:597
+msgid "Free space"
+msgstr "ነፃ ቦታ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:370
+#: usr/lib/live-installer/frontend/gtk_interface.py:598
+msgid "Layout"
+msgstr "አቀማመጥ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:376
+#: usr/lib/live-installer/frontend/gtk_interface.py:599
+msgid "Variant"
+msgstr "የተለየ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:385
+#: usr/lib/live-installer/frontend/gtk_interface.py:600
+msgid "Overview"
+msgstr "አጠቃላይ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:389
+msgid "Calculating file indexes..."
+msgstr "በማስላት ላይ የፋይል ማውጫዎችን..."
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:473
+msgid "Images"
+msgstr "ምስሎች"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:541
+msgid "Your full name"
+msgstr "ሙሉ ሰም"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:542
+msgid "This will be shown in the About Me application"
+msgstr "ስለ እኔ በሚለው መተግበሪያ ላይ ይህ ስም ይታያል"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:543
+msgid "Your username"
+msgstr "የእርስዎ የመጠቃሚያ ስም"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:544
+msgid "This is the name you will use to log in to your computer"
+msgstr ""
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:545
+msgid "Your password"
+msgstr "የመግቢያ ቃል"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:546
+msgid "Please enter your password twice to ensure it is correct"
+msgstr "እባክዎ የመግቢያ ቃልዎን በድጋሚ ያስገቡ ትክክል መሆኑን ለማረጋገጥ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:547
+msgid "Hostname"
+msgstr "የጋባዥ ስም"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:548
+msgid "This hostname will be the computers name on the network"
+msgstr "በኔትዎርክ ላይ ይህ የጋባዥ ስም የኮምፒዩተሩ ስም ይሆናል"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:550
+msgid "Your picture"
+msgstr "የ እርስዎ ስእል"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:551
+msgid ""
+"This picture represents your user account. It is used in the login screen "
+"and a few other places."
+msgstr ""
+"ይህ ስእል የ እርስዎን የተጠቃሚ መግለጫ ይሆናል፡ ለመግቢያ መመልከቻ እና ለአንዳንድ ሌሎች ቦታዎች መጠቀሚያ ይሆናል"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:552
+msgid "Take a photo"
+msgstr "ፎቶ ማንሻ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:554
+msgid "Select a picture"
+msgstr "ስእል ይምረጡ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:555
+msgid "Click this button to choose a picture for your account"
+msgstr "ለ እርስዎ መግለጫ የሚሆን ስእል ለመምረጥ ይህን ቁልፍ ይጫኑ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:558
+msgid "Selected timezone:"
+msgstr "የተመረጠው የ ሰአት ክልል:"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:561
+msgid "Bootloader"
+msgstr "ማስነሻውን መጫኛ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:562
+msgid "Install GRUB"
+msgstr "ግረብን መግጠሚያ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:563
+msgid "GRUB is a bootloader used to load the Linux kernel"
+msgstr "ግረብ ማስነሻውን መጫኛ ነው የሊነክስ ከረኔልን ለማስነሳት የሚጠቅም"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:566
+msgid "Use this box to test your keyboard layout"
+msgstr "የፊደል ገበታውን አቀማመጥ ለመሞከር ይህን ሳጥን ይጠቀሙ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:567
+msgid "Model"
+msgstr "አርአያ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:570
+msgid ""
+"You have selected to manage your partitions manually, this feature is for "
+"ADVANCED USERS ONLY."
+msgstr "ከፍልፋዮችን በእጅዎ ለመፍጠር መርጠዋል ይህ ሁኔታ ለረቀቁ ተጠቃሚዎች ብቻ ነው"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:571
+msgid "Before continuing, please mount your target filesystem(s) at /target."
+msgstr ""
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:572
+msgid ""
+"Do NOT mount virtual devices such as /dev, /proc, /sys, etc on /target/."
+msgstr ""
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:573
+msgid ""
+"During the install, you will be given time to chroot into /target and "
+"install any pacakges that will be needed to boot your new system."
+msgstr ""
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:574
+msgid ""
+"During the install, you will be required to write your own /etc/fstab."
+msgstr ""
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:575
+msgid ""
+"If you arent sure what any of this means, please go back and deselect manual "
+"partition management."
+msgstr ""
+"እነዚህ ነገሮች ምን ማለት እንደሆኑ ካልተረዱ እባክዎን ወደ ኋላ ይመለሱ እና የመከፋፈያ አስተዳዳሪ በእጅ ከሚለው ላይ "
+"ምልክቱን ያጥፉ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:578
+msgid ""
+"Please do the following and then click Forward to finish Installation:"
+msgstr "እባክዎን ይህን ያድርጉ እና ከዛ ይጫኑ ወደፊት የሚለውን ቁልፍ መግጠሙን ለመጨረስ:"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:579
+msgid ""
+"Create /target/etc/fstab for the filesystems as they will be mounted in your "
+"new system, matching those currently mounted at /target (without using the "
+"/target prefix in the mount paths themselves)."
+msgstr ""
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:580
+msgid ""
+"Install any packages that may be needed for first boot (mdadm, cryptsetup, "
+"dmraid, etc) by calling \"sudo chroot /target\" followed by the relevant apt-"
+"get/aptitude installations."
+msgstr ""
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:581
+msgid ""
+"Note that in order for update-initramfs to work properly in some cases (such "
+"as dm-crypt), you may need to have drives currently mounted using the same "
+"block device name as they appear in /target/etc/fstab."
+msgstr ""
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:582
+msgid ""
+"Double-check that your /target/etc/fstab is correct, matches what your new "
+"system will have at first boot, and matches what is currently mounted at "
+"/target."
+msgstr ""
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:585
+msgid "Install Linux Mint on the selected drive:"
+msgstr "በተመረጠው አካል ላይ ሊነክስ ሚንትን መግጠሚያ:"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:586
+msgid "Manually mount partitions (ADVANCED USERS ONLY)."
+msgstr "በእጅ ክፍልፋዮች መጫኛ (በጣም ለረቀቁ ተጠቃሚዎች)"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:590
+msgid "Description"
+msgstr "መግለጫ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:603
+msgid "Edit partitions"
+msgstr "ክፍልፋዮችን ማረሚያ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:646
+msgid "Edit"
+msgstr "ማረሚያ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:651
+msgid "Assign to /"
+msgstr "መመደብ ወደ /"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:654
+msgid "Assign to /home"
+msgstr "መመደቢያ ወደ /ቤት"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:661
+msgid "Assign to /boot/efi"
+msgstr "መመደብ ወደ /boot/efi"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1004
+msgid "Removable device:"
+msgstr "የሚወልቁ አካሎች:"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1066
+#: usr/lib/live-installer/frontend/gtk_interface.py:1681
+#: usr/lib/live-installer/frontend/gtk_interface.py:1699
+#: usr/lib/live-installer/frontend/gtk_interface.py:1702
+#: usr/lib/live-installer/frontend/gtk_interface.py:1712
+#: usr/lib/live-installer/frontend/gtk_interface.py:1715
+#: usr/lib/live-installer/frontend/gtk_interface.py:1720
+#: usr/lib/live-installer/frontend/gtk_interface.py:1724
+#: usr/lib/live-installer/frontend/gtk_interface.py:1728
+msgid "Installation Tool"
+msgstr "የመግጠሚያ መሳሪያዎች"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1066
+msgid ""
+"No partition table was found on the hard drive. Do you want the installer to "
+"create a set of partitions for you? Note: This will erase any data present "
+"on the disk."
+msgstr ""
+"በ ሀርድ ድራይቩ ላይ ምንም የክፍልፋይ ሰንጠረዥ አልተገኘም ፡ ገጣሚው ክፍልፋይ ሰንጠረዥ እንዲፈጥርልዎ ይፈልጋሉ? "
+"ማስታወሻ ፡ ይህ ሁኔታ ዲስኩ ላይ ያለውን ዳታ በሙሉ ያጠፋዋል"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1234
+msgid "Extended"
+msgstr "ተራዝሟል"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1587
+msgid "Passwords do not match"
+msgstr "የመግቢያ ቃልዎ ተመሳሳይ አይደለም"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1590
+msgid "Passwords match"
+msgstr "የመግቢያ ቃልዎ ተመሳሰሏል"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1602
+msgid "Forward"
+msgstr "ወደ ፊት"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1648
+msgid "Please provide your full name"
+msgstr "እባክዎ ሙሉ ስም ያስገቡ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1651
+msgid "Please provide a username"
+msgstr "እባክዎ የተጠቃሚ ስም ያስገቡ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1654
+msgid "Please provide a password for your user account"
+msgstr "እባክዎ የመግቢያ ቃል ያስገቡ ለእርስዎ መጠቀሚያ ስም"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1657
+msgid "Your passwords do not match"
+msgstr "የመግቢያ ቃልዎ ተመሳሳይ አይደለም"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1660
+msgid "Please provide a hostname"
+msgstr "እባክዎ የጋባዥ ስም ያስገቡ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1665
+msgid "Your username must be lower case"
+msgstr "የተጠቃሚ ስም በትንሽ ፊደል መጻፍ አለበት"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1669
+msgid "Your username may not contain whitespace"
+msgstr "የተጠቃሚ ስም መካከል ባዶ ቦታ አይተዉ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1674
+msgid "Your hostname must be lower case"
+msgstr "የእርስዎ ጋባዥ ስም በትንንሽ ፊደል መጻፍ አለበት"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1678
+msgid "Your hostname may not contain whitespace"
+msgstr "የእርስዎ ጋባዥ ስም ውስጥ ባዶ ቦታ መኖር የለበትም"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1699
+msgid ""
+"Please indicate a filesystem to format the root (/) partition before "
+"proceeding"
+msgstr "እባክዎን ይጠቁሙ ፎርማት የሚደረገውን የፋይል ስርአት ሩት (/) መከፋፈል ከመቀጠልዎ በፊት"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1702
+msgid "<b>Please select a root partition</b>"
+msgstr "<b>እባክዎን የ ሩት መከፋፈያ ይምረጡ</b>"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1702
+msgid ""
+"A root partition is needed to install Linux Mint.\n"
+"\n"
+" - Mount point: /\n"
+" - Recommended size: Larger than 10GB\n"
+" - Recommended format: ext4\n"
+" "
+msgstr ""
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1712
+msgid "The EFI partition is not bootable. Please edit the partition flags."
+msgstr ""
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1715
+msgid "The EFI partition is too small. It must be at least 100MB."
+msgstr ""
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1720
+#: usr/lib/live-installer/frontend/gtk_interface.py:1724
+msgid "The EFI partition must be formatted as vfat."
+msgstr ""
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1728
+msgid "<b>Please select an EFI partition</b>"
+msgstr ""
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1728
+msgid ""
+"An EFI system partition is needed with the following requirements:\n"
+"\n"
+" - Mount point: /boot/efi\n"
+" - Partition flags: Bootable\n"
+" - Size: Larger than 100MB\n"
+" - Format: vfat or fat32\n"
+"\n"
+"To ensure compatibility with Windows we recommend you use the first "
+"partition of the disk as the EFI system partition.\n"
+" "
+msgstr ""
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1741
+msgid "Install"
+msgstr "መግጠም"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1780
+msgid "Localization"
+msgstr "መተርጎም"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1782
+msgid "Language: "
+msgstr "ቋንቋ : "
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1784
+msgid "Timezone: "
+msgstr "የሰአት ክልል : "
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1787
+#: usr/lib/live-installer/frontend/gtk_interface.py:1789
+msgid "Keyboard layout: "
+msgstr "የፊደል ገበታ አቅማመጥ : "
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1791
+msgid "User settings"
+msgstr "ተጠቃሚ ማሰናጃዎች"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1793
+msgid "Real name: "
+msgstr "ትክክለኛ ስም : "
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1795
+msgid "Username: "
+msgstr "የተጠቃሚ ስም : "
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1797
+msgid "System settings"
+msgstr "የስርአት ማሰናጃ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1799
+msgid "Hostname: "
+msgstr "የጋባዥ ስም : "
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1802
+#, python-format
+msgid "Install bootloader in %s"
+msgstr "መግጠሚያ ማስነሻ መጫኛውን በ %s"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1804
+msgid "Do not install bootloader"
+msgstr "ማስነሻ መጫኛውን አትግጠም"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1806
+msgid "Filesystem operations"
+msgstr "የፋይል ስርአት ተግባሮች"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1815
+#, python-format
+msgid "Format %(partition)s as %(format)s"
+msgstr "ፎርማት %(partition)s እንደ %(format)s"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1820
+#, python-format
+msgid "Mount %(partition)s as %(mountpoint)s"
+msgstr "መጫኛ %(partition)s እንደ %(mountpoint)s"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1856
+#: usr/lib/live-installer/frontend/gtk_interface.py:1863
+#: usr/lib/live-installer/frontend/gtk_interface.py:1886
+#: usr/lib/live-installer/frontend/gtk_interface.py:1897
+msgid "Installation error"
+msgstr "የመግጠም ስህተት ተፈጥሯል"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1873
+msgid "Installation Paused"
+msgstr "መግጠሙ ተቋርጧል"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1873
+msgid ""
+"Installation is now paused. Please read the instructions on the page "
+"carefully and click Forward to finish installation."
+msgstr ""
+"መግጠሙ አሁን ተቋርጧል፡ እባክዎን በ ገጹ ላይ ላይ ያለውን መመሪያ ያንብቡ እና ወደ ፊት የሚለውን ይጫኑ መግጠሙን "
+"ለመጨረስ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1901
+msgid ""
+"Installation is now complete. Do you want to restart your computer to use "
+"the new system?"
+msgstr "መግጠሙ አሁን ጨርሷል፡ አዲሱን ስርአት ለመጠቀም ኮምፒዩተሩን አሁን እንደገና ማስጀመር ይፈልጋሉ?"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1978
+msgid "Edit partition"
+msgstr "መከፋፈያን ማረሚያ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1993
+msgid "Could not build supported filesystems list!"
+msgstr "በፋይል ስርአቱ የተደገፈ ዝርዝር መገንባት አልተቻለም!"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:2006
+msgid "Device:"
+msgstr "አካል :"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:2009
+msgid "Format as:"
+msgstr "ፎርማት እንደ :"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:2018
+msgid "Mount point:"
+msgstr "መጫኛ ጣቢያ:"

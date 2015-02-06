@@ -1,1 +1,5 @@
-slideshow/usr  /
+slideshow/template.html usr/share/live-installer/slideshow/
+slideshow/link          usr/share/live-installer/slideshow/
+slideshow/icons         usr/share/live-installer/slideshow/
+slideshow/en            usr/share/live-installer/slideshow/
+slideshow/translated/*  usr/share/live-installer/slideshow/

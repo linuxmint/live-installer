@@ -1,0 +1,288 @@
+# Vietnamese translation for live-installer-slideshow
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the live-installer-slideshow package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: live-installer-slideshow\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2014-09-15 01:03+0300\n"
+"PO-Revision-Date: 2013-11-03 04:09+0000\n"
+"Last-Translator: Tada Saki <a4e484b@hotmail.com>\n"
+"Language-Team: Vietnamese <vi@li.org>\n"
+"Language: vi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2014-05-03 20:44+0000\n"
+"X-Generator: Launchpad (build 16985)\n"
+
+#. type: Content of: <h1>
+#: en/10_welcome.html:1
+msgid "Welcome to Linux Mint Debian"
+msgstr "Chào mừng"
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:6
+msgid "Thank you for choosing Linux Mint."
+msgstr "Cám ơn bạn đã chọn Linux Mint."
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:7
+msgid ""
+"We believe in sharing and being open-minded. Our vision of Freedom includes "
+"being able to do what you want with your computer, and the operating system "
+"should never stand in the way."
+msgstr ""
+"Chúng tôi tin tưởng vào sự sẻ chia và cởi mở. Quan điểm của chúng tôi về Tự "
+"do là người dùng phải có thể thực hiện những gì họ muốn với máy tính của "
+"mình và hệ điều hành phải giúp họ thực hiện điều đó."
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:8
+msgid ""
+"We focus on ease of use, comfort, and elegance to make your experience with "
+"Linux Mint as enjoyable as possible."
+msgstr ""
+"Chúng tôi tập trung vào tính tiện dụng, thoải mái và thanh nhã để bạn có thể "
+"trải nghiệm Linux Mint thỏa thích."
+
+#. type: Content of: <div><div><p>
+#: en/10_welcome.html:11
+msgid ""
+"We hope you will have a wonderful time spent with Linux Mint, and that you "
+"will enjoy using it as much as we do developing it!"
+msgstr ""
+"Chúng tôi hi vọng bạn sẽ có khoảng thời gian tuyệt vời với Linux Mint và bạn "
+"sẽ hứng thú sử dụng nó như chúng tôi đã hứng thú phát triển nó."
+
+#. type: Content of: <h1>
+#: en/20_giants.html:1
+msgid "Standing on the shoulders of Giants"
+msgstr "Dựa trên nền tảng của những \"tên tuổi lớn\""
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:6
+#, fuzzy
+#| msgid ""
+#| "Linux Mint is a Debian-based GNU/Linux distribution derived from and "
+#| "compatible with Ubuntu."
+msgid "Linux Mint is a Debian-based GNU/Linux distribution."
+msgstr ""
+"Linux MInt là một bản phân phối Linux GNU dựa trên Debian và có sự kế thừa, "
+"tương thích với Ubuntu."
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:7
+#, fuzzy
+#| msgid ""
+#| "Our innovations, the rapid development of Ubuntu and the huge Debian "
+#| "package selection make Linux Mint one of the most attractive desktop "
+#| "operating systems available to home users."
+msgid ""
+"Our innovations and the huge Debian package selection make Linux Mint one of "
+"the most attractive desktop operating systems available to home users."
+msgstr ""
+"Sự sáng tạo của chúng tôi cùng với sự phát triển nhanh chóng của Ubuntu và "
+"khả năng lựa chọn giữa một kho phần mềm đồ sộ của Debian đã đem lại cho "
+"người dùng Linux Mint một trong những hệ điều hành máy để bàn lôi cuốn nhất."
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:8
+#, fuzzy
+#| msgid ""
+#| "At home, Linux Mint is the 4th most widely used desktop operating system, "
+#| "behind Microsoft Windows, Apple OS X and Ubuntu."
+msgid ""
+"At home, GNU/Linux distributions like Linux Mint or Ubuntu are among the "
+"most widely used desktop operating systems, right next to Microsoft Windows "
+"and Apple OS X."
+msgstr ""
+"Linux Mint hiện là hệ điều hành máy để bàn gia dụng được sử dụng nhiều thứ "
+"4, sau Microsoft Windows, Apple OS X và Ubuntu."
+
+#. type: Content of: <h1>
+#: en/30_desktop-ready.html:1
+msgid "Out of the box"
+msgstr "Sử dụng ngay được"
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:6
+#, fuzzy
+#| msgid ""
+#| "Firefox, Thunderbird, OpenOffice.org and Xchat come pre-installed in "
+#| "Linux Mint, so you can get started immediately with your daily routine on "
+#| "your desktop and the Internet."
+msgid ""
+"Most standard applications you are used to come pre-installed in Linux Mint, "
+"so you can get started immediately with your daily routine on your desktop "
+"and the Internet."
+msgstr ""
+"Trình duyệt Firefox, trình thư tín điện tử Thunderbird, bộ phần mềm văn "
+"phòng OpenOffice.org và trình tán gẫu Xchat được cài sẵn trong Linux Mint "
+"nên bạn có thể bắt đầu sử dụng Internet và các ứng dụng để bàn ngay lập tức."
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:7
+#, fuzzy
+#| msgid ""
+#| "Other popular applications such as Skype, Google Earth, Opera can be "
+#| "installed with a click of the mouse."
+msgid ""
+"Other popular applications such as Skype, Google Earth, Opera, and over "
+"30,000+ more can be installed with a click of the mouse."
+msgstr ""
+"Bạn có thể cài đặt nhiều ứng dụng phổ biến khác như là Skype, Google Earth, "
+"Opera đơn giản chỉ với một cú nhấp chuột."
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:8
+#, fuzzy
+#| msgid ""
+#| "Linux Mint is compatible with most popular file formats: zip, doc, xls, "
+#| "pdf, rar, mp3, wmv, mpg, mp4, mov ...etc"
+msgid ""
+"Linux Mint is compatible with most popular file formats: zip, doc, xls, pdf, "
+"rar, mp3, wmv, mpg, mp4, mov ..."
+msgstr ""
+"Linux Mint tương thích với hầu hết những dạng thức tập tin phổ biến nhất: "
+"zip, doc, xls, pdf, rar, mp3, wmv, mpg, mp4, mov ...v.v"
+
+#. type: Content of: <h1>
+#: en/40_office.html:1
+msgid "Be productive"
+msgstr "Luôn sáng tạo và năng động"
+
+#. type: Content of: <div><div><ul><li>
+#: en/40_office.html:6
+msgid ""
+"Use LibreOffice to create professional documents, spreadsheets and "
+"presentations that are fully compatible with Microsoft Office. Share "
+"printers or access them remotely."
+msgstr ""
+"Dùng LibreOffice để tạo tài liệu, bảng tính và trình diễn chuyên nghiệp hoàn "
+"toàn tương thích với Microsoft Office. Chia sẻ máy tin hoặc truy cập chúng "
+"từ xa."
+
+#. type: Content of: <h1>
+#: en/50_windows.html:1
+msgid "An alternative to mainstream operating systems"
+msgstr "Một lựa chọn thay thế cho các hệ điều hành chủ đạo."
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:6
+msgid "Linux Mint is easy to use, powerful and configurable."
+msgstr "Linux Mint dễ dùng, mạnh mẽ và có nhiều khả năng tùy biến."
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:7
+msgid ""
+"Linux Mint can detect other operating systems and install itself beside "
+"them. You can choose which operating system to launch when you start the "
+"computer."
+msgstr ""
+"Linux Mint có thể phát hiện các hệ điều hành khác trên máy và cài đặt vào "
+"cạnh nó. Bạn sẽ được chọn hệ điều hành muốn sử dụng khi khởi động máy."
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:8
+#, fuzzy
+#| msgid ""
+#| "Install Wine and run Windows software in Linux Mint. Or install "
+#| "Virtualbox, and run Windows itself within Linux Mint."
+msgid ""
+"Install Wine and run Windows software in Linux Mint. Or install VirtualBox, "
+"and run Windows itself within Linux Mint."
+msgstr ""
+"Cài đặt Wine và chạy phần mềm Windows trong Linux Mint. Hoặc cài đặt "
+"Virtualbox và chạy cả hệ điều hành Windows trong Linux Mint."
+
+#. type: Content of: <h1>
+#: en/60_safe.html:1
+msgid "Safe updates"
+msgstr "Cập nhật an toàn"
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:6
+msgid ""
+"Linux Mint is safe and stable, you don't need an antivirus, an anti-spyware, "
+"a defragmentation tool or a registry cleaner."
+msgstr ""
+"Linux Mint rất an toàn và ổn định, bạn sẽ không cần thêm một trình diệt "
+"virus, chống phần mềm gián điệp, dồn đĩa hay trình dọn dẹp bản ghi nào."
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:7
+msgid ""
+"Receive fixes and security updates all in one place, for the entire system, "
+"including the software you install."
+msgstr ""
+"Nhận bản vá và cập nhật bảo mật cho toàn bộ hệ thống và những phần mềm bạn "
+"cài đặt tất cả chỉ trong một chỗ."
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:8
+msgid ""
+"The Linux Mint Update Manager sits discreetly in your system tray and lets "
+"you know when updates are available. You don't have to apply updates when "
+"you don't want to. The Update Manager won't pop up or annoy you in any way."
+msgstr ""
+"Linux Mint cập nhật quản lý ngồi kín đáo trong khay hệ thống của bạn và cho "
+"bạn biết khi có cập nhật có sẵn. Bạn không cần phải áp dụng các bản cập nhật "
+"nếu bạn không muốn. Người quản lý cập nhật sẽ không bật lên hay làm phiền "
+"bạn trong bất kỳ cách nào."
+
+#. type: Content of: <h1>
+#: en/70_chat.html:1
+msgid "Stay connected"
+msgstr "Luôn kết nối"
+
+#. type: Content of: <div><div><ul><li>
+#: en/70_chat.html:6
+msgid ""
+"Keep in touch with your friends and contacts, by email, messenger or on your "
+"favorite social networks. Linux Mint provides all you need to interact with "
+"Twitter, Facebook, Google Hangouts, ICQ, IRC, AIM, Yahoo and many other "
+"networks."
+msgstr ""
+"Giữ liên lạc với bạn bè và các mối liên hệ với điện thư, trình nhắn tin hoặc "
+"trên mạng xã hội ưa thích. Linux Mint đem đến tất cả những gì bạn cần để "
+"tương tác với Twitter, Facebook, Google Hangouts, ICQ, IRC, AIM, Yahoo và "
+"rất nhiều mạng xã hội khác."
+
+#. type: Content of: <h1>
+#: en/80_community.html:1
+msgid "A great community"
+msgstr "Một cộng đồng tuyệt vời"
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:6
+msgid ""
+"The Linux Mint community is one of the best on the Internet. Our users not "
+"only provide most of our funding, but also ideas, artwork, and sometimes "
+"even source code."
+msgstr ""
+"Cộng đồng Linux Mint là một trong những cộng đồng tuyệt vời nhất trên "
+"Internet. Người dùng không chỉ hỗ trợ phần lớn kinh phí mà còn cả ý tưởng, "
+"hình họa và đôi khi ngay cả mã nguồn chương trình."
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:7
+msgid ""
+"Linux Mint users are happy to share their passion, enthusiasm, and eagerness "
+"to help. Don't hesitate to ask questions in the forums or get involved with "
+"the community."
+msgstr ""
+"Cộng đồng người dùng Linux Mint luôn vui vẻ chia sẻ mối quan tâm, nhiệt tình "
+"và sẵn sàng giúp đỡ lẫn nhau. Bạn đừng ngại đặt câu hỏi trên diễn đàn hay "
+"tham gia vào cộng đồng."
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:8
+msgid ""
+"Send us your feedback and tell us about your experience. We'll listen to "
+"your ideas and use them to further improve Linux Mint."
+msgstr ""
+"Hãy gởi cho chúng tôi ý kiến phản hồi và trải nghiệm của bạn. Chúng tôi luôn "
+"lắng nghe ý kiến của bạn để cải thiện Linux Mint tốt hơn."

@@ -1,0 +1,286 @@
+# Persian translation for live-installer-slideshow
+# Copyright (c) 2011 Rosetta Contributors and Canonical Ltd 2011
+# This file is distributed under the same license as the live-installer-slideshow package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: live-installer-slideshow\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2014-09-15 01:03+0300\n"
+"PO-Revision-Date: 2012-02-08 19:00+0000\n"
+"Last-Translator: Sari Galin <Unknown>\n"
+"Language-Team: Persian <fa@li.org>\n"
+"Language: fa\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2014-05-03 20:44+0000\n"
+"X-Generator: Launchpad (build 16985)\n"
+
+#. type: Content of: <h1>
+#: en/10_welcome.html:1
+msgid "Welcome to Linux Mint Debian"
+msgstr "خوش آمدید"
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:6
+msgid "Thank you for choosing Linux Mint."
+msgstr "از شما برای انتخاب لینوکس مینت سپاسگذاریم."
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:7
+msgid ""
+"We believe in sharing and being open-minded. Our vision of Freedom includes "
+"being able to do what you want with your computer, and the operating system "
+"should never stand in the way."
+msgstr ""
+"ما به آزادی و اشتراک معتقدیم. تجسم ما از آزادی این است که شما باید توانایی "
+"انجام هرکاری را بر روی رایانه ی خود داشته باشید و سیستم عاملی که شما انتخاب "
+"کرده اید باید به شما در این مسیر کمک کند."
+
+#. type: Content of: <div><div><ul><li>
+#: en/10_welcome.html:8
+msgid ""
+"We focus on ease of use, comfort, and elegance to make your experience with "
+"Linux Mint as enjoyable as possible."
+msgstr ""
+"تمرکز ما بر روی استفاده آسان، راحت و زیبا در کنار تجربه لذت بخش استفاده از "
+"لینوکس مینت می باشد."
+
+#. type: Content of: <div><div><p>
+#: en/10_welcome.html:11
+msgid ""
+"We hope you will have a wonderful time spent with Linux Mint, and that you "
+"will enjoy using it as much as we do developing it!"
+msgstr ""
+"ما امیدواریم که شما زمان شگفت انگیزی را با لینوکس مینت سپری کنید و استفاده ی "
+"از آن برای شما به اندازه ی ساخت آن برای ما لذت بخش باشد."
+
+#. type: Content of: <h1>
+#: en/20_giants.html:1
+msgid "Standing on the shoulders of Giants"
+msgstr "ایستادن بر دوش بزرگان"
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:6
+#, fuzzy
+#| msgid ""
+#| "Linux Mint is a Debian-based GNU/Linux distribution derived from and "
+#| "compatible with Ubuntu."
+msgid "Linux Mint is a Debian-based GNU/Linux distribution."
+msgstr ""
+"لینوکس مینت از زیر شاخه های لینوکس دبیان است و با اوبونتو سازگاری کامل دارد."
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:7
+#, fuzzy
+#| msgid ""
+#| "Our innovations, the rapid development of Ubuntu and the huge Debian "
+#| "package selection make Linux Mint one of the most attractive desktop "
+#| "operating systems available to home users."
+msgid ""
+"Our innovations and the huge Debian package selection make Linux Mint one of "
+"the most attractive desktop operating systems available to home users."
+msgstr ""
+"نوآوری ما در این بوده که با تکامل و پیشرفت سریع اوبونتو داشتن گزیده ای از "
+"بسته ی بزرگ دبیان، لینوکس مینت را به یکی از بهترین و جذاب ترین سیستم عامل ها "
+"برای کاربران خانگی تکامل داده ایم."
+
+#. type: Content of: <div><div><ul><li>
+#: en/20_giants.html:8
+#, fuzzy
+#| msgid ""
+#| "At home, Linux Mint is the 4th most widely used desktop operating system, "
+#| "behind Microsoft Windows, Apple OS X and Ubuntu."
+msgid ""
+"At home, GNU/Linux distributions like Linux Mint or Ubuntu are among the "
+"most widely used desktop operating systems, right next to Microsoft Windows "
+"and Apple OS X."
+msgstr ""
+"لینوکس مینت از نظر تعداد کاربران، چهارمین سیستم عامل مورد استفاده در رایاده "
+"های خانگی بعد از مایکروسافت ویندوز, اَپِل مکینتاش و ابونتو است."
+
+#. type: Content of: <h1>
+#: en/30_desktop-ready.html:1
+msgid "Out of the box"
+msgstr "خارج از کادر"
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:6
+#, fuzzy
+#| msgid ""
+#| "Firefox, Thunderbird, OpenOffice.org and Xchat come pre-installed in "
+#| "Linux Mint, so you can get started immediately with your daily routine on "
+#| "your desktop and the Internet."
+msgid ""
+"Most standard applications you are used to come pre-installed in Linux Mint, "
+"so you can get started immediately with your daily routine on your desktop "
+"and the Internet."
+msgstr ""
+"نرم افزار های فایر فاکس ، ساندر برد ، اُپن آفیس و اکس چت از قبل بر روی لینوکس "
+"مینت نصب شده اند. از این رو شما از همین حالا می توانید از اینترنت و محیط "
+"رومیزی (دسکتاپ) استفاده کنید."
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:7
+#, fuzzy
+#| msgid ""
+#| "Other popular applications such as Skype, Google Earth, Opera can be "
+#| "installed with a click of the mouse."
+msgid ""
+"Other popular applications such as Skype, Google Earth, Opera, and over "
+"30,000+ more can be installed with a click of the mouse."
+msgstr ""
+"برنامه های کاربردی و مهم دیگر مثل اسکایپ، پیکاسا، گوگل ارث و اُپرا می توانند "
+"با فشردن یک کلیک موس بر روی دستگاه شما نصب شوند."
+
+#. type: Content of: <div><div><ul><li>
+#: en/30_desktop-ready.html:8
+#, fuzzy
+#| msgid ""
+#| "Linux Mint is compatible with most popular file formats: zip, doc, xls, "
+#| "pdf, rar, mp3, wmv, mpg, mp4, mov ...etc"
+msgid ""
+"Linux Mint is compatible with most popular file formats: zip, doc, xls, pdf, "
+"rar, mp3, wmv, mpg, mp4, mov ..."
+msgstr ""
+"لینوکس مینت با بسیاری از فرمت های رایج مثل : zip, doc, xls, pdf, rar, mp3, "
+"wmv, mpg, mp4, mov و غیره، سازگاری کامل دارد."
+
+#. type: Content of: <h1>
+#: en/40_office.html:1
+msgid "Be productive"
+msgstr "کارآمد باشید"
+
+#. type: Content of: <div><div><ul><li>
+#: en/40_office.html:6
+msgid ""
+"Use LibreOffice to create professional documents, spreadsheets and "
+"presentations that are fully compatible with Microsoft Office. Share "
+"printers or access them remotely."
+msgstr ""
+
+#. type: Content of: <h1>
+#: en/50_windows.html:1
+msgid "An alternative to mainstream operating systems"
+msgstr "جایگزینی برای سیستم عامل‌های اصلی"
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:6
+msgid "Linux Mint is easy to use, powerful and configurable."
+msgstr "لینوکس مینت برای استفاده کردن آسان, توانمند و قابل تنظیم است."
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:7
+msgid ""
+"Linux Mint can detect other operating systems and install itself beside "
+"them. You can choose which operating system to launch when you start the "
+"computer."
+msgstr ""
+"لینوکس مینت می‌تواند سیستم عامل‌های دیگر را شناسایی کند و در کنار آن‌ها نصب "
+"شود. شما می‌توانید در هنگام راه اندازی کامپیوتر هر سیستم عاملی را که می "
+"خواهید انتخاب کنید."
+
+#. type: Content of: <div><div><ul><li>
+#: en/50_windows.html:8
+#, fuzzy
+#| msgid ""
+#| "Install Wine and run Windows software in Linux Mint. Or install "
+#| "Virtualbox, and run Windows itself within Linux Mint."
+msgid ""
+"Install Wine and run Windows software in Linux Mint. Or install VirtualBox, "
+"and run Windows itself within Linux Mint."
+msgstr ""
+"Wine را نصب کنید و نرم‌افزارهای ویندوز را  در لینوکس مینت اجرا کنید. یا "
+"Virtualbox را نصب کنید و خود ویندوز را داخل لینوکس مینت اجرا کنید."
+
+#. type: Content of: <h1>
+#: en/60_safe.html:1
+msgid "Safe updates"
+msgstr "به روز رسانی ایمن"
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:6
+msgid ""
+"Linux Mint is safe and stable, you don't need an antivirus, an anti-spyware, "
+"a defragmentation tool or a registry cleaner."
+msgstr ""
+"لینوکس مینت ایمن و پایدار است, و شما برای استفاده از آن نیاز به ویروس کش، ضد "
+"جاسوس، ابزارهای یک‌ پاچه سازی دیسک یا تمیز کننده ی رجیستری ندارید."
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:7
+msgid ""
+"Receive fixes and security updates all in one place, for the entire system, "
+"including the software you install."
+msgstr ""
+"همه تعمیرات و به‌روزرسانی‌های امنیتی، برای کل سیستم، شامل نرم‌افزارهایی که شما "
+"نصب می‌کنید را، یک‌جا دریافت کنید."
+
+#. type: Content of: <div><div><ul><li>
+#: en/60_safe.html:8
+msgid ""
+"The Linux Mint Update Manager sits discreetly in your system tray and lets "
+"you know when updates are available. You don't have to apply updates when "
+"you don't want to. The Update Manager won't pop up or annoy you in any way."
+msgstr ""
+"ابزار به روز رسانی لینوکس مینت به آرامی در حافظه سیستم شما نشسته و شما را از "
+"جدیدترین به روز رسانی ها با خبر می سازد. در صورت عدم علاقه شما مجبور به "
+"دریافت به روزرسانی های نیستید و ابزار به روزرسانی با پیغام های ناخواسته و "
+"مکرر شما را ناراحت نخواهد کرد."
+
+#. type: Content of: <h1>
+#: en/70_chat.html:1
+msgid "Stay connected"
+msgstr "در ارتباط باشید"
+
+#. type: Content of: <div><div><ul><li>
+#: en/70_chat.html:6
+msgid ""
+"Keep in touch with your friends and contacts, by email, messenger or on your "
+"favorite social networks. Linux Mint provides all you need to interact with "
+"Twitter, Facebook, Google Hangouts, ICQ, IRC, AIM, Yahoo and many other "
+"networks."
+msgstr ""
+"با دوستان‌تان یا مخاطب‌هایتان با ایمیل، یا پیغام‌بر  یا در شبکه‌های اجتماعی مورد "
+"علاقه‌یتان در تماس باشید. لینوکس مینت همه آن‌ چیزی که شما لازم دارید تا با  "
+"Twitter, Facebook, Google Hangouts, ICQ, IRC, AIM, Yahoo و بسیاری از شبکه‌های "
+"دیگر تعامل داشته‌باشید، را فراهم می‌کند."
+
+#. type: Content of: <h1>
+#: en/80_community.html:1
+msgid "A great community"
+msgstr "یک جامعه کاربری بزرگ"
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:6
+msgid ""
+"The Linux Mint community is one of the best on the Internet. Our users not "
+"only provide most of our funding, but also ideas, artwork, and sometimes "
+"even source code."
+msgstr ""
+"جامعه لینوکس مینت یکی از بهترین های اینترنت است. کاربران ما نه تنها بیشتر "
+"سرمایه ی ما را ،بلکه یبشتر ایده ها ، کارهای هنری و حتی کد برنامه ها را فراهم "
+"می کنند."
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:7
+msgid ""
+"Linux Mint users are happy to share their passion, enthusiasm, and eagerness "
+"to help. Don't hesitate to ask questions in the forums or get involved with "
+"the community."
+msgstr ""
+"کاربران لینوکس مینت همیشه دوست داشته اند تا احساسات خود را با دیگران به "
+"اشتراک بگذارند و در ضمن بسیار مشتاق کمک کردن هستند. در این جامعه بدون هیچ "
+"نگرانی مشکلاتتان را بپرسید و در انجمن شرکت کنید."
+
+#. type: Content of: <div><div><ul><li>
+#: en/80_community.html:8
+msgid ""
+"Send us your feedback and tell us about your experience. We'll listen to "
+"your ideas and use them to further improve Linux Mint."
+msgstr ""
+"پیشنهادات و انتقادات خود را برای ما بفرستید و تجربیات خود را با ما به اشتراک "
+"بگذارید. ما به ایده های شما گوش می دهیم و آنان را در راستای پیشرفت لینوکس "
+"مینت اعمال می کنیم."
