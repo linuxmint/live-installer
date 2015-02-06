@@ -1,7 +1,10 @@
 #!/usr/bin/python -OO
 
 import sys
-import commands
+sys.path.insert(1, '/usr/lib/live-installer')
+
+from frontend.gtk_interface import InstallerWindow
+from utils import getoutput
 
 def uncaught_excepthook(*args):
     sys.__excepthook__(*args)
@@ -32,17 +35,10 @@ def uncaught_excepthook(*args):
 
 sys.excepthook = uncaught_excepthook
 
-sys.path.insert(1, '/usr/lib/live-installer')
-from frontend.gtk_interface import InstallerWindow
-
-import pygtk
-pygtk.require("2.0")
+import pygtk; pygtk.require("2.0")
 import gtk
 
 # main entry
 if __name__ == "__main__":
-	if("install" in commands.getoutput("cat /proc/cmdline")):
-		win = InstallerWindow(fullscreen=True)
-	else:
-		win = InstallerWindow(fullscreen=False)
-	gtk.main()
+    InstallerWindow(fullscreen=("install" in getoutput("cat /proc/cmdline")))
+    gtk.main()

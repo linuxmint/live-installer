@@ -1,11 +1,11 @@
+from utils import shell_exec, getoutput, chroot_exec
+
 import os
 import re
-import subprocess
 import time
 import shutil
 import gettext
 import stat
-import commands
 import sys
 import parted
 
@@ -80,9 +80,7 @@ class InstallerEngine:
                         cmd = "mkfs.%s %s -F 32" % (partition.format_as, partition.partition.path)
                     else:
                         cmd = "mkfs.%s %s" % (partition.format_as, partition.partition.path) # works with bfs, btrfs, ext2, ext3, ext4, minix, msdos, ntfs, vfat
-                    
-                print "EXECUTING: '%s'" % cmd
-                self.exec_cmd(cmd)
+                shell_exec(cmd)
                 partition.type = partition.format_as
 
     def step_mount_source(self, setup):
@@ -237,7 +235,7 @@ class InstallerEngine:
         os.system("mv /target/etc/resolv.conf /target/etc/resolv.conf.bk")
         os.system("cp -f /etc/resolv.conf /target/etc/resolv.conf")
 
-        kernelversion= commands.getoutput("uname -r")
+        kernelversion = getoutput("uname -r")
         os.system("cp /lib/live/mount/medium/live/vmlinuz /target/boot/vmlinuz-%s" % kernelversion)
         found_initrd = False
         for initrd in ["/lib/live/mount/medium/live/initrd.img", "/lib/live/mount/medium/live/initrd.lz"]:
@@ -256,7 +254,7 @@ class InstallerEngine:
             os.system("cp /lib/live/mount/medium/pool/main/g/grub2/grub-efi* /target/debs/")
             os.system("cp /lib/live/mount/medium/pool/main/e/efibootmgr/efibootmgr* /target/debs/")
             os.system("cp /lib/live/mount/medium/pool/main/e/efivar/* /target/debs/")
-            self.do_run_in_chroot("dpkg -i /debs/*")
+            chroot_exec("dpkg -i /debs/*")
             os.system("rm -rf /target/debs")
 
         # Detect cdrom device
@@ -265,7 +263,7 @@ class InstallerEngine:
         # os.system("mkdir -p /target/media/cdrom")
         # if (int(os.system("mount /dev/sr0 /target/media/cdrom"))):
         #     print " --> Failed to mount CDROM. Install will fail"
-        # self.do_run_in_chroot("apt-cdrom -o Acquire::cdrom::AutoDetect=false -m add")
+        # chroot_exec("apt-cdrom -o Acquire::cdrom::AutoDetect=false -m add")
 
         # remove live-packages (or w/e)
         print " --> Removing live packages"
@@ -273,41 +271,41 @@ class InstallerEngine:
         self.update_progress(total=our_total, current=our_current, message=_("Removing live configuration (packages)"))
         with open("/lib/live/mount/medium/live/filesystem.packages-remove", "r") as fd:
             line = fd.read().replace('\n', ' ')
-        self.do_run_in_chroot("apt-get remove --purge --yes --force-yes %s" % line)
+        chroot_exec("apt-get remove --purge --yes --force-yes %s" % line)
 
         # add new user
         print " --> Adding new user"
         our_current += 1
         self.update_progress(total=our_total, current=our_current, message=_("Adding new user to the system"))
-        self.do_run_in_chroot('adduser --disabled-login --gecos "{real_name}" {username}'.format(real_name=setup.real_name.replace('"', r'\"'), username=setup.username))
+        chroot_exec('adduser --disabled-login --gecos "{real_name}" {username}'.format(real_name=setup.real_name.replace('"', r'\"'), username=setup.username))
         for group in 'adm audio bluetooth cdrom dialout dip fax floppy fuse lpadmin netdev plugdev powerdev sambashare scanner sudo tape users vboxusers video'.split():
-            self.do_run_in_chroot("adduser {user} {group}".format(user=setup.username, group=group))
+            chroot_exec("adduser {user} {group}".format(user=setup.username, group=group))
 
         fp = open("/target/tmp/.passwd", "w")
         fp.write(setup.username +  ":" + setup.password1 + "\n")
         fp.write("root:" + setup.password1 + "\n")
         fp.close()
-        self.do_run_in_chroot("cat /tmp/.passwd | chpasswd")
+        chroot_exec("cat /tmp/.passwd | chpasswd")
         os.system("rm -f /target/tmp/.passwd")
 
         # Set autologin for user if they so elected
         if setup.autologin:
             # LightDM
-            self.do_run_in_chroot(r"sed -i -r 's/^#?(autologin-user)\s*=.*/\1={user}/' /etc/lightdm/lightdm.conf".format(user=setup.username))
+            chroot_exec(r"sed -i -r 's/^#?(autologin-user)\s*=.*/\1={user}/' /etc/lightdm/lightdm.conf".format(user=setup.username))
             # MDM
-            self.do_run_in_chroot(r"sed -i -r -e '/^AutomaticLogin(Enable)?\s*=/d' -e 's/^(\[daemon\])/\1\nAutomaticLoginEnable=true\nAutomaticLogin={user}/' /etc/mdm/mdm.conf".format(user=setup.username))
+            chroot_exec(r"sed -i -r -e '/^AutomaticLogin(Enable)?\s*=/d' -e 's/^(\[daemon\])/\1\nAutomaticLoginEnable=true\nAutomaticLogin={user}/' /etc/mdm/mdm.conf".format(user=setup.username))
             # GDM3
-            self.do_run_in_chroot(r"sed -i -r -e '/^(#\s*)?AutomaticLogin(Enable)?\s*=/d' -e 's/^(\[daemon\])/\1\nAutomaticLoginEnable=true\nAutomaticLogin={user}/' /etc/gdm3/daemon.conf".format(user=setup.username))
+            chroot_exec(r"sed -i -r -e '/^(#\s*)?AutomaticLogin(Enable)?\s*=/d' -e 's/^(\[daemon\])/\1\nAutomaticLoginEnable=true\nAutomaticLogin={user}/' /etc/gdm3/daemon.conf".format(user=setup.username))
             # KDE4
-            self.do_run_in_chroot(r"sed -i -r -e 's/^#?(AutomaticLoginEnable)\s*=.*/\1=true/' -e 's/^#?(AutomaticLoginUser)\s*.*/\1={user}/' /etc/kde4/kdm/kdmrc".format(user=setup.username))
+            chroot_exec(r"sed -i -r -e 's/^#?(AutomaticLoginEnable)\s*=.*/\1=true/' -e 's/^#?(AutomaticLoginUser)\s*.*/\1={user}/' /etc/kde4/kdm/kdmrc".format(user=setup.username))
             # LXDM
-            self.do_run_in_chroot(r"sed -i -r -e 's/^#?(autologin)\s*=.*/\1={user}/' /etc/lxdm/lxdm.conf".format(user=setup.username))
+            chroot_exec(r"sed -i -r -e 's/^#?(autologin)\s*=.*/\1={user}/' /etc/lxdm/lxdm.conf".format(user=setup.username))
             # SLiM
-            self.do_run_in_chroot(r"sed -i -r -e 's/^#?(default_user)\s.*/\1  {user}/' -e 's/^#?(auto_login)\s.*/\1  yes/' /etc/slim.conf".format(user=setup.username))
+            chroot_exec(r"sed -i -r -e 's/^#?(default_user)\s.*/\1  {user}/' -e 's/^#?(auto_login)\s.*/\1  yes/' /etc/slim.conf".format(user=setup.username))
 
         # Add user's face
         os.system("cp /tmp/live-installer-face.png /target/home/%s/.face" % setup.username)
-        self.do_run_in_chroot("chown %s:%s /home/%s/.face" % (setup.username, setup.username, setup.username))
+        chroot_exec("chown %s:%s /home/%s/.face" % (setup.username, setup.username, setup.username))
 
         # Make the new user the default user in KDM
         if os.path.exists('/target/etc/kde4/kdm/kdmrc'):
@@ -328,7 +326,7 @@ class InstallerEngine:
             for partition in setup.partitions:
                 if (partition.mount_as is not None and partition.mount_as != "None"):
                     partition_uuid = partition.partition.path # If we can't find the UUID we use the path
-                    blkid = commands.getoutput('blkid').split('\n')
+                    blkid = getoutput('blkid').split('\n')
                     for blkid_line in blkid:
                         blkid_elements = blkid_line.split(':')
                         if blkid_elements[0] == partition.partition.path:
@@ -392,10 +390,10 @@ class InstallerEngine:
         our_current += 1
         self.update_progress(total=our_total, current=our_current, message=_("Setting locale"))
         os.system("echo \"%s.UTF-8 UTF-8\" >> /target/etc/locale.gen" % setup.language)
-        self.do_run_in_chroot("locale-gen")
+        chroot_exec("locale-gen")
         os.system("echo \"\" > /target/etc/default/locale")
-        self.do_run_in_chroot("update-locale LANG=\"%s.UTF-8\"" % setup.language)
-        self.do_run_in_chroot("update-locale LANG=%s.UTF-8" % setup.language)
+        chroot_exec("update-locale LANG=\"%s.UTF-8\"" % setup.language)
+        chroot_exec("update-locale LANG=%s.UTF-8" % setup.language)
 
         # set the timezone
         print " --> Setting the timezone"
@@ -410,17 +408,17 @@ class InstallerEngine:
             language_code = setup.language
             if "_" in setup.language:
                 language_code = setup.language.split("_")[0]
-            l10ns = commands.getoutput("find /lib/live/mount/medium/pool | grep 'l10n-%s\\|hunspell-%s'" % (language_code, language_code))
+            l10ns = getoutput("find /lib/live/mount/medium/pool | grep 'l10n-%s\\|hunspell-%s'" % (language_code, language_code))
             for l10n in l10ns.split("\n"):
                 os.system("cp %s /target/debs/" % l10n)
-            self.do_run_in_chroot("dpkg -i /debs/*")
+            chroot_exec("dpkg -i /debs/*")
             os.system("rm -rf /target/debs")
 
         if os.path.exists("/etc/linuxmint/info"):
             # drivers
             print " --> Installing drivers"
             self.update_progress(total=our_total, current=our_current, message=_("Installing drivers"))
-            drivers = commands.getoutput("mint-drivers")
+            drivers = getoutput("mint-drivers")
             if "broadcom-sta-dkms" in drivers:
                 try:
                     os.system("mkdir -p /target/debs")
@@ -449,8 +447,8 @@ class InstallerEngine:
                 newconsolefh.write("%s\n" % line)
         consolefh.close()
         newconsolefh.close()
-        self.do_run_in_chroot("rm /etc/default/console-setup")
-        self.do_run_in_chroot("mv /etc/default/console-setup.new /etc/default/console-setup")
+        chroot_exec("rm /etc/default/console-setup")
+        chroot_exec("mv /etc/default/console-setup.new /etc/default/console-setup")
 
         consolefh = open("/target/etc/default/keyboard", "r")
         newconsolefh = open("/target/etc/default/keyboard.new", "w")
@@ -466,8 +464,8 @@ class InstallerEngine:
                 newconsolefh.write("%s\n" % line)
         consolefh.close()
         newconsolefh.close()
-        self.do_run_in_chroot("rm /etc/default/keyboard")
-        self.do_run_in_chroot("mv /etc/default/keyboard.new /etc/default/keyboard")
+        chroot_exec("rm /etc/default/keyboard")
+        chroot_exec("mv /etc/default/keyboard.new /etc/default/keyboard")
 
         # write MBR (grub)
         print " --> Configuring Grub"
@@ -475,7 +473,7 @@ class InstallerEngine:
         if(setup.grub_device is not None):
             self.update_progress(pulse=True, total=our_total, current=our_current, message=_("Installing bootloader"))
             print " --> Running grub-install"
-            self.do_run_in_chroot("grub-install --force %s" % setup.grub_device)
+            chroot_exec("grub-install --force %s" % setup.grub_device)
             self.do_configure_grub(our_total, our_current)
             grub_retries = 0
             while (not self.do_check_grub(our_total, our_current)):
@@ -488,17 +486,17 @@ class InstallerEngine:
         # recreate initramfs (needed in case of skip_mount also, to include things like mdadm/dm-crypt/etc in case its needed to boot a custom install)
         print " --> Configuring Initramfs"
         our_current += 1
-        self.do_run_in_chroot("/usr/sbin/update-initramfs -t -u -k all")
-        kernelversion= commands.getoutput("uname -r")
-        self.do_run_in_chroot("/usr/bin/sha1sum /boot/initrd.img-%s > /var/lib/initramfs-tools/%s" % (kernelversion,kernelversion))
+        chroot_exec("/usr/sbin/update-initramfs -t -u -k all")
+        kernelversion = getoutput("uname -r")
+        chroot_exec("/usr/bin/sha1sum /boot/initrd.img-%s > /var/lib/initramfs-tools/%s" % (kernelversion,kernelversion))
 
         # Clean APT
         print " --> Cleaning APT"
         our_current += 1
         self.update_progress(pulse=True, total=our_total, current=our_current, message=_("Cleaning APT"))
         os.system("chroot /target/ /bin/sh -c \"dpkg --configure -a\"")
-        self.do_run_in_chroot("sed -i 's/^deb cdrom/#deb cdrom/' /etc/apt/sources.list")
-        self.do_run_in_chroot("apt-get -y --force-yes autoremove")
+        chroot_exec("sed -i 's/^deb cdrom/#deb cdrom/' /etc/apt/sources.list")
+        chroot_exec("apt-get -y --force-yes autoremove")
 
         # now unmount it
         print " --> Unmounting partitions"
@@ -522,17 +520,11 @@ class InstallerEngine:
         self.update_progress(done=True, message=_("Installation finished"))
         print " --> All done"
 
-
-    def do_run_in_chroot(self, command):
-        command = command.replace('"', "'").strip()
-        print "chroot /target/ /bin/sh -c \"%s\"" % command
-        os.system("chroot /target/ /bin/sh -c \"%s\"" % command)
-        
     def do_configure_grub(self, our_total, our_current):
         self.update_progress(pulse=True, total=our_total, current=our_current, message=_("Configuring bootloader"))
         print " --> Running grub-mkconfig"
-        self.do_run_in_chroot("grub-mkconfig -o /boot/grub/grub.cfg")
-        grub_output = commands.getoutput("chroot /target/ /bin/sh -c \"grub-mkconfig -o /boot/grub/grub.cfg\"")
+        chroot_exec("grub-mkconfig -o /boot/grub/grub.cfg")
+        grub_output = getoutput("chroot /target/ /bin/sh -c \"grub-mkconfig -o /boot/grub/grub.cfg\"")
         grubfh = open("/var/log/live-installer-grub-output.log", "w")
         grubfh.writelines(grub_output)
         grubfh.close()
@@ -561,19 +553,14 @@ class InstallerEngine:
 
     def do_mount(self, device, dest, type, options=None):
         ''' Mount a filesystem '''
-        p = None
-        if(options is not None):
-            cmd = "mount -o %s -t %s %s %s" % (options, type, device, dest)            
-        else:
-            cmd = "mount -t %s %s %s" % (type, device, dest)
-        print "EXECUTING: '%s'" % cmd
-        self.exec_cmd(cmd)        
+        options = '-o ' + options if options else ''
+        cmd = "mount {options} -t {type} {device} {dest}".format(**locals())
+        shell_exec(cmd)
 
     def do_unmount(self, mountpoint):
         ''' Unmount a filesystem '''
         cmd = "umount %s" % mountpoint
-        print "EXECUTING: '%s'" % cmd
-        self.exec_cmd(cmd)        
+        shell_exec(cmd)
 
     def do_copy_file(self, source, dest):
         # TODO: Add md5 checks. BADLY needed..
@@ -587,17 +574,6 @@ class InstallerEngine:
             dst.write(read)
         input.close()
         dst.close()
-    
-    # Execute schell command and return output in a list
-    def exec_cmd(self, cmd):
-        p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        lstOut = []
-        for line in p.stdout.readlines():
-            # Strip the line, also from null spaces (strip() only strips white spaces)
-            line = line.strip().strip("\0")
-            if line != '':
-                lstOut.append(line)
-        return lstOut
 
 # Represents the choices made by the user
 class Setup(object):

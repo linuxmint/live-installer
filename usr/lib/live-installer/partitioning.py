@@ -3,21 +3,15 @@
 #
 from __future__ import division
 
+from utils import getoutput
+
 import os
 import re
 import sys
-import subprocess
 from collections import defaultdict
 
 import gtk
 import parted
-import commands
-
-def shell_exec(command):
-    return subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
-
-def getoutput(command):
-    return shell_exec(command).stdout.read().strip()
 
 (IDX_PART_PATH,
  IDX_PART_TYPE,
@@ -180,13 +174,13 @@ class PartitionSetup(gtk.TreeStore):
         def _get_attached_disks():
             disks = []
             exclude_devices = ['/dev/sr0', '/dev/sr1', '/dev/cdrom', '/dev/dvd']
-            live_device = commands.getoutput("findmnt -n -o source /lib/live/mount/medium").split('\n')[0]
+            live_device = getoutput("findmnt -n -o source /lib/live/mount/medium").split('\n')[0]
             live_device = re.sub('[0-9]+$', '', live_device) # remove partition numbers if any
             if live_device is not None and live_device.startswith('/dev/'):
                 exclude_devices.append(live_device)
                 print "Excluding %s (detected as the live device)" % live_device
-            lsblk = shell_exec('LC_ALL=en_US.UTF-8 lsblk -rindo TYPE,NAME,RM,SIZE,MODEL | sort -k3,2')
-            for line in lsblk.stdout:
+            lsblk = getoutput('LC_ALL=en_US.UTF-8 lsblk -rindo TYPE,NAME,RM,SIZE,MODEL | sort -k3,2')
+            for line in lsblk.split('\n'):
                 type, device, removable, size, model = line.split(" ", 4)
                 device = "/dev/" + device
                 if type == "disk" and device not in exclude_devices:
