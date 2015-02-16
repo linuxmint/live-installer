@@ -592,22 +592,19 @@ class InstallerWindow:
     def assign_language(self, treeview, data=None):
         ''' Called whenever someone updates the language '''
         model = treeview.get_model()
-        active = treeview.get_selection().get_selected_rows()
-        if(len(active) < 1):
-            return
-        active = active[1][0]
-        if(active is None):
-            return
-        row = model[active]
-        self.setup.language = row[-1]
-        self.setup.print_setup()
-        gettext.translation('live-installer', "/usr/share/linuxmint/locale",
-                            languages=[self.setup.language, self.setup.language.split('_')[0]],
-                            fallback=True).install()  # Try e.g. zh_CN, zh, or fallback to hardcoded English
-        try:
-            self.i18n()
-        except:
-            pass # Best effort. Fails the first time as self.column1 doesn't exist yet.
+        selection = treeview.get_selection()
+        if selection.count_selected_rows > 0:
+            (model, iter) = selection.get_selected()
+            if iter is not None:
+                self.setup.language = model.get_value(iter, 3)
+                self.setup.print_setup()
+                gettext.translation('live-installer', "/usr/share/linuxmint/locale",
+                                languages=[self.setup.language, self.setup.language.split('_')[0]],
+                                fallback=True).install()  # Try e.g. zh_CN, zh, or fallback to hardcoded English
+                try:
+                    self.i18n()
+                except:
+                    pass # Best effort. Fails the first time as self.column1 doesn't exist yet.
 
     def assign_autologin(self, checkbox, data=None):
         self.setup.autologin = checkbox.get_active()
@@ -712,17 +709,20 @@ class InstallerWindow:
         # check each page for errors
         if(not goback):
             if(sel == self.PAGE_LANGUAGE):
-                lang_country_code = self.setup.language.split('_')[-1]
-                for value in (self.cur_timezone,      # timezone guessed from IP
-                              self.cur_country_code,  # otherwise pick country from IP
-                              lang_country_code):     # otherwise use country from language selection
-                    if not value: continue
-                    for row in timezones.timezones:
-                        if value in row:
-                            timezones.select_timezone(row)
-                            break
-                    break
-                self.activate_page(self.PAGE_TIMEZONE)
+                if self.setup.language is None:
+                    WarningDialog(_("Installation Tool"), _("Please choose a language"))
+                else:
+                    lang_country_code = self.setup.language.split('_')[-1]
+                    for value in (self.cur_timezone,      # timezone guessed from IP
+                                  self.cur_country_code,  # otherwise pick country from IP
+                                  lang_country_code):     # otherwise use country from language selection
+                        if not value: continue
+                        for row in timezones.timezones:
+                            if value in row:
+                                timezones.select_timezone(row)
+                                break
+                        break
+                    self.activate_page(self.PAGE_TIMEZONE)
             elif (sel == self.PAGE_TIMEZONE):
                 if ("_" in self.setup.language):
                     country_code = self.setup.language.split("_")[1]
