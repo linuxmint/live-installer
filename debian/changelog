@@ -1,3 +1,9 @@
+live-installer (2015.02.16) betsy; urgency=medium
+
+  * Fixed regression making the installer crash when no language is selected
+
+ -- Clement Lefebvre <root@linuxmint.com>  Mon, 16 Feb 2015 23:40:03 +0100
+
 live-installer (2015.01.31) betsy; urgency=medium
 
   * Fixed bugs detected in EFI/GPT mode and/or with blank HDDs
