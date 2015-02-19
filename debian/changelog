@@ -1,3 +1,9 @@
+live-installer (2015.02.19) betsy; urgency=medium
+
+  * Fixed slideshow, updated slideshow content, removed unused l10n slideshow and its package definition
+
+ -- Clement Lefebvre <root@linuxmint.com>  Thu, 19 Feb 2015 14:25:59 +0100
+
 live-installer (2015.02.16) betsy; urgency=medium
 
   * Fixed regression making the installer crash when no language is selected
