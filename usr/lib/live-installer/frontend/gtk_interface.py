@@ -387,7 +387,7 @@ class InstallerWindow:
     def i18n(self):
         # about you
         self.wTree.get_widget("label_your_name").set_markup("<b>%s</b>" % _("Your full name"))
-        self.wTree.get_widget("label_your_name_help").set_markup("<span fgcolor='#3C3C3C'><sub><i>%s</i></sub></span>" % _("This will be shown in the About Me application."))
+        self.wTree.get_widget("label_your_name_help").set_markup("<span fgcolor='#3C3C3C'><sub><i>%s</i></sub></span>" % _("Please enter your full name."))
         self.wTree.get_widget("label_username").set_markup("<b>%s</b>" % _("Your username"))
         self.wTree.get_widget("label_username_help").set_markup("<span fgcolor='#3C3C3C'><sub><i>%s</i></sub></span>" % _("This is the name you will use to log in to your computer."))
         self.wTree.get_widget("label_choose_pass").set_markup("<b>%s</b>" % _("Your password"))
