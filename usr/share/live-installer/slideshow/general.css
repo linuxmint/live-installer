@@ -1,0 +1,8 @@
+body { text-align: center; padding: 100px; background-color: #3c3c3c;}
+h1 { font-size: 30px; }
+body { font: 14px Helvetica, sans-serif; color: #dedede; }
+article { display: block; text-align: left; width: 650px; margin: 0 auto; }
+a { color: #9dc565; text-decoration: none; }
+a:hover { color: #829864; text-decoration: none; }
+p { text-align: left;}
+.pcenter { text-align: center;}

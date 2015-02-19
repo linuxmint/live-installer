@@ -31,8 +31,3 @@ Depends: ${misc:Depends}, ${python:Depends}
   , adduser
 Description: Live Installer
  A live installer
-
-Package: live-installer-slideshow
-Architecture: all
-Description: Live Installer Slideshow
- A Linux Mint slideshow for the live installer
