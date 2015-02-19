@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-19 14:49+0100\n"
+"POT-Creation-Date: 2015-02-19 14:57+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -171,7 +171,7 @@ msgid "Installing Linux Mint..."
 msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:101
-msgid "Installation is paused: please finish the custom installation"
+msgid "Installation paused: please finish the custom installation"
 msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:114
@@ -230,7 +230,7 @@ msgid "Your full name"
 msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:390
-msgid "This will be shown in the About Me application."
+msgid "Please enter your full name."
 msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:391
@@ -268,7 +268,7 @@ msgid ""
 msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:399
-msgid "Log in automatically on system boot"
+msgid "Log in automatically"
 msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:402

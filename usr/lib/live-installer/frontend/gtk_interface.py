@@ -396,7 +396,7 @@ class InstallerWindow:
         self.wTree.get_widget("label_hostname_help").set_markup("<span fgcolor='#3C3C3C'><sub><i>%s</i></sub></span>" % _("This hostname will be the computer's name on the network."))
         self.wTree.get_widget("label_autologin").set_markup("<b>%s</b>" % _("Automatic login"))
         self.wTree.get_widget("label_autologin_help").set_markup("<span fgcolor='#3C3C3C'><sub><i>%s</i></sub></span>" % _("If enabled, the login screen is skipped when the system starts, and you are signed into your desktop session automatically."))
-        self.wTree.get_widget("checkbutton_autologin").set_label(_("Log in automatically on system boot"))
+        self.wTree.get_widget("checkbutton_autologin").set_label(_("Log in automatically"))
         self.wTree.get_widget("checkbutton_autologin").connect("toggled", self.assign_autologin)
                 
         self.wTree.get_widget("face_label").set_markup("<b>%s</b>" % _("Your picture"))
