@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-19 14:23+0100\n"
+"POT-Creation-Date: 2015-02-19 14:49+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -124,9 +124,7 @@ msgid "Unexpected error"
 msgstr ""
 
 #: usr/lib/live-installer/main.py:29
-msgid ""
-"<b>The installer has failed with the following unexpected error. Please "
-"submit a bug report!</b>"
+msgid "The installer failed with the following error."
 msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:75
@@ -473,7 +471,7 @@ msgid ""
 msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:802
-msgid "<b>Please select a root (/) partition.</b>"
+msgid "Please select a root (/) partition."
 msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:802
@@ -500,7 +498,7 @@ msgid "The EFI partition must be formatted as vfat."
 msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:828
-msgid "<b>Please select an EFI partition.</b>"
+msgid "Please select an EFI partition."
 msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:828
@@ -605,12 +603,12 @@ msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:945
 msgid ""
-"Installation is now paused. Please read the instructions on the page "
+"The installation is now paused. Please read the instructions on the page "
 "carefully before clicking Forward to finish the installation."
 msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:966
 msgid ""
-"Installation is now complete. Do you want to restart your computer to use "
-"the new system?"
+"The installation is now complete. Do you want to restart your computer to "
+"use the new system?"
 msgstr ""

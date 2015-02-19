@@ -799,7 +799,7 @@ class InstallerWindow:
                             ErrorDialog(_("Installation Tool"), _("Please indicate a filesystem to format the root (/) partition with before proceeding."))
                             return
                 if not found_root_partition:
-                    ErrorDialog(_("Installation Tool"), _("<b>Please select a root (/) partition.</b>"), _("A root partition is needed to install Linux Mint on.\n\n - Mount point: /\n - Recommended size: 30GB\n - Recommended filesystem format: ext4\n "))
+                    ErrorDialog(_("Installation Tool"), "<b>%s</b>" % _("Please select a root (/) partition."), _("A root partition is needed to install Linux Mint on.\n\n - Mount point: /\n - Recommended size: 30GB\n - Recommended filesystem format: ext4\n "))
                     return
 
                 if self.setup.gptonefi:
@@ -825,7 +825,7 @@ class InstallerWindow:
                                     return
                             
                     if not found_efi_partition:
-                        ErrorDialog(_("Installation Tool"), _("<b>Please select an EFI partition.</b>"),_("An EFI system partition is needed with the following requirements:\n\n - Mount point: /boot/efi\n - Partition flags: Bootable\n - Size: Larger than 100MB\n - Format: vfat or fat32\n\nTo ensure compatibility with Windows we recommend you use the first partition of the disk as the EFI system partition.\n "))
+                        ErrorDialog(_("Installation Tool"), "<b>%s</b>" % _("Please select an EFI partition."),_("An EFI system partition is needed with the following requirements:\n\n - Mount point: /boot/efi\n - Partition flags: Bootable\n - Size: Larger than 100MB\n - Format: vfat or fat32\n\nTo ensure compatibility with Windows we recommend you use the first partition of the disk as the EFI system partition.\n "))
                         return
 
                 partitioning.build_grub_partitions()
@@ -942,7 +942,7 @@ class InstallerWindow:
                     self.paused = True
                     self.activate_page(self.PAGE_CUSTOMPAUSED)
                     self.wTree.get_widget("button_next").show()
-                    MessageDialog(_("Installation paused"), _("Installation is now paused. Please read the instructions on the page carefully before clicking Forward to finish the installation."))
+                    MessageDialog(_("Installation paused"), _("The installation is now paused. Please read the instructions on the page carefully before clicking Forward to finish the installation."))
                     self.wTree.get_widget("button_next").set_sensitive(True)
 
                 while(self.paused):
@@ -963,7 +963,7 @@ class InstallerWindow:
                 if self.critical_error_happened:
                     ErrorDialog(_("Installation error"), self.critical_error_message)
                 else:
-                    reboot = QuestionDialog(_("Installation finished"), _("Installation is now complete. Do you want to restart your computer to use the new system?"))
+                    reboot = QuestionDialog(_("Installation finished"), _("The installation is now complete. Do you want to restart your computer to use the new system?"))
                     if reboot:
                         os.system('reboot')
 

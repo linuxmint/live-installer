@@ -26,7 +26,7 @@ def uncaught_excepthook(*args):
         import traceback
         from dialogs import ErrorDialog
         ErrorDialog(_('Unexpected error'),
-                    _('<b>The installer has failed with the following unexpected error. Please submit a bug report!</b>'),
+                    '<b>%s</b>' % _("The installer failed with the following error."),
                     '<tt>' + '\n'.join(traceback.format_exception(*args)) + '</tt>')
     sys.exit(1)
 
