@@ -2,6 +2,9 @@
 
 import sys
 import commands
+import gettext
+
+gettext.install("live-installer", "/usr/share/linuxmint/locale")
 
 def uncaught_excepthook(*args):
     sys.__excepthook__(*args)

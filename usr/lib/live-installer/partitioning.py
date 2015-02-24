@@ -12,6 +12,9 @@ from collections import defaultdict
 import gtk
 import parted
 import commands
+import gettext
+
+gettext.install("live-installer", "/usr/share/linuxmint/locale")
 
 def shell_exec(command):
     return subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
@@ -210,7 +213,7 @@ class PartitionSetup(gtk.TreeStore):
             except Exception:
                 from frontend.gtk_interface import QuestionDialog
                 dialog = QuestionDialog(_("Installation Tool"),
-                                        _("No partition table was found on the hard drive: {disk_description}. Do you want the installer to create a set of partitions for you? Note: This will ERASE ALL DATA present on this disk.").format(**locals()),
+                                        _("No partition table was found on the hard drive: %s. Do you want the installer to create a set of partitions for you? Note: This will ERASE ALL DATA present on this disk.") % disk_description,
                                         None, installer.window)
                 if not dialog: continue  # the user said No, skip this disk
                 installer.window.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
