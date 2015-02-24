@@ -64,17 +64,12 @@ class InstallerWindow:
 
         # here comes the installer engine
         self.installer = InstallerEngine()
-        # the distribution name
-        DISTRIBUTION_NAME = self.installer.get_distribution_name()
+
         # load the window object
         self.window = self.wTree.get_widget("main_window")
         self.window.set_position(gtk.WIN_POS_CENTER_ALWAYS)
         self.window.set_resizable(False)
-
-        if __debug__:
-            self.window.set_title((_("%s Installer") % DISTRIBUTION_NAME) + ' (debug)')
-        else:
-            self.window.set_title((_("%s Installer") % DISTRIBUTION_NAME))
+        
         self.window.connect("delete-event", self.quit_cb)
 
         # Wizard pages
@@ -122,13 +117,10 @@ class InstallerWindow:
 
         pic_box = self.wTree.get_widget("hbox8")
         self.face_button = PictureChooserButton(num_cols=4, button_picture_size=96, menu_pictures_size=64)
-        self.face_button.set_alignment(0.0, 0.5)
-        self.face_button.set_tooltip_text(_("Click to change your picture"))
-
-        self.face_photo_menuitem = gtk.MenuItem(_("Take a photo..."))
+        self.face_button.set_alignment(0.0, 0.5)  
+        self.face_photo_menuitem = gtk.MenuItem(_("Take a photo..."))        
         self.face_photo_menuitem.connect('activate', self._on_face_take_picture_button_clicked)
-
-        self.face_browse_menuitem = gtk.MenuItem(_("Browse for more pictures..."))
+        self.face_browse_menuitem = gtk.MenuItem(_("Browse for more pictures..."))             
         self.face_browse_menuitem.connect('activate', self._on_face_browse_menuitem_activated)
 
         face_dirs = ["/usr/share/pixmaps/faces"]
@@ -386,6 +378,12 @@ class InstallerWindow:
         self.wTree.get_widget("label_custom_install_paused_5").set_size_request(width, -1)
         
     def i18n(self):
+
+        if __debug__:
+            self.window.set_title((_("%s Installer") % self.installer.get_distribution_name()) + ' (debug)')
+        else:
+            self.window.set_title((_("%s Installer") % self.installer.get_distribution_name()))
+
         # about you
         self.wTree.get_widget("label_your_name").set_markup("<b>%s</b>" % _("Your full name"))
         self.wTree.get_widget("label_your_name_help").set_markup("<span fgcolor='#3C3C3C'><sub><i>%s</i></sub></span>" % _("Please enter your full name."))
@@ -402,6 +400,10 @@ class InstallerWindow:
                 
         self.wTree.get_widget("face_label").set_markup("<b>%s</b>" % _("Your picture"))
         self.wTree.get_widget("face_description").set_markup("<span fgcolor='#3C3C3C'><sub><i>%s</i></sub></span>" % _("This picture represents your user account. It is used in the login screen and a few other places."))
+
+        self.face_button.set_tooltip_text(_("Click to change your picture"))
+        self.face_photo_menuitem.set_label(_("Take a photo..."))
+        self.face_browse_menuitem.set_label(_("Browse for more pictures..."))
 
         # timezones
         self.wTree.get_widget("label_timezones").set_label(_("Selected timezone:"))
