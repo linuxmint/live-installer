@@ -1,3 +1,9 @@
+live-installer (2015.02.24) betsy; urgency=medium
+
+  * Updated gettext translations
+
+ -- Clement Lefebvre <root@linuxmint.com>  Tue, 24 Feb 2015 14:55:16 +0100
+
 live-installer (2015.02.19) betsy; urgency=medium
 
   * Fixed slideshow, updated slideshow content, removed unused l10n slideshow and its package definition
