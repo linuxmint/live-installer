@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-24 15:49+0100\n"
+"POT-Creation-Date: 2015-02-24 17:11+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -397,7 +397,7 @@ msgid "Size"
 msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:441
-#: usr/lib/live-installer/partitioning.py:337
+#: usr/lib/live-installer/partitioning.py:338
 msgid "Free space"
 msgstr ""
 
@@ -426,7 +426,7 @@ msgstr ""
 #: usr/lib/live-installer/frontend/gtk_interface.py:821
 #: usr/lib/live-installer/frontend/gtk_interface.py:825
 #: usr/lib/live-installer/frontend/gtk_interface.py:829
-#: usr/lib/live-installer/partitioning.py:215
+#: usr/lib/live-installer/partitioning.py:217
 msgid "Installation Tool"
 msgstr ""
 
@@ -635,11 +635,35 @@ msgstr ""
 msgid "Assign to /boot/efi"
 msgstr ""
 
-#: usr/lib/live-installer/partitioning.py:201
+#: usr/lib/live-installer/partitioning.py:198
+msgid "B"
+msgstr ""
+
+#: usr/lib/live-installer/partitioning.py:198
+#: usr/lib/live-installer/partitioning.py:303
+msgid "kB"
+msgstr ""
+
+#: usr/lib/live-installer/partitioning.py:198
+#: usr/lib/live-installer/partitioning.py:303
+msgid "MB"
+msgstr ""
+
+#: usr/lib/live-installer/partitioning.py:198
+#: usr/lib/live-installer/partitioning.py:303
+msgid "GB"
+msgstr ""
+
+#: usr/lib/live-installer/partitioning.py:198
+#: usr/lib/live-installer/partitioning.py:303
+msgid "TB"
+msgstr ""
+
+#: usr/lib/live-installer/partitioning.py:203
 msgid "Removable:"
 msgstr ""
 
-#: usr/lib/live-installer/partitioning.py:216
+#: usr/lib/live-installer/partitioning.py:218
 #, python-format
 msgid ""
 "No partition table was found on the hard drive: %s. Do you want the "
@@ -647,30 +671,30 @@ msgid ""
 "DATA present on this disk."
 msgstr ""
 
-#: usr/lib/live-installer/partitioning.py:335
+#: usr/lib/live-installer/partitioning.py:336
 msgid "Logical partition"
 msgstr ""
 
-#: usr/lib/live-installer/partitioning.py:336
+#: usr/lib/live-installer/partitioning.py:337
 msgid "Extended partition"
 msgstr ""
 
-#: usr/lib/live-installer/partitioning.py:340
+#: usr/lib/live-installer/partitioning.py:341
 msgid "Unknown"
 msgstr ""
 
-#: usr/lib/live-installer/partitioning.py:435
+#: usr/lib/live-installer/partitioning.py:436
 msgid "Edit partition"
 msgstr ""
 
-#: usr/lib/live-installer/partitioning.py:436
+#: usr/lib/live-installer/partitioning.py:437
 msgid "Device:"
 msgstr ""
 
-#: usr/lib/live-installer/partitioning.py:438
+#: usr/lib/live-installer/partitioning.py:439
 msgid "Format as:"
 msgstr ""
 
-#: usr/lib/live-installer/partitioning.py:439
+#: usr/lib/live-installer/partitioning.py:440
 msgid "Mount point:"
 msgstr ""

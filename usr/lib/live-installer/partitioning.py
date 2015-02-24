@@ -194,9 +194,11 @@ class PartitionSetup(gtk.TreeStore):
                 device = "/dev/" + device
                 if type == "disk" and device not in exclude_devices:
                     # convert size to manufacturer's size for show, e.g. in GB, not GiB!
-                    size = str(int(float(size[:-1]) * (1024/1000)**'BkMGTPEZY'.index(size[-1]))) + size[-1]
+                    unit_index = 'BkMGTPEZY'.index(size[-1])
+                    l10n_unit = [_('B'), _('kB'), _('MB'), _('GB'), _('TB'), 'PB', 'EB', 'ZB', 'YB'][unit_index]
+                    size = "%s %s" % (str(int(float(size[:-1]) * (1024/1000)**unit_index)), l10n_unit)
                     model = model.replace("\\x20", " ")
-                    description = '{} ({}B)'.format(model.strip(), size)
+                    description = '{} ({})'.format(model.strip(), size)
                     if int(removable):
                         description = _('Removable:') + ' ' + description
                     disks.append((device, description))
@@ -298,11 +300,10 @@ class PartitionSetup(gtk.TreeStore):
 
 
 def to_human_readable(size):
-    for unit in ' kMGTPEZY':
+    for unit in [' ', _('kB'), _('MB'), _('GB'), _('TB'), 'PB', 'EB', 'ZB', 'YB']:
         if size < 1000:
-            return "{:.1f} {}B".format(size, unit)
+            return "{:.1f} {}".format(size, unit)
         size /= 1000
-
 
 class Partition(object):
     format_as = ''
