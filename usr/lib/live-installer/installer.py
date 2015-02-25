@@ -66,7 +66,7 @@ class InstallerEngine:
         for partition in setup.partitions:                    
             if(partition.format_as is not None and partition.format_as != ""):                
                 # report it. should grab the total count of filesystems to be formatted ..
-                self.update_progress(total=4, current=1, pulse=True, message=_("Formatting %(partition)s as %(format)s ..." % {'partition':partition.partition.path, 'format':partition.format_as}))
+                self.update_progress(total=4, current=1, pulse=True, message=_("Formatting %(partition)s as %(format)s ...") % {'partition':partition.partition.path, 'format':partition.format_as})
                 
                 #Format it
                 if partition.format_as == "swap":
@@ -176,7 +176,7 @@ class InstallerEngine:
 
                 # now show the world what we're doing
                 our_current += 1
-                self.update_progress(total=our_total, current=our_current, message=_("Copying %s" % rpath))
+                self.update_progress(total=our_total, current=our_current, message=_("Copying %s") % rpath)
 
                 if os.path.exists(targetpath):
                     if not os.path.isdir(targetpath):
@@ -218,7 +218,7 @@ class InstallerEngine:
         for dirtime in directory_times:
             (directory, atime, mtime) = dirtime
             try:
-                self.update_progress(pulse=True, message=_("Restoring meta-information on %s" % directory))
+                self.update_progress(pulse=True, message=_("Restoring meta-information on %s") % directory)
                 os.utime(directory, (atime, mtime))
             except OSError:
                 pass

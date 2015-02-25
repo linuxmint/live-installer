@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-24 17:11+0100\n"
+"POT-Creation-Date: 2015-02-25 12:39+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -107,7 +107,7 @@ msgid "Cleaning APT"
 msgstr ""
 
 #: usr/lib/live-installer/installer.py:522
-#: usr/lib/live-installer/frontend/gtk_interface.py:967
+#: usr/lib/live-installer/frontend/gtk_interface.py:969
 msgid "Installation finished"
 msgstr ""
 
@@ -127,360 +127,362 @@ msgstr ""
 msgid "The installer failed with the following error."
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:75
-#: usr/lib/live-installer/frontend/gtk_interface.py:77
+#: usr/lib/live-installer/frontend/gtk_interface.py:87
+#: usr/lib/live-installer/frontend/gtk_interface.py:106
+msgid "Language"
+msgstr ""
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:88
+msgid "Timezone"
+msgstr ""
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:89
+msgid "Keyboard layout"
+msgstr ""
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:90
+msgid "User info"
+msgstr ""
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:91
+msgid "Partitioning"
+msgstr ""
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:92
+msgid "Please make sure you wish to manage partitions manually"
+msgstr ""
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:93
+msgid "Advanced options"
+msgstr ""
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:94
+msgid "Summary"
+msgstr ""
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:95
+msgid "Installing Linux Mint..."
+msgstr ""
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:96
+msgid "Installation paused: please finish the custom installation"
+msgstr ""
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:109
+msgid "Country"
+msgstr ""
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:121
+#: usr/lib/live-installer/frontend/gtk_interface.py:405
+msgid "Take a photo..."
+msgstr ""
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:123
+#: usr/lib/live-installer/frontend/gtk_interface.py:406
+msgid "Browse for more pictures..."
+msgstr ""
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:162
+msgid "Select timezone"
+msgstr ""
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:166
+msgid "Edit partitions"
+msgstr ""
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:167
+msgid "Refresh"
+msgstr ""
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:168
+msgid "Expert mode"
+msgstr ""
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:212
+#: usr/lib/live-installer/frontend/gtk_interface.py:446
+msgid "Layout"
+msgstr ""
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:218
+#: usr/lib/live-installer/frontend/gtk_interface.py:447
+msgid "Variant"
+msgstr ""
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:227
+#: usr/lib/live-installer/frontend/gtk_interface.py:448
+msgid "Overview"
+msgstr ""
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:231
+msgid "Calculating file indexes ..."
+msgstr ""
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:303
+msgid "Images"
+msgstr ""
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:383
+#: usr/lib/live-installer/frontend/gtk_interface.py:385
 #, python-format
 msgid "%s Installer"
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:92
-#: usr/lib/live-installer/frontend/gtk_interface.py:111
-msgid "Language"
-msgstr ""
-
-#: usr/lib/live-installer/frontend/gtk_interface.py:93
-msgid "Timezone"
-msgstr ""
-
-#: usr/lib/live-installer/frontend/gtk_interface.py:94
-msgid "Keyboard layout"
-msgstr ""
-
-#: usr/lib/live-installer/frontend/gtk_interface.py:95
-msgid "User info"
-msgstr ""
-
-#: usr/lib/live-installer/frontend/gtk_interface.py:96
-msgid "Partitioning"
-msgstr ""
-
-#: usr/lib/live-installer/frontend/gtk_interface.py:97
-msgid "Please make sure you wish to manage partitions manually"
-msgstr ""
-
-#: usr/lib/live-installer/frontend/gtk_interface.py:98
-msgid "Advanced options"
-msgstr ""
-
-#: usr/lib/live-installer/frontend/gtk_interface.py:99
-msgid "Summary"
-msgstr ""
-
-#: usr/lib/live-installer/frontend/gtk_interface.py:100
-msgid "Installing Linux Mint..."
-msgstr ""
-
-#: usr/lib/live-installer/frontend/gtk_interface.py:101
-msgid "Installation paused: please finish the custom installation"
-msgstr ""
-
-#: usr/lib/live-installer/frontend/gtk_interface.py:114
-msgid "Country"
-msgstr ""
-
-#: usr/lib/live-installer/frontend/gtk_interface.py:126
-msgid "Click to change your picture"
-msgstr ""
-
-#: usr/lib/live-installer/frontend/gtk_interface.py:128
-msgid "Take a photo..."
-msgstr ""
-
-#: usr/lib/live-installer/frontend/gtk_interface.py:131
-msgid "Browse for more pictures..."
-msgstr ""
-
-#: usr/lib/live-installer/frontend/gtk_interface.py:170
-msgid "Select timezone"
-msgstr ""
-
-#: usr/lib/live-installer/frontend/gtk_interface.py:174
-msgid "Edit partitions"
-msgstr ""
-
-#: usr/lib/live-installer/frontend/gtk_interface.py:175
-msgid "Refresh"
-msgstr ""
-
-#: usr/lib/live-installer/frontend/gtk_interface.py:176
-msgid "Expert mode"
-msgstr ""
-
-#: usr/lib/live-installer/frontend/gtk_interface.py:220
-#: usr/lib/live-installer/frontend/gtk_interface.py:444
-msgid "Layout"
-msgstr ""
-
-#: usr/lib/live-installer/frontend/gtk_interface.py:226
-#: usr/lib/live-installer/frontend/gtk_interface.py:445
-msgid "Variant"
-msgstr ""
-
-#: usr/lib/live-installer/frontend/gtk_interface.py:235
-#: usr/lib/live-installer/frontend/gtk_interface.py:446
-msgid "Overview"
-msgstr ""
-
-#: usr/lib/live-installer/frontend/gtk_interface.py:239
-msgid "Calculating file indexes ..."
-msgstr ""
-
-#: usr/lib/live-installer/frontend/gtk_interface.py:311
-msgid "Images"
-msgstr ""
-
-#: usr/lib/live-installer/frontend/gtk_interface.py:390
+#: usr/lib/live-installer/frontend/gtk_interface.py:388
 msgid "Your full name"
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:391
+#: usr/lib/live-installer/frontend/gtk_interface.py:389
 msgid "Please enter your full name."
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:392
+#: usr/lib/live-installer/frontend/gtk_interface.py:390
 msgid "Your username"
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:393
+#: usr/lib/live-installer/frontend/gtk_interface.py:391
 msgid "This is the name you will use to log in to your computer."
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:394
+#: usr/lib/live-installer/frontend/gtk_interface.py:392
 msgid "Your password"
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:395
+#: usr/lib/live-installer/frontend/gtk_interface.py:393
 msgid "Please enter your password twice to ensure it is correct."
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:396
+#: usr/lib/live-installer/frontend/gtk_interface.py:394
 msgid "Hostname"
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:397
+#: usr/lib/live-installer/frontend/gtk_interface.py:395
 msgid "This hostname will be the computer's name on the network."
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:398
+#: usr/lib/live-installer/frontend/gtk_interface.py:396
 msgid "Automatic login"
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:399
+#: usr/lib/live-installer/frontend/gtk_interface.py:397
 msgid ""
 "If enabled, the login screen is skipped when the system starts, and you are "
 "signed into your desktop session automatically."
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:400
+#: usr/lib/live-installer/frontend/gtk_interface.py:398
 msgid "Log in automatically"
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:403
+#: usr/lib/live-installer/frontend/gtk_interface.py:401
 msgid "Your picture"
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:404
+#: usr/lib/live-installer/frontend/gtk_interface.py:402
 msgid ""
 "This picture represents your user account. It is used in the login screen "
 "and a few other places."
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:407
+#: usr/lib/live-installer/frontend/gtk_interface.py:404
+msgid "Click to change your picture"
+msgstr ""
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:409
 msgid "Selected timezone:"
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:410
+#: usr/lib/live-installer/frontend/gtk_interface.py:412
 msgid "Bootloader"
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:411
+#: usr/lib/live-installer/frontend/gtk_interface.py:413
 msgid "Install GRUB"
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:412
+#: usr/lib/live-installer/frontend/gtk_interface.py:414
 msgid "GRUB is a bootloader used to load the Linux kernel."
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:415
+#: usr/lib/live-installer/frontend/gtk_interface.py:417
 msgid "Use this box to test your keyboard layout."
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:416
+#: usr/lib/live-installer/frontend/gtk_interface.py:418
 msgid "Model"
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:419
+#: usr/lib/live-installer/frontend/gtk_interface.py:421
 msgid ""
 "You have selected to manage your partitions manually, this feature is for "
 "ADVANCED USERS ONLY."
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:420
+#: usr/lib/live-installer/frontend/gtk_interface.py:422
 msgid "Before continuing, please mount your target filesystem(s) at /target."
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:421
+#: usr/lib/live-installer/frontend/gtk_interface.py:423
 msgid ""
 "Do NOT mount virtual devices such as /dev, /proc, /sys, etc on /target/."
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:422
+#: usr/lib/live-installer/frontend/gtk_interface.py:424
 msgid ""
 "During the install, you will be given time to chroot into /target and "
 "install any packages that will be needed to boot your new system."
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:423
+#: usr/lib/live-installer/frontend/gtk_interface.py:425
 msgid "During the install, you will be required to write your own /etc/fstab."
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:424
+#: usr/lib/live-installer/frontend/gtk_interface.py:426
 msgid ""
 "If you aren't sure what any of this means, please go back and deselect "
 "manual partition management."
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:427
+#: usr/lib/live-installer/frontend/gtk_interface.py:429
 msgid "Please do the following and then click Forward to finish installation:"
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:428
+#: usr/lib/live-installer/frontend/gtk_interface.py:430
 msgid ""
 "Create /target/etc/fstab for the filesystems as they will be mounted in your "
 "new system, matching those currently mounted at /target (without using the /"
 "target prefix in the mount paths themselves)."
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:429
+#: usr/lib/live-installer/frontend/gtk_interface.py:431
 msgid ""
 "Install any packages that may be needed for first boot (mdadm, cryptsetup, "
 "dmraid, etc) by calling \"sudo chroot /target\" followed by the relevant apt-"
 "get/aptitude installations."
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:430
+#: usr/lib/live-installer/frontend/gtk_interface.py:432
 msgid ""
 "Note that in order for update-initramfs to work properly in some cases (such "
 "as dm-crypt), you may need to have drives currently mounted using the same "
 "block device name as they appear in /target/etc/fstab."
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:431
+#: usr/lib/live-installer/frontend/gtk_interface.py:433
 msgid ""
 "Double-check that your /target/etc/fstab is correct, matches what your new "
 "system will have at first boot, and matches what is currently mounted at /"
 "target."
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:435
+#: usr/lib/live-installer/frontend/gtk_interface.py:437
 msgid "Device"
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:436
+#: usr/lib/live-installer/frontend/gtk_interface.py:438
 msgid "Type"
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:437
+#: usr/lib/live-installer/frontend/gtk_interface.py:439
 msgid "Operating system"
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:438
+#: usr/lib/live-installer/frontend/gtk_interface.py:440
 msgid "Mount point"
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:439
+#: usr/lib/live-installer/frontend/gtk_interface.py:441
 msgid "Format as"
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:440
+#: usr/lib/live-installer/frontend/gtk_interface.py:442
 msgid "Size"
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:441
+#: usr/lib/live-installer/frontend/gtk_interface.py:443
 #: usr/lib/live-installer/partitioning.py:338
 msgid "Free space"
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:467
+#: usr/lib/live-installer/frontend/gtk_interface.py:469
 msgid "Quit?"
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:467
+#: usr/lib/live-installer/frontend/gtk_interface.py:469
 msgid "Are you sure you want to quit the installer?"
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:686
+#: usr/lib/live-installer/frontend/gtk_interface.py:688
 msgid "Passwords do not match."
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:689
+#: usr/lib/live-installer/frontend/gtk_interface.py:691
 msgid "Passwords match."
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:714
-#: usr/lib/live-installer/frontend/gtk_interface.py:787
-#: usr/lib/live-installer/frontend/gtk_interface.py:800
-#: usr/lib/live-installer/frontend/gtk_interface.py:803
-#: usr/lib/live-installer/frontend/gtk_interface.py:813
-#: usr/lib/live-installer/frontend/gtk_interface.py:816
-#: usr/lib/live-installer/frontend/gtk_interface.py:821
-#: usr/lib/live-installer/frontend/gtk_interface.py:825
-#: usr/lib/live-installer/frontend/gtk_interface.py:829
+#: usr/lib/live-installer/frontend/gtk_interface.py:716
+#: usr/lib/live-installer/frontend/gtk_interface.py:789
+#: usr/lib/live-installer/frontend/gtk_interface.py:802
+#: usr/lib/live-installer/frontend/gtk_interface.py:805
+#: usr/lib/live-installer/frontend/gtk_interface.py:815
+#: usr/lib/live-installer/frontend/gtk_interface.py:818
+#: usr/lib/live-installer/frontend/gtk_interface.py:823
+#: usr/lib/live-installer/frontend/gtk_interface.py:827
+#: usr/lib/live-installer/frontend/gtk_interface.py:831
 #: usr/lib/live-installer/partitioning.py:217
 msgid "Installation Tool"
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:714
+#: usr/lib/live-installer/frontend/gtk_interface.py:716
 msgid "Please choose a language"
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:754
+#: usr/lib/live-installer/frontend/gtk_interface.py:756
 msgid "Please provide your full name."
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:757
+#: usr/lib/live-installer/frontend/gtk_interface.py:759
 msgid "Please provide a username."
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:760
+#: usr/lib/live-installer/frontend/gtk_interface.py:762
 msgid "Please provide a password for your user account."
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:763
+#: usr/lib/live-installer/frontend/gtk_interface.py:765
 msgid "Your passwords do not match."
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:766
+#: usr/lib/live-installer/frontend/gtk_interface.py:768
 msgid "Please provide a hostname."
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:771
+#: usr/lib/live-installer/frontend/gtk_interface.py:773
 msgid "Your username must be lower case."
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:775
+#: usr/lib/live-installer/frontend/gtk_interface.py:777
 msgid "Your username may not contain whitespace characters."
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:780
+#: usr/lib/live-installer/frontend/gtk_interface.py:782
 msgid "The hostname must be lower case."
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:784
+#: usr/lib/live-installer/frontend/gtk_interface.py:786
 msgid "The hostname may not contain whitespace characters."
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:800
+#: usr/lib/live-installer/frontend/gtk_interface.py:802
 msgid ""
 "Please indicate a filesystem to format the root (/) partition with before "
 "proceeding."
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:803
+#: usr/lib/live-installer/frontend/gtk_interface.py:805
 msgid "Please select a root (/) partition."
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:803
+#: usr/lib/live-installer/frontend/gtk_interface.py:805
 msgid ""
 "A root partition is needed to install Linux Mint on.\n"
 "\n"
@@ -490,24 +492,24 @@ msgid ""
 " "
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:813
+#: usr/lib/live-installer/frontend/gtk_interface.py:815
 msgid "The EFI partition is not bootable. Please edit the partition flags."
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:816
+#: usr/lib/live-installer/frontend/gtk_interface.py:818
 msgid "The EFI partition is too small. It must be at least 100MB."
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:821
-#: usr/lib/live-installer/frontend/gtk_interface.py:825
+#: usr/lib/live-installer/frontend/gtk_interface.py:823
+#: usr/lib/live-installer/frontend/gtk_interface.py:827
 msgid "The EFI partition must be formatted as vfat."
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:829
+#: usr/lib/live-installer/frontend/gtk_interface.py:831
 msgid "Please select an EFI partition."
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:829
+#: usr/lib/live-installer/frontend/gtk_interface.py:831
 msgid ""
 "An EFI system partition is needed with the following requirements:\n"
 "\n"
@@ -521,99 +523,99 @@ msgid ""
 " "
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:879
+#: usr/lib/live-installer/frontend/gtk_interface.py:881
 msgid "Localization"
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:880
+#: usr/lib/live-installer/frontend/gtk_interface.py:882
 msgid "Language: "
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:881
+#: usr/lib/live-installer/frontend/gtk_interface.py:883
 msgid "Timezone: "
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:882
+#: usr/lib/live-installer/frontend/gtk_interface.py:884
 msgid "Keyboard layout: "
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:885
+#: usr/lib/live-installer/frontend/gtk_interface.py:887
 msgid "User settings"
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:886
+#: usr/lib/live-installer/frontend/gtk_interface.py:888
 msgid "Real name: "
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:887
+#: usr/lib/live-installer/frontend/gtk_interface.py:889
 msgid "Username: "
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:888
+#: usr/lib/live-installer/frontend/gtk_interface.py:890
 msgid "Automatic login: "
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:888
+#: usr/lib/live-installer/frontend/gtk_interface.py:890
 msgid "enabled"
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:888
+#: usr/lib/live-installer/frontend/gtk_interface.py:890
 msgid "disabled"
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:889
+#: usr/lib/live-installer/frontend/gtk_interface.py:891
 msgid "System settings"
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:890
+#: usr/lib/live-installer/frontend/gtk_interface.py:892
 msgid "Hostname: "
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:891
+#: usr/lib/live-installer/frontend/gtk_interface.py:893
 msgid "Filesystem operations"
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:892
+#: usr/lib/live-installer/frontend/gtk_interface.py:894
 #, python-format
 msgid "Install bootloader on %s"
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:892
+#: usr/lib/live-installer/frontend/gtk_interface.py:894
 msgid "Do not install bootloader"
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:894
+#: usr/lib/live-installer/frontend/gtk_interface.py:896
 msgid "Use already-mounted /target."
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:898
+#: usr/lib/live-installer/frontend/gtk_interface.py:900
 #, python-format
 msgid "Format %(path)s as %(filesystem)s"
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:901
+#: usr/lib/live-installer/frontend/gtk_interface.py:903
 #, python-format
 msgid "Mount %(path)s as %(mount)s"
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:933
-#: usr/lib/live-installer/frontend/gtk_interface.py:937
-#: usr/lib/live-installer/frontend/gtk_interface.py:957
-#: usr/lib/live-installer/frontend/gtk_interface.py:965
+#: usr/lib/live-installer/frontend/gtk_interface.py:935
+#: usr/lib/live-installer/frontend/gtk_interface.py:939
+#: usr/lib/live-installer/frontend/gtk_interface.py:959
+#: usr/lib/live-installer/frontend/gtk_interface.py:967
 msgid "Installation error"
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:946
+#: usr/lib/live-installer/frontend/gtk_interface.py:948
 msgid "Installation paused"
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:946
+#: usr/lib/live-installer/frontend/gtk_interface.py:948
 msgid ""
 "The installation is now paused. Please read the instructions on the page "
 "carefully before clicking Forward to finish the installation."
 msgstr ""
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:967
+#: usr/lib/live-installer/frontend/gtk_interface.py:969
 msgid ""
 "The installation is now complete. Do you want to restart your computer to "
 "use the new system?"
