@@ -1,3 +1,12 @@
+live-installer (2015.02.25) betsy; urgency=medium
+
+  * Improved partitioning buttons
+  * Fixed regressions in l10n
+  * Fixed more l10n regressions..
+  * l10n fixes
+
+ -- Clement Lefebvre <root@linuxmint.com>  Wed, 25 Feb 2015 11:18:06 +0100
+
 live-installer (2015.02.24) betsy; urgency=medium
 
   * Updated gettext translations
