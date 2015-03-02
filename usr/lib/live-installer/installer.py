@@ -469,6 +469,10 @@ class InstallerEngine:
         self.do_run_in_chroot("rm /etc/default/keyboard")
         self.do_run_in_chroot("mv /etc/default/keyboard.new /etc/default/keyboard")
 
+        # Perform OS adjustments (this is needed prior to installing grub)
+        if os.path.exists("/target/usr/lib/linuxmint/mintSystem/mint-adjust.py"):
+            self.do_run_in_chroot("/usr/lib/linuxmint/mintSystem/mint-adjust.py")
+
         # write MBR (grub)
         print " --> Configuring Grub"
         our_current += 1
