@@ -326,7 +326,7 @@ class InstallerEngine:
         fstab.write("proc\t/proc\tproc\tdefaults\t0\t0\n")
         if(not setup.skip_mount):
             for partition in setup.partitions:
-                if (partition.mount_as is not None and partition.mount_as != "None"):
+                if (partition.mount_as is not None and partition.mount_as != "" and partition.mount_as != "None"):
                     partition_uuid = partition.partition.path # If we can't find the UUID we use the path
                     blkid = commands.getoutput('blkid').split('\n')
                     for blkid_line in blkid:
