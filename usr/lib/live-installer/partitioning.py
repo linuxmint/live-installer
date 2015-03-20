@@ -182,7 +182,7 @@ class PartitionSetup(gtk.TreeStore):
 
         def _get_attached_disks():
             disks = []
-            exclude_devices = ['/dev/sr0', '/dev/sr1', '/dev/cdrom', '/dev/dvd']
+            exclude_devices = ['/dev/sr0', '/dev/sr1', '/dev/cdrom', '/dev/dvd', '/dev/fd0']
             live_device = commands.getoutput("findmnt -n -o source /lib/live/mount/medium").split('\n')[0]
             live_device = re.sub('[0-9]+$', '', live_device) # remove partition numbers if any
             if live_device is not None and live_device.startswith('/dev/'):
@@ -190,18 +190,29 @@ class PartitionSetup(gtk.TreeStore):
                 print "Excluding %s (detected as the live device)" % live_device
             lsblk = shell_exec('LC_ALL=en_US.UTF-8 lsblk -rindo TYPE,NAME,RM,SIZE,MODEL | sort -k3,2')
             for line in lsblk.stdout:
-                type, device, removable, size, model = line.split(" ", 4)
-                device = "/dev/" + device
-                if type == "disk" and device not in exclude_devices:
-                    # convert size to manufacturer's size for show, e.g. in GB, not GiB!
-                    unit_index = 'BkMGTPEZY'.index(size[-1])
-                    l10n_unit = [_('B'), _('kB'), _('MB'), _('GB'), _('TB'), 'PB', 'EB', 'ZB', 'YB'][unit_index]
-                    size = "%s %s" % (str(int(float(size[:-1]) * (1024/1000)**unit_index)), l10n_unit)
-                    model = model.replace("\\x20", " ")
-                    description = '{} ({})'.format(model.strip(), size)
-                    if int(removable):
-                        description = _('Removable:') + ' ' + description
-                    disks.append((device, description))
+                try:
+                    elements = line.strip().split(" ", 4)
+                    if len(elements) < 4:
+                        print "Can't parse blkid output: %s" % elements
+                        continue
+                    elif len(elements) < 5:
+                        print "Can't find model in blkid output: %s" % elements
+                        type, device, removable, size, model = elements[0], elements[1], elements[2], elements[3], elements[1]
+                    else:
+                        type, device, removable, size, model = elements
+                    device = "/dev/" + device
+                    if type == "disk" and device not in exclude_devices:
+                        # convert size to manufacturer's size for show, e.g. in GB, not GiB!
+                        unit_index = 'BKMGTPEZY'.index(size.upper()[-1])
+                        l10n_unit = [_('B'), _('kB'), _('MB'), _('GB'), _('TB'), 'PB', 'EB', 'ZB', 'YB'][unit_index]
+                        size = "%s %s" % (str(int(float(size[:-1]) * (1024/1000)**unit_index)), l10n_unit)
+                        model = model.replace("\\x20", " ")
+                        description = '{} ({})'.format(model.strip(), size)
+                        if int(removable):
+                            description = _('Removable:') + ' ' + description
+                        disks.append((device, description))
+                except Exception, detail:
+                    print "Could not parse blkid output: %s (%s)" % (line, detail)
             return disks
 
         os.popen('mkdir -p ' + TMP_MOUNTPOINT)
