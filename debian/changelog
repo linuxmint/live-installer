@@ -1,3 +1,9 @@
+live-installer (2015.03.20) betsy; urgency=medium
+
+  * Multiple fixes in partitions detection:  - Don't crash when blkid returns empty model info  - Don't crash when blkid returns size unit "K" instead of "k"  - Ignore malformed blkid output or device info we can't parse  - Ignore /dev/fd0
+
+ -- Clement Lefebvre <root@linuxmint.com>  Fri, 20 Mar 2015 15:24:56 +0100
+
 live-installer (2015.03.05) betsy; urgency=medium
 
   * Don't add non-mounted partitions to fstab
