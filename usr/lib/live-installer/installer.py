@@ -72,6 +72,8 @@ class InstallerEngine:
                 if partition.format_as == "swap":
                     cmd = "mkswap %s" % partition.partition.path
                 else:
+                    if (partition.format_as in ['ext2', 'ext3', 'ext4']):
+                        cmd = "mkfs.%s -F %s" % (partition.format_as, partition.partition.path)
                     if (partition.format_as == "jfs"):
                         cmd = "mkfs.%s -q %s" % (partition.format_as, partition.partition.path)
                     elif (partition.format_as == "xfs"):
@@ -79,7 +81,7 @@ class InstallerEngine:
                     elif (partition.format_as == "vfat"):
                         cmd = "mkfs.%s %s -F 32" % (partition.format_as, partition.partition.path)
                     else:
-                        cmd = "mkfs.%s %s" % (partition.format_as, partition.partition.path) # works with bfs, btrfs, ext2, ext3, ext4, minix, msdos, ntfs, vfat
+                        cmd = "mkfs.%s %s" % (partition.format_as, partition.partition.path) # works with bfs, btrfs, minix, msdos, ntfs, vfat
                     
                 print "EXECUTING: '%s'" % cmd
                 self.exec_cmd(cmd)
