@@ -74,7 +74,7 @@ class InstallerEngine:
                 else:
                     if (partition.format_as in ['ext2', 'ext3', 'ext4']):
                         cmd = "mkfs.%s -F %s" % (partition.format_as, partition.partition.path)
-                    if (partition.format_as == "jfs"):
+                    elif (partition.format_as == "jfs"):
                         cmd = "mkfs.%s -q %s" % (partition.format_as, partition.partition.path)
                     elif (partition.format_as == "xfs"):
                         cmd = "mkfs.%s -f %s" % (partition.format_as, partition.partition.path)
