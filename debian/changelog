@@ -1,3 +1,9 @@
+live-installer (2015.03.23) betsy; urgency=medium
+
+  * Don't hang when formating ext partitions (Upstream changed the behaviour of mkfs.ext2|3|4. It now asks for a confirmation unless -F is used.)
+
+ -- Clement Lefebvre <root@linuxmint.com>  Mon, 23 Mar 2015 13:16:23 +0100
+
 live-installer (2015.03.20) betsy; urgency=medium
 
   * Multiple fixes in partitions detection:  - Don't crash when blkid returns empty model info  - Don't crash when blkid returns size unit "K" instead of "k"  - Ignore malformed blkid output or device info we can't parse  - Ignore /dev/fd0
