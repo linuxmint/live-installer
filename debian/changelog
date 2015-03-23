@@ -1,4 +1,4 @@
-live-installer (2015.03.23) betsy; urgency=medium
+live-installer (2015.03.23.1) betsy; urgency=medium
 
   * Don't hang when formating ext partitions (Upstream changed the behaviour of mkfs.ext2|3|4. It now asks for a confirmation unless -F is used.)
 
