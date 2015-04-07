@@ -449,13 +449,17 @@ class InstallerWindow:
 
     def assign_realname(self, entry, prop):
         self.setup.real_name = entry.props.text
-        text = entry.props.text.strip().lower()
-        if " " in entry.props.text:
-            elements = text.split()
-            text = elements[0]
-        self.setup.username = text
-        self.wTree.get_widget("entry_username").set_text(text)   
-        self.setup.print_setup()    
+        # Try to set the username (doesn't matter if it fails)
+        try:
+            text = entry.props.text.strip().lower()
+            if " " in entry.props.text:
+                elements = text.split()
+                text = elements[0]
+            self.setup.username = text
+            self.wTree.get_widget("entry_username").set_text(text)
+        except:
+            pass
+        self.setup.print_setup()
 
     def assign_username(self, entry, prop):
         self.setup.username = entry.props.text
