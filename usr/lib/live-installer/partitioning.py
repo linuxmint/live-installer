@@ -62,10 +62,14 @@ def build_partitions(_installer):
     installer = _installer
     installer.window.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))  # "busy" cursor
     installer.window.set_sensitive(False)
+    print "Starting PartitionSetup()"
     partition_setup = PartitionSetup()
+    print "Finished PartitionSetup()"
     if partition_setup.disks:
         installer._selected_disk = partition_setup.disks[0][0]
+        print "Loading HTML string"
         installer.partitions_browser.load_string(partition_setup.get_html(installer._selected_disk), 'text/html', 'UTF-8', 'file:///')
+    print "Showing the partition screen"
     installer.wTree.get_widget("scrolled_partitions").show_all()
     installer.wTree.get_widget("treeview_disks").set_model(partition_setup)
     installer.wTree.get_widget("treeview_disks").expand_all()
@@ -221,23 +225,32 @@ class PartitionSetup(gtk.TreeStore):
         print 'Disks: ', self.disks
         already_done_full_disk_format = False
         for disk_path, disk_description in self.disks:
+            print "    Analyzing path='%s' description='%s'" % (disk_path, disk_description)
             disk_device = parted.getDevice(disk_path)
-            try: disk = parted.Disk(disk_device)
-            except Exception:
+            print "      - Found the device..."
+            try:
+                disk = parted.Disk(disk_device)
+                print "      - Found the disk..."
+            except Exception, detail:
+                print "      - Found an issue while looking for the disk: %s" % detail
                 from frontend.gtk_interface import QuestionDialog
                 dialog = QuestionDialog(_("Installation Tool"),
                                         _("No partition table was found on the hard drive: %s. Do you want the installer to create a set of partitions for you? Note: This will ERASE ALL DATA present on this disk.") % disk_description,
                                         None, installer.window)
                 if not dialog: continue  # the user said No, skip this disk
                 installer.window.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
+                print "Performing a full disk format"
                 if not already_done_full_disk_format:
                     assign_mount_format = self.full_disk_format(disk_device)
                     already_done_full_disk_format = True
                 else:
                     self.full_disk_format(disk_device) # Format but don't assign mount points
                 installer.window.window.set_cursor(None)
+                print "Done full disk format"
                 disk = parted.Disk(disk_device)
+                print "Got disk!"
             disk_iter = self.append(None, (disk_description, '', '', '', '', '', '', None, disk_path))
+            print "      - Looking at partitions..."
             partitions = map(Partition,
                              sorted(filter(lambda part: part.getLength('MB') > 5,  # skip ranges <5MB
                                     set(disk.getFreeSpacePartitions() +
@@ -246,15 +259,18 @@ class PartitionSetup(gtk.TreeStore):
                                         disk.getRaidPartitions() +
                                         disk.getLVMPartitions())),
                                     key=lambda part: part.geometry.start))
+            print "      - Found partitions..."
             try: # assign mount_as and format_as if disk was just auto-formatted
                 for partition, (mount_as, format_as) in zip(partitions, assign_mount_format):
                     partition.mount_as = mount_as
                     partition.format_as = format_as
                 del assign_mount_format
             except NameError: pass
+            print "      - Iterating partitions..."
             # Needed to fix the 1% minimum Partition.size_percent
             sum_size_percent = sum(p.size_percent for p in partitions) + .5  # .5 for good measure
             for partition in partitions:
+                print "        . Appending partition %s..." % partition.name
                 partition.size_percent = round(partition.size_percent / sum_size_percent * 100, 1)
                 installer.setup.partitions.append(partition)
                 self.append(disk_iter, (partition.name,
@@ -266,6 +282,8 @@ class PartitionSetup(gtk.TreeStore):
                                         partition.free_space,
                                         partition,
                                         disk_path))
+
+            print "      - Loading HTML view..."
             self.html_disks[disk_path] = DISK_TEMPLATE.format(PARTITIONS_HTML=''.join(PARTITION_TEMPLATE.format(p) for p in partitions))
 
     def get_html(self, disk):
