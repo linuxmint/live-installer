@@ -251,14 +251,28 @@ class PartitionSetup(gtk.TreeStore):
                 print "Got disk!"
             disk_iter = self.append(None, (disk_description, '', '', '', '', '', '', None, disk_path))
             print "      - Looking at partitions..."
-            partitions = map(Partition,
-                             sorted(filter(lambda part: part.getLength('MB') > 5,  # skip ranges <5MB
-                                    set(disk.getFreeSpacePartitions() +
-                                        disk.getPrimaryPartitions() +
-                                        disk.getLogicalPartitions() +
-                                        disk.getRaidPartitions() +
-                                        disk.getLVMPartitions())),
-                                    key=lambda part: part.geometry.start))
+            free_space_partition = disk.getFreeSpacePartitions()
+            print "           -> %d free space partitions" % len(free_space_partition)
+            primary_partitions = disk.getPrimaryPartitions()
+            print "           -> %d primary partitions" % len(primary_partitions)
+            logical_partitions = disk.getLogicalPartitions()
+            print "           -> %d logical partitions" % len(logical_partitions)
+            raid_partitions = disk.getRaidPartitions()
+            print "           -> %d raid partitions" % len(raid_partitions)
+            lvm_partitions = disk.getLVMPartitions()
+            print "           -> %d LVM partitions" % len(lvm_partitions)
+
+            partition_set = set(free_space_partition + primary_partitions + logical_partitions + raid_partitions + lvm_partitions)
+            print "           -> set of %d partitions" % len(partition_set)
+
+            partitions = []
+            for partition in partition_set:
+                # skip ranges <5MB
+                if partition.getLength('MB') > 5:
+                    part = Partition(partition)
+                    partitions.append(part)
+            partitions = sorted(partitions, key=lambda part: part.partition.geometry.start)
+
             print "      - Found partitions..."
             try: # assign mount_as and format_as if disk was just auto-formatted
                 for partition, (mount_as, format_as) in zip(partitions, assign_mount_format):
@@ -341,13 +355,21 @@ class Partition(object):
     def __init__(self, partition):
         assert partition.type not in (parted.PARTITION_METADATA, parted.PARTITION_EXTENDED)
 
+        print "              -> Building partition object for %s" % partition.path
+
         self.partition = partition
         self.length = partition.getLength()
+        print "                  . length %d" % self.length
+
         self.size_percent = max(1, round(80*self.length/partition.disk.device.getLength(), 1))
+        print "                  . size_percent %d" % self.size_percent
+
         self.size = to_human_readable(partition.getLength('B'))
+        print "                  . size %s" % self.size
 
         # if not normal partition with /dev/sdXN path, set its name to '' and discard it from model
         self.name = partition.path if partition.number != -1 else ''
+        print "                  . name %s" % self.name
         
         try:
             self.type = partition.fileSystem.type
@@ -355,6 +377,7 @@ class Partition(object):
                 if fs in self.type:
                     self.type = fs
             self.style = self.type
+            print "                  . type %s" % self.type
         except AttributeError:  # non-formatted partitions
             self.type = {
                 parted.PARTITION_LVM: 'LVM',
@@ -372,21 +395,27 @@ class Partition(object):
                 parted.PARTITION_SWAP: 'swap',
                 parted.PARTITION_FREESPACE: 'freespace',
             }.get(partition.type, '')
+            print "                  . type %s" % self.type
 
         if "swap" in self.type:
             self.mount_as = SWAP_MOUNT_POINT
 
         # identify partition's description and used space
         try:
+            print "                  . About to mount it..."
             os.system('mount --read-only {} {}'.format(partition.path, TMP_MOUNTPOINT))
             size, free, self.used_percent, mount_point = getoutput("df {0} | grep '^{0}' | awk '{{print $2,$4,$5,$6}}' | tail -1".format(partition.path)).split(None, 3)
-        except ValueError:            
+            print "                  . size %s, free %s, self.used_percent %s, mount_point %s" % (size, free, self.used_percent, mount_point)
+        except ValueError:
+            print "                  . value error!"
             if "swap" in self.type:
                 self.os_fs_info, self.description, self.free_space, self.used_percent = ': '+self.type, 'swap', '', 0
             else:
                 print 'WARNING: Partition {} or type {} failed to mount!'.format(partition.path, partition.type)
                 self.os_fs_info, self.description, self.free_space, self.used_percent = ': '+self.type, '', '', 0
+            print "                  . self.os_fs_info %s, self.description %s, self.free_space %s, self.used_percent %s" % (self.os_fs_info, self.description, self.free_space, self.used_percent)
         else:
+            print "                  . About to find more about it..."
             self.size = to_human_readable(int(size)*1024)  # for mountable partitions, more accurate than the getLength size above
             self.free_space = to_human_readable(int(free)*1024)  # df returns values in 1024B-blocks by default
             self.used_percent = self.used_percent.strip('%') or 0
@@ -421,8 +450,11 @@ class Partition(object):
                 self.mount_as = EFI_MOUNT_POINT
             self.description = description
             self.os_fs_info = ': {0.description} ({0.type}; {0.size}; {0.free_space})'.format(self) if description else ': ' + self.type
+            print "                  . self.description %s self.os_fs_info %s" % (self.description, self.os_fs_info)
         finally:
+            print "                  . umounting it"
             os.system('umount ' + TMP_MOUNTPOINT + ' 2>/dev/null')
+            print "                  . done"
 
         self.html_name = self.name.split('/')[-1]
         self.html_description = self.description
@@ -430,7 +462,7 @@ class Partition(object):
             self.html_description = "%s..." % self.description[0:5]
         if (self.size_percent < 5):
             #Not enough space, don't write the name
-            self.html_name = ""                          
+            self.html_name = ""
             self.html_description = ""
 
         self.color = {
