@@ -1,3 +1,9 @@
+live-installer (2015.09.15) betsy; urgency=medium
+
+  * Add more traces in the partition detection step
+
+ -- Clement Lefebvre <root@linuxmint.com>  Tue, 15 Sep 2015 14:34:46 +0100
+
 live-installer (2015.09.03) betsy; urgency=medium
 
   * Fixed crash when user inputs Windows+Space in real name entry
