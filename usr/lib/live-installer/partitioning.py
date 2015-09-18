@@ -402,6 +402,7 @@ class Partition(object):
 
         # identify partition's description and used space
         try:
+            print "%s: '%s'" % (partition.path, partition.getFlagsAsString())
             print "                  . About to mount it..."
             os.system('mount --read-only {} {}'.format(partition.path, TMP_MOUNTPOINT))
             size, free, self.used_percent, mount_point = getoutput("df {0} | grep '^{0}' | awk '{{print $2,$4,$5,$6}}' | tail -1".format(partition.path)).split(None, 3)
@@ -420,10 +421,9 @@ class Partition(object):
             self.free_space = to_human_readable(int(free)*1024)  # df returns values in 1024B-blocks by default
             self.used_percent = self.used_percent.strip('%') or 0
             description = ''
-            if path_exists(mount_point, 'etc/'):
-                description = getoutput("su -c '{{ . {0}/etc/lsb-release && echo $DISTRIB_DESCRIPTION; }} || \
-                                                {{ . {0}/etc/os-release && echo $PRETTY_NAME; }}' mint".format(mount_point)) or 'Unix'
-            if path_exists(mount_point, 'Windows/servicing/Version'):
+            if path_exists(mount_point, 'etc/linuxmint/info'):
+                description = getoutput("cat %s/etc/linuxmint/info | grep GRUB_TITLE" % mount_point).replace('GRUB_TITLE', '').replace('=', '').replace('"', '').strip()
+            elif path_exists(mount_point, 'Windows/servicing/Version'):
                 description = 'Windows ' + {
                     '6.4':'10',
                     '6.3':'8.1',
@@ -443,11 +443,15 @@ class Partition(object):
                 description = 'Windows'
             elif path_exists(mount_point, 'System/Library/CoreServices/SystemVersion.plist'):
                 description = 'Mac OS X'
-            if path_exists(mount_point, 'etc/linuxmint/info'):
-                description = getoutput("cat %s/etc/linuxmint/info | grep GRUB_TITLE" % mount_point).replace('GRUB_TITLE', '').replace('=', '').replace('"', '').strip()
-            if getoutput("/sbin/gdisk -l {} | awk '/ EF00 /{{print $1}}'".format(partition.disk.device.path)) == str(partition.number):
-                description = 'EFI System Partition'
-                self.mount_as = EFI_MOUNT_POINT
+            elif path_exists(mount_point, 'etc/'):
+                description = getoutput("su -c '{{ . {0}/etc/lsb-release && echo $DISTRIB_DESCRIPTION; }} || \
+                                                {{ . {0}/etc/os-release && echo $PRETTY_NAME; }}' mint".format(mount_point)) or 'Unix'
+            else:
+                for flag in partition.getFlagsAsString().split(", "):
+                    if flag in ["boot", "esp"]:
+                        description = 'EFI System Partition'
+                        self.mount_as = EFI_MOUNT_POINT
+                        break
             self.description = description
             self.os_fs_info = ': {0.description} ({0.type}; {0.size}; {0.free_space})'.format(self) if description else ': ' + self.type
             print "                  . self.description %s self.os_fs_info %s" % (self.description, self.os_fs_info)
