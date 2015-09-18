@@ -1,3 +1,9 @@
+live-installer (2015.09.18) betsy; urgency=medium
+
+  * Improved partition detection, don't rely on gdisk to detect EFI System Partition (as it can potentially hang until the user presses Enter in the terminal...#cough)
+
+ -- Clement Lefebvre <root@linuxmint.com>  Fri, 18 Sep 2015 13:32:42 +0100
+
 live-installer (2015.09.15) betsy; urgency=medium
 
   * Add more traces in the partition detection step
