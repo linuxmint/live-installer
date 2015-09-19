@@ -402,7 +402,6 @@ class Partition(object):
 
         # identify partition's description and used space
         try:
-            print "%s: '%s'" % (partition.path, partition.getFlagsAsString())
             print "                  . About to mount it..."
             os.system('mount --read-only {} {}'.format(partition.path, TMP_MOUNTPOINT))
             size, free, self.used_percent, mount_point = getoutput("df {0} | grep '^{0}' | awk '{{print $2,$4,$5,$6}}' | tail -1".format(partition.path)).split(None, 3)
@@ -447,11 +446,16 @@ class Partition(object):
                 description = getoutput("su -c '{{ . {0}/etc/lsb-release && echo $DISTRIB_DESCRIPTION; }} || \
                                                 {{ . {0}/etc/os-release && echo $PRETTY_NAME; }}' mint".format(mount_point)) or 'Unix'
             else:
-                for flag in partition.getFlagsAsString().split(", "):
-                    if flag in ["boot", "esp"]:
-                        description = 'EFI System Partition'
-                        self.mount_as = EFI_MOUNT_POINT
-                        break
+                try:
+                    if partition.active:
+                        for flag in partition.getFlagsAsString().split(", "):
+                            if flag in ["boot", "esp"]:
+                                description = 'EFI System Partition'
+                                self.mount_as = EFI_MOUNT_POINT
+                                break
+                except Exception, detail:
+                    # best effort
+                    print "Could not read partition flags for %s: %s" % (partition.path, detail)
             self.description = description
             self.os_fs_info = ': {0.description} ({0.type}; {0.size}; {0.free_space})'.format(self) if description else ': ' + self.type
             print "                  . self.description %s self.os_fs_info %s" % (self.description, self.os_fs_info)
