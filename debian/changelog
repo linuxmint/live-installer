@@ -1,3 +1,9 @@
+live-installer (2015.09.19) betsy; urgency=medium
+
+  * Partitioning: Don't read flags on inactive partitions
+
+ -- Clement Lefebvre <root@linuxmint.com>  Sat, 19 Sep 2015 11:19:03 +0100
+
 live-installer (2015.09.18) betsy; urgency=medium
 
   * Improved partition detection, don't rely on gdisk to detect EFI System Partition (as it can potentially hang until the user presses Enter in the terminal...#cough)
