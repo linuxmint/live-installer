@@ -141,8 +141,9 @@ class InstallerWindow:
 
         self.face_button.add_separator()
 
-        # if the command fails, we don't have a webcam
-        webcam_detected = (0 == os.system('streamer -o /tmp/live-installer-face07.jpeg'))
+        # if no /dev/video*, we don't have a webcam
+        from glob import glob
+        webcam_detected = bool(len(glob('/dev/video*')))
 
         if webcam_detected:
             self.face_button.add_menuitem(self.face_photo_menuitem)
@@ -358,7 +359,7 @@ class InstallerWindow:
         if 0 != os.system('streamer -j90 -t8 -s800x600 -o /tmp/live-installer-face00.jpeg'):
             return  # Error, no webcam
         # Convert and resize the 7th frame (the webcam takes a few frames to "lighten up")
-        os.system('convert /tmp/live-installer-face07.jpeg -resize x96 /tmp/live-installer-face.png')
+        os.system('convert /tmp/live-installer-face07.jpeg -crop 600x600+100+0 -resize 96x96 /tmp/live-installer-face.png')
         self.face_button.set_picture_from_file("/tmp/live-installer-face.png")
 
     def fix_text_wrap(self):
