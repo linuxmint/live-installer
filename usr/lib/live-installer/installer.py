@@ -482,6 +482,8 @@ class InstallerEngine:
             self.update_progress(pulse=True, total=our_total, current=our_current, message=_("Installing bootloader"))
             print " --> Running grub-install"
             self.do_run_in_chroot("grub-install --force %s" % setup.grub_device)
+            #fix not add windows grub entry 
+            self.do_run_in_chroot("update-grub")
             self.do_configure_grub(our_total, our_current)
             grub_retries = 0
             while (not self.do_check_grub(our_total, our_current)):
