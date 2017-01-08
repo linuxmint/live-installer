@@ -1,3 +1,18 @@
+live-installer (2017.01.08) betsy; urgency=medium
+
+  [ Kernc ]
+  * Use streamer instead of OpenCV for webcam face capture
+  * Test for /dev/video* to see if webcam exists & crop image to rect
+
+  [ Ali Rıza KESKİN ]
+  * Update installer.py
+
+  [ Clement Lefebvre ]
+  * Unbrand icon
+  * Fix icon changes
+
+ -- Clement Lefebvre <root@linuxmint.com>  Sun, 08 Jan 2017 17:12:34 +0000
+
 live-installer (2015.09.19) betsy; urgency=medium
 
   * Partitioning: Don't read flags on inactive partitions
