@@ -1,3 +1,9 @@
+live-installer (2017.01.09) betsy; urgency=medium
+
+  * Fix crash when user refuses to initiate a blank HDD
+
+ -- Clement Lefebvre <root@linuxmint.com>  Mon, 09 Jan 2017 17:03:37 +0000
+
 live-installer (2017.01.08) betsy; urgency=medium
 
   [ Kernc ]
