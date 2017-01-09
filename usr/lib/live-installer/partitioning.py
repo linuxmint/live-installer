@@ -301,7 +301,10 @@ class PartitionSetup(gtk.TreeStore):
             self.html_disks[disk_path] = DISK_TEMPLATE.format(PARTITIONS_HTML=''.join(PARTITION_TEMPLATE.format(p) for p in partitions))
 
     def get_html(self, disk):
-        return self.html_disks[disk]
+        if disk in self.html_disks:
+            return self.html_disks[disk]
+        else:
+            return ""
 
     def full_disk_format(self, device):
         # Create a default partition set up
