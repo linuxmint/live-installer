@@ -277,6 +277,10 @@ class InstallerEngine:
             line = fd.read().replace('\n', ' ')
         self.do_run_in_chroot("apt-get remove --purge --yes --force-yes %s" % line)
 
+        # remove live leftovers
+        self.do_run_in_chroot("rm -rf /etc/live")
+        self.do_run_in_chroot("rm -rf /lib/live")
+
         # add new user
         print " --> Adding new user"
         our_current += 1
