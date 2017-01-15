@@ -1,3 +1,9 @@
+live-installer (2017.01.15) betsy; urgency=medium
+
+  * Remove live config leftovers
+
+ -- Clement Lefebvre <root@linuxmint.com>  Sun, 15 Jan 2017 16:19:11 +0000
+
 live-installer (2017.01.09) betsy; urgency=medium
 
   * Fix crash when user refuses to initiate a blank HDD
