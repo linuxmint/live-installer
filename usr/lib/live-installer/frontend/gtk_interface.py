@@ -123,15 +123,18 @@ class InstallerWindow:
         self.face_browse_menuitem = gtk.MenuItem(_("Browse for more pictures..."))             
         self.face_browse_menuitem.connect('activate', self._on_face_browse_menuitem_activated)
 
-        face_dirs = ["/usr/share/pixmaps/faces"]
+        face_dirs = ["/usr/share/pixmaps/faces",
+                     "/usr/share/icons/gnome/256x256/emotes"]
+        have_pictures = None
         for face_dir in face_dirs:
             if os.path.exists(face_dir):
+                have_pictures = True
                 pictures = sorted(os.listdir(face_dir))
                 for picture in pictures:
                     path = os.path.join(face_dir, picture)
                     self.face_button.add_picture(path, self._on_face_menuitem_activated)
-
-        self.face_button.add_separator()
+        if have_pictures:
+            self.face_button.add_separator()
 
         # if no /dev/video*, we don't have a webcam
         from glob import glob
