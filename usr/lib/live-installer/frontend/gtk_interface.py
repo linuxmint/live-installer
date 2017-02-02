@@ -28,6 +28,7 @@ import parted
 
 gettext.install("live-installer", "/usr/share/linuxmint/locale")
 gtk.gdk.threads_init()
+gtk.gdk.threads_enter()
 
 LOADING_ANIMATION = '/usr/share/live-installer/loading.gif'
 
