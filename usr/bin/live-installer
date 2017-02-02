@@ -1,5 +1,14 @@
 #!/bin/sh
-
 optimize='OO'; case "$*" in *--debug*) unset optimize; esac
 # Launch live-installer with all passed arguments (future reserved)
+# squashfs control
+if [ -d /lib/live/mount/medium/live/filesystem.squashfs ]
+then
+#open installer
 python2.7 -tt${optimize} /usr/lib/live-installer/main.py "$@"
+else
+echo "/lib/live/mount/medium/live/filesystem.squashfs not found. Use /dev/loop0"
+cat /etc/live-installer/live-installerx.conf > /etc/live-installer/live-installer.conf
+#open installer
+python2.7 -tt${optimize} /usr/lib/live-installer/main.py "$@"
+fi
