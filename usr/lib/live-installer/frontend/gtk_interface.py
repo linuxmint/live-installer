@@ -935,6 +935,9 @@ class InstallerWindow:
                     self.paused = True
                     self.activate_page(self.PAGE_CUSTOMPAUSED)
                     self.wTree.get_widget("button_next").show()
+                    self.wTree.get_widget("button_next").set_sensitive(True)
+                    self.wTree.get_widget("button_back").set_sensitive(True)
+                    self.wTree.get_widget("button_quit").set_sensitive(True)
                     MessageDialog(_("Installation paused"), _("The installation is now paused. Please read the instructions on the page carefully before clicking Forward to finish the installation."))
                     self.wTree.get_widget("button_next").set_sensitive(True)
 
