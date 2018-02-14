@@ -481,15 +481,29 @@ class InstallerWindow:
 
         #Load countries into memory
         countries = {}
-        for line in commands.getoutput("isoquery --iso 3166 | cut -f1,4-").split('\n'):
+        iso_standard = "3166"
+        if os.path.exists("/usr/share/xml/iso-codes/iso_3166-1.xml"):
+            iso_standard = "3166-1"
+        for line in commands.getoutput("isoquery --iso %s | cut -f1,4-" % iso_standard).split('\n'):
             ccode, cname = line.split(None, 1)
             countries[ccode] = cname
 
         #Load languages into memory
         languages = {}
-        for line in commands.getoutput("isoquery --iso 639").split('\n'):
-            _, code3, code2, language = line.split('\t')
-            languages[code2 or code3] = language
+        iso_standard = "639"
+        if os.path.exists("/usr/share/xml/iso-codes/iso_639-2.xml"):
+            iso_standard = "639-2"
+        for line in commands.getoutput("isoquery --iso %s | cut -f3,4-" % iso_standard).split('\n'):
+            cols = line.split(None, 1)
+            if len(cols) > 1:
+                name = cols[1].replace(";", ",")
+                languages[cols[0]] = name
+        for line in commands.getoutput("isoquery --iso %s | cut -f1,4-" % iso_standard).split('\n'):
+            cols = line.split(None, 1)
+            if len(cols) > 1:
+                if cols[0] not in languages.keys():
+                    name = cols[1].replace(";", ",")
+                    languages[cols[0]] = name
 
         # Construct language selection model
         model = Gtk.ListStore(str, str, GdkPixbuf.Pixbuf, str)
@@ -497,18 +511,26 @@ class InstallerWindow:
         flag_path = lambda ccode: self.resource_dir + '/flags/16/' + ccode.lower() + '.png'
         from utils import memoize
         flag = memoize(lambda ccode: GdkPixbuf.Pixbuf.new_from_file(flag_path(ccode)))
-        for locale in commands.getoutput("awk -F'[@ \.]' '/UTF-8/{ print $1 }' /usr/share/i18n/SUPPORTED | uniq").split('\n'):
-            try:
-                if '_' in locale:
-                    lang, ccode = locale.split('_')
-                    language, country = languages[lang], countries[ccode]
-                else:
-                    lang = locale
+        for locale in commands.getoutput("awk -F'[@ .]' '/UTF-8/{ print $1 }' /usr/share/i18n/SUPPORTED | uniq").split('\n'):
+            if '_' in locale:
+                lang, ccode = locale.split('_')
+                language = lang
+                country = ccode
+                try:
                     language = languages[lang]
-                    country = ''
-            except:
-                print "Error adding locale '%s'" % locale
-                continue
+                except:
+                    pass
+                try:
+                    country = countries[ccode]
+                except:
+                    pass
+            else:
+                lang = locale
+                try:
+                    language = languages[lang]
+                except:
+                    pass
+                country = ''
             pixbuf = flag(ccode) if not lang in 'eo ia' else flag('_' + lang)
             iter = model.append((language, country, pixbuf, locale))
             if (ccode == cur_country_code and

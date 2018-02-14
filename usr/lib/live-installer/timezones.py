@@ -43,12 +43,10 @@ def debug(func):
         return func(*func_args, **func_kwargs)
     return wrapper
 
-@debug
 def to_float(position, wholedigits):
     assert position and len(position) > 4 and wholedigits < 9
     return float(position[:wholedigits + 1] + '.' + position[wholedigits + 1:])
 
-@debug
 def pixel_position(lat, lon):
     """Transform latlong pair into map pixel coordinates"""
     dx = MAP_SIZE[0] / 2 / 180
@@ -193,7 +191,6 @@ ADJUST_HOURS_MINUTES = re.compile('([+-])([0-9][0-9])([0-9][0-9])')
 
 IS_WINTER = datetime.now().timetuple().tm_yday not in range(80, 264)  # today is between Mar 20 and Sep 20
 
-@debug
 def select_timezone(tz):
     # Adjust time preview to current timezone (using `date` removes need for pytz package)
     offset = getoutput('TZ={} date +%z'.format(tz.name))
@@ -217,12 +214,10 @@ def select_timezone(tz):
     if y + time_label_box.get_allocation().height + 4 > MAP_SIZE[1]: y -= time_label_box.get_allocation().height
     installer.builder.get_object("fixed_timezones").move(time_label_box, x, y)
 
-@debug
 def _get_x_offset():
     now = datetime.utcnow().timetuple()
     return - int((now.tm_hour*60 + now.tm_min - 12*60) / (24*60) * MAP_SIZE[0])  # night is centered at UTC noon (12)
 
-@debug
 def _get_image(overlay, x, y):
     """Superpose the picture of the timezone on the map"""
     im = BACK_IM.copy()
