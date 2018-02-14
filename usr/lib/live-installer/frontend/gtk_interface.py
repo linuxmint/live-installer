@@ -905,6 +905,27 @@ class InstallerWindow:
             if p.mount_as:
                 model.append(top, (bold(_("Mount %(path)s as %(mount)s") % {'path': p.partition.path, 'mount':p.mount_as}),))
 
+    @idle
+    def show_error_dialog(self, message, detail):
+        ErrorDialog(message, detail)
+
+    @idle
+    def show_reboot_dialog(self, message, detail):
+        reboot = QuestionDialog(_("Installation finished"), _("The installation is now complete. Do you want to restart your computer to use the new system?"))
+        if reboot:
+            os.system('reboot')
+
+    @idle
+    def pause_installation(self):
+        self.paused = True
+        self.activate_page(self.PAGE_CUSTOMPAUSED)
+        self.builder.get_object("button_next").show()
+        self.builder.get_object("button_next").set_sensitive(True)
+        self.builder.get_object("button_back").set_sensitive(True)
+        self.builder.get_object("button_quit").set_sensitive(True)
+        MessageDialog(_("Installation paused"), _("The installation is now paused. Please read the instructions on the page carefully before clicking Forward to finish the installation."))
+        self.builder.get_object("button_next").set_sensitive(True)
+
     @async
     def do_install(self):
         print " ## INSTALLATION "
@@ -913,8 +934,7 @@ class InstallerWindow:
 
         if __debug__:
             print " ## DEBUG MODE - INSTALLATION PROCESS NOT LAUNCHED"
-            with Gdk.lock:
-                return Gtk.main_quit()
+            return Gtk.main_quit()
 
         inst.set_progress_hook(self.update_progress)
         inst.set_error_hook(self.error_message)
@@ -930,25 +950,15 @@ class InstallerWindow:
         except Exception, detail1:
             print detail1
             do_try_finish_install = False
-            with Gdk.lock:
-                ErrorDialog(_("Installation error"), str(detail1))
+            self.show_error_dialog(_("Installation error"), str(detail1))
 
         if self.critical_error_happened:
-            with Gdk.lock:
-                ErrorDialog(_("Installation error"), self.critical_error_message)
+            self.show_error_dialog(_("Installation error"), self.critical_error_message)
             do_try_finish_install = False
 
         if do_try_finish_install:
             if(self.setup.skip_mount):
-                with Gdk.lock:
-                    self.paused = True
-                    self.activate_page(self.PAGE_CUSTOMPAUSED)
-                    self.builder.get_object("button_next").show()
-                    self.builder.get_object("button_next").set_sensitive(True)
-                    self.builder.get_object("button_back").set_sensitive(True)
-                    self.builder.get_object("button_quit").set_sensitive(True)
-                    MessageDialog(_("Installation paused"), _("The installation is now paused. Please read the instructions on the page carefully before clicking Forward to finish the installation."))
-                    self.builder.get_object("button_next").set_sensitive(True)
+                self.pause_installation()
 
                 while(self.paused):
                     time.sleep(0.1)
@@ -957,20 +967,16 @@ class InstallerWindow:
                 inst.finish_install(self.setup)
             except Exception, detail1:
                 print detail1
-                with Gdk.lock:
-                    ErrorDialog(_("Installation error"), str(detail1))
+                self.show_error_dialog(_("Installation error"), str(detail1))
 
             # show a message dialog thingum
             while(not self.done):
                 time.sleep(0.1)
 
-            with Gdk.lock:
-                if self.critical_error_happened:
-                    ErrorDialog(_("Installation error"), self.critical_error_message)
-                else:
-                    reboot = QuestionDialog(_("Installation finished"), _("The installation is now complete. Do you want to restart your computer to use the new system?"))
-                    if reboot:
-                        os.system('reboot')
+            if self.critical_error_happened:
+                self.show_error_dialog(_("Installation error"), self.critical_error_message)
+            else:
+                self.show_reboot_dialog()
 
             print " ## INSTALLATION COMPLETE "
 
@@ -981,6 +987,7 @@ class InstallerWindow:
         self.critical_error_happened = True
         self.critical_error_message = message
 
+    @idle
     def update_progress(self, fail=False, done=False, pulse=False, total=0,current=0,message=""):
         if(pulse):
             self.builder.get_object("label_install_progress").set_label(message)
@@ -1000,6 +1007,7 @@ class InstallerWindow:
         self.builder.get_object("progressbar").set_fraction(pct)
         self.builder.get_object("label_install_progress").set_label(message)
 
+    @idle
     def do_progress_pulse(self, message):
         def pbar_pulse():
             if(not self.should_pulse):
