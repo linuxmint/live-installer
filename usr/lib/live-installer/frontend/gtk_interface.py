@@ -77,9 +77,6 @@ class InstallerWindow:
 
         # load the window object
         self.window = self.builder.get_object("main_window")
-        self.window.set_position(Gtk.WindowPosition.CENTER_ALWAYS)
-        self.window.set_resizable(False)
-
         self.window.connect("delete-event", self.quit_cb)
 
         # Wizard pages
@@ -239,8 +236,6 @@ class InstallerWindow:
 
         # make sure we're on the right page (no pun.)
         self.activate_page(0)
-
-        self.builder.get_object("menubar").hide()
 
         if(fullscreen):
             # dedicated installer mode thingum
