@@ -199,13 +199,6 @@ def select_timezone(tz):
     adjust_time = timedelta(hours=int(tzadj[0] + tzadj[1]),
                             minutes=int(tzadj[0] + tzadj[2]))
 
-    try:
-        hexcolor = '{:02x}{:02x}{:02x}'.format(*CC_IM.getpixel((tz.x, tz.y)))
-        overlay = 'timezone_{}.png'.format(TIMEZONE_COLORS[hexcolor])
-    except (IndexError, KeyError):
-        installer.builder.get_object("image_timezones").set_from_pixbuf(_get_image(None, min(tz.x, MAP_SIZE[0]), min(tz.y, MAP_SIZE[1])))
-    else:
-        installer.builder.get_object("image_timezones").set_from_pixbuf(_get_image(None, min(tz.x, MAP_SIZE[0]), min(tz.y, MAP_SIZE[1])))
     installer.setup.timezone = tz.name
     installer.builder.get_object("button_timezones").set_label(tz.name)
     # Move the current time label to appropriate position
@@ -224,9 +217,9 @@ def _get_image(overlay, x, y):
     if overlay:
         overlay_im = Image.open(TIMEZONE_RESOURCES + overlay)
         im.paste(BACK_ENHANCED_IM, overlay_im)
-    night_im = ImageChops.offset(NIGHT_IM, _get_x_offset(), 0)
-    if IS_WINTER: night_im = ImageOps.flip(night_im)
-    im.paste(Image.alpha_composite(night_im, LIGHTS_IM), night_im)
+    # night_im = ImageChops.offset(NIGHT_IM, _get_x_offset(), 0)
+    # if IS_WINTER: night_im = ImageOps.flip(night_im)
+    # im.paste(Image.alpha_composite(night_im, LIGHTS_IM), night_im)
     im.paste(DOT_IM, (int(x - DOT_IM.size[1]/2), int(y - DOT_IM.size[0]/2)), DOT_IM)
     return GdkPixbuf.Pixbuf.new_from_data(im.tobytes(), GdkPixbuf.Colorspace.RGB,
                                         False, 8, im.size[0], im.size[1], im.size[0] * 3)

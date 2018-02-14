@@ -148,7 +148,7 @@ def partitions_popup_menu(widget, event):
         menuItem.connect("activate", lambda w: assign_mount_point(partition, EFI_MOUNT_POINT, ''))
         menu.append(menuItem)
     menu.show_all()
-    menu.popup(None, None, None, event.button, event.time)
+    menu.popup(None, None, None, None, 0, event.time)
 
 def manually_edit_partitions(widget):
     """ Edit only known disks in gparted, selected one first """
@@ -502,34 +502,36 @@ class Partition(object):
 
 class PartitionDialog(object):
     def __init__(self, path, mount_as, format_as, type):
-        self.glade = RESOURCE_DIR + 'interface.glade'
-        self.dTree = Gtk.glade.XML(self.glade, 'dialog')
-        self.window = self.dTree.get_widget("dialog")
+        glade_file = RESOURCE_DIR + 'interface.ui'
+        self.builder = Gtk.Builder()
+        self.builder.add_from_file(glade_file)
+        self.window = self.builder.get_object("dialog")
         self.window.set_title(_("Edit partition"))
-        self.dTree.get_widget("label_partition").set_markup("<b>%s</b>" % _("Device:"))
-        self.dTree.get_widget("label_partition_value").set_label(path)
-        self.dTree.get_widget("label_use_as").set_markup(_("Format as:"))
-        self.dTree.get_widget("label_mount_point").set_markup(_("Mount point:"))
+        self.builder.get_object("label_partition").set_markup("<b>%s</b>" % _("Device:"))
+        self.builder.get_object("label_partition_value").set_label(path)
+        self.builder.get_object("label_use_as").set_markup(_("Format as:"))
+        self.builder.get_object("label_mount_point").set_markup(_("Mount point:"))
         # Build supported filesystems list
         filesystems = sorted(['', 'swap'] +
                              [fs[11:] for fs in getoutput('echo /sbin/mkfs.*').split()],
                              key=lambda x: 0 if x in ('', 'ext4') else 1 if x == 'swap' else 2)
         model = Gtk.ListStore(str)
-        for i in filesystems: model.append([i])
-        self.dTree.get_widget("combobox_use_as").set_model(model)
-        self.dTree.get_widget("combobox_use_as").set_active(filesystems.index(format_as))
+        for i in filesystems:
+            model.append([i])
+        self.builder.get_object("combobox_use_as").set_model(model)
+        self.builder.get_object("combobox_use_as").set_active(filesystems.index(format_as))
         # Build list of pre-provided mountpoints
         model = Gtk.ListStore(str)
-        for i in " / /home /boot /boot/efi /srv /tmp swap".split(' '):
+        for i in ["/", "/home", "/boot", "/boot/efi", "/srv", "/tmp", "swap"]:
             model.append([i])
-        self.dTree.get_widget("comboboxentry_mount_point").set_model(model)
-        self.dTree.get_widget("comboboxentry_mount_point").get_child().set_text(mount_as)
+        self.builder.get_object("comboboxentry_mount_point").set_model(model)
+        self.builder.get_object("comboboxentry_mount_point").get_child().set_text(mount_as)
 
     def show(self):
         self.window.run()
         self.window.hide()
-        w = self.dTree.get_widget("comboboxentry_mount_point")
+        w = self.builder.get_object("comboboxentry_mount_point")
         mount_as = w.get_child().get_text().strip()
-        w = self.dTree.get_widget("combobox_use_as")
+        w = self.builder.get_object("combobox_use_as")
         format_as = w.get_model()[w.get_active()][0]
         return mount_as, format_as
