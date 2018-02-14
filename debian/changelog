@@ -1,3 +1,15 @@
+live-installer (2018.02.14) tara; urgency=medium
+
+  * Custom install: Fix https://bugs.launchpad.net/linuxmint/+bug/1223631
+  * Migrate to GTK3
+  * Fix parsing countries/locales with newer ISO standards
+  * Fix erros in Glade file
+  * Fixes in partitioning/timezones
+  * Improve multithreading
+  * Happy Valentine's ;)
+
+ -- Clement Lefebvre <root@linuxmint.com>  Wed, 14 Feb 2018 18:28:20 +0000
+
 live-installer (2017.01.15) betsy; urgency=medium
 
   * Remove live config leftovers
