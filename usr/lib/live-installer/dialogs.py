@@ -1,45 +1,39 @@
 
-import gtk
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
 
-DIALOG_TYPES = {
-    gtk.MESSAGE_INFO: 'MessageDialog',
-    gtk.MESSAGE_ERROR: 'ErrorDialog',
-    gtk.MESSAGE_WARNING: 'WarningDialog',
-    gtk.MESSAGE_QUESTION: 'QuestionDialog',
-}
-
-class Dialog(gtk.MessageDialog):
-    def __init__(self, style, buttons,
-                 title, text, text2=None, parent=None):
-        parent = parent or next((w for w in gtk.window_list_toplevels() if w.get_title()), None)
-        gtk.MessageDialog.__init__(self, parent,
-                                   gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-                                   style, buttons, text)
-        self.set_position(gtk.WIN_POS_CENTER)
+class Dialog(Gtk.MessageDialog):
+    def __init__(self, style, buttons, title, text, text2=None, parent=None):
+        Gtk.MessageDialog.__init__(self, parent, 0, style, buttons)
+        self.set_position(Gtk.WindowPosition.CENTER)
         self.set_icon_from_file("/usr/share/icons/live-installer.png")
         self.set_title(title)
         self.set_markup(text)
         self.desc = text[:30] + ' ...' if len(text) > 30 else text
-        self.dialog_type = DIALOG_TYPES[style]
         if text2: self.format_secondary_markup(text2)
+        if parent:
+            self.set_transient_for(parent)
+            self.set_modal(True)
 
     def show(self):
-        """ Show the dialog.
-            Returns True if user response was confirmatory.
-        """
-        print 'Showing {0.dialog_type} ({0.desc})'.format(self)
-        try: return self.run() in (gtk.RESPONSE_YES, gtk.RESPONSE_APPLY,
-                                   gtk.RESPONSE_OK, gtk.RESPONSE_ACCEPT)
-        finally: self.destroy()
+        try:
+            response = self.run()
+            if response in (Gtk.ResponseType.YES, Gtk.ResponseType.APPLY, Gtk.ResponseType.OK, Gtk.ResponseType.ACCEPT):
+                return True
+            else:
+                return False
+        finally:
+            self.destroy()
 
 def MessageDialog(*args):
-    return Dialog(gtk.MESSAGE_INFO, gtk.BUTTONS_OK, *args).show()
+    return Dialog(Gtk.MessageType.INFO, Gtk.ButtonsType.OK, *args).show()
 
 def QuestionDialog(*args):
-    return Dialog(gtk.MESSAGE_QUESTION, gtk.BUTTONS_YES_NO, *args).show()
+    return Dialog(Gtk.MessageType.QUESTION, Gtk.ButtonsType.YES_NO, *args).show()
 
 def WarningDialog(*args):
-    return Dialog(gtk.MESSAGE_WARNING, gtk.BUTTONS_OK, *args).show()
+    return Dialog(Gtk.MessageType.WARNING, Gtk.ButtonsType.OK, *args).show()
 
 def ErrorDialog(*args):
-    return Dialog(gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, *args).show()
+    return Dialog(Gtk.MessageType.ERROR, Gtk.ButtonsType.OK, *args).show()

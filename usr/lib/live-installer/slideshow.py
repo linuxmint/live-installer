@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 
 import os
-import gtk
-import glib
 import time
 import string
 import threading
+
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
 
 pages = [
 'welcome.html',
@@ -16,9 +18,25 @@ pages = [
 'community.html'
 ]
 
-class Slideshow(threading.Thread):
+# Used as a decorator to run things in the background
+def async(func):
+    def wrapper(*args, **kwargs):
+        thread = threading.Thread(target=func, args=args, kwargs=kwargs)
+        thread.daemon = True
+        thread.start()
+        return thread
+    return wrapper
+
+# Used as a decorator to run things in the main loop, from another thread
+def idle(func):
+    def wrapper(*args):
+        GObject.idle_add(func, *args)
+    return wrapper
+
+
+
+class Slideshow():
     def __init__(self, webviewObject, slideshowDirectory, language='', intervalSeconds=30, loopPages=False):
-        threading.Thread.__init__(self)
         self.browser = webviewObject
         self.loop = loopPages
         self.interval = intervalSeconds
@@ -28,12 +46,7 @@ class Slideshow(threading.Thread):
         self.template = os.path.join(slideshowDirectory, 'template.html')
         self.templateText = ''
         self.pageContent = []
-        
-        # Prepare variables
-        self.prepare()
-        
-    
-    def prepare(self):
+
         try:
             # Prepare pages
             if os.path.isfile(self.template):
@@ -63,8 +76,9 @@ class Slideshow(threading.Thread):
         except Exception, detail:
             print detail
 
+    @async
     def run(self):
-        # Update widget in main thread             
+        # Update widget in main thread
         try:
             if self.pageContent:
                 # Loop through all pages
@@ -74,15 +88,11 @@ class Slideshow(threading.Thread):
                 while runLoop:
                     # Get the full path of the content page
                     if os.path.isfile(self.pageContent[i][0]):
-                        #print 'Load page: ' + self.pageContent[i][0]
-                        # Load html into browser object
-                        # Use glib to schedule an update of the parent browser object
-                        # If you do this directly the objects won't refresh
-                        glib.idle_add(self.browser.load_html_string, self.pageContent[i][1], 'file:///')
-                        
+                        self.updatePage(self.pageContent[i][1])
+
                         # Wait interval
                         time.sleep(self.interval)
-                        
+
                         # Reset counter when you need to loop the pages
                         if i == lastIndex:
                             if self.loop:
@@ -98,7 +108,11 @@ class Slideshow(threading.Thread):
                 print 'No pages found to load'
         except Exception, detail:
             print detail
-            
+
+    @idle
+    def updatePage(self, page):
+        self.browser.load_html_string(page, 'file:///')
+
     def getLanguageDirectory(self):
         langDir = self.slideshowDir
         if self.language != '':

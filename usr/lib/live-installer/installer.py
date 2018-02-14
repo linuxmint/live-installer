@@ -43,7 +43,7 @@ class InstallerEngine:
         self.live_user = config.get('live_user', 'user')
         self.media = config.get('live_media_source', '/lib/live/mount/medium/live/filesystem.squashfs')
         self.media_type = config.get('live_media_type', 'squashfs')
-        # Flush print when it's called    
+        # Flush print when it's called
         sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
 
     def set_progress_hook(self, progresshook):
@@ -51,7 +51,7 @@ class InstallerEngine:
         ''' i.e. def my_callback(progress_type, message, current_progress, total) '''
         ''' Where progress_type is any off PROGRESS_START, PROGRESS_UPDATE, PROGRESS_COMPLETE, PROGRESS_ERROR '''
         self.update_progress = progresshook
-        
+
     def set_error_hook(self, errorhook):
         ''' Set a callback to be called on errors '''
         self.error_message = errorhook
