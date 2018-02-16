@@ -37,8 +37,8 @@ def async(func):
 
 # Used as a decorator to run things in the main loop, from another thread
 def idle(func):
-    def wrapper(*args):
-        GObject.idle_add(func, *args)
+    def wrapper(*args, **kwargs):
+        GObject.idle_add(func, *args, **kwargs)
     return wrapper
 
 
@@ -988,7 +988,7 @@ class InstallerWindow:
         self.critical_error_message = message
 
     @idle
-    def update_progress(self, fail=False, done=False, pulse=False, total=0,current=0,message=""):
+    def update_progress(self, current, total, pulse, done, message):
         if(pulse):
             self.builder.get_object("label_install_progress").set_label(message)
             self.do_progress_pulse(message)

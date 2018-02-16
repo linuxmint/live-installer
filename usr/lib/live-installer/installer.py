@@ -61,13 +61,13 @@ class InstallerEngine:
 
     def get_distribution_version(self):
         return self.distribution_version
-        
-    def step_format_partitions(self, setup):        
-        for partition in setup.partitions:                    
-            if(partition.format_as is not None and partition.format_as != ""):                
+
+    def step_format_partitions(self, setup):
+        for partition in setup.partitions:
+            if(partition.format_as is not None and partition.format_as != ""):
                 # report it. should grab the total count of filesystems to be formatted ..
-                self.update_progress(total=4, current=1, pulse=True, message=_("Formatting %(partition)s as %(format)s ...") % {'partition':partition.partition.path, 'format':partition.format_as})
-                
+                self.update_progress(1, 4, True, False, _("Formatting %(partition)s as %(format)s ...") % {'partition':partition.partition.path, 'format':partition.format_as})
+
                 #Format it
                 if partition.format_as == "swap":
                     cmd = "mkswap %s" % partition.partition.path
@@ -82,7 +82,7 @@ class InstallerEngine:
                         cmd = "mkfs.%s %s -F 32" % (partition.format_as, partition.partition.path)
                     else:
                         cmd = "mkfs.%s %s" % (partition.format_as, partition.partition.path) # works with bfs, btrfs, minix, msdos, ntfs, vfat
-                    
+
                 print "EXECUTING: '%s'" % cmd
                 self.exec_cmd(cmd)
                 partition.type = partition.format_as
@@ -90,18 +90,18 @@ class InstallerEngine:
     def step_mount_source(self, setup):
         # Mount the installation media
         print " --> Mounting partitions"
-        self.update_progress(total=4, current=2, message=_("Mounting %(partition)s on %(mountpoint)s") % {'partition':self.media, 'mountpoint':"/source/"})
+        self.update_progress(2, 4, False, False, _("Mounting %(partition)s on %(mountpoint)s") % {'partition':self.media, 'mountpoint':"/source/"})
         print " ------ Mounting %s on %s" % (self.media, "/source/")
         self.do_mount(self.media, "/source/", self.media_type, options="loop")
-                                        
-    def step_mount_partitions(self, setup):  
+
+    def step_mount_partitions(self, setup):
         self.step_mount_source(setup)
-      
+
         # Mount the target partition
-        for partition in setup.partitions:                    
-            if(partition.mount_as is not None and partition.mount_as != ""):   
+        for partition in setup.partitions:
+            if(partition.mount_as is not None and partition.mount_as != ""):
                   if partition.mount_as == "/":
-                        self.update_progress(total=4, current=3, message=_("Mounting %(partition)s on %(mountpoint)s") % {'partition':partition.partition.path, 'mountpoint':"/target/"})
+                        self.update_progress(3, 4, False, False, _("Mounting %(partition)s on %(mountpoint)s") % {'partition':partition.partition.path, 'mountpoint':"/target/"})
                         print " ------ Mounting partition %s on %s" % (partition.partition.path, "/target/")
                         if partition.type == "fat32":
                             fs = "vfat"
@@ -109,8 +109,8 @@ class InstallerEngine:
                             fs = partition.type
                         self.do_mount(partition.partition.path, "/target", fs, None)
                         break
-        
-        # Mount the other partitions        
+
+        # Mount the other partitions
         for partition in setup.partitions:
             if(partition.mount_as is not None and partition.mount_as != "" and partition.mount_as != "/" and partition.mount_as != "swap"):
                 print " ------ Mounting %s on %s" % (partition.partition.path, "/target" + partition.mount_as)
@@ -121,7 +121,7 @@ class InstallerEngine:
                     fs = partition.type
                 self.do_mount(partition.partition.path, "/target" + partition.mount_as, fs, None)
 
-    def init_install(self, setup):        
+    def init_install(self, setup):
         # mount the media location.
         print " --> Installation started"
         if(not os.path.exists("/target")):
@@ -158,7 +158,7 @@ class InstallerEngine:
         os.chdir(SOURCE)
         # index the files
         print " --> Indexing files"
-        self.update_progress(pulse=True, message=_("Indexing files to be copied.."))
+        self.update_progress(0, 0, True, False, _("Indexing files to be copied.."))
         for top,dirs,files in os.walk(SOURCE, topdown=False):
             our_total += len(dirs) + len(files)
         our_total += 1 # safenessness
@@ -178,7 +178,7 @@ class InstallerEngine:
 
                 # now show the world what we're doing
                 our_current += 1
-                self.update_progress(total=our_total, current=our_current, message=_("Copying %s") % rpath)
+                self.update_progress(our_current, our_total, False, False, _("Copying %s") % rpath)
 
                 if os.path.exists(targetpath):
                     if not os.path.isdir(targetpath):
@@ -220,7 +220,7 @@ class InstallerEngine:
         for dirtime in directory_times:
             (directory, atime, mtime) = dirtime
             try:
-                self.update_progress(pulse=True, message=_("Restoring meta-information on %s") % directory)
+                self.update_progress(0, 0, True, False, _("Restoring meta-information on %s") % directory)
                 os.utime(directory, (atime, mtime))
             except OSError:
                 pass
@@ -230,7 +230,7 @@ class InstallerEngine:
         our_current = 0
         # chroot
         print " --> Chrooting"
-        self.update_progress(total=our_total, current=our_current, message=_("Entering the system ..."))
+        self.update_progress(our_current, our_total, False, False, _("Entering the system ..."))
         os.system("mount --bind /dev/ /target/dev/")
         os.system("mount --bind /dev/shm /target/dev/shm")
         os.system("mount --bind /dev/pts /target/dev/pts")
@@ -272,7 +272,7 @@ class InstallerEngine:
         # remove live-packages (or w/e)
         print " --> Removing live packages"
         our_current += 1
-        self.update_progress(total=our_total, current=our_current, message=_("Removing live configuration (packages)"))
+        self.update_progress(our_current, our_total, False, False, _("Removing live configuration (packages)"))
         with open("/lib/live/mount/medium/live/filesystem.packages-remove", "r") as fd:
             line = fd.read().replace('\n', ' ')
         self.do_run_in_chroot("apt-get remove --purge --yes --force-yes %s" % line)
@@ -284,7 +284,7 @@ class InstallerEngine:
         # add new user
         print " --> Adding new user"
         our_current += 1
-        self.update_progress(total=our_total, current=our_current, message=_("Adding new user to the system"))
+        self.update_progress(our_current, our_total, False, False, _("Adding new user to the system"))
         self.do_run_in_chroot('adduser --disabled-login --gecos "{real_name}" {username}'.format(real_name=setup.real_name.replace('"', r'\"'), username=setup.username))
         for group in 'adm audio bluetooth cdrom dialout dip fax floppy fuse lpadmin netdev plugdev powerdev sambashare scanner sudo tape users vboxusers video'.split():
             self.do_run_in_chroot("adduser {user} {group}".format(user=setup.username, group=group))
@@ -324,7 +324,7 @@ class InstallerEngine:
         # write the /etc/fstab
         print " --> Writing fstab"
         our_current += 1
-        self.update_progress(total=our_total, current=our_current, message=_("Writing filesystem mount information to /etc/fstab"))
+        self.update_progress(our_current, our_total, False, False, _("Writing filesystem mount information to /etc/fstab"))
         # make sure fstab has default /proc and /sys entries
         if(not os.path.exists("/target/etc/fstab")):
             os.system("echo \"#### Static Filesystem Table File\" > /target/etc/fstab")
@@ -377,7 +377,7 @@ class InstallerEngine:
         # write host+hostname infos
         print " --> Writing hostname"
         our_current += 1
-        self.update_progress(total=our_total, current=our_current, message=_("Setting hostname"))
+        self.update_progress(our_current, our_total, False, False, _("Setting hostname"))
         hostnamefh = open("/target/etc/hostname", "w")
         hostnamefh.write("%s\n" % setup.hostname)
         hostnamefh.close()
@@ -396,7 +396,7 @@ class InstallerEngine:
         # set the locale
         print " --> Setting the locale"
         our_current += 1
-        self.update_progress(total=our_total, current=our_current, message=_("Setting locale"))
+        self.update_progress(our_current, our_total, False, False, _("Setting locale"))
         os.system("echo \"%s.UTF-8 UTF-8\" >> /target/etc/locale.gen" % setup.language)
         self.do_run_in_chroot("locale-gen")
         os.system("echo \"\" > /target/etc/default/locale")
@@ -410,7 +410,7 @@ class InstallerEngine:
 
         # localizing
         print " --> Localizing packages"
-        self.update_progress(total=our_total, current=our_current, message=_("Localizing packages"))
+        self.update_progress(our_current, our_total, False, False, _("Localizing packages"))
         if setup.language != "en_US":
             os.system("mkdir -p /target/debs")
             language_code = setup.language
@@ -425,7 +425,7 @@ class InstallerEngine:
         if os.path.exists("/etc/linuxmint/info"):
             # drivers
             print " --> Installing drivers"
-            self.update_progress(total=our_total, current=our_current, message=_("Installing drivers"))
+            self.update_progress(our_current, our_total, False, False, _("Installing drivers"))
             drivers = commands.getoutput("mint-drivers")
             if "broadcom-sta-dkms" in drivers:
                 try:
@@ -440,7 +440,7 @@ class InstallerEngine:
         # set the keyboard options..
         print " --> Setting the keyboard"
         our_current += 1
-        self.update_progress(total=our_total, current=our_current, message=_("Setting keyboard options"))
+        self.update_progress(our_current, our_total, False, False, _("Setting keyboard options"))
         consolefh = open("/target/etc/default/console-setup", "r")
         newconsolefh = open("/target/etc/default/console-setup.new", "w")
         for line in consolefh:
@@ -483,10 +483,10 @@ class InstallerEngine:
         print " --> Configuring Grub"
         our_current += 1
         if(setup.grub_device is not None):
-            self.update_progress(pulse=True, total=our_total, current=our_current, message=_("Installing bootloader"))
+            self.update_progress(our_current, our_total, False, False, _("Installing bootloader"))
             print " --> Running grub-install"
             self.do_run_in_chroot("grub-install --force %s" % setup.grub_device)
-            #fix not add windows grub entry 
+            #fix not add windows grub entry
             self.do_run_in_chroot("update-grub")
             self.do_configure_grub(our_total, our_current)
             grub_retries = 0
@@ -507,7 +507,7 @@ class InstallerEngine:
         # Clean APT
         print " --> Cleaning APT"
         our_current += 1
-        self.update_progress(pulse=True, total=our_total, current=our_current, message=_("Cleaning APT"))
+        self.update_progress(our_current, our_total, True, False, _("Cleaning APT"))
         os.system("chroot /target/ /bin/sh -c \"dpkg --configure -a\"")
         self.do_run_in_chroot("sed -i 's/^deb cdrom/#deb cdrom/' /etc/apt/sources.list")
         self.do_run_in_chroot("apt-get -y --force-yes autoremove")
@@ -531,7 +531,7 @@ class InstallerEngine:
             self.do_unmount("/target")
         self.do_unmount("/source")
 
-        self.update_progress(done=True, message=_("Installation finished"))
+        self.update_progress(0, 0, False, True, _("Installation finished"))
         print " --> All done"
 
 
@@ -539,18 +539,18 @@ class InstallerEngine:
         command = command.replace('"', "'").strip()
         print "chroot /target/ /bin/sh -c \"%s\"" % command
         os.system("chroot /target/ /bin/sh -c \"%s\"" % command)
-        
+
     def do_configure_grub(self, our_total, our_current):
-        self.update_progress(pulse=True, total=our_total, current=our_current, message=_("Configuring bootloader"))
+        self.update_progress(our_current, our_total, True, False, _("Configuring bootloader"))
         print " --> Running grub-mkconfig"
         self.do_run_in_chroot("grub-mkconfig -o /boot/grub/grub.cfg")
         grub_output = commands.getoutput("chroot /target/ /bin/sh -c \"grub-mkconfig -o /boot/grub/grub.cfg\"")
         grubfh = open("/var/log/live-installer-grub-output.log", "w")
         grubfh.writelines(grub_output)
         grubfh.close()
-        
+
     def do_check_grub(self, our_total, our_current):
-        self.update_progress(pulse=True, total=our_total, current=our_current, message=_("Checking bootloader"))
+        self.update_progress(our_current, our_total, True, False, _("Checking bootloader"))
         print " --> Checking Grub configuration"
         time.sleep(5)
         found_theme = False
@@ -575,17 +575,17 @@ class InstallerEngine:
         ''' Mount a filesystem '''
         p = None
         if(options is not None):
-            cmd = "mount -o %s -t %s %s %s" % (options, type, device, dest)            
+            cmd = "mount -o %s -t %s %s %s" % (options, type, device, dest)
         else:
             cmd = "mount -t %s %s %s" % (type, device, dest)
         print "EXECUTING: '%s'" % cmd
-        self.exec_cmd(cmd)        
+        self.exec_cmd(cmd)
 
     def do_unmount(self, mountpoint):
         ''' Unmount a filesystem '''
         cmd = "umount %s" % mountpoint
         print "EXECUTING: '%s'" % cmd
-        self.exec_cmd(cmd)        
+        self.exec_cmd(cmd)
 
     def do_copy_file(self, source, dest):
         # TODO: Add md5 checks. BADLY needed..
@@ -599,7 +599,7 @@ class InstallerEngine:
             dst.write(read)
         input.close()
         dst.close()
-    
+
     # Execute schell command and return output in a list
     def exec_cmd(self, cmd):
         p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -615,16 +615,16 @@ class InstallerEngine:
 class Setup(object):
     language = None
     timezone = None
-    keyboard_model = None    
-    keyboard_layout = None    
-    keyboard_variant = None    
+    keyboard_model = None
+    keyboard_layout = None
+    keyboard_variant = None
     partitions = [] #Array of PartitionSetup objects
     username = None
     hostname = None
     autologin = False
     password1 = None
     password2 = None
-    real_name = None    
+    real_name = None
     grub_device = None
     disks = []
     target_disk = None
@@ -637,22 +637,22 @@ class Setup(object):
     #  * Install cryptsetup/dmraid/mdadm/etc in target environment (using chroot) between init_install and finish_install
     #  * Make sure target is mounted using the same block device as is used in /target/etc/fstab (eg if you change the name of a dm-crypt device between now and /target/etc/fstab, update-initramfs will likely fail)
     skip_mount = False
-    
-    #Descriptions (used by the summary screen)    
+
+    #Descriptions (used by the summary screen)
     keyboard_model_description = None
     keyboard_layout_description = None
     keyboard_variant_description = None
-    
+
     def print_setup(self):
         if __debug__:
             print "-------------------------------------------------------------------------"
             print "language: %s" % self.language
             print "timezone: %s" % self.timezone
-            print "keyboard: %s - %s (%s) - %s - %s (%s)" % (self.keyboard_model, self.keyboard_layout, self.keyboard_variant, self.keyboard_model_description, self.keyboard_layout_description, self.keyboard_variant_description)        
+            print "keyboard: %s - %s (%s) - %s - %s (%s)" % (self.keyboard_model, self.keyboard_layout, self.keyboard_variant, self.keyboard_model_description, self.keyboard_layout_description, self.keyboard_variant_description)
             print "user: %s (%s)" % (self.username, self.real_name)
             print "autologin: ", self.autologin
             print "hostname: %s " % self.hostname
-            print "passwords: %s - %s" % (self.password1, self.password2)        
+            print "passwords: %s - %s" % (self.password1, self.password2)
             print "grub_device: %s " % self.grub_device
             print "skip_mount: %s" % self.skip_mount
             if (not self.skip_mount):
@@ -661,7 +661,7 @@ class Setup(object):
                     print "GPT partition table: True"
                 else:
                     print "GPT partition table: False"
-                print "disks: %s " % self.disks                       
+                print "disks: %s " % self.disks
                 print "partitions:"
                 for partition in self.partitions:
                     partition.print_partition()
