@@ -26,5 +26,6 @@ Depends: ${misc:Depends}, ${python:Depends}, gir1.2-webkit-3.0
   , gdisk
   , isoquery, iso-codes, locales
   , adduser
+  , rsync
 Description: Live Installer
  A live installer

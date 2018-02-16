@@ -1,4 +1,10 @@
-live-installer (2018.02.14) tara; urgency=medium
+live-installer (2018.02.16) cindy; urgency=medium
+
+  * Fix named args in decorator
+
+ -- Clement Lefebvre <clement.lefebvre@linuxmint.com>  Fri, 16 Feb 2018 17:56:25 +0000
+
+live-installer (2018.02.14) cindy; urgency=medium
 
   * Custom install: Fix https://bugs.launchpad.net/linuxmint/+bug/1223631
   * Migrate to GTK3
