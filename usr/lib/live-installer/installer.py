@@ -167,8 +167,7 @@ class InstallerEngine:
                 time.sleep(0.1)
             else:
                 our_current = min(our_current + 1, our_total)
-                self.update_progress(total=our_total, current=our_current, message=_("Copying %s" % line))
-                print "Copying " + line
+                self.update_progress(our_current, our_total, False, False, _("Copying %s" % line))
         print "rsync exited with returncode: " + str(rsync.poll())
 
         # Steps:
@@ -508,7 +507,7 @@ class InstallerEngine:
                 if("06_mint_theme" in line):
                     found_theme = True
                     print " --> Found Grub theme: %s " % line
-                if ("menuentry" in line and "class linuxmint" in line):
+                if ("menuentry" in line and ("class linuxmint" in line or "Linux Mint" in line)):
                     found_entry = True
                     print " --> Found Grub entry: %s " % line
             grubfh.close()

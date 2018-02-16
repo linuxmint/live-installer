@@ -1,4 +1,4 @@
-live-installer (2018.02.16) cindy; urgency=medium
+live-installer (2018.02.16.1) cindy; urgency=medium
 
   * Fix named args in decorator
 
