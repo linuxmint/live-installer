@@ -1,3 +1,9 @@
+live-installer (2018.07.12.1) cindy; urgency=medium
+
+  * LightDM: Don't hide user list by default
+
+ -- Clement Lefebvre <root@linuxmint.com>  Thu, 12 Jul 2018 14:01:25 +0200
+
 live-installer (2018.07.12) cindy; urgency=medium
 
   * Grub check: Accept LMDE menuentry
