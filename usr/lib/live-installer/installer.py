@@ -241,6 +241,9 @@ class InstallerEngine:
         self.do_run_in_chroot("cat /tmp/.passwd | chpasswd")
         os.system("rm -f /target/tmp/.passwd")
 
+        # Set LightDM to show user list by default
+        self.do_run_in_chroot(r"sed -i -r 's/^#?(greeter-hide-users)\s*=.*/\1=false/' /etc/lightdm/lightdm.conf")
+
         # Set autologin for user if they so elected
         if setup.autologin:
             # LightDM
