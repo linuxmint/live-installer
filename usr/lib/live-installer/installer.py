@@ -498,16 +498,12 @@ class InstallerEngine:
         self.update_progress(our_current, our_total, True, False, _("Checking bootloader"))
         print " --> Checking Grub configuration"
         time.sleep(5)
-        found_theme = False
         found_entry = False
         if os.path.exists("/target/boot/grub/grub.cfg"):
             grubfh = open("/target/boot/grub/grub.cfg", "r")
             for line in grubfh:
                 line = line.rstrip("\r\n")
-                if("06_mint_theme" in line):
-                    found_theme = True
-                    print " --> Found Grub theme: %s " % line
-                if ("menuentry" in line and ("class linuxmint" in line or "Linux Mint" in line)):
+                if ("menuentry" in line and ("class linuxmint" in line or "Linux Mint" in line or "LMDE" in line)):
                     found_entry = True
                     print " --> Found Grub entry: %s " % line
             grubfh.close()
