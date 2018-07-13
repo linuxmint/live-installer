@@ -1,3 +1,9 @@
+live-installer (2018.07.13) cindy; urgency=medium
+
+  * Fix timezone
+
+ -- Clement Lefebvre <root@linuxmint.com>  Fri, 13 Jul 2018 11:39:58 +0200
+
 live-installer (2018.07.12.1) cindy; urgency=medium
 
   * LightDM: Don't hide user list by default
