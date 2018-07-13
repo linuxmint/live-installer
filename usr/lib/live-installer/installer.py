@@ -354,7 +354,8 @@ class InstallerEngine:
         # set the timezone
         print " --> Setting the timezone"
         os.system("echo \"%s\" > /target/etc/timezone" % setup.timezone)
-        os.system("cp /target/usr/share/zoneinfo/%s /target/etc/localtime" % setup.timezone)
+        os.system("rm -f /target/etc/localtime")
+        os.system("ln -s /usr/share/zoneinfo/%s /target/etc/localtime" % setup.timezone)
 
         # localizing
         print " --> Localizing packages"
