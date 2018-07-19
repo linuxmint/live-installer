@@ -1,3 +1,9 @@
+live-installer (2018.07.19) cindy; urgency=medium
+
+  * Fix slideshow
+
+ -- Clement Lefebvre <root@linuxmint.com>  Thu, 19 Jul 2018 16:20:19 +0200
+
 live-installer (2018.07.13) cindy; urgency=medium
 
   * Fix timezone
