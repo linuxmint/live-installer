@@ -236,10 +236,12 @@ class InstallerEngine:
 
         fp = open("/target/tmp/.passwd", "w")
         fp.write(setup.username +  ":" + setup.password1 + "\n")
-        fp.write("root:" + setup.password1 + "\n")
         fp.close()
         self.do_run_in_chroot("cat /tmp/.passwd | chpasswd")
         os.system("rm -f /target/tmp/.passwd")
+
+        # Lock root password
+        self.do_run_in_chroot("passwd -l root")
 
         # Set LightDM to show user list by default
         self.do_run_in_chroot(r"sed -i -r 's/^#?(greeter-hide-users)\s*=.*/\1=false/' /etc/lightdm/lightdm.conf")
