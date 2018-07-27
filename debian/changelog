@@ -1,3 +1,9 @@
+live-installer (2018.07.27.2) cindy; urgency=medium
+
+  * Don't set the root password, lock it.
+
+ -- Clement Lefebvre <root@linuxmint.com>  Fri, 27 Jul 2018 15:34:02 +0200
+
 live-installer (2018.07.27.1) cindy; urgency=medium
 
   * Add live-installer-stop and its systemd service
