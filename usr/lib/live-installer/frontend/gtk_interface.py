@@ -934,7 +934,9 @@ class InstallerWindow:
 
         if __debug__:
             print " ## DEBUG MODE - INSTALLATION PROCESS NOT LAUNCHED"
-            return Gtk.main_quit()
+            time.sleep(200)
+            Gtk.main_quit()
+            sys.exit(0)
 
         inst.set_progress_hook(self.update_progress)
         inst.set_error_hook(self.error_message)
