@@ -1,0 +1,98 @@
+#! /bin/sh
+
+PATH=/usr/sbin:/usr/bin:/sbin:/bin
+NAME=live
+
+# Exit if system was not booted by live
+grep -qs boot=live /proc/cmdline || exit 0
+
+# Exit if the system was booted from an ISO image rather than a physical CD
+grep -qs find_iso= /proc/cmdline && exit 0
+
+# Try to cache everything we're likely to need after ejecting.  This
+# is fragile and simple-minded, but our options are limited.
+cache_path() {
+    path="$1"
+
+    if [ -d "$path" ]; then
+        for f in $(find "$path" -type f); do
+            cache_path "$f"
+        done
+    elif [ -f "$path" ] && [ ! -L "$path" ]; then
+        if [ -x "$path" ]; then
+            if file -L "$path" | grep -q 'dynamically linked'; then
+                for lib in $(ldd "$path" | awk '{ print $3 }'); do
+                    cache_path "$lib"
+                done
+            fi
+        fi
+        echo -n >> "$path"
+    fi
+}
+
+do_stop ()
+{
+    logger -t ${NAME} "caching reboot files..."
+
+    # check for netboot
+    if [ ! -z "${NETBOOT}" ] || grep -qs netboot /proc/cmdline || grep -qsi root=/dev/nfs /proc/cmdline  || grep -qsi root=/dev/cifs /proc/cmdline ; then
+        return 0
+    fi
+
+    prompt=1
+    if grep -qs noprompt /proc/cmdline; then
+        prompt=
+    fi
+
+    for path in $(which halt) $(which reboot) /etc/rc?.d /etc/default $(which stty) /bin/plymouth /usr/lib/*/plymouth /lib/systemd /etc/systemd /lib/*/libnss_files* /etc/nsswitch.conf /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf /usr/share/fonts/truetype/ubuntu/Ubuntu-R.ttf /usr/share/fonts/truetype/ubuntu/UbuntuMono-R.ttf /etc/fonts/fonts.conf /etc/fonts/conf.d/60-latin.conf; do
+        cache_path "$path"
+    done
+
+    device="$(grep " /lib/live/mount/medium " /proc/mounts | cut -d' ' -f1)" || device=
+    # If /lib/live/mount/medium isn't mounted, don't try to eject it
+    if [ -z "$device" ]; then
+        return 0
+    fi
+
+    # If the device exists but can't be found in /sys/block, it's most likely a partition
+    # so unmount it (lazy mode) and sync
+    if [ -b "$device" ] && [ ! -f "/sys/block/$(basename $device)/removable" ]; then
+        umount -l $device >/dev/null 2>&1
+        sync
+        return 0
+    fi
+
+    # If we're still there, then we're probably a cdrom or other media
+    # ship the eject if the kernel says the media isn't removable
+    if [ "$(cat /sys/block/$(basename $device)/removable)" = "0" ]; then
+        return 0
+    fi
+
+    # XXX - i18n
+    MSG="Please remove the installation medium, then press ENTER: "
+    MSG_FALLBACK="Please remove the installation medium, then reboot."
+
+    if [ "$prompt" ]; then
+        if [ -x /bin/plymouth ] && plymouth --ping; then
+            plymouth message --text="$MSG"
+            clear > /dev/tty1
+            echo $MSG_FALLBACK > /dev/tty1
+        else
+            stty sane < /dev/console
+            echo $MSG > /dev/console
+        fi
+    fi
+
+    eject -p -m $device >/dev/null 2>&1
+
+    [ "$prompt" ] || return 0
+
+    if [ -x /bin/plymouth ] && plymouth --ping; then
+        plymouth watch-keystroke > /dev/null
+    else
+        read x < /dev/console
+    fi
+}
+
+do_stop
+

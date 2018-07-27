@@ -1,0 +1,16 @@
+[Unit]
+Description=Shuts down the "live" preinstalled system cleanly
+DefaultDependencies=no
+Before=final.target
+After=shutdown.target umount.target
+
+[Service]
+Type=oneshot
+ExecStart=/sbin/live-installer-stop
+StandardInput=tty-force
+StandardOutput=inherit
+StandardError=inherit
+TTYReset=yes
+
+[Install]
+WantedBy=final.target
