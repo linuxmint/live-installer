@@ -65,22 +65,22 @@ class InstallerEngine:
         for partition in setup.partitions:
             if(partition.format_as is not None and partition.format_as != ""):
                 # report it. should grab the total count of filesystems to be formatted ..
-                self.update_progress(1, 4, True, False, _("Formatting %(partition)s as %(format)s ...") % {'partition':partition.partition.path, 'format':partition.format_as})
+                self.update_progress(1, 4, True, False, _("Formatting %(partition)s as %(format)s ...") % {'partition':partition.path, 'format':partition.format_as})
 
                 #Format it
                 if partition.format_as == "swap":
-                    cmd = "mkswap %s" % partition.partition.path
+                    cmd = "mkswap %s" % partition.path
                 else:
                     if (partition.format_as in ['ext2', 'ext3', 'ext4']):
-                        cmd = "mkfs.%s -F %s" % (partition.format_as, partition.partition.path)
+                        cmd = "mkfs.%s -F %s" % (partition.format_as, partition.path)
                     elif (partition.format_as == "jfs"):
-                        cmd = "mkfs.%s -q %s" % (partition.format_as, partition.partition.path)
+                        cmd = "mkfs.%s -q %s" % (partition.format_as, partition.path)
                     elif (partition.format_as == "xfs"):
-                        cmd = "mkfs.%s -f %s" % (partition.format_as, partition.partition.path)
+                        cmd = "mkfs.%s -f %s" % (partition.format_as, partition.path)
                     elif (partition.format_as == "vfat"):
-                        cmd = "mkfs.%s %s -F 32" % (partition.format_as, partition.partition.path)
+                        cmd = "mkfs.%s %s -F 32" % (partition.format_as, partition.path)
                     else:
-                        cmd = "mkfs.%s %s" % (partition.format_as, partition.partition.path) # works with bfs, btrfs, minix, msdos, ntfs, vfat
+                        cmd = "mkfs.%s %s" % (partition.format_as, partition.path) # works with bfs, btrfs, minix, msdos, ntfs, vfat
 
                 print "EXECUTING: '%s'" % cmd
                 self.exec_cmd(cmd)
@@ -100,25 +100,25 @@ class InstallerEngine:
         for partition in setup.partitions:
             if(partition.mount_as is not None and partition.mount_as != ""):
                   if partition.mount_as == "/":
-                        self.update_progress(3, 4, False, False, _("Mounting %(partition)s on %(mountpoint)s") % {'partition':partition.partition.path, 'mountpoint':"/target/"})
-                        print " ------ Mounting partition %s on %s" % (partition.partition.path, "/target/")
+                        self.update_progress(3, 4, False, False, _("Mounting %(partition)s on %(mountpoint)s") % {'partition':partition.path, 'mountpoint':"/target/"})
+                        print " ------ Mounting partition %s on %s" % (partition.path, "/target/")
                         if partition.type == "fat32":
                             fs = "vfat"
                         else:
                             fs = partition.type
-                        self.do_mount(partition.partition.path, "/target", fs, None)
+                        self.do_mount(partition.path, "/target", fs, None)
                         break
 
         # Mount the other partitions
         for partition in setup.partitions:
             if(partition.mount_as is not None and partition.mount_as != "" and partition.mount_as != "/" and partition.mount_as != "swap"):
-                print " ------ Mounting %s on %s" % (partition.partition.path, "/target" + partition.mount_as)
+                print " ------ Mounting %s on %s" % (partition.path, "/target" + partition.mount_as)
                 os.system("mkdir -p /target" + partition.mount_as)
                 if partition.type == "fat16" or partition.type == "fat32":
                     fs = "vfat"
                 else:
                     fs = partition.type
-                self.do_mount(partition.partition.path, "/target" + partition.mount_as, fs, None)
+                self.do_mount(partition.path, "/target" + partition.mount_as, fs, None)
 
     def init_install(self, setup):
         # mount the media location.
@@ -281,11 +281,11 @@ class InstallerEngine:
         if(not setup.skip_mount):
             for partition in setup.partitions:
                 if (partition.mount_as is not None and partition.mount_as != "" and partition.mount_as != "None"):
-                    partition_uuid = partition.partition.path # If we can't find the UUID we use the path
+                    partition_uuid = partition.path # If we can't find the UUID we use the path
                     blkid = commands.getoutput('blkid').split('\n')
                     for blkid_line in blkid:
                         blkid_elements = blkid_line.split(':')
-                        if blkid_elements[0] == partition.partition.path:
+                        if blkid_elements[0] == partition.path:
                             blkid_mini_elements = blkid_line.split()
                             for blkid_mini_element in blkid_mini_elements:
                                 if "UUID=" in blkid_mini_element:
@@ -293,7 +293,7 @@ class InstallerEngine:
                                     break
                             break
 
-                    fstab.write("# %s\n" % (partition.partition.path))
+                    fstab.write("# %s\n" % (partition.path))
 
                     if(partition.mount_as == "/"):
                         fstab_fsck_option = "1"

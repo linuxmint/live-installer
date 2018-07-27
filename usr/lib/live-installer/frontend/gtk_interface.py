@@ -900,10 +900,10 @@ class InstallerWindow:
             return
         for p in self.setup.partitions:
             if p.format_as:
-                model.append(top, (bold(_("Format %(path)s as %(filesystem)s") % {'path':p.partition.path, 'filesystem':p.format_as}),))
+                model.append(top, (bold(_("Format %(path)s as %(filesystem)s") % {'path':p.path, 'filesystem':p.format_as}),))
         for p in self.setup.partitions:
             if p.mount_as:
-                model.append(top, (bold(_("Mount %(path)s as %(mount)s") % {'path': p.partition.path, 'mount':p.mount_as}),))
+                model.append(top, (bold(_("Mount %(path)s as %(mount)s") % {'path': p.path, 'mount':p.mount_as}),))
 
     @idle
     def show_error_dialog(self, message, detail):

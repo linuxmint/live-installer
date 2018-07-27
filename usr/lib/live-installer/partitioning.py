@@ -357,8 +357,9 @@ class Partition(object):
 
     def __init__(self, partition):
         assert partition.type not in (parted.PARTITION_METADATA, parted.PARTITION_EXTENDED)
+        self.path = str(partition.path)
 
-        print "              -> Building partition object for %s" % partition.path
+        print "              -> Building partition object for %s" % self.path
 
         self.partition = partition
         self.length = partition.getLength()
@@ -371,9 +372,9 @@ class Partition(object):
         print "                  . size %s" % self.size
 
         # if not normal partition with /dev/sdXN path, set its name to '' and discard it from model
-        self.name = partition.path if partition.number != -1 else ''
+        self.name = self.path if partition.number != -1 else ''
         print "                  . name %s" % self.name
-        
+
         try:
             self.type = partition.fileSystem.type
             for fs in ('swap', 'hfs', 'ufs'):  # normalize fs variations (parted.filesystem.fileSystemType.keys())
@@ -406,15 +407,15 @@ class Partition(object):
         # identify partition's description and used space
         try:
             print "                  . About to mount it..."
-            os.system('mount --read-only {} {}'.format(partition.path, TMP_MOUNTPOINT))
-            size, free, self.used_percent, mount_point = getoutput("df {0} | grep '^{0}' | awk '{{print $2,$4,$5,$6}}' | tail -1".format(partition.path)).split(None, 3)
+            os.system('mount --read-only {} {}'.format(self.path, TMP_MOUNTPOINT))
+            size, free, self.used_percent, mount_point = getoutput("df {0} | grep '^{0}' | awk '{{print $2,$4,$5,$6}}' | tail -1".format(self.path)).split(None, 3)
             print "                  . size %s, free %s, self.used_percent %s, mount_point %s" % (size, free, self.used_percent, mount_point)
         except ValueError:
             print "                  . value error!"
             if "swap" in self.type:
                 self.os_fs_info, self.description, self.free_space, self.used_percent = ': '+self.type, 'swap', '', 0
             else:
-                print 'WARNING: Partition {} or type {} failed to mount!'.format(partition.path, partition.type)
+                print 'WARNING: Partition {} or type {} failed to mount!'.format(self.path, partition.type)
                 self.os_fs_info, self.description, self.free_space, self.used_percent = ': '+self.type, '', '', 0
             print "                  . self.os_fs_info %s, self.description %s, self.free_space %s, self.used_percent %s" % (self.os_fs_info, self.description, self.free_space, self.used_percent)
         else:
@@ -458,7 +459,7 @@ class Partition(object):
                                 break
                 except Exception, detail:
                     # best effort
-                    print "Could not read partition flags for %s: %s" % (partition.path, detail)
+                    print "Could not read partition flags for %s: %s" % (self.path, detail)
             self.description = description
             self.os_fs_info = ': {0.description} ({0.type}; {0.size}; {0.free_space})'.format(self) if description else ': ' + self.type
             print "                  . self.description %s self.os_fs_info %s" % (self.description, self.os_fs_info)
@@ -497,7 +498,7 @@ class Partition(object):
         }.get(self.type, '#a9a9a9')
 
     def print_partition(self):
-        print "Device: %s, format as: %s, mount as: %s" % (self.partition.path, self.format_as, self.mount_as)
+        print "Device: %s, format as: %s, mount as: %s" % (self.path, self.format_as, self.mount_as)
 
 
 class PartitionDialog(object):
