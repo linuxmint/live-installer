@@ -1,3 +1,9 @@
+live-installer (2018.07.28.1) cindy; urgency=medium
+
+  * Delete root password
+
+ -- Clement Lefebvre <root@linuxmint.com>  Sat, 28 Jul 2018 16:20:19 +0200
+
 live-installer (2018.07.28) cindy; urgency=medium
 
   * Add a postinst to enable the systemd service
