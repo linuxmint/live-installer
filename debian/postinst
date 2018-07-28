@@ -1,0 +1,27 @@
+#!/bin/sh
+
+set -e
+
+case "$1" in
+    configure)
+        if which systemctl >/dev/null 2>&1
+        then
+            systemctl daemon-reload || true
+            systemctl enable live-installer.service || true
+        fi
+    ;;
+    abort-upgrade|abort-remove|abort-deconfigure)
+
+    ;;
+    triggered)
+
+    ;;
+    *)
+        echo "postinst called with unknown argument \`$1'" >&2
+        exit 0
+    ;;
+esac
+
+exit 0
+
+
