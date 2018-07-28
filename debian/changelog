@@ -1,3 +1,9 @@
+live-installer (2018.07.28) cindy; urgency=medium
+
+  * Add a postinst to enable the systemd service
+
+ -- Clement Lefebvre <root@linuxmint.com>  Sat, 28 Jul 2018 11:44:05 +0200
+
 live-installer (2018.07.27.2) cindy; urgency=medium
 
   * Don't set the root password, lock it.
