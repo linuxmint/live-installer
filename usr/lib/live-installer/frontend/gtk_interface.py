@@ -663,7 +663,15 @@ class InstallerWindow:
         if self.setup.keyboard_variant:
             os.system('setxkbmap -variant ' + self.setup.keyboard_variant)
         else:
-            os.system('setxkbmap -layout ' + self.setup.keyboard_layout)
+            if self.setup.keyboard_layout in ('am', 'ara', 'ben', 'bd', 'bg', 'bt', 'by', 'deva', 'ge',
+                      'gh', 'gr', 'guj', 'guru', 'il', 'in', 'ir', 'iku',
+                      'kan', 'kh', 'kz', 'la', 'lao', 'lk', 'mk', 'mm', 'mn',
+                      'mv', 'mal', 'ori', 'pk', 'ru', 'scc', 'sy', 'syr',
+                      'tel', 'th', 'tj', 'tam', 'ua', 'uz'):
+                self.setup.keyboard_layout = 'us,%s' % self.setup.keyboard_layout
+                os.system('setxkbmap -layout ' + self.setup.keyboard_layout + ' -option grp:alt_shift_toggle')
+            else:
+                os.system('setxkbmap -layout ' + self.setup.keyboard_layout)
         self.setup.print_setup()
         # Set preview image
         self.builder.get_object("image_keyboard").set_from_file(LOADING_ANIMATION)
