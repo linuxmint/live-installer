@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.20.2 -->
+<!-- Generated with glade 3.22.1 -->
 <interface>
   <requires lib="gtk+" version="3.18"/>
   <object class="GtkListStore" id="model1">
@@ -42,6 +42,9 @@
     <property name="default_width">640</property>
     <property name="default_height">480</property>
     <property name="icon">logo.png</property>
+    <child>
+      <placeholder/>
+    </child>
     <child>
       <object class="GtkBox" id="vbox1">
         <property name="visible">True</property>
@@ -1648,9 +1651,6 @@
         </child>
       </object>
     </child>
-    <child>
-      <placeholder/>
-    </child>
   </object>
   <object class="GtkDialog" id="dialog">
     <property name="can_focus">False</property>
@@ -1658,6 +1658,9 @@
     <property name="icon">logo.png</property>
     <property name="type_hint">dialog</property>
     <property name="transient_for">main_window</property>
+    <child>
+      <placeholder/>
+    </child>
     <child internal-child="vbox">
       <object class="GtkBox" id="dialog-vbox1">
         <property name="visible">True</property>
@@ -1811,9 +1814,10 @@
         </child>
       </object>
     </child>
-    <child>
-      <placeholder/>
-    </child>
+    <action-widgets>
+      <action-widget response="-6">button_cancel</action-widget>
+      <action-widget response="-5">button_ok</action-widget>
+    </action-widgets>
   </object>
   <object class="GtkWindow" id="progress_window">
     <property name="can_focus">False</property>
@@ -1822,6 +1826,9 @@
     <property name="skip_taskbar_hint">True</property>
     <property name="skip_pager_hint">True</property>
     <property name="deletable">False</property>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
     <child>
       <object class="GtkBox" id="hbox9">
         <property name="visible">True</property>
@@ -1866,9 +1873,6 @@
           </packing>
         </child>
       </object>
-    </child>
-    <child type="titlebar">
-      <placeholder/>
     </child>
   </object>
 </interface>

@@ -96,8 +96,9 @@ def edit_partition_dialog(widget, path, viewcol):
                               row[IDX_PART_MOUNT_AS],
                               row[IDX_PART_FORMAT_AS],
                               row[IDX_PART_TYPE])
-        mount_as, format_as = dlg.show()
-        assign_mount_point(partition, mount_as, format_as)
+        response_is_ok, mount_as, format_as = dlg.show()
+        if response_is_ok:
+            assign_mount_point(partition, mount_as, format_as)
 
 def assign_mount_point(partition, mount_point, filesystem):
     # Assign it in the treeview
@@ -529,10 +530,14 @@ class PartitionDialog(object):
         self.builder.get_object("comboboxentry_mount_point").get_child().set_text(mount_as)
 
     def show(self):
-        self.window.run()
-        self.window.hide()
+        response = self.window.run()
         w = self.builder.get_object("comboboxentry_mount_point")
         mount_as = w.get_child().get_text().strip()
         w = self.builder.get_object("combobox_use_as")
         format_as = w.get_model()[w.get_active()][0]
-        return mount_as, format_as
+        self.window.destroy()
+        if response in (Gtk.ResponseType.YES, Gtk.ResponseType.APPLY, Gtk.ResponseType.OK, Gtk.ResponseType.ACCEPT):
+            response_is_ok = True
+        else:
+            response_is_ok = False
+        return response_is_ok, mount_as, format_as
