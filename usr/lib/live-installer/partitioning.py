@@ -514,9 +514,12 @@ class PartitionDialog(object):
         self.builder.get_object("label_use_as").set_markup(_("Format as:"))
         self.builder.get_object("label_mount_point").set_markup(_("Mount point:"))
         # Build supported filesystems list
-        filesystems = sorted(['', 'swap'] +
-                             [fs[11:] for fs in getoutput('echo /sbin/mkfs.*').split()],
-                             key=lambda x: 0 if x in ('', 'ext4') else 1 if x == 'swap' else 2)
+        filesystems = ['', 'swap']
+        for path in ["/bin", "/sbin"]:
+            for fs in getoutput('echo %s/mkfs.*' % path).split():
+                filesystems.append(fs.split("mkfs.")[1])
+        filesystems = sorted(filesystems)
+        filesystems = sorted(filesystems, key=lambda x: 0 if x in ('', 'ext4') else 1 if x == 'swap' else 2)
         model = Gtk.ListStore(str)
         for i in filesystems:
             model.append([i])
