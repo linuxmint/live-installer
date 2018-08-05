@@ -162,9 +162,6 @@ class InstallerWindow:
         self.builder.get_object("event_timezones").connect('button-release-event', timezones.cb_map_clicked, model)
 
         # partitions
-        self.builder.get_object("button_edit").set_label(_("Edit partitions"))
-        self.builder.get_object("button_refresh").set_label(_("Refresh"))
-        self.builder.get_object("button_custommount").set_label(_("Expert mode"))
         self.builder.get_object("button_custommount").connect("clicked", self.show_customwarning)
         self.builder.get_object("button_edit").connect("clicked", partitioning.manually_edit_partitions)
         self.builder.get_object("button_refresh").connect("clicked", lambda _: partitioning.build_partitions(self))
@@ -371,6 +368,11 @@ class InstallerWindow:
 
         self.language_column.set_title(_("Language"))
         self.country_column.set_title(_("Country"))
+        self.activate_page(0)
+
+        self.builder.get_object("button_edit").set_label(_("Edit partitions"))
+        self.builder.get_object("button_refresh").set_label(_("Refresh"))
+        self.builder.get_object("button_custommount").set_label(_("Expert mode"))
 
         self.builder.get_object("label_your_name").set_markup("<b>%s</b>" % _("Your full name"))
         self.builder.get_object("label_your_name_help").set_markup("<span fgcolor='#3C3C3C'><sub><i>%s</i></sub></span>" % _("Please enter your full name."))
