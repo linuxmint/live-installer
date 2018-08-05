@@ -232,6 +232,14 @@ class InstallerWindow:
         #i18n
         self.i18n()
 
+        # Pre-fill user details in debug mode
+        if __debug__:
+            self.builder.get_object("entry_your_name").set_text("John Boone")
+            self.builder.get_object("entry_username").set_text("john")
+            self.builder.get_object("entry_hostname").set_text("mars")
+            self.builder.get_object("entry_userpass1").set_text("dummy_password")
+            self.builder.get_object("entry_userpass2").set_text("dummy_password")
+
         # build partition list
         self.should_pulse = False
 
