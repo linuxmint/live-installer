@@ -523,11 +523,14 @@ class PartitionDialog(object):
         self.builder.get_object("combobox_use_as").set_model(model)
         self.builder.get_object("combobox_use_as").set_active(filesystems.index(format_as))
         # Build list of pre-provided mountpoints
-        model = Gtk.ListStore(str)
+        combobox = self.builder.get_object("comboboxentry_mount_point")
+        model = Gtk.ListStore(str, str)
         for i in ["/", "/home", "/boot", "/boot/efi", "/srv", "/tmp", "swap"]:
-            model.append([i])
-        self.builder.get_object("comboboxentry_mount_point").set_model(model)
-        self.builder.get_object("comboboxentry_mount_point").get_child().set_text(mount_as)
+            model.append(["", i])
+        combobox.set_model(model)
+        combobox.set_entry_text_column(1)
+        combobox.set_id_column(1)
+        combobox.get_child().set_text(mount_as)
 
     def show(self):
         response = self.window.run()
