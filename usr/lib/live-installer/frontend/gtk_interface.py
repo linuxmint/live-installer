@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from installer import InstallerEngine, Setup
+from installer import InstallerEngine, Setup, NON_LATIN_KB_LAYOUTS
 from slideshow import Slideshow
 from dialogs import MessageDialog, QuestionDialog, ErrorDialog, WarningDialog
 import timezones
@@ -664,11 +664,7 @@ class InstallerWindow:
         if self.setup.keyboard_variant:
             os.system('setxkbmap -variant ' + self.setup.keyboard_variant)
         else:
-            if self.setup.keyboard_layout in ('am', 'ara', 'ben', 'bd', 'bg', 'bt', 'by', 'deva', 'ge',
-                      'gh', 'gr', 'guj', 'guru', 'il', 'in', 'ir', 'iku',
-                      'kan', 'kh', 'kz', 'la', 'lao', 'lk', 'mk', 'mm', 'mn',
-                      'mv', 'mal', 'ori', 'pk', 'ru', 'scc', 'sy', 'syr',
-                      'tel', 'th', 'tj', 'tam', 'ua', 'uz'):
+            if self.setup.keyboard_layout in NON_LATIN_KB_LAYOUTS:
                 self.setup.keyboard_layout = 'us,%s' % self.setup.keyboard_layout
                 os.system('setxkbmap -layout ' + self.setup.keyboard_layout + ' -option grp:alt_shift_toggle')
             else:

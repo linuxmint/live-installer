@@ -12,6 +12,8 @@ gettext.install("live-installer", "/usr/share/linuxmint/locale")
 
 CONFIG_FILE = '/etc/live-installer/live-installer.conf'
 
+NON_LATIN_KB_LAYOUTS = ['am', 'ara', 'ben', 'bd', 'bg', 'bt', 'by', 'deva', 'ge', 'gh', 'gr', 'guj', 'guru', 'il', 'in', 'ir', 'iku', 'kan', 'kh', 'kz', 'la', 'lao', 'lk', 'mk', 'mm', 'mn', 'mv', 'mal', 'ori', 'pk', 'ru', 'scc', 'sy', 'syr', 'tel', 'th', 'tj', 'tam', 'ua', 'uz']
+
 class InstallerEngine:
     ''' This is central to the live installer '''
 
@@ -416,11 +418,7 @@ class InstallerEngine:
             if(line.startswith("XKBMODEL=")):
                 newconsolefh.write("XKBMODEL=\"%s\"\n" % setup.keyboard_model)
             elif(line.startswith("XKBLAYOUT=")):
-                if setup.keyboard_layout in ('am', 'ara', 'ben', 'bd', 'bg', 'bt', 'by', 'deva', 'ge',
-                      'gh', 'gr', 'guj', 'guru', 'il', 'in', 'ir', 'iku',
-                      'kan', 'kh', 'kz', 'la', 'lao', 'lk', 'mk', 'mm', 'mn',
-                      'mv', 'mal', 'ori', 'pk', 'ru', 'scc', 'sy', 'syr',
-                      'tel', 'th', 'tj', 'tam', 'ua', 'uz'):
+                if setup.keyboard_layout in NON_LATIN_KB_LAYOUTS:
                     setup.keyboard_layout = 'us,%s' % self.setup.keyboard_layout
                 newconsolefh.write("XKBLAYOUT=\"%s\"\n" % setup.keyboard_layout)
             elif(line.startswith("XKBVARIANT=") and setup.keyboard_variant is not None):
