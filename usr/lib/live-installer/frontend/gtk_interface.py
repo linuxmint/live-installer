@@ -111,12 +111,12 @@ class InstallerWindow:
         col = Gtk.TreeViewColumn("", Gtk.CellRendererPixbuf(), pixbuf=2)
         self.builder.get_object("treeview_language_list").append_column(col)
         ren = Gtk.CellRendererText()
-        col = Gtk.TreeViewColumn(_("Language"), ren, text=0)
-        col.set_sort_column_id(0)
-        self.builder.get_object("treeview_language_list").append_column(col)
-        col = Gtk.TreeViewColumn(_("Country"), ren, text=1)
-        col.set_sort_column_id(1)
-        self.builder.get_object("treeview_language_list").append_column(col)
+        self.language_column = Gtk.TreeViewColumn(_("Language"), ren, text=0)
+        self.language_column.set_sort_column_id(0)
+        self.builder.get_object("treeview_language_list").append_column(self.language_column)
+        self.country_column = Gtk.TreeViewColumn(_("Country"), ren, text=1)
+        self.country_column.set_sort_column_id(1)
+        self.builder.get_object("treeview_language_list").append_column(self.country_column)
 
         self.builder.get_object("treeview_language_list").connect("cursor-changed", self.assign_language)
 
@@ -361,7 +361,9 @@ class InstallerWindow:
         else:
             self.window.set_title((_("%s Installer") % self.installer.get_distribution_name()))
 
-        # about you
+        self.language_column.set_title(_("Language"))
+        self.country_column.set_title(_("Country"))
+
         self.builder.get_object("label_your_name").set_markup("<b>%s</b>" % _("Your full name"))
         self.builder.get_object("label_your_name_help").set_markup("<span fgcolor='#3C3C3C'><sub><i>%s</i></sub></span>" % _("Please enter your full name."))
         self.builder.get_object("label_username").set_markup("<b>%s</b>" % _("Your username"))
