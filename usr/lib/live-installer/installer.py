@@ -416,9 +416,17 @@ class InstallerEngine:
             if(line.startswith("XKBMODEL=")):
                 newconsolefh.write("XKBMODEL=\"%s\"\n" % setup.keyboard_model)
             elif(line.startswith("XKBLAYOUT=")):
+                if setup.keyboard_layout in ('am', 'ara', 'ben', 'bd', 'bg', 'bt', 'by', 'deva', 'ge',
+                      'gh', 'gr', 'guj', 'guru', 'il', 'in', 'ir', 'iku',
+                      'kan', 'kh', 'kz', 'la', 'lao', 'lk', 'mk', 'mm', 'mn',
+                      'mv', 'mal', 'ori', 'pk', 'ru', 'scc', 'sy', 'syr',
+                      'tel', 'th', 'tj', 'tam', 'ua', 'uz'):
+                    setup.keyboard_layout = 'us,%s' % self.setup.keyboard_layout
                 newconsolefh.write("XKBLAYOUT=\"%s\"\n" % setup.keyboard_layout)
             elif(line.startswith("XKBVARIANT=") and setup.keyboard_variant is not None):
                 newconsolefh.write("XKBVARIANT=\"%s\"\n" % setup.keyboard_variant)
+            elif(line.startswith("XKBOPTIONS=")):
+                newconsolefh.write("XKBOPTIONS=grp:alt_shift_toggle")
             else:
                 newconsolefh.write("%s\n" % line)
         consolefh.close()
