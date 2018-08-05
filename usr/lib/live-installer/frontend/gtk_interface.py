@@ -639,9 +639,9 @@ class InstallerWindow:
         ''' Called whenever someone updates the keyboard model '''
         model = combobox.get_model()
         active = combobox.get_active()
-        (self.setup.keyboard_model_description,
-         self.setup.keyboard_model) = model[active]
-        os.system('setxkbmap -model ' + self.setup.keyboard_model)
+        (self.setup.keyboard_model_description, self.setup.keyboard_model) = model[active]
+        if not __debug__:
+            os.system('setxkbmap -model ' + self.setup.keyboard_model)
         self.setup.print_setup()
 
     def assign_keyboard_layout(self, treeview):
@@ -664,13 +664,16 @@ class InstallerWindow:
         (self.setup.keyboard_variant_description,
          self.setup.keyboard_variant) = model[active[0]]
         if self.setup.keyboard_variant:
-            os.system('setxkbmap -variant ' + self.setup.keyboard_variant)
+            if not __debug__:
+                os.system('setxkbmap -variant ' + self.setup.keyboard_variant)
         else:
             if self.setup.keyboard_layout in NON_LATIN_KB_LAYOUTS:
                 self.setup.keyboard_layout = 'us,%s' % self.setup.keyboard_layout
-                os.system('setxkbmap -layout ' + self.setup.keyboard_layout + ' -option grp:alt_shift_toggle')
+                if not __debug__:
+                    os.system('setxkbmap -layout ' + self.setup.keyboard_layout + ' -option grp:alt_shift_toggle')
             else:
-                os.system('setxkbmap -layout ' + self.setup.keyboard_layout)
+                if not __debug__:
+                    os.system('setxkbmap -layout ' + self.setup.keyboard_layout)
         self.setup.print_setup()
         # Set preview image
         self.builder.get_object("image_keyboard").set_from_file(LOADING_ANIMATION)
