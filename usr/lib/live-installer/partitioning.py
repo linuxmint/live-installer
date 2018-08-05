@@ -239,17 +239,23 @@ class PartitionSetup(Gtk.TreeStore):
                                         _("No partition table was found on the hard drive: %s. Do you want the installer to create a set of partitions for you? Note: This will ERASE ALL DATA present on this disk.") % disk_description,
                                         None, installer.window)
                 if not dialog: continue  # the user said No, skip this disk
-                installer.window.get_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
-                print "Performing a full disk format"
-                if not already_done_full_disk_format:
-                    assign_mount_format = self.full_disk_format(disk_device)
-                    already_done_full_disk_format = True
-                else:
-                    self.full_disk_format(disk_device) # Format but don't assign mount points
-                installer.window.get_window().set_cursor(None)
-                print "Done full disk format"
-                disk = parted.Disk(disk_device)
-                print "Got disk!"
+                try:
+                    installer.window.get_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
+                    print "Performing a full disk format"
+                    if not already_done_full_disk_format:
+                        assign_mount_format = self.full_disk_format(disk_device)
+                        already_done_full_disk_format = True
+                    else:
+                        self.full_disk_format(disk_device) # Format but don't assign mount points
+                    installer.window.get_window().set_cursor(None)
+                    print "Done full disk format"
+                    disk = parted.Disk(disk_device)
+                    print "Got disk!"
+                except Exception as second_exception:
+                    installer.window.get_window().set_cursor(None)
+                    print "      - Found another issue while looking for the disk: %s" % detail
+                    continue # Something is wrong with this disk, skip it
+
             disk_iter = self.append(None, (disk_description, '', '', '', '', '', '', None, disk_path))
             print "      - Looking at partitions..."
             free_space_partition = disk.getFreeSpacePartitions()
