@@ -15,4 +15,4 @@ sudo rm -rf /usr/share/live-installer-slideshow
 sudo cp -R usr /
 sudo cp -R etc /
 
-live-installer --debug
+sudo live-installer --debug
