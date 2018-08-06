@@ -12,7 +12,7 @@ gettext.install("live-installer", "/usr/share/linuxmint/locale")
 
 CONFIG_FILE = '/etc/live-installer/live-installer.conf'
 
-NON_LATIN_KB_LAYOUTS = ['am', 'ara', 'ben', 'bd', 'bg', 'bt', 'by', 'deva', 'ge', 'gh', 'gr', 'guj', 'guru', 'il', 'in', 'ir', 'iku', 'kan', 'kh', 'kz', 'la', 'lao', 'lk', 'mk', 'mm', 'mn', 'mv', 'mal', 'ori', 'pk', 'ru', 'scc', 'sy', 'syr', 'tel', 'th', 'tj', 'tam', 'ua', 'uz']
+NON_LATIN_KB_LAYOUTS = ['am', 'af', 'ara', 'ben', 'bd', 'bg', 'bt', 'by', 'deva', 'et', 'ge', 'gh', 'gr', 'guj', 'guru', 'id', 'il', 'iku', 'in', 'iq', 'ir', 'kan', 'kg', 'kh', 'kz', 'la', 'lao', 'lk', 'ma', 'mk', 'mm', 'mn', 'mv', 'mal', 'my', 'np', 'ori', 'pk', 'ru', 'rs', 'scc', 'sy', 'syr', 'tel', 'th', 'tj', 'tam', 'tz', 'ua', 'uz']
 
 class InstallerEngine:
     ''' This is central to the live installer '''
@@ -402,7 +402,7 @@ class InstallerEngine:
                 newconsolefh.write("XKBMODEL=\"%s\"\n" % setup.keyboard_model)
             elif(line.startswith("XKBLAYOUT=")):
                 newconsolefh.write("XKBLAYOUT=\"%s\"\n" % setup.keyboard_layout)
-            elif(line.startswith("XKBVARIANT=") and setup.keyboard_variant is not None):
+            elif(line.startswith("XKBVARIANT=") and setup.keyboard_variant is not None and setup.keyboard_variant != ""):
                 newconsolefh.write("XKBVARIANT=\"%s\"\n" % setup.keyboard_variant)
             else:
                 newconsolefh.write("%s\n" % line)
@@ -418,13 +418,11 @@ class InstallerEngine:
             if(line.startswith("XKBMODEL=")):
                 newconsolefh.write("XKBMODEL=\"%s\"\n" % setup.keyboard_model)
             elif(line.startswith("XKBLAYOUT=")):
-                if setup.keyboard_layout in NON_LATIN_KB_LAYOUTS:
-                    setup.keyboard_layout = 'us,%s' % self.setup.keyboard_layout
                 newconsolefh.write("XKBLAYOUT=\"%s\"\n" % setup.keyboard_layout)
-            elif(line.startswith("XKBVARIANT=") and setup.keyboard_variant is not None):
+            elif(line.startswith("XKBVARIANT=") and setup.keyboard_variant is not None and setup.keyboard_variant != ""):
                 newconsolefh.write("XKBVARIANT=\"%s\"\n" % setup.keyboard_variant)
             elif(line.startswith("XKBOPTIONS=")):
-                newconsolefh.write("XKBOPTIONS=grp:alt_shift_toggle")
+                newconsolefh.write("XKBOPTIONS=grp:ctrls_toggle")
             else:
                 newconsolefh.write("%s\n" % line)
         consolefh.close()

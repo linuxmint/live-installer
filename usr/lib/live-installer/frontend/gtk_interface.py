@@ -373,7 +373,6 @@ class InstallerWindow:
         self.builder.get_object("button_edit").set_label(_("Edit partitions"))
         self.builder.get_object("button_refresh").set_label(_("Refresh"))
         self.builder.get_object("button_custommount").set_label(_("Expert mode"))
-
         self.builder.get_object("label_your_name").set_markup("<b>%s</b>" % _("Your full name"))
         self.builder.get_object("label_your_name_help").set_markup("<span fgcolor='#3C3C3C'><sub><i>%s</i></sub></span>" % _("Please enter your full name."))
         self.builder.get_object("label_username").set_markup("<b>%s</b>" % _("Your username"))
@@ -584,11 +583,18 @@ class InstallerWindow:
                 set_keyboard_model = iterator
         for node in xml.iterfind('.//layoutList/layout'):
             name, desc = node.find('configItem/name').text, node.find('configItem/description').text
-            variants[name].append((desc, None))
+            nonedesc = desc
+            if name in NON_LATIN_KB_LAYOUTS:
+                nonedesc = "English (US) + %s" % nonedesc
+            variants[name].append((nonedesc, None))
             for variant in node.iterfind('variantList/variant/configItem'):
                 var_name, var_desc = variant.find('name').text, variant.find('description').text
                 var_desc = var_desc if var_desc.startswith(desc) else '{} - {}'.format(desc, var_desc)
+                if name in NON_LATIN_KB_LAYOUTS and "Latin" not in var_desc:
+                    var_desc = "English (US) + %s" % var_desc
                 variants[name].append((var_desc, var_name))
+            if name in NON_LATIN_KB_LAYOUTS:
+                desc = desc + " *"
             iterator = layouts.append((desc, name))
             if name == self.setup.keyboard_layout:
                 set_keyboard_layout = iterator
@@ -673,25 +679,46 @@ class InstallerWindow:
         if not active: return
         (self.setup.keyboard_variant_description,
          self.setup.keyboard_variant) = model[active[0]]
-        if self.setup.keyboard_variant:
-            if not __debug__:
-                os.system('setxkbmap -variant ' + self.setup.keyboard_variant)
+
+        if self.setup.keyboard_variant is None:
+            self.setup.keyboard_variant = ""
+
+        if self.setup.keyboard_layout in NON_LATIN_KB_LAYOUTS:
+            # Add US layout for non-latin layouts
+            self.setup.keyboard_layout = 'us,%s' % self.setup.keyboard_layout
+
+        if "Latin" in self.setup.keyboard_variant_description:
+            # Remove US layout for Latin variants
+            self.setup.keyboard_layout = self.setup.keyboard_layout.replace("us,", "")
+
+        if "us," in self.setup.keyboard_layout:
+            # Add None variant for US layout
+            self.setup.keyboard_variant = ',%s' % self.setup.keyboard_variant
+
+        self.builder.get_object("label_non_latin").set_text(_("* Your username, hostname and password should only contain Latin characters. In addition to your selected layout, English (US) is set as the default. You can switch layouts by pressing both Ctrl keys together."))
+        if "us," in self.setup.keyboard_layout:
+            self.builder.get_object("label_non_latin").show()
         else:
-            if self.setup.keyboard_layout in NON_LATIN_KB_LAYOUTS:
-                self.setup.keyboard_layout = 'us,%s' % self.setup.keyboard_layout
-                if not __debug__:
-                    os.system('setxkbmap -layout ' + self.setup.keyboard_layout + ' -option grp:alt_shift_toggle')
-            else:
-                if not __debug__:
-                    os.system('setxkbmap -layout ' + self.setup.keyboard_layout)
-        self.setup.print_setup()
+            self.builder.get_object("label_non_latin").hide()
+
+        command = "setxkbmap -layout '%s' -variant '%s' -option grp:ctrls_toggle" % (self.setup.keyboard_layout, self.setup.keyboard_variant)
+        print(command)
+        if not __debug__:
+            os.system(command)
+            self.setup.print_setup()
+
         # Set preview image
         self.builder.get_object("image_keyboard").set_from_file(LOADING_ANIMATION)
         self.kbd_preview_generation = GObject.timeout_add(500, self._generate_keyboard_layout_preview)
 
     def _generate_keyboard_layout_preview(self):
         filename = "/tmp/live-install-keyboard-layout.png"
-        os.system("python /usr/lib/live-installer/frontend/generate_keyboard_layout.py %s %s %s" % (self.setup.keyboard_layout, self.setup.keyboard_variant, filename))
+        layout = self.setup.keyboard_layout.split(",")[-1]
+        variant = self.setup.keyboard_variant.split(",")[-1]
+        if variant == "":
+            variant = None
+        print("python /usr/lib/live-installer/frontend/generate_keyboard_layout.py %s %s %s" % (layout, variant, filename))
+        os.system("python /usr/lib/live-installer/frontend/generate_keyboard_layout.py %s %s %s" % (layout, variant, filename))
         self.builder.get_object("image_keyboard").set_from_file(filename)
         return False
 
