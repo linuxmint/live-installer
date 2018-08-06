@@ -77,12 +77,12 @@ class InstallerEngine:
                         cmd = "mkfs.%s -F %s" % (partition.format_as, partition.path)
                     elif (partition.format_as == "jfs"):
                         cmd = "mkfs.%s -q %s" % (partition.format_as, partition.path)
-                    elif (partition.format_as == "xfs"):
+                    elif (partition.format_as in ["btrfs", "xfs"]):
                         cmd = "mkfs.%s -f %s" % (partition.format_as, partition.path)
                     elif (partition.format_as == "vfat"):
                         cmd = "mkfs.%s %s -F 32" % (partition.format_as, partition.path)
                     else:
-                        cmd = "mkfs.%s %s" % (partition.format_as, partition.path) # works with bfs, btrfs, minix, msdos, ntfs, vfat
+                        cmd = "mkfs.%s %s" % (partition.format_as, partition.path) # works with bfs, minix, msdos, ntfs, vfat
 
                 print "EXECUTING: '%s'" % cmd
                 self.exec_cmd(cmd)
