@@ -27,13 +27,22 @@ class Dialog(Gtk.MessageDialog):
             self.destroy()
 
 def MessageDialog(*args):
-    return Dialog(Gtk.MessageType.INFO, Gtk.ButtonsType.OK, *args).show()
+    dialog = Dialog(Gtk.MessageType.INFO, Gtk.ButtonsType.NONE, *args)
+    dialog.add_button(_("OK"), Gtk.ResponseType.OK)
+    return dialog.show()
 
 def QuestionDialog(*args):
-    return Dialog(Gtk.MessageType.QUESTION, Gtk.ButtonsType.YES_NO, *args).show()
+    dialog = Dialog(Gtk.MessageType.QUESTION, Gtk.ButtonsType.NONE, *args)
+    dialog.add_button(_("No"), Gtk.ResponseType.NO)
+    dialog.add_button(_("Yes"), Gtk.ResponseType.YES)
+    return dialog.show()
 
 def WarningDialog(*args):
-    return Dialog(Gtk.MessageType.WARNING, Gtk.ButtonsType.OK, *args).show()
+    dialog = Dialog(Gtk.MessageType.WARNING, Gtk.ButtonsType.NONE, *args)
+    dialog.add_button(_("OK"), Gtk.ResponseType.OK)
+    return dialog.show()
 
 def ErrorDialog(*args):
-    return Dialog(Gtk.MessageType.ERROR, Gtk.ButtonsType.OK, *args).show()
+    dialog = Dialog(Gtk.MessageType.ERROR, Gtk.ButtonsType.NONE, *args)
+    dialog.add_button(_("OK"), Gtk.ResponseType.OK)
+    return dialog.show()

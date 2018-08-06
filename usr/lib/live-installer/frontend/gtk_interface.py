@@ -284,7 +284,7 @@ class InstallerWindow:
             pass
 
     def _on_face_browse_menuitem_activated(self, menuitem):
-        dialog = Gtk.FileChooserDialog(None, None, Gtk.FileChooserAction.OPEN, (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
+        dialog = Gtk.FileChooserDialog(None, None, Gtk.FileChooserAction.OPEN, (_("Cancel"), Gtk.ResponseType.CANCEL, _("Open"), Gtk.ResponseType.OK))
 
         filter = Gtk.FileFilter()
         filter.set_name(_("Images"))
@@ -369,6 +369,12 @@ class InstallerWindow:
         self.language_column.set_title(_("Language"))
         self.country_column.set_title(_("Country"))
         self.activate_page(0)
+
+        self.builder.get_object("button_cancel").set_label(_("Cancel"))
+        self.builder.get_object("button_ok").set_label(_("OK"))
+        self.builder.get_object("button_quit").set_label(_("Quit"))
+        self.builder.get_object("button_back").set_label(_("Back"))
+        self.builder.get_object("button_next").set_label(_("Forward"))
 
         self.builder.get_object("button_edit").set_label(_("Edit partitions"))
         self.builder.get_object("button_refresh").set_label(_("Refresh"))
@@ -754,8 +760,6 @@ class InstallerWindow:
     def wizard_cb(self, widget, goback, data=None):
         ''' wizard buttons '''
         sel = self.builder.get_object("notebook1").get_current_page()
-        self.builder.get_object("button_next").set_label(Gtk.STOCK_GO_FORWARD)
-        self.builder.get_object("button_next").set_use_stock(True)
         self.builder.get_object("button_back").set_sensitive(True)
 
         # check each page for errors
@@ -891,7 +895,7 @@ class InstallerWindow:
                 self.activate_page(self.PAGE_OVERVIEW)
                 self.show_overview()
                 self.builder.get_object("treeview_overview").expand_all()
-                self.builder.get_object("button_next").set_label(Gtk.STOCK_APPLY)
+                self.builder.get_object("button_next").set_label(_("Install"))
             elif(sel == self.PAGE_OVERVIEW):
                 self.activate_page(self.PAGE_INSTALL)
                 self.builder.get_object("button_next").set_sensitive(False)
