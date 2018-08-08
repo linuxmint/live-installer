@@ -1,3 +1,32 @@
+live-installer (2018.08.08) cindy; urgency=medium
+
+  [ Clement Lefebvre ]
+  * Don't kill the screensaver in debug mode
+
+  [ Alexander Ryabov ]
+  * Adding layout for non-latin choises to target (#88)
+  * Additional layout in live-session for non-latin choises (#89)
+
+  [ Clement Lefebvre ]
+  * Define a list of non-latin keyboard layouts
+  * Test script needs to run live-installer with sudo
+  * l10n: Fix language treeview column titles
+  * Don't set keyboard layout in debug mode
+  * Pre-fill user details in debug mode
+  * Fix partition edit window
+  * Fix mount point selection in partition edit dialog
+  * Fix btrfs missing in file formats
+  * Don't error out when a disk cannot be formatted.
+  * l10n: Fix partition buttons and language page title
+  * Use -f option when formatting with btrfs
+  * Fix non-latin keyboard selection
+  * Add bn to non-latin keyboard layouts
+  * l10n: Replace stock widgets
+  * Add gn to non-latin layouts
+  * l10n: Add dialogs.py to POT
+
+ -- Clement Lefebvre <root@linuxmint.com>  Wed, 08 Aug 2018 11:07:46 +0200
+
 live-installer (2018.07.28.1) cindy; urgency=medium
 
   * Delete root password
