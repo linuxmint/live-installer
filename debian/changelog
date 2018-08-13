@@ -1,3 +1,9 @@
+live-installer (2018.08.13) cindy; urgency=medium
+
+  * live-installer-stop: Fix case where mounted device has a partition number
+
+ -- Clement Lefebvre <root@linuxmint.com>  Mon, 13 Aug 2018 14:25:51 +0200
+
 live-installer (2018.08.08) cindy; urgency=medium
 
   [ Clement Lefebvre ]
