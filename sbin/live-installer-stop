@@ -49,6 +49,8 @@ do_stop ()
     done
 
     device="$(grep " /lib/live/mount/medium " /proc/mounts | cut -d' ' -f1)" || device=
+    pkname="$(lsblk -no pkname $device)" || pkname=
+
     # If /lib/live/mount/medium isn't mounted, don't try to eject it
     if [ -z "$device" ]; then
         return 0
@@ -56,15 +58,15 @@ do_stop ()
 
     # If the device exists but can't be found in /sys/block, it's most likely a partition
     # so unmount it (lazy mode) and sync
-    if [ -b "$device" ] && [ ! -f "/sys/block/$(basename $device)/removable" ]; then
+    if [ -b "$device" ] && [ ! -f "/sys/block/$(basename $device)/removable" ] && [ ! -f "/sys/block/$pkname/removable" ]; then
         umount -l $device >/dev/null 2>&1
         sync
         return 0
     fi
 
     # If we're still there, then we're probably a cdrom or other media
-    # ship the eject if the kernel says the media isn't removable
-    if [ "$(cat /sys/block/$(basename $device)/removable)" = "0" ]; then
+    # skip the eject if the kernel says the media isn't removable
+    if [ "$(cat /sys/block/$(basename $device)/removable)" = "0" ] || [ "$(cat /sys/block/$pkname/removable)" = "0" ]; then
         return 0
     fi
 
