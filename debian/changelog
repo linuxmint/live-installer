@@ -1,3 +1,9 @@
+live-installer (2018.08.14.1) cindy; urgency=medium
+
+  * show_error_dialog: Set flag after showing the dialog
+
+ -- Clement Lefebvre <root@linuxmint.com>  Tue, 14 Aug 2018 15:13:30 +0200
+
 live-installer (2018.08.14) cindy; urgency=medium
 
   * Fix a few race conditions
