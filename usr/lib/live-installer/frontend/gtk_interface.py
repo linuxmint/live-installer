@@ -959,9 +959,9 @@ class InstallerWindow:
 
     @idle
     def show_error_dialog(self, message, detail):
+        ErrorDialog(message, detail)
         if self.showing_last_dialog:
             self.showing_last_dialog = False
-        ErrorDialog(message, detail)
 
     @idle
     def show_reboot_dialog(self):
