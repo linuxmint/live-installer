@@ -72,6 +72,7 @@ class InstallerWindow:
         self.done = False
         self.fail = False
         self.paused = False
+        self.showing_last_dialog = False
 
         # here comes the installer engine
         self.installer = InstallerEngine()
@@ -958,17 +959,20 @@ class InstallerWindow:
 
     @idle
     def show_error_dialog(self, message, detail):
+        if self.showing_last_dialog:
+            self.showing_last_dialog = False
         ErrorDialog(message, detail)
 
     @idle
     def show_reboot_dialog(self):
         reboot = QuestionDialog(_("Installation finished"), _("The installation is now complete. Do you want to restart your computer to use the new system?"))
+        if self.showing_last_dialog:
+            self.showing_last_dialog = False
         if reboot:
             os.system('reboot')
 
     @idle
     def pause_installation(self):
-        self.paused = True
         self.activate_page(self.PAGE_CUSTOMPAUSED)
         self.builder.get_object("button_next").show()
         self.builder.get_object("button_next").set_sensitive(True)
@@ -1011,8 +1015,8 @@ class InstallerWindow:
 
         if do_try_finish_install:
             if(self.setup.skip_mount):
+                self.paused = True
                 self.pause_installation()
-
                 while(self.paused):
                     time.sleep(0.1)
 
@@ -1026,10 +1030,14 @@ class InstallerWindow:
             while(not self.done):
                 time.sleep(0.1)
 
+            self.showing_last_dialog = True
             if self.critical_error_happened:
                 self.show_error_dialog(_("Installation error"), self.critical_error_message)
             else:
                 self.show_reboot_dialog()
+
+            while(self.showing_last_dialog):
+                time.sleep(0.1)
 
             print " ## INSTALLATION COMPLETE "
 
