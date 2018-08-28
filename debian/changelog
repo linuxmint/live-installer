@@ -1,3 +1,9 @@
+live-installer (2018.08.28) cindy; urgency=medium
+
+  * Partitioning: Don't skip partitions with negative size
+
+ -- Clement Lefebvre <root@linuxmint.com>  Tue, 28 Aug 2018 14:14:39 +0200
+
 live-installer (2018.08.14.1) cindy; urgency=medium
 
   * show_error_dialog: Set flag after showing the dialog
