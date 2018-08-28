@@ -274,10 +274,13 @@ class PartitionSetup(Gtk.TreeStore):
 
             partitions = []
             for partition in partition_set:
+                part = Partition(partition)
+                print(partition.path, part.size, part.raw_size)
                 # skip ranges <5MB
-                if partition.getLength('MB') > 5:
-                    part = Partition(partition)
+                if part.raw_size > 5242880:
                     partitions.append(part)
+                else:
+                    print("skipping ", partition.path, part.raw_size)
             partitions = sorted(partitions, key=lambda part: part.partition.geometry.start)
 
             print "      - Found partitions..."
@@ -376,6 +379,7 @@ class Partition(object):
         print "                  . size_percent %d" % self.size_percent
 
         self.size = to_human_readable(partition.getLength('B'))
+        self.raw_size = partition.getLength('B')
         print "                  . size %s" % self.size
 
         # if not normal partition with /dev/sdXN path, set its name to '' and discard it from model
@@ -416,6 +420,7 @@ class Partition(object):
             print "                  . About to mount it..."
             os.system('mount --read-only {} {}'.format(self.path, TMP_MOUNTPOINT))
             size, free, self.used_percent, mount_point = getoutput("df {0} | grep '^{0}' | awk '{{print $2,$4,$5,$6}}' | tail -1".format(self.path)).split(None, 3)
+            self.raw_size = int(size)*1024
             print "                  . size %s, free %s, self.used_percent %s, mount_point %s" % (size, free, self.used_percent, mount_point)
         except ValueError:
             print "                  . value error!"
