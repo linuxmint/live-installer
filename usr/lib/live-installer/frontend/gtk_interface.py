@@ -856,8 +856,27 @@ class InstallerWindow:
                         if partition.format_as is None or partition.format_as == "":
                             ErrorDialog(_("Installation Tool"), _("Please indicate a filesystem to format the root (/) partition with before proceeding."))
                             return
+                    if partition.mount_as == "/@":
+                        if partition.format_as != "btrfs":
+                            ErrorDialog(_("Installation Tool"), _("A root subvolume (/@) requires to format the partition with btrfs."))
+                            return
+                        found_root_partition = True
+                    if partition.mount_as == "/@home":
+                        if partition.format_as == "btrfs":
+                            continue;
+                        if partition.type == "btrfs" and (partition.format_as == None or partition.format_as == ""):
+                            continue;
+                        ErrorDialog(_("Installation Tool"), _("A home subvolume (/@home) requires the use of a btrfs formatted partition."))
+                        return
+
                 if not found_root_partition:
-                    ErrorDialog(_("Installation Tool"), "<b>%s</b>" % _("Please select a root (/) partition."), _("A root partition is needed to install Linux Mint on.\n\n - Mount point: /\n - Recommended size: 30GB\n - Recommended filesystem format: ext4\n "))
+                    ErrorDialog(_("Installation Tool"), "<b>%s</b>" % _("Please select a root (/) partition."), _(
+                        "A root partition is needed to install Linux Mint on.\n\n"
+                        " - Mount point: /\n - Recommended size: 30GB\n"
+                        " - Recommended filesystem format: ext4\n\n"
+                        "Note: The timeshift btrfs snapshots feature requires the use of:\n"
+                        " - subvolume Mount-point /@\n"
+                        " - btrfs as filesystem format\n"))
                     return
 
                 if self.setup.gptonefi:
