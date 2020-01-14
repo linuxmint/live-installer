@@ -1,3 +1,13 @@
+live-installer (2020.01.14) debbie; urgency=medium
+
+  [ aja ]
+  * Add support for btrfs subvolumes (#94)
+
+  [ Clement Lefebvre ]
+  * Switch to python-pil and webkit2
+
+ -- Clement Lefebvre <root@linuxmint.com>  Tue, 14 Jan 2020 10:08:00 +0000
+
 live-installer (2018.08.28) cindy; urgency=medium
 
   * Partitioning: Don't skip partitions with negative size
