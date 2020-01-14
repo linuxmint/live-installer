@@ -111,7 +111,7 @@ class Slideshow():
 
     @idle
     def updatePage(self, page):
-        self.browser.load_html_string(page, 'file:///')
+        self.browser.load_html(page, 'file:///')
 
     def getLanguageDirectory(self):
         langDir = self.slideshowDir

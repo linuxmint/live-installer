@@ -68,7 +68,7 @@ def build_partitions(_installer):
     if partition_setup.disks:
         installer._selected_disk = partition_setup.disks[0][0]
         print "Loading HTML string"
-        installer.partitions_browser.load_string(partition_setup.get_html(installer._selected_disk), 'text/html', 'UTF-8', 'file:///')
+        installer.partitions_browser.load_html(partition_setup.get_html(installer._selected_disk), 'file:///')
     print "Showing the partition screen"
     installer.builder.get_object("scrolled_partitions").show_all()
     installer.builder.get_object("treeview_disks").set_model(partition_setup)
@@ -82,7 +82,7 @@ def update_html_preview(selection):
     except TypeError, IndexError: return  # no disk is selected or no disk available
     if disk != installer._selected_disk:
         installer._selected_disk = disk
-        installer.partitions_browser.load_string(model.get_html(disk), 'text/html', 'UTF-8', 'file:///')
+        installer.partitions_browser.load_html(model.get_html(disk), 'file:///')
 
 def edit_partition_dialog(widget, path, viewcol):
     ''' assign the partition ... '''
