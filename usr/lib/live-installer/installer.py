@@ -488,7 +488,7 @@ class InstallerEngine:
         self.do_run_in_chroot("rm /etc/default/keyboard")
         self.do_run_in_chroot("mv /etc/default/keyboard.new /etc/default/keyboard")
 
-        # Perform OS adjustments (this is needed prior to installing grub)
+        # Perform OS adjustments
         if os.path.exists("/target/usr/lib/linuxmint/mintSystem/mint-adjust.py"):
             self.do_run_in_chroot("/usr/lib/linuxmint/mintSystem/mint-adjust.py")
 
@@ -514,6 +514,7 @@ class InstallerEngine:
         print " --> Configuring Initramfs"
         our_current += 1
         self.do_run_in_chroot("/usr/sbin/update-initramfs -t -u -k all")
+        self.do_run_in_chroot("/usr/share/debian-system-adjustments/systemd/adjust-grub-title")
         kernelversion= commands.getoutput("uname -r")
         self.do_run_in_chroot("/usr/bin/sha1sum /boot/initrd.img-%s > /var/lib/initramfs-tools/%s" % (kernelversion,kernelversion))
 
@@ -568,6 +569,7 @@ class InstallerEngine:
         time.sleep(5)
         found_entry = False
         if os.path.exists("/target/boot/grub/grub.cfg"):
+            self.do_run_in_chroot("/usr/share/debian-system-adjustments/systemd/adjust-grub-title")
             grubfh = open("/target/boot/grub/grub.cfg", "r")
             for line in grubfh:
                 line = line.rstrip("\r\n")
