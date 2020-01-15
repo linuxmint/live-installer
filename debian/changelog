@@ -1,3 +1,11 @@
+live-installer (2020.01.15) debbie; urgency=medium
+
+  * Adjust grub title
+  * Launcher: Replace gksu with sudo
+  * Fix slideshow and partitions preview
+
+ -- Clement Lefebvre <root@linuxmint.com>  Wed, 15 Jan 2020 16:45:10 +0000
+
 live-installer (2020.01.14) debbie; urgency=medium
 
   [ aja ]
