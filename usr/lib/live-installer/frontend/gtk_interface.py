@@ -41,9 +41,10 @@ def idle(func):
 
 class WizardPage:
 
-    def __init__(self, help_text, icon):
+    def __init__(self, help_text, icon, question):
         self.help_text = help_text
         self.icon = icon
+        self.question = question
 
 class InstallerWindow:
     # Cancelable timeout for keyboard preview generation, which is
@@ -79,7 +80,8 @@ class InstallerWindow:
         self.window.connect("delete-event", self.quit_cb)
 
         # Wizard pages
-        (self.PAGE_LANGUAGE,
+        (self.PAGE_WELCOME,
+         self.PAGE_LANGUAGE,
          self.PAGE_TIMEZONE,
          self.PAGE_KEYBOARD,
          self.PAGE_USER,
@@ -88,18 +90,19 @@ class InstallerWindow:
          self.PAGE_OVERVIEW,
          self.PAGE_INSTALL,
          self.PAGE_CUSTOMWARNING,
-         self.PAGE_CUSTOMPAUSED) = range(10)
-        self.wizard_pages = range(10)
-        self.wizard_pages[self.PAGE_LANGUAGE] = WizardPage(_("Language"), "locales.png")
-        self.wizard_pages[self.PAGE_TIMEZONE] = WizardPage(_("Timezone"), "time.png")
-        self.wizard_pages[self.PAGE_KEYBOARD] = WizardPage(_("Keyboard layout"), "keyboard.png")
-        self.wizard_pages[self.PAGE_USER] = WizardPage(_("User info"), "user.png")
-        self.wizard_pages[self.PAGE_PARTITIONS] = WizardPage(_("Partitioning"), "hdd.svg")
-        self.wizard_pages[self.PAGE_CUSTOMWARNING] = WizardPage(_("Please make sure you wish to manage partitions manually"), "hdd.svg")
-        self.wizard_pages[self.PAGE_ADVANCED] = WizardPage(_("Advanced options"), "advanced.png")
-        self.wizard_pages[self.PAGE_OVERVIEW] = WizardPage(_("Summary"), "summary.png")
-        self.wizard_pages[self.PAGE_INSTALL] = WizardPage(_("Installing Linux Mint..."), "install.png")
-        self.wizard_pages[self.PAGE_CUSTOMPAUSED] = WizardPage(_("Installation paused: please finish the custom installation"), "install.png")
+         self.PAGE_CUSTOMPAUSED) = range(11)
+        self.wizard_pages = range(11)
+        self.wizard_pages[self.PAGE_WELCOME] = WizardPage(_("Welcome"), "mark-location-symbolic", "")
+        self.wizard_pages[self.PAGE_LANGUAGE] = WizardPage(_("Language"), "preferences-desktop-locale-symbolic", _("What language would you like to use?"))
+        self.wizard_pages[self.PAGE_TIMEZONE] = WizardPage(_("Timezone"), "mark-location-symbolic", _("Where are you?"))
+        self.wizard_pages[self.PAGE_KEYBOARD] = WizardPage(_("Keyboard layout"), "preferences-desktop-keyboard-symbolic", _("What is your keyboard layout?"))
+        self.wizard_pages[self.PAGE_USER] = WizardPage(_("User account"), "avatar-default-symbolic", _("Who are you?"))
+        self.wizard_pages[self.PAGE_PARTITIONS] = WizardPage(_("Partitioning"), "drive-harddisk-system-symbolic", _("Where do you want to install LMDE?"))
+        self.wizard_pages[self.PAGE_CUSTOMWARNING] = WizardPage(_("Make sure you want to manage partitions manually"), "drive-harddisk-system-symbolic", "")
+        self.wizard_pages[self.PAGE_ADVANCED] = WizardPage(_("Advanced options"), "preferences-system-symbolic", "Configure the boot menu")
+        self.wizard_pages[self.PAGE_OVERVIEW] = WizardPage(_("Summary"), "object-select-symbolic", "Check that everything is correct")
+        self.wizard_pages[self.PAGE_INSTALL] = WizardPage(_("Installing"), "system-run-symbolic", "Please wait...")
+        self.wizard_pages[self.PAGE_CUSTOMPAUSED] = WizardPage(_("Installation paused: please finish the custom installation"), "system-run-symbolic", "")
 
         # set the button events (wizard_cb)
         self.builder.get_object("button_next").connect("clicked", self.wizard_cb, False)
@@ -144,13 +147,13 @@ class InstallerWindow:
             col = Gtk.TreeViewColumn("", text, markup=i)  # real title is set in i18n()
             self.builder.get_object("treeview_disks").append_column(col)
 
-        self.builder.get_object("entry_your_name").connect("notify::text", self.assign_realname)
+        self.builder.get_object("entry_name").connect("notify::text", self.assign_realname)
         self.builder.get_object("entry_username").connect("notify::text", self.assign_username)
         self.builder.get_object("entry_hostname").connect("notify::text", self.assign_hostname)
 
         # events for detecting password mismatch..
-        self.builder.get_object("entry_userpass1").connect("changed", self.assign_password)
-        self.builder.get_object("entry_userpass2").connect("changed", self.assign_password)
+        self.builder.get_object("entry_password").connect("changed", self.assign_password)
+        self.builder.get_object("entry_confirm").connect("changed", self.assign_password)
 
         # link the checkbutton to the combobox
         grub_check = self.builder.get_object("checkbutton_grub")
@@ -189,18 +192,18 @@ class InstallerWindow:
         self.column12.add_attribute(ren, "markup", 0)
         self.builder.get_object("treeview_overview").append_column(self.column12)
         # install page
-        self.builder.get_object("label_install_progress").set_markup("<i>%s</i>" % _("Calculating file indexes ..."))
+        self.builder.get_object("label_install_progress").set_text(_("Calculating file indexes ..."))
 
         #i18n
         self.i18n()
 
         # Pre-fill user details in debug mode
         if __debug__:
-            self.builder.get_object("entry_your_name").set_text("John Boone")
+            self.builder.get_object("entry_name").set_text("John Boone")
             self.builder.get_object("entry_username").set_text("john")
             self.builder.get_object("entry_hostname").set_text("mars")
-            self.builder.get_object("entry_userpass1").set_text("dummy_password")
-            self.builder.get_object("entry_userpass2").set_text("dummy_password")
+            self.builder.get_object("entry_password").set_text("dummy_password")
+            self.builder.get_object("entry_confirm").set_text("dummy_password")
 
         # build partition list
         self.should_pulse = False
@@ -284,35 +287,26 @@ class InstallerWindow:
         self.builder.get_object("button_ok").set_label(_("OK"))
         self.builder.get_object("button_quit").set_label(_("Quit"))
         self.builder.get_object("button_back").set_label(_("Back"))
-        self.builder.get_object("button_next").set_label(_("Forward"))
+        self.builder.get_object("button_next").set_label(_("Next"))
 
         self.builder.get_object("button_edit").set_label(_("Edit partitions"))
         self.builder.get_object("button_refresh").set_label(_("Refresh"))
         self.builder.get_object("button_custommount").set_label(_("Expert mode"))
-        self.builder.get_object("label_your_name").set_markup("<b>%s</b>" % _("Your full name"))
-        self.builder.get_object("label_your_name_help").set_markup("<span fgcolor='#3C3C3C'><sub><i>%s</i></sub></span>" % _("Please enter your full name."))
-        self.builder.get_object("label_username").set_markup("<b>%s</b>" % _("Your username"))
-        self.builder.get_object("label_username_help").set_markup("<span fgcolor='#3C3C3C'><sub><i>%s</i></sub></span>" % _("This is the name you will use to log in to your computer."))
-        self.builder.get_object("label_choose_pass").set_markup("<b>%s</b>" % _("Your password"))
-        self.builder.get_object("label_pass_help").set_markup("<span fgcolor='#3C3C3C'><sub><i>%s</i></sub></span>" % _("Please enter your password twice to ensure it is correct."))
-        self.builder.get_object("label_hostname").set_markup("<b>%s</b>" % _("Hostname"))
-        self.builder.get_object("label_hostname_help").set_markup("<span fgcolor='#3C3C3C'><sub><i>%s</i></sub></span>" % _("This hostname will be the computer's name on the network."))
-        self.builder.get_object("label_autologin").set_markup("<b>%s</b>" % _("Automatic login"))
-        self.builder.get_object("label_autologin_help").set_markup("<span fgcolor='#3C3C3C'><sub><i>%s</i></sub></span>" % _("If enabled, the login screen is skipped when the system starts, and you are signed into your desktop session automatically."))
+        self.builder.get_object("label_name").set_text(_("Your name:"))
+        self.builder.get_object("label_hostname").set_text(_("Your computer's name:"))
+        self.builder.get_object("label_hostname_help").set_text(_("The name it uses when it talks to other computers."))
+        self.builder.get_object("label_username").set_text(_("Pick a username:"))
+        self.builder.get_object("label_password").set_text(_("Choose a password:"))
+        self.builder.get_object("label_confirm").set_text(_("Confirm your password:"))
         self.builder.get_object("checkbutton_autologin").set_label(_("Log in automatically"))
         self.builder.get_object("checkbutton_autologin").connect("toggled", self.assign_autologin)
 
-        # timezones
-        self.builder.get_object("label_timezones").set_label(_("Selected timezone:"))
-
         # grub
-        self.builder.get_object("label_grub").set_markup("<b>%s</b>" % _("Bootloader"))
-        self.builder.get_object("checkbutton_grub").set_label(_("Install GRUB"))
-        self.builder.get_object("label_grub_help").set_label(_("GRUB is a bootloader used to load the Linux kernel."))
+        self.builder.get_object("checkbutton_grub").set_label(_("Install the GRUB boot menu on:"))
 
         # keyboard page
-        self.builder.get_object("label_test_kb").set_label(_("Use this box to test your keyboard layout."))
-        self.builder.get_object("label_kb_model").set_label(_("Model"))
+        self.builder.get_object("entry_test_kb").set_placeholder_text(_("Type here to test your keyboard layout"))
+        self.builder.get_object("label_kb_model").set_label(_("Keyboard Model:"))
 
         # custom install warning
         self.builder.get_object("label_custom_install_directions_1").set_label(_("You have selected to manage your partitions manually, this feature is for ADVANCED USERS ONLY."))
@@ -323,7 +317,7 @@ class InstallerWindow:
         self.builder.get_object("label_custom_install_directions_6").set_label(_("If you aren't sure what any of this means, please go back and deselect manual partition management."))
 
         # custom install installation paused directions
-        self.builder.get_object("label_custom_install_paused_1").set_label(_("Please do the following and then click Forward to finish installation:"))
+        self.builder.get_object("label_custom_install_paused_1").set_label(_("Please do the following and then click Next to finish installation:"))
         self.builder.get_object("label_custom_install_paused_2").set_label(_("Create /target/etc/fstab for the filesystems as they will be mounted in your new system, matching those currently mounted at /target (without using the /target prefix in the mount paths themselves)."))
         self.builder.get_object("label_custom_install_paused_3").set_label(_("Install any packages that may be needed for first boot (mdadm, cryptsetup, dmraid, etc) by calling \"sudo chroot /target\" followed by the relevant apt-get/aptitude installations."))
         self.builder.get_object("label_custom_install_paused_4").set_label(_("Note that in order for update-initramfs to work properly in some cases (such as dm-crypt), you may need to have drives currently mounted using the same block device name as they appear in /target/etc/fstab."))
@@ -356,14 +350,59 @@ class InstallerWindow:
             self.builder.get_object("entry_username").set_text(text)
         except:
             pass
+        if self.setup.real_name == "":
+            self.builder.get_object("check_name").hide()
+        else:
+            self.builder.get_object("check_name").show()
         self.setup.print_setup()
 
     def assign_username(self, entry, prop):
         self.setup.username = entry.props.text
+        errorFound = False
+        for char in self.setup.username:
+            if(char.isupper()):
+                errorFound = True
+                break
+            elif(char.isspace()):
+                errorFound = True
+                break
+        if errorFound or self.setup.username == "":
+            self.builder.get_object("check_username").hide()
+        else:
+            self.builder.get_object("check_username").show()
         self.setup.print_setup()
 
     def assign_hostname(self, entry, prop):
         self.setup.hostname = entry.props.text
+        errorFound = False
+        for char in self.setup.hostname:
+            if(char.isupper()):
+                errorFound = True
+                break
+            elif(char.isspace()):
+                errorFound = True
+                break
+        if errorFound or self.setup.hostname == "":
+            self.builder.get_object("check_hostname").hide()
+        else:
+            self.builder.get_object("check_hostname").show()
+        self.setup.print_setup()
+
+    def assign_password(self, widget):
+        self.setup.password1 = self.builder.get_object("entry_password").get_text()
+        self.setup.password2 = self.builder.get_object("entry_confirm").get_text()
+
+        if self.setup.password1 == "":
+            self.builder.get_object("check_password").hide()
+        else:
+            self.builder.get_object("check_password").show()
+
+        # Check the password confirmation
+        if(self.setup.password1 == "" or self.setup.password2 == "" or self.setup.password1 != self.setup.password2):
+            self.builder.get_object("check_confirm").hide()
+        else:
+            self.builder.get_object("check_confirm").show()
+
         self.setup.print_setup()
 
     def quit_cb(self, widget, data=None):
@@ -628,28 +667,18 @@ class InstallerWindow:
         self.builder.get_object("image_keyboard").set_from_file(filename)
         return False
 
-    def assign_password(self, widget):
-        ''' Someone typed into the entry '''
-        self.setup.password1 = self.builder.get_object("entry_userpass1").get_text()
-        self.setup.password2 = self.builder.get_object("entry_userpass2").get_text()
-        if(self.setup.password1 == "" and self.setup.password2 == ""):
-            self.builder.get_object("image_mismatch").hide()
-            self.builder.get_object("label_mismatch").hide()
-        else:
-            self.builder.get_object("image_mismatch").show()
-            self.builder.get_object("label_mismatch").show()
-        if(self.setup.password1 != self.setup.password2):
-            self.builder.get_object("image_mismatch").set_from_stock(Gtk.STOCK_NO, Gtk.IconSize.BUTTON)
-            self.builder.get_object("label_mismatch").set_label(_("Passwords do not match."))
-        else:
-            self.builder.get_object("image_mismatch").set_from_stock(Gtk.STOCK_OK, Gtk.IconSize.BUTTON)
-            self.builder.get_object("label_mismatch").set_label(_("Passwords match."))
-        self.setup.print_setup()
-
     def activate_page(self, index):
+        # progress images
+        for i in range(9):
+            img = self.builder.get_object("progress_%d" % i)
+            if i <= index:
+                img.set_from_file("/usr/share/icons/live-installer-progress-dot-on.png")
+            else:
+                img.set_from_file("/usr/share/icons/live-installer-progress-dot-off.png")
         help_text = _(self.wizard_pages[index].help_text)
         self.builder.get_object("help_label").set_markup("<big><b>%s</b></big>" % help_text)
-        # self.builder.get_object("help_icon").set_from_file("/usr/share/live-installer/icons/%s" % self.wizard_pages[index].icon)
+        self.builder.get_object("help_icon").set_from_icon_name(self.wizard_pages[index].icon, Gtk.IconSize.LARGE_TOOLBAR)
+        self.builder.get_object("help_question").set_text(self.wizard_pages[index].question)
         self.builder.get_object("notebook1").set_current_page(index)
         # TODO: move other page-depended actions from the wizard_cb into here below
         if index == self.PAGE_PARTITIONS:
@@ -664,7 +693,9 @@ class InstallerWindow:
 
         # check each page for errors
         if(not goback):
-            if(sel == self.PAGE_LANGUAGE):
+            if (sel == self.PAGE_WELCOME):
+                self.activate_page(self.PAGE_LANGUAGE)
+            elif(sel == self.PAGE_LANGUAGE):
                 if self.setup.language is None:
                     WarningDialog(_("Installation Tool"), _("Please choose a language"))
                 else:
@@ -700,7 +731,7 @@ class InstallerWindow:
                 self.activate_page(self.PAGE_KEYBOARD)
             elif(sel == self.PAGE_KEYBOARD):
                 self.activate_page(self.PAGE_USER)
-                self.builder.get_object("entry_your_name").grab_focus()
+                self.builder.get_object("entry_name").grab_focus()
             elif(sel == self.PAGE_USER):
                 errorFound = False
                 errorMessage = ""
@@ -729,6 +760,7 @@ class InstallerWindow:
                         elif(char.isspace()):
                             errorFound = True
                             errorMessage = _("Your username may not contain whitespace characters.")
+                            break
 
                     for char in self.setup.hostname:
                         if(char.isupper()):
@@ -738,6 +770,7 @@ class InstallerWindow:
                         elif(char.isspace()):
                             errorFound = True
                             errorMessage = _("The hostname may not contain whitespace characters.")
+                            break
 
                 if (errorFound):
                     WarningDialog(_("Installation Tool"), errorMessage)
@@ -846,6 +879,8 @@ class InstallerWindow:
                 self.activate_page(self.PAGE_TIMEZONE)
             elif(sel == self.PAGE_TIMEZONE):
                 self.activate_page(self.PAGE_LANGUAGE)
+            elif(sel == self.PAGE_LANGUAGE):
+                self.activate_page(self.PAGE_WELCOME)
 
     def show_overview(self):
         bold = lambda str: '<b>' + str + '</b>'
@@ -896,7 +931,7 @@ class InstallerWindow:
         self.builder.get_object("button_next").set_sensitive(True)
         self.builder.get_object("button_back").set_sensitive(True)
         self.builder.get_object("button_quit").set_sensitive(True)
-        MessageDialog(_("Installation paused"), _("The installation is now paused. Please read the instructions on the page carefully before clicking Forward to finish the installation."))
+        MessageDialog(_("Installation paused"), _("The installation is now paused. Please read the instructions on the page carefully before clicking Next to finish the installation."))
         self.builder.get_object("button_next").set_sensitive(True)
 
     @async

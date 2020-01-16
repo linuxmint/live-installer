@@ -91,15 +91,15 @@ class Keyboard(QWidget):
         p = QPainter(self)
         p.setRenderHint(QPainter.Antialiasing)
 
-        p.setBrush(QColor(0xd6, 0xd6, 0xd6))
-        p.drawRect(-1,-1,740,740)
+        # p.setBrush(QColor(0xf0, 0xf0, 0xf0)) # color of the border
+        # p.drawRect(-1, -1, 800, 800)
 
         pen = QPen()
         pen.setWidth(1)
-        pen.setColor(QColor(0x58, 0x58, 0x58))
+        pen.setColor(QColor(0x58, 0x58, 0x58)) # color of the borders of the keys
         p.setPen(pen)
 
-        p.setBrush(QColor(0x58, 0x58, 0x58))
+        p.setBrush(QColor(0x58, 0x58, 0x58)) # color of the keys
 
         p.setBackgroundMode(Qt.TransparentMode)
 
