@@ -385,15 +385,12 @@ class InstallerWindow:
             from urllib.request import urlopen
         try:
             lookup = str(urlopen('http://geoip.ubuntu.com/lookup').read())
-            cur_country_code = re.search('<CountryCode>(.*)</CountryCode>', lookup).group(1)
-            cur_timezone = re.search('<TimeZone>(.*)</TimeZone>', lookup).group(1)
-            if cur_country_code == 'None': cur_country_code = None
-            if cur_timezone == 'None': cur_timezone = None
+            self.cur_country_code = re.search('<CountryCode>(.*)</CountryCode>', lookup).group(1)
+            self.cur_timezone = re.search('<TimeZone>(.*)</TimeZone>', lookup).group(1)
+            if self.cur_country_code == 'None': self.cur_country_code = "US"
+            if self.cur_timezone == 'None': self.cur_timezone = "America/New_York"
         except:
-            cur_country_code, cur_timezone = None, None  # no internet connection
-
-        self.cur_country_code = cur_country_code or os.environ.get('LANG', 'US').split('.')[0].split('_')[-1]  # fallback to LANG location or 'US'
-        self.cur_timezone = cur_timezone
+            self.cur_country_code, self.cur_timezone = "US", "America/New_York"  # no internet connection
 
         #Load countries into memory
         countries = {}
@@ -449,15 +446,15 @@ class InstallerWindow:
                 country = ''
             pixbuf = flag(ccode) if not lang in 'eo ia' else flag('_' + lang)
             iter = model.append((language, country, pixbuf, locale))
-            if (ccode == cur_country_code and
+            if (ccode == self.cur_country_code and
                 (not set_iter or
                  set_iter and lang == 'en' or  # prefer English, or
                  set_iter and lang == ccode.lower())):  # fuzzy: lang matching ccode (fr_FR, de_DE, es_ES, ...)
                 set_iter = iter
 
-        # Sort by Country, then by Language
-        model.set_sort_column_id(0, Gtk.SortType.ASCENDING)
+        # Sort by language then country
         model.set_sort_column_id(1, Gtk.SortType.ASCENDING)
+        model.set_sort_column_id(0, Gtk.SortType.ASCENDING)
         # Set the model and pre-select the correct language
         treeview = self.builder.get_object("treeview_language_list")
         treeview.set_model(model)
