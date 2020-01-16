@@ -16,7 +16,6 @@ Depends: ${misc:Depends}, ${python:Depends}, gir1.2-webkit2-4.0
   , python-parted, parted, gparted
   , python-qt4
   , python-pil
-  , streamer
   , imagemagick
   , isoquery
   , desktop-file-utils

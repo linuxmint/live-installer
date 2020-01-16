@@ -5,14 +5,11 @@ from slideshow import Slideshow
 from dialogs import MessageDialog, QuestionDialog, ErrorDialog, WarningDialog
 import timezones
 import partitioning
-from widgets import PictureChooserButton
-
 import gettext
 import os
 import re
 import commands
 import sys
-import PIL
 import threading
 import time
 import parted
@@ -120,39 +117,6 @@ class InstallerWindow:
         self.builder.get_object("treeview_language_list").append_column(self.country_column)
 
         self.builder.get_object("treeview_language_list").connect("cursor-changed", self.assign_language)
-
-        # build user info page
-        os.system("convert /usr/share/pixmaps/faces/7_penguin.png -resize x96 /tmp/live-installer-face.png")
-
-        pic_box = self.builder.get_object("hbox8")
-        self.face_button = PictureChooserButton(num_cols=4, button_picture_size=96, menu_pictures_size=64)
-        self.face_button.set_alignment(0.0, 0.5)
-        self.face_photo_menuitem = Gtk.MenuItem(_("Take a photo..."))
-        self.face_photo_menuitem.connect('activate', self._on_face_take_picture_button_clicked)
-        self.face_browse_menuitem = Gtk.MenuItem(_("Browse for more pictures..."))
-        self.face_browse_menuitem.connect('activate', self._on_face_browse_menuitem_activated)
-
-        face_dirs = ["/usr/share/pixmaps/faces"]
-        for face_dir in face_dirs:
-            if os.path.exists(face_dir):
-                pictures = sorted(os.listdir(face_dir))
-                for picture in pictures:
-                    path = os.path.join(face_dir, picture)
-                    self.face_button.add_picture(path, self._on_face_menuitem_activated)
-
-        self.face_button.add_separator()
-
-        # if no /dev/video*, we don't have a webcam
-        from glob import glob
-        webcam_detected = bool(len(glob('/dev/video*')))
-
-        if webcam_detected:
-            self.face_button.add_menuitem(self.face_photo_menuitem)
-        self.face_button.add_menuitem(self.face_browse_menuitem)
-
-        self.face_button.set_picture_from_file("/tmp/live-installer-face.png")
-
-        pic_box.pack_start(self.face_button, True, False, 6)
 
         # build the language list
         self.build_lang_list()
@@ -282,71 +246,6 @@ class InstallerWindow:
         # True will not show the menu
         return True
 
-    def update_preview_cb(self, dialog, preview):
-        filename = dialog.get_preview_filename()
-        dialog.set_preview_widget_active(False)
-        try:
-            if os.path.isfile(filename):
-                pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(filename, 128, 128)
-                if pixbuf:
-                    preview.set_from_pixbuf(pixbuf)
-                    dialog.set_preview_widget_active(True)
-        except Exception:
-            pass
-
-    def _on_face_browse_menuitem_activated(self, menuitem):
-        dialog = Gtk.FileChooserDialog(None, None, Gtk.FileChooserAction.OPEN, (_("Cancel"), Gtk.ResponseType.CANCEL, _("Open"), Gtk.ResponseType.OK))
-
-        filter = Gtk.FileFilter()
-        filter.set_name(_("Images"))
-        filter.add_mime_type("image/*")
-        dialog.add_filter(filter)
-
-        preview = Gtk.Image()
-        dialog.set_preview_widget(preview);
-        dialog.connect("update-preview", self.update_preview_cb, preview)
-        dialog.set_use_preview_label(False)
-
-        response = dialog.run()
-        if response == Gtk.ResponseType.OK:
-            path = dialog.get_filename()
-            image = PIL.Image.open(path)
-            width, height = image.size
-            if width > height:
-                new_width = height
-                new_height = height
-            elif height > width:
-                new_width = width
-                new_height = width
-            else:
-                new_width = width
-                new_height = height
-            left = (width - new_width)/2
-            top = (height - new_height)/2
-            right = (width + new_width)/2
-            bottom = (height + new_height)/2
-            image = image.crop((left, top, right, bottom))
-            image.thumbnail((96, 96), PIL.Image.ANTIALIAS)
-            face_path = "/tmp/live-installer-face.png"
-            image.save(face_path, "png")
-            self.face_button.set_picture_from_file(face_path)
-
-        dialog.destroy()
-
-    def _on_face_menuitem_activated(self, path):
-        if os.path.exists(path):
-            os.system("cp %s /tmp/live-installer-face.png" % path)
-            print path
-            return True
-
-    def _on_face_take_picture_button_clicked(self, menuitem):
-        # streamer takes -t photos
-        if 0 != os.system('streamer -j90 -t8 -s800x600 -o /tmp/live-installer-face00.jpeg'):
-            return  # Error, no webcam
-        # Convert and resize the 7th frame (the webcam takes a few frames to "lighten up")
-        os.system('convert /tmp/live-installer-face07.jpeg -crop 600x600+100+0 -resize 96x96 /tmp/live-installer-face.png')
-        self.face_button.set_picture_from_file("/tmp/live-installer-face.png")
-
     def fix_text_wrap(self):
         while Gtk.events_pending():
             Gtk.main_iteration_do(False)
@@ -402,13 +301,6 @@ class InstallerWindow:
         self.builder.get_object("label_autologin_help").set_markup("<span fgcolor='#3C3C3C'><sub><i>%s</i></sub></span>" % _("If enabled, the login screen is skipped when the system starts, and you are signed into your desktop session automatically."))
         self.builder.get_object("checkbutton_autologin").set_label(_("Log in automatically"))
         self.builder.get_object("checkbutton_autologin").connect("toggled", self.assign_autologin)
-
-        self.builder.get_object("face_label").set_markup("<b>%s</b>" % _("Your picture"))
-        self.builder.get_object("face_description").set_markup("<span fgcolor='#3C3C3C'><sub><i>%s</i></sub></span>" % _("This picture represents your user account. It is used in the login screen and a few other places."))
-
-        self.face_button.set_tooltip_text(_("Click to change your picture"))
-        self.face_photo_menuitem.set_label(_("Take a photo..."))
-        self.face_browse_menuitem.set_label(_("Browse for more pictures..."))
 
         # timezones
         self.builder.get_object("label_timezones").set_label(_("Selected timezone:"))
