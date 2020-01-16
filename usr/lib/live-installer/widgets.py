@@ -4,7 +4,6 @@
 from gi.repository import Gtk, Gdk, GdkPixbuf
 import os
 import gettext
-import PIL.Image
 
 gettext.install("live-installer", "/usr/share/linuxmint/locale")
 

@@ -83,13 +83,13 @@ class InstallerWindow:
 
         # Wizard pages
         (self.PAGE_LANGUAGE,
-         self.PAGE_PARTITIONS,
-         self.PAGE_USER,
-         self.PAGE_ADVANCED,
+         self.PAGE_TIMEZONE,
          self.PAGE_KEYBOARD,
+         self.PAGE_USER,
+         self.PAGE_PARTITIONS,
+         self.PAGE_ADVANCED,
          self.PAGE_OVERVIEW,
          self.PAGE_INSTALL,
-         self.PAGE_TIMEZONE,
          self.PAGE_CUSTOMWARNING,
          self.PAGE_CUSTOMPAUSED) = range(10)
         self.wizard_pages = range(10)
