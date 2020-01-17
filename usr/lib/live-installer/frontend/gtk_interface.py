@@ -91,18 +91,6 @@ class InstallerWindow:
          self.PAGE_INSTALL,
          self.PAGE_CUSTOMWARNING,
          self.PAGE_CUSTOMPAUSED) = range(11)
-        self.wizard_pages = range(11)
-        self.wizard_pages[self.PAGE_WELCOME] = WizardPage(_("Welcome"), "mark-location-symbolic", "")
-        self.wizard_pages[self.PAGE_LANGUAGE] = WizardPage(_("Language"), "preferences-desktop-locale-symbolic", _("What language would you like to use?"))
-        self.wizard_pages[self.PAGE_TIMEZONE] = WizardPage(_("Timezone"), "mark-location-symbolic", _("Where are you?"))
-        self.wizard_pages[self.PAGE_KEYBOARD] = WizardPage(_("Keyboard layout"), "preferences-desktop-keyboard-symbolic", _("What is your keyboard layout?"))
-        self.wizard_pages[self.PAGE_USER] = WizardPage(_("User account"), "avatar-default-symbolic", _("Who are you?"))
-        self.wizard_pages[self.PAGE_PARTITIONS] = WizardPage(_("Partitioning"), "drive-harddisk-system-symbolic", _("Where do you want to install LMDE?"))
-        self.wizard_pages[self.PAGE_CUSTOMWARNING] = WizardPage(_("Make sure you want to manage partitions manually"), "drive-harddisk-system-symbolic", "")
-        self.wizard_pages[self.PAGE_ADVANCED] = WizardPage(_("Advanced options"), "preferences-system-symbolic", "Configure the boot menu")
-        self.wizard_pages[self.PAGE_OVERVIEW] = WizardPage(_("Summary"), "object-select-symbolic", "Check that everything is correct")
-        self.wizard_pages[self.PAGE_INSTALL] = WizardPage(_("Installing"), "system-run-symbolic", "Please wait...")
-        self.wizard_pages[self.PAGE_CUSTOMPAUSED] = WizardPage(_("Installation paused: please finish the custom installation"), "system-run-symbolic", "")
 
         # set the button events (wizard_cb)
         self.builder.get_object("button_next").connect("clicked", self.wizard_cb, False)
@@ -188,7 +176,7 @@ class InstallerWindow:
 
         # 'about to install' aka overview
         ren = Gtk.CellRendererText()
-        self.column12 = Gtk.TreeViewColumn(_("Overview"), ren)
+        self.column12 = Gtk.TreeViewColumn("", ren)
         self.column12.add_attribute(ren, "markup", 0)
         self.builder.get_object("treeview_overview").append_column(self.column12)
         # install page
@@ -269,19 +257,41 @@ class InstallerWindow:
         else:
             self.window.set_title((_("%s Installer") % self.installer.get_distribution_name()))
 
-        self.language_column.set_title(_("Language"))
-        self.country_column.set_title(_("Country"))
-        self.activate_page(0)
+        # Header
+        self.wizard_pages = range(11)
+        self.wizard_pages[self.PAGE_WELCOME] = WizardPage(_("Welcome"), "mark-location-symbolic", "")
+        self.wizard_pages[self.PAGE_LANGUAGE] = WizardPage(_("Language"), "preferences-desktop-locale-symbolic", _("What language would you like to use?"))
+        self.wizard_pages[self.PAGE_TIMEZONE] = WizardPage(_("Timezone"), "mark-location-symbolic", _("Where are you?"))
+        self.wizard_pages[self.PAGE_KEYBOARD] = WizardPage(_("Keyboard layout"), "preferences-desktop-keyboard-symbolic", _("What is your keyboard layout?"))
+        self.wizard_pages[self.PAGE_USER] = WizardPage(_("User account"), "avatar-default-symbolic", _("Who are you?"))
+        self.wizard_pages[self.PAGE_PARTITIONS] = WizardPage(_("Partitioning"), "drive-harddisk-system-symbolic", _("Where do you want to install LMDE?"))
+        self.wizard_pages[self.PAGE_CUSTOMWARNING] = WizardPage(_("Make sure you want to manage partitions manually"), "drive-harddisk-system-symbolic", "")
+        self.wizard_pages[self.PAGE_ADVANCED] = WizardPage(_("Advanced options"), "preferences-system-symbolic", "Configure the boot menu")
+        self.wizard_pages[self.PAGE_OVERVIEW] = WizardPage(_("Summary"), "object-select-symbolic", "Check that everything is correct")
+        self.wizard_pages[self.PAGE_INSTALL] = WizardPage(_("Installing"), "system-run-symbolic", "Please wait...")
+        self.wizard_pages[self.PAGE_CUSTOMPAUSED] = WizardPage(_("Installation paused: please finish the custom installation"), "system-run-symbolic", "")
 
-        self.builder.get_object("button_cancel").set_label(_("Cancel"))
-        self.builder.get_object("button_ok").set_label(_("OK"))
+        # Buttons
         self.builder.get_object("button_quit").set_label(_("Quit"))
         self.builder.get_object("button_back").set_label(_("Back"))
         self.builder.get_object("button_next").set_label(_("Next"))
 
-        self.builder.get_object("button_edit").set_label(_("Edit partitions"))
-        self.builder.get_object("button_refresh").set_label(_("Refresh"))
-        self.builder.get_object("button_custommount").set_label(_("Expert mode"))
+        # Welcome page
+        self.builder.get_object("label_welcome1").set_text(_("Welcome to the LMDE Installer."))
+        self.builder.get_object("label_welcome2").set_text(_("This program will ask you some questions and set up LMDE on your computer."))
+
+        # Language page
+        self.language_column.set_title(_("Language"))
+        self.country_column.set_title(_("Country"))
+
+        # Keyboard page
+        self.builder.get_object("label_kb_model").set_label(_("Keyboard Model:"))
+        self.column10.set_title(_("Layout"))
+        self.column11.set_title(_("Variant"))
+        self.builder.get_object("entry_test_kb").set_placeholder_text(_("Type here to test your keyboard layout"))
+        self.builder.get_object("label_non_latin").set_text(_("* Your username, hostname and password should only contain Latin characters. In addition to your selected layout, English (US) is set as the default. You can switch layouts by pressing both Ctrl keys together."))
+
+        # User page
         self.builder.get_object("label_name").set_text(_("Your name:"))
         self.builder.get_object("label_hostname").set_text(_("Your computer's name:"))
         self.builder.get_object("label_hostname_help").set_text(_("The name it uses when it talks to other computers."))
@@ -291,12 +301,22 @@ class InstallerWindow:
         self.builder.get_object("checkbutton_autologin").set_label(_("Log in automatically"))
         self.builder.get_object("checkbutton_autologin").connect("toggled", self.assign_autologin)
 
-        # grub
-        self.builder.get_object("checkbutton_grub").set_label(_("Install the GRUB boot menu on:"))
+        # Partitions page
+        self.builder.get_object("button_edit").set_label(_("Edit partitions"))
+        self.builder.get_object("button_refresh").set_label(_("Refresh"))
+        self.builder.get_object("button_custommount").set_label(_("Expert mode"))
+        for col, title in zip(self.builder.get_object("treeview_disks").get_columns(),
+                              (_("Device"),
+                               _("Type"),
+                               _("Operating system"),
+                               _("Mount point"),
+                               _("Format as"),
+                               _("Size"),
+                               _("Free space"))):
+            col.set_title(title)
 
-        # keyboard page
-        self.builder.get_object("entry_test_kb").set_placeholder_text(_("Type here to test your keyboard layout"))
-        self.builder.get_object("label_kb_model").set_label(_("Keyboard Model:"))
+        # Advanced page
+        self.builder.get_object("checkbutton_grub").set_label(_("Install the GRUB boot menu on:"))
 
         # custom install warning
         self.builder.get_object("label_custom_install_directions_1").set_label(_("You have selected to manage your partitions manually, this feature is for ADVANCED USERS ONLY."))
@@ -313,20 +333,8 @@ class InstallerWindow:
         self.builder.get_object("label_custom_install_paused_4").set_label(_("Note that in order for update-initramfs to work properly in some cases (such as dm-crypt), you may need to have drives currently mounted using the same block device name as they appear in /target/etc/fstab."))
         self.builder.get_object("label_custom_install_paused_5").set_label(_("Double-check that your /target/etc/fstab is correct, matches what your new system will have at first boot, and matches what is currently mounted at /target."))
 
-        # Columns
-        for col, title in zip(self.builder.get_object("treeview_disks").get_columns(),
-                              (_("Device"),
-                               _("Type"),
-                               _("Operating system"),
-                               _("Mount point"),
-                               _("Format as"),
-                               _("Size"),
-                               _("Free space"))):
-            col.set_title(title)
-
-        self.column10.set_title(_("Layout"))
-        self.column11.set_title(_("Variant"))
-        self.column12.set_title(_("Overview"))
+        # Refresh the current title and help question in the page header
+        self.activate_page(self.PAGE_LANGUAGE)
 
     def assign_realname(self, entry, prop):
         self.setup.real_name = entry.props.text
@@ -630,7 +638,6 @@ class InstallerWindow:
             # Add None variant for US layout
             self.setup.keyboard_variant = ',%s' % self.setup.keyboard_variant
 
-        self.builder.get_object("label_non_latin").set_text(_("* Your username, hostname and password should only contain Latin characters. In addition to your selected layout, English (US) is set as the default. You can switch layouts by pressing both Ctrl keys together."))
         if "us," in self.setup.keyboard_layout:
             self.builder.get_object("label_non_latin").show()
         else:

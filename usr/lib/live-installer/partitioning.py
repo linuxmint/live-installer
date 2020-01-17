@@ -524,6 +524,8 @@ class PartitionDialog(object):
         self.builder.get_object("label_partition_value").set_label(path)
         self.builder.get_object("label_use_as").set_markup(_("Format as:"))
         self.builder.get_object("label_mount_point").set_markup(_("Mount point:"))
+        self.builder.get_object("button_cancel").set_label(_("Cancel"))
+        self.builder.get_object("button_ok").set_label(_("OK"))
         # Build supported filesystems list
         filesystems = ['', 'swap']
         for path in ["/bin", "/sbin"]:
