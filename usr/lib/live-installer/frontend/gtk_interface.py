@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 from installer import InstallerEngine, Setup, NON_LATIN_KB_LAYOUTS
-from slideshow import Slideshow
 from dialogs import MessageDialog, QuestionDialog, ErrorDialog, WarningDialog
 import timezones
 import partitioning
