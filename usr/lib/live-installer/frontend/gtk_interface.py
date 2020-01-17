@@ -52,7 +52,7 @@ class InstallerWindow:
     # the keyboard layout list
     kbd_preview_generation = -1
 
-    def __init__(self, fullscreen=False):
+    def __init__(self):
 
         #Disable the screensaver
         if not __debug__:
@@ -198,11 +198,6 @@ class InstallerWindow:
 
         # make sure we're on the right page (no pun.)
         self.activate_page(0)
-
-        if(fullscreen):
-            # dedicated installer mode thingum
-            self.window.maximize()
-            self.window.fullscreen()
 
         # Initiate the slide show
         # We have no significant browsing interface, so there isn't much point
