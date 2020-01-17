@@ -1,3 +1,18 @@
+live-installer (2020.01.17) debbie; urgency=medium
+
+  * UI: Reorganize glade vbox widgets
+  * Remove webcam/avatar selection
+  * Languages: Sort by language and fix defaults for geoip
+  * UI overhaul
+  * Import Mint slideshow
+  * Fix i18n switch
+  * Use Ubuntu font in keymap png
+  * Remove fullscreen mode
+  * Remove obsolete code
+  * Fix expert mode and give it its own argument/command
+
+ -- Clement Lefebvre <root@linuxmint.com>  Fri, 17 Jan 2020 16:12:34 +0000
+
 live-installer (2020.01.15) debbie; urgency=medium
 
   * Adjust grub title
