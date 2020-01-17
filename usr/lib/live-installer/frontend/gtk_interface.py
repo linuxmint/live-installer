@@ -37,7 +37,6 @@ def idle(func):
         GObject.idle_add(func, *args, **kwargs)
     return wrapper
 
-
 class WizardPage:
 
     def __init__(self, help_text, icon, question):
@@ -51,7 +50,9 @@ class InstallerWindow:
     # the keyboard layout list
     kbd_preview_generation = -1
 
-    def __init__(self):
+    def __init__(self, expert_mode=False):
+
+        self.expert_mode = expert_mode
 
         #Disable the screensaver
         if not __debug__:
@@ -117,7 +118,7 @@ class InstallerWindow:
         self.builder.get_object("event_timezones").connect('button-release-event', timezones.cb_map_clicked, model)
 
         # partitions
-        self.builder.get_object("button_custommount").connect("clicked", self.show_customwarning)
+        self.builder.get_object("button_expert").connect("clicked", self.show_customwarning)
         self.builder.get_object("button_edit").connect("clicked", partitioning.manually_edit_partitions)
         self.builder.get_object("button_refresh").connect("clicked", lambda _: partitioning.build_partitions(self))
         self.builder.get_object("treeview_disks").get_selection().connect("changed", partitioning.update_html_preview)
@@ -213,43 +214,23 @@ class InstallerWindow:
 
         self.window.show_all()
 
-        # fix text wrap
-        self.fix_text_wrap()
-
     def on_context_menu(self, unused_web_view, unused_context_menu,
                     unused_event, unused_hit_test_result):
         # True will not show the menu
         return True
 
-    def fix_text_wrap(self):
-        while Gtk.events_pending():
-            Gtk.main_iteration_do(False)
-
-        # this looks bad on resize, but to handle it on resize gracefully requires quite a bit of code (to keep from lagging)
-        width = self.window.get_size()[0] - 75
-
-        # custom install warning
-        self.builder.get_object("label_custom_install_directions_1").set_size_request(width, -1)
-        self.builder.get_object("label_custom_install_directions_1").set_size_request(width, -1)
-        self.builder.get_object("label_custom_install_directions_2").set_size_request(width, -1)
-        self.builder.get_object("label_custom_install_directions_3").set_size_request(width, -1)
-        self.builder.get_object("label_custom_install_directions_4").set_size_request(width, -1)
-        self.builder.get_object("label_custom_install_directions_5").set_size_request(width, -1)
-        self.builder.get_object("label_custom_install_directions_6").set_size_request(width, -1)
-
-        # custom install installation paused directions
-        self.builder.get_object("label_custom_install_paused_1").set_size_request(width, -1)
-        self.builder.get_object("label_custom_install_paused_2").set_size_request(width, -1)
-        self.builder.get_object("label_custom_install_paused_3").set_size_request(width, -1)
-        self.builder.get_object("label_custom_install_paused_4").set_size_request(width, -1)
-        self.builder.get_object("label_custom_install_paused_5").set_size_request(width, -1)
-
     def i18n(self):
 
+        window_title = _("%s Installer") % self.installer.get_distribution_name()
         if __debug__:
-            self.window.set_title((_("%s Installer") % self.installer.get_distribution_name()) + ' (debug)')
+            window_title += ' (debug)'
+        self.builder.get_object("button_expert").set_no_show_all(True)
+        if self.expert_mode:
+            window_title += ' (expert mode)'
+            self.builder.get_object("button_expert").show()
         else:
-            self.window.set_title((_("%s Installer") % self.installer.get_distribution_name()))
+            self.builder.get_object("button_expert").hide()
+        self.window.set_title(window_title)
 
         # Header
         self.wizard_pages = range(11)
@@ -259,11 +240,11 @@ class InstallerWindow:
         self.wizard_pages[self.PAGE_KEYBOARD] = WizardPage(_("Keyboard layout"), "preferences-desktop-keyboard-symbolic", _("What is your keyboard layout?"))
         self.wizard_pages[self.PAGE_USER] = WizardPage(_("User account"), "avatar-default-symbolic", _("Who are you?"))
         self.wizard_pages[self.PAGE_PARTITIONS] = WizardPage(_("Partitioning"), "drive-harddisk-system-symbolic", _("Where do you want to install LMDE?"))
-        self.wizard_pages[self.PAGE_CUSTOMWARNING] = WizardPage(_("Make sure you want to manage partitions manually"), "drive-harddisk-system-symbolic", "")
         self.wizard_pages[self.PAGE_ADVANCED] = WizardPage(_("Advanced options"), "preferences-system-symbolic", "Configure the boot menu")
         self.wizard_pages[self.PAGE_OVERVIEW] = WizardPage(_("Summary"), "object-select-symbolic", "Check that everything is correct")
         self.wizard_pages[self.PAGE_INSTALL] = WizardPage(_("Installing"), "system-run-symbolic", "Please wait...")
-        self.wizard_pages[self.PAGE_CUSTOMPAUSED] = WizardPage(_("Installation paused: please finish the custom installation"), "system-run-symbolic", "")
+        self.wizard_pages[self.PAGE_CUSTOMWARNING] = WizardPage(_("Expert mode"), "drive-harddisk-system-symbolic", "")
+        self.wizard_pages[self.PAGE_CUSTOMPAUSED] = WizardPage(_("Installation paused"), "system-run-symbolic", "")
 
         # Buttons
         self.builder.get_object("button_quit").set_label(_("Quit"))
@@ -298,7 +279,7 @@ class InstallerWindow:
         # Partitions page
         self.builder.get_object("button_edit").set_label(_("Edit partitions"))
         self.builder.get_object("button_refresh").set_label(_("Refresh"))
-        self.builder.get_object("button_custommount").set_label(_("Expert mode"))
+        self.builder.get_object("button_expert").set_label(_("Expert mode"))
         for col, title in zip(self.builder.get_object("treeview_disks").get_columns(),
                               (_("Device"),
                                _("Type"),
@@ -313,15 +294,14 @@ class InstallerWindow:
         self.builder.get_object("checkbutton_grub").set_label(_("Install the GRUB boot menu on:"))
 
         # custom install warning
-        self.builder.get_object("label_custom_install_directions_1").set_label(_("You have selected to manage your partitions manually, this feature is for ADVANCED USERS ONLY."))
-        self.builder.get_object("label_custom_install_directions_2").set_label(_("Before continuing, please mount your target filesystem(s) at /target."))
+        self.builder.get_object("label_custom_install_directions_1").set_label(_("You selected to manage your partitions manually, this feature is for ADVANCED USERS ONLY."))
+        self.builder.get_object("label_custom_install_directions_2").set_label(_("Before continuing, mount your target filesystem(s) on /target."))
         self.builder.get_object("label_custom_install_directions_3").set_label(_("Do NOT mount virtual devices such as /dev, /proc, /sys, etc on /target/."))
         self.builder.get_object("label_custom_install_directions_4").set_label(_("During the install, you will be given time to chroot into /target and install any packages that will be needed to boot your new system."))
         self.builder.get_object("label_custom_install_directions_5").set_label(_("During the install, you will be required to write your own /etc/fstab."))
-        self.builder.get_object("label_custom_install_directions_6").set_label(_("If you aren't sure what any of this means, please go back and deselect manual partition management."))
 
         # custom install installation paused directions
-        self.builder.get_object("label_custom_install_paused_1").set_label(_("Please do the following and then click Next to finish installation:"))
+        self.builder.get_object("label_custom_install_paused_1").set_label(_("Do the following and then click Next to finish installation:"))
         self.builder.get_object("label_custom_install_paused_2").set_label(_("Create /target/etc/fstab for the filesystems as they will be mounted in your new system, matching those currently mounted at /target (without using the /target prefix in the mount paths themselves)."))
         self.builder.get_object("label_custom_install_paused_3").set_label(_("Install any packages that may be needed for first boot (mdadm, cryptsetup, dmraid, etc) by calling \"sudo chroot /target\" followed by the relevant apt-get/aptitude installations."))
         self.builder.get_object("label_custom_install_paused_4").set_label(_("Note that in order for update-initramfs to work properly in some cases (such as dm-crypt), you may need to have drives currently mounted using the same block device name as they appear in /target/etc/fstab."))

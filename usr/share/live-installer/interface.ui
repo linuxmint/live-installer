@@ -71,7 +71,6 @@
                           <object class="GtkImage" id="progress_0">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="pixbuf">usr/share/icons/progress-dot-on.png</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -83,7 +82,6 @@
                           <object class="GtkImage" id="progress_1">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="pixbuf">usr/share/icons/progress-dot-off.png</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -95,7 +93,6 @@
                           <object class="GtkImage" id="progress_2">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="pixbuf">usr/share/icons/progress-dot-off.png</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -107,7 +104,6 @@
                           <object class="GtkImage" id="progress_3">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="pixbuf">usr/share/icons/progress-dot-off.png</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -119,7 +115,6 @@
                           <object class="GtkImage" id="progress_4">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="pixbuf">usr/share/icons/progress-dot-off.png</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -131,7 +126,6 @@
                           <object class="GtkImage" id="progress_5">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="pixbuf">usr/share/icons/progress-dot-off.png</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -143,7 +137,6 @@
                           <object class="GtkImage" id="progress_6">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="pixbuf">usr/share/icons/progress-dot-off.png</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -155,7 +148,6 @@
                           <object class="GtkImage" id="progress_7">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="pixbuf">usr/share/icons/progress-dot-off.png</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -167,7 +159,6 @@
                           <object class="GtkImage" id="progress_8">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="pixbuf">usr/share/icons/progress-dot-off.png</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -886,9 +877,8 @@
                         <property name="spacing">6</property>
                         <property name="layout_style">end</property>
                         <child>
-                          <object class="GtkButton" id="button_custommount">
-                            <property name="label" translatable="yes">button</property>
-                            <property name="visible">True</property>
+                          <object class="GtkButton" id="button_expert">
+                            <property name="label" translatable="yes">Expert mode</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
                           </object>
@@ -901,7 +891,7 @@
                         </child>
                         <child>
                           <object class="GtkButton" id="button_refresh">
-                            <property name="label">button</property>
+                            <property name="label">Refresh</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
@@ -914,7 +904,7 @@
                         </child>
                         <child>
                           <object class="GtkButton" id="button_edit">
-                            <property name="label" translatable="yes">button</property>
+                            <property name="label" translatable="yes">Edit partitions</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
@@ -1127,8 +1117,9 @@
                   <object class="GtkBox" id="vbox_customwarning">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="border_width">12</property>
                     <property name="orientation">vertical</property>
-                    <property name="spacing">6</property>
+                    <property name="spacing">12</property>
                     <child>
                       <object class="GtkBox">
                         <property name="visible">True</property>
@@ -1149,7 +1140,7 @@
                           <object class="GtkLabel" id="label_custom_install_directions_1">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">You have selected to manage your partitions manually, this feature is for ADVANCED USERS ONLY.</property>
+                            <property name="label" translatable="yes">You selected to manage your partitions manually, this feature is for ADVANCED USERS ONLY.</property>
                             <property name="wrap">True</property>
                             <property name="xalign">0</property>
                           </object>
@@ -1186,7 +1177,7 @@
                           <object class="GtkLabel" id="label_custom_install_directions_2">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">Before continuing, please mount your target filesystem(s) at /target.</property>
+                            <property name="label" translatable="yes">Before continuing, mount your target filesystem(s) at /target.</property>
                             <property name="wrap">True</property>
                             <property name="xalign">0</property>
                           </object>
@@ -1314,43 +1305,6 @@
                         <property name="position">5</property>
                       </packing>
                     </child>
-                    <child>
-                      <object class="GtkBox">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <child>
-                          <object class="GtkImage" id="image17">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="pixbuf">bullet-point.png</property>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkLabel" id="label_custom_install_directions_6">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">If you aren't sure what any of this means, please go back and deselect manual partition management.</property>
-                            <property name="wrap">True</property>
-                            <property name="xalign">0</property>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">1</property>
-                          </packing>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">6</property>
-                      </packing>
-                    </child>
                   </object>
                   <packing>
                     <property name="position">9</property>
@@ -1363,38 +1317,16 @@
                   <object class="GtkBox" id="vbox_custompause">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="border_width">12</property>
                     <property name="orientation">vertical</property>
-                    <property name="spacing">6</property>
+                    <property name="spacing">12</property>
                     <child>
-                      <object class="GtkBox">
+                      <object class="GtkLabel" id="label_custom_install_paused_1">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <child>
-                          <object class="GtkImage" id="image11">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="pixbuf">bullet-point.png</property>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkLabel" id="label_custom_install_paused_1">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">Please do the following and then click Forward to finish Installation:</property>
-                            <property name="wrap">True</property>
-                            <property name="xalign">0</property>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">1</property>
-                          </packing>
-                        </child>
+                        <property name="label" translatable="yes">Do the following and then click Next to finish Installation:</property>
+                        <property name="wrap">True</property>
+                        <property name="xalign">0</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -1621,7 +1553,7 @@
                     </child>
                     <child>
                       <object class="GtkButton" id="button_next">
-                        <property name="label">Forward</property>
+                        <property name="label">Next</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
