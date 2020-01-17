@@ -221,16 +221,6 @@ class InstallerWindow:
         # in WebKit creating a memory-hungry cache.
         context = WebKit2.WebContext.get_default()
         context.set_cache_model(WebKit2.CacheModel.DOCUMENT_VIEWER)
-        self.slideshow_path = "/usr/share/live-installer/slideshow"
-        if os.path.exists(self.slideshow_path):
-            self.slideshow_browser = WebKit2.WebView()
-            s = self.slideshow_browser.get_settings()
-            s.set_allow_file_access_from_file_urls(True)
-            s.set_property('enable-caret-browsing', False)
-            self.slideshow_browser.load_uri("file://" + os.path.join(self.slideshow_path, 'template.html'))
-            self.builder.get_object("scrolled_slideshow").add(self.slideshow_browser)
-            self.builder.get_object("scrolled_slideshow").show_all()
-            self.slideshow_browser.connect('context-menu', self.on_context_menu)
 
         self.partitions_browser = WebKit2.WebView()
         s = self.partitions_browser.get_settings()
@@ -854,8 +844,17 @@ class InstallerWindow:
                 self.builder.get_object("button_back").set_sensitive(False)
                 self.builder.get_object("button_quit").set_sensitive(False)
                 self.do_install()
-                slideshow = Slideshow(self.slideshow_browser, self.slideshow_path)
-                slideshow.run()
+                self.slideshow_browser = WebKit2.WebView()
+                s = self.slideshow_browser.get_settings()
+                s.set_allow_file_access_from_file_urls(True)
+                s.set_property('enable-caret-browsing', False)
+                self.slideshow_browser.load_uri("file:////usr/share/live-installer/slideshow/index.html#locale=%s" % self.setup.language)
+                self.builder.get_object("scrolled_slideshow").add(self.slideshow_browser)
+                self.builder.get_object("scrolled_slideshow").show_all()
+                self.slideshow_browser.connect('context-menu', self.on_context_menu)
+                self.builder.get_object("title_eventbox").hide()
+                self.builder.get_object("button_eventbox").hide()
+                self.window.resize(100, 100)
             elif(sel == self.PAGE_CUSTOMPAUSED):
                 self.activate_page(self.PAGE_INSTALL)
                 self.builder.get_object("button_next").hide()

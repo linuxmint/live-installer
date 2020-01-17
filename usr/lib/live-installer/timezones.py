@@ -20,9 +20,9 @@ NIGHT_IM = Image.open(TIMEZONE_RESOURCES + 'night.png').convert('RGBA')
 LIGHTS_IM = Image.open(TIMEZONE_RESOURCES + 'lights.png').convert('RGBA')
 DOT_IM = Image.open(TIMEZONE_RESOURCES + 'dot.png').convert('RGBA')
 
-MAP_CENTER = (373, 263)  # pixel center of where equatorial line and 0th meridian cross on our bg map; WARNING: cc.png relies on this exactly!
+MAP_CENTER = (351, 246)  # pixel center of where equatorial line and 0th meridian cross on our bg map; WARNING: cc.png relies on this exactly!
 MAP_SIZE = BACK_IM.size  # size of the map image
-assert MAP_SIZE == (800, 409), 'MAP_CENTER (et al.?) calculations depend on this size'
+assert MAP_SIZE == (752, 384), 'MAP_CENTER (et al.?) calculations depend on this size'
 
 def debug(func):
     '''Decorator to print function call details - parameters names and effective values'''

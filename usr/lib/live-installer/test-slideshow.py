@@ -24,7 +24,7 @@ builder.add_from_file(glade_file)
 context = WebKit2.WebContext.get_default()
 context.set_cache_model(WebKit2.CacheModel.DOCUMENT_VIEWER)
 
-slideshow_path = "/usr/share/live-installer/slideshow"
+slideshow_path = "file:///usr/share/live-installer/slideshow/index.html"
 webview = WebKit2.WebView()
 s = webview.get_settings()
 s.set_allow_file_access_from_file_urls(True)
@@ -32,16 +32,14 @@ s.set_allow_file_access_from_file_urls(True)
 webview.connect('context-menu', on_context_menu)
 s.set_property('enable-caret-browsing', False)
 
-webview.load_uri("file://" + os.path.join(slideshow_path, 'template.html'))
+webview.load_uri(slideshow_path)
 webview.show()
 
 builder.get_object("scrolled_slideshow").add(webview)
-slideshow = Slideshow(webview, slideshow_path, intervalSeconds=3, loopPages=True)
-slideshow.run()
-
 
 window = builder.get_object("main_window")
-builder.get_object("notebook1").set_current_page(1)
+builder.get_object("notebook1").set_current_page(8)
 window.show_all()
 window.connect("destroy", Gtk.main_quit)
 Gtk.main()
+
