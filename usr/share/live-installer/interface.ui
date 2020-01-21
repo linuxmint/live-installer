@@ -4,7 +4,6 @@
   <requires lib="gtk+" version="3.18"/>
   <object class="GtkWindow" id="main_window">
     <property name="can_focus">False</property>
-    <property name="border_width">0</property>
     <property name="window_position">center</property>
     <property name="default_width">752</property>
     <property name="default_height">480</property>
@@ -458,6 +457,7 @@
                               <object class="GtkTreeView" id="treeview_layouts">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
+                                <property name="enable_grid_lines">horizontal</property>
                                 <child internal-child="selection">
                                   <object class="GtkTreeSelection"/>
                                 </child>
@@ -479,6 +479,7 @@
                               <object class="GtkTreeView" id="treeview_variants">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
+                                <property name="enable_grid_lines">horizontal</property>
                                 <child internal-child="selection">
                                   <object class="GtkTreeSelection"/>
                                 </child>
@@ -850,6 +851,7 @@
                               <object class="GtkTreeView" id="treeview_disks">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
+                                <property name="enable_grid_lines">horizontal</property>
                                 <child internal-child="selection">
                                   <object class="GtkTreeSelection"/>
                                 </child>
@@ -1007,6 +1009,7 @@
                             <property name="can_focus">True</property>
                             <property name="border_width">12</property>
                             <property name="headers_visible">False</property>
+                            <property name="enable_grid_lines">horizontal</property>
                             <child internal-child="selection">
                               <object class="GtkTreeSelection"/>
                             </child>
