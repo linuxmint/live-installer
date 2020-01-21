@@ -16,7 +16,7 @@ import parted
 import gi
 gi.require_version('Gtk', '3.0')
 gi.require_version('WebKit2', '4.0')
-from gi.repository import Gtk, Gdk, GdkPixbuf, GObject, WebKit2
+from gi.repository import Gtk, Gdk, GdkPixbuf, GObject, WebKit2, Pango
 
 gettext.install("live-installer", "/usr/share/linuxmint/locale")
 
@@ -102,9 +102,17 @@ class InstallerWindow:
         ren = Gtk.CellRendererText()
         self.language_column = Gtk.TreeViewColumn(_("Language"), ren, text=0)
         self.language_column.set_sort_column_id(0)
+        self.language_column.set_expand(True)
+        self.language_column.set_resizable(True)
+        ren.set_property("ellipsize", Pango.EllipsizeMode.MIDDLE)
         self.builder.get_object("treeview_language_list").append_column(self.language_column)
+
+        ren = Gtk.CellRendererText()
         self.country_column = Gtk.TreeViewColumn(_("Country"), ren, text=1)
         self.country_column.set_sort_column_id(1)
+        self.country_column.set_expand(True)
+        self.country_column.set_resizable(True)
+        ren.set_property("ellipsize", Pango.EllipsizeMode.MIDDLE)
         self.builder.get_object("treeview_language_list").append_column(self.country_column)
 
         self.builder.get_object("treeview_language_list").connect("cursor-changed", self.assign_language)
