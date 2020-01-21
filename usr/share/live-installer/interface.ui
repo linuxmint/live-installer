@@ -565,8 +565,8 @@
                         <child>
                           <object class="GtkImage" id="check_name">
                             <property name="name">check_name</property>
-                            <property name="visible">True</property>
                             <property name="can_focus">False</property>
+                            <property name="no_show_all">True</property>
                             <property name="halign">start</property>
                             <property name="icon_name">gtk-yes</property>
                           </object>
@@ -578,8 +578,8 @@
                         <child>
                           <object class="GtkImage" id="check_hostname">
                             <property name="name">check_hostname</property>
-                            <property name="visible">True</property>
                             <property name="can_focus">False</property>
+                            <property name="no_show_all">True</property>
                             <property name="halign">start</property>
                             <property name="icon_name">gtk-yes</property>
                           </object>
@@ -740,8 +740,8 @@
                         <child>
                           <object class="GtkImage" id="check_confirm">
                             <property name="name">check_confirm</property>
-                            <property name="visible">True</property>
                             <property name="can_focus">False</property>
+                            <property name="no_show_all">True</property>
                             <property name="halign">start</property>
                             <property name="icon_name">gtk-yes</property>
                           </object>
@@ -753,8 +753,8 @@
                         <child>
                           <object class="GtkImage" id="check_password">
                             <property name="name">check_password</property>
-                            <property name="visible">True</property>
                             <property name="can_focus">False</property>
+                            <property name="no_show_all">True</property>
                             <property name="halign">start</property>
                             <property name="icon_name">gtk-yes</property>
                           </object>
@@ -766,8 +766,8 @@
                         <child>
                           <object class="GtkImage" id="check_username">
                             <property name="name">check_username</property>
-                            <property name="visible">True</property>
                             <property name="can_focus">False</property>
+                            <property name="no_show_all">True</property>
                             <property name="halign">start</property>
                             <property name="icon_name">gtk-yes</property>
                           </object>
