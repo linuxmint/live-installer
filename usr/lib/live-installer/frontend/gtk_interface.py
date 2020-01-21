@@ -163,6 +163,7 @@ class InstallerWindow:
 
         # kb models
         cell = Gtk.CellRendererText()
+        cell.set_property("ellipsize", Pango.EllipsizeMode.MIDDLE)
         self.builder.get_object("combobox_kb_model").pack_start(cell, True)
         self.builder.get_object("combobox_kb_model").add_attribute(cell, 'text', 0)
         self.builder.get_object("combobox_kb_model").connect("changed", self.assign_keyboard_model)
