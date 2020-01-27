@@ -16,9 +16,14 @@ class InstallerEngine:
     ''' This is central to the live installer '''
 
     def __init__(self):
-        self.media = '/lib/live/mount/medium/live/filesystem.squashfs'
         # Flush print when it's called
         sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
+
+        # find the squashfs..
+        self.media = '/run/live/medium/live/filesystem.squashfs'
+        if(not os.path.exists(self.media)):
+            print "Critical Error: Live medium (%s) not found!" % self.media
+            sys.exit(1)
 
     def set_progress_hook(self, progresshook):
         ''' Set a callback to be called on progress updates '''
@@ -151,11 +156,6 @@ class InstallerEngine:
             os.mkdir("/target")
         if(not os.path.exists("/source")):
             os.mkdir("/source")
-        # find the squashfs..
-        if(not os.path.exists(self.media)):
-            print "Base filesystem does not exist! Critical error (exiting)."
-            self.error_message(message=_("ERROR: Something is wrong with the installation medium! This is usually caused by burning tools which are not compatible with LMDE (YUMI or other multiboot tools). Please burn the ISO image to DVD/USB using a different tool."))
-            return
 
         os.system("umount --force /target/dev/shm")
         os.system("umount --force /target/dev/pts")
@@ -206,9 +206,9 @@ class InstallerEngine:
         os.system("cp -f /etc/resolv.conf /target/etc/resolv.conf")
 
         kernelversion= commands.getoutput("uname -r")
-        os.system("cp /lib/live/mount/medium/live/vmlinuz /target/boot/vmlinuz-%s" % kernelversion)
+        os.system("cp /run/live/medium/live/vmlinuz /target/boot/vmlinuz-%s" % kernelversion)
         found_initrd = False
-        for initrd in ["/lib/live/mount/medium/live/initrd.img", "/lib/live/mount/medium/live/initrd.lz"]:
+        for initrd in ["/run/live/medium/live/initrd.img", "/run/live/medium/live/initrd.lz"]:
             if os.path.exists(initrd):
                 os.system("cp %s /target/boot/initrd.img-%s" % (initrd, kernelversion))
                 found_initrd = True
@@ -219,11 +219,11 @@ class InstallerEngine:
 
         if (setup.gptonefi):
             os.system("mkdir -p /target/boot/efi/EFI/linuxmint")
-            os.system("cp /lib/live/mount/medium/EFI/BOOT/grubx64.efi /target/boot/efi/EFI/linuxmint")
+            os.system("cp /run/live/medium/EFI/BOOT/grubx64.efi /target/boot/efi/EFI/linuxmint")
             os.system("mkdir -p /target/debs")
-            os.system("cp /lib/live/mount/medium/pool/main/g/grub2/grub-efi* /target/debs/")
-            os.system("cp /lib/live/mount/medium/pool/main/e/efibootmgr/efibootmgr* /target/debs/")
-            os.system("cp /lib/live/mount/medium/pool/main/e/efivar/* /target/debs/")
+            os.system("cp /run/live/medium/pool/main/g/grub2/grub-efi* /target/debs/")
+            os.system("cp /run/live/medium/pool/main/e/efibootmgr/efibootmgr* /target/debs/")
+            os.system("cp /run/live/medium/pool/main/e/efivar/* /target/debs/")
             self.do_run_in_chroot("dpkg -i /debs/*")
             os.system("rm -rf /target/debs")
 
@@ -239,7 +239,7 @@ class InstallerEngine:
         print " --> Removing live packages"
         our_current += 1
         self.update_progress(our_current, our_total, False, False, _("Removing live configuration (packages)"))
-        with open("/lib/live/mount/medium/live/filesystem.packages-remove", "r") as fd:
+        with open("/run/live/medium/live/filesystem.packages-remove", "r") as fd:
             line = fd.read().replace('\n', ' ')
         self.do_run_in_chroot("apt-get remove --purge --yes --force-yes %s" % line)
 
@@ -402,7 +402,7 @@ class InstallerEngine:
             language_code = setup.language
             if "_" in setup.language:
                 language_code = setup.language.split("_")[0]
-            l10ns = commands.getoutput("find /lib/live/mount/medium/pool | grep 'l10n-%s\\|hunspell-%s'" % (language_code, language_code))
+            l10ns = commands.getoutput("find /run/live/medium/pool | grep 'l10n-%s\\|hunspell-%s'" % (language_code, language_code))
             for l10n in l10ns.split("\n"):
                 os.system("cp %s /target/debs/" % l10n)
             self.do_run_in_chroot("dpkg -i /debs/*")
@@ -416,7 +416,7 @@ class InstallerEngine:
             if "broadcom-sta-dkms" in drivers:
                 try:
                     os.system("mkdir -p /target/debs")
-                    os.system("cp /lib/live/mount/medium/pool/non-free/b/broadcom-sta/*.deb /target/debs/")
+                    os.system("cp /run/live/medium/pool/non-free/b/broadcom-sta/*.deb /target/debs/")
                     self.do_run_in_chroot("dpkg -i /debs/*")
                     self.do_run_in_chroot("modprobe wl")
                     os.system("rm -rf /target/debs")
