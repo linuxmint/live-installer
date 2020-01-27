@@ -1,3 +1,11 @@
+live-installer (2020.01.27) debbie; urgency=medium
+
+  * Remove config file
+  * Cleanup test script
+  * Detect live path before starting the installer.
+
+ -- Clement Lefebvre <root@linuxmint.com>  Mon, 27 Jan 2020 13:56:51 +0000
+
 live-installer (2020.01.21) debbie; urgency=medium
 
   * Language list: Ellipsize, resizable columns
