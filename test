@@ -1,9 +1,6 @@
 #!/bin/bash
 
-sudo rm -rf /etc/live-installer
-sudo rm -rf /etc/init.d/live-installer
 sudo rm -rf /usr/bin/live-installer
-sudo rm -rf /usr/bin/live-installer-dm
 sudo rm -rf /usr/lib/live-installer
 sudo rm -rf /usr/share/live-installer
 sudo rm -rf /usr/share/menu/live-installer
@@ -13,6 +10,5 @@ sudo rm -rf /usr/share/applications/live-installer-launcher.desktop
 sudo rm -rf /usr/share/live-installer-slideshow
 
 sudo cp -R usr /
-sudo cp -R etc /
 
 sudo live-installer --debug --expert-mode
