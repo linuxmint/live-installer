@@ -230,7 +230,7 @@ class InstallerWindow:
 
     def i18n(self):
 
-        window_title = _("%s Installer") % self.installer.get_distribution_name()
+        window_title = "%s - %s" % (self.installer.get_distribution_name(), _("Installer"))
         if __debug__:
             window_title += ' (debug)'
         self.builder.get_object("button_expert").set_no_show_all(True)

@@ -10,40 +10,13 @@ import parted
 
 gettext.install("live-installer", "/usr/share/linuxmint/locale")
 
-CONFIG_FILE = '/etc/live-installer/live-installer.conf'
-
 NON_LATIN_KB_LAYOUTS = ['am', 'af', 'ara', 'ben', 'bd', 'bg', 'bn', 'bt', 'by', 'deva', 'et', 'ge', 'gh', 'gn', 'gr', 'guj', 'guru', 'id', 'il', 'iku', 'in', 'iq', 'ir', 'kan', 'kg', 'kh', 'kz', 'la', 'lao', 'lk', 'ma', 'mk', 'mm', 'mn', 'mv', 'mal', 'my', 'np', 'ori', 'pk', 'ru', 'rs', 'scc', 'sy', 'syr', 'tel', 'th', 'tj', 'tam', 'tz', 'ua', 'uz']
 
 class InstallerEngine:
     ''' This is central to the live installer '''
 
     def __init__(self):
-        # Set distribution name and version
-        def _get_config_dict(file, key_value=re.compile(r'^\s*(\w+)\s*=\s*["\']?(.*?)["\']?\s*(#.*)?$')):
-            """Returns POSIX config file (key=value, no sections) as dict.
-            Assumptions: no multiline values, no value contains '#'. """
-            d = {}
-            with open(file) as f:
-                for line in f:
-                    try: key, value, _ = key_value.match(line).groups()
-                    except AttributeError: continue
-                    d[key] = value
-            return d
-        for f, n, v in (('/etc/os-release', 'PRETTY_NAME', 'VERSION'),
-                        ('/etc/lsb-release', 'DISTRIB_DESCRIPTION', 'DISTRIB_RELEASE'),
-                        (CONFIG_FILE, 'DISTRIBUTION_NAME', 'DISTRIBUTION_VERSION')):
-            try:
-                config = _get_config_dict(f)
-                name, version = config[n], config[v]
-            except (IOError, KeyError): continue
-            else: break
-        else: name, version = 'Unknown GNU/Linux', '1.0'
-        self.distribution_name, self.distribution_version = name, version
-        # Set other configuration
-        config = _get_config_dict(CONFIG_FILE)
-        self.live_user = config.get('live_user', 'user')
-        self.media = config.get('live_media_source', '/lib/live/mount/medium/live/filesystem.squashfs')
-        self.media_type = config.get('live_media_type', 'squashfs')
+        self.media = '/lib/live/mount/medium/live/filesystem.squashfs'
         # Flush print when it's called
         sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
 
@@ -58,7 +31,9 @@ class InstallerEngine:
         self.error_message = errorhook
 
     def get_distribution_name(self):
-        return self.distribution_name
+        with open("/etc/lsb-release") as f:
+            config = dict([line.strip().split("=") for line in f])
+        return config['DISTRIB_DESCRIPTION'].replace('"', '')
 
     def get_distribution_version(self):
         return self.distribution_version
@@ -93,7 +68,7 @@ class InstallerEngine:
         print " --> Mounting partitions"
         self.update_progress(2, 4, False, False, _("Mounting %(partition)s on %(mountpoint)s") % {'partition':self.media, 'mountpoint':"/source/"})
         print " ------ Mounting %s on %s" % (self.media, "/source/")
-        self.do_mount(self.media, "/source/", self.media_type, options="loop")
+        self.do_mount(self.media, "/source/", "squashfs", options="loop")
 
     def step_mount_partitions(self, setup):
         self.step_mount_source(setup)
