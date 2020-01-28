@@ -189,7 +189,7 @@ class InstallerEngine:
                 time.sleep(0.1)
             else:
                 our_current = min(our_current + 1, our_total)
-                self.update_progress(our_current, our_total, False, False, _("Copying %s" % line))
+                self.update_progress(our_current, our_total, False, False, _("Copying /%s" % line))
         print "rsync exited with returncode: " + str(rsync.poll())
 
         # Steps:
