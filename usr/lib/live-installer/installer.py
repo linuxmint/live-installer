@@ -162,6 +162,7 @@ class InstallerEngine:
         os.system("umount --force /target/dev/")
         os.system("umount --force /target/sys/")
         os.system("umount --force /target/proc/")
+        os.system("umount --force /target/run/")
 
         if (not setup.skip_mount):
             self.step_format_partitions(setup)
@@ -202,6 +203,7 @@ class InstallerEngine:
         os.system("mount --bind /dev/pts /target/dev/pts")
         os.system("mount --bind /sys/ /target/sys/")
         os.system("mount --bind /proc/ /target/proc/")
+        os.system("mount --bind /run/ /target/run/")
         os.system("mv /target/etc/resolv.conf /target/etc/resolv.conf.bk")
         os.system("cp -f /etc/resolv.conf /target/etc/resolv.conf")
 
@@ -519,6 +521,7 @@ class InstallerEngine:
         os.system("umount --force /target/dev/")
         os.system("umount --force /target/sys/")
         os.system("umount --force /target/proc/")
+        os.system("umount --force /target/run/")
         os.system("rm -f /target/etc/resolv.conf")
         os.system("mv /target/etc/resolv.conf.bk /target/etc/resolv.conf")
         if(not setup.skip_mount):
