@@ -21,7 +21,7 @@ class InstallerEngine:
 
         # find the squashfs..
         self.media = '/run/live/medium/live/filesystem.squashfs'
-        if(not os.path.exists(self.media)):
+        if(not os.path.exists(self.media) and not __debug__):
             print "Critical Error: Live medium (%s) not found!" % self.media
             sys.exit(1)
 
