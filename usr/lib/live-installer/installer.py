@@ -253,8 +253,7 @@ class InstallerEngine:
         print " --> Adding new user"
         our_current += 1
         self.update_progress(our_current, our_total, False, False, _("Adding new user to the system"))
-        encrypt_home_dir = True
-        if encrypt_home_dir:
+        if setup.ecryptfs:
             # ecryptfs looks for the /sys mount point in /etc/mtab.. which doesn't exist during the installation.
             # it defaults to /sys anyway, so we just need to create an empty /etc/mtab file at this stage.
             self.do_run_in_chroot('touch /etc/mtab')
@@ -606,6 +605,7 @@ class Setup(object):
     username = None
     hostname = None
     autologin = False
+    ecryptfs = False
     password1 = None
     password2 = None
     real_name = None
@@ -635,6 +635,7 @@ class Setup(object):
             print "keyboard: %s - %s (%s) - %s - %s (%s)" % (self.keyboard_model, self.keyboard_layout, self.keyboard_variant, self.keyboard_model_description, self.keyboard_layout_description, self.keyboard_variant_description)
             print "user: %s (%s)" % (self.username, self.real_name)
             print "autologin: ", self.autologin
+            print "ecryptfs: ", self.ecryptfs
             print "hostname: %s " % self.hostname
             print "passwords: %s - %s" % (self.password1, self.password2)
             print "grub_device: %s " % self.grub_device

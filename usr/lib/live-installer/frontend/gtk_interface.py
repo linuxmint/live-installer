@@ -151,6 +151,9 @@ class InstallerWindow:
         self.builder.get_object("entry_password").connect("changed", self.assign_password)
         self.builder.get_object("entry_confirm").connect("changed", self.assign_password)
 
+        self.builder.get_object("radiobutton_passwordlogin").connect("toggled", self.assign_login_options)
+        self.builder.get_object("checkbutton_encrypt_home").connect("toggled", self.assign_login_options)
+
         # link the checkbutton to the combobox
         grub_check = self.builder.get_object("checkbutton_grub")
         grub_box = self.builder.get_object("combobox_grub")
@@ -282,8 +285,10 @@ class InstallerWindow:
         self.builder.get_object("label_username").set_text(_("Pick a username:"))
         self.builder.get_object("label_password").set_text(_("Choose a password:"))
         self.builder.get_object("label_confirm").set_text(_("Confirm your password:"))
-        self.builder.get_object("checkbutton_autologin").set_label(_("Log in automatically"))
-        self.builder.get_object("checkbutton_autologin").connect("toggled", self.assign_autologin)
+
+        self.builder.get_object("radiobutton_autologin").set_label(_("Log in automatically"))
+        self.builder.get_object("radiobutton_passwordlogin").set_label(_("Require my password to log in"))
+        self.builder.get_object("checkbutton_encrypt_home").set_label(_("Encrypt my home folder"))
 
         # Partitions page
         self.builder.get_object("button_edit").set_label(_("Edit partitions"))
@@ -556,8 +561,15 @@ class InstallerWindow:
                 except:
                     pass # Best effort. Fails the first time as self.column1 doesn't exist yet.
 
-    def assign_autologin(self, checkbox, data=None):
-        self.setup.autologin = checkbox.get_active()
+    def assign_login_options(self, checkbox, data=None):
+        if self.builder.get_object("radiobutton_passwordlogin").get_active():
+            self.builder.get_object("checkbutton_encrypt_home").set_sensitive(True)
+        else:
+            self.builder.get_object("checkbutton_encrypt_home").set_active(False)
+            self.builder.get_object("checkbutton_encrypt_home").set_sensitive(False)
+
+        self.setup.ecryptfs = self.builder.get_object("checkbutton_encrypt_home").get_active()
+        self.setup.autologin = self.builder.get_object("radiobutton_autologin").get_active()
         self.setup.print_setup()
 
     def assign_grub_install(self, checkbox, grub_box, data=None):
@@ -885,6 +897,7 @@ class InstallerWindow:
         model.append(top, (_("Real name: ") + bold(self.setup.real_name),))
         model.append(top, (_("Username: ") + bold(self.setup.username),))
         model.append(top, (_("Automatic login: ") + bold(_("enabled") if self.setup.autologin else _("disabled")),))
+        model.append(top, (_("Home encryption: ") + bold(_("enabled") if self.setup.ecryptfs else _("disabled")),))
         top = model.append(None, (_("System settings"),))
         model.append(top, (_("Hostname: ") + bold(self.setup.hostname),))
         top = model.append(None, (_("Filesystem operations"),))
