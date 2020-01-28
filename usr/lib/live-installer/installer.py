@@ -251,7 +251,15 @@ class InstallerEngine:
         print " --> Adding new user"
         our_current += 1
         self.update_progress(our_current, our_total, False, False, _("Adding new user to the system"))
-        self.do_run_in_chroot('adduser --disabled-login --gecos "{real_name}" {username}'.format(real_name=setup.real_name.replace('"', r'\"'), username=setup.username))
+        encrypt_home_dir = True
+        if encrypt_home_dir:
+            # ecryptfs looks for the /sys mount point in /etc/mtab.. which doesn't exist during the installation.
+            # it defaults to /sys anyway, so we just need to create an empty /etc/mtab file at this stage.
+            self.do_run_in_chroot('touch /etc/mtab')
+            self.do_run_in_chroot('modprobe ecryptfs')
+            self.do_run_in_chroot('adduser --disabled-login --encrypt-home --gecos "{real_name}" {username}'.format(real_name=setup.real_name.replace('"', r'\"'), username=setup.username))
+        else:
+            self.do_run_in_chroot('adduser --disabled-login --gecos "{real_name}" {username}'.format(real_name=setup.real_name.replace('"', r'\"'), username=setup.username))
         for group in 'adm audio bluetooth cdrom dialout dip fax floppy fuse lpadmin netdev plugdev powerdev sambashare scanner sudo tape users vboxusers video'.split():
             self.do_run_in_chroot("adduser {user} {group}".format(user=setup.username, group=group))
 
