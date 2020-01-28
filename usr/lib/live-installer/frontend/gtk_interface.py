@@ -56,7 +56,7 @@ class InstallerWindow:
 
         #Disable the screensaver
         if not __debug__:
-            os.system("killall cinnamon-screensaver")
+            os.system("killall cinnamon-screen")
 
         #Build the Setup object (where we put all our choices)
         self.setup = Setup()
