@@ -1,10 +1,23 @@
+live-installer (2020.01.29) debbie; urgency=medium
+
+  * Add support for home directory encryption
+  * Fix killing screensaver
+  * Mount /run during the installation
+  * File copy: Add missing / in file path given to the UI
+  * Don't test squashfs presence in debug mode
+  * Add home directory encryption option to UI
+  * live-installer-stop: Fix ISO mount point
+  * Remove memtest86+ before updating grub
+
+ -- Clement Lefebvre <root@linuxmint.com>  Wed, 29 Jan 2020 11:31:33 +0000
+
 live-installer (2020.01.27) debbie; urgency=medium
 
   * Remove config file
   * Cleanup test script
   * Detect live path before starting the installer.
 
- -- Clement Lefebvre <root@linuxmint.com>  Mon, 27 Jan 2020 13:56:51 +0000
+ -- Clement Lefebvre <root@linuxmint.com>  Wed, 29 Jan 2020 11:31:25 +0000
 
 live-installer (2020.01.21) debbie; urgency=medium
 
