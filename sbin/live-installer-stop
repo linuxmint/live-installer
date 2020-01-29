@@ -48,7 +48,7 @@ do_stop ()
         cache_path "$path"
     done
 
-    device="$(grep " /lib/live/mount/medium " /proc/mounts | cut -d' ' -f1)" || device=
+    device="$(grep " /run/live/medium " /proc/mounts | cut -d' ' -f1)" || device=
     pkname="$(lsblk -no pkname $device)" || pkname=
 
     # If /lib/live/mount/medium isn't mounted, don't try to eject it
