@@ -12,11 +12,12 @@ import sys
 import threading
 import time
 import parted
+import cairo
 
 import gi
 gi.require_version('Gtk', '3.0')
 gi.require_version('WebKit2', '4.0')
-from gi.repository import Gtk, Gdk, GdkPixbuf, GObject, WebKit2, Pango
+from gi.repository import Gtk, Gdk, GdkPixbuf, GObject, WebKit2, Pango, GLib
 
 gettext.install("live-installer", "/usr/share/linuxmint/locale")
 
@@ -656,7 +657,14 @@ class InstallerWindow:
             variant = None
         print("python /usr/lib/live-installer/frontend/generate_keyboard_layout.py %s %s %s" % (layout, variant, filename))
         os.system("python /usr/lib/live-installer/frontend/generate_keyboard_layout.py %s %s %s" % (layout, variant, filename))
-        self.builder.get_object("image_keyboard").set_from_file(filename)
+
+        widget = self.builder.get_object("image_keyboard")
+        try:
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file(filename)
+            surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, widget.get_scale_factor(), widget.get_window())
+            widget.set_from_surface(surface)
+        except GLib.Error as e:
+            print("could not load keyboard layout: %s" % e.message)
         return False
 
     def activate_page(self, index):

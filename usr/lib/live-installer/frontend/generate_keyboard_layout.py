@@ -3,8 +3,13 @@
 import subprocess
 import sys
 
-from PyQt4.QtCore import Qt, QRectF
-from PyQt4.QtGui import QWidget, QFont, QPainter, QPen, QPainterPath, QColor, QPixmap
+import PyQt5
+from PyQt5.QtCore import Qt, QRectF
+from PyQt5.QtWidgets import QWidget, QApplication, QVBoxLayout
+from PyQt5.QtGui import QFont, QPainter, QPen, QPainterPath, QColor, QPixmap
+
+PyQt5.QtWidgets.QApplication.setAttribute(PyQt5.QtCore.Qt.AA_EnableHighDpiScaling, True)
+PyQt5.QtWidgets.QApplication.setAttribute(PyQt5.QtCore.Qt.AA_UseHighDpiPixmaps, True)
 
 #U+ , or +U+ ... to string
 def fromUnicodeString(raw):
@@ -261,8 +266,6 @@ class Keyboard(QWidget):
 
 ## testing
 if __name__ == "__main__":
-    from PyQt4.QtGui import QApplication, QVBoxLayout
-
     app = QApplication(sys.argv)
 
     layout=sys.argv[1]
@@ -273,7 +276,7 @@ if __name__ == "__main__":
     kb1.setLayout(layout)
     kb1.setVariant(variant)
 
-    snapshot = QPixmap.grabWidget(kb1)
+    snapshot = kb1.grab()
     #snapshot = snapshot.scaled(600, 200, Qt.IgnoreAspectRatio, Qt.FastTransformation)
     snapshot.save(filename, "PNG")
 
