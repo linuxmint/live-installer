@@ -483,6 +483,8 @@ class InstallerEngine:
             self.update_progress(our_current, our_total, False, False, _("Installing bootloader"))
             print " --> Running grub-install"
             self.do_run_in_chroot("grub-install --force %s" % setup.grub_device)
+            # Remove memtest86+ package (it provides multiple memtest unwanted grub entries)
+            self.do_run_in_chroot("apt-get remove --purge --yes --force-yes memtest86+")
             #fix not add windows grub entry
             self.do_run_in_chroot("update-grub")
             self.do_configure_grub(our_total, our_current)
