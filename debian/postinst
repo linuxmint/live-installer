@@ -8,6 +8,7 @@ case "$1" in
         then
             systemctl daemon-reload || true
             systemctl enable live-installer.service || true
+            systemctl enable install-live-drivers.service || true
         fi
     ;;
     abort-upgrade|abort-remove|abort-deconfigure)

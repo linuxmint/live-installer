@@ -1,0 +1,15 @@
+#!/usr/bin/python2
+
+import os
+import commands
+
+#NVIDIA
+driver = "/usr/share/live-installer/nvidia-driver.tar.gz"
+if "install-nvidia=" in commands.getoutput("cat /proc/cmdline") and os.path.exists(driver):
+    print("Installing NVIDIA driver...")
+    try:
+        os.system("tar zxvf %s" % driver)
+        os.system("DEBIAN_FRONTEND=noninteractive dpkg -i --force-depends nvidia-driver/*.deb")
+        os.system("rm -rf nvidia-driver")
+    except Exception as e:
+        print ("Failed to install NVIDIA driver: ", e)
