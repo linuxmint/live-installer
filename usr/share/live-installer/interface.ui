@@ -420,6 +420,8 @@
                       <object class="GtkBox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="vexpand">False</property>
+                        <property name="border_width">15</property>
                         <child>
                           <object class="GtkSpinner" id="kb_spinner">
                             <property name="visible">True</property>
@@ -450,6 +452,25 @@
                         <property name="expand">False</property>
                         <property name="fill">True</property>
                         <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkAlignment">
+                        <property name="height_request">40</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <child>
+                          <object class="GtkLabel" id="label_non_latin">
+                            <property name="can_focus">False</property>
+                            <property name="wrap">True</property>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="pack_type">end</property>
+                        <property name="position">1</property>
                       </packing>
                     </child>
                     <child>
@@ -497,6 +518,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="shadow_type">in</property>
+                            <property name="min_content_height">280</property>
                             <child>
                               <object class="GtkTreeView" id="treeview_layouts">
                                 <property name="visible">True</property>
@@ -519,6 +541,8 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="shadow_type">in</property>
+                            <property name="min_content_height">280</property>
+                            <property name="overlay_scrolling">False</property>
                             <child>
                               <object class="GtkTreeView" id="treeview_variants">
                                 <property name="visible">True</property>
@@ -555,18 +579,6 @@
                         <property name="expand">False</property>
                         <property name="fill">False</property>
                         <property name="position">4</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="label_non_latin">
-                        <property name="can_focus">False</property>
-                        <property name="wrap">True</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="padding">3</property>
-                        <property name="position">5</property>
                       </packing>
                     </child>
                   </object>
