@@ -1,3 +1,15 @@
+live-installer (2020.01.30) debbie; urgency=medium
+
+  [ Michael Webster ]
+  * Render keyboard layout properly in hidpi.
+  * gtk_interface.py: Use a spinning widget instead of a gif when loading a keyboard layout.
+  * interface.ui: Keep the space for the non-latin warning label reserved, so when the label is shown, it doesn't resize the scroll boxes.
+
+  [ Clement Lefebvre ]
+  * NVIDIA driver: Add systemd support
+
+ -- Clement Lefebvre <root@linuxmint.com>  Thu, 30 Jan 2020 17:37:56 +0000
+
 live-installer (2020.01.29) debbie; urgency=medium
 
   * Add support for home directory encryption
