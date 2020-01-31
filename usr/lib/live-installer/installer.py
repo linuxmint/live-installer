@@ -421,6 +421,8 @@ class InstallerEngine:
             # drivers
             print " --> Installing drivers"
             self.update_progress(our_current, our_total, False, False, _("Installing drivers"))
+
+            # Broadcom
             drivers = commands.getoutput("mint-drivers")
             if "broadcom-sta-dkms" in drivers:
                 try:
@@ -431,6 +433,20 @@ class InstallerEngine:
                     os.system("rm -rf /target/debs")
                 except:
                     print "Failed to install Broadcom drivers"
+
+            # NVIDIA
+            driver = "/usr/share/live-installer/nvidia-driver.tar.gz"
+            if os.path.exists(driver):
+                if "install-nvidia" in commands.getoutput("cat /proc/cmdline")
+                    print(" --> Installing NVIDIA driver")
+                    try:
+                        self.do_run_in_chroot("tar zxvf %s" % driver)
+                        self.do_run_in_chroot("DEBIAN_FRONTEND=noninteractive dpkg -i --force-depends nvidia-driver/*.deb")
+                        self.do_run_in_chroot("rm -rf nvidia-driver")
+                    except Exception as e:
+                        print ("Failed to install NVIDIA driver: ", e)
+
+                os.system("rm -f /target/usr/share/live-installer/nvidia-driver.tar.gz")
 
         # set the keyboard options..
         print " --> Setting the keyboard"
