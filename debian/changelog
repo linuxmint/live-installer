@@ -1,3 +1,9 @@
+live-installer (2020.01.31) debbie; urgency=medium
+
+  * NVIDIA: Install in chroot and cleanup /target
+
+ -- Clement Lefebvre <root@linuxmint.com>  Fri, 31 Jan 2020 09:59:10 +0000
+
 live-installer (2020.01.30) debbie; urgency=medium
 
   [ Michael Webster ]
