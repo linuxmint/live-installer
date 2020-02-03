@@ -28,7 +28,6 @@
     <property name="can_focus">False</property>
     <property name="window_position">center</property>
     <property name="default_width">752</property>
-    <property name="default_height">480</property>
     <property name="icon">logo.png</property>
     <child type="titlebar">
       <placeholder/>
@@ -435,8 +434,6 @@
                         </child>
                         <child>
                           <object class="GtkImage" id="image_keyboard">
-                            <property name="width_request">600</property>
-                            <property name="height_request">150</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="stock">gtk-missing-image</property>
@@ -456,7 +453,7 @@
                     </child>
                     <child>
                       <object class="GtkAlignment">
-                        <property name="height_request">40</property>
+                        <property name="height_request">35</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <child>
@@ -518,7 +515,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="shadow_type">in</property>
-                            <property name="min_content_height">280</property>
+                            <property name="min_content_height">200</property>
                             <child>
                               <object class="GtkTreeView" id="treeview_layouts">
                                 <property name="visible">True</property>
@@ -541,7 +538,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="shadow_type">in</property>
-                            <property name="min_content_height">280</property>
+                            <property name="min_content_height">200</property>
                             <property name="overlay_scrolling">False</property>
                             <child>
                               <object class="GtkTreeView" id="treeview_variants">
@@ -1200,7 +1197,7 @@
                         <property name="vscrollbar_policy">external</property>
                         <property name="shadow_type">in</property>
                         <property name="min_content_width">752</property>
-                        <property name="min_content_height">442</property>
+                        <property name="min_content_height">200</property>
                         <child>
                           <placeholder/>
                         </child>
@@ -1616,13 +1613,15 @@
         </child>
         <child>
           <object class="GtkEventBox" id="button_eventbox">
-            <property name="height_request">70</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
               <object class="GtkBox" id="hbox1">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="margin_right">10</property>
+                <property name="margin_top">10</property>
+                <property name="margin_bottom">10</property>
                 <child>
                   <object class="GtkButtonBox">
                     <property name="visible">True</property>
@@ -1675,7 +1674,6 @@
                   <packing>
                     <property name="expand">True</property>
                     <property name="fill">True</property>
-                    <property name="padding">6</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
