@@ -437,7 +437,7 @@ class InstallerEngine:
             # NVIDIA
             driver = "/usr/share/live-installer/nvidia-driver.tar.gz"
             if os.path.exists(driver):
-                if "install-nvidia" in commands.getoutput("cat /proc/cmdline")
+                if "install-nvidia" in commands.getoutput("cat /proc/cmdline"):
                     print(" --> Installing NVIDIA driver")
                     try:
                         self.do_run_in_chroot("tar zxvf %s" % driver)

@@ -8,8 +8,11 @@ from PyQt5.QtCore import Qt, QRectF
 from PyQt5.QtWidgets import QWidget, QApplication, QVBoxLayout
 from PyQt5.QtGui import QFont, QPainter, QPen, QPainterPath, QColor, QPixmap
 
-PyQt5.QtWidgets.QApplication.setAttribute(PyQt5.QtCore.Qt.AA_EnableHighDpiScaling, True)
-PyQt5.QtWidgets.QApplication.setAttribute(PyQt5.QtCore.Qt.AA_UseHighDpiPixmaps, True)
+is_hidpi = sys.argv[4] == "hidpi"
+if is_hidpi:
+    print("Keyboard layout being generated for hidpi")
+    PyQt5.QtWidgets.QApplication.setAttribute(PyQt5.QtCore.Qt.AA_EnableHighDpiScaling, True)
+    PyQt5.QtWidgets.QApplication.setAttribute(PyQt5.QtCore.Qt.AA_UseHighDpiPixmaps, True)
 
 #U+ , or +U+ ... to string
 def fromUnicodeString(raw):

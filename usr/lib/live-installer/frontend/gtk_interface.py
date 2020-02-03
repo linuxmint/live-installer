@@ -659,8 +659,14 @@ class InstallerWindow:
         variant = self.setup.keyboard_variant.split(",")[-1]
         if variant == "":
             variant = None
-        print("python /usr/lib/live-installer/frontend/generate_keyboard_layout.py %s %s %s" % (layout, variant, filename))
-        os.system("python /usr/lib/live-installer/frontend/generate_keyboard_layout.py %s %s %s" % (layout, variant, filename))
+
+        if self.builder.get_object("image_keyboard").get_scale_factor() > 1:
+            hidpi = "hidpi"
+        else:
+            hidpi = "normal"
+
+        print("python /usr/lib/live-installer/frontend/generate_keyboard_layout.py %s %s %s %s" % (layout, variant, filename, hidpi))
+        os.system("python /usr/lib/live-installer/frontend/generate_keyboard_layout.py %s %s %s %s" % (layout, variant, filename, hidpi))
         self._on_layout_generated()
 
     @idle
