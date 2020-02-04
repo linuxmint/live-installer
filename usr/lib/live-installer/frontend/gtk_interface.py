@@ -840,8 +840,8 @@ class InstallerWindow:
                             if not partition.partition.getFlag(parted.PARTITION_BOOT):
                                 ErrorDialog(_("Installation Tool"), _("The EFI partition is not bootable. Please edit the partition flags."))
                                 return
-                            if int(float(partition.partition.getLength('MB'))) < 100:
-                                ErrorDialog(_("Installation Tool"), _("The EFI partition is too small. It must be at least 100MB."))
+                            if int(float(partition.partition.getLength('MB'))) < 35:
+                                ErrorDialog(_("Installation Tool"), _("The EFI partition is too small. It must be at least 35MB."))
                                 return
                             if partition.format_as == None or partition.format_as == "":
                                 # No partitioning
@@ -854,7 +854,7 @@ class InstallerWindow:
                                     return
 
                     if not found_efi_partition:
-                        ErrorDialog(_("Installation Tool"), "<b>%s</b>" % _("Please select an EFI partition."),_("An EFI system partition is needed with the following requirements:\n\n - Mount point: /boot/efi\n - Partition flags: Bootable\n - Size: Larger than 100MB\n - Format: vfat or fat32\n\nTo ensure compatibility with Windows we recommend you use the first partition of the disk as the EFI system partition.\n "))
+                        ErrorDialog(_("Installation Tool"), "<b>%s</b>" % _("Please select an EFI partition."),_("An EFI system partition is needed with the following requirements:\n\n - Mount point: /boot/efi\n - Partition flags: Bootable\n - Size: at least 35MB (100MB or more recommended)\n - Format: vfat or fat32\n\nTo ensure compatibility with Windows we recommend you use the first partition of the disk as the EFI system partition.\n "))
                         return
 
                 partitioning.build_grub_partitions()
