@@ -1,3 +1,17 @@
+live-installer (2020.02.04) debbie; urgency=medium
+
+  [ Michael Webster ]
+  * keyboard layout: Base hidpi processing on gtk's scale state instead of letting QT5 do it itself.
+  * interface.ui: Make adjustments to reduce the required window height.
+  * gtk_interface.py: Change the EFI minimum size  to 35mb (this matches ubiquity).
+
+  [ Clement Lefebvre ]
+  * UI: Expand installation footer
+  * live-installer-stop: Don't rely on plymouth to show the message
+  * l10n: Update POT
+
+ -- Clement Lefebvre <root@linuxmint.com>  Tue, 04 Feb 2020 16:24:10 +0000
+
 live-installer (2020.01.31) debbie; urgency=medium
 
   * NVIDIA: Install in chroot and cleanup /target
