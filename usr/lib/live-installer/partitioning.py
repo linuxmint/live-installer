@@ -188,7 +188,7 @@ class PartitionSetup(Gtk.TreeStore):
         def _get_attached_disks():
             disks = []
             exclude_devices = ['/dev/sr0', '/dev/sr1', '/dev/cdrom', '/dev/dvd', '/dev/fd0']
-            live_device = commands.getoutput("findmnt -n -o source /lib/live/mount/medium").split('\n')[0]
+            live_device = commands.getoutput("findmnt -n -o source /run/live/medium").split('\n')[0]
             live_device = re.sub('[0-9]+$', '', live_device) # remove partition numbers if any
             if live_device is not None and live_device.startswith('/dev/'):
                 exclude_devices.append(live_device)

@@ -51,7 +51,7 @@ do_stop ()
     device="$(grep " /run/live/medium " /proc/mounts | cut -d' ' -f1)" || device=
     pkname="$(lsblk -no pkname $device)" || pkname=
 
-    # If /lib/live/mount/medium isn't mounted, don't try to eject it
+    # If /run/live/medium isn't mounted, don't try to eject it
     if [ -z "$device" ]; then
         return 0
     fi
