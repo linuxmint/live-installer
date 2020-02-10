@@ -629,6 +629,13 @@ class Setup(object):
     real_name = None
     grub_device = None
     disks = []
+    automated = True
+    disk = None
+    diskname = None
+    passphrase1 = None
+    passphrase2 = None
+    lvm = False
+    luks = False
     target_disk = None
     gptonefi = False
     # Optionally skip all mouting/partitioning for advanced users with custom setups (raid/dmcrypt/etc)
@@ -658,6 +665,12 @@ class Setup(object):
             print "passwords: %s - %s" % (self.password1, self.password2)
             print "grub_device: %s " % self.grub_device
             print "skip_mount: %s" % self.skip_mount
+            print "automated: %s" % self.automated
+            if self.automated:
+            	print "disk: %s (%s)" % (self.disk, self.diskname)
+            	print "luks: %s" % self.luks
+            	print "lvm: %s" % self.lvm
+            	print "passphrase: %s - %s" % (self.passphrase1, self.passphrase2)
             if (not self.skip_mount):
                 print "target_disk: %s " % self.target_disk
                 if self.gptonefi:

@@ -86,12 +86,13 @@ class InstallerWindow:
          self.PAGE_TIMEZONE,
          self.PAGE_KEYBOARD,
          self.PAGE_USER,
+         self.PAGE_TYPE,
          self.PAGE_PARTITIONS,
          self.PAGE_ADVANCED,
          self.PAGE_OVERVIEW,
          self.PAGE_INSTALL,
          self.PAGE_CUSTOMWARNING,
-         self.PAGE_CUSTOMPAUSED) = range(11)
+         self.PAGE_CUSTOMPAUSED) = range(12)
 
         # set the button events (wizard_cb)
         self.builder.get_object("button_next").connect("clicked", self.wizard_cb, False)
@@ -125,6 +126,24 @@ class InstallerWindow:
         model = timezones.build_timezones(self)
         self.builder.get_object("button_timezones").set_label(_('Select timezone'))
         self.builder.get_object("event_timezones").connect('button-release-event', timezones.cb_map_clicked, model)
+
+        # type page
+        model = Gtk.ListStore(str, str)
+        model.set_sort_column_id(0, Gtk.SortType.ASCENDING)
+        for disk_path, disk_description in partitioning.get_disks():
+            iterator = model.append(("%s (%s)" % (disk_description, disk_path), disk_path))
+        self.builder.get_object("combo_disk").set_model(model)
+        renderer_text = Gtk.CellRendererText()
+        self.builder.get_object("combo_disk").pack_start(renderer_text, True)
+        self.builder.get_object("combo_disk").add_attribute(renderer_text, "text", 0)
+
+        self.builder.get_object("entry_passphrase").connect("changed", self.assign_passphrase)
+        self.builder.get_object("entry_passphrase2").connect("changed", self.assign_passphrase)
+        self.builder.get_object("radio_automated").connect("toggled", self.assign_type_options)
+        self.builder.get_object("radio_manual").connect("toggled", self.assign_type_options)
+        self.builder.get_object("check_encrypt").connect("toggled", self.assign_type_options)
+        self.builder.get_object("check_lvm").connect("toggled", self.assign_type_options)
+        self.builder.get_object("combo_disk").connect("changed", self.assign_type_options)
 
         # partitions
         self.builder.get_object("button_expert").connect("clicked", self.show_customwarning)
@@ -246,12 +265,13 @@ class InstallerWindow:
         self.window.set_title(window_title)
 
         # Header
-        self.wizard_pages = range(11)
+        self.wizard_pages = range(12)
         self.wizard_pages[self.PAGE_WELCOME] = WizardPage(_("Welcome"), "mark-location-symbolic", "")
         self.wizard_pages[self.PAGE_LANGUAGE] = WizardPage(_("Language"), "preferences-desktop-locale-symbolic", _("What language would you like to use?"))
         self.wizard_pages[self.PAGE_TIMEZONE] = WizardPage(_("Timezone"), "mark-location-symbolic", _("Where are you?"))
         self.wizard_pages[self.PAGE_KEYBOARD] = WizardPage(_("Keyboard layout"), "preferences-desktop-keyboard-symbolic", _("What is your keyboard layout?"))
         self.wizard_pages[self.PAGE_USER] = WizardPage(_("User account"), "avatar-default-symbolic", _("Who are you?"))
+        self.wizard_pages[self.PAGE_TYPE] = WizardPage(_("Installation Type"), "drive-harddisk-system-symbolic", _("Where do you want to install LMDE?"))
         self.wizard_pages[self.PAGE_PARTITIONS] = WizardPage(_("Partitioning"), "drive-harddisk-system-symbolic", _("Where do you want to install LMDE?"))
         self.wizard_pages[self.PAGE_ADVANCED] = WizardPage(_("Advanced options"), "preferences-system-symbolic", "Configure the boot menu")
         self.wizard_pages[self.PAGE_OVERVIEW] = WizardPage(_("Summary"), "object-select-symbolic", "Check that everything is correct")
@@ -290,6 +310,17 @@ class InstallerWindow:
         self.builder.get_object("radiobutton_autologin").set_label(_("Log in automatically"))
         self.builder.get_object("radiobutton_passwordlogin").set_label(_("Require my password to log in"))
         self.builder.get_object("checkbutton_encrypt_home").set_label(_("Encrypt my home folder"))
+
+        # Type page
+        self.builder.get_object("label_automated").set_text(_("Automated Installation"))
+        self.builder.get_object("label_automated2").set_text(_("Erase a disk and install LMDE on it."))
+        self.builder.get_object("label_disk").set_text(_("Disk:"))
+        self.builder.get_object("label_encrypt").set_text(_("Encrypt the operating system"))
+        self.builder.get_object("entry_passphrase").set_placeholder_text(_("Passphrase"))
+        self.builder.get_object("entry_passphrase2").set_placeholder_text(_("Confirm passphrase"))
+        self.builder.get_object("label_lvm").set_text(_("Use LVM (Logical Volume Management)"))
+        self.builder.get_object("label_manual").set_text(_("Manual Partitioning"))
+        self.builder.get_object("label_manual2").set_text(_("Manually create, resize or choose partitions for LMDE."))
 
         # Partitions page
         self.builder.get_object("button_edit").set_label(_("Edit partitions"))
@@ -390,6 +421,46 @@ class InstallerWindow:
         else:
             self.builder.get_object("check_confirm").show()
 
+        self.setup.print_setup()
+
+
+    def assign_type_options(self, widget, data=None):
+        self.setup.automated = self.builder.get_object("radio_automated").get_active()
+        self.builder.get_object("check_encrypt").set_sensitive(self.setup.automated)
+        self.builder.get_object("check_lvm").set_sensitive(self.setup.automated)
+        self.builder.get_object("combo_disk").set_sensitive(self.setup.automated)
+        self.builder.get_object("entry_passphrase").set_sensitive(self.setup.automated)
+        self.builder.get_object("entry_passphrase2").set_sensitive(self.setup.automated)
+        if not self.setup.automated:
+            self.builder.get_object("check_encrypt").set_active(False)
+            self.builder.get_object("check_lvm").set_active(False)
+            self.builder.get_object("combo_disk").set_active(-1)
+            self.builder.get_object("entry_passphrase").set_text("")
+            self.builder.get_object("entry_passphrase2").set_text("")
+        self.setup.passphrase1 = self.builder.get_object("entry_passphrase").get_text()
+        self.setup.passphrase2 = self.builder.get_object("entry_passphrase2").get_text()
+        self.setup.luks = self.builder.get_object("check_encrypt").get_active()
+        self.setup.lvm = self.builder.get_object("check_lvm").get_active()
+        model = self.builder.get_object("combo_disk").get_model()
+        active = self.builder.get_object("combo_disk").get_active()
+        if(active > -1):
+            row = model[active]
+            self.setup.disk = row[1]
+            self.setup.diskname = row[0]
+        if not self.builder.get_object("check_encrypt").get_active():
+            self.builder.get_object("entry_passphrase").set_text("")
+            self.builder.get_object("entry_passphrase2").set_text("")
+            self.builder.get_object("entry_passphrase").set_sensitive(False)
+            self.builder.get_object("entry_passphrase2").set_sensitive(False)
+        else:
+            self.builder.get_object("entry_passphrase").set_sensitive(True)
+            self.builder.get_object("entry_passphrase2").set_sensitive(True)
+
+        self.setup.print_setup()
+
+    def assign_passphrase(self, widget):
+        self.setup.passphrase1 = self.builder.get_object("entry_passphrase").get_text()
+        self.setup.passphrase2 = self.builder.get_object("entry_passphrase2").get_text()
         self.setup.print_setup()
 
     def quit_cb(self, widget, data=None):
@@ -795,6 +866,29 @@ class InstallerWindow:
                 if (errorFound):
                     WarningDialog(_("Installation Tool"), errorMessage)
                 else:
+                    self.activate_page(self.PAGE_TYPE)
+            elif(sel == self.PAGE_TYPE):
+                if self.setup.automated:
+                    errorFound = False
+                    errorMessage = ""
+                    if self.setup.disk is None:
+                        errorFound = True
+                        errorMessage = _("Please select a disk.")
+                    if self.setup.luks:
+                        if (self.setup.passphrase1 is None or self.setup.passphrase1 == ""):
+                            errorFound = True
+                            errorMessage = _("Please provide a passphrase for the encryption.")
+                        elif (self.setup.passphrase1 != self.setup.passphrase1):
+                            errorFound = True
+                            errorMessage = _("Your passphrases do not match.")
+                    if (errorFound):
+                        WarningDialog(_("Installation Tool"), errorMessage)
+                    else:
+                        if QuestionDialog(_("Warning"), _("This will delete all the data on %s. Are you sure?") % self.setup.diskname):
+                            partitioning.build_partitions(self)
+                            partitioning.build_grub_partitions()
+                            self.activate_page(self.PAGE_ADVANCED)
+                else:
                     self.activate_page(self.PAGE_PARTITIONS)
                     partitioning.build_partitions(self)
             elif(sel == self.PAGE_PARTITIONS):
@@ -896,11 +990,15 @@ class InstallerWindow:
             elif(sel == self.PAGE_ADVANCED):
                 if (self.setup.skip_mount):
                     self.activate_page(self.PAGE_CUSTOMWARNING)
+                elif self.setup.automated:
+                    self.activate_page(self.PAGE_TYPE)
                 else:
                     self.activate_page(self.PAGE_PARTITIONS)
             elif(sel == self.PAGE_CUSTOMWARNING):
                 self.activate_page(self.PAGE_PARTITIONS)
             elif(sel == self.PAGE_PARTITIONS):
+                self.activate_page(self.PAGE_TYPE)
+            elif(sel == self.PAGE_TYPE):
                 self.activate_page(self.PAGE_USER)
             elif(sel == self.PAGE_USER):
                 self.activate_page(self.PAGE_KEYBOARD)
@@ -933,12 +1031,17 @@ class InstallerWindow:
         if self.setup.skip_mount:
             model.append(top, (bold(_("Use already-mounted /target.")),))
             return
-        for p in self.setup.partitions:
-            if p.format_as:
-                model.append(top, (bold(_("Format %(path)s as %(filesystem)s") % {'path':p.path, 'filesystem':p.format_as}),))
-        for p in self.setup.partitions:
-            if p.mount_as:
-                model.append(top, (bold(_("Mount %(path)s as %(mount)s") % {'path': p.path, 'mount':p.mount_as}),))
+        if self.setup.automated:
+            model.append(top, (bold(_("Automated installation on %s") % self.setup.diskname),))
+            model.append(top, (_("Disk Encryption: ") + bold(_("enabled") if self.setup.luks else _("disabled")),))
+            model.append(top, (_("LVM: ") + bold(_("enabled") if self.setup.lvm else _("disabled")),))
+        else:
+            for p in self.setup.partitions:
+                if p.format_as:
+                    model.append(top, (bold(_("Format %(path)s as %(filesystem)s") % {'path':p.path, 'filesystem':p.format_as}),))
+            for p in self.setup.partitions:
+                if p.mount_as:
+                    model.append(top, (bold(_("Mount %(path)s as %(mount)s") % {'path': p.path, 'mount':p.mount_as}),))
 
     @idle
     def show_error_dialog(self, message, detail):
