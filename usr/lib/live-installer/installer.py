@@ -59,8 +59,11 @@ class InstallerEngine:
         self.mount_source()
 
         if (not self.setup.skip_mount):
-            self.format_partitions()
-            self.mount_partitions()
+            if self.setup.automated:
+                self.create_partitions()
+            else:
+                self.format_partitions()
+                self.mount_partitions()
 
         # Transfer the files
         SOURCE = "/source/"
@@ -186,6 +189,95 @@ class InstallerEngine:
         print " ------ Mounting %s on %s" % (self.media, "/source/")
         self.do_mount(self.media, "/source/", "squashfs", options="loop")
 
+    def create_partitions(self):
+        # Create partitions on the selected disk (automated installation)
+        if self.setup.luks:
+            if self.gptonefi:
+                # EFI+LUKS/LVM
+                # sda1=EFI, sda2=BOOT, sda3=ROOT
+                self.auto_efi_partition = "/dev/sda1"
+                self.auto_boot_partition = "/dev/sda2"
+                self.auto_swap_partition = None
+                self.auto_root_partition = "/dev/sda3"
+            else:
+                # BIOS+LUKS/LVM
+                # sda1=BOOT, sda2=ROOT
+                self.auto_efi_partition = None
+                self.auto_boot_partition = "/dev/sda1"
+                self.auto_swap_partition = None
+                self.auto_root_partition = "/dev/sda2"
+        elif self.setup.lvm:
+            if self.gptonefi:
+                # EFI+LVM
+                # sda1=EFI, sda2=ROOT
+                self.auto_efi_partition = "/dev/sda1"
+                self.auto_boot_partition = None
+                self.auto_swap_partition = None
+                self.auto_root_partition = "/dev/sda2"
+            else:
+                # BIOS+LVM:
+                # sda1=ROOT
+                self.auto_efi_partition = None
+                self.auto_boot_partition = None
+                self.auto_swap_partition = None
+                self.auto_root_partition = "/dev/sda1"
+        else:
+            if self.gptonefi:
+                # EFI
+                # sda1=EFI, sda2=SWAP, sda3=ROOT
+                self.auto_efi_partition = "/dev/sda1"
+                self.auto_boot_partition = None
+                self.auto_swap_partition = "/dev/sda2"
+                self.auto_root_partition = "/dev/sda3"
+            else:
+                # BIOS:
+                # sda1=SWAP, sda2=ROOT
+                self.auto_efi_partition = None
+                self.auto_boot_partition = None
+                self.auto_swap_partition = "/dev/sda1"
+                self.auto_root_partition = "/dev/sda2"
+
+        self.auto_root_physical_partition = self.auto_root_partition
+
+        # Wipe HDD
+        if self.setup.luks:
+            print " --> Erasing data on %s" % self.setup.disk
+            os.system("badblocks -c 10240 -s -w -t random -v %s" % self.setup.disk)
+
+        # Create partitions
+        print " --> Creating partitions on %s" % self.setup.disk
+        disk_device = parted.getDevice(self.setup.disk)
+        partitioning.full_disk_format(disk_device, create_boot=(self.auto_boot_partition is not None), create_swap=(self.auto_swap_partition is not None))
+
+        # Encrypt root partition
+        if self.setup.luks:
+            print " --> Encrypting root partition %s" % self.auto_root_partition
+            os.system("printf \"%s\" | cryptsetup luksFormat -c aes-xts-plain64 -h sha256 -s 512 %s" % (self.setup.passphrase1, self.auto_root_partition))
+            os.system("printf \"%s\" | cryptsetup luksOpen %s lvmlmde" % (self.setup.passphrase1, self.auto_root_partition))
+            self.auto_root_partition = "/dev/mapper/lvmlmde"
+
+        # Setup LVM
+        if self.setup.lvm:
+            os.system("pvcreate %s" % self.auto_root_partition)
+            os.system("vgcreate lvmlmde %s" % self.auto_root_partition)
+            os.system("lvcreate -n root -L 1GB lvmlmde")
+            swap_size = int(round(int(commands.getoutput("awk '/^MemTotal/{ print $2 }' /proc/meminfo")) / 1024, 0))
+            os.system("lvcreate -n swap -L %dMB lvmlmde" % swap_size)
+            os.system("lvextend -l 100%%FREE /dev/lvmlmde/root")
+            os.system("mkfs.ext4 /dev/mapper/lvmlmde-root")
+            os.system("mkswap -f /dev/mapper/lvmlmde-swap")
+            os.system("swapon /dev/mapper/lvmlmde-swap")
+            self.auto_root_partition = "/dev/mapper/lvmlmde-root"
+            self.auto_swap_partition = "/dev/mapper/lvmlmde-swap"
+
+        self.do_mount(self.auto_root_partition, "/target", "ext4", None)
+        if (self.auto_boot_partition is not None):
+            os.system("mkdir -p /target/boot")
+            self.do_mount(self.auto_boot_partition, "/target/boot", "ext4", None)
+        if (self.auto_efi_partition is not None):
+            os.system("mkdir -p /target/boot/efi")
+            self.do_mount(self.auto_efi_partition, "/target/boot/efi", "vfat", None)
+
     def format_partitions(self):
         for partition in self.setup.partitions:
             if(partition.format_as is not None and partition.format_as != ""):
@@ -280,6 +372,20 @@ class InstallerEngine:
                     fs = partition.type
                 self.do_mount(partition.path, "/target" + partition.mount_as, fs, None)
 
+    def get_blkid(self, path):
+        uuid = path # If we can't find the UUID we use the path
+        blkid = commands.getoutput('blkid').split('\n')
+        for blkid_line in blkid:
+            blkid_elements = blkid_line.split(':')
+            if blkid_elements[0] == path:
+                blkid_mini_elements = blkid_line.split()
+                for blkid_mini_element in blkid_mini_elements:
+                    if "UUID=" in blkid_mini_element:
+                        uuid = blkid_mini_element.replace('"', '').strip()
+                        break
+                break
+        return uuid
+
     def write_fstab(self):
         # write the /etc/fstab
         print " --> Writing fstab"
@@ -291,56 +397,67 @@ class InstallerEngine:
         fstab = open("/target/etc/fstab", "a")
         fstab.write("proc\t/proc\tproc\tdefaults\t0\t0\n")
         if(not self.setup.skip_mount):
-            for partition in self.setup.partitions:
-                if (partition.mount_as is not None and partition.mount_as != "" and partition.mount_as != "None"):
-                    partition_uuid = partition.path # If we can't find the UUID we use the path
-                    blkid = commands.getoutput('blkid').split('\n')
-                    for blkid_line in blkid:
-                        blkid_elements = blkid_line.split(':')
-                        if blkid_elements[0] == partition.path:
-                            blkid_mini_elements = blkid_line.split()
-                            for blkid_mini_element in blkid_mini_elements:
-                                if "UUID=" in blkid_mini_element:
-                                    partition_uuid = blkid_mini_element.replace('"', '').strip()
-                                    break
-                            break
+            if self.setup.automated:
+                if self.setup.lvm:
+                    # Don't use UUIDs with LVM
+                    fstab.write("%s /  ext4 defaults 0 1" % self.auto_root_partition)
+                    fstab.write("%s none   swap sw 0 0" % self.auto_swap_partition)
+                else:
+                    fstab.write("# %s" % self.auto_root_partition)
+                    fstab.write("%s /  ext4 defaults 0 1" % self.get_blkid(self.auto_root_partition))
+                    fstab.write("# %s" % self.auto_swap_partition)
+                    fstab.write("%s none   swap sw 0 0" % self.get_blkid(self.auto_swap_partition))
+                if (self.auto_boot_partition is not None):
+                    fstab.write("# %s" % self.auto_boot_partition)
+                    fstab.write("%s /boot  ext4 defaults 0 1" % self.get_blkid(self.auto_boot_partition))
+                if (self.auto_efi_partition is not None):
+                    fstab.write("# %s" % self.auto_efi_partition)
+                    fstab.write("%s /boot/efi  vfat defaults 0 1" % self.get_blkid(self.auto_efi_partition))
+            else:
+                for partition in self.setup.partitions:
+                    if (partition.mount_as is not None and partition.mount_as != "" and partition.mount_as != "None"):
+                        fstab.write("# %s\n" % (partition.path))
+                        if(partition.mount_as == "/"):
+                            fstab_fsck_option = "1"
+                        # section could be removed - just to state/document that fscheck is turned off
+                        # intentionally with /@ (same would be true if btrfs used without a subvol)
+                        # /bin/fsck.btrfs comment states to use fs-check==0 on mount
+                        elif(partition.mount_as == "/@"):
+                            fstab_fsck_option = "0"
+                        else:
+                            fstab_fsck_option = "0"
 
-                    fstab.write("# %s\n" % (partition.path))
+                        if("ext" in partition.type):
+                            fstab_mount_options = "rw,errors=remount-ro"
+                        elif partition.type == "btrfs"  and partition.mount_as == "/@":
+                            fstab_mount_options = "rw,subvol=/@"
+                            # sort of dirty hack - we are done with subvol handling
+                            # mount_as is next used to setup the mount point
+                            partition.mount_as="/"
+                        elif partition.type == "btrfs"  and partition.mount_as == "/@home":
+                            fstab_mount_options = "rw,subvol=/@home"
+                            # sort of dirty hack - see above
+                            partition.mount_as="/home"
+                        else:
+                            fstab_mount_options = "defaults"
 
-                    if(partition.mount_as == "/"):
-                        fstab_fsck_option = "1"
-                    # section could be removed - just to state/document that fscheck is turned off
-                    # intentionally with /@ (same would be true if btrfs used without a subvol)
-                    # /bin/fsck.btrfs comment states to use fs-check==0 on mount
-                    elif(partition.mount_as == "/@"):
-                        fstab_fsck_option = "0"
-                    else:
-                        fstab_fsck_option = "0"
+                        if partition.type == "fat16" or partition.type == "fat32":
+                            fs = "vfat"
+                        else:
+                            fs = partition.type
 
-                    if("ext" in partition.type):
-                        fstab_mount_options = "rw,errors=remount-ro"
-                    elif partition.type == "btrfs"  and partition.mount_as == "/@":
-                        fstab_mount_options = "rw,subvol=/@"
-                        # sort of dirty hack - we are done with subvol handling
-                        # mount_as is next used to setup the mount point
-                        partition.mount_as="/"
-                    elif partition.type == "btrfs"  and partition.mount_as == "/@home":
-                        fstab_mount_options = "rw,subvol=/@home"
-                        # sort of dirty hack - see above
-                        partition.mount_as="/home"
-                    else:
-                        fstab_mount_options = "defaults"
-
-                    if partition.type == "fat16" or partition.type == "fat32":
-                        fs = "vfat"
-                    else:
-                        fs = partition.type
-
-                    if(fs == "swap"):
-                        fstab.write("%s\tswap\tswap\tsw\t0\t0\n" % partition_uuid)
-                    else:
-                        fstab.write("%s\t%s\t%s\t%s\t%s\t%s\n" % (partition_uuid, partition.mount_as, fs, fstab_mount_options, "0", fstab_fsck_option))
+                        partition_uuid = self.get_blkid(partition.path)
+                        if(fs == "swap"):
+                            fstab.write("%s\tswap\tswap\tsw\t0\t0\n" % partition_uuid)
+                        else:
+                            fstab.write("%s\t%s\t%s\t%s\t%s\t%s\n" % (partition_uuid, partition.mount_as, fs, fstab_mount_options, "0", fstab_fsck_option))
         fstab.close()
+
+        if self.setup.lvm:
+            os.system("grep -v swap /target/etc/fstab > /target/etc/mtab")
+
+        if self.setup.luks:
+            os.system("echo \"lvmlmde   %s   none   luks,tries=3\" >> /etc/crypttab" % self.auto_root_physical_partition)
 
     def finish_installation(self):
         # Steps:
@@ -471,6 +588,16 @@ class InstallerEngine:
         if os.path.exists("/target/usr/lib/linuxmint/mintSystem/mint-adjust.py"):
             self.do_run_in_chroot("/usr/lib/linuxmint/mintSystem/mint-adjust.py")
 
+        if self.setup.luks:
+            self.do_run_in_chroot("echo aes-i586 >> /etc/initramfs-tools/modules")
+            self.do_run_in_chroot("echo aes_x86_64 >> /etc/initramfs-tools/modules")
+            self.do_run_in_chroot("echo dm-crypt >> /etc/initramfs-tools/modules")
+            self.do_run_in_chroot("echo dm-mod >> /etc/initramfs-tools/modules")
+            self.do_run_in_chroot("echo xts >> /etc/initramfs-tools/modules")
+            self.do_run_in_chroot("echo 'GRUB_CMDLINE_LINUX=\"cryptdevice=%s:lvmlocal root=/dev/mapper/lvmlmde-root resume=/dev/mapper/lvmlmde-swap\" > /etc/default/grub.d/61_live-installer.cfg" % self.auto_root_physical_partition)
+            self.do_run_in_chroot("apt-get install -y sysfsutils")
+            self.do_run_in_chroot("echo \"power/disk = shutdown\" >> /etc/sysfs.d/local.conf")
+
         # write MBR (grub)
         print " --> Configuring Grub"
         our_current += 1
@@ -514,6 +641,7 @@ class InstallerEngine:
         if self.setup.gptonefi:
             os.system("umount --force /target/boot/efi")
             os.system("umount --force /target/media/cdrom")
+        os.system("umount --force /target/boot")
         os.system("umount --force /target/dev/")
         os.system("umount --force /target/sys/")
         os.system("umount --force /target/proc/")

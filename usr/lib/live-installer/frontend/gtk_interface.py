@@ -456,6 +456,8 @@ class InstallerWindow:
             self.builder.get_object("entry_passphrase").set_sensitive(False)
             self.builder.get_object("entry_passphrase2").set_sensitive(False)
         else:
+            # Force LVM when encryption is used
+            self.builder.get_object("check_lvm").set_active(True)
             self.builder.get_object("entry_passphrase").set_sensitive(True)
             self.builder.get_object("entry_passphrase2").set_sensitive(True)
 
