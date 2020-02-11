@@ -440,10 +440,18 @@ class InstallerWindow:
             self.builder.get_object("combo_disk").set_active(-1)
             self.builder.get_object("entry_passphrase").set_text("")
             self.builder.get_object("entry_passphrase2").set_text("")
+
+        self.setup.lvm = self.builder.get_object("check_lvm").get_active()
+        if not self.setup.lvm:
+            # Force LVM for LUKs
+            self.builder.get_object("check_encrypt").set_active(False)
+            self.builder.get_object("entry_passphrase").set_text("")
+            self.builder.get_object("entry_passphrase2").set_text("")
+            self.builder.get_object("check_encrypt").set_sensitive(False)
+
         self.setup.passphrase1 = self.builder.get_object("entry_passphrase").get_text()
         self.setup.passphrase2 = self.builder.get_object("entry_passphrase2").get_text()
         self.setup.luks = self.builder.get_object("check_encrypt").get_active()
-        self.setup.lvm = self.builder.get_object("check_lvm").get_active()
         model = self.builder.get_object("combo_disk").get_model()
         active = self.builder.get_object("combo_disk").get_active()
         if(active > -1):
@@ -456,8 +464,6 @@ class InstallerWindow:
             self.builder.get_object("entry_passphrase").set_sensitive(False)
             self.builder.get_object("entry_passphrase2").set_sensitive(False)
         else:
-            # Force LVM when encryption is used
-            self.builder.get_object("check_lvm").set_active(True)
             self.builder.get_object("entry_passphrase").set_sensitive(True)
             self.builder.get_object("entry_passphrase2").set_sensitive(True)
 
