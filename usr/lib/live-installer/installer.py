@@ -15,7 +15,10 @@ NON_LATIN_KB_LAYOUTS = ['am', 'af', 'ara', 'ben', 'bd', 'bg', 'bn', 'bt', 'by', 
 class InstallerEngine:
     ''' This is central to the live installer '''
 
-    def __init__(self):
+    def __init__(self, setup):
+
+        self.setup = setup
+
         # Flush print when it's called
         sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
 
@@ -43,8 +46,8 @@ class InstallerEngine:
     def get_distribution_version(self):
         return self.distribution_version
 
-    def step_format_partitions(self, setup):
-        for partition in setup.partitions:
+    def step_format_partitions(self):
+        for partition in self.setup.partitions:
             if(partition.format_as is not None and partition.format_as != ""):
                 # report it. should grab the total count of filesystems to be formatted ..
                 self.update_progress(1, 4, True, False, _("Formatting %(partition)s as %(format)s ...") % {'partition':partition.path, 'format':partition.format_as})
@@ -68,18 +71,16 @@ class InstallerEngine:
                 self.exec_cmd(cmd)
                 partition.type = partition.format_as
 
-    def step_mount_source(self, setup):
+    def step_mount_source(self):
         # Mount the installation media
         print " --> Mounting partitions"
         self.update_progress(2, 4, False, False, _("Mounting %(partition)s on %(mountpoint)s") % {'partition':self.media, 'mountpoint':"/source/"})
         print " ------ Mounting %s on %s" % (self.media, "/source/")
         self.do_mount(self.media, "/source/", "squashfs", options="loop")
 
-    def step_mount_partitions(self, setup):
-        self.step_mount_source(setup)
-
+    def step_mount_partitions(self):
         # Mount the target partition
-        for partition in setup.partitions:
+        for partition in self.setup.partitions:
             if(partition.mount_as is not None and partition.mount_as != ""):
                   if partition.mount_as == "/":
                         self.update_progress(3, 4, False, False, _("Mounting %(partition)s on %(mountpoint)s") % {'partition':partition.path, 'mountpoint':"/target/"})
@@ -109,7 +110,7 @@ class InstallerEngine:
                         break
 
         # handle btrfs /@home subvolume-option after mounting / or /@
-        for partition in setup.partitions:
+        for partition in self.setup.partitions:
             if(partition.mount_as is not None and partition.mount_as != ""):
                   if partition.mount_as == "/@home":
                         if partition.type != "btrfs":
@@ -132,7 +133,7 @@ class InstallerEngine:
                         break
 
         # Mount the other partitions
-        for partition in setup.partitions:
+        for partition in self.setup.partitions:
             if(partition.mount_as == "/@home" or partition.mount_as == "/@"):
                 # already mounted as subvolume
                 continue
@@ -146,11 +147,12 @@ class InstallerEngine:
                     fs = partition.type
                 self.do_mount(partition.path, "/target" + partition.mount_as, fs, None)
 
-    def init_install(self, setup):
+    def start_installation(self):
+
         # mount the media location.
         print " --> Installation started"
         if(not os.path.exists("/target")):
-            if (setup.skip_mount):
+            if (self.setup.skip_mount):
                 self.error_message(message=_("ERROR: You must first manually mount your target filesystem(s) at /target to do a custom install!"))
                 return
             os.mkdir("/target")
@@ -164,11 +166,11 @@ class InstallerEngine:
         os.system("umount --force /target/proc/")
         os.system("umount --force /target/run/")
 
-        if (not setup.skip_mount):
-            self.step_format_partitions(setup)
-            self.step_mount_partitions(setup)
-        else:
-            self.step_mount_source(setup)
+        self.step_mount_source()
+
+        if (not self.setup.skip_mount):
+            self.step_format_partitions()
+            self.step_mount_partitions()
 
         # Transfer the files
         SOURCE = "/source/"
@@ -219,7 +221,7 @@ class InstallerEngine:
         if not found_initrd:
             print "WARNING: No initrd found!!"
 
-        if (setup.gptonefi):
+        if (self.setup.gptonefi):
             os.system("mkdir -p /target/boot/efi/EFI/linuxmint")
             os.system("cp /run/live/medium/EFI/BOOT/grubx64.efi /target/boot/efi/EFI/linuxmint")
             os.system("mkdir -p /target/debs")
@@ -253,19 +255,19 @@ class InstallerEngine:
         print " --> Adding new user"
         our_current += 1
         self.update_progress(our_current, our_total, False, False, _("Adding new user to the system"))
-        if setup.ecryptfs:
+        if self.setup.ecryptfs:
             # ecryptfs looks for the /sys mount point in /etc/mtab.. which doesn't exist during the installation.
             # it defaults to /sys anyway, so we just need to create an empty /etc/mtab file at this stage.
             self.do_run_in_chroot('touch /etc/mtab')
             self.do_run_in_chroot('modprobe ecryptfs')
-            self.do_run_in_chroot('adduser --disabled-login --encrypt-home --gecos "{real_name}" {username}'.format(real_name=setup.real_name.replace('"', r'\"'), username=setup.username))
+            self.do_run_in_chroot('adduser --disabled-login --encrypt-home --gecos "{real_name}" {username}'.format(real_name=self.setup.real_name.replace('"', r'\"'), username=self.setup.username))
         else:
-            self.do_run_in_chroot('adduser --disabled-login --gecos "{real_name}" {username}'.format(real_name=setup.real_name.replace('"', r'\"'), username=setup.username))
+            self.do_run_in_chroot('adduser --disabled-login --gecos "{real_name}" {username}'.format(real_name=self.setup.real_name.replace('"', r'\"'), username=self.setup.username))
         for group in 'adm audio bluetooth cdrom dialout dip fax floppy fuse lpadmin netdev plugdev powerdev sambashare scanner sudo tape users vboxusers video'.split():
-            self.do_run_in_chroot("adduser {user} {group}".format(user=setup.username, group=group))
+            self.do_run_in_chroot("adduser {user} {group}".format(user=self.setup.username, group=group))
 
         fp = open("/target/tmp/.passwd", "w")
-        fp.write(setup.username +  ":" + setup.password1 + "\n")
+        fp.write(self.setup.username +  ":" + self.setup.password1 + "\n")
         fp.close()
         self.do_run_in_chroot("cat /tmp/.passwd | chpasswd")
         os.system("rm -f /target/tmp/.passwd")
@@ -277,30 +279,34 @@ class InstallerEngine:
         self.do_run_in_chroot(r"sed -i -r 's/^#?(greeter-hide-users)\s*=.*/\1=false/' /etc/lightdm/lightdm.conf")
 
         # Set autologin for user if they so elected
-        if setup.autologin:
+        if self.setup.autologin:
             # LightDM
-            self.do_run_in_chroot(r"sed -i -r 's/^#?(autologin-user)\s*=.*/\1={user}/' /etc/lightdm/lightdm.conf".format(user=setup.username))
+            self.do_run_in_chroot(r"sed -i -r 's/^#?(autologin-user)\s*=.*/\1={user}/' /etc/lightdm/lightdm.conf".format(user=self.setup.username))
             # MDM
-            self.do_run_in_chroot(r"sed -i -r -e '/^AutomaticLogin(Enable)?\s*=/d' -e 's/^(\[daemon\])/\1\nAutomaticLoginEnable=true\nAutomaticLogin={user}/' /etc/mdm/mdm.conf".format(user=setup.username))
+            self.do_run_in_chroot(r"sed -i -r -e '/^AutomaticLogin(Enable)?\s*=/d' -e 's/^(\[daemon\])/\1\nAutomaticLoginEnable=true\nAutomaticLogin={user}/' /etc/mdm/mdm.conf".format(user=self.setup.username))
             # GDM3
-            self.do_run_in_chroot(r"sed -i -r -e '/^(#\s*)?AutomaticLogin(Enable)?\s*=/d' -e 's/^(\[daemon\])/\1\nAutomaticLoginEnable=true\nAutomaticLogin={user}/' /etc/gdm3/daemon.conf".format(user=setup.username))
+            self.do_run_in_chroot(r"sed -i -r -e '/^(#\s*)?AutomaticLogin(Enable)?\s*=/d' -e 's/^(\[daemon\])/\1\nAutomaticLoginEnable=true\nAutomaticLogin={user}/' /etc/gdm3/daemon.conf".format(user=self.setup.username))
             # KDE4
-            self.do_run_in_chroot(r"sed -i -r -e 's/^#?(AutomaticLoginEnable)\s*=.*/\1=true/' -e 's/^#?(AutomaticLoginUser)\s*.*/\1={user}/' /etc/kde4/kdm/kdmrc".format(user=setup.username))
+            self.do_run_in_chroot(r"sed -i -r -e 's/^#?(AutomaticLoginEnable)\s*=.*/\1=true/' -e 's/^#?(AutomaticLoginUser)\s*.*/\1={user}/' /etc/kde4/kdm/kdmrc".format(user=self.setup.username))
             # LXDM
-            self.do_run_in_chroot(r"sed -i -r -e 's/^#?(autologin)\s*=.*/\1={user}/' /etc/lxdm/lxdm.conf".format(user=setup.username))
+            self.do_run_in_chroot(r"sed -i -r -e 's/^#?(autologin)\s*=.*/\1={user}/' /etc/lxdm/lxdm.conf".format(user=self.setup.username))
             # SLiM
-            self.do_run_in_chroot(r"sed -i -r -e 's/^#?(default_user)\s.*/\1  {user}/' -e 's/^#?(auto_login)\s.*/\1  yes/' /etc/slim.conf".format(user=setup.username))
+            self.do_run_in_chroot(r"sed -i -r -e 's/^#?(default_user)\s.*/\1  {user}/' -e 's/^#?(auto_login)\s.*/\1  yes/' /etc/slim.conf".format(user=self.setup.username))
 
         # Add user's face
-        os.system("cp /tmp/live-installer-face.png /target/home/%s/.face" % setup.username)
-        self.do_run_in_chroot("chown %s:%s /home/%s/.face" % (setup.username, setup.username, setup.username))
+        os.system("cp /tmp/live-installer-face.png /target/home/%s/.face" % self.setup.username)
+        self.do_run_in_chroot("chown %s:%s /home/%s/.face" % (self.setup.username, self.setup.username, self.setup.username))
 
         # Make the new user the default user in KDM
         if os.path.exists('/target/etc/kde4/kdm/kdmrc'):
-            defUsrCmd = "sed -i 's/^#DefaultUser=.*/DefaultUser=" + setup.username + "/g' " + kdmrcPath
+            defUsrCmd = "sed -i 's/^#DefaultUser=.*/DefaultUser=" + self.setup.username + "/g' " + kdmrcPath
             print defUsrCmd
             os.system(defUsrCmd)
 
+        self.write_fstab()
+
+
+    def write_fstab(self):
         # write the /etc/fstab
         print " --> Writing fstab"
         our_current += 1
@@ -310,8 +316,8 @@ class InstallerEngine:
             os.system("echo \"#### Static Filesystem Table File\" > /target/etc/fstab")
         fstab = open("/target/etc/fstab", "a")
         fstab.write("proc\t/proc\tproc\tdefaults\t0\t0\n")
-        if(not setup.skip_mount):
-            for partition in setup.partitions:
+        if(not self.setup.skip_mount):
+            for partition in self.setup.partitions:
                 if (partition.mount_as is not None and partition.mount_as != "" and partition.mount_as != "None"):
                     partition_uuid = partition.path # If we can't find the UUID we use the path
                     blkid = commands.getoutput('blkid').split('\n')
@@ -362,8 +368,7 @@ class InstallerEngine:
                         fstab.write("%s\t%s\t%s\t%s\t%s\t%s\n" % (partition_uuid, partition.mount_as, fs, fstab_mount_options, "0", fstab_fsck_option))
         fstab.close()
 
-
-    def finish_install(self, setup):
+    def finish_installation(self):
         # Steps:
         our_total = 11
         our_current = 4
@@ -373,11 +378,11 @@ class InstallerEngine:
         our_current += 1
         self.update_progress(our_current, our_total, False, False, _("Setting hostname"))
         hostnamefh = open("/target/etc/hostname", "w")
-        hostnamefh.write("%s\n" % setup.hostname)
+        hostnamefh.write("%s\n" % self.setup.hostname)
         hostnamefh.close()
         hostsfh = open("/target/etc/hosts", "w")
         hostsfh.write("127.0.0.1\tlocalhost\n")
-        hostsfh.write("127.0.1.1\t%s\n" % setup.hostname)
+        hostsfh.write("127.0.1.1\t%s\n" % self.setup.hostname)
         hostsfh.write("# The following lines are desirable for IPv6 capable hosts\n")
         hostsfh.write("::1     localhost ip6-localhost ip6-loopback\n")
         hostsfh.write("fe00::0 ip6-localnet\n")
@@ -391,26 +396,26 @@ class InstallerEngine:
         print " --> Setting the locale"
         our_current += 1
         self.update_progress(our_current, our_total, False, False, _("Setting locale"))
-        os.system("echo \"%s.UTF-8 UTF-8\" >> /target/etc/locale.gen" % setup.language)
+        os.system("echo \"%s.UTF-8 UTF-8\" >> /target/etc/locale.gen" % self.setup.language)
         self.do_run_in_chroot("locale-gen")
         os.system("echo \"\" > /target/etc/default/locale")
-        self.do_run_in_chroot("update-locale LANG=\"%s.UTF-8\"" % setup.language)
-        self.do_run_in_chroot("update-locale LANG=%s.UTF-8" % setup.language)
+        self.do_run_in_chroot("update-locale LANG=\"%s.UTF-8\"" % self.setup.language)
+        self.do_run_in_chroot("update-locale LANG=%s.UTF-8" % self.setup.language)
 
         # set the timezone
         print " --> Setting the timezone"
-        os.system("echo \"%s\" > /target/etc/timezone" % setup.timezone)
+        os.system("echo \"%s\" > /target/etc/timezone" % self.setup.timezone)
         os.system("rm -f /target/etc/localtime")
-        os.system("ln -s /usr/share/zoneinfo/%s /target/etc/localtime" % setup.timezone)
+        os.system("ln -s /usr/share/zoneinfo/%s /target/etc/localtime" % self.setup.timezone)
 
         # localizing
         print " --> Localizing packages"
         self.update_progress(our_current, our_total, False, False, _("Localizing packages"))
-        if setup.language != "en_US":
+        if self.setup.language != "en_US":
             os.system("mkdir -p /target/debs")
-            language_code = setup.language
-            if "_" in setup.language:
-                language_code = setup.language.split("_")[0]
+            language_code = self.setup.language
+            if "_" in self.setup.language:
+                language_code = self.setup.language.split("_")[0]
             l10ns = commands.getoutput("find /run/live/medium/pool | grep 'l10n-%s\\|hunspell-%s'" % (language_code, language_code))
             for l10n in l10ns.split("\n"):
                 os.system("cp %s /target/debs/" % l10n)
@@ -457,11 +462,11 @@ class InstallerEngine:
         for line in consolefh:
             line = line.rstrip("\r\n")
             if(line.startswith("XKBMODEL=")):
-                newconsolefh.write("XKBMODEL=\"%s\"\n" % setup.keyboard_model)
+                newconsolefh.write("XKBMODEL=\"%s\"\n" % self.setup.keyboard_model)
             elif(line.startswith("XKBLAYOUT=")):
-                newconsolefh.write("XKBLAYOUT=\"%s\"\n" % setup.keyboard_layout)
-            elif(line.startswith("XKBVARIANT=") and setup.keyboard_variant is not None and setup.keyboard_variant != ""):
-                newconsolefh.write("XKBVARIANT=\"%s\"\n" % setup.keyboard_variant)
+                newconsolefh.write("XKBLAYOUT=\"%s\"\n" % self.setup.keyboard_layout)
+            elif(line.startswith("XKBVARIANT=") and self.setup.keyboard_variant is not None and self.setup.keyboard_variant != ""):
+                newconsolefh.write("XKBVARIANT=\"%s\"\n" % self.setup.keyboard_variant)
             else:
                 newconsolefh.write("%s\n" % line)
         consolefh.close()
@@ -474,11 +479,11 @@ class InstallerEngine:
         for line in consolefh:
             line = line.rstrip("\r\n")
             if(line.startswith("XKBMODEL=")):
-                newconsolefh.write("XKBMODEL=\"%s\"\n" % setup.keyboard_model)
+                newconsolefh.write("XKBMODEL=\"%s\"\n" % self.setup.keyboard_model)
             elif(line.startswith("XKBLAYOUT=")):
-                newconsolefh.write("XKBLAYOUT=\"%s\"\n" % setup.keyboard_layout)
-            elif(line.startswith("XKBVARIANT=") and setup.keyboard_variant is not None and setup.keyboard_variant != ""):
-                newconsolefh.write("XKBVARIANT=\"%s\"\n" % setup.keyboard_variant)
+                newconsolefh.write("XKBLAYOUT=\"%s\"\n" % self.setup.keyboard_layout)
+            elif(line.startswith("XKBVARIANT=") and self.setup.keyboard_variant is not None and self.setup.keyboard_variant != ""):
+                newconsolefh.write("XKBVARIANT=\"%s\"\n" % self.setup.keyboard_variant)
             elif(line.startswith("XKBOPTIONS=")):
                 newconsolefh.write("XKBOPTIONS=grp:ctrls_toggle")
             else:
@@ -495,10 +500,10 @@ class InstallerEngine:
         # write MBR (grub)
         print " --> Configuring Grub"
         our_current += 1
-        if(setup.grub_device is not None):
+        if(self.setup.grub_device is not None):
             self.update_progress(our_current, our_total, False, False, _("Installing bootloader"))
             print " --> Running grub-install"
-            self.do_run_in_chroot("grub-install --force %s" % setup.grub_device)
+            self.do_run_in_chroot("grub-install --force %s" % self.setup.grub_device)
             # Remove memtest86+ package (it provides multiple memtest unwanted grub entries)
             self.do_run_in_chroot("apt-get remove --purge --yes --force-yes memtest86+")
             #fix not add windows grub entry
@@ -532,7 +537,7 @@ class InstallerEngine:
         print " --> Unmounting partitions"
         os.system("umount --force /target/dev/shm")
         os.system("umount --force /target/dev/pts")
-        if setup.gptonefi:
+        if self.setup.gptonefi:
             os.system("umount --force /target/boot/efi")
             os.system("umount --force /target/media/cdrom")
         os.system("umount --force /target/dev/")
@@ -541,8 +546,8 @@ class InstallerEngine:
         os.system("umount --force /target/run/")
         os.system("rm -f /target/etc/resolv.conf")
         os.system("mv /target/etc/resolv.conf.bk /target/etc/resolv.conf")
-        if(not setup.skip_mount):
-            for partition in setup.partitions:
+        if(not self.setup.skip_mount):
+            for partition in self.setup.partitions:
                 if(partition.mount_as is not None and partition.mount_as != "" and partition.mount_as != "/" and partition.mount_as != "swap"):
                     self.do_unmount("/target" + partition.mount_as)
             self.do_unmount("/target")
@@ -642,8 +647,8 @@ class Setup(object):
     # Make sure the user knows that they need to:
     #  * Mount their target directory structure at /target
     #  * NOT mount /target/dev, /target/dev/shm, /target/dev/pts, /target/proc, and /target/sys
-    #  * Manually create /target/etc/fstab after init_install has completed and before finish_install is called
-    #  * Install cryptsetup/dmraid/mdadm/etc in target environment (using chroot) between init_install and finish_install
+    #  * Manually create /target/etc/fstab after start_installation has completed and before finish_installation is called
+    #  * Install cryptsetup/dmraid/mdadm/etc in target environment (using chroot) between start_installation and finish_installation
     #  * Make sure target is mounted using the same block device as is used in /target/etc/fstab (eg if you change the name of a dm-crypt device between now and /target/etc/fstab, update-initramfs will likely fail)
     skip_mount = False
 
@@ -667,10 +672,10 @@ class Setup(object):
             print "skip_mount: %s" % self.skip_mount
             print "automated: %s" % self.automated
             if self.automated:
-            	print "disk: %s (%s)" % (self.disk, self.diskname)
-            	print "luks: %s" % self.luks
-            	print "lvm: %s" % self.lvm
-            	print "passphrase: %s - %s" % (self.passphrase1, self.passphrase2)
+                print "disk: %s (%s)" % (self.disk, self.diskname)
+                print "luks: %s" % self.luks
+                print "lvm: %s" % self.lvm
+                print "passphrase: %s - %s" % (self.passphrase1, self.passphrase2)
             if (not self.skip_mount):
                 print "target_disk: %s " % self.target_disk
                 if self.gptonefi:

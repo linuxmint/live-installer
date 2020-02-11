@@ -74,7 +74,7 @@ class InstallerWindow:
         self.showing_last_dialog = False
 
         # here comes the installer engine
-        self.installer = InstallerEngine()
+        self.installer = InstallerEngine(self.setup)
 
         # load the window object
         self.window = self.builder.get_object("main_window")
@@ -1071,7 +1071,6 @@ class InstallerWindow:
     def do_install(self):
         print " ## INSTALLATION "
         ''' Actually perform the installation .. '''
-        inst = self.installer
 
         if __debug__:
             print " ## DEBUG MODE - INSTALLATION PROCESS NOT LAUNCHED"
@@ -1079,8 +1078,8 @@ class InstallerWindow:
             Gtk.main_quit()
             sys.exit(0)
 
-        inst.set_progress_hook(self.update_progress)
-        inst.set_error_hook(self.error_message)
+        self.installer.set_progress_hook(self.update_progress)
+        self.installer.set_error_hook(self.error_message)
 
         # do we dare? ..
         self.critical_error_happened = False
@@ -1089,7 +1088,7 @@ class InstallerWindow:
         do_try_finish_install = True
 
         try:
-            inst.init_install(self.setup)
+            self.installer.start_installation()
         except Exception, detail1:
             print detail1
             do_try_finish_install = False
@@ -1107,7 +1106,7 @@ class InstallerWindow:
                     time.sleep(0.1)
 
             try:
-                inst.finish_install(self.setup)
+                self.installer.finish_installation()
             except Exception, detail1:
                 print detail1
                 self.show_error_dialog(_("Installation error"), str(detail1))
