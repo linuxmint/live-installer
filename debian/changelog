@@ -1,3 +1,9 @@
+live-installer (2020.02.11.1) debbie; urgency=medium
+
+  * Various fixes
+
+ -- Clement Lefebvre <root@linuxmint.com>  Tue, 11 Feb 2020 16:42:38 +0000
+
 live-installer (2020.02.11) debbie; urgency=medium
 
   * Fix wrong live mount points
