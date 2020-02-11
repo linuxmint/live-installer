@@ -7,6 +7,7 @@ import gettext
 import commands
 import sys
 import parted
+import partitioning
 
 gettext.install("live-installer", "/usr/share/linuxmint/locale")
 
@@ -180,6 +181,9 @@ class InstallerEngine:
         os.system("cp /tmp/live-installer-face.png /target/home/%s/.face" % self.setup.username)
         self.do_run_in_chroot("chown %s:%s /home/%s/.face" % (self.setup.username, self.setup.username, self.setup.username))
 
+        # /etc/fstab, mtab and crypttab
+        our_current += 1
+        self.update_progress(our_current, our_total, False, False, _("Writing filesystem mount information to /etc/fstab"))
         self.write_fstab()
 
     def mount_source(self):
@@ -191,8 +195,9 @@ class InstallerEngine:
 
     def create_partitions(self):
         # Create partitions on the selected disk (automated installation)
+        self.update_progress(1, 4, False, False, _("Creating partitions on %s") % self.setup.disk)
         if self.setup.luks:
-            if self.gptonefi:
+            if self.setup.gptonefi:
                 # EFI+LUKS/LVM
                 # sda1=EFI, sda2=BOOT, sda3=ROOT
                 self.auto_efi_partition = "/dev/sda1"
@@ -207,7 +212,7 @@ class InstallerEngine:
                 self.auto_swap_partition = None
                 self.auto_root_partition = "/dev/sda2"
         elif self.setup.lvm:
-            if self.gptonefi:
+            if self.setup.gptonefi:
                 # EFI+LVM
                 # sda1=EFI, sda2=ROOT
                 self.auto_efi_partition = "/dev/sda1"
@@ -222,7 +227,7 @@ class InstallerEngine:
                 self.auto_swap_partition = None
                 self.auto_root_partition = "/dev/sda1"
         else:
-            if self.gptonefi:
+            if self.setup.gptonefi:
                 # EFI
                 # sda1=EFI, sda2=SWAP, sda3=ROOT
                 self.auto_efi_partition = "/dev/sda1"
@@ -253,19 +258,28 @@ class InstallerEngine:
         if self.setup.luks:
             print " --> Encrypting root partition %s" % self.auto_root_partition
             os.system("printf \"%s\" | cryptsetup luksFormat -c aes-xts-plain64 -h sha256 -s 512 %s" % (self.setup.passphrase1, self.auto_root_partition))
+            print " --> Opening root partition %s" % self.auto_root_partition
             os.system("printf \"%s\" | cryptsetup luksOpen %s lvmlmde" % (self.setup.passphrase1, self.auto_root_partition))
             self.auto_root_partition = "/dev/mapper/lvmlmde"
 
         # Setup LVM
         if self.setup.lvm:
-            os.system("pvcreate %s" % self.auto_root_partition)
+            print (" --> LVM: Creating PV")
+            os.system("pvcreate -y %s" % self.auto_root_partition)
+            print (" --> LVM: Creating VG")
             os.system("vgcreate -y lvmlmde %s" % self.auto_root_partition)
+            print (" --> LVM: Creating LV root")
             os.system("lvcreate -y -n root -L 1GB lvmlmde")
+            print (" --> LVM: Creating LV swap")
             swap_size = int(round(int(commands.getoutput("awk '/^MemTotal/{ print $2 }' /proc/meminfo")) / 1024, 0))
             os.system("lvcreate -y -n swap -L %dMB lvmlmde" % swap_size)
-            os.system("lvextend -l 100%%FREE /dev/lvmlmde/root")
-            os.system("mkfs.ext4 /dev/mapper/lvmlmde-root")
+            print (" --> LVM: Extending LV root")
+            os.system("lvextend -l 100\%FREE /dev/lvmlmde/root")
+            print (" --> LVM: Formatting LV root")
+            os.system("mkfs.ext4 /dev/mapper/lvmlmde-root -FF")
+            print (" --> LVM: Formatting LV swap")
             os.system("mkswap -f /dev/mapper/lvmlmde-swap")
+            print (" --> LVM: Enabling LV swap")
             os.system("swapon /dev/mapper/lvmlmde-swap")
             self.auto_root_partition = "/dev/mapper/lvmlmde-root"
             self.auto_swap_partition = "/dev/mapper/lvmlmde-swap"
@@ -389,8 +403,6 @@ class InstallerEngine:
     def write_fstab(self):
         # write the /etc/fstab
         print " --> Writing fstab"
-        our_current += 1
-        self.update_progress(our_current, our_total, False, False, _("Writing filesystem mount information to /etc/fstab"))
         # make sure fstab has default /proc and /sys entries
         if(not os.path.exists("/target/etc/fstab")):
             os.system("echo \"#### Static Filesystem Table File\" > /target/etc/fstab")

@@ -88,9 +88,9 @@ class InstallerWindow:
          self.PAGE_PARTITIONS,
          self.PAGE_ADVANCED,
          self.PAGE_OVERVIEW,
-         self.PAGE_INSTALL,
          self.PAGE_CUSTOMWARNING,
-         self.PAGE_CUSTOMPAUSED) = range(12)
+         self.PAGE_CUSTOMPAUSED,
+         self.PAGE_INSTALL) = range(12)
 
         # set the button events (wizard_cb)
         self.builder.get_object("button_next").connect("clicked", self.wizard_cb, False)
@@ -722,7 +722,6 @@ class InstallerWindow:
             self.builder.get_object("label_non_latin").hide()
 
         command = "setxkbmap -layout '%s' -variant '%s' -option grp:ctrls_toggle" % (self.setup.keyboard_layout, self.setup.keyboard_variant)
-        print(command)
         if not __debug__:
             os.system(command)
             self.setup.print_setup()
@@ -747,7 +746,6 @@ class InstallerWindow:
         else:
             hidpi = "normal"
 
-        print("python /usr/lib/live-installer/frontend/generate_keyboard_layout.py %s %s %s %s" % (layout, variant, filename, hidpi))
         os.system("python /usr/lib/live-installer/frontend/generate_keyboard_layout.py %s %s %s %s" % (layout, variant, filename, hidpi))
         self._on_layout_generated()
 
@@ -1044,8 +1042,8 @@ class InstallerWindow:
             return
         if self.setup.automated:
             model.append(top, (bold(_("Automated installation on %s") % self.setup.diskname),))
-            model.append(top, (_("Disk Encryption: ") + bold(_("enabled") if self.setup.luks else _("disabled")),))
             model.append(top, (_("LVM: ") + bold(_("enabled") if self.setup.lvm else _("disabled")),))
+            model.append(top, (_("Disk Encryption: ") + bold(_("enabled") if self.setup.luks else _("disabled")),))
         else:
             for p in self.setup.partitions:
                 if p.format_as:

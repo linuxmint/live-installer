@@ -39,7 +39,7 @@ def debug(func):
         for argName, argValue in func_kwargs.items():
             params.append((argName, argValue))
         params = [ argName + ' = ' + repr(argValue) for argName, argValue in params]
-        print(func.__name__ + '(' +  ', '.join(params) + ')')
+        #print(func.__name__ + '(' +  ', '.join(params) + ')')
         return func(*func_args, **func_kwargs)
     return wrapper
 

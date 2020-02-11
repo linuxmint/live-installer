@@ -8,7 +8,8 @@ import re
 import sys
 import subprocess
 from collections import defaultdict
-
+import gi
+gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk
 import parted
 import commands
@@ -243,10 +244,10 @@ class PartitionSetup(Gtk.TreeStore):
                     installer.window.get_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
                     print "Performing a full disk format"
                     if not already_done_full_disk_format:
-                        assign_mount_format = self.full_disk_format(disk_device)
+                        assign_mount_format = full_disk_format(disk_device)
                         already_done_full_disk_format = True
                     else:
-                        self.full_disk_format(disk_device) # Format but don't assign mount points
+                        full_disk_format(disk_device) # Format but don't assign mount points
                     installer.window.get_window().set_cursor(None)
                     print "Done full disk format"
                     disk = parted.Disk(disk_device)
@@ -316,42 +317,42 @@ class PartitionSetup(Gtk.TreeStore):
         else:
             return ""
 
-    def full_disk_format(self, device, create_boot=False, create_swap=True):
-        # Create a default partition set up
-        disk_label = ('gpt' if device.getLength('B') > 2**32*.9 * device.sectorSize  # size of disk > ~2TB
-                               or installer.setup.gptonefi
-                            else 'msdos')
-        mkpart = (
-            # (condition, mount_as, format_as, mkfs command, size_mb)
-            # EFI
-            (installer.setup.gptonefi, EFI_MOUNT_POINT, 'vfat', 'mkfs.vfat {} -F 32 ', 300),
-            # boot
-            (create_boot, '/boot', 'ext4', 'mkfs.ext4 -F {}', 1024),
-            # swap - equal to RAM for hibernate to work well (but capped at ~8GB)
-            (create_swap, SWAP_MOUNT_POINT, 'swap', 'mkswap {}', min(8800, int(round(1.1/1024 * int(getoutput("awk '/^MemTotal/{ print $2 }' /proc/meminfo")), -2)))),
-            # root
-            (True, '/', 'ext4', 'mkfs.ext4 -F {}', 30000 if separate_home_partition else 0),
-        )
-        run_parted = lambda cmd: os.system('parted --script --align optimal {} {} ; sync'.format(device.path, cmd))
-        run_parted('mklabel ' + disk_label)
-        start_mb = 2
-        partition_number = 0
-        for partition in mkpart:
-            if partition[0]:
-                partition_number = partition_number + 1
-                mkfs = partition[3]
-                size_mb = partition[4]
-                end = '{}MB'.format(start_mb + size_mb) if size_mb else '100%'
-                mkpart_cmd = 'mkpart primary {}MB {}'.format(start_mb, end)
-                print mkpart_cmd
-                run_parted(mkpart_cmd)
-                mkfs = mkfs.format("%s%d" % (device.path, partition_number))
-                print mkfs
-                os.system(mkfs)
-                start_mb += size_mb + 1
-        if installer.setup.gptonefi:
-            run_parted('set 1 boot on')
-        return ((i[1], i[2]) for i in mkpart if i[0])
+def full_disk_format(device, create_boot=False, create_swap=True):
+    # Create a default partition set up
+    disk_label = ('gpt' if device.getLength('B') > 2**32*.9 * device.sectorSize  # size of disk > ~2TB
+                           or installer.setup.gptonefi
+                        else 'msdos')
+    mkpart = (
+        # (condition, mount_as, format_as, mkfs command, size_mb)
+        # EFI
+        (installer.setup.gptonefi, EFI_MOUNT_POINT, 'vfat', 'mkfs.vfat {} -F 32 ', 300),
+        # boot
+        (create_boot, '/boot', 'ext4', 'mkfs.ext4 -F {}', 1024),
+        # swap - equal to RAM for hibernate to work well (but capped at ~8GB)
+        (create_swap, SWAP_MOUNT_POINT, 'swap', 'mkswap {}', min(8800, int(round(1.1/1024 * int(getoutput("awk '/^MemTotal/{ print $2 }' /proc/meminfo")), -2)))),
+        # root
+        (True, '/', 'ext4', 'mkfs.ext4 -F {}', 0),
+    )
+    run_parted = lambda cmd: os.system('parted --script --align optimal {} {} ; sync'.format(device.path, cmd))
+    run_parted('mklabel ' + disk_label)
+    start_mb = 2
+    partition_number = 0
+    for partition in mkpart:
+        if partition[0]:
+            partition_number = partition_number + 1
+            mkfs = partition[3]
+            size_mb = partition[4]
+            end = '{}MB'.format(start_mb + size_mb) if size_mb else '100%'
+            mkpart_cmd = 'mkpart primary {}MB {}'.format(start_mb, end)
+            print mkpart_cmd
+            run_parted(mkpart_cmd)
+            mkfs = mkfs.format("%s%d" % (device.path, partition_number))
+            print mkfs
+            os.system(mkfs)
+            start_mb += size_mb + 1
+    if installer.setup.gptonefi:
+        run_parted('set 1 boot on')
+    return ((i[1], i[2]) for i in mkpart if i[0])
 
 
 def to_human_readable(size):
