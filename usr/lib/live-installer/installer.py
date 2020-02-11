@@ -259,10 +259,10 @@ class InstallerEngine:
         # Setup LVM
         if self.setup.lvm:
             os.system("pvcreate %s" % self.auto_root_partition)
-            os.system("vgcreate lvmlmde %s" % self.auto_root_partition)
-            os.system("lvcreate -n root -L 1GB lvmlmde")
+            os.system("vgcreate -y lvmlmde %s" % self.auto_root_partition)
+            os.system("lvcreate -y -n root -L 1GB lvmlmde")
             swap_size = int(round(int(commands.getoutput("awk '/^MemTotal/{ print $2 }' /proc/meminfo")) / 1024, 0))
-            os.system("lvcreate -n swap -L %dMB lvmlmde" % swap_size)
+            os.system("lvcreate -y -n swap -L %dMB lvmlmde" % swap_size)
             os.system("lvextend -l 100%%FREE /dev/lvmlmde/root")
             os.system("mkfs.ext4 /dev/mapper/lvmlmde-root")
             os.system("mkswap -f /dev/mapper/lvmlmde-swap")
@@ -595,7 +595,6 @@ class InstallerEngine:
             self.do_run_in_chroot("echo dm-mod >> /etc/initramfs-tools/modules")
             self.do_run_in_chroot("echo xts >> /etc/initramfs-tools/modules")
             self.do_run_in_chroot("echo 'GRUB_CMDLINE_LINUX=\"cryptdevice=%s:lvmlocal root=/dev/mapper/lvmlmde-root resume=/dev/mapper/lvmlmde-swap\" > /etc/default/grub.d/61_live-installer.cfg" % self.auto_root_physical_partition)
-            self.do_run_in_chroot("apt-get install -y sysfsutils")
             self.do_run_in_chroot("echo \"power/disk = shutdown\" >> /etc/sysfs.d/local.conf")
 
         # write MBR (grub)
