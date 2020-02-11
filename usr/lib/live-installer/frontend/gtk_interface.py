@@ -24,7 +24,7 @@ gettext.install("live-installer", "/usr/share/linuxmint/locale")
 LOADING_ANIMATION = '/usr/share/live-installer/loading.gif'
 
 # Used as a decorator to run things in the background
-def async(func):
+def asynchronous(func):
     def wrapper(*args, **kwargs):
         thread = threading.Thread(target=func, args=args, kwargs=kwargs)
         thread.daemon = True
@@ -55,12 +55,13 @@ class InstallerWindow:
 
         self.expert_mode = expert_mode
 
-        #Disable the screensaver
+        # disable the screensaver
         if not __debug__:
             os.system("killall cinnamon-screen")
 
-        #Build the Setup object (where we put all our choices)
+        # build the setup object (where we put all our choices) and the installer
         self.setup = Setup()
+        self.installer = InstallerEngine(self.setup)
 
         self.resource_dir = '/usr/share/live-installer/'
         glade_file = os.path.join(self.resource_dir, 'interface.ui')
@@ -73,14 +74,11 @@ class InstallerWindow:
         self.paused = False
         self.showing_last_dialog = False
 
-        # here comes the installer engine
-        self.installer = InstallerEngine(self.setup)
-
         # load the window object
         self.window = self.builder.get_object("main_window")
         self.window.connect("delete-event", self.quit_cb)
 
-        # Wizard pages
+        # wizard pages
         (self.PAGE_WELCOME,
          self.PAGE_LANGUAGE,
          self.PAGE_TIMEZONE,
@@ -180,7 +178,7 @@ class InstallerWindow:
         grub_check.connect("toggled", self.assign_grub_install, grub_box)
         grub_box.connect("changed", self.assign_grub_device)
 
-        # Install Grub by default
+        # install Grub by default
         grub_check.set_active(True)
         grub_box.set_sensitive(True)
 
@@ -211,13 +209,14 @@ class InstallerWindow:
         self.column12 = Gtk.TreeViewColumn("", ren)
         self.column12.add_attribute(ren, "markup", 0)
         self.builder.get_object("treeview_overview").append_column(self.column12)
+
         # install page
         self.builder.get_object("label_install_progress").set_text(_("Calculating file indexes ..."))
 
-        #i18n
+        # i18n
         self.i18n()
 
-        # Pre-fill user details in debug mode
+        # pre-fill user details in debug mode
         if __debug__:
             self.builder.get_object("entry_name").set_text("John Boone")
             self.builder.get_object("entry_username").set_text("john")
@@ -231,7 +230,7 @@ class InstallerWindow:
         # make sure we're on the right page (no pun.)
         self.activate_page(0)
 
-        # Initiate the slide show
+        # initiate the slide show
         # We have no significant browsing interface, so there isn't much point
         # in WebKit creating a memory-hungry cache.
         context = WebKit2.WebContext.get_default()
@@ -253,7 +252,11 @@ class InstallerWindow:
 
     def i18n(self):
 
-        window_title = "%s - %s" % (self.installer.get_distribution_name(), _("Installer"))
+        window_title = _("Installer")
+        with open("/etc/lsb-release") as f:
+            config = dict([line.strip().split("=") for line in f])
+            window_title = "%s - %s" % (config['DISTRIB_DESCRIPTION'].replace('"', ''), _("Installer"))
+
         if __debug__:
             window_title += ' (debug)'
         self.builder.get_object("button_expert").set_no_show_all(True)
@@ -339,14 +342,14 @@ class InstallerWindow:
         # Advanced page
         self.builder.get_object("checkbutton_grub").set_label(_("Install the GRUB boot menu on:"))
 
-        # custom install warning
+        # Custom install warning
         self.builder.get_object("label_custom_install_directions_1").set_label(_("You selected to manage your partitions manually, this feature is for ADVANCED USERS ONLY."))
         self.builder.get_object("label_custom_install_directions_2").set_label(_("Before continuing, mount your target filesystem(s) on /target."))
         self.builder.get_object("label_custom_install_directions_3").set_label(_("Do NOT mount virtual devices such as /dev, /proc, /sys, etc on /target/."))
         self.builder.get_object("label_custom_install_directions_4").set_label(_("During the install, you will be given time to chroot into /target and install any packages that will be needed to boot your new system."))
         self.builder.get_object("label_custom_install_directions_5").set_label(_("During the install, you will be required to write your own /etc/fstab."))
 
-        # custom install installation paused directions
+        # Custom install installation paused directions
         self.builder.get_object("label_custom_install_paused_1").set_label(_("Do the following and then click Next to finish installation:"))
         self.builder.get_object("label_custom_install_paused_2").set_label(_("Create /target/etc/fstab for the filesystems as they will be mounted in your new system, matching those currently mounted at /target (without using the /target prefix in the mount paths themselves)."))
         self.builder.get_object("label_custom_install_paused_3").set_label(_("Install any packages that may be needed for first boot (mdadm, cryptsetup, dmraid, etc) by calling \"sudo chroot /target\" followed by the relevant apt-get/aptitude installations."))
@@ -1067,7 +1070,7 @@ class InstallerWindow:
         MessageDialog(_("Installation paused"), _("The installation is now paused. Please read the instructions on the page carefully before clicking Next to finish the installation."))
         self.builder.get_object("button_next").set_sensitive(True)
 
-    @async
+    @asynchronous
     def do_install(self):
         print " ## INSTALLATION "
         ''' Actually perform the installation .. '''

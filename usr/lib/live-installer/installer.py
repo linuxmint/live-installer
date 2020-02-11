@@ -16,7 +16,6 @@ class InstallerEngine:
     ''' This is central to the live installer '''
 
     def __init__(self, setup):
-
         self.setup = setup
 
         # Flush print when it's called
@@ -38,115 +37,6 @@ class InstallerEngine:
         ''' Set a callback to be called on errors '''
         self.error_message = errorhook
 
-    def get_distribution_name(self):
-        with open("/etc/lsb-release") as f:
-            config = dict([line.strip().split("=") for line in f])
-        return config['DISTRIB_DESCRIPTION'].replace('"', '')
-
-    def get_distribution_version(self):
-        return self.distribution_version
-
-    def step_format_partitions(self):
-        for partition in self.setup.partitions:
-            if(partition.format_as is not None and partition.format_as != ""):
-                # report it. should grab the total count of filesystems to be formatted ..
-                self.update_progress(1, 4, True, False, _("Formatting %(partition)s as %(format)s ...") % {'partition':partition.path, 'format':partition.format_as})
-
-                #Format it
-                if partition.format_as == "swap":
-                    cmd = "mkswap %s" % partition.path
-                else:
-                    if (partition.format_as in ['ext2', 'ext3', 'ext4']):
-                        cmd = "mkfs.%s -F %s" % (partition.format_as, partition.path)
-                    elif (partition.format_as == "jfs"):
-                        cmd = "mkfs.%s -q %s" % (partition.format_as, partition.path)
-                    elif (partition.format_as in ["btrfs", "xfs"]):
-                        cmd = "mkfs.%s -f %s" % (partition.format_as, partition.path)
-                    elif (partition.format_as == "vfat"):
-                        cmd = "mkfs.%s %s -F 32" % (partition.format_as, partition.path)
-                    else:
-                        cmd = "mkfs.%s %s" % (partition.format_as, partition.path) # works with bfs, minix, msdos, ntfs, vfat
-
-                print "EXECUTING: '%s'" % cmd
-                self.exec_cmd(cmd)
-                partition.type = partition.format_as
-
-    def step_mount_source(self):
-        # Mount the installation media
-        print " --> Mounting partitions"
-        self.update_progress(2, 4, False, False, _("Mounting %(partition)s on %(mountpoint)s") % {'partition':self.media, 'mountpoint':"/source/"})
-        print " ------ Mounting %s on %s" % (self.media, "/source/")
-        self.do_mount(self.media, "/source/", "squashfs", options="loop")
-
-    def step_mount_partitions(self):
-        # Mount the target partition
-        for partition in self.setup.partitions:
-            if(partition.mount_as is not None and partition.mount_as != ""):
-                  if partition.mount_as == "/":
-                        self.update_progress(3, 4, False, False, _("Mounting %(partition)s on %(mountpoint)s") % {'partition':partition.path, 'mountpoint':"/target/"})
-                        print " ------ Mounting partition %s on %s" % (partition.path, "/target/")
-                        if partition.type == "fat32":
-                            fs = "vfat"
-                        else:
-                            fs = partition.type
-                        self.do_mount(partition.path, "/target", fs, None)
-                        break
-
-                  if partition.mount_as == "/@" :
-                        if partition.type != "btrfs":
-                            self.error_message(message=_("ERROR: the use of @subvolumes is limited to btrfs"))
-                            return
-                        print "btrfs using /@ subvolume..."
-                        self.update_progress(3, 4, False, False, _("Mounting %(partition)s on %(mountpoint)s") % {'partition':partition.path, 'mountpoint':"/target/"})
-                        # partition.mount_as = "/"
-                        print " ------ Mounting partition %s on %s" % (partition.path, "/target/")
-                        fs = partition.type
-                        self.do_mount(partition.path, "/target", fs, None)
-                        os.system("btrfs subvolume create /target/@")
-                        os.system("btrfs subvolume list -p /target")
-                        print " ------ Umount btrfs to remount subvolume /@"
-                        os.system("umount --force /target")
-                        self.do_mount(partition.path, "/target", fs, "subvol=@")
-                        break
-
-        # handle btrfs /@home subvolume-option after mounting / or /@
-        for partition in self.setup.partitions:
-            if(partition.mount_as is not None and partition.mount_as != ""):
-                  if partition.mount_as == "/@home":
-                        if partition.type != "btrfs":
-                            self.error_message(message=_("ERROR: the use of @subvolumes is limited to btrfs"))
-                            return
-                        print "btrfs using /@home subvolume..."
-                        self.update_progress(3, 4, False, False, _("Mounting %(partition)s on %(mountpoint)s") % {'partition':partition.path, 'mountpoint':"/target/"})
-                        print " ------ Mounting partition %s on %s" % (partition.path, "/target/home")
-                        fs = partition.type
-                        os.system("mkdir -p /target/home")
-                        self.do_mount(partition.path, "/target/home", fs, None)
-                        # if reusing a btrfs with /@home already being there wont
-                        # currently just keep it; data outside of /@home will still
-                        # be there (just not reachable from the mounted /@home subvolume)
-                        os.system("btrfs subvolume create /target/home/@home")
-                        #os.system("btrfs subvolume list -p /target/home")
-                        print " ------- Umount btrfs to remount subvolume /@home"
-                        os.system("umount --force /target/home")
-                        self.do_mount(partition.path, "/target/home", fs, "subvol=@home")
-                        break
-
-        # Mount the other partitions
-        for partition in self.setup.partitions:
-            if(partition.mount_as == "/@home" or partition.mount_as == "/@"):
-                # already mounted as subvolume
-                continue
-
-            if(partition.mount_as is not None and partition.mount_as != "" and partition.mount_as != "/" and partition.mount_as != "swap"):
-                print " ------ Mounting %s on %s" % (partition.path, "/target" + partition.mount_as)
-                os.system("mkdir -p /target" + partition.mount_as)
-                if partition.type == "fat16" or partition.type == "fat32":
-                    fs = "vfat"
-                else:
-                    fs = partition.type
-                self.do_mount(partition.path, "/target" + partition.mount_as, fs, None)
-
     def start_installation(self):
 
         # mount the media location.
@@ -166,11 +56,11 @@ class InstallerEngine:
         os.system("umount --force /target/proc/")
         os.system("umount --force /target/run/")
 
-        self.step_mount_source()
+        self.mount_source()
 
         if (not self.setup.skip_mount):
-            self.step_format_partitions()
-            self.step_mount_partitions()
+            self.format_partitions()
+            self.mount_partitions()
 
         # Transfer the files
         SOURCE = "/source/"
@@ -289,6 +179,106 @@ class InstallerEngine:
 
         self.write_fstab()
 
+    def mount_source(self):
+        # Mount the installation media
+        print " --> Mounting partitions"
+        self.update_progress(2, 4, False, False, _("Mounting %(partition)s on %(mountpoint)s") % {'partition':self.media, 'mountpoint':"/source/"})
+        print " ------ Mounting %s on %s" % (self.media, "/source/")
+        self.do_mount(self.media, "/source/", "squashfs", options="loop")
+
+    def format_partitions(self):
+        for partition in self.setup.partitions:
+            if(partition.format_as is not None and partition.format_as != ""):
+                # report it. should grab the total count of filesystems to be formatted ..
+                self.update_progress(1, 4, True, False, _("Formatting %(partition)s as %(format)s ...") % {'partition':partition.path, 'format':partition.format_as})
+
+                #Format it
+                if partition.format_as == "swap":
+                    cmd = "mkswap %s" % partition.path
+                else:
+                    if (partition.format_as in ['ext2', 'ext3', 'ext4']):
+                        cmd = "mkfs.%s -F %s" % (partition.format_as, partition.path)
+                    elif (partition.format_as == "jfs"):
+                        cmd = "mkfs.%s -q %s" % (partition.format_as, partition.path)
+                    elif (partition.format_as in ["btrfs", "xfs"]):
+                        cmd = "mkfs.%s -f %s" % (partition.format_as, partition.path)
+                    elif (partition.format_as == "vfat"):
+                        cmd = "mkfs.%s %s -F 32" % (partition.format_as, partition.path)
+                    else:
+                        cmd = "mkfs.%s %s" % (partition.format_as, partition.path) # works with bfs, minix, msdos, ntfs, vfat
+
+                print "EXECUTING: '%s'" % cmd
+                self.exec_cmd(cmd)
+                partition.type = partition.format_as
+
+    def mount_partitions(self):
+        # Mount the target partition
+        for partition in self.setup.partitions:
+            if(partition.mount_as is not None and partition.mount_as != ""):
+                  if partition.mount_as == "/":
+                        self.update_progress(3, 4, False, False, _("Mounting %(partition)s on %(mountpoint)s") % {'partition':partition.path, 'mountpoint':"/target/"})
+                        print " ------ Mounting partition %s on %s" % (partition.path, "/target/")
+                        if partition.type == "fat32":
+                            fs = "vfat"
+                        else:
+                            fs = partition.type
+                        self.do_mount(partition.path, "/target", fs, None)
+                        break
+
+                  if partition.mount_as == "/@" :
+                        if partition.type != "btrfs":
+                            self.error_message(message=_("ERROR: the use of @subvolumes is limited to btrfs"))
+                            return
+                        print "btrfs using /@ subvolume..."
+                        self.update_progress(3, 4, False, False, _("Mounting %(partition)s on %(mountpoint)s") % {'partition':partition.path, 'mountpoint':"/target/"})
+                        # partition.mount_as = "/"
+                        print " ------ Mounting partition %s on %s" % (partition.path, "/target/")
+                        fs = partition.type
+                        self.do_mount(partition.path, "/target", fs, None)
+                        os.system("btrfs subvolume create /target/@")
+                        os.system("btrfs subvolume list -p /target")
+                        print " ------ Umount btrfs to remount subvolume /@"
+                        os.system("umount --force /target")
+                        self.do_mount(partition.path, "/target", fs, "subvol=@")
+                        break
+
+        # handle btrfs /@home subvolume-option after mounting / or /@
+        for partition in self.setup.partitions:
+            if(partition.mount_as is not None and partition.mount_as != ""):
+                  if partition.mount_as == "/@home":
+                        if partition.type != "btrfs":
+                            self.error_message(message=_("ERROR: the use of @subvolumes is limited to btrfs"))
+                            return
+                        print "btrfs using /@home subvolume..."
+                        self.update_progress(3, 4, False, False, _("Mounting %(partition)s on %(mountpoint)s") % {'partition':partition.path, 'mountpoint':"/target/"})
+                        print " ------ Mounting partition %s on %s" % (partition.path, "/target/home")
+                        fs = partition.type
+                        os.system("mkdir -p /target/home")
+                        self.do_mount(partition.path, "/target/home", fs, None)
+                        # if reusing a btrfs with /@home already being there wont
+                        # currently just keep it; data outside of /@home will still
+                        # be there (just not reachable from the mounted /@home subvolume)
+                        os.system("btrfs subvolume create /target/home/@home")
+                        #os.system("btrfs subvolume list -p /target/home")
+                        print " ------- Umount btrfs to remount subvolume /@home"
+                        os.system("umount --force /target/home")
+                        self.do_mount(partition.path, "/target/home", fs, "subvol=@home")
+                        break
+
+        # Mount the other partitions
+        for partition in self.setup.partitions:
+            if(partition.mount_as == "/@home" or partition.mount_as == "/@"):
+                # already mounted as subvolume
+                continue
+
+            if(partition.mount_as is not None and partition.mount_as != "" and partition.mount_as != "/" and partition.mount_as != "swap"):
+                print " ------ Mounting %s on %s" % (partition.path, "/target" + partition.mount_as)
+                os.system("mkdir -p /target" + partition.mount_as)
+                if partition.type == "fat16" or partition.type == "fat32":
+                    fs = "vfat"
+                else:
+                    fs = partition.type
+                self.do_mount(partition.path, "/target" + partition.mount_as, fs, None)
 
     def write_fstab(self):
         # write the /etc/fstab
@@ -539,7 +529,6 @@ class InstallerEngine:
 
         self.update_progress(0, 0, False, True, _("Installation finished"))
         print " --> All done"
-
 
     def do_run_in_chroot(self, command):
         command = command.replace('"', "'").strip()
