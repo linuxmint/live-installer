@@ -282,26 +282,10 @@ class InstallerEngine:
         if self.setup.autologin:
             # LightDM
             self.do_run_in_chroot(r"sed -i -r 's/^#?(autologin-user)\s*=.*/\1={user}/' /etc/lightdm/lightdm.conf".format(user=self.setup.username))
-            # MDM
-            self.do_run_in_chroot(r"sed -i -r -e '/^AutomaticLogin(Enable)?\s*=/d' -e 's/^(\[daemon\])/\1\nAutomaticLoginEnable=true\nAutomaticLogin={user}/' /etc/mdm/mdm.conf".format(user=self.setup.username))
-            # GDM3
-            self.do_run_in_chroot(r"sed -i -r -e '/^(#\s*)?AutomaticLogin(Enable)?\s*=/d' -e 's/^(\[daemon\])/\1\nAutomaticLoginEnable=true\nAutomaticLogin={user}/' /etc/gdm3/daemon.conf".format(user=self.setup.username))
-            # KDE4
-            self.do_run_in_chroot(r"sed -i -r -e 's/^#?(AutomaticLoginEnable)\s*=.*/\1=true/' -e 's/^#?(AutomaticLoginUser)\s*.*/\1={user}/' /etc/kde4/kdm/kdmrc".format(user=self.setup.username))
-            # LXDM
-            self.do_run_in_chroot(r"sed -i -r -e 's/^#?(autologin)\s*=.*/\1={user}/' /etc/lxdm/lxdm.conf".format(user=self.setup.username))
-            # SLiM
-            self.do_run_in_chroot(r"sed -i -r -e 's/^#?(default_user)\s.*/\1  {user}/' -e 's/^#?(auto_login)\s.*/\1  yes/' /etc/slim.conf".format(user=self.setup.username))
 
         # Add user's face
         os.system("cp /tmp/live-installer-face.png /target/home/%s/.face" % self.setup.username)
         self.do_run_in_chroot("chown %s:%s /home/%s/.face" % (self.setup.username, self.setup.username, self.setup.username))
-
-        # Make the new user the default user in KDM
-        if os.path.exists('/target/etc/kde4/kdm/kdmrc'):
-            defUsrCmd = "sed -i 's/^#DefaultUser=.*/DefaultUser=" + self.setup.username + "/g' " + kdmrcPath
-            print defUsrCmd
-            os.system(defUsrCmd)
 
         self.write_fstab()
 
