@@ -1,3 +1,9 @@
+live-installer (2020.02.12.1) debbie; urgency=medium
+
+  * More fixes
+
+ -- Clement Lefebvre <root@linuxmint.com>  Wed, 12 Feb 2020 16:16:40 +0000
+
 live-installer (2020.02.12) debbie; urgency=medium
 
   * Few more fixes
