@@ -469,7 +469,7 @@ class InstallerEngine:
             os.system("grep -v swap /target/etc/fstab > /target/etc/mtab")
 
         if self.setup.luks:
-            os.system("echo 'lvmlmde   %s   none   luks,tries=3' >> /etc/crypttab" % self.auto_root_physical_partition)
+            os.system("echo 'lvmlmde   %s   none   luks,tries=3' >> /target/etc/crypttab" % self.auto_root_physical_partition)
 
     def finish_installation(self):
         # Steps:
@@ -606,7 +606,10 @@ class InstallerEngine:
             self.do_run_in_chroot("echo dm-crypt >> /etc/initramfs-tools/modules")
             self.do_run_in_chroot("echo dm-mod >> /etc/initramfs-tools/modules")
             self.do_run_in_chroot("echo xts >> /etc/initramfs-tools/modules")
-            self.do_run_in_chroot("echo 'GRUB_CMDLINE_LINUX=\"cryptdevice=%s:lvmlmde root=/dev/mapper/lvmlmde-root resume=/dev/mapper/lvmlmde-swap\"' > /etc/default/grub.d/61_live-installer.cfg" % self.auto_root_physical_partition)
+            with open("/target/etc/default/grub.d/61_live-installer.cfg", "w") as f:
+                f.write("#! /bin/sh\n")
+                f.write("set -e\n\n")
+                f.write('GRUB_CMDLINE_LINUX="cryptdevice=%s:lvmlmde root=/dev/mapper/lvmlmde-root resume=/dev/mapper/lvmlmde-swap"\n' % self.auto_root_physical_partition)
             self.do_run_in_chroot("echo \"power/disk = shutdown\" >> /etc/sysfs.d/local.conf")
 
         # write MBR (grub)
