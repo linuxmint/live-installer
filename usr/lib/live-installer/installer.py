@@ -412,19 +412,19 @@ class InstallerEngine:
             if self.setup.automated:
                 if self.setup.lvm:
                     # Don't use UUIDs with LVM
-                    fstab.write("%s /  ext4 defaults 0 1" % self.auto_root_partition)
-                    fstab.write("%s none   swap sw 0 0" % self.auto_swap_partition)
+                    fstab.write("%s /  ext4 defaults 0 1\n" % self.auto_root_partition)
+                    fstab.write("%s none   swap sw 0 0\n" % self.auto_swap_partition)
                 else:
-                    fstab.write("# %s" % self.auto_root_partition)
-                    fstab.write("%s /  ext4 defaults 0 1" % self.get_blkid(self.auto_root_partition))
-                    fstab.write("# %s" % self.auto_swap_partition)
-                    fstab.write("%s none   swap sw 0 0" % self.get_blkid(self.auto_swap_partition))
+                    fstab.write("# %s\n" % self.auto_root_partition)
+                    fstab.write("%s /  ext4 defaults 0 1\n" % self.get_blkid(self.auto_root_partition))
+                    fstab.write("# %s\n" % self.auto_swap_partition)
+                    fstab.write("%s none   swap sw 0 0\n" % self.get_blkid(self.auto_swap_partition))
                 if (self.auto_boot_partition is not None):
-                    fstab.write("# %s" % self.auto_boot_partition)
-                    fstab.write("%s /boot  ext4 defaults 0 1" % self.get_blkid(self.auto_boot_partition))
+                    fstab.write("# %s\n" % self.auto_boot_partition)
+                    fstab.write("%s /boot  ext4 defaults 0 1\n" % self.get_blkid(self.auto_boot_partition))
                 if (self.auto_efi_partition is not None):
-                    fstab.write("# %s" % self.auto_efi_partition)
-                    fstab.write("%s /boot/efi  vfat defaults 0 1" % self.get_blkid(self.auto_efi_partition))
+                    fstab.write("# %s\n" % self.auto_efi_partition)
+                    fstab.write("%s /boot/efi  vfat defaults 0 1\n" % self.get_blkid(self.auto_efi_partition))
             else:
                 for partition in self.setup.partitions:
                     if (partition.mount_as is not None and partition.mount_as != "" and partition.mount_as != "None"):
@@ -469,7 +469,7 @@ class InstallerEngine:
             os.system("grep -v swap /target/etc/fstab > /target/etc/mtab")
 
         if self.setup.luks:
-            os.system("echo \"lvmlmde   %s   none   luks,tries=3\" >> /etc/crypttab" % self.auto_root_physical_partition)
+            os.system("echo 'lvmlmde   %s   none   luks,tries=3' >> /etc/crypttab" % self.auto_root_physical_partition)
 
     def finish_installation(self):
         # Steps:
@@ -606,7 +606,7 @@ class InstallerEngine:
             self.do_run_in_chroot("echo dm-crypt >> /etc/initramfs-tools/modules")
             self.do_run_in_chroot("echo dm-mod >> /etc/initramfs-tools/modules")
             self.do_run_in_chroot("echo xts >> /etc/initramfs-tools/modules")
-            self.do_run_in_chroot("echo 'GRUB_CMDLINE_LINUX=\"cryptdevice=%s:lvmlocal root=/dev/mapper/lvmlmde-root resume=/dev/mapper/lvmlmde-swap\" > /etc/default/grub.d/61_live-installer.cfg" % self.auto_root_physical_partition)
+            self.do_run_in_chroot("echo 'GRUB_CMDLINE_LINUX=\"cryptdevice=%s:lvmlmde root=/dev/mapper/lvmlmde-root resume=/dev/mapper/lvmlmde-swap\"' > /etc/default/grub.d/61_live-installer.cfg" % self.auto_root_physical_partition)
             self.do_run_in_chroot("echo \"power/disk = shutdown\" >> /etc/sysfs.d/local.conf")
 
         # write MBR (grub)
