@@ -337,6 +337,9 @@ def full_disk_format(device, create_boot=False, create_swap=True):
     run_parted('mklabel ' + disk_label)
     start_mb = 2
     partition_number = 0
+    partition_prefix = ""
+    if device.path.startswith("/dev/nvme"):
+        partition_prefix = "p"
     for partition in mkpart:
         if partition[0]:
             partition_number = partition_number + 1
@@ -346,7 +349,7 @@ def full_disk_format(device, create_boot=False, create_swap=True):
             mkpart_cmd = 'mkpart primary {}MB {}'.format(start_mb, end)
             print mkpart_cmd
             run_parted(mkpart_cmd)
-            mkfs = mkfs.format("%s%d" % (device.path, partition_number))
+            mkfs = mkfs.format("%s%s%d" % (device.path, partition_prefix, partition_number))
             print mkfs
             os.system(mkfs)
             start_mb += size_mb + 1
