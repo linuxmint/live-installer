@@ -300,7 +300,7 @@ class InstallerWindow:
         self.column10.set_title(_("Layout"))
         self.column11.set_title(_("Variant"))
         self.builder.get_object("entry_test_kb").set_placeholder_text(_("Type here to test your keyboard layout"))
-        self.builder.get_object("label_non_latin").set_text(_("* Your username, hostname and password should only contain Latin characters. In addition to your selected layout, English (US) is set as the default. You can switch layouts by pressing both Ctrl keys together."))
+        self.builder.get_object("label_non_latin").set_text(_("* Your username, your computer's name and your password should only contain Latin characters. In addition to your selected layout, English (US) is set as the default. You can switch layouts by pressing both Ctrl keys together."))
 
         # User page
         self.builder.get_object("label_name").set_text(_("Your name:"))
@@ -850,7 +850,7 @@ class InstallerWindow:
                     errorMessage = _("Your passwords do not match.")
                 elif(self.setup.hostname is None or self.setup.hostname == ""):
                     errorFound = True
-                    errorMessage = _("Please provide a hostname.")
+                    errorMessage = _("Please provide a name for your computer.")
                 else:
                     for char in self.setup.username:
                         if(char.isupper()):
@@ -865,11 +865,11 @@ class InstallerWindow:
                     for char in self.setup.hostname:
                         if(char.isupper()):
                             errorFound = True
-                            errorMessage = _("The hostname must be lower case.")
+                            errorMessage = _("The computer's name must be lower case.")
                             break
                         elif(char.isspace()):
                             errorFound = True
-                            errorMessage = _("The hostname may not contain whitespace characters.")
+                            errorMessage = _("The computer's name may not contain whitespace characters.")
                             break
 
                 if (errorFound):
@@ -1034,7 +1034,7 @@ class InstallerWindow:
         model.append(top, (_("Automatic login: ") + bold(_("enabled") if self.setup.autologin else _("disabled")),))
         model.append(top, (_("Home encryption: ") + bold(_("enabled") if self.setup.ecryptfs else _("disabled")),))
         top = model.append(None, (_("System settings"),))
-        model.append(top, (_("Hostname: ") + bold(self.setup.hostname),))
+        model.append(top, (_("Computer's name: ") + bold(self.setup.hostname),))
         top = model.append(None, (_("Filesystem operations"),))
         model.append(top, (bold(_("Install bootloader on %s") % self.setup.grub_device) if self.setup.grub_device else _("Do not install bootloader"),))
         if self.setup.skip_mount:

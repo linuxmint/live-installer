@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-12 17:15+0000\n"
+"POT-Creation-Date: 2020-02-26 17:19+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -45,9 +45,9 @@ msgid "Writing filesystem mount information to /etc/fstab"
 msgstr ""
 
 #: usr/lib/live-installer/installer.py:192
-#: usr/lib/live-installer/installer.py:325
-#: usr/lib/live-installer/installer.py:339
-#: usr/lib/live-installer/installer.py:359
+#: usr/lib/live-installer/installer.py:328
+#: usr/lib/live-installer/installer.py:342
+#: usr/lib/live-installer/installer.py:362
 #, python-format
 msgid "Mounting %(partition)s on %(mountpoint)s"
 msgstr ""
@@ -57,60 +57,60 @@ msgstr ""
 msgid "Creating partitions on %s"
 msgstr ""
 
-#: usr/lib/live-installer/installer.py:299
+#: usr/lib/live-installer/installer.py:302
 #, python-format
 msgid "Formatting %(partition)s as %(format)s ..."
 msgstr ""
 
-#: usr/lib/live-installer/installer.py:336
-#: usr/lib/live-installer/installer.py:356
+#: usr/lib/live-installer/installer.py:339
+#: usr/lib/live-installer/installer.py:359
 msgid "ERROR: the use of @subvolumes is limited to btrfs"
 msgstr ""
 
-#: usr/lib/live-installer/installer.py:482
+#: usr/lib/live-installer/installer.py:485
 msgid "Setting hostname"
 msgstr ""
 
-#: usr/lib/live-installer/installer.py:501
+#: usr/lib/live-installer/installer.py:504
 msgid "Setting locale"
 msgstr ""
 
-#: usr/lib/live-installer/installer.py:516
+#: usr/lib/live-installer/installer.py:519
 msgid "Localizing packages"
 msgstr ""
 
-#: usr/lib/live-installer/installer.py:531
+#: usr/lib/live-installer/installer.py:534
 msgid "Installing drivers"
 msgstr ""
 
-#: usr/lib/live-installer/installer.py:562
+#: usr/lib/live-installer/installer.py:565
 msgid "Setting keyboard options"
 msgstr ""
 
-#: usr/lib/live-installer/installer.py:619
+#: usr/lib/live-installer/installer.py:622
 msgid "Installing bootloader"
 msgstr ""
 
-#: usr/lib/live-installer/installer.py:632
+#: usr/lib/live-installer/installer.py:635
 msgid ""
 "WARNING: The grub bootloader was not configured properly! You need to "
 "configure it manually."
 msgstr ""
 
-#: usr/lib/live-installer/installer.py:646
+#: usr/lib/live-installer/installer.py:649
 msgid "Cleaning APT"
 msgstr ""
 
-#: usr/lib/live-installer/installer.py:672
+#: usr/lib/live-installer/installer.py:675
 #: usr/lib/live-installer/frontend/gtk_interface.py:1063
 msgid "Installation finished"
 msgstr ""
 
-#: usr/lib/live-installer/installer.py:681
+#: usr/lib/live-installer/installer.py:684
 msgid "Configuring bootloader"
 msgstr ""
 
-#: usr/lib/live-installer/installer.py:690
+#: usr/lib/live-installer/installer.py:693
 msgid "Checking bootloader"
 msgstr ""
 
@@ -246,9 +246,9 @@ msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:303
 msgid ""
-"* Your username, hostname and password should only contain Latin characters. "
-"In addition to your selected layout, English (US) is set as the default. You "
-"can switch layouts by pressing both Ctrl keys together."
+"* Your username, your computer's name and your password should only contain "
+"Latin characters. In addition to your selected layout, English (US) is set "
+"as the default. You can switch layouts by pressing both Ctrl keys together."
 msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:306
@@ -356,7 +356,7 @@ msgid "Size"
 msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:339
-#: usr/lib/live-installer/partitioning.py:405
+#: usr/lib/live-installer/partitioning.py:408
 msgid "Free space"
 msgstr ""
 
@@ -466,7 +466,7 @@ msgid "Your passwords do not match."
 msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:853
-msgid "Please provide a hostname."
+msgid "Please provide a name for your computer."
 msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:858
@@ -478,11 +478,11 @@ msgid "Your username may not contain whitespace characters."
 msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:868
-msgid "The hostname must be lower case."
+msgid "The computer's name must be lower case."
 msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:872
-msgid "The hostname may not contain whitespace characters."
+msgid "The computer's name may not contain whitespace characters."
 msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:885
@@ -628,7 +628,7 @@ msgid "System settings"
 msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1037
-msgid "Hostname: "
+msgid "Computer's name: "
 msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1038
@@ -695,22 +695,22 @@ msgid "B"
 msgstr ""
 
 #: usr/lib/live-installer/partitioning.py:85
-#: usr/lib/live-installer/partitioning.py:359
+#: usr/lib/live-installer/partitioning.py:362
 msgid "kB"
 msgstr ""
 
 #: usr/lib/live-installer/partitioning.py:85
-#: usr/lib/live-installer/partitioning.py:359
+#: usr/lib/live-installer/partitioning.py:362
 msgid "MB"
 msgstr ""
 
 #: usr/lib/live-installer/partitioning.py:85
-#: usr/lib/live-installer/partitioning.py:359
+#: usr/lib/live-installer/partitioning.py:362
 msgid "GB"
 msgstr ""
 
 #: usr/lib/live-installer/partitioning.py:85
-#: usr/lib/live-installer/partitioning.py:359
+#: usr/lib/live-installer/partitioning.py:362
 msgid "TB"
 msgstr ""
 
@@ -742,39 +742,39 @@ msgid ""
 "DATA present on this disk."
 msgstr ""
 
-#: usr/lib/live-installer/partitioning.py:403
+#: usr/lib/live-installer/partitioning.py:406
 msgid "Logical partition"
 msgstr ""
 
-#: usr/lib/live-installer/partitioning.py:404
+#: usr/lib/live-installer/partitioning.py:407
 msgid "Extended partition"
 msgstr ""
 
-#: usr/lib/live-installer/partitioning.py:408
+#: usr/lib/live-installer/partitioning.py:411
 msgid "Unknown"
 msgstr ""
 
-#: usr/lib/live-installer/partitioning.py:522
+#: usr/lib/live-installer/partitioning.py:525
 msgid "Edit partition"
 msgstr ""
 
-#: usr/lib/live-installer/partitioning.py:523
+#: usr/lib/live-installer/partitioning.py:526
 msgid "Device:"
 msgstr ""
 
-#: usr/lib/live-installer/partitioning.py:525
+#: usr/lib/live-installer/partitioning.py:528
 msgid "Format as:"
 msgstr ""
 
-#: usr/lib/live-installer/partitioning.py:526
+#: usr/lib/live-installer/partitioning.py:529
 msgid "Mount point:"
 msgstr ""
 
-#: usr/lib/live-installer/partitioning.py:527
+#: usr/lib/live-installer/partitioning.py:530
 msgid "Cancel"
 msgstr ""
 
-#: usr/lib/live-installer/partitioning.py:528
+#: usr/lib/live-installer/partitioning.py:531
 #: usr/lib/live-installer/dialogs.py:31 usr/lib/live-installer/dialogs.py:42
 #: usr/lib/live-installer/dialogs.py:47
 msgid "OK"
