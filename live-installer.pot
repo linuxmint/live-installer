@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-26 17:19+0000\n"
+"POT-Creation-Date: 2020-02-26 17:24+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -145,6 +145,18 @@ msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:255
 #: usr/lib/live-installer/frontend/gtk_interface.py:258
+#: usr/lib/live-installer/frontend/gtk_interface.py:800
+#: usr/lib/live-installer/frontend/gtk_interface.py:876
+#: usr/lib/live-installer/frontend/gtk_interface.py:894
+#: usr/lib/live-installer/frontend/gtk_interface.py:912
+#: usr/lib/live-installer/frontend/gtk_interface.py:916
+#: usr/lib/live-installer/frontend/gtk_interface.py:924
+#: usr/lib/live-installer/frontend/gtk_interface.py:928
+#: usr/lib/live-installer/frontend/gtk_interface.py:944
+#: usr/lib/live-installer/frontend/gtk_interface.py:947
+#: usr/lib/live-installer/frontend/gtk_interface.py:952
+#: usr/lib/live-installer/frontend/gtk_interface.py:956
+#: usr/lib/live-installer/frontend/gtk_interface.py:960
 msgid "Installer"
 msgstr ""
 
@@ -427,22 +439,6 @@ msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:478
 msgid "Are you sure you want to quit the installer?"
-msgstr ""
-
-#: usr/lib/live-installer/frontend/gtk_interface.py:800
-#: usr/lib/live-installer/frontend/gtk_interface.py:876
-#: usr/lib/live-installer/frontend/gtk_interface.py:894
-#: usr/lib/live-installer/frontend/gtk_interface.py:912
-#: usr/lib/live-installer/frontend/gtk_interface.py:916
-#: usr/lib/live-installer/frontend/gtk_interface.py:924
-#: usr/lib/live-installer/frontend/gtk_interface.py:928
-#: usr/lib/live-installer/frontend/gtk_interface.py:944
-#: usr/lib/live-installer/frontend/gtk_interface.py:947
-#: usr/lib/live-installer/frontend/gtk_interface.py:952
-#: usr/lib/live-installer/frontend/gtk_interface.py:956
-#: usr/lib/live-installer/frontend/gtk_interface.py:960
-#: usr/lib/live-installer/partitioning.py:239
-msgid "Installation Tool"
 msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:800
@@ -732,6 +728,10 @@ msgstr ""
 
 #: usr/lib/live-installer/partitioning.py:184
 msgid "Assign to /boot/efi"
+msgstr ""
+
+#: usr/lib/live-installer/partitioning.py:239
+msgid "Installation Tool"
 msgstr ""
 
 #: usr/lib/live-installer/partitioning.py:240

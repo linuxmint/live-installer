@@ -797,7 +797,7 @@ class InstallerWindow:
                 self.activate_page(self.PAGE_LANGUAGE)
             elif(sel == self.PAGE_LANGUAGE):
                 if self.setup.language is None:
-                    WarningDialog(_("Installation Tool"), _("Please choose a language"))
+                    WarningDialog(_("Installer"), _("Please choose a language"))
                 else:
                     lang_country_code = self.setup.language.split('_')[-1]
                     for value in (self.cur_timezone,      # timezone guessed from IP
@@ -873,7 +873,7 @@ class InstallerWindow:
                             break
 
                 if (errorFound):
-                    WarningDialog(_("Installation Tool"), errorMessage)
+                    WarningDialog(_("Installer"), errorMessage)
                 else:
                     self.activate_page(self.PAGE_TYPE)
             elif(sel == self.PAGE_TYPE):
@@ -891,7 +891,7 @@ class InstallerWindow:
                             errorFound = True
                             errorMessage = _("Your passphrases do not match.")
                     if (errorFound):
-                        WarningDialog(_("Installation Tool"), errorMessage)
+                        WarningDialog(_("Installer"), errorMessage)
                     else:
                         if QuestionDialog(_("Warning"), _("This will delete all the data on %s. Are you sure?") % self.setup.diskname):
                             partitioning.build_partitions(self)
@@ -909,11 +909,11 @@ class InstallerWindow:
                     if(partition.mount_as == "/"):
                         found_root_partition = True
                         if partition.format_as is None or partition.format_as == "":
-                            ErrorDialog(_("Installation Tool"), _("Please indicate a filesystem to format the root (/) partition with before proceeding."))
+                            ErrorDialog(_("Installer"), _("Please indicate a filesystem to format the root (/) partition with before proceeding."))
                             return
                     if partition.mount_as == "/@":
                         if partition.format_as != "btrfs":
-                            ErrorDialog(_("Installation Tool"), _("A root subvolume (/@) requires to format the partition with btrfs."))
+                            ErrorDialog(_("Installer"), _("A root subvolume (/@) requires to format the partition with btrfs."))
                             return
                         found_root_partition = True
                     if partition.mount_as == "/@home":
@@ -921,11 +921,11 @@ class InstallerWindow:
                             continue;
                         if partition.type == "btrfs" and (partition.format_as == None or partition.format_as == ""):
                             continue;
-                        ErrorDialog(_("Installation Tool"), _("A home subvolume (/@home) requires the use of a btrfs formatted partition."))
+                        ErrorDialog(_("Installer"), _("A home subvolume (/@home) requires the use of a btrfs formatted partition."))
                         return
 
                 if not found_root_partition:
-                    ErrorDialog(_("Installation Tool"), "<b>%s</b>" % _("Please select a root (/) partition."), _(
+                    ErrorDialog(_("Installer"), "<b>%s</b>" % _("Please select a root (/) partition."), _(
                         "A root partition is needed to install Linux Mint on.\n\n"
                         " - Mount point: /\n - Recommended size: 30GB\n"
                         " - Recommended filesystem format: ext4\n\n"
@@ -941,23 +941,23 @@ class InstallerWindow:
                         if(partition.mount_as == "/boot/efi"):
                             found_efi_partition = True
                             if not partition.partition.getFlag(parted.PARTITION_BOOT):
-                                ErrorDialog(_("Installation Tool"), _("The EFI partition is not bootable. Please edit the partition flags."))
+                                ErrorDialog(_("Installer"), _("The EFI partition is not bootable. Please edit the partition flags."))
                                 return
                             if int(float(partition.partition.getLength('MB'))) < 35:
-                                ErrorDialog(_("Installation Tool"), _("The EFI partition is too small. It must be at least 35MB."))
+                                ErrorDialog(_("Installer"), _("The EFI partition is too small. It must be at least 35MB."))
                                 return
                             if partition.format_as == None or partition.format_as == "":
                                 # No partitioning
                                 if partition.type != "vfat" and partition.type != "fat32" and partition.type != "fat16":
-                                    ErrorDialog(_("Installation Tool"), _("The EFI partition must be formatted as vfat."))
+                                    ErrorDialog(_("Installer"), _("The EFI partition must be formatted as vfat."))
                                     return
                             else:
                                 if partition.format_as != "vfat":
-                                    ErrorDialog(_("Installation Tool"), _("The EFI partition must be formatted as vfat."))
+                                    ErrorDialog(_("Installer"), _("The EFI partition must be formatted as vfat."))
                                     return
 
                     if not found_efi_partition:
-                        ErrorDialog(_("Installation Tool"), "<b>%s</b>" % _("Please select an EFI partition."),_("An EFI system partition is needed with the following requirements:\n\n - Mount point: /boot/efi\n - Partition flags: Bootable\n - Size: at least 35MB (100MB or more recommended)\n - Format: vfat or fat32\n\nTo ensure compatibility with Windows we recommend you use the first partition of the disk as the EFI system partition.\n "))
+                        ErrorDialog(_("Installer"), "<b>%s</b>" % _("Please select an EFI partition."),_("An EFI system partition is needed with the following requirements:\n\n - Mount point: /boot/efi\n - Partition flags: Bootable\n - Size: at least 35MB (100MB or more recommended)\n - Format: vfat or fat32\n\nTo ensure compatibility with Windows we recommend you use the first partition of the disk as the EFI system partition.\n "))
                         return
 
                 partitioning.build_grub_partitions()
