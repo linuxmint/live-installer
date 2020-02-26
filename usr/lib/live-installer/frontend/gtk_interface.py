@@ -835,45 +835,56 @@ class InstallerWindow:
             elif(sel == self.PAGE_USER):
                 errorFound = False
                 errorMessage = ""
+                focus_widget = None
 
                 if(self.setup.real_name is None or self.setup.real_name == ""):
                     errorFound = True
                     errorMessage = _("Please provide your full name.")
-                elif(self.setup.username is None or self.setup.username == ""):
-                    errorFound = True
-                    errorMessage = _("Please provide a username.")
-                elif(self.setup.password1 is None or self.setup.password1 == ""):
-                    errorFound = True
-                    errorMessage = _("Please provide a password for your user account.")
-                elif(self.setup.password1 != self.setup.password2):
-                    errorFound = True
-                    errorMessage = _("Your passwords do not match.")
+                    focus_widget = self.builder.get_object("entry_name")
                 elif(self.setup.hostname is None or self.setup.hostname == ""):
                     errorFound = True
                     errorMessage = _("Please provide a name for your computer.")
+                    focus_widget = self.builder.get_object("entry_hostname")
+                elif(self.setup.username is None or self.setup.username == ""):
+                    errorFound = True
+                    errorMessage = _("Please provide a username.")
+                    focus_widget = self.builder.get_object("entry_username")
+                elif(self.setup.password1 is None or self.setup.password1 == ""):
+                    errorFound = True
+                    errorMessage = _("Please provide a password for your user account.")
+                    focus_widget = self.builder.get_object("entry_password")
+                elif(self.setup.password1 != self.setup.password2):
+                    errorFound = True
+                    errorMessage = _("Your passwords do not match.")
+                    focus_widget = self.builder.get_object("entry_confirm")
                 else:
                     for char in self.setup.username:
                         if(char.isupper()):
                             errorFound = True
                             errorMessage = _("Your username must be lower case.")
+                            focus_widget = self.builder.get_object("entry_username")
                             break
                         elif(char.isspace()):
                             errorFound = True
                             errorMessage = _("Your username may not contain whitespace characters.")
+                            focus_widget = self.builder.get_object("entry_username")
                             break
-
                     for char in self.setup.hostname:
                         if(char.isupper()):
                             errorFound = True
                             errorMessage = _("The computer's name must be lower case.")
+                            focus_widget = self.builder.get_object("entry_hostname")
                             break
                         elif(char.isspace()):
                             errorFound = True
                             errorMessage = _("The computer's name may not contain whitespace characters.")
+                            focus_widget = self.builder.get_object("entry_hostname")
                             break
 
                 if (errorFound):
                     WarningDialog(_("Installer"), errorMessage)
+                    if focus_widget is not None:
+                        focus_widget.grab_focus()
                 else:
                     self.activate_page(self.PAGE_TYPE)
             elif(sel == self.PAGE_TYPE):
