@@ -4,7 +4,7 @@ import sys
 import commands
 import gettext
 
-gettext.install("live-installer", "/usr/share/linuxmint/locale")
+gettext.install("live-installer", "/usr/share/locale")
 
 sys.path.insert(1, '/usr/lib/live-installer')
 from frontend.gtk_interface import InstallerWindow

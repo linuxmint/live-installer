@@ -15,7 +15,7 @@ import parted
 import commands
 import gettext
 
-gettext.install("live-installer", "/usr/share/linuxmint/locale")
+gettext.install("live-installer", "/usr/share/locale")
 
 def shell_exec(command):
     return subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
