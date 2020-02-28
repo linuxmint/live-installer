@@ -1,3 +1,13 @@
+live-installer (2020.02.28) debbie; urgency=medium
+
+  * Automatic partitioning: Fix NVME support
+  * Add translations to core package
+  * l10n: Replace hostname with computer's name.
+  * l10n: Rename dialog titles
+  * UI: User page, focus appropriate widget when a new entry is needed
+
+ -- Clement Lefebvre <root@linuxmint.com>  Fri, 28 Feb 2020 10:25:12 +0000
+
 live-installer (2020.02.13) debbie; urgency=medium
 
   * l10n: Update POT
