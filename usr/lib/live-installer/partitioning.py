@@ -14,6 +14,7 @@ from gi.repository import Gtk, Gdk
 import parted
 import commands
 import gettext
+import time
 
 gettext.install("live-installer", "/usr/share/locale")
 
@@ -349,7 +350,21 @@ def full_disk_format(device, create_boot=False, create_swap=True):
             mkpart_cmd = 'mkpart primary {}MB {}'.format(start_mb, end)
             print mkpart_cmd
             run_parted(mkpart_cmd)
-            mkfs = mkfs.format("%s%s%d" % (device.path, partition_prefix, partition_number))
+            partition_path = "%s%s%d" % (device.path, partition_prefix, partition_number)
+            num_tries = 0
+            while True:
+                if os.path.exists(partition_path):
+                    break
+                if num_tries < 5:
+                    num_tries += 1
+                    print ("Could not find %s, waiting 1s..." % partition_path)
+                    os.system("sync")
+                    time.sleep(1)
+                else:
+                    from frontend.gtk_interface import ErrorDialog
+                    dialog = ErrorDialog(_("Installer"), _("The partition %s could not be created. The installation will stop. Restart the computer and try again.") % partition_path)
+                    sys.exit(1)
+            mkfs = mkfs.format(partition_path)
             print mkfs
             os.system(mkfs)
             start_mb += size_mb + 1
