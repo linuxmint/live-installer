@@ -59,6 +59,7 @@ def pixel_position(lat, lon):
 TZ_SPLIT_COORDS = re.compile('([+-][0-9]+)([+-][0-9]+)')
 
 timezones = []
+region_menus = {}
 
 Timezone = namedtuple('Timezone', 'name ccode x y'.split())
 
@@ -77,7 +78,6 @@ def build_timezones(_installer):
     time_label = installer.builder.get_object("label_time")
     time_label_box = time_label.get_parent()
 
-    ctx = time_label.get_style_context()
     time_label.set_name('TimezoneLabel')
 
     update_local_time_label()
@@ -102,47 +102,77 @@ def build_timezones(_installer):
             else: submenu[part] = tup
         timezones.append(tup)
 
-    def _build_menu(d):
+    def _build_tz_menu(d):
         menu = Gtk.Menu()
         for k in sorted(d):
             v = d[k]
-            item = Gtk.MenuItem(k)
+            item = Gtk.MenuItem(k.replace("_", " "))
             item.show()
             if isinstance(v, dict):
-                item.set_submenu(_build_menu(v))
+                item.set_submenu(_build_tz_menu(v))
             else:
-                item.connect('activate', cb_menu_selected, v)
+                item.connect('activate', tz_menu_selected, v)
             menu.append(item)
         menu.show()
         return menu
-    tz_menu = _build_menu(hierarchy)
-    tz_menu.show()
-    installer.builder.get_object('button_timezones').connect('event', cb_button_timezones, tz_menu)
+
+    def _build_cont_menu(d):
+        menu = Gtk.Menu()
+        for k in sorted(d):
+            print(k)
+            v = d[k]
+            item = Gtk.MenuItem(k.replace("_", " "))
+            item.show()
+            if isinstance(v, dict):
+                region_menus[k] = _build_tz_menu(v)
+                region_menus[k].show_all()
+
+            item.connect('activate', cont_menu_selected, k)
+            menu.append(item)
+        menu.show()
+        return menu
+
+    cont_menu = _build_cont_menu(hierarchy)
+    cont_menu.show_all()
+
+    installer.builder.get_object('cont_button').connect('event', button_callback)
+    installer.builder.get_object('cont_button').menu = cont_menu
+
+    installer.builder.get_object('tz_button').connect('event', button_callback)
+
+    installer.builder.get_object("event_timezones").connect('button-release-event', map_clicked)
 
 adjust_time = timedelta(0)
+
+def button_callback(button, event):
+    menu = button.menu
+
+    if event.type == Gdk.EventType.BUTTON_PRESS:
+        menu.popup(None, None, None, None, 0, event.time)
+        return True
+    return False
 
 def update_local_time_label():
     now = datetime.utcnow() + adjust_time
     time_label.set_label(now.strftime('%H:%M'))
     return True
 
-def cb_button_timezones(button, event, menu):
-    if event.type == Gdk.EventType.BUTTON_PRESS:
-        menu.popup(None, None, None, None, 0, event.time)
-        return True
-    return False
+def cont_menu_selected(widget, cont):
+    installer.builder.get_object("cont_button").set_label(cont)
 
-def cb_menu_selected(widget, timezone):
-    select_timezone(timezone)
+    installer.builder.get_object("tz_button").set_label(_('Select timezone'))
+    installer.builder.get_object("tz_button").menu = region_menus[cont]
 
-def cb_map_clicked(widget, event, model):
+def tz_menu_selected(widget, tz):
+    select_timezone(tz)
+
+def map_clicked(widget, event, data=None):
     x, y = event.x, event.y
     if event.window != installer.builder.get_object("event_timezones").get_window():
         dx, dy = event.window.get_position()
         x, y = x + dx, y + dy
     closest_timezone = min(timezones, key=lambda tz: math.sqrt((x - tz.x)**2 + (y - tz.y)**2))
     select_timezone(closest_timezone)
-    update_local_time_label()
 
 # Timezone offsets color coded in cc.png
 # If someone can make this more robust (maintainable), I buy you lunch!
@@ -200,11 +230,18 @@ def select_timezone(tz):
                             minutes=int(tzadj[0] + tzadj[2]))
 
     installer.setup.timezone = tz.name
-    installer.builder.get_object("button_timezones").set_label(tz.name)
+    cont, separator, tz_str = tz.name.partition("/")
+
+    installer.builder.get_object("cont_button").set_label(cont)
+    installer.builder.get_object("tz_button").set_label(tz_str.replace("_", " "))
+    installer.builder.get_object("tz_button").menu = region_menus[cont]
+
+    update_local_time_label()
+
     # Move the current time label to appropriate position
     x, y = tz.x, tz.y
-    if x + time_label_box.get_allocation().width + 4 > MAP_SIZE[0]: x -= time_label_box.get_allocation().width
-    if y + time_label_box.get_allocation().height + 4 > MAP_SIZE[1]: y -= time_label_box.get_allocation().height
+    if x + time_label_box.get_allocation().width + 4 > MAP_SIZE[0]: x = MAP_SIZE[0] - time_label_box.get_allocation().width
+    if y + time_label_box.get_allocation().height + 4 > MAP_SIZE[1]: y = MAP_SIZE[1] - time_label_box.get_allocation().height
     installer.builder.get_object("fixed_timezones").move(time_label_box, x, y)
 
 def _get_x_offset():

@@ -121,9 +121,7 @@ class InstallerWindow:
         self.build_lang_list()
 
         # build timezones
-        model = timezones.build_timezones(self)
-        self.builder.get_object("button_timezones").set_label(_('Select timezone'))
-        self.builder.get_object("event_timezones").connect('button-release-event', timezones.cb_map_clicked, model)
+        timezones.build_timezones(self)
 
         # type page
         model = Gtk.ListStore(str, str)
