@@ -1,3 +1,10 @@
+live-installer (2020.03.04) debbie; urgency=medium
+
+  * Partitioning: Wait up to 5s for newly created device to appear before formatting
+  * GPT: Install signed shim and grub packages
+
+ -- Clement Lefebvre <root@linuxmint.com>  Wed, 04 Mar 2020 10:02:01 +0000
+
 live-installer (2020.02.28) debbie; urgency=medium
 
   * Automatic partitioning: Fix NVME support
