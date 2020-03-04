@@ -120,8 +120,8 @@ class InstallerEngine:
             os.system("cp /run/live/medium/EFI/BOOT/grubx64.efi /target/boot/efi/EFI/linuxmint")
             os.system("mkdir -p /target/debs")
             os.system("cp /run/live/medium/pool/main/g/grub2/grub-efi* /target/debs/")
-            os.system("cp /run/live/medium/pool/main/e/efibootmgr/efibootmgr* /target/debs/")
-            os.system("cp /run/live/medium/pool/main/e/efivar/* /target/debs/")
+            os.system("cp /run/live/medium/pool/main/g/grub-efi-amd64-signed/* /target/debs/")
+            os.system("cp /run/live/medium/pool/main/s/shim*/* /target/debs/")
             self.do_run_in_chroot("dpkg -i /debs/*")
             os.system("rm -rf /target/debs")
 
