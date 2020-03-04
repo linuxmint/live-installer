@@ -177,10 +177,6 @@ class InstallerEngine:
             # LightDM
             self.do_run_in_chroot(r"sed -i -r 's/^#?(autologin-user)\s*=.*/\1={user}/' /etc/lightdm/lightdm.conf".format(user=self.setup.username))
 
-        # Add user's face
-        os.system("cp /tmp/live-installer-face.png /target/home/%s/.face" % self.setup.username)
-        self.do_run_in_chroot("chown %s:%s /home/%s/.face" % (self.setup.username, self.setup.username, self.setup.username))
-
         # /etc/fstab, mtab and crypttab
         our_current += 1
         self.update_progress(our_current, our_total, False, False, _("Writing filesystem mount information to /etc/fstab"))
