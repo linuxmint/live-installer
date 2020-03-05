@@ -10,13 +10,19 @@ import subprocess
 from collections import defaultdict
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk, Gdk, GObject
 import parted
 import commands
 import gettext
 import time
 
 gettext.install("live-installer", "/usr/share/locale")
+
+# Used as a decorator to run things in the main loop, from another thread
+def idle(func):
+    def wrapper(*args, **kwargs):
+        GObject.idle_add(func, *args, **kwargs)
+    return wrapper
 
 def shell_exec(command):
     return subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
@@ -318,11 +324,22 @@ class PartitionSetup(Gtk.TreeStore):
         else:
             return ""
 
+@idle
+def show_error(message):
+    from frontend.gtk_interface import ErrorDialog
+    ErrorDialog(_("Installer"), message)
+
 def full_disk_format(device, create_boot=False, create_swap=True):
     # Create a default partition set up
     disk_label = ('gpt' if device.getLength('B') > 2**32*.9 * device.sectorSize  # size of disk > ~2TB
                            or installer.setup.gptonefi
                         else 'msdos')
+    return_code = os.system("parted -s %s mklabel %s" % (device.path, disk_label))
+    if return_code != 0:
+        show_error(_("The partition table couldn't be written for %s. Restart the computer and try again.") % device.path)
+        Gtk.main_quit()
+        sys.exit(1)
+
     mkpart = (
         # (condition, mount_as, format_as, mkfs command, size_mb)
         # EFI
@@ -335,7 +352,6 @@ def full_disk_format(device, create_boot=False, create_swap=True):
         (True, '/', 'ext4', 'mkfs.ext4 -F {}', 0),
     )
     run_parted = lambda cmd: os.system('parted --script --align optimal {} {} ; sync'.format(device.path, cmd))
-    run_parted('mklabel ' + disk_label)
     start_mb = 2
     partition_number = 0
     partition_prefix = ""
@@ -361,8 +377,8 @@ def full_disk_format(device, create_boot=False, create_swap=True):
                     os.system("sync")
                     time.sleep(1)
                 else:
-                    from frontend.gtk_interface import ErrorDialog
-                    dialog = ErrorDialog(_("Installer"), _("The partition %s could not be created. The installation will stop. Restart the computer and try again.") % partition_path)
+                    show_error(_("The partition %s could not be created. The installation will stop. Restart the computer and try again.") % partition_path)
+                    Gtk.main_quit()
                     sys.exit(1)
             mkfs = mkfs.format(partition_path)
             print mkfs
