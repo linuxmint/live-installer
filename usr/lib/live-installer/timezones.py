@@ -119,7 +119,6 @@ def build_timezones(_installer):
     def _build_cont_menu(d):
         menu = Gtk.Menu()
         for k in sorted(d):
-            print(k)
             v = d[k]
             item = Gtk.MenuItem(k.replace("_", " "))
             item.show()
@@ -239,9 +238,17 @@ def select_timezone(tz):
     update_local_time_label()
 
     # Move the current time label to appropriate position
-    x, y = tz.x, tz.y
-    if x + time_label_box.get_allocation().width + 4 > MAP_SIZE[0]: x = MAP_SIZE[0] - time_label_box.get_allocation().width
-    if y + time_label_box.get_allocation().height + 4 > MAP_SIZE[1]: y = MAP_SIZE[1] - time_label_box.get_allocation().height
+    a = time_label_box.get_allocation()
+    width = a.width
+    height = a.height
+
+    x = tz.x - (width / 2)
+    y = tz.y - (height / 2)
+
+    if x < 0: x = 0
+    if y < 0: y = 0
+    if (x + width) > MAP_SIZE[0]: x = MAP_SIZE[0] - width
+    if (y + height) > MAP_SIZE[1]: y = MAP_SIZE[1] - height
     installer.builder.get_object("fixed_timezones").move(time_label_box, x, y)
 
 def _get_x_offset():
