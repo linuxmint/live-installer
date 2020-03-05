@@ -76,9 +76,9 @@ def build_timezones(_installer):
 
     # Add the label displaying current time
     time_label = installer.builder.get_object("label_time")
-    time_label_box = time_label.get_parent()
+    time_label_box = installer.builder.get_object("eventbox_time")
 
-    time_label.set_name('TimezoneLabel')
+    time_label_box.set_name('TimezoneLabel')
 
     update_local_time_label()
 

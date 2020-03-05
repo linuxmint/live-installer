@@ -373,13 +373,23 @@
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
                                         <child>
-                                          <object class="GtkLabel" id="label_time">
+                                          <object class="GtkBox">
                                             <property name="visible">True</property>
                                             <property name="can_focus">False</property>
-                                            <property name="margin_top">10</property>
-                                            <property name="margin_bottom">10</property>
-                                            <property name="label" translatable="yes">label</property>
-                                            <property name="use_markup">True</property>
+                                            <property name="border_width">4</property>
+                                            <child>
+                                              <object class="GtkLabel" id="label_time">
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
+                                                <property name="label" translatable="yes">label</property>
+                                                <property name="use_markup">True</property>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">0</property>
+                                              </packing>
+                                            </child>
                                           </object>
                                         </child>
                                       </object>
