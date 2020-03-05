@@ -116,6 +116,7 @@ class InstallerEngine:
             print "WARNING: No initrd found!!"
 
         if (self.setup.gptonefi):
+            print " --> Installing signed boot loader"
             os.system("mkdir -p /target/boot/efi/EFI/linuxmint")
             os.system("cp /run/live/medium/EFI/BOOT/grubx64.efi /target/boot/efi/EFI/linuxmint")
             os.system("mkdir -p /target/debs")
@@ -124,6 +125,14 @@ class InstallerEngine:
             os.system("cp /run/live/medium/pool/main/s/shim*/* /target/debs/")
             self.do_run_in_chroot("dpkg -i /debs/*")
             os.system("rm -rf /target/debs")
+
+        print " --> Installing microcode packages"
+        os.system("mkdir -p /target/debs")
+        os.system("cp /run/live/medium/pool/non-free/i/intel-microcode/* /target/debs/")
+        os.system("cp /run/live/medium/pool/non-free/a/amd64-microcode/* /target/debs/")
+        os.system("cp /run/live/medium/pool/contrib/i/iucode-tool/* /target/debs/")
+        self.do_run_in_chroot("dpkg -i /debs/*")
+        os.system("rm -rf /target/debs")
 
         # Detect cdrom device
         # TODO : properly detect cdrom device
