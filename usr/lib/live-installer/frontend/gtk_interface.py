@@ -999,7 +999,12 @@ class InstallerWindow:
                 self.window.resize(100, 100)
             elif(sel == self.PAGE_CUSTOMPAUSED):
                 self.activate_page(self.PAGE_INSTALL)
-                self.builder.get_object("button_next").hide()
+                self.builder.get_object("button_next").set_sensitive(False)
+                self.builder.get_object("button_back").set_sensitive(False)
+                self.builder.get_object("button_quit").set_sensitive(False)
+                self.builder.get_object("title_eventbox").hide()
+                self.builder.get_object("button_eventbox").hide()
+                self.window.resize(100, 100)
                 self.paused = False
         else:
             self.builder.get_object("button_back").set_sensitive(True)
@@ -1078,12 +1083,13 @@ class InstallerWindow:
     @idle
     def pause_installation(self):
         self.activate_page(self.PAGE_CUSTOMPAUSED)
-        self.builder.get_object("button_next").show()
         self.builder.get_object("button_next").set_sensitive(True)
-        self.builder.get_object("button_back").set_sensitive(True)
-        self.builder.get_object("button_quit").set_sensitive(True)
+        self.builder.get_object("button_next").set_label(_("Next"))
+        self.builder.get_object("button_back").hide()
+        self.builder.get_object("button_quit").hide()
+        self.builder.get_object("title_eventbox").show()
+        self.builder.get_object("button_eventbox").show()
         MessageDialog(_("Installation paused"), _("The installation is now paused. Please read the instructions on the page carefully before clicking Next to finish the installation."))
-        self.builder.get_object("button_next").set_sensitive(True)
 
     @asynchronous
     def do_install(self):
