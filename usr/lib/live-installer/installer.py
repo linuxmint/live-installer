@@ -117,8 +117,6 @@ class InstallerEngine:
 
         if (self.setup.gptonefi):
             print " --> Installing signed boot loader"
-            os.system("mkdir -p /target/boot/efi/EFI/linuxmint")
-            os.system("cp /run/live/medium/EFI/BOOT/grubx64.efi /target/boot/efi/EFI/linuxmint")
             os.system("mkdir -p /target/debs")
             os.system("cp /run/live/medium/pool/main/g/grub2/grub-efi* /target/debs/")
             os.system("cp /run/live/medium/pool/main/g/grub-efi-amd64-signed/* /target/debs/")
