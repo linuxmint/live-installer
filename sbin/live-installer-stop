@@ -82,6 +82,9 @@ do_stop ()
         echo $MSG > /dev/console
     fi
 
+    umount /lib/live/mount/rootfs/filesystem.squashfs >/dev/null 2>&1
+    umount /lib/live/mount/overlay >/dev/null 2>&1
+    umount /lib/live/mount >/dev/null 2>&1
     eject -p -m $device >/dev/null 2>&1
 
     if [ "$prompt" ]; then
