@@ -1,3 +1,24 @@
+live-installer (2020.03.06) debbie; urgency=medium
+
+  [ Clement Lefebvre ]
+  * Remove obsolete code
+
+  [ Michael Webster ]
+  * timezones: Split timezone selection into two menus - menu scrolling only works for the 'primary' menu, not submenus, so the continents are one menu, zones inside each continent in the other.
+  * Add some padding around the floating time label in the timezone map.
+  * timezones: Move the center of the label to the target location instead of the upper left corner.
+
+  [ Clement Lefebvre ]
+  * Partitioning: Improve failure detection when making label and partitions
+  * l10n: Update POT
+  * Install microcode packages
+  * EFI: Don't create EFI\linuxmint
+  * live-installer-stop: Suppress most errors during post-install reboot
+  * Expert mode: Fixed Next button not visible during pause
+  * l10n: Update translations
+
+ -- Clement Lefebvre <root@linuxmint.com>  Fri, 06 Mar 2020 10:29:54 +0000
+
 live-installer (2020.03.04) debbie; urgency=medium
 
   * Partitioning: Wait up to 5s for newly created device to appear before formatting
