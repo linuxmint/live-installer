@@ -1,3 +1,9 @@
+live-installer (2020.03.06.1) debbie; urgency=medium
+
+  * Virtualbox: Bump live resolution to a minimum of 1024x768px
+
+ -- Clement Lefebvre <root@linuxmint.com>  Fri, 06 Mar 2020 12:08:15 +0000
+
 live-installer (2020.03.06) debbie; urgency=medium
 
   [ Clement Lefebvre ]
