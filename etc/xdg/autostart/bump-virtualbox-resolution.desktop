@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Bump Virtualbox Resolution
+Comment=Increase resolution to 1024x768 if it's below that value
+Exec=bump-virtualbox-resolution
+Terminal=false
+Type=application
+Icon=virtualbox
+StartupNotify=false
+Categories=System;Monitor;
