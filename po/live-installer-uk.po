@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2020-02-12 17:15+0000\n"
-"PO-Revision-Date: 2020-02-12 21:19+0000\n"
-"Last-Translator: Roman Pavlyshyn <Unknown>\n"
+"POT-Creation-Date: 2020-03-05 11:46+0000\n"
+"PO-Revision-Date: 2020-03-05 14:08+0000\n"
+"Last-Translator: Jon900 <Stuartlittle1970@gmail.com>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2020-02-26 14:39+0000\n"
-"X-Generator: Launchpad (build 9eff1c37c1740693bdcba94d8f8c608164af5689)\n"
+"X-Launchpad-Export-Date: 2020-03-06 10:16+0000\n"
+"X-Generator: Launchpad (build e0878392dc799b267dea80578fa65500a5d74155)\n"
 
 #: usr/lib/live-installer/installer.py:47
 msgid ""
@@ -42,58 +42,58 @@ msgstr "Вилучення тимчасових налаштувань (паку
 msgid "Adding new user to the system"
 msgstr "Додавання нового користувача у систему"
 
-#: usr/lib/live-installer/installer.py:186
+#: usr/lib/live-installer/installer.py:182
 msgid "Writing filesystem mount information to /etc/fstab"
 msgstr "Запис інформації про монтування файлової системи у /etc/fstab"
 
-#: usr/lib/live-installer/installer.py:192
-#: usr/lib/live-installer/installer.py:325
-#: usr/lib/live-installer/installer.py:339
-#: usr/lib/live-installer/installer.py:359
+#: usr/lib/live-installer/installer.py:188
+#: usr/lib/live-installer/installer.py:324
+#: usr/lib/live-installer/installer.py:338
+#: usr/lib/live-installer/installer.py:358
 #, python-format
 msgid "Mounting %(partition)s on %(mountpoint)s"
 msgstr "Монтування %(partition)s на %(mountpoint)s"
 
-#: usr/lib/live-installer/installer.py:198
+#: usr/lib/live-installer/installer.py:194
 #, python-format
 msgid "Creating partitions on %s"
 msgstr "Створення розділів на %s"
 
-#: usr/lib/live-installer/installer.py:299
+#: usr/lib/live-installer/installer.py:298
 #, python-format
 msgid "Formatting %(partition)s as %(format)s ..."
 msgstr "Форматування %(partition)s як %(format)s ..."
 
-#: usr/lib/live-installer/installer.py:336
-#: usr/lib/live-installer/installer.py:356
+#: usr/lib/live-installer/installer.py:335
+#: usr/lib/live-installer/installer.py:355
 msgid "ERROR: the use of @subvolumes is limited to btrfs"
 msgstr "ПОМИЛКА: використання @subvolumes обмежується btrfs"
 
-#: usr/lib/live-installer/installer.py:482
+#: usr/lib/live-installer/installer.py:481
 msgid "Setting hostname"
 msgstr "Налаштування назви хосту"
 
-#: usr/lib/live-installer/installer.py:501
+#: usr/lib/live-installer/installer.py:500
 msgid "Setting locale"
 msgstr "Налаштування мови"
 
-#: usr/lib/live-installer/installer.py:516
+#: usr/lib/live-installer/installer.py:515
 msgid "Localizing packages"
 msgstr "Мовні пакунки"
 
-#: usr/lib/live-installer/installer.py:531
+#: usr/lib/live-installer/installer.py:530
 msgid "Installing drivers"
 msgstr "Встановлення драйверів"
 
-#: usr/lib/live-installer/installer.py:562
+#: usr/lib/live-installer/installer.py:561
 msgid "Setting keyboard options"
 msgstr "Налаштування параметрів клавіатури"
 
-#: usr/lib/live-installer/installer.py:619
+#: usr/lib/live-installer/installer.py:618
 msgid "Installing bootloader"
 msgstr "Встановлення завантажувача"
 
-#: usr/lib/live-installer/installer.py:632
+#: usr/lib/live-installer/installer.py:631
 msgid ""
 "WARNING: The grub bootloader was not configured properly! You need to "
 "configure it manually."
@@ -101,278 +101,288 @@ msgstr ""
 "УВАГА! Завантажувач GRUB не був налаштований правильно! Вам треба "
 "наташтувати його вручну."
 
-#: usr/lib/live-installer/installer.py:646
+#: usr/lib/live-installer/installer.py:645
 msgid "Cleaning APT"
 msgstr "Очищення APT"
 
-#: usr/lib/live-installer/installer.py:672
-#: usr/lib/live-installer/frontend/gtk_interface.py:1063
+#: usr/lib/live-installer/installer.py:671
+#: usr/lib/live-installer/frontend/gtk_interface.py:1072
 msgid "Installation finished"
 msgstr "Встановлення завершено"
 
-#: usr/lib/live-installer/installer.py:681
+#: usr/lib/live-installer/installer.py:680
 msgid "Configuring bootloader"
 msgstr "Налаштування завантажувача"
 
-#: usr/lib/live-installer/installer.py:690
+#: usr/lib/live-installer/installer.py:689
 msgid "Checking bootloader"
 msgstr "Перевірка завантажувача"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:103
-#: usr/lib/live-installer/frontend/gtk_interface.py:273
-#: usr/lib/live-installer/frontend/gtk_interface.py:295
+#: usr/lib/live-installer/frontend/gtk_interface.py:271
+#: usr/lib/live-installer/frontend/gtk_interface.py:293
 msgid "Language"
 msgstr "Мова"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:111
-#: usr/lib/live-installer/frontend/gtk_interface.py:296
+#: usr/lib/live-installer/frontend/gtk_interface.py:294
 msgid "Country"
 msgstr "Країна"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:125
-msgid "Select timezone"
-msgstr "Вибір часового поясу"
-
-#: usr/lib/live-installer/frontend/gtk_interface.py:194
-#: usr/lib/live-installer/frontend/gtk_interface.py:300
+#: usr/lib/live-installer/frontend/gtk_interface.py:192
+#: usr/lib/live-installer/frontend/gtk_interface.py:298
 msgid "Layout"
 msgstr "Розкладка"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:200
-#: usr/lib/live-installer/frontend/gtk_interface.py:301
+#: usr/lib/live-installer/frontend/gtk_interface.py:198
+#: usr/lib/live-installer/frontend/gtk_interface.py:299
 msgid "Variant"
 msgstr "Варіант"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:214
+#: usr/lib/live-installer/frontend/gtk_interface.py:212
 msgid "Calculating file indexes ..."
 msgstr "Обчислення індексів файлів"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:255
-#: usr/lib/live-installer/frontend/gtk_interface.py:258
+#: usr/lib/live-installer/frontend/gtk_interface.py:253
+#: usr/lib/live-installer/frontend/gtk_interface.py:256
+#: usr/lib/live-installer/frontend/gtk_interface.py:798
+#: usr/lib/live-installer/frontend/gtk_interface.py:883
+#: usr/lib/live-installer/frontend/gtk_interface.py:903
+#: usr/lib/live-installer/frontend/gtk_interface.py:921
+#: usr/lib/live-installer/frontend/gtk_interface.py:925
+#: usr/lib/live-installer/frontend/gtk_interface.py:933
+#: usr/lib/live-installer/frontend/gtk_interface.py:937
+#: usr/lib/live-installer/frontend/gtk_interface.py:953
+#: usr/lib/live-installer/frontend/gtk_interface.py:956
+#: usr/lib/live-installer/frontend/gtk_interface.py:961
+#: usr/lib/live-installer/frontend/gtk_interface.py:965
+#: usr/lib/live-installer/frontend/gtk_interface.py:969
+#: usr/lib/live-installer/partitioning.py:330
 msgid "Installer"
 msgstr "Встановлювач"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:272
+#: usr/lib/live-installer/frontend/gtk_interface.py:270
 msgid "Welcome"
 msgstr "Вітаємо!"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:273
+#: usr/lib/live-installer/frontend/gtk_interface.py:271
 msgid "What language would you like to use?"
 msgstr "Якою мовою ви б хотіли користуватися?"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:274
+#: usr/lib/live-installer/frontend/gtk_interface.py:272
 msgid "Timezone"
 msgstr "Часовий пояс"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:274
+#: usr/lib/live-installer/frontend/gtk_interface.py:272
 msgid "Where are you?"
 msgstr "Ваше місце знаходження?"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:275
+#: usr/lib/live-installer/frontend/gtk_interface.py:273
 msgid "Keyboard layout"
 msgstr "Розкладка клавіатури"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:275
+#: usr/lib/live-installer/frontend/gtk_interface.py:273
 msgid "What is your keyboard layout?"
 msgstr "Яка розкладка клавіатури?"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:276
+#: usr/lib/live-installer/frontend/gtk_interface.py:274
 msgid "User account"
 msgstr "Профіль користувача"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:276
+#: usr/lib/live-installer/frontend/gtk_interface.py:274
 msgid "Who are you?"
 msgstr "Хто ви?"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:277
+#: usr/lib/live-installer/frontend/gtk_interface.py:275
 msgid "Installation Type"
 msgstr "Тип установки"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:277
-#: usr/lib/live-installer/frontend/gtk_interface.py:278
+#: usr/lib/live-installer/frontend/gtk_interface.py:275
+#: usr/lib/live-installer/frontend/gtk_interface.py:276
 msgid "Where do you want to install LMDE?"
 msgstr "Де ви хочете встановити LMDE?"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:278
+#: usr/lib/live-installer/frontend/gtk_interface.py:276
 msgid "Partitioning"
 msgstr "Розбиття на розділи"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:279
+#: usr/lib/live-installer/frontend/gtk_interface.py:277
 msgid "Advanced options"
 msgstr "Додаткові параметри"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:280
+#: usr/lib/live-installer/frontend/gtk_interface.py:278
 msgid "Summary"
 msgstr "Підсумок"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:281
+#: usr/lib/live-installer/frontend/gtk_interface.py:279
 msgid "Installing"
 msgstr "Триває інсталяція"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:282
-#: usr/lib/live-installer/frontend/gtk_interface.py:331
+#: usr/lib/live-installer/frontend/gtk_interface.py:280
+#: usr/lib/live-installer/frontend/gtk_interface.py:329
 msgid "Expert mode"
-msgstr "Режим експерта"
+msgstr "Режим фахівця"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:283
-#: usr/lib/live-installer/frontend/gtk_interface.py:1076
+#: usr/lib/live-installer/frontend/gtk_interface.py:281
+#: usr/lib/live-installer/frontend/gtk_interface.py:1085
 msgid "Installation paused"
 msgstr "Встановлення призупинено"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:286
+#: usr/lib/live-installer/frontend/gtk_interface.py:284
 msgid "Quit"
 msgstr "Вийти"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:287
+#: usr/lib/live-installer/frontend/gtk_interface.py:285
 msgid "Back"
 msgstr "Назад"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:288
+#: usr/lib/live-installer/frontend/gtk_interface.py:286
 msgid "Next"
 msgstr "Наступне"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:291
+#: usr/lib/live-installer/frontend/gtk_interface.py:289
 msgid "Welcome to the LMDE Installer."
 msgstr "Ласкаво просимо до інсталятора LMDE."
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:292
+#: usr/lib/live-installer/frontend/gtk_interface.py:290
 msgid ""
 "This program will ask you some questions and set up LMDE on your computer."
 msgstr ""
 "Ця програма задасть вам кілька запитань і налаштує LMDE на комп'ютері."
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:299
+#: usr/lib/live-installer/frontend/gtk_interface.py:297
 msgid "Keyboard Model:"
 msgstr "Модель клавіатури:"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:302
+#: usr/lib/live-installer/frontend/gtk_interface.py:300
 msgid "Type here to test your keyboard layout"
 msgstr "Введіть тут, щоб перевірити розкладку клавіатури"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:303
+#: usr/lib/live-installer/frontend/gtk_interface.py:301
 msgid ""
-"* Your username, hostname and password should only contain Latin characters. "
-"In addition to your selected layout, English (US) is set as the default. You "
-"can switch layouts by pressing both Ctrl keys together."
+"* Your username, your computer's name and your password should only contain "
+"Latin characters. In addition to your selected layout, English (US) is set "
+"as the default. You can switch layouts by pressing both Ctrl keys together."
 msgstr ""
-"Ім'я користувача, ім'я хосту та пароль мають містити лише латинські символи. "
-"На додаток до вибраного макету типово використовується Англійська (США). Ви "
-"можете перемикати макети, тиснучи обидві клавіші Ctrl разом."
+"* Ваше ім'я користувача, ім’я комп'ютера та пароль повинні містити лише "
+"латинські символи. Окрім вибраної розкладки, за замовчуванням встановлено "
+"English (US). Ви можете перемикати розкладки одночасним натисканням обох "
+"клавіш Ctrl."
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:306
+#: usr/lib/live-installer/frontend/gtk_interface.py:304
 msgid "Your name:"
 msgstr "Ваше ім'я:"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:307
+#: usr/lib/live-installer/frontend/gtk_interface.py:305
 msgid "Your computer's name:"
 msgstr "Назва Вашого комп'ютера:"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:308
+#: usr/lib/live-installer/frontend/gtk_interface.py:306
 msgid "The name it uses when it talks to other computers."
 msgstr "Назва, яка використовується для зв'язку з іншими комп'ютерами."
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:309
+#: usr/lib/live-installer/frontend/gtk_interface.py:307
 msgid "Pick a username:"
 msgstr "Вкажіть ім'я користувача:"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:310
+#: usr/lib/live-installer/frontend/gtk_interface.py:308
 msgid "Choose a password:"
 msgstr "Виберіть пароль:"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:311
+#: usr/lib/live-installer/frontend/gtk_interface.py:309
 msgid "Confirm your password:"
 msgstr "Підтвердження паролю:"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:313
+#: usr/lib/live-installer/frontend/gtk_interface.py:311
 msgid "Log in automatically"
 msgstr "Входити автоматично"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:314
+#: usr/lib/live-installer/frontend/gtk_interface.py:312
 msgid "Require my password to log in"
 msgstr "Для входу потрібен пароль"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:315
+#: usr/lib/live-installer/frontend/gtk_interface.py:313
 msgid "Encrypt my home folder"
 msgstr "Зашифрувати мій домашній каталог"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:318
+#: usr/lib/live-installer/frontend/gtk_interface.py:316
 msgid "Automated Installation"
 msgstr "Автоматична установка"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:319
+#: usr/lib/live-installer/frontend/gtk_interface.py:317
 msgid "Erase a disk and install LMDE on it."
 msgstr "Стерти диск та встановити на нього LMDE."
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:320
+#: usr/lib/live-installer/frontend/gtk_interface.py:318
 msgid "Disk:"
 msgstr "Диск:"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:321
+#: usr/lib/live-installer/frontend/gtk_interface.py:319
 msgid "Encrypt the operating system"
 msgstr "Шифрування операційної системи"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:322
+#: usr/lib/live-installer/frontend/gtk_interface.py:320
 msgid "Passphrase"
 msgstr "Пароль"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:323
+#: usr/lib/live-installer/frontend/gtk_interface.py:321
 msgid "Confirm passphrase"
 msgstr "Підтвердіть пароль"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:324
+#: usr/lib/live-installer/frontend/gtk_interface.py:322
 msgid "Use LVM (Logical Volume Management)"
 msgstr "Використання УЛР (Управління Логічними Розділами)"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:325
+#: usr/lib/live-installer/frontend/gtk_interface.py:323
 msgid "Manual Partitioning"
 msgstr "Ручне розділення"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:326
+#: usr/lib/live-installer/frontend/gtk_interface.py:324
 msgid "Manually create, resize or choose partitions for LMDE."
 msgstr "Вручну створити, змінити розмір або вибрати розділи для LMDE."
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:329
+#: usr/lib/live-installer/frontend/gtk_interface.py:327
 msgid "Edit partitions"
 msgstr "Редагувати розділи"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:330
+#: usr/lib/live-installer/frontend/gtk_interface.py:328
 msgid "Refresh"
 msgstr "Оновити"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:333
+#: usr/lib/live-installer/frontend/gtk_interface.py:331
 msgid "Device"
 msgstr "Пристрій"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:334
+#: usr/lib/live-installer/frontend/gtk_interface.py:332
 msgid "Type"
 msgstr "Тип"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:335
+#: usr/lib/live-installer/frontend/gtk_interface.py:333
 msgid "Operating system"
 msgstr "Операційна система"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:336
+#: usr/lib/live-installer/frontend/gtk_interface.py:334
 msgid "Mount point"
 msgstr "Точка монтування"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:337
+#: usr/lib/live-installer/frontend/gtk_interface.py:335
 msgid "Format as"
 msgstr "Форматувати як"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:338
+#: usr/lib/live-installer/frontend/gtk_interface.py:336
 msgid "Size"
 msgstr "Розмір"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:339
-#: usr/lib/live-installer/partitioning.py:405
+#: usr/lib/live-installer/frontend/gtk_interface.py:337
+#: usr/lib/live-installer/partitioning.py:439
 msgid "Free space"
 msgstr "Вільне місце"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:343
+#: usr/lib/live-installer/frontend/gtk_interface.py:341
 msgid "Install the GRUB boot menu on:"
 msgstr "Встановлення меню завантаження GRUB на:"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:346
+#: usr/lib/live-installer/frontend/gtk_interface.py:344
 msgid ""
 "You selected to manage your partitions manually, this feature is for "
 "ADVANCED USERS ONLY."
@@ -380,18 +390,18 @@ msgstr ""
 "Ви вибрали для управління розділами вручну, ця функція лише для ДОСВІДЧЕНИИХ "
 "КОРИСТУВАЧІВ."
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:347
+#: usr/lib/live-installer/frontend/gtk_interface.py:345
 msgid "Before continuing, mount your target filesystem(s) on /target."
 msgstr ""
 "Перш ніж продовжити, встановіть цільову файлову систему(ми) на /target."
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:348
+#: usr/lib/live-installer/frontend/gtk_interface.py:346
 msgid ""
 "Do NOT mount virtual devices such as /dev, /proc, /sys, etc on /target/."
 msgstr ""
 "Не монтуйте віртуальні пристрої, такі як /dev, /proc, /sys, etc в /target/."
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:349
+#: usr/lib/live-installer/frontend/gtk_interface.py:347
 msgid ""
 "During the install, you will be given time to chroot into /target and "
 "install any packages that will be needed to boot your new system."
@@ -400,18 +410,18 @@ msgstr ""
 "кореневого каталогу) та встановити усі програми, необхідні для завантаження "
 "нової системи."
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:350
+#: usr/lib/live-installer/frontend/gtk_interface.py:348
 msgid ""
 "During the install, you will be required to write your own /etc/fstab."
 msgstr ""
 "Під час встановлення, Вам буде потрібно написати свій власний /etc/fstab."
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:353
+#: usr/lib/live-installer/frontend/gtk_interface.py:351
 msgid "Do the following and then click Next to finish installation:"
 msgstr ""
 "Виконайте наступні дії та натисніть кнопку Далі, щоб закінчити встановлення:"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:354
+#: usr/lib/live-installer/frontend/gtk_interface.py:352
 msgid ""
 "Create /target/etc/fstab for the filesystems as they will be mounted in your "
 "new system, matching those currently mounted at /target (without using the "
@@ -421,7 +431,7 @@ msgstr ""
 "Вашій новій системі, що відповідають тим, які на даний час змонтовані на "
 "/target (без використання префікс /target у власних частинах монтування)"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:355
+#: usr/lib/live-installer/frontend/gtk_interface.py:353
 msgid ""
 "Install any packages that may be needed for first boot (mdadm, cryptsetup, "
 "dmraid, etc) by calling \"sudo chroot /target\" followed by the relevant apt-"
@@ -431,7 +441,7 @@ msgstr ""
 "(mdadm, cryptsetup, dmraid, інші) командою \"sudo chroot /target\" після "
 "встановлення apt-get/aptitude"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:356
+#: usr/lib/live-installer/frontend/gtk_interface.py:354
 msgid ""
 "Note that in order for update-initramfs to work properly in some cases (such "
 "as dm-crypt), you may need to have drives currently mounted using the same "
@@ -442,7 +452,7 @@ msgstr ""
 "встановлені на даний час  за допомогою того ж блоку ім'я пристрою, як вони "
 "відображуються в /target/etc/fstab."
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:357
+#: usr/lib/live-installer/frontend/gtk_interface.py:355
 msgid ""
 "Double-check that your /target/etc/fstab is correct, matches what your new "
 "system will have at first boot, and matches what is currently mounted at "
@@ -452,92 +462,76 @@ msgstr ""
 "який Ваша нова система буде мати при першому завантаженні, і відповідає "
 "тому, що на даний час встановлений на /target."
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:478
+#: usr/lib/live-installer/frontend/gtk_interface.py:476
 msgid "Quit?"
 msgstr "Вийти?"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:478
+#: usr/lib/live-installer/frontend/gtk_interface.py:476
 msgid "Are you sure you want to quit the installer?"
 msgstr "Ви впевнені, що бажаєте вийти з встановлення ?"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:800
-#: usr/lib/live-installer/frontend/gtk_interface.py:876
-#: usr/lib/live-installer/frontend/gtk_interface.py:894
-#: usr/lib/live-installer/frontend/gtk_interface.py:912
-#: usr/lib/live-installer/frontend/gtk_interface.py:916
-#: usr/lib/live-installer/frontend/gtk_interface.py:924
-#: usr/lib/live-installer/frontend/gtk_interface.py:928
-#: usr/lib/live-installer/frontend/gtk_interface.py:944
-#: usr/lib/live-installer/frontend/gtk_interface.py:947
-#: usr/lib/live-installer/frontend/gtk_interface.py:952
-#: usr/lib/live-installer/frontend/gtk_interface.py:956
-#: usr/lib/live-installer/frontend/gtk_interface.py:960
-#: usr/lib/live-installer/partitioning.py:239
-msgid "Installation Tool"
-msgstr "Знадіб встановлення"
-
-#: usr/lib/live-installer/frontend/gtk_interface.py:800
+#: usr/lib/live-installer/frontend/gtk_interface.py:798
 msgid "Please choose a language"
 msgstr "Будь ласка, оберіть мову"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:841
+#: usr/lib/live-installer/frontend/gtk_interface.py:840
 msgid "Please provide your full name."
 msgstr "Будь ласка, вкажіть своє повне ім'я."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:844
+msgid "Please provide a name for your computer."
+msgstr "Вкажіть ім’я для свого комп’ютера."
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:848
 msgid "Please provide a username."
 msgstr "Будь ласка, вкажіть ім'я користувача."
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:847
+#: usr/lib/live-installer/frontend/gtk_interface.py:852
 msgid "Please provide a password for your user account."
 msgstr "Будь ласка, вкажіть пароль для облікового запису користувача."
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:850
+#: usr/lib/live-installer/frontend/gtk_interface.py:856
 msgid "Your passwords do not match."
 msgstr "Ваші паролі не збігаються."
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:853
-msgid "Please provide a hostname."
-msgstr "Будь ласка, вкажіть ім'я хосту."
-
-#: usr/lib/live-installer/frontend/gtk_interface.py:858
+#: usr/lib/live-installer/frontend/gtk_interface.py:862
 msgid "Your username must be lower case."
 msgstr "Ваше ім'я користувача має складатися з маленьких літер."
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:862
+#: usr/lib/live-installer/frontend/gtk_interface.py:867
 msgid "Your username may not contain whitespace characters."
 msgstr "Ваше ім'я користувача не може містити символи пробілу."
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:868
-msgid "The hostname must be lower case."
-msgstr "Ім'я хосту має складатися з маленьких літер."
+#: usr/lib/live-installer/frontend/gtk_interface.py:873
+msgid "The computer's name must be lower case."
+msgstr "Ім'я комп'ютера повинно бути в нижньому регістрі."
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:872
-msgid "The hostname may not contain whitespace characters."
-msgstr "Ім'я хосту не може містити пробіли."
+#: usr/lib/live-installer/frontend/gtk_interface.py:878
+msgid "The computer's name may not contain whitespace characters."
+msgstr "Ім'я комп'ютера не може містити символів пробілу."
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:885
+#: usr/lib/live-installer/frontend/gtk_interface.py:894
 msgid "Please select a disk."
 msgstr "Виберіть диск."
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:889
+#: usr/lib/live-installer/frontend/gtk_interface.py:898
 msgid "Please provide a passphrase for the encryption."
 msgstr "Введіть пароль для шифрування."
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:892
+#: usr/lib/live-installer/frontend/gtk_interface.py:901
 msgid "Your passphrases do not match."
 msgstr "Ваші паролі не збігаються."
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:896
+#: usr/lib/live-installer/frontend/gtk_interface.py:905
 msgid "Warning"
 msgstr "Застереження"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:896
+#: usr/lib/live-installer/frontend/gtk_interface.py:905
 #, python-format
 msgid "This will delete all the data on %s. Are you sure?"
 msgstr "Це видалить усі дані на %s. Ви впевнені?"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:912
+#: usr/lib/live-installer/frontend/gtk_interface.py:921
 msgid ""
 "Please indicate a filesystem to format the root (/) partition with before "
 "proceeding."
@@ -545,21 +539,21 @@ msgstr ""
 "Вкажіть, будь ласка, файлову систему для форматування кореневого розділу (/) "
 "перед продовженням."
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:916
+#: usr/lib/live-installer/frontend/gtk_interface.py:925
 msgid "A root subvolume (/@) requires to format the partition with btrfs."
 msgstr "Кореневий підрозділ (/@) потребує форматування розділу btrfs."
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:924
+#: usr/lib/live-installer/frontend/gtk_interface.py:933
 msgid ""
 "A home subvolume (/@home) requires the use of a btrfs formatted partition."
 msgstr ""
 "Домашній підрозділ (/@home) потребує використання btrfs форматування розділу."
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:928
+#: usr/lib/live-installer/frontend/gtk_interface.py:937
 msgid "Please select a root (/) partition."
 msgstr "Будь ласка, виберіть кореневий розділ (/)."
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:929
+#: usr/lib/live-installer/frontend/gtk_interface.py:938
 msgid ""
 "A root partition is needed to install Linux Mint on.\n"
 "\n"
@@ -581,25 +575,25 @@ msgstr ""
 " - підрозділ місця монтування /@\n"
 " - форматування btrfs\n"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:944
+#: usr/lib/live-installer/frontend/gtk_interface.py:953
 msgid "The EFI partition is not bootable. Please edit the partition flags."
 msgstr ""
 "Розділ EFI не є завантажувальним. Будь ласка, відредагуйте прапорці розділів."
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:947
+#: usr/lib/live-installer/frontend/gtk_interface.py:956
 msgid "The EFI partition is too small. It must be at least 35MB."
 msgstr "Розділ EFI занадто малий. Він повинен бути не менше 35 Мб."
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:952
-#: usr/lib/live-installer/frontend/gtk_interface.py:956
+#: usr/lib/live-installer/frontend/gtk_interface.py:961
+#: usr/lib/live-installer/frontend/gtk_interface.py:965
 msgid "The EFI partition must be formatted as vfat."
 msgstr "Розділ EFI повинен бути відформатований як vfat."
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:960
+#: usr/lib/live-installer/frontend/gtk_interface.py:969
 msgid "Please select an EFI partition."
 msgstr "Будь ласка, виберіть розділ EFI."
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:960
+#: usr/lib/live-installer/frontend/gtk_interface.py:969
 msgid ""
 "An EFI system partition is needed with the following requirements:\n"
 "\n"
@@ -623,109 +617,109 @@ msgstr ""
 "розділ диска як системний розділ EFI.\n"
 " "
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:973
+#: usr/lib/live-installer/frontend/gtk_interface.py:982
 msgid "Install"
 msgstr "Встановити"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:1025
+#: usr/lib/live-installer/frontend/gtk_interface.py:1034
 msgid "Localization"
 msgstr "Локалізація"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:1026
+#: usr/lib/live-installer/frontend/gtk_interface.py:1035
 msgid "Language: "
 msgstr "Мова: "
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:1027
+#: usr/lib/live-installer/frontend/gtk_interface.py:1036
 msgid "Timezone: "
 msgstr "Часовий пояс: "
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:1028
+#: usr/lib/live-installer/frontend/gtk_interface.py:1037
 msgid "Keyboard layout: "
 msgstr "Розкладка клавіатури: "
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:1031
+#: usr/lib/live-installer/frontend/gtk_interface.py:1040
 msgid "User settings"
 msgstr "Налаштування користувача"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:1032
+#: usr/lib/live-installer/frontend/gtk_interface.py:1041
 msgid "Real name: "
 msgstr "Справжнє ім'я "
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:1033
+#: usr/lib/live-installer/frontend/gtk_interface.py:1042
 msgid "Username: "
 msgstr "Ім'я користувача: "
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:1034
+#: usr/lib/live-installer/frontend/gtk_interface.py:1043
 msgid "Automatic login: "
 msgstr "Автоматичний вхід у систему: "
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:1034
-#: usr/lib/live-installer/frontend/gtk_interface.py:1035
-#: usr/lib/live-installer/frontend/gtk_interface.py:1045
-#: usr/lib/live-installer/frontend/gtk_interface.py:1046
+#: usr/lib/live-installer/frontend/gtk_interface.py:1043
+#: usr/lib/live-installer/frontend/gtk_interface.py:1044
+#: usr/lib/live-installer/frontend/gtk_interface.py:1054
+#: usr/lib/live-installer/frontend/gtk_interface.py:1055
 msgid "enabled"
 msgstr "увімкнено"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:1034
-#: usr/lib/live-installer/frontend/gtk_interface.py:1035
-#: usr/lib/live-installer/frontend/gtk_interface.py:1045
-#: usr/lib/live-installer/frontend/gtk_interface.py:1046
+#: usr/lib/live-installer/frontend/gtk_interface.py:1043
+#: usr/lib/live-installer/frontend/gtk_interface.py:1044
+#: usr/lib/live-installer/frontend/gtk_interface.py:1054
+#: usr/lib/live-installer/frontend/gtk_interface.py:1055
 msgid "disabled"
 msgstr "вимкнено"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:1035
+#: usr/lib/live-installer/frontend/gtk_interface.py:1044
 msgid "Home encryption: "
 msgstr "Шифрування домашнього каталогу: "
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:1036
+#: usr/lib/live-installer/frontend/gtk_interface.py:1045
 msgid "System settings"
 msgstr "Налаштування системи"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:1037
-msgid "Hostname: "
-msgstr "Ім'я хосту: "
+#: usr/lib/live-installer/frontend/gtk_interface.py:1046
+msgid "Computer's name: "
+msgstr "Ім'я комп’ютера: "
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:1038
+#: usr/lib/live-installer/frontend/gtk_interface.py:1047
 msgid "Filesystem operations"
 msgstr "Операції з файловою системою"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:1039
+#: usr/lib/live-installer/frontend/gtk_interface.py:1048
 #, python-format
 msgid "Install bootloader on %s"
 msgstr "Встановити завантажувач на %s"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:1039
+#: usr/lib/live-installer/frontend/gtk_interface.py:1048
 msgid "Do not install bootloader"
 msgstr "Не встановлювати завантажувач"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:1041
+#: usr/lib/live-installer/frontend/gtk_interface.py:1050
 msgid "Use already-mounted /target."
 msgstr "Використовувати вже встановлений /target."
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:1044
+#: usr/lib/live-installer/frontend/gtk_interface.py:1053
 #, python-format
 msgid "Automated installation on %s"
 msgstr "Автоматична установка на %s"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:1045
+#: usr/lib/live-installer/frontend/gtk_interface.py:1054
 msgid "LVM: "
 msgstr "LVM: "
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:1046
+#: usr/lib/live-installer/frontend/gtk_interface.py:1055
 msgid "Disk Encryption: "
 msgstr "Шифрування диску: "
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:1050
+#: usr/lib/live-installer/frontend/gtk_interface.py:1059
 #, python-format
 msgid "Format %(path)s as %(filesystem)s"
 msgstr "Форматувати %(path)s як %(filesystem)s"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:1053
+#: usr/lib/live-installer/frontend/gtk_interface.py:1062
 #, python-format
 msgid "Mount %(path)s as %(mount)s"
 msgstr "Монтувати %(path)s як %(mount)s"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:1063
+#: usr/lib/live-installer/frontend/gtk_interface.py:1072
 msgid ""
 "The installation is now complete. Do you want to restart your computer to "
 "use the new system?"
@@ -733,7 +727,7 @@ msgstr ""
 "Встановлення завершено. Ви бажаєте перезавантажити комп'ютер, щоб "
 "скористатися новою системою?"
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:1076
+#: usr/lib/live-installer/frontend/gtk_interface.py:1085
 msgid ""
 "The installation is now paused. Please read the instructions on the page "
 "carefully before clicking Next to finish the installation."
@@ -741,58 +735,62 @@ msgstr ""
 "Встановлення зараз призупинено. Будь ласка, уважно прочитайте інструкції на "
 "сторінці, перш ніж натиснути кнопку Далі, щоб закінчити встановлення."
 
-#: usr/lib/live-installer/frontend/gtk_interface.py:1104
-#: usr/lib/live-installer/frontend/gtk_interface.py:1107
-#: usr/lib/live-installer/frontend/gtk_interface.py:1121
-#: usr/lib/live-installer/frontend/gtk_interface.py:1129
+#: usr/lib/live-installer/frontend/gtk_interface.py:1113
+#: usr/lib/live-installer/frontend/gtk_interface.py:1116
+#: usr/lib/live-installer/frontend/gtk_interface.py:1130
+#: usr/lib/live-installer/frontend/gtk_interface.py:1138
 msgid "Installation error"
 msgstr "Помилка під час встановлення"
 
-#: usr/lib/live-installer/partitioning.py:85
+#: usr/lib/live-installer/partitioning.py:92
 msgid "B"
 msgstr "Б"
 
-#: usr/lib/live-installer/partitioning.py:85
-#: usr/lib/live-installer/partitioning.py:359
+#: usr/lib/live-installer/partitioning.py:92
+#: usr/lib/live-installer/partitioning.py:393
 msgid "kB"
 msgstr "кб"
 
-#: usr/lib/live-installer/partitioning.py:85
-#: usr/lib/live-installer/partitioning.py:359
+#: usr/lib/live-installer/partitioning.py:92
+#: usr/lib/live-installer/partitioning.py:393
 msgid "MB"
 msgstr "Мб"
 
-#: usr/lib/live-installer/partitioning.py:85
-#: usr/lib/live-installer/partitioning.py:359
+#: usr/lib/live-installer/partitioning.py:92
+#: usr/lib/live-installer/partitioning.py:393
 msgid "GB"
 msgstr "ҐБ"
 
-#: usr/lib/live-installer/partitioning.py:85
-#: usr/lib/live-installer/partitioning.py:359
+#: usr/lib/live-installer/partitioning.py:92
+#: usr/lib/live-installer/partitioning.py:393
 msgid "TB"
 msgstr "Тб"
 
-#: usr/lib/live-installer/partitioning.py:90
+#: usr/lib/live-installer/partitioning.py:97
 msgid "Removable:"
 msgstr "Знімний:"
 
-#: usr/lib/live-installer/partitioning.py:170
+#: usr/lib/live-installer/partitioning.py:177
 msgid "Edit"
 msgstr "Редагувати"
 
-#: usr/lib/live-installer/partitioning.py:175
+#: usr/lib/live-installer/partitioning.py:182
 msgid "Assign to /"
 msgstr "Призначити /"
 
-#: usr/lib/live-installer/partitioning.py:178
+#: usr/lib/live-installer/partitioning.py:185
 msgid "Assign to /home"
 msgstr "Призначити /home"
 
-#: usr/lib/live-installer/partitioning.py:184
+#: usr/lib/live-installer/partitioning.py:191
 msgid "Assign to /boot/efi"
 msgstr "Призначити /boot/efi"
 
-#: usr/lib/live-installer/partitioning.py:240
+#: usr/lib/live-installer/partitioning.py:246
+msgid "Installation Tool"
+msgstr "Знадіб встановлення"
+
+#: usr/lib/live-installer/partitioning.py:247
 #, python-format
 msgid ""
 "No partition table was found on the hard drive: %s. Do you want the "
@@ -803,39 +801,57 @@ msgstr ""
 "встановлювач створив розділи за Вас? Застереження: Це ЗІТРЕ УСЮ ІНФОРМАЦІЮ "
 "на цьому жорсткому диску."
 
-#: usr/lib/live-installer/partitioning.py:403
+#: usr/lib/live-installer/partitioning.py:339
+#, python-format
+msgid ""
+"The partition table couldn't be written for %s. Restart the computer and try "
+"again."
+msgstr ""
+"Не вдалося записати таблицю розділів для %s. Перезавантажте комп’ютер і "
+"повторіть спробу."
+
+#: usr/lib/live-installer/partitioning.py:380
+#, python-format
+msgid ""
+"The partition %s could not be created. The installation will stop. Restart "
+"the computer and try again."
+msgstr ""
+"Розділ %s не вдалося створити. Встановлення припиниться. Перезавантажте "
+"комп’ютер і повторіть спробу."
+
+#: usr/lib/live-installer/partitioning.py:437
 msgid "Logical partition"
 msgstr "Логічний розділ"
 
-#: usr/lib/live-installer/partitioning.py:404
+#: usr/lib/live-installer/partitioning.py:438
 msgid "Extended partition"
 msgstr "Розширений розділ"
 
-#: usr/lib/live-installer/partitioning.py:408
+#: usr/lib/live-installer/partitioning.py:442
 msgid "Unknown"
 msgstr "Невідомий"
 
-#: usr/lib/live-installer/partitioning.py:522
+#: usr/lib/live-installer/partitioning.py:556
 msgid "Edit partition"
 msgstr "Змінити розділ"
 
-#: usr/lib/live-installer/partitioning.py:523
+#: usr/lib/live-installer/partitioning.py:557
 msgid "Device:"
 msgstr "Пристрій:"
 
-#: usr/lib/live-installer/partitioning.py:525
+#: usr/lib/live-installer/partitioning.py:559
 msgid "Format as:"
 msgstr "Форматувати як:"
 
-#: usr/lib/live-installer/partitioning.py:526
+#: usr/lib/live-installer/partitioning.py:560
 msgid "Mount point:"
 msgstr "Точка монтування:"
 
-#: usr/lib/live-installer/partitioning.py:527
+#: usr/lib/live-installer/partitioning.py:561
 msgid "Cancel"
 msgstr "Скасувати"
 
-#: usr/lib/live-installer/partitioning.py:528
+#: usr/lib/live-installer/partitioning.py:562
 #: usr/lib/live-installer/dialogs.py:31 usr/lib/live-installer/dialogs.py:42
 #: usr/lib/live-installer/dialogs.py:47
 msgid "OK"
