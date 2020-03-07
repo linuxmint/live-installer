@@ -1,9 +1,9 @@
 [Desktop Entry]
+Encoding=UTF-8
 Name=Bump Virtualbox Resolution
 Comment=Increase resolution to 1024x768 if it's below that value
+Icon=virtualbox
 Exec=bump-virtualbox-resolution
 Terminal=false
-Type=application
-Icon=virtualbox
+Type=Application
 StartupNotify=false
-Categories=System;Monitor;
