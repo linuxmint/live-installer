@@ -1,3 +1,9 @@
+live-installer (2020.03.09) debbie; urgency=medium
+
+  * Fix padding in timezone and slideshow
+
+ -- Clement Lefebvre <root@linuxmint.com>  Mon, 09 Mar 2020 13:00:53 +0000
+
 live-installer (2020.03.07) debbie; urgency=medium
 
   * Virtualbox: Fix XDG Autostart file
