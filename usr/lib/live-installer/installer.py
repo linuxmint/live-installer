@@ -198,7 +198,6 @@ class InstallerEngine:
 
     def create_partitions(self):
         # Create partitions on the selected disk (automated installation)
-        self.update_progress(1, 4, False, False, _("Creating partitions on %s") % self.setup.disk)
         partition_prefix = ""
         if self.setup.disk.startswith("/dev/nvme"):
             partition_prefix = "p"
@@ -251,11 +250,13 @@ class InstallerEngine:
         self.auto_root_physical_partition = self.auto_root_partition
 
         # Wipe HDD
-        if self.setup.luks:
-            print " --> Erasing data on %s" % self.setup.disk
+        if self.setup.badblocks:
+            self.update_progress(1, 4, False, False, _("Filling %s with random data (please be patient, this can take hours...)") % self.setup.disk)
+            print " --> Filling %s with random data" % self.setup.disk
             os.system("badblocks -c 10240 -s -w -t random -v %s" % self.setup.disk)
 
         # Create partitions
+        self.update_progress(1, 4, False, False, _("Creating partitions on %s") % self.setup.disk)
         print " --> Creating partitions on %s" % self.setup.disk
         disk_device = parted.getDevice(self.setup.disk)
         partitioning.full_disk_format(disk_device, create_boot=(self.auto_boot_partition is not None), create_swap=(self.auto_swap_partition is not None))
@@ -762,6 +763,7 @@ class Setup(object):
     passphrase2 = None
     lvm = False
     luks = False
+    badblocks = False
     target_disk = None
     gptonefi = False
     # Optionally skip all mouting/partitioning for advanced users with custom setups (raid/dmcrypt/etc)
@@ -795,6 +797,7 @@ class Setup(object):
             if self.automated:
                 print "disk: %s (%s)" % (self.disk, self.diskname)
                 print "luks: %s" % self.luks
+                print "badblocks: %s" % self.badblocks
                 print "lvm: %s" % self.lvm
                 print "passphrase: %s - %s" % (self.passphrase1, self.passphrase2)
             if (not self.skip_mount):

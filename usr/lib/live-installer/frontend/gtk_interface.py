@@ -137,6 +137,7 @@ class InstallerWindow:
         self.builder.get_object("entry_passphrase2").connect("changed", self.assign_passphrase)
         self.builder.get_object("radio_automated").connect("toggled", self.assign_type_options)
         self.builder.get_object("radio_manual").connect("toggled", self.assign_type_options)
+        self.builder.get_object("check_badblocks").connect("toggled", self.assign_type_options)
         self.builder.get_object("check_encrypt").connect("toggled", self.assign_type_options)
         self.builder.get_object("check_lvm").connect("toggled", self.assign_type_options)
         self.builder.get_object("combo_disk").connect("changed", self.assign_type_options)
@@ -322,6 +323,8 @@ class InstallerWindow:
         self.builder.get_object("label_lvm").set_text(_("Use LVM (Logical Volume Management)"))
         self.builder.get_object("label_manual").set_text(_("Manual Partitioning"))
         self.builder.get_object("label_manual2").set_text(_("Manually create, resize or choose partitions for LMDE."))
+        self.builder.get_object("label_badblocks").set_text(_("Fill the disk with random data"))
+        self.builder.get_object("check_badblocks").set_tooltip_text(_("This provides extra security but it can take hours."))
 
         # Partitions page
         self.builder.get_object("button_edit").set_label(_("Edit partitions"))
@@ -427,12 +430,14 @@ class InstallerWindow:
 
     def assign_type_options(self, widget, data=None):
         self.setup.automated = self.builder.get_object("radio_automated").get_active()
+        self.builder.get_object("check_badblocks").set_sensitive(self.setup.automated)
         self.builder.get_object("check_encrypt").set_sensitive(self.setup.automated)
         self.builder.get_object("check_lvm").set_sensitive(self.setup.automated)
         self.builder.get_object("combo_disk").set_sensitive(self.setup.automated)
         self.builder.get_object("entry_passphrase").set_sensitive(self.setup.automated)
         self.builder.get_object("entry_passphrase2").set_sensitive(self.setup.automated)
         if not self.setup.automated:
+            self.builder.get_object("check_badblocks").set_active(False)
             self.builder.get_object("check_encrypt").set_active(False)
             self.builder.get_object("check_lvm").set_active(False)
             self.builder.get_object("combo_disk").set_active(-1)
@@ -442,9 +447,11 @@ class InstallerWindow:
         self.setup.lvm = self.builder.get_object("check_lvm").get_active()
         if not self.setup.lvm:
             # Force LVM for LUKs
+            self.builder.get_object("check_badblocks").set_active(False)
             self.builder.get_object("check_encrypt").set_active(False)
             self.builder.get_object("entry_passphrase").set_text("")
             self.builder.get_object("entry_passphrase2").set_text("")
+            self.builder.get_object("check_badblocks").set_sensitive(False)
             self.builder.get_object("check_encrypt").set_sensitive(False)
 
         self.setup.passphrase1 = self.builder.get_object("entry_passphrase").get_text()
@@ -461,9 +468,14 @@ class InstallerWindow:
             self.builder.get_object("entry_passphrase2").set_text("")
             self.builder.get_object("entry_passphrase").set_sensitive(False)
             self.builder.get_object("entry_passphrase2").set_sensitive(False)
+            self.builder.get_object("check_badblocks").set_active(False)
+            self.builder.get_object("check_badblocks").set_sensitive(False)
         else:
             self.builder.get_object("entry_passphrase").set_sensitive(True)
             self.builder.get_object("entry_passphrase2").set_sensitive(True)
+            self.builder.get_object("check_badblocks").set_sensitive(True)
+
+        self.setup.badblocks = self.builder.get_object("check_badblocks").get_active()
 
         self.setup.print_setup()
 
