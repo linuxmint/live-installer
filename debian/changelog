@@ -1,3 +1,18 @@
+live-installer (2020.03.13) debbie; urgency=medium
+
+  [ Clement Lefebvre ]
+  * LUKS: Make use of badblocks optional
+  * l10n: Update POT
+
+  [ Michael Webster ]
+  * user creation page: Add a placeholder to the checkmark column so the checks don't push all of the content to the left when they appear.
+
+  [ Clement Lefebvre ]
+  * Timezone: Give button box a spread layout
+  * l10n: Update translations
+
+ -- Clement Lefebvre <root@linuxmint.com>  Fri, 13 Mar 2020 11:32:03 +0000
+
 live-installer (2020.03.09) debbie; urgency=medium
 
   * Fix padding in timezone and slideshow
