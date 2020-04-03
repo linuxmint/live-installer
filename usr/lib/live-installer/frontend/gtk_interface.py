@@ -51,7 +51,7 @@ class InstallerWindow:
     # the keyboard layout list
     kbd_preview_generation = -1
 
-    def __init__(self, expert_mode=False):
+    def __init__(self, expert_mode=False, install_bootloader=True):
 
         self.expert_mode = expert_mode
 
@@ -61,6 +61,7 @@ class InstallerWindow:
 
         # build the setup object (where we put all our choices) and the installer
         self.setup = Setup()
+        self.setup.install_bootloader = install_bootloader
         self.installer = InstallerEngine(self.setup)
 
         self.resource_dir = '/usr/share/live-installer/'
@@ -178,8 +179,12 @@ class InstallerWindow:
         grub_box.connect("changed", self.assign_grub_device)
 
         # install Grub by default
-        grub_check.set_active(True)
-        grub_box.set_sensitive(True)
+        if self.setup.install_bootloader:
+            grub_check.set_active(True)
+            grub_box.set_sensitive(True)
+        else:
+            grub_check.set_active(False)
+            grub_box.set_sensitive(False)
 
         # kb models
         cell = Gtk.CellRendererText()

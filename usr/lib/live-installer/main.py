@@ -1,5 +1,6 @@
 #!/usr/bin/python -OO
 
+import argparse
 import sys
 import commands
 import gettext
@@ -16,8 +17,9 @@ from gi.repository import Gtk
 # main entry
 if __name__ == "__main__":
 
-	if ("--expert-mode" in sys.argv):
-		win = InstallerWindow(expert_mode=True)
-	else:
-		win = InstallerWindow()
-	Gtk.main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--expert-mode", action="store_true", help="Expert mode")
+    parser.add_argument("--no-bootloader", dest="insatll_bootloader", action="store_false", help="Do no install bootloader")
+    args = parser.parse_args()
+    win = InstallerWindow(args.expert_mode, args.insatll_bootloader)
+    Gtk.main()

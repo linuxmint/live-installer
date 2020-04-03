@@ -115,7 +115,7 @@ class InstallerEngine:
         if not found_initrd:
             print "WARNING: No initrd found!!"
 
-        if (self.setup.gptonefi):
+        if self.setup.install_bootloader and self.setup.gptonefi:
             print " --> Installing signed boot loader"
             os.system("mkdir -p /target/debs")
             os.system("cp /run/live/medium/pool/main/g/grub2/grub-efi* /target/debs/")
@@ -754,6 +754,7 @@ class Setup(object):
     password1 = None
     password2 = None
     real_name = None
+    install_bootloader = False
     grub_device = None
     disks = []
     automated = True
