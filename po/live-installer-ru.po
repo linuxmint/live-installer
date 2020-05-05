@@ -558,7 +558,8 @@ msgid ""
 "Please indicate a filesystem to format the root (/) partition with before "
 "proceeding."
 msgstr ""
-"Прежде чем продолжить, пожалуйста, укажите корневую (/) файловую систему."
+"Прежде чем продолжить, пожалуйста, отметьте для форматирования корневую (/) "
+"файловую систему."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:937
 msgid "A root subvolume (/@) requires to format the partition with btrfs."
