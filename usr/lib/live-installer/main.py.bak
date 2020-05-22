@@ -1,7 +1,7 @@
 #!/usr/bin/python -OO
 
 import sys
-import subprocess
+import commands
 import gettext
 
 gettext.install("live-installer", "/usr/share/locale")

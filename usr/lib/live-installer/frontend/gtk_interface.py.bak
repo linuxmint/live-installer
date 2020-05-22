@@ -7,7 +7,7 @@ import partitioning
 import gettext
 import os
 import re
-import subprocess
+import commands
 import sys
 import threading
 import time
@@ -90,7 +90,7 @@ class InstallerWindow:
          self.PAGE_OVERVIEW,
          self.PAGE_CUSTOMWARNING,
          self.PAGE_CUSTOMPAUSED,
-         self.PAGE_INSTALL) = list(range(12))
+         self.PAGE_INSTALL) = range(12)
 
         # set the button events (wizard_cb)
         self.builder.get_object("button_next").connect("clicked", self.wizard_cb, False)
@@ -267,7 +267,7 @@ class InstallerWindow:
         self.window.set_title(window_title)
 
         # Header
-        self.wizard_pages = list(range(12))
+        self.wizard_pages = range(12)
         self.wizard_pages[self.PAGE_WELCOME] = WizardPage(_("Welcome"), "mark-location-symbolic", "")
         self.wizard_pages[self.PAGE_LANGUAGE] = WizardPage(_("Language"), "preferences-desktop-locale-symbolic", _("What language would you like to use?"))
         self.wizard_pages[self.PAGE_TIMEZONE] = WizardPage(_("Timezone"), "mark-location-symbolic", _("Where are you?"))
@@ -498,7 +498,7 @@ class InstallerWindow:
 
         # Try to find out where we're located...
         try:
-            from urllib.request import urlopen
+            from urllib import urlopen
         except ImportError:  # py3
             from urllib.request import urlopen
         try:
@@ -515,7 +515,7 @@ class InstallerWindow:
         iso_standard = "3166"
         if os.path.exists("/usr/share/xml/iso-codes/iso_3166-1.xml"):
             iso_standard = "3166-1"
-        for line in subprocess.getoutput("isoquery --iso %s | cut -f1,4-" % iso_standard).split('\n'):
+        for line in commands.getoutput("isoquery --iso %s | cut -f1,4-" % iso_standard).split('\n'):
             ccode, cname = line.split(None, 1)
             countries[ccode] = cname
 
@@ -524,15 +524,15 @@ class InstallerWindow:
         iso_standard = "639"
         if os.path.exists("/usr/share/xml/iso-codes/iso_639-2.xml"):
             iso_standard = "639-2"
-        for line in subprocess.getoutput("isoquery --iso %s | cut -f3,4-" % iso_standard).split('\n'):
+        for line in commands.getoutput("isoquery --iso %s | cut -f3,4-" % iso_standard).split('\n'):
             cols = line.split(None, 1)
             if len(cols) > 1:
                 name = cols[1].replace(";", ",")
                 languages[cols[0]] = name
-        for line in subprocess.getoutput("isoquery --iso %s | cut -f1,4-" % iso_standard).split('\n'):
+        for line in commands.getoutput("isoquery --iso %s | cut -f1,4-" % iso_standard).split('\n'):
             cols = line.split(None, 1)
             if len(cols) > 1:
-                if cols[0] not in list(languages.keys()):
+                if cols[0] not in languages.keys():
                     name = cols[1].replace(";", ",")
                     languages[cols[0]] = name
 
@@ -542,7 +542,7 @@ class InstallerWindow:
         flag_path = lambda ccode: self.resource_dir + '/flags/16/' + ccode.lower() + '.png'
         from utils import memoize
         flag = memoize(lambda ccode: GdkPixbuf.Pixbuf.new_from_file(flag_path(ccode)))
-        for locale in subprocess.getoutput("awk -F'[@ .]' '/UTF-8/{ print $1 }' /usr/share/i18n/SUPPORTED | uniq").split('\n'):
+        for locale in commands.getoutput("awk -F'[@ .]' '/UTF-8/{ print $1 }' /usr/share/i18n/SUPPORTED | uniq").split('\n'):
             if '_' in locale:
                 lang, ccode = locale.split('_')
                 language = lang
@@ -585,7 +585,7 @@ class InstallerWindow:
         ''' Do some xml kung-fu and load the keyboard stuffs '''
         # Determine the layouts in use
         (keyboard_geom,
-         self.setup.keyboard_layout) = subprocess.getoutput("setxkbmap -query | awk '/^(model|layout)/{print $2}'").split()
+         self.setup.keyboard_layout) = commands.getoutput("setxkbmap -query | awk '/^(model|layout)/{print $2}'").split()
         # Build the models
         from collections import defaultdict
         def _ListStore_factory():
@@ -641,17 +641,18 @@ class InstallerWindow:
         ''' Called whenever someone updates the language '''
         model = treeview.get_model()
         selection = treeview.get_selection()
-        (model, iter) = selection.get_selected()
-        if iter is not None:
-            self.setup.language = model.get_value(iter, 3)
-            self.setup.print_setup()
-            gettext.translation('live-installer', "/usr/share/locale",
-                            languages=[self.setup.language, self.setup.language.split('_')[0]],
-                            fallback=True).install()  # Try e.g. zh_CN, zh, or fallback to hardcoded English
-            try:
-                self.i18n()
-            except:
-                pass # Best effort. Fails the first time as self.column1 doesn't exist yet.
+        if selection.count_selected_rows > 0:
+            (model, iter) = selection.get_selected()
+            if iter is not None:
+                self.setup.language = model.get_value(iter, 3)
+                self.setup.print_setup()
+                gettext.translation('live-installer', "/usr/share/locale",
+                                languages=[self.setup.language, self.setup.language.split('_')[0]],
+                                fallback=True).install()  # Try e.g. zh_CN, zh, or fallback to hardcoded English
+                try:
+                    self.i18n()
+                except:
+                    pass # Best effort. Fails the first time as self.column1 doesn't exist yet.
 
     def assign_login_options(self, checkbox, data=None):
         if self.builder.get_object("radiobutton_passwordlogin").get_active():
@@ -773,7 +774,7 @@ class InstallerWindow:
             surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, widget.get_scale_factor(), widget.get_window())
             widget.set_from_surface(surface)
         except GLib.Error as e:
-            print(("could not load keyboard layout: %s" % e.message))
+            print("could not load keyboard layout: %s" % e.message)
         return False
 
     def activate_page(self, index):
@@ -1104,11 +1105,11 @@ class InstallerWindow:
 
     @asynchronous
     def do_install(self):
-        print(" ## INSTALLATION ")
+        print " ## INSTALLATION "
         ''' Actually perform the installation .. '''
 
         if __debug__:
-            print(" ## DEBUG MODE - INSTALLATION PROCESS NOT LAUNCHED")
+            print " ## DEBUG MODE - INSTALLATION PROCESS NOT LAUNCHED"
             time.sleep(200)
             Gtk.main_quit()
             sys.exit(0)
@@ -1124,8 +1125,8 @@ class InstallerWindow:
 
         try:
             self.installer.start_installation()
-        except Exception as detail1:
-            print(detail1)
+        except Exception, detail1:
+            print detail1
             do_try_finish_install = False
             self.show_error_dialog(_("Installation error"), str(detail1))
 
@@ -1142,8 +1143,8 @@ class InstallerWindow:
 
             try:
                 self.installer.finish_installation()
-            except Exception as detail1:
-                print(detail1)
+            except Exception, detail1:
+                print detail1
                 self.show_error_dialog(_("Installation error"), str(detail1))
 
             # show a message dialog thingum
@@ -1159,7 +1160,7 @@ class InstallerWindow:
             while(self.showing_last_dialog):
                 time.sleep(0.1)
 
-            print(" ## INSTALLATION COMPLETE ")
+            print " ## INSTALLATION COMPLETE "
 
         Gtk.main_quit()
         sys.exit(0)
