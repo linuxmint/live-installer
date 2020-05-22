@@ -76,7 +76,7 @@ def get_disks():
     lsblk = shell_exec('LC_ALL=en_US.UTF-8 lsblk -rindo TYPE,NAME,RM,SIZE,MODEL | sort -k3,2')
     for line in lsblk.stdout:
         try:
-            elements = str(line).strip().split(" ", 4)
+            elements = str(line).strip().split(" ")
             if len(elements) < 4:
                 print("Can't parse blkid output: %s" % elements)
                 continue
@@ -86,7 +86,8 @@ def get_disks():
             else:
                 type, device, removable, size, model = elements
             device = "/dev/" + device
-            if type == "disk" and device not in exclude_devices:
+            print(str(type))
+            if str(type) == "b'disk" and device not in exclude_devices:
                 # convert size to manufacturer's size for show, e.g. in GB, not GiB!
                 unit_index = 'BKMGTPEZY'.index(size.upper()[-1])
                 l10n_unit = [_('B'), _('kB'), _('MB'), _('GB'), _('TB'), 'PB', 'EB', 'ZB', 'YB'][unit_index]
@@ -208,7 +209,7 @@ def build_grub_partitions():
     except IndexError: preferred = ''
     devices = sorted(list(d[0] for d in installer.setup.partition_setup.disks) +
                      list([_f for _f in (p.name for p in installer.setup.partitions) if _f]),
-                     key=lambda path: path != preferred and path)
+                     key=lambda path: path != preferred)
     for p in devices: grub_model.append([p])
     installer.builder.get_object("combobox_grub").set_model(grub_model)
     installer.builder.get_object("combobox_grub").set_active(0)
@@ -277,7 +278,7 @@ class PartitionSetup(Gtk.TreeStore):
             lvm_partitions = disk.getLVMPartitions()
             print("           -> %d LVM partitions" % len(lvm_partitions))
 
-            partition_set = set(free_space_partition + primary_partitions + logical_partitions + raid_partitions + lvm_partitions)
+            partition_set = tuple(free_space_partition + primary_partitions + logical_partitions + raid_partitions + lvm_partitions)
             print("           -> set of %d partitions" % len(partition_set))
 
             partitions = []
@@ -453,7 +454,7 @@ class Partition(object):
         try:
             print("                  . About to mount it...")
             os.system('mount --read-only {} {}'.format(self.path, TMP_MOUNTPOINT))
-            size, free, self.used_percent, mount_point = getoutput("df {0} | grep '^{0}' | awk '{{print $2,$4,$5,$6}}' | tail -1".format(self.path)).split(None, 3)
+            size, free, self.used_percent, mount_point = str(getoutput("df {0} | grep '^{0}' | awk '{{print $2,$4,$5,$6}}' | tail -1".format(self.path)).split(None, 3))
             self.raw_size = int(size)*1024
             print("                  . size %s, free %s, self.used_percent %s, mount_point %s" % (size, free, self.used_percent, mount_point))
         except ValueError:
@@ -468,11 +469,11 @@ class Partition(object):
             print("                  . About to find more about it...")
             self.size = to_human_readable(int(size)*1024)  # for mountable partitions, more accurate than the getLength size above
             self.free_space = to_human_readable(int(free)*1024)  # df returns values in 1024B-blocks by default
-            self.used_percent = self.used_percent.strip('%') or 0
+            self.used_percent = self.used_percent.strip(b'%') or 0
             description = ''
-            if path_exists(mount_point, 'etc/linuxmint/info'):
+            if path_exists(str(mount_point), str('etc/linuxmint/info')):
                 description = getoutput("cat %s/etc/linuxmint/info | grep GRUB_TITLE" % mount_point).replace('GRUB_TITLE', '').replace('=', '').replace('"', '').strip()
-            elif path_exists(mount_point, 'Windows/servicing/Version'):
+            elif path_exists(str(mount_point), str('Windows/servicing/Version')):
                 description = 'Windows ' + {
                     '6.4':'10',
                     '6.3':'8.1',
