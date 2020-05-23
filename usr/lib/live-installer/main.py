@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 
 import sys
 import subprocess
@@ -20,4 +19,6 @@ if __name__ == "__main__":
 		win = InstallerWindow(expert_mode=True)
 	else:
 		win = InstallerWindow()
+	if ("--window" not in sys.argv):
+		win.fullscreen()
 	Gtk.main()

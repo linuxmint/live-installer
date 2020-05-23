@@ -235,6 +235,9 @@ class InstallerWindow:
 
         self.window.show_all()
 
+    def fullscreen(self):
+        self.window.fullscreen()
+
     def on_context_menu(self, unused_web_view, unused_context_menu,
                     unused_event, unused_hit_test_result):
         # True will not show the menu
@@ -530,6 +533,7 @@ class InstallerWindow:
         set_iter = None
         flag_path = lambda ccode: self.resource_dir + '/flags/16/' + ccode.lower() + '.png'
         from utils import memoize
+        language=None
         flag = memoize(lambda ccode: GdkPixbuf.Pixbuf.new_from_file(flag_path(ccode)))
         for locale in subprocess.getoutput("awk -F'[@ .]' '/UTF-8/{ print $1 }' /usr/share/i18n/SUPPORTED | uniq").split('\n'):
             if '_' in locale:
@@ -722,28 +726,10 @@ class InstallerWindow:
         os.system(command)
         self.setup.print_setup()
 
-        # Set preview image
+        # Remove preview image
         self.builder.get_object("image_keyboard").hide()
-        self.builder.get_object("kb_spinner").show()
-        self.builder.get_object("kb_spinner").start()
+        self.builder.get_object("kb_spinner").hide()
 
-        self._generate_keyboard_layout_preview()
-
-    @idle
-    def _generate_keyboard_layout_preview(self, *args, **kwargs):
-        filename = "/tmp/live-install-keyboard-layout.png"
-        layout = self.setup.keyboard_layout.split(",")[-1]
-        variant = self.setup.keyboard_variant.split(",")[-1]
-        if variant == "":
-            variant = None
-
-        if self.builder.get_object("image_keyboard").get_scale_factor() > 1:
-            hidpi = "hidpi"
-        else:
-            hidpi = "normal"
-
-        os.system("python /usr/lib/live-installer/frontend/generate_keyboard_layout.py %s %s %s %s" % (layout, variant, filename, hidpi))
-        self._on_layout_generated()
 
     @idle
     def _on_layout_generated(self):

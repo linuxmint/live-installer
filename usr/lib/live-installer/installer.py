@@ -26,7 +26,7 @@ class InstallerEngine:
         self.media = '/run/live/medium/live/filesystem.squashfs'
         if(not os.path.exists(self.media)):
             print("Critical Error: Live medium (%s) not found!" % self.media)
-            sys.exit(1)
+            #sys.exit(1)
 
     def set_progress_hook(self, progresshook):
         ''' Set a callback to be called on progress updates '''

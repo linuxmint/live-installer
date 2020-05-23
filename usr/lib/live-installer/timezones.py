@@ -145,10 +145,8 @@ def build_timezones(_installer):
 adjust_time = timedelta(0)
 
 def button_callback(button, event):
-    menu = button.menu
-
     if event.type == Gdk.EventType.BUTTON_PRESS:
-        menu.popup(None, None, None, None, 0, event.time)
+        button.menu.popup(None, None, None, None, 0, event.time)
         return True
     return False
 
