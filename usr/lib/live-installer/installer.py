@@ -24,7 +24,7 @@ class InstallerEngine:
 
         # find the squashfs..
         self.media = '/run/live/medium/live/filesystem.squashfs'
-        if(not os.path.exists(self.media) and not __debug__):
+        if(not os.path.exists(self.media)):
             print("Critical Error: Live medium (%s) not found!" % self.media)
             sys.exit(1)
 
@@ -730,14 +730,7 @@ class InstallerEngine:
 
     # Execute schell command and return output in a list
     def exec_cmd(self, cmd):
-        p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        lstOut = []
-        for line in p.stdout.readlines():
-            # Strip the line, also from null spaces (strip() only strips white spaces)
-            line = line.strip().strip("\0")
-            if line != '':
-                lstOut.append(line)
-        return lstOut
+        return os.system(cmd)
 
 # Represents the choices made by the user
 class Setup(object):
@@ -781,7 +774,7 @@ class Setup(object):
     keyboard_variant_description = None
 
     def print_setup(self):
-        if __debug__:
+        if True:
             print("-------------------------------------------------------------------------")
             print("language: %s" % self.language)
             print("timezone: %s" % self.timezone)

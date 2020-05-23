@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 
 from installer import InstallerEngine, Setup, NON_LATIN_KB_LAYOUTS
 from dialogs import MessageDialog, QuestionDialog, ErrorDialog, WarningDialog
@@ -56,8 +56,7 @@ class InstallerWindow:
         self.expert_mode = expert_mode
 
         # disable the screensaver
-        if not __debug__:
-            os.system("killall cinnamon-screen")
+        os.system("killall cinnamon-screen")
 
         # build the setup object (where we put all our choices) and the installer
         self.setup = Setup()
@@ -215,14 +214,6 @@ class InstallerWindow:
         # i18n
         self.i18n()
 
-        # pre-fill user details in debug mode
-        if __debug__:
-            self.builder.get_object("entry_name").set_text("John Boone")
-            self.builder.get_object("entry_username").set_text("john")
-            self.builder.get_object("entry_hostname").set_text("mars")
-            self.builder.get_object("entry_password").set_text("dummy_password")
-            self.builder.get_object("entry_confirm").set_text("dummy_password")
-
         # build partition list
         self.should_pulse = False
 
@@ -256,8 +247,6 @@ class InstallerWindow:
             config = dict([line.strip().split("=") for line in f])
             window_title = "%s - %s" % (config['DISTRIB_DESCRIPTION'].replace('"', ''), _("Installer"))
 
-        if __debug__:
-            window_title += ' (debug)'
         self.builder.get_object("button_expert").set_no_show_all(True)
         if self.expert_mode:
             window_title += ' (expert mode)'
@@ -686,8 +675,7 @@ class InstallerWindow:
         model = combobox.get_model()
         active = combobox.get_active()
         (self.setup.keyboard_model_description, self.setup.keyboard_model) = model[active]
-        if not __debug__:
-            os.system('setxkbmap -model ' + self.setup.keyboard_model)
+        os.system('setxkbmap -model ' + self.setup.keyboard_model)
         self.setup.print_setup()
 
     def assign_keyboard_layout(self, treeview):
@@ -731,9 +719,8 @@ class InstallerWindow:
             self.builder.get_object("label_non_latin").hide()
 
         command = "setxkbmap -layout '%s' -variant '%s' -option grp:ctrls_toggle" % (self.setup.keyboard_layout, self.setup.keyboard_variant)
-        if not __debug__:
-            os.system(command)
-            self.setup.print_setup()
+        os.system(command)
+        self.setup.print_setup()
 
         # Set preview image
         self.builder.get_object("image_keyboard").hide()
@@ -1106,12 +1093,6 @@ class InstallerWindow:
     def do_install(self):
         print(" ## INSTALLATION ")
         ''' Actually perform the installation .. '''
-
-        if __debug__:
-            print(" ## DEBUG MODE - INSTALLATION PROCESS NOT LAUNCHED")
-            time.sleep(200)
-            Gtk.main_quit()
-            sys.exit(0)
 
         self.installer.set_progress_hook(self.update_progress)
         self.installer.set_error_hook(self.error_message)
