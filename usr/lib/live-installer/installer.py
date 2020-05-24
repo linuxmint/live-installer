@@ -80,12 +80,15 @@ class InstallerEngine:
                                  "{src}* {dst}".format(src=SOURCE, dst=DEST, rsync_filter=rsync_filter),
                                  shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         while rsync.poll() is None:
-            line = rsync.stdout.readline()
+            line = str(rsync.stdout.readline())
+            line = line.replace("b'","'")
+            line = line.replace("'","")
+            line = line.replace("\\n","")
             if not line:  # still copying the previous file, just wait
                 time.sleep(0.1)
             else:
                 our_current = min(our_current + 1, our_total)
-                self.update_progress(our_current, our_total, False, False, _("Copying /%s" % line))
+                self.update_progress(our_current, our_total, False, False, _("Copying /%s") % line)
         print("rsync exited with returncode: " + str(rsync.poll()))
 
         # Steps:

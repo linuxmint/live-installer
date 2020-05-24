@@ -54,16 +54,6 @@ EFI_MOUNT_POINT = '/boot/efi'
 SWAP_MOUNT_POINT = 'swap'
 
 
-with open(RESOURCE_DIR + 'disk-partitions.html') as f:
-    DISK_TEMPLATE = f.read()
-    # cut out the single partition (skeleton) block
-    PARTITION_TEMPLATE = re.search('CUT_HERE([\s\S]+?)CUT_HERE', DISK_TEMPLATE, re.MULTILINE).group(1)
-    # delete the skeleton from original
-    DISK_TEMPLATE = DISK_TEMPLATE.replace(PARTITION_TEMPLATE, '')
-    # duplicate all { or } in original CSS so they don't get interpreted as part of string formatting
-    DISK_TEMPLATE = re.sub('<style>[\s\S]+?</style>', lambda match: match.group().replace('{', '{{').replace('}', '}}'), DISK_TEMPLATE)
-
-
 def get_disks():
     disks = []
     exclude_devices = ['/dev/sr0', '/dev/sr1', '/dev/cdrom', '/dev/dvd', '/dev/fd0']
@@ -110,10 +100,7 @@ def build_partitions(_installer):
     print("Finished PartitionSetup()")
     if partition_setup.disks:
         installer._selected_disk = partition_setup.disks[0][0]
-        print("Loading HTML string")
-        installer.partitions_browser.load_html(partition_setup.get_html(installer._selected_disk), 'file:///')
     print("Showing the partition screen")
-    installer.builder.get_object("scrolled_partitions").show_all()
     installer.builder.get_object("treeview_disks").set_model(partition_setup)
     installer.builder.get_object("treeview_disks").expand_all()
     installer.window.get_window().set_cursor(None)
@@ -125,7 +112,6 @@ def update_html_preview(selection):
     except TypeError as IndexError: return  # no disk is selected or no disk available
     if disk != installer._selected_disk:
         installer._selected_disk = disk
-        installer.partitions_browser.load_html(model.get_html(disk), 'file:///')
 
 def edit_partition_dialog(widget, path, viewcol):
     ''' assign the partition ... '''
@@ -226,7 +212,7 @@ class PartitionSetup(Gtk.TreeStore):
                                              str)  # disk device path
         installer.setup.partitions = []
         installer.setup.partition_setup = self
-        self.html_disks, self.html_chunks = {}, defaultdict(list)
+        self.html_chunks = {}, defaultdict(list)
 
         os.popen('mkdir -p ' + TMP_MOUNTPOINT)
         installer.setup.gptonefi = is_efi_supported()
@@ -315,14 +301,9 @@ class PartitionSetup(Gtk.TreeStore):
                                         partition,
                                         disk_path))
 
-            print("      - Loading HTML view...")
-            self.html_disks[disk_path] = DISK_TEMPLATE.format(PARTITIONS_HTML=''.join(PARTITION_TEMPLATE.format(p) for p in partitions))
 
     def get_html(self, disk):
-        if disk in self.html_disks:
-            return self.html_disks[disk]
-        else:
-            return ""
+        return ""
 
 @idle
 def show_error(message):
@@ -564,7 +545,7 @@ class PartitionDialog(object):
         filesystems = ['', 'swap']
         for path in ["/bin", "/sbin"]:
             for fs in getoutput('echo %s/mkfs.*' % path).split():
-                filesystems.append(fs.split("mkfs.")[1])
+                filesystems.append(str(fs).split("mkfs.")[1].replace("'",""))
         filesystems = sorted(filesystems)
         filesystems = sorted(filesystems, key=lambda x: 0 if x in ('', 'ext4') else 1 if x == 'swap' else 2)
         model = Gtk.ListStore(str)

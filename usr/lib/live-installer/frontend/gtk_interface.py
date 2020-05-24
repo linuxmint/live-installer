@@ -16,8 +16,7 @@ import cairo
 
 import gi
 gi.require_version('Gtk', '3.0')
-gi.require_version('WebKit2', '4.0')
-from gi.repository import Gtk, Gdk, GdkPixbuf, GObject, WebKit2, Pango, GLib
+from gi.repository import Gtk, Gdk, GdkPixbuf, GObject, Pango, GLib
 
 gettext.install("live-installer", "/usr/share/locale")
 
@@ -220,28 +219,11 @@ class InstallerWindow:
         # make sure we're on the right page (no pun.)
         self.activate_page(0)
 
-        # initiate the slide show
-        # We have no significant browsing interface, so there isn't much point
-        # in WebKit creating a memory-hungry cache.
-        context = WebKit2.WebContext.get_default()
-        context.set_cache_model(WebKit2.CacheModel.DOCUMENT_VIEWER)
-
-        self.partitions_browser = WebKit2.WebView()
-        s = self.partitions_browser.get_settings()
-        s.set_allow_file_access_from_file_urls(True)
-        self.partitions_browser.show()
-        self.partitions_browser.set_size_request(-1, 80)
-        self.builder.get_object("scrolled_partitions").add(self.partitions_browser)
-
         self.window.show_all()
 
     def fullscreen(self):
         self.window.fullscreen()
 
-    def on_context_menu(self, unused_web_view, unused_context_menu,
-                    unused_event, unused_hit_test_result):
-        # True will not show the menu
-        return True
 
     def i18n(self):
 
@@ -970,17 +952,9 @@ class InstallerWindow:
                 self.builder.get_object("button_back").set_sensitive(False)
                 self.builder.get_object("button_quit").set_sensitive(False)
                 self.do_install()
-                self.slideshow_browser = WebKit2.WebView()
-                s = self.slideshow_browser.get_settings()
-                s.set_allow_file_access_from_file_urls(True)
-                s.set_property('enable-caret-browsing', False)
-                self.slideshow_browser.load_uri("file:////usr/share/live-installer/slideshow/index.html#locale=%s" % self.setup.language)
-                self.builder.get_object("scrolled_slideshow").add(self.slideshow_browser)
-                self.builder.get_object("scrolled_slideshow").show_all()
-                self.slideshow_browser.connect('context-menu', self.on_context_menu)
                 self.builder.get_object("title_eventbox").hide()
                 self.builder.get_object("button_eventbox").hide()
-                self.window.resize(100, 100)
+                #self.window.resize(100, 100)
             elif(sel == self.PAGE_CUSTOMPAUSED):
                 self.activate_page(self.PAGE_INSTALL)
                 self.builder.get_object("button_next").set_sensitive(False)

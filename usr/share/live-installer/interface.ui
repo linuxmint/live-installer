@@ -1349,7 +1349,7 @@
                         <property name="orientation">vertical</property>
                         <child>
                           <object class="GtkBox" id="scrolled_partitions">
-                            <property name="visible">True</property>
+                            <property name="visible">False</property>
                             <property name="can_focus">False</property>
                             <property name="orientation">vertical</property>
                             <child>
@@ -1986,8 +1986,8 @@
                     </child>
                     <child>
                       <object class="GtkScrolledWindow" id="scrolled_slideshow">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
+                        <property name="visible">False</property>
+                        <property name="can_focus">False</property>
                         <property name="halign">center</property>
                         <property name="valign">center</property>
                         <property name="hexpand">True</property>
@@ -1996,7 +1996,7 @@
                         <property name="vscrollbar_policy">external</property>
                         <property name="shadow_type">in</property>
                         <property name="min_content_width">752</property>
-                        <property name="min_content_height">200</property>
+                        <property name="min_content_height">450</property>
                         <child>
                           <placeholder/>
                         </child>
@@ -2215,7 +2215,7 @@
               <object class="GtkLabel" id="label_partition_value">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">/dev/sda6</property>
+                <property name="label" translatable="yes">/dev/sda1</property>
                 <property name="use_markup">True</property>
                 <property name="xalign">0</property>
               </object>
