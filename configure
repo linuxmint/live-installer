@@ -17,7 +17,7 @@ helpmsg(){
 	echo "  --help        : Show this message"
 }
 #defaults
-export prefix="/usr"
+export prefix="/usr/local"
 export nsl=true
 cp Makefile.in Makefile.ac
 
