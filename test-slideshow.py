@@ -1,1 +1,0 @@
-usr/lib/live-installer/test-slideshow.py

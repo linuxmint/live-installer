@@ -553,7 +553,7 @@ class InstallerEngine:
                     print("Failed to install Broadcom drivers")
 
             # NVIDIA
-            driver = "/usr/share/live-installer/nvidia-driver.tar.gz"
+            driver = "./resources/nvidia-driver.tar.gz"
             if os.path.exists(driver):
                 if "install-nvidia" in subprocess.getoutput("cat /proc/cmdline"):
                     print(" --> Installing NVIDIA driver")
@@ -564,7 +564,6 @@ class InstallerEngine:
                     except Exception as e:
                         print(("Failed to install NVIDIA driver: ", e))
 
-                os.system("rm -f /target/usr/share/live-installer/nvidia-driver.tar.gz")
 
         # set the keyboard options..
         print(" --> Setting the keyboard")

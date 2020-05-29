@@ -14,7 +14,7 @@ def on_context_menu(unused_web_view, unused_context_menu,
     # True will not show the menu
     return True
 
-resource_dir = 'usr/share/live-installer/'
+resource_dir = './resources'
 glade_file = os.path.join(resource_dir, 'interface.ui')
 builder = Gtk.Builder()
 builder.add_from_file(glade_file)

@@ -1,9 +1,0 @@
-[Desktop Entry]
-Name=Install Linux Mint
-GenericName=Live Installer
-Comment=Install the operating system to disk
-Exec=sudo /usr/bin/live-installer
-Icon=live-installer
-Terminal=False
-Type=Application
-Categories=System;

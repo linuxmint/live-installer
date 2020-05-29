@@ -48,7 +48,7 @@ def path_exists(*args):
     return os.path.exists(os.path.join(*args))
 
 TMP_MOUNTPOINT = '/tmp/live-installer/tmpmount'
-RESOURCE_DIR = '/usr/share/live-installer/'
+RESOURCE_DIR = './resources/'
 
 EFI_MOUNT_POINT = '/boot/efi'
 SWAP_MOUNT_POINT = 'swap'
@@ -56,7 +56,7 @@ SWAP_MOUNT_POINT = 'swap'
 
 def get_disks():
     disks = []
-    exclude_devices = ['/dev/sr0', '/dev/sr1', '/dev/cdrom', '/dev/dvd', '/dev/fd0']
+    exclude_devices = ['/dev/sr0', '/dev/sr1', '/dev/cdrom', '/dev/dvd', '/dev/fd0', '/dev/nullb0']
     live_device = subprocess.getoutput("findmnt -n -o source /run/live/medium").split('\n')[0]
     live_device = re.sub('[0-9]+$', '', live_device) # remove partition numbers if any
     if live_device is not None and live_device.startswith('/dev/'):

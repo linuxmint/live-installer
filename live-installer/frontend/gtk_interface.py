@@ -20,7 +20,7 @@ from gi.repository import Gtk, Gdk, GdkPixbuf, GObject, Pango, GLib
 
 gettext.install("live-installer", "/usr/share/locale")
 
-LOADING_ANIMATION = '/usr/share/live-installer/loading.gif'
+LOADING_ANIMATION = './resources/loading.gif'
 
 # Used as a decorator to run things in the background
 def asynchronous(func):
@@ -61,7 +61,7 @@ class InstallerWindow:
         self.setup = Setup()
         self.installer = InstallerEngine(self.setup)
 
-        self.resource_dir = '/usr/share/live-installer/'
+        self.resource_dir = './resources/'
         glade_file = os.path.join(self.resource_dir, 'interface.ui')
         self.builder = Gtk.Builder()
         self.builder.add_from_file(glade_file)
@@ -517,7 +517,7 @@ class InstallerWindow:
         from utils import memoize
         language=None
         flag = memoize(lambda ccode: GdkPixbuf.Pixbuf.new_from_file(flag_path(ccode)))
-        for locale in subprocess.getoutput("awk -F'[@ .]' '/UTF-8/{ print $1 }' /usr/share/i18n/SUPPORTED | uniq").split('\n'):
+        for locale in subprocess.getoutput("cat ./resources/locales").split('\n'):
             if '_' in locale:
                 lang, ccode = locale.split('_')
                 language = lang

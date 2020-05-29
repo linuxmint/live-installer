@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 from PIL import Image, ImageEnhance, ImageChops, ImageOps
 from functools import reduce
 
-TIMEZONE_RESOURCES = '/usr/share/live-installer/timezone/'
+TIMEZONE_RESOURCES = './resources/timezone/'
 CC_IM = Image.open(TIMEZONE_RESOURCES + 'cc.png').convert('RGB')
 BACK_IM = Image.open(TIMEZONE_RESOURCES + 'bg.png').convert('RGB')
 BACK_ENHANCED_IM = reduce(lambda im, mod: mod[0](im).enhance(mod[1]),
@@ -70,7 +70,7 @@ def build_timezones(_installer):
     installer = _installer
 
     cssProvider = Gtk.CssProvider()
-    cssProvider.load_from_path('/usr/share/live-installer/style.css')
+    cssProvider.load_from_path('./resources/style.css')
     screen = Gdk.Screen.get_default()
     styleContext = Gtk.StyleContext()
     styleContext.add_provider_for_screen(screen, cssProvider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
