@@ -110,28 +110,15 @@ class InstallerEngine:
         os.system("cp /lib/modules/{0}/vmlinuz /target/boot/vmlinuz-{0}".format(kernelversion))
 
         # add new user
+        # add new user
         print(" --> Adding new user")
         our_current += 1
-        self.update_progress(our_current, our_total, False, False, _("Adding new user to the system"))
-        if self.setup.ecryptfs:
-            # ecryptfs looks for the /sys mount point in /etc/mtab.. which doesn't exist during the installation.
-            # it defaults to /sys anyway, so we just need to create an empty /etc/mtab file at this stage.
-            self.do_run_in_chroot('touch /etc/mtab')
-            self.do_run_in_chroot('modprobe ecryptfs')
-            self.do_run_in_chroot('adduser --disabled-login --encrypt-home --gecos "{real_name}" {username}'.format(real_name=self.setup.real_name.replace('"', r'\"'), username=self.setup.username))
-        else:
-            self.do_run_in_chroot('adduser --disabled-login --gecos "{real_name}" {username}'.format(real_name=self.setup.real_name.replace('"', r'\"'), username=self.setup.username))
-        for group in 'adm audio bluetooth cdrom dialout dip fax floppy fuse lpadmin netdev plugdev powerdev sambashare scanner sudo tape users vboxusers video'.split():
-            self.do_run_in_chroot("adduser {user} {group}".format(user=self.setup.username, group=group))
-
-        fp = open("/target/tmp/.passwd", "w")
-        fp.write(self.setup.username +  ":" + self.setup.password1 + "\n")
-        fp.close()
-        self.do_run_in_chroot("cat /tmp/.passwd | chpasswd")
-        os.system("rm -f /target/tmp/.passwd")
-
-        # Lock and delete root password
-        self.do_run_in_chroot("passwd -dl root")
+        self.update_progress(our_current, our_total, False,
+                             False, ("Adding new user to the system"))
+        #TODO: support encryption
+        self.do_run_in_chroot('useradd {username}'.format(username=self.setup.username))
+        self.do_run_in_chroot("echo -ne \"{0}\\n{0}\\n\" | passwd {1}".format(self.setup.password1,self.setup.username))
+        self.do_run_in_chroot("echo -ne \"{0}\\n{0}\\n\" | passwd".format(self.setup.password1))
 
         # Set LightDM to show user list by default
         self.do_run_in_chroot(r"sed -i -r 's/^#?(greeter-hide-users)\s*=.*/\1=false/' /etc/lightdm/lightdm.conf")
@@ -475,6 +462,21 @@ class InstallerEngine:
         os.system("rm -f /target/etc/localtime")
         os.system("ln -s /usr/share/zoneinfo/%s /target/etc/localtime" % self.setup.timezone)
 
+        #Keyboard settings X11
+        self.update_progress(our_current, our_total, False,
+                             False, ("Settings X11 keyboard options"))
+        
+        newconsolefh = open("/target/etc/X11/xorg.conf.d/10-keyboard.conf", "w")
+        newconsolefh.write('Section "InputClass"\n')
+        newconsolefh.write('Identifier "system-keyboard"\n')
+        newconsolefh.write('MatchIsKeyboard "on"\n')
+        newconsolefh.write('Option "XkbLayout" "{}"\n'.format(self.setup.keyboard_layout))
+        newconsolefh.write('Option "XkbModel" "{}"\n'.format(self.setup.keyboard_model))
+        newconsolefh.write('Option "XkbVariant" "{}"\n'.format(self.setup.keyboard_variant))
+        newconsolefh.write('#Option "XkbOptions" "grp:alt_shift_toggle"\n')
+        newconsolefh.write('EndSection\n')
+        newconsolefh.close()
+
         # set the keyboard options..
         print(" --> Setting the keyboard")
         our_current += 1
@@ -514,6 +516,11 @@ class InstallerEngine:
         self.do_run_in_chroot("mv /etc/vconsole.conf.new /etc/vconsole.conf")
 
 
+        #remove pacman
+        self.update_progress(our_current, our_total, False, False, _("Clearing Pacman"))
+        print(" --> Clearing pacman")
+        self.do_run_in_chroot("yes | pacman -R archiso")
+
         if self.setup.luks:
             with open("/target/etc/default/grub.d/61_live-installer.cfg", "w") as f:
                 f.write("#! /bin/sh\n")
@@ -543,7 +550,10 @@ class InstallerEngine:
         print(" --> Configuring Initramfs")
         our_current += 1
         kernelversion= subprocess.getoutput("uname -r")
-        self.do_run_in_chroot("/usr/sbin/mkinitcpio -g /boot/initrd.img-"+kernelversion)
+        self.do_run_in_chroot("/usr/sbin/mkinitcpio -g /boot/initramfs-"+kernelversion+".img")
+        self.do_run_in_chroot("/usr/sbin/mkinitcpio -g /boot/initramfs-"+kernelversion+"-fallback.img")
+        
+
 
         # now unmount it
         print(" --> Unmounting partitions")
