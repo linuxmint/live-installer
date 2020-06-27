@@ -107,53 +107,7 @@ class InstallerEngine:
         os.system("cp -f /etc/resolv.conf /target/etc/resolv.conf")
 
         kernelversion= subprocess.getoutput("uname -r")
-        os.system("cp /run/live/medium/live/vmlinuz /target/boot/vmlinuz-%s" % kernelversion)
-        found_initrd = False
-        for initrd in ["/run/live/medium/live/initrd.img", "/run/live/medium/live/initrd.lz"]:
-            if os.path.exists(initrd):
-                os.system("cp %s /target/boot/initrd.img-%s" % (initrd, kernelversion))
-                found_initrd = True
-                break
-
-        if not found_initrd:
-            print("WARNING: No initrd found!!")
-
-        if self.setup.grub_device and self.setup.gptonefi:
-            print(" --> Installing signed boot loader")
-            os.system("mkdir -p /target/debs")
-            os.system("cp /run/live/medium/pool/main/g/grub2/grub-efi* /target/debs/")
-            os.system("cp /run/live/medium/pool/main/g/grub-efi-amd64-signed/* /target/debs/")
-            os.system("cp /run/live/medium/pool/main/s/shim*/* /target/debs/")
-            self.do_run_in_chroot("dpkg -i /debs/*")
-            os.system("rm -rf /target/debs")
-
-        print(" --> Installing microcode packages")
-        os.system("mkdir -p /target/debs")
-        os.system("cp /run/live/medium/pool/non-free/i/intel-microcode/* /target/debs/")
-        os.system("cp /run/live/medium/pool/non-free/a/amd64-microcode/* /target/debs/")
-        os.system("cp /run/live/medium/pool/contrib/i/iucode-tool/* /target/debs/")
-        self.do_run_in_chroot("dpkg -i /debs/*")
-        os.system("rm -rf /target/debs")
-
-        # Detect cdrom device
-        # TODO : properly detect cdrom device
-        # Mount it
-        # os.system("mkdir -p /target/media/cdrom")
-        # if (int(os.system("mount /dev/sr0 /target/media/cdrom"))):
-        #     print " --> Failed to mount CDROM. Install will fail"
-        # self.do_run_in_chroot("apt-cdrom -o Acquire::cdrom::AutoDetect=false -m add")
-
-        # remove live-packages (or w/e)
-        print(" --> Removing live packages")
-        our_current += 1
-        self.update_progress(our_current, our_total, False, False, _("Removing live configuration (packages)"))
-        with open("/run/live/medium/live/filesystem.packages-remove", "r") as fd:
-            line = fd.read().replace('\n', ' ')
-        self.do_run_in_chroot("apt-get remove --purge --yes --force-yes %s" % line)
-
-        # remove live leftovers
-        self.do_run_in_chroot("rm -rf /etc/live")
-        self.do_run_in_chroot("rm -rf /lib/live")
+        os.system("cp /lib/modules/{0}/vmlinuz /target/boot/vmlinuz-{0}".format(kernelversion))
 
         # add new user
         print(" --> Adding new user")
@@ -521,50 +475,6 @@ class InstallerEngine:
         os.system("rm -f /target/etc/localtime")
         os.system("ln -s /usr/share/zoneinfo/%s /target/etc/localtime" % self.setup.timezone)
 
-        # localizing
-        print(" --> Localizing packages")
-        self.update_progress(our_current, our_total, False, False, _("Localizing packages"))
-        if self.setup.language != "en_US":
-            os.system("mkdir -p /target/debs")
-            language_code = self.setup.language
-            if "_" in self.setup.language:
-                language_code = self.setup.language.split("_")[0]
-            l10ns = subprocess.getoutput("find /run/live/medium/pool | grep 'l10n-%s\\|hunspell-%s'" % (language_code, language_code))
-            for l10n in l10ns.split("\n"):
-                os.system("cp %s /target/debs/" % l10n)
-            self.do_run_in_chroot("dpkg -i /debs/*")
-            os.system("rm -rf /target/debs")
-
-        if os.path.exists("/etc/linuxmint/info"):
-            # drivers
-            print(" --> Installing drivers")
-            self.update_progress(our_current, our_total, False, False, _("Installing drivers"))
-
-            # Broadcom
-            drivers = subprocess.getoutput("mint-drivers")
-            if "broadcom-sta-dkms" in drivers:
-                try:
-                    os.system("mkdir -p /target/debs")
-                    os.system("cp /run/live/medium/pool/non-free/b/broadcom-sta/*.deb /target/debs/")
-                    self.do_run_in_chroot("dpkg -i /debs/*")
-                    self.do_run_in_chroot("modprobe wl")
-                    os.system("rm -rf /target/debs")
-                except:
-                    print("Failed to install Broadcom drivers")
-
-            # NVIDIA
-            driver = "./resources/nvidia-driver.tar.gz"
-            if os.path.exists(driver):
-                if "install-nvidia" in subprocess.getoutput("cat /proc/cmdline"):
-                    print(" --> Installing NVIDIA driver")
-                    try:
-                        self.do_run_in_chroot("tar zxvf %s" % driver)
-                        self.do_run_in_chroot("DEBIAN_FRONTEND=noninteractive dpkg -i --force-depends nvidia-driver/*.deb")
-                        self.do_run_in_chroot("rm -rf nvidia-driver")
-                    except Exception as e:
-                        print(("Failed to install NVIDIA driver: ", e))
-
-
         # set the keyboard options..
         print(" --> Setting the keyboard")
         our_current += 1
@@ -605,16 +515,8 @@ class InstallerEngine:
         self.do_run_in_chroot("rm /etc/default/keyboard")
         self.do_run_in_chroot("mv /etc/default/keyboard.new /etc/default/keyboard")
 
-        # Perform OS adjustments
-        if os.path.exists("/target/usr/lib/linuxmint/mintSystem/mint-adjust.py"):
-            self.do_run_in_chroot("/usr/lib/linuxmint/mintSystem/mint-adjust.py")
 
         if self.setup.luks:
-            self.do_run_in_chroot("echo aes-i586 >> /etc/initramfs-tools/modules")
-            self.do_run_in_chroot("echo aes_x86_64 >> /etc/initramfs-tools/modules")
-            self.do_run_in_chroot("echo dm-crypt >> /etc/initramfs-tools/modules")
-            self.do_run_in_chroot("echo dm-mod >> /etc/initramfs-tools/modules")
-            self.do_run_in_chroot("echo xts >> /etc/initramfs-tools/modules")
             with open("/target/etc/default/grub.d/61_live-installer.cfg", "w") as f:
                 f.write("#! /bin/sh\n")
                 f.write("set -e\n\n")
@@ -628,10 +530,8 @@ class InstallerEngine:
             self.update_progress(our_current, our_total, False, False, _("Installing bootloader"))
             print(" --> Running grub-install")
             self.do_run_in_chroot("grub-install --force %s" % self.setup.grub_device)
-            # Remove memtest86+ package (it provides multiple memtest unwanted grub entries)
-            self.do_run_in_chroot("apt-get remove --purge --yes --force-yes memtest86+")
             #fix not add windows grub entry
-            self.do_run_in_chroot("update-grub")
+            self.do_run_in_chroot("grub-mkconfig -o /boot/grub/grub.cfg")
             self.do_configure_grub(our_total, our_current)
             grub_retries = 0
             while (not self.do_check_grub(our_total, our_current)):
@@ -644,18 +544,8 @@ class InstallerEngine:
         # recreate initramfs (needed in case of skip_mount also, to include things like mdadm/dm-crypt/etc in case its needed to boot a custom install)
         print(" --> Configuring Initramfs")
         our_current += 1
-        self.do_run_in_chroot("/usr/sbin/update-initramfs -t -u -k all")
-        self.do_run_in_chroot("/usr/share/debian-system-adjustments/systemd/adjust-grub-title")
         kernelversion= subprocess.getoutput("uname -r")
-        self.do_run_in_chroot("/usr/bin/sha1sum /boot/initrd.img-%s > /var/lib/initramfs-tools/%s" % (kernelversion,kernelversion))
-
-        # Clean APT
-        print(" --> Cleaning APT")
-        our_current += 1
-        self.update_progress(our_current, our_total, True, False, _("Cleaning APT"))
-        os.system("chroot /target/ /bin/sh -c \"dpkg --configure -a\"")
-        self.do_run_in_chroot("sed -i 's/^deb cdrom/#deb cdrom/' /etc/apt/sources.list")
-        self.do_run_in_chroot("apt-get -y --force-yes autoremove")
+        self.do_run_in_chroot("/usr/sbin/mkinitcpio -g /boot/initrd.img-"+kernelversion)
 
         # now unmount it
         print(" --> Unmounting partitions")
@@ -701,15 +591,7 @@ class InstallerEngine:
         time.sleep(5)
         found_entry = False
         if os.path.exists("/target/boot/grub/grub.cfg"):
-            self.do_run_in_chroot("/usr/share/debian-system-adjustments/systemd/adjust-grub-title")
-            grubfh = open("/target/boot/grub/grub.cfg", "r")
-            for line in grubfh:
-                line = line.rstrip("\r\n")
-                if ("menuentry" in line and ("class linuxmint" in line or "Linux Mint" in line or "LMDE" in line)):
-                    found_entry = True
-                    print(" --> Found Grub entry: %s " % line)
-            grubfh.close()
-            return (found_entry)
+            return True
         else:
             print("!No /target/boot/grub/grub.cfg file found!")
             return False
