@@ -117,7 +117,7 @@ class InstallerEngine:
         self.update_progress(our_current, our_total, False,
                              False, ("Adding new user to the system"))
         #TODO: support encryption
-        self.do_run_in_chroot('useradd {username}'.format(username=self.setup.username))
+        self.do_run_in_chroot('useradd -m -g users -G wheel -s /bin/bash {username}'.format(username=self.setup.username))
         self.do_run_in_chroot("echo -ne \"{0}\\n{0}\\n\" | passwd {1}".format(self.setup.password1,self.setup.username))
         #TODO: sudoers support
         self.do_run_in_chroot("echo -ne \"{0}\\n{0}\\n\" | passwd".format(self.setup.password1))
