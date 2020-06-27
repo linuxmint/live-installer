@@ -479,22 +479,23 @@ class InstallerEngine:
         print(" --> Setting the keyboard")
         our_current += 1
         self.update_progress(our_current, our_total, False, False, _("Setting keyboard options"))
-        consolefh = open("/target/etc/default/console-setup", "r")
-        newconsolefh = open("/target/etc/default/console-setup.new", "w")
-        for line in consolefh:
-            line = line.rstrip("\r\n")
-            if(line.startswith("XKBMODEL=")):
-                newconsolefh.write("XKBMODEL=\"%s\"\n" % self.setup.keyboard_model)
-            elif(line.startswith("XKBLAYOUT=")):
-                newconsolefh.write("XKBLAYOUT=\"%s\"\n" % self.setup.keyboard_layout)
-            elif(line.startswith("XKBVARIANT=") and self.setup.keyboard_variant is not None and self.setup.keyboard_variant != ""):
-                newconsolefh.write("XKBVARIANT=\"%s\"\n" % self.setup.keyboard_variant)
-            else:
-                newconsolefh.write("%s\n" % line)
-        consolefh.close()
-        newconsolefh.close()
-        self.do_run_in_chroot("rm /etc/default/console-setup")
-        self.do_run_in_chroot("mv /etc/default/console-setup.new /etc/default/console-setup")
+        if os.path.exists("/target/etc/default/console-setup"):
+            consolefh = open("/target/etc/default/console-setup", "r")
+            newconsolefh = open("/target/etc/default/console-setup.new", "w")
+            for line in consolefh:
+                line = line.rstrip("\r\n")
+                if(line.startswith("XKBMODEL=")):
+                    newconsolefh.write("XKBMODEL=\"%s\"\n" % self.setup.keyboard_model)
+                elif(line.startswith("XKBLAYOUT=")):
+                    newconsolefh.write("XKBLAYOUT=\"%s\"\n" % self.setup.keyboard_layout)
+                elif(line.startswith("XKBVARIANT=") and self.setup.keyboard_variant is not None and self.setup.keyboard_variant != ""):
+                    newconsolefh.write("XKBVARIANT=\"%s\"\n" % self.setup.keyboard_variant)
+                else:
+                    newconsolefh.write("%s\n" % line)
+            consolefh.close()
+            newconsolefh.close()
+            self.do_run_in_chroot("rm /etc/default/console-setup")
+            self.do_run_in_chroot("mv /etc/default/console-setup.new /etc/default/console-setup")
 
         consolefh = open("/target/etc/default/keyboard", "r")
         newconsolefh = open("/target/etc/default/keyboard.new", "w")
