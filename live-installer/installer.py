@@ -503,7 +503,7 @@ class InstallerEngine:
             line = line.rstrip("\r\n")
             if(line.startswith("KEYMAP=")):
                 if(self.setup.keyboard_variant is not None and self.setup.keyboard_variant != ""):
-                    newconsolefh.write("KEYMAP=\"{0}-{1}\"\n".format(self.setup.keyboard_layout, self.setup.keyboard_variant)
+                    newconsolefh.write("KEYMAP=\"{0}-{1}\"\n".format(self.setup.keyboard_layout, self.setup.keyboard_variant))
                 else:
                     newconsolefh.write("KEYMAP=\"{0}\"\n".format(self.setup.keyboard_layout))
             else:
