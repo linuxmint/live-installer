@@ -530,6 +530,15 @@ class InstallerEngine:
                 f.write('GRUB_CMDLINE_LINUX="cryptdevice=%s:lvmlmde root=/dev/mapper/lvmlmde-root resume=/dev/mapper/lvmlmde-swap"\n' % self.auto_root_physical_partition)
             self.do_run_in_chroot("echo \"power/disk = shutdown\" >> /etc/sysfs.d/local.conf")
 
+        # recreate initramfs (needed in case of skip_mount also, to include things like mdadm/dm-crypt/etc in case its needed to boot a custom install)
+        print(" --> Configuring Initramfs")
+        self.update_progress(our_current, our_total, False, False, _("Genetaring initramfs"))
+        our_current += 1
+        kernelversion= subprocess.getoutput("uname -r")
+        self.do_run_in_chroot("/usr/sbin/mkinitcpio -g /boot/initramfs-"+kernelversion+".img")
+        self.do_run_in_chroot("/usr/sbin/mkinitcpio -g /boot/initramfs-"+kernelversion+"-fallback.img")
+
+
         # write MBR (grub)
         print(" --> Configuring Grub")
         our_current += 1
@@ -547,13 +556,6 @@ class InstallerEngine:
                 if grub_retries >= 5:
                     self.error_message(message=_("WARNING: The grub bootloader was not configured properly! You need to configure it manually."))
                     break
-
-        # recreate initramfs (needed in case of skip_mount also, to include things like mdadm/dm-crypt/etc in case its needed to boot a custom install)
-        print(" --> Configuring Initramfs")
-        our_current += 1
-        kernelversion= subprocess.getoutput("uname -r")
-        self.do_run_in_chroot("/usr/sbin/mkinitcpio -g /boot/initramfs-"+kernelversion+".img")
-        self.do_run_in_chroot("/usr/sbin/mkinitcpio -g /boot/initramfs-"+kernelversion+"-fallback.img")
         
 
 
