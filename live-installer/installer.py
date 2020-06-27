@@ -466,8 +466,8 @@ class InstallerEngine:
         os.system("echo \"%s.UTF-8 UTF-8\" >> /target/etc/locale.gen" % self.setup.language)
         self.do_run_in_chroot("locale-gen")
         os.system("echo \"\" > /target/etc/default/locale")
-        self.do_run_in_chroot("update-locale LANG=\"%s.UTF-8\"" % self.setup.language)
-        self.do_run_in_chroot("update-locale LANG=%s.UTF-8" % self.setup.language)
+        self.do_run_in_chroot("localectl set-locale LANG=\"%s.UTF-8\"" % self.setup.language)
+        self.do_run_in_chroot("localectl set-locale LANG=%s.UTF-8" % self.setup.language)
 
         # set the timezone
         print(" --> Setting the timezone")
