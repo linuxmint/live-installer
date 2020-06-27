@@ -497,24 +497,21 @@ class InstallerEngine:
             self.do_run_in_chroot("rm /etc/default/console-setup")
             self.do_run_in_chroot("mv /etc/default/console-setup.new /etc/default/console-setup")
 
-        consolefh = open("/target/etc/default/keyboard", "r")
-        newconsolefh = open("/target/etc/default/keyboard.new", "w")
+        consolefh = open("/target/etc/vconsole.conf", "r")
+        newconsolefh = open("/target/etc/vconsole.conf.new", "w")
         for line in consolefh:
             line = line.rstrip("\r\n")
-            if(line.startswith("XKBMODEL=")):
-                newconsolefh.write("XKBMODEL=\"%s\"\n" % self.setup.keyboard_model)
-            elif(line.startswith("XKBLAYOUT=")):
-                newconsolefh.write("XKBLAYOUT=\"%s\"\n" % self.setup.keyboard_layout)
-            elif(line.startswith("XKBVARIANT=") and self.setup.keyboard_variant is not None and self.setup.keyboard_variant != ""):
-                newconsolefh.write("XKBVARIANT=\"%s\"\n" % self.setup.keyboard_variant)
-            elif(line.startswith("XKBOPTIONS=")):
-                newconsolefh.write("XKBOPTIONS=grp:ctrls_toggle")
+            if(line.startswith("KEYMAP=")):
+                if(self.setup.keyboard_variant is not None and self.setup.keyboard_variant != ""):
+                    newconsolefh.write("KEYMAP=\"{0}-{1}\"\n".format(self.setup.keyboard_layout, self.setup.keyboard_variant)
+                else:
+                    newconsolefh.write("KEYMAP=\"{0}\"\n".format(self.setup.keyboard_layout))
             else:
                 newconsolefh.write("%s\n" % line)
         consolefh.close()
         newconsolefh.close()
-        self.do_run_in_chroot("rm /etc/default/keyboard")
-        self.do_run_in_chroot("mv /etc/default/keyboard.new /etc/default/keyboard")
+        self.do_run_in_chroot("rm /etc/vconsole.conf")
+        self.do_run_in_chroot("mv /etc/vconsole.conf.new /etc/vconsole.conf")
 
 
         if self.setup.luks:
