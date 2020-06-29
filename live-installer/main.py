@@ -1,11 +1,15 @@
 #!/usr/bin/python3
 import sys
+import os
 import subprocess
 import gettext
 
 gettext.install("live-installer", "/usr/share/locale")
 
 sys.path.insert(1, '/usr/lib/live-installer')
+os.chdir("/usr/lib/live-installer")
+os.env['GTK_THEME']="Adwaita"
+
 from frontend.gtk_interface import InstallerWindow
 
 import gi
