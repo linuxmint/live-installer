@@ -207,8 +207,8 @@ msgstr "Gerð uppsetningar"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:276
 #: usr/lib/live-installer/frontend/gtk_interface.py:277
-msgid "Where do you want to install LMDE?"
-msgstr "Hvar viltu setja upp LMDE?"
+msgid "Where do you want to install 17G?"
+msgstr "Hvar viltu setja upp 17G?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:277
 msgid "Partitioning"
@@ -250,12 +250,12 @@ msgid "Next"
 msgstr "Næsta"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:290
-msgid "Welcome to the LMDE Installer."
-msgstr "Velkomin í LMDE uppsetningarforritið."
+msgid "Welcome to the 17G Installer."
+msgstr "Velkomin í 17G uppsetningarforritið."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:291
 msgid ""
-"This program will ask you some questions and set up LMDE on your computer."
+"This program will ask you some questions and set up 17G on your computer."
 msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:298
@@ -314,8 +314,8 @@ msgid "Automated Installation"
 msgstr "Sjálfvirk uppsetning"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:318
-msgid "Erase a disk and install LMDE on it."
-msgstr "Hreinsa disk og setja LMDE upp á honum."
+msgid "Erase a disk and install 17G on it."
+msgstr "Hreinsa disk og setja 17G upp á honum."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:319
 msgid "Disk:"
@@ -342,8 +342,8 @@ msgid "Manual Partitioning"
 msgstr "Handvirk disksneiðing"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:325
-msgid "Manually create, resize or choose partitions for LMDE."
-msgstr "Skilgreina, eyða og endurstilla disksneiðar fyrir LMDE."
+msgid "Manually create, resize or choose partitions for 17G."
+msgstr "Skilgreina, eyða og endurstilla disksneiðar fyrir 17G."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:326
 msgid "Fill the disk with random data"

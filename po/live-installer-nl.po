@@ -209,8 +209,8 @@ msgstr "Installatietype"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:276
 #: usr/lib/live-installer/frontend/gtk_interface.py:277
-msgid "Where do you want to install LMDE?"
-msgstr "Waar wilt u LMDE installeren?"
+msgid "Where do you want to install 17G?"
+msgstr "Waar wilt u 17G installeren?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:277
 msgid "Partitioning"
@@ -252,14 +252,14 @@ msgid "Next"
 msgstr "Volgende"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:290
-msgid "Welcome to the LMDE Installer."
-msgstr "Welkom bij het installatieprogramma van LMDE."
+msgid "Welcome to the 17G Installer."
+msgstr "Welkom bij het installatieprogramma van 17G."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:291
 msgid ""
-"This program will ask you some questions and set up LMDE on your computer."
+"This program will ask you some questions and set up 17G on your computer."
 msgstr ""
-"Dit programma zal u enkele vragen stellen en LMDE installeren op uw computer."
+"Dit programma zal u enkele vragen stellen en 17G installeren op uw computer."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:298
 msgid "Keyboard Model:"
@@ -323,8 +323,8 @@ msgid "Automated Installation"
 msgstr "Geautomatiseerde installatie"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:318
-msgid "Erase a disk and install LMDE on it."
-msgstr "Wis een schijf en installeer LMDE erop."
+msgid "Erase a disk and install 17G on it."
+msgstr "Wis een schijf en installeer 17G erop."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:319
 msgid "Disk:"
@@ -352,8 +352,8 @@ msgid "Manual Partitioning"
 msgstr "Handmatige schijfindeling"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:325
-msgid "Manually create, resize or choose partitions for LMDE."
-msgstr "Handmatig partities maken, kiezen of grootte veranderen voor LMDE"
+msgid "Manually create, resize or choose partitions for 17G."
+msgstr "Handmatig partities maken, kiezen of grootte veranderen voor 17G"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:326
 msgid "Fill the disk with random data"
