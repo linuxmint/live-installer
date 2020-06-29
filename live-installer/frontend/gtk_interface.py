@@ -232,12 +232,12 @@ class InstallerWindow:
             imglist=os.listdir("./resources/slide/")
             i=0
             while(1):
-                img.set_from_file("./resources/slide/"+imglist[i])
-                #img.set_size_request(743,384)
-                if(i==len(imglist)-1):
+                if(i>=(len(imglist)-1)):
                     i=0
                 else:
                     i=i+1
+                img.set_from_file("./resources/slide/"+imglist[i])
+                img.set_size_request(743,384)
                 time.sleep(30)
 
 
