@@ -16,7 +16,7 @@ Comment=GUI Installation Tool for GNU/Linux
 Path=/usr/lib/live-installer/
 
 # The executable of the application, possibly with arguments.
-Exec=sudo GTK_THEME=Adwaita python3 /usr/lib/live-installer/main.py --window
+Exec=/usr/bin/live-installer
 
 # The name of the icon that will be used to display this entry
 Icon=live-installer
