@@ -13,6 +13,7 @@ import threading
 import time
 import parted
 import cairo
+import threading
 
 import gi
 gi.require_version('Gtk', '3.0')
@@ -209,7 +210,9 @@ class InstallerWindow:
 
         # install page
         self.builder.get_object("label_install_progress").set_text(_("Calculating file indexes ..."))
-
+        t = threading.Thread(target=self.slide)
+        t.daemon = True
+        t.start()
         # i18n
         self.i18n()
 
@@ -223,6 +226,19 @@ class InstallerWindow:
 
     def fullscreen(self):
         self.window.fullscreen()
+
+    def slide(self):
+            img = self.builder.get_object("install_image")
+            imglist=os.listdir("./resources/slide/")
+            i=0
+            while(1):
+                img.set_from_file("./resources/slide/"+imglist[i])
+                #img.set_size_request(743,384)
+                if(i==len(imglist)-1):
+                    i=0
+                else:
+                    i=i+1
+                time.sleep(30)
 
 
     def i18n(self):
@@ -1056,6 +1072,7 @@ class InstallerWindow:
 
         self.installer.set_progress_hook(self.update_progress)
         self.installer.set_error_hook(self.error_message)
+
 
         # do we dare? ..
         self.critical_error_happened = False

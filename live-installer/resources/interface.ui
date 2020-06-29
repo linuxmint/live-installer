@@ -247,7 +247,7 @@
                         <property name="orientation">vertical</property>
                         <property name="spacing">15</property>
                         <child>
-                          <object class="GtkImage">
+                          <object class="GtkImage" id="image_welcome">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="pixel_size">80</property>
@@ -1982,6 +1982,18 @@
                         <property name="fill">False</property>
                         <property name="pack_type">end</property>
                         <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkImage" id="install_image">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="icon_name">distro</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
                       </packing>
                     </child>
                     <child>
