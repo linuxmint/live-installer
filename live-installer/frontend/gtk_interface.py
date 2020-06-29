@@ -210,9 +210,10 @@ class InstallerWindow:
 
         # install page
         self.builder.get_object("label_install_progress").set_text(_("Calculating file indexes ..."))
-        t = threading.Thread(target=self.slide)
-        t.daemon = True
-        t.start()
+        img = self.builder.get_object("install_image")
+        img.set_from_file("./resources/install.png")
+        img.set_size_request(783,384)
+
         # i18n
         self.i18n()
 
@@ -226,20 +227,6 @@ class InstallerWindow:
 
     def fullscreen(self):
         self.window.fullscreen()
-
-    def slide(self):
-            img = self.builder.get_object("install_image")
-            imglist=os.listdir("./resources/slide/")
-            i=0
-            while(1):
-                img.set_from_file("./resources/slide/"+imglist[i])
-                img.set_size_request(743,384)
-                if(i>=(len(imglist)-1)):
-                    i=0
-                else:
-                    i=i+1
-                time.sleep(30)
-
 
     def i18n(self):
 
@@ -263,8 +250,8 @@ class InstallerWindow:
         self.wizard_pages[self.PAGE_TIMEZONE] = WizardPage(_("Timezone"), "mark-location-symbolic", _("Where are you?"))
         self.wizard_pages[self.PAGE_KEYBOARD] = WizardPage(_("Keyboard layout"), "preferences-desktop-keyboard-symbolic", _("What is your keyboard layout?"))
         self.wizard_pages[self.PAGE_USER] = WizardPage(_("User account"), "avatar-default-symbolic", _("Who are you?"))
-        self.wizard_pages[self.PAGE_TYPE] = WizardPage(_("Installation Type"), "drive-harddisk-system-symbolic", _("Where do you want to install LMDE?"))
-        self.wizard_pages[self.PAGE_PARTITIONS] = WizardPage(_("Partitioning"), "drive-harddisk-system-symbolic", _("Where do you want to install LMDE?"))
+        self.wizard_pages[self.PAGE_TYPE] = WizardPage(_("Installation Type"), "drive-harddisk-system-symbolic", _("Where do you want to install system?"))
+        self.wizard_pages[self.PAGE_PARTITIONS] = WizardPage(_("Partitioning"), "drive-harddisk-system-symbolic", _("Where do you want to install system?"))
         self.wizard_pages[self.PAGE_ADVANCED] = WizardPage(_("Advanced options"), "preferences-system-symbolic", "Configure the boot menu")
         self.wizard_pages[self.PAGE_OVERVIEW] = WizardPage(_("Summary"), "object-select-symbolic", "Check that everything is correct")
         self.wizard_pages[self.PAGE_INSTALL] = WizardPage(_("Installing"), "system-run-symbolic", "Please wait...")
@@ -277,8 +264,8 @@ class InstallerWindow:
         self.builder.get_object("button_next").set_label(_("Next"))
 
         # Welcome page
-        self.builder.get_object("label_welcome1").set_text(_("Welcome to the LMDE Installer."))
-        self.builder.get_object("label_welcome2").set_text(_("This program will ask you some questions and set up LMDE on your computer."))
+        self.builder.get_object("label_welcome1").set_text(_("Welcome to the 17g Installer."))
+        self.builder.get_object("label_welcome2").set_text(_("This program will ask you some questions and set up system on your computer."))
 
         # Language page
         self.language_column.set_title(_("Language"))
@@ -305,14 +292,14 @@ class InstallerWindow:
 
         # Type page
         self.builder.get_object("label_automated").set_text(_("Automated Installation"))
-        self.builder.get_object("label_automated2").set_text(_("Erase a disk and install LMDE on it."))
+        self.builder.get_object("label_automated2").set_text(_("Erase a disk and install system on it."))
         self.builder.get_object("label_disk").set_text(_("Disk:"))
         self.builder.get_object("label_encrypt").set_text(_("Encrypt the operating system"))
         self.builder.get_object("entry_passphrase").set_placeholder_text(_("Passphrase"))
         self.builder.get_object("entry_passphrase2").set_placeholder_text(_("Confirm passphrase"))
         self.builder.get_object("label_lvm").set_text(_("Use LVM (Logical Volume Management)"))
         self.builder.get_object("label_manual").set_text(_("Manual Partitioning"))
-        self.builder.get_object("label_manual2").set_text(_("Manually create, resize or choose partitions for LMDE."))
+        self.builder.get_object("label_manual2").set_text(_("Manually create, resize or choose partitions for system."))
         self.builder.get_object("label_badblocks").set_text(_("Fill the disk with random data"))
         self.builder.get_object("check_badblocks").set_tooltip_text(_("This provides extra security but it can take hours."))
 
