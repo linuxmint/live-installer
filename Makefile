@@ -22,9 +22,11 @@ buildmo:
 install:
 	cp -prfv build/* $(DESTDIR)/
 	install live-installer.desktop $(DESTDIR)/usr/share/applications/live-installer.desktop
+	install live-installer.sh $(DESTDIR)/usr/bin/live-installer
 	
 uninstall:
-	rm -rf $(DESTDIR)//usr/lib/live-installer
+	rm -rf $(DESTDIR)/usr/lib/live-installer
+	rm -f $(DESTDIR)/usr/bin/live-installer
 	rm -f $(DESTDIR)/usr/share/applications/live-installer.desktop
 clean:
 	rm -rf build
