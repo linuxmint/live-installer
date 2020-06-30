@@ -1,2 +1,2 @@
 xhost +
-pkexec DISPLAY=$DISPLAY /usr/lib/live-installer/main.py
+pkexec sh -c "DISPLAY=$DISPLAY /usr/lib/live-installer/main.py"
