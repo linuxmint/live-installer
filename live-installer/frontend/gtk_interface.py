@@ -740,9 +740,9 @@ class InstallerWindow:
         for i in range(9):
             img = self.builder.get_object("progress_%d" % i)
             if i <= index:
-                img.set_from_file("/usr/lib/live-installer/icons/live-installer-progress-dot-on.png")
+                img.set_from_file("./icons/live-installer-progress-dot-on.png")
             else:
-                img.set_from_file("/usr/lib/live-installer/icons/live-installer-progress-dot-off.png")
+                img.set_from_file("./icons/live-installer-progress-dot-off.png")
         help_text = _(self.wizard_pages[index].help_text)
         self.builder.get_object("help_label").set_markup("<big><b>%s</b></big>" % help_text)
         self.builder.get_object("help_icon").set_from_icon_name(self.wizard_pages[index].icon, Gtk.IconSize.LARGE_TOOLBAR)
