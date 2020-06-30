@@ -4,8 +4,8 @@ all: clean build
 
 build: buildmo
 	mkdir -p build/usr/lib/ || true
-	cp live-installer.sh build/usr/lib/live-installer/
 	cp -prfv live-installer build/usr/lib/
+	cp live-installer.sh build/usr/lib/live-installer/
 	#set parmissions
 	chmod 755 -R build
 	chown root -R build
