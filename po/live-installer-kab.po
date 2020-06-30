@@ -206,8 +206,8 @@ msgstr "Anaw n usbeddi"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:276
 #: usr/lib/live-installer/frontend/gtk_interface.py:277
-msgid "Where do you want to install LMDE?"
-msgstr "Anida tebɣiḍ ad tesbeddeḍ LMDE ?"
+msgid "Where do you want to install 17G?"
+msgstr "Anida tebɣiḍ ad tesbeddeḍ 17G ?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:277
 msgid "Partitioning"
@@ -249,14 +249,14 @@ msgid "Next"
 msgstr "Ɣer sdat"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:290
-msgid "Welcome to the LMDE Installer."
-msgstr "Anṣuf ɣer umsbedday LMDE."
+msgid "Welcome to the 17G Installer."
+msgstr "Anṣuf ɣer umsbedday 17G."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:291
 msgid ""
-"This program will ask you some questions and set up LMDE on your computer."
+"This program will ask you some questions and set up 17G on your computer."
 msgstr ""
-"Ahil-agi ad k-d-yefk kra n isteqsiyen yerna ad isbedd LMDE ɣef uselkim-inek."
+"Ahil-agi ad k-d-yefk kra n isteqsiyen yerna ad isbedd 17G ɣef uselkim-inek."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:298
 msgid "Keyboard Model:"
@@ -318,8 +318,8 @@ msgid "Automated Installation"
 msgstr "Asbeddi awurman"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:318
-msgid "Erase a disk and install LMDE on it."
-msgstr "Sfeḍ aḍebsi u sbedd degs LMDE."
+msgid "Erase a disk and install 17G on it."
+msgstr "Sfeḍ aḍebsi u sbedd degs 17G."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:319
 msgid "Disk:"
@@ -346,8 +346,8 @@ msgid "Manual Partitioning"
 msgstr "Beḍḍu n uḍebsi s ufus"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:325
-msgid "Manually create, resize or choose partitions for LMDE."
-msgstr "Snulfu-d, beddel tiddi neɣ fren iḥricen i LMDE s ufus."
+msgid "Manually create, resize or choose partitions for 17G."
+msgstr "Snulfu-d, beddel tiddi neɣ fren iḥricen i 17G s ufus."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:326
 msgid "Fill the disk with random data"

@@ -207,8 +207,8 @@ msgstr "Typ instalace"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:276
 #: usr/lib/live-installer/frontend/gtk_interface.py:277
-msgid "Where do you want to install LMDE?"
-msgstr "Kam chcete LMDE nainstalovat?"
+msgid "Where do you want to install 17G?"
+msgstr "Kam chcete 17G nainstalovat?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:277
 msgid "Partitioning"
@@ -250,15 +250,15 @@ msgid "Next"
 msgstr "Další"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:290
-msgid "Welcome to the LMDE Installer."
-msgstr "Vítejte v instalátoru LMDE."
+msgid "Welcome to the 17G Installer."
+msgstr "Vítejte v instalátoru 17G."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:291
 msgid ""
-"This program will ask you some questions and set up LMDE on your computer."
+"This program will ask you some questions and set up 17G on your computer."
 msgstr ""
 "Tento program vám položí několik dotazů a na základě odpovědí na ně "
-"nainstaluje LMDE na váš počítač."
+"nainstaluje 17G na váš počítač."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:298
 msgid "Keyboard Model:"
@@ -319,8 +319,8 @@ msgid "Automated Installation"
 msgstr "Automatizovaná instalace"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:318
-msgid "Erase a disk and install LMDE on it."
-msgstr "Vymazat disk a nainstalovat na něj LMDE."
+msgid "Erase a disk and install 17G on it."
+msgstr "Vymazat disk a nainstalovat na něj 17G."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:319
 msgid "Disk:"
@@ -347,8 +347,8 @@ msgid "Manual Partitioning"
 msgstr "Ruční rozdělení"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:325
-msgid "Manually create, resize or choose partitions for LMDE."
-msgstr "Ručně vytvořit, změnit velikost nebo zvolit oddíly pro LMDE."
+msgid "Manually create, resize or choose partitions for 17G."
+msgstr "Ručně vytvořit, změnit velikost nebo zvolit oddíly pro 17G."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:326
 msgid "Fill the disk with random data"

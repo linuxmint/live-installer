@@ -207,8 +207,8 @@ msgstr "Tipus d'instal·lació"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:276
 #: usr/lib/live-installer/frontend/gtk_interface.py:277
-msgid "Where do you want to install LMDE?"
-msgstr "On voleu instal·lar LMDE?"
+msgid "Where do you want to install 17G?"
+msgstr "On voleu instal·lar 17G?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:277
 msgid "Partitioning"
@@ -250,14 +250,14 @@ msgid "Next"
 msgstr "Següent"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:290
-msgid "Welcome to the LMDE Installer."
-msgstr "Benvingut/da a l'instal·lador de LMDE."
+msgid "Welcome to the 17G Installer."
+msgstr "Benvingut/da a l'instal·lador de 17G."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:291
 msgid ""
-"This program will ask you some questions and set up LMDE on your computer."
+"This program will ask you some questions and set up 17G on your computer."
 msgstr ""
-"Aquest programa us farà algunes preguntes i configurarà LMDE en el vostre "
+"Aquest programa us farà algunes preguntes i configurarà 17G en el vostre "
 "equip."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:298
@@ -320,8 +320,8 @@ msgid "Automated Installation"
 msgstr "Instal·lació automatitzada"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:318
-msgid "Erase a disk and install LMDE on it."
-msgstr "Esborrar un disc i instal·lar-hi LMDE."
+msgid "Erase a disk and install 17G on it."
+msgstr "Esborrar un disc i instal·lar-hi 17G."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:319
 msgid "Disk:"
@@ -348,8 +348,8 @@ msgid "Manual Partitioning"
 msgstr "Particionat manual"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:325
-msgid "Manually create, resize or choose partitions for LMDE."
-msgstr "Crear, redimensionar o triar particions de LMDE manualment."
+msgid "Manually create, resize or choose partitions for 17G."
+msgstr "Crear, redimensionar o triar particions de 17G manualment."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:326
 msgid "Fill the disk with random data"

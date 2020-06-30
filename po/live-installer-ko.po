@@ -201,8 +201,8 @@ msgstr "설치 형태"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:276
 #: usr/lib/live-installer/frontend/gtk_interface.py:277
-msgid "Where do you want to install LMDE?"
-msgstr "LMDE를 설치하고자 하는 장소가 어떻게 되나요?"
+msgid "Where do you want to install 17G?"
+msgstr "17G를 설치하고자 하는 장소가 어떻게 되나요?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:277
 msgid "Partitioning"
@@ -244,13 +244,13 @@ msgid "Next"
 msgstr "다음"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:290
-msgid "Welcome to the LMDE Installer."
-msgstr "LMDE 설치관리자에 오신 걸 환영합니다."
+msgid "Welcome to the 17G Installer."
+msgstr "17G 설치관리자에 오신 걸 환영합니다."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:291
 msgid ""
-"This program will ask you some questions and set up LMDE on your computer."
-msgstr "이 프로그램은 몇 가지 질문을 하고 LMDE를 컴퓨터에 설치할 것입니다."
+"This program will ask you some questions and set up 17G on your computer."
+msgstr "이 프로그램은 몇 가지 질문을 하고 17G를 컴퓨터에 설치할 것입니다."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:298
 msgid "Keyboard Model:"
@@ -308,7 +308,7 @@ msgid "Automated Installation"
 msgstr "자동 설치"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:318
-msgid "Erase a disk and install LMDE on it."
+msgid "Erase a disk and install 17G on it."
 msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:319
@@ -336,7 +336,7 @@ msgid "Manual Partitioning"
 msgstr "수동 파티션 작업"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:325
-msgid "Manually create, resize or choose partitions for LMDE."
+msgid "Manually create, resize or choose partitions for 17G."
 msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:326

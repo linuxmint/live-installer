@@ -208,8 +208,8 @@ msgstr "Asennustapa"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:276
 #: usr/lib/live-installer/frontend/gtk_interface.py:277
-msgid "Where do you want to install LMDE?"
-msgstr "Mihin haluat asentaa LMDE:n?"
+msgid "Where do you want to install 17G?"
+msgstr "Mihin haluat asentaa 17G:n?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:277
 msgid "Partitioning"
@@ -251,14 +251,14 @@ msgid "Next"
 msgstr "Seuraava"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:290
-msgid "Welcome to the LMDE Installer."
-msgstr "Tervetuloa LMDE-asennusohjelmaan"
+msgid "Welcome to the 17G Installer."
+msgstr "Tervetuloa 17G-asennusohjelmaan"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:291
 msgid ""
-"This program will ask you some questions and set up LMDE on your computer."
+"This program will ask you some questions and set up 17G on your computer."
 msgstr ""
-"Tämä ohjelma kysyy sinulta muutamia kysymyksiä ja asentaa LMDE:n "
+"Tämä ohjelma kysyy sinulta muutamia kysymyksiä ja asentaa 17G:n "
 "tietokoneeseesi."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:298
@@ -322,8 +322,8 @@ msgid "Automated Installation"
 msgstr "Automatisoitu asennus"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:318
-msgid "Erase a disk and install LMDE on it."
-msgstr "Tyhjennä levy ja asenna sille LMDE."
+msgid "Erase a disk and install 17G on it."
+msgstr "Tyhjennä levy ja asenna sille 17G."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:319
 msgid "Disk:"
@@ -350,8 +350,8 @@ msgid "Manual Partitioning"
 msgstr "Luo oma osiorakenne"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:325
-msgid "Manually create, resize or choose partitions for LMDE."
-msgstr "Luo, muuta kokoa tai valitse osioita LMDE:lle itsenäisesti."
+msgid "Manually create, resize or choose partitions for 17G."
+msgstr "Luo, muuta kokoa tai valitse osioita 17G:lle itsenäisesti."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:326
 msgid "Fill the disk with random data"

@@ -207,8 +207,8 @@ msgstr "Тип установки"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:276
 #: usr/lib/live-installer/frontend/gtk_interface.py:277
-msgid "Where do you want to install LMDE?"
-msgstr "Куда вы хотите установить LMDE?"
+msgid "Where do you want to install 17G?"
+msgstr "Куда вы хотите установить 17G?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:277
 msgid "Partitioning"
@@ -250,14 +250,14 @@ msgid "Next"
 msgstr "Далее"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:290
-msgid "Welcome to the LMDE Installer."
-msgstr "Добро пожаловать в программу установки LMDE."
+msgid "Welcome to the 17G Installer."
+msgstr "Добро пожаловать в программу установки 17G."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:291
 msgid ""
-"This program will ask you some questions and set up LMDE on your computer."
+"This program will ask you some questions and set up 17G on your computer."
 msgstr ""
-"Эта программа задаст вам несколько вопросов и установит LMDE на ваш "
+"Эта программа задаст вам несколько вопросов и установит 17G на ваш "
 "компьютер."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:298
@@ -320,8 +320,8 @@ msgid "Automated Installation"
 msgstr "Автоматическая установка"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:318
-msgid "Erase a disk and install LMDE on it."
-msgstr "Стереть диск и установить на нём LMDE."
+msgid "Erase a disk and install 17G on it."
+msgstr "Стереть диск и установить на нём 17G."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:319
 msgid "Disk:"
@@ -348,8 +348,8 @@ msgid "Manual Partitioning"
 msgstr "Ручная разметка"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:325
-msgid "Manually create, resize or choose partitions for LMDE."
-msgstr "Вручную создать, изменить размер или выбрать разделы для LMDE."
+msgid "Manually create, resize or choose partitions for 17G."
+msgstr "Вручную создать, изменить размер или выбрать разделы для 17G."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:326
 msgid "Fill the disk with random data"

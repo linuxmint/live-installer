@@ -205,8 +205,8 @@ msgstr "Instalazio-mota"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:276
 #: usr/lib/live-installer/frontend/gtk_interface.py:277
-msgid "Where do you want to install LMDE?"
-msgstr "Non instalatu nahi duzu LMDE?"
+msgid "Where do you want to install 17G?"
+msgstr "Non instalatu nahi duzu 17G?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:277
 msgid "Partitioning"
@@ -248,14 +248,14 @@ msgid "Next"
 msgstr "Hurrengoa"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:290
-msgid "Welcome to the LMDE Installer."
-msgstr "Ongi etorri LMDE instalatzailera"
+msgid "Welcome to the 17G Installer."
+msgstr "Ongi etorri 17G instalatzailera"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:291
 msgid ""
-"This program will ask you some questions and set up LMDE on your computer."
+"This program will ask you some questions and set up 17G on your computer."
 msgstr ""
-"Programa honek galdera batzuk egingo dizkizu eta LMDE konfiguratuko du zure "
+"Programa honek galdera batzuk egingo dizkizu eta 17G konfiguratuko du zure "
 "ordenagailuan."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:298
@@ -318,8 +318,8 @@ msgid "Automated Installation"
 msgstr "Instalazio automatizatua"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:318
-msgid "Erase a disk and install LMDE on it."
-msgstr "Garbitu disko bat eta instalatu LMDE bertan"
+msgid "Erase a disk and install 17G on it."
+msgstr "Garbitu disko bat eta instalatu 17G bertan"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:319
 msgid "Disk:"
@@ -346,8 +346,8 @@ msgid "Manual Partitioning"
 msgstr "Eskuzko partizioak"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:325
-msgid "Manually create, resize or choose partitions for LMDE."
-msgstr "Eskuz sortu, aldatu tamainaz edo aukeratu LMDErentzako partizioak."
+msgid "Manually create, resize or choose partitions for 17G."
+msgstr "Eskuz sortu, aldatu tamainaz edo aukeratu 17Grentzako partizioak."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:326
 msgid "Fill the disk with random data"

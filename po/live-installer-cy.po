@@ -206,8 +206,8 @@ msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:276
 #: usr/lib/live-installer/frontend/gtk_interface.py:277
-msgid "Where do you want to install LMDE?"
-msgstr "Ble ydych chi am osod LMDE?"
+msgid "Where do you want to install 17G?"
+msgstr "Ble ydych chi am osod 17G?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:277
 msgid "Partitioning"
@@ -249,14 +249,14 @@ msgid "Next"
 msgstr "Nesaf"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:290
-msgid "Welcome to the LMDE Installer."
-msgstr "Croeso i'r Gosodwr LMDE."
+msgid "Welcome to the 17G Installer."
+msgstr "Croeso i'r Gosodwr 17G."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:291
 msgid ""
-"This program will ask you some questions and set up LMDE on your computer."
+"This program will ask you some questions and set up 17G on your computer."
 msgstr ""
-"Bydd y rhaglen hon yn gofyn rhai cwestiynau i chi ac yn gosod LMDE ar eich "
+"Bydd y rhaglen hon yn gofyn rhai cwestiynau i chi ac yn gosod 17G ar eich "
 "cyfrifiadur."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:298
@@ -316,7 +316,7 @@ msgid "Automated Installation"
 msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:318
-msgid "Erase a disk and install LMDE on it."
+msgid "Erase a disk and install 17G on it."
 msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:319
@@ -344,7 +344,7 @@ msgid "Manual Partitioning"
 msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:325
-msgid "Manually create, resize or choose partitions for LMDE."
+msgid "Manually create, resize or choose partitions for 17G."
 msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:326

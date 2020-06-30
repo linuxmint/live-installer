@@ -207,8 +207,8 @@ msgstr "Tipo de instalación"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:276
 #: usr/lib/live-installer/frontend/gtk_interface.py:277
-msgid "Where do you want to install LMDE?"
-msgstr "¿Dónde quiere instalar LMDE?"
+msgid "Where do you want to install 17G?"
+msgstr "¿Dónde quiere instalar 17G?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:277
 msgid "Partitioning"
@@ -250,14 +250,14 @@ msgid "Next"
 msgstr "Siguiente"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:290
-msgid "Welcome to the LMDE Installer."
-msgstr "Bienvenid@ al instalador de LMDE."
+msgid "Welcome to the 17G Installer."
+msgstr "Bienvenid@ al instalador de 17G."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:291
 msgid ""
-"This program will ask you some questions and set up LMDE on your computer."
+"This program will ask you some questions and set up 17G on your computer."
 msgstr ""
-"Este programa le hará algunas preguntas y configurará LMDE en su equipo."
+"Este programa le hará algunas preguntas y configurará 17G en su equipo."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:298
 msgid "Keyboard Model:"
@@ -319,8 +319,8 @@ msgid "Automated Installation"
 msgstr "Instalación automática"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:318
-msgid "Erase a disk and install LMDE on it."
-msgstr "Borrar un disco e instalar LMDE en él."
+msgid "Erase a disk and install 17G on it."
+msgstr "Borrar un disco e instalar 17G en él."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:319
 msgid "Disk:"
@@ -347,8 +347,8 @@ msgid "Manual Partitioning"
 msgstr "Particionado manual"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:325
-msgid "Manually create, resize or choose partitions for LMDE."
-msgstr "Crear, redimensionar o elegir particiones de LMDE manualmente."
+msgid "Manually create, resize or choose partitions for 17G."
+msgstr "Crear, redimensionar o elegir particiones de 17G manualmente."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:326
 msgid "Fill the disk with random data"

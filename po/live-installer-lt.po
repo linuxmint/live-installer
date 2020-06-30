@@ -205,8 +205,8 @@ msgstr "Diegimo tipas"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:276
 #: usr/lib/live-installer/frontend/gtk_interface.py:277
-msgid "Where do you want to install LMDE?"
-msgstr "Kur norite įdiegti LMDE?"
+msgid "Where do you want to install 17G?"
+msgstr "Kur norite įdiegti 17G?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:277
 msgid "Partitioning"
@@ -248,15 +248,15 @@ msgid "Next"
 msgstr "Kitas"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:290
-msgid "Welcome to the LMDE Installer."
-msgstr "Sveiki atvykę į LMDE diegimo programą."
+msgid "Welcome to the 17G Installer."
+msgstr "Sveiki atvykę į 17G diegimo programą."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:291
 msgid ""
-"This program will ask you some questions and set up LMDE on your computer."
+"This program will ask you some questions and set up 17G on your computer."
 msgstr ""
 "Ši programa užduos jums kai kuriuos klausimus ir nustatys jūsų kompiuteryje "
-"LMDE."
+"17G."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:298
 msgid "Keyboard Model:"
@@ -318,8 +318,8 @@ msgid "Automated Installation"
 msgstr "Automatizuotas diegimas"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:318
-msgid "Erase a disk and install LMDE on it."
-msgstr "Ištrinti diską ir įdiegti jame LMDE."
+msgid "Erase a disk and install 17G on it."
+msgstr "Ištrinti diską ir įdiegti jame 17G."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:319
 msgid "Disk:"
@@ -346,7 +346,7 @@ msgid "Manual Partitioning"
 msgstr "Rankinis skaidymas"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:325
-msgid "Manually create, resize or choose partitions for LMDE."
+msgid "Manually create, resize or choose partitions for 17G."
 msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:326

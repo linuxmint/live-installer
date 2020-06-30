@@ -207,8 +207,8 @@ msgstr "Installationstype"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:276
 #: usr/lib/live-installer/frontend/gtk_interface.py:277
-msgid "Where do you want to install LMDE?"
-msgstr "Hvor vil du installere LMDE?"
+msgid "Where do you want to install 17G?"
+msgstr "Hvor vil du installere 17G?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:277
 msgid "Partitioning"
@@ -250,14 +250,14 @@ msgid "Next"
 msgstr "Næste"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:290
-msgid "Welcome to the LMDE Installer."
-msgstr "Velkommen til installationsprogrammet til LMDE."
+msgid "Welcome to the 17G Installer."
+msgstr "Velkommen til installationsprogrammet til 17G."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:291
 msgid ""
-"This program will ask you some questions and set up LMDE on your computer."
+"This program will ask you some questions and set up 17G on your computer."
 msgstr ""
-"Dette program vil stille dig nogle spørgsmål og installere LMDE på din "
+"Dette program vil stille dig nogle spørgsmål og installere 17G på din "
 "computer."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:298
@@ -319,8 +319,8 @@ msgid "Automated Installation"
 msgstr "Automatiseret installation"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:318
-msgid "Erase a disk and install LMDE on it."
-msgstr "Slet en disk og installér LMDE derpå."
+msgid "Erase a disk and install 17G on it."
+msgstr "Slet en disk og installér 17G derpå."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:319
 msgid "Disk:"
@@ -347,9 +347,9 @@ msgid "Manual Partitioning"
 msgstr "Manuel partitionering"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:325
-msgid "Manually create, resize or choose partitions for LMDE."
+msgid "Manually create, resize or choose partitions for 17G."
 msgstr ""
-"Manuel oprettelse, størrelsesændring eller valg af partitioner til LMDE."
+"Manuel oprettelse, størrelsesændring eller valg af partitioner til 17G."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:326
 msgid "Fill the disk with random data"

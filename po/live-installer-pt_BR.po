@@ -208,8 +208,8 @@ msgstr "Tipo de instalação"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:276
 #: usr/lib/live-installer/frontend/gtk_interface.py:277
-msgid "Where do you want to install LMDE?"
-msgstr "Onde você deseja instalar o LMDE?"
+msgid "Where do you want to install 17G?"
+msgstr "Onde você deseja instalar o 17G?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:277
 msgid "Partitioning"
@@ -251,14 +251,14 @@ msgid "Next"
 msgstr "Próxima"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:290
-msgid "Welcome to the LMDE Installer."
-msgstr "Bem-vindo ao instalador do LMDE."
+msgid "Welcome to the 17G Installer."
+msgstr "Bem-vindo ao instalador do 17G."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:291
 msgid ""
-"This program will ask you some questions and set up LMDE on your computer."
+"This program will ask you some questions and set up 17G on your computer."
 msgstr ""
-"Este programa fará algumas perguntas e configurará o LMDE no seu computador."
+"Este programa fará algumas perguntas e configurará o 17G no seu computador."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:298
 msgid "Keyboard Model:"
@@ -320,8 +320,8 @@ msgid "Automated Installation"
 msgstr "Instalação automatizada"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:318
-msgid "Erase a disk and install LMDE on it."
-msgstr "Apaguar um disco e instale o LMDE nele."
+msgid "Erase a disk and install 17G on it."
+msgstr "Apaguar um disco e instale o 17G nele."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:319
 msgid "Disk:"
@@ -348,8 +348,8 @@ msgid "Manual Partitioning"
 msgstr "Particionamento Manual"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:325
-msgid "Manually create, resize or choose partitions for LMDE."
-msgstr "Crie, redimensione ou escolha manualmente partições para o LMDE."
+msgid "Manually create, resize or choose partitions for 17G."
+msgstr "Crie, redimensione ou escolha manualmente partições para o 17G."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:326
 msgid "Fill the disk with random data"

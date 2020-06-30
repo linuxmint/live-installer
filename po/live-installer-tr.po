@@ -207,8 +207,8 @@ msgstr "Kurulum Türü"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:276
 #: usr/lib/live-installer/frontend/gtk_interface.py:277
-msgid "Where do you want to install LMDE?"
-msgstr "LMDE'yi nereye kurmak istiyorsunuz?"
+msgid "Where do you want to install 17G?"
+msgstr "17G'yi nereye kurmak istiyorsunuz?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:277
 msgid "Partitioning"
@@ -250,14 +250,14 @@ msgid "Next"
 msgstr "İleri"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:290
-msgid "Welcome to the LMDE Installer."
-msgstr "LMDE Kurucuya Hoş Geldiniz."
+msgid "Welcome to the 17G Installer."
+msgstr "17G Kurucuya Hoş Geldiniz."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:291
 msgid ""
-"This program will ask you some questions and set up LMDE on your computer."
+"This program will ask you some questions and set up 17G on your computer."
 msgstr ""
-"Bu uygulama size bazı sorular soracak ve bilgisayarınıza LMDE'yi kuracaktır."
+"Bu uygulama size bazı sorular soracak ve bilgisayarınıza 17G'yi kuracaktır."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:298
 msgid "Keyboard Model:"
@@ -319,8 +319,8 @@ msgid "Automated Installation"
 msgstr "Otomatik Kurulum"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:318
-msgid "Erase a disk and install LMDE on it."
-msgstr "Diski sil ve LMDE'yi üstüne kur."
+msgid "Erase a disk and install 17G on it."
+msgstr "Diski sil ve 17G'yi üstüne kur."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:319
 msgid "Disk:"
@@ -347,9 +347,9 @@ msgid "Manual Partitioning"
 msgstr "Elle Disk Bölümlendirme"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:325
-msgid "Manually create, resize or choose partitions for LMDE."
+msgid "Manually create, resize or choose partitions for 17G."
 msgstr ""
-"LMDE için disk bölümlerini elle oluşturun, yeniden boyutlandırın veya seçin."
+"17G için disk bölümlerini elle oluşturun, yeniden boyutlandırın veya seçin."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:326
 msgid "Fill the disk with random data"

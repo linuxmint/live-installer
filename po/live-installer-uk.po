@@ -207,8 +207,8 @@ msgstr "Тип установки"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:276
 #: usr/lib/live-installer/frontend/gtk_interface.py:277
-msgid "Where do you want to install LMDE?"
-msgstr "Де ви хочете встановити LMDE?"
+msgid "Where do you want to install 17G?"
+msgstr "Де ви хочете встановити 17G?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:277
 msgid "Partitioning"
@@ -250,14 +250,14 @@ msgid "Next"
 msgstr "Наступне"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:290
-msgid "Welcome to the LMDE Installer."
-msgstr "Ласкаво просимо до інсталятора LMDE."
+msgid "Welcome to the 17G Installer."
+msgstr "Ласкаво просимо до інсталятора 17G."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:291
 msgid ""
-"This program will ask you some questions and set up LMDE on your computer."
+"This program will ask you some questions and set up 17G on your computer."
 msgstr ""
-"Ця програма задасть вам кілька запитань і налаштує LMDE на комп'ютері."
+"Ця програма задасть вам кілька запитань і налаштує 17G на комп'ютері."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:298
 msgid "Keyboard Model:"
@@ -319,8 +319,8 @@ msgid "Automated Installation"
 msgstr "Автоматична установка"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:318
-msgid "Erase a disk and install LMDE on it."
-msgstr "Стерти диск та встановити на нього LMDE."
+msgid "Erase a disk and install 17G on it."
+msgstr "Стерти диск та встановити на нього 17G."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:319
 msgid "Disk:"
@@ -347,8 +347,8 @@ msgid "Manual Partitioning"
 msgstr "Ручне розділення"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:325
-msgid "Manually create, resize or choose partitions for LMDE."
-msgstr "Вручну створити, змінити розмір або вибрати розділи для LMDE."
+msgid "Manually create, resize or choose partitions for 17G."
+msgstr "Вручну створити, змінити розмір або вибрати розділи для 17G."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:326
 msgid "Fill the disk with random data"

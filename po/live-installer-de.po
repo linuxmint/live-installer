@@ -209,8 +209,8 @@ msgstr "Installationsart"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:276
 #: usr/lib/live-installer/frontend/gtk_interface.py:277
-msgid "Where do you want to install LMDE?"
-msgstr "Wo möchten Sie LMDE installieren?"
+msgid "Where do you want to install 17G?"
+msgstr "Wo möchten Sie 17G installieren?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:277
 msgid "Partitioning"
@@ -252,14 +252,14 @@ msgid "Next"
 msgstr "weiter"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:290
-msgid "Welcome to the LMDE Installer."
-msgstr "Willkommen beim LMDE-Installationsprogramm."
+msgid "Welcome to the 17G Installer."
+msgstr "Willkommen beim 17G-Installationsprogramm."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:291
 msgid ""
-"This program will ask you some questions and set up LMDE on your computer."
+"This program will ask you some questions and set up 17G on your computer."
 msgstr ""
-"Dieses Programm wird Ihnen einige Fragen stellen und LMDE auf Ihrem Rechner "
+"Dieses Programm wird Ihnen einige Fragen stellen und 17G auf Ihrem Rechner "
 "einrichten."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:298
@@ -323,8 +323,8 @@ msgid "Automated Installation"
 msgstr "Automatische Installation"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:318
-msgid "Erase a disk and install LMDE on it."
-msgstr "Medium löschen und LMDE darauf installieren."
+msgid "Erase a disk and install 17G on it."
+msgstr "Medium löschen und 17G darauf installieren."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:319
 msgid "Disk:"
@@ -351,9 +351,9 @@ msgid "Manual Partitioning"
 msgstr "Manuelles Partitionieren"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:325
-msgid "Manually create, resize or choose partitions for LMDE."
+msgid "Manually create, resize or choose partitions for 17G."
 msgstr ""
-"Partionen für LMDE manuell erstellen, in der Größe ändern oder auswählen."
+"Partionen für 17G manuell erstellen, in der Größe ändern oder auswählen."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:326
 msgid "Fill the disk with random data"
