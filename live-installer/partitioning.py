@@ -546,7 +546,7 @@ class PartitionDialog(object):
         for path in ["/bin", "/sbin"]:
             for fs in getoutput('echo %s/mkfs.*' % path).split():
                 filesystems.append(str(fs).split("mkfs.")[1].replace("'",""))
-        filesystems = sorted(filesystems)
+        filesystems = sorted(set(filesystems))
         filesystems = sorted(filesystems, key=lambda x: 0 if x in ('', 'ext4') else 1 if x == 'swap' else 2)
         model = Gtk.ListStore(str)
         for i in filesystems:
@@ -556,7 +556,7 @@ class PartitionDialog(object):
         # Build list of pre-provided mountpoints
         combobox = self.builder.get_object("comboboxentry_mount_point")
         model = Gtk.ListStore(str, str)
-        for i in ["/", "/@", "/home", "/@home", "/boot", "/boot/efi", "/srv", "/tmp", "swap"]:
+        for i in ["/", "/home", "/boot", "/boot/efi", "/srv", "/tmp", "swap"]:
             model.append(["", i])
         combobox.set_model(model)
         combobox.set_entry_text_column(1)
