@@ -210,9 +210,10 @@ class InstallerWindow:
 
         # install page
         self.builder.get_object("label_install_progress").set_text(_("Calculating file indexes ..."))
-        img = self.builder.get_object("install_image")
-        img.set_from_file("./resources/install.png")
-        img.set_size_request(783,384)
+        img = self.builder.get_object("image_welcome")
+        img.set_from_file("./resources/welcome.png")
+        imgx = self.builder.get_object("install_image")
+        imgx.set_from_file("./resources/install.png")
 
         # i18n
         self.i18n()
@@ -739,9 +740,9 @@ class InstallerWindow:
         for i in range(9):
             img = self.builder.get_object("progress_%d" % i)
             if i <= index:
-                img.set_from_file("/usr/share/icons/live-installer-progress-dot-on.png")
+                img.set_from_file("/usr/lib/live-installer/icons/live-installer-progress-dot-on.png")
             else:
-                img.set_from_file("/usr/share/icons/live-installer-progress-dot-off.png")
+                img.set_from_file("/usr/lib/live-installer/icons/live-installer-progress-dot-off.png")
         help_text = _(self.wizard_pages[index].help_text)
         self.builder.get_object("help_label").set_markup("<big><b>%s</b></big>" % help_text)
         self.builder.get_object("help_icon").set_from_icon_name(self.wizard_pages[index].icon, Gtk.IconSize.LARGE_TOOLBAR)
