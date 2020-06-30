@@ -1985,18 +1985,6 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkImage" id="install_image">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="icon_name">distro</property>
-                      </object>
-                      <packing>
-                        <property name="expand">True</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                    <child>
                       <object class="GtkScrolledWindow" id="scrolled_slideshow">
                         <property name="visible">False</property>
                         <property name="can_focus">False</property>
@@ -2006,9 +1994,20 @@
                         <property name="vexpand">True</property>
                         <property name="hscrollbar_policy">external</property>
                         <property name="vscrollbar_policy">external</property>
-                        <property name="shadow_type">in</property>
                         <property name="min_content_width">752</property>
                         <property name="min_content_height">450</property>
+                      <child>
+                      <object class="GtkImage" id="install_image">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="icon_name">distro</property>
+                      </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                      </child>
                         <child>
                           <placeholder/>
                         </child>
