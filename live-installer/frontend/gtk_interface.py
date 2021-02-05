@@ -520,7 +520,13 @@ class InstallerWindow:
         flag_path = lambda ccode: self.resource_dir + '/flags/16/' + ccode.lower() + '.png'
         from utils import memoize
         language=None
-        flag = memoize(lambda ccode: GdkPixbuf.Pixbuf.new_from_file(flag_path(ccode)))
+
+        def flag(ccode):
+            flag_image = memoize(lambda image : GdkPixbuf.Pixbuf.new_from_file(image))
+            try:
+                return flag_image(flag_path(ccode))
+            except:
+                return flag_image("./resources/flags/16/_United Nations.png")
         for locale in subprocess.getoutput("cat ./resources/locales").split('\n'):
             if '_' in locale:
                 lang, ccode = locale.split('_')
