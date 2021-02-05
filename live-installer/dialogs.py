@@ -7,7 +7,7 @@ class Dialog(Gtk.MessageDialog):
     def __init__(self, style, buttons, title, text, text2=None, parent=None):
         Gtk.MessageDialog.__init__(self, parent, 0, style, buttons)
         self.set_position(Gtk.WindowPosition.CENTER)
-        self.set_icon_from_file("./icons/live-installer.png")
+        self.set_icon_from_file("./icons/17g.svg")
         self.set_title(title)
         self.set_markup(text)
         self.desc = text[:30] + ' ...' if len(text) > 30 else text
