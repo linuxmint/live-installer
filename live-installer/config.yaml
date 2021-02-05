@@ -1,0 +1,11 @@
+loop_directory: /dev/loop0
+initramfs_system: mkinitcpio 
+using_shell: /bin/fish
+list_users_when_auto_login: true 
+addintional_user_groups:
+  - audio
+exclude_dirs:
+  - /home
+remove_packages:
+  - 17g-live-installer
+  - archiso 

@@ -8,11 +8,13 @@ import subprocess
 import sys
 import parted
 import partitioning
+from config import parse_config
 
 gettext.install("live-installer", "/usr/share/locale")
 
 NON_LATIN_KB_LAYOUTS = ['am', 'af', 'ara', 'ben', 'bd', 'bg', 'bn', 'bt', 'by', 'deva', 'et', 'ge', 'gh', 'gn', 'gr', 'guj', 'guru', 'id', 'il', 'iku', 'in', 'iq', 'ir', 'kan', 'kg', 'kh', 'kz', 'la', 'lao', 'lk', 'ma', 'mk', 'mm', 'mn', 'mv', 'mal', 'my', 'np', 'ori', 'pk', 'ru', 'rs', 'scc', 'sy', 'syr', 'tel', 'th', 'tj', 'tam', 'tz', 'ua', 'uz']
 
+config = parse_config()
 class InstallerEngine:
     ''' This is central to the live installer '''
 
@@ -23,7 +25,8 @@ class InstallerEngine:
         #sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
 
         # find the squashfs..
-        self.media = '/dev/loop0'
+        self.media = config["loop_directory"]
+
         if(not os.path.exists(self.media)):
             print("Critical Error: Live medium (%s) not found!" % self.media)
             #sys.exit(1)
@@ -70,6 +73,11 @@ class InstallerEngine:
         SOURCE = "/source/"
         DEST = "/target/"
         EXCLUDE_DIRS = "home/* dev/* proc/* sys/* tmp/* run/* mnt/* media/* lost+found source target".split()
+        
+        # Add optional entries to EXCLUDE_DIRS
+        for dir in config["exclude_dirst"]:
+            EXCLUDE_DIRS.append(dir)
+            
         our_current = 0
         # (Valid) assumption: num-of-files-to-copy ~= num-of-used-inodes-on-/
         our_total = int(subprocess.getoutput("df --inodes /{src} | awk 'END{{ print $3 }}'".format(src=SOURCE.strip('/'))))
@@ -117,13 +125,22 @@ class InstallerEngine:
         self.update_progress(our_current, our_total, False,
                              False, ("Adding new user to the system"))
         #TODO: support encryption
-        self.do_run_in_chroot('useradd -m -g users -G wheel -s /bin/bash {username}'.format(username=self.setup.username))
+        
+        self.do_run_in_chroot('useradd -m -g users -G wheel -s {shell} {username}'.format(shell=config["using_shell"], username=self.setup.username))
+        
+        # Add user to addintional groups
+        for group in config["addintional_user_groups"]:
+            self.do_run_in_chroot("usermod -aG {} {}".format(group, self.setup.username))
+
         self.do_run_in_chroot("echo -ne \"{0}\\n{0}\\n\" | passwd {1}".format(self.setup.password1,self.setup.username))
         #TODO: sudoers support
         self.do_run_in_chroot("echo -ne \"{0}\\n{0}\\n\" | passwd".format(self.setup.password1))
 
         # Set LightDM to show user list by default
-        self.do_run_in_chroot(r"sed -i -r 's/^#?(greeter-hide-users)\s*=.*/\1=false/' /etc/lightdm/lightdm.conf")
+        if config["list_users_when_auto_login"]:
+            self.do_run_in_chroot(r"sed -i -r 's/^#?(greeter-hide-users)\s*=.*/\1=true/' /etc/lightdm/lightdm.conf")
+        else:
+            self.do_run_in_chroot(r"sed -i -r 's/^#?(greeter-hide-users)\s*=.*/\1=false/' /etc/lightdm/lightdm.conf")
 
         # Set autologin for user if they so elected
         if self.setup.autologin:
