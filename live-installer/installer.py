@@ -259,7 +259,7 @@ class InstallerEngine:
                         cmd = "mkfs.%s -F %s" % (partition.format_as, partition.path)
                     elif (partition.format_as == "jfs"):
                         cmd = "mkfs.%s -q %s" % (partition.format_as, partition.path)
-                    elif (partition.format_as in ["btrfs", "xfs"]):
+                    elif (partition.format_as == "xfs"):
                         cmd = "mkfs.%s -f %s" % (partition.format_as, partition.path)
                     elif (partition.format_as == "vfat"):
                         cmd = "mkfs.%s %s -F 32" % (partition.format_as, partition.path)
@@ -284,52 +284,10 @@ class InstallerEngine:
                         self.do_mount(partition.path, "/target", fs, None)
                         break
 
-                  if partition.mount_as == "/@" :
-                        if partition.type != "btrfs":
-                            self.error_message(message=_("ERROR: the use of @subvolumes is limited to btrfs"))
-                            return
-                        print("btrfs using /@ subvolume...")
-                        self.update_progress(3, 4, False, False, _("Mounting %(partition)s on %(mountpoint)s") % {'partition':partition.path, 'mountpoint':"/target/"})
-                        # partition.mount_as = "/"
-                        print(" ------ Mounting partition %s on %s" % (partition.path, "/target/"))
-                        fs = partition.type
-                        self.do_mount(partition.path, "/target", fs, None)
-                        os.system("btrfs subvolume create /target/@")
-                        os.system("btrfs subvolume list -p /target")
-                        print(" ------ Umount btrfs to remount subvolume /@")
-                        os.system("umount --force /target")
-                        self.do_mount(partition.path, "/target", fs, "subvol=@")
-                        break
-
-        # handle btrfs /@home subvolume-option after mounting / or /@
-        for partition in self.setup.partitions:
-            if(partition.mount_as is not None and partition.mount_as != ""):
-                  if partition.mount_as == "/@home":
-                        if partition.type != "btrfs":
-                            self.error_message(message=_("ERROR: the use of @subvolumes is limited to btrfs"))
-                            return
-                        print("btrfs using /@home subvolume...")
-                        self.update_progress(3, 4, False, False, _("Mounting %(partition)s on %(mountpoint)s") % {'partition':partition.path, 'mountpoint':"/target/"})
-                        print(" ------ Mounting partition %s on %s" % (partition.path, "/target/home"))
-                        fs = partition.type
-                        os.system("mkdir -p /target/home")
-                        self.do_mount(partition.path, "/target/home", fs, None)
-                        # if reusing a btrfs with /@home already being there wont
-                        # currently just keep it; data outside of /@home will still
-                        # be there (just not reachable from the mounted /@home subvolume)
-                        os.system("btrfs subvolume create /target/home/@home")
-                        #os.system("btrfs subvolume list -p /target/home")
-                        print(" ------- Umount btrfs to remount subvolume /@home")
-                        os.system("umount --force /target/home")
-                        self.do_mount(partition.path, "/target/home", fs, "subvol=@home")
-                        break
-
+                  
+       
         # Mount the other partitions
         for partition in self.setup.partitions:
-            if(partition.mount_as == "/@home" or partition.mount_as == "/@"):
-                # already mounted as subvolume
-                continue
-
             if(partition.mount_as is not None and partition.mount_as != "" and partition.mount_as != "/" and partition.mount_as != "swap"):
                 print(" ------ Mounting %s on %s" % (partition.path, "/target" + partition.mount_as))
                 os.system("mkdir -p /target" + partition.mount_as)
@@ -384,25 +342,11 @@ class InstallerEngine:
                         fstab.write("# %s\n" % (partition.path))
                         if(partition.mount_as == "/"):
                             fstab_fsck_option = "1"
-                        # section could be removed - just to state/document that fscheck is turned off
-                        # intentionally with /@ (same would be true if btrfs used without a subvol)
-                        # /bin/fsck.btrfs comment states to use fs-check==0 on mount
-                        elif(partition.mount_as == "/@"):
-                            fstab_fsck_option = "0"
                         else:
                             fstab_fsck_option = "0"
 
                         if("ext" in partition.type):
                             fstab_mount_options = "rw,errors=remount-ro"
-                        elif partition.type == "btrfs"  and partition.mount_as == "/@":
-                            fstab_mount_options = "rw,subvol=/@"
-                            # sort of dirty hack - we are done with subvol handling
-                            # mount_as is next used to setup the mount point
-                            partition.mount_as="/"
-                        elif partition.type == "btrfs"  and partition.mount_as == "/@home":
-                            fstab_mount_options = "rw,subvol=/@home"
-                            # sort of dirty hack - see above
-                            partition.mount_as="/home"
                         else:
                             fstab_mount_options = "defaults"
 
