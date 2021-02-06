@@ -1,3 +1,7 @@
+from glob import glob
+import os
+import yaml
+from shlex import quote
 
 def memoize(func):
     """ Caches expensive function calls.
@@ -23,3 +27,23 @@ def memoize(func):
             ret = self[key] = func(*key)
             return ret
     return memodict()
+
+# Package Manager
+for package_manager in glob("resources/package_managers/*"):
+        pm = open(package_manager, 'r')
+        pm_contents = yaml.load(pm, Loader=yaml.FullLoader)
+    
+        if os.path.exists(pm_contents["check_this_dir"]):
+            package_manager = pm_contents
+            break
+
+def PackageManager(process, packages=[]):
+    if process == "name":
+        exit("You can't use this parameter!")
+    if process in package_manager:
+        pkgs = " ".join(str(p) for p in packages)
+        cmd = (package_manager[process] + " ").replace("{packages}", pkgs)
+
+        return cmd
+    else:
+        exit("Process doesn't exists on package manager's config file!")

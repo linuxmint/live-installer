@@ -1,4 +1,5 @@
 loop_directory: /dev/loop0
+gtk_theme: Yaru-dark
 initramfs_system: mkinitcpio 
 using_shell: /bin/fish
 list_users_when_auto_login: true 

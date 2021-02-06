@@ -1,0 +1,6 @@
+name: apt
+check_this_dir: /var/lib/dpkg
+install_package: apt install {packages}
+remove_package: apt remove {packages}
+remove_package_with_unusing_deps: pacman -Rsn {packages}
+remove_package_with_needed_packages: pacman -Rsnc {packages}
