@@ -2,6 +2,28 @@
 <!-- Generated with glade 3.37.0 -->
 <interface>
   <requires lib="gtk+" version="3.18"/>
+  <object class="GtkListStore" id="model2">
+    <columns>
+      <!-- column-name gchararray -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">ext4 filesystem</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkListStore" id="model3">
+    <columns>
+      <!-- column-name gchararray -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">/dev/sda</col>
+      </row>
+    </data>
+  </object>
   <object class="GtkWindow" id="main_window">
     <property name="can-focus">False</property>
     <property name="window-position">center</property>
@@ -92,6 +114,7 @@
           <object class="GtkNotebook" id="notebook1">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
+            <property name="show-tabs">False</property>
             <property name="show-border">False</property>
             <child>
               <object class="GtkEventBox">
@@ -156,9 +179,6 @@
                 </style>
               </object>
             </child>
-            <child type="tab">
-              <placeholder/>
-            </child>
             <child>
               <object class="GtkBox" id="vbox_language">
                 <property name="visible">True</property>
@@ -191,9 +211,6 @@
               <packing>
                 <property name="position">1</property>
               </packing>
-            </child>
-            <child type="tab">
-              <placeholder/>
             </child>
             <child>
               <object class="GtkBox" id="vbox_timezones">
@@ -340,9 +357,6 @@
               <packing>
                 <property name="position">2</property>
               </packing>
-            </child>
-            <child type="tab">
-              <placeholder/>
             </child>
             <child>
               <object class="GtkBox" id="vbox_keyboard">
@@ -517,9 +531,6 @@
               <packing>
                 <property name="position">3</property>
               </packing>
-            </child>
-            <child type="tab">
-              <placeholder/>
             </child>
             <child>
               <object class="GtkBox" id="vbox_user">
@@ -855,9 +866,6 @@
               <packing>
                 <property name="position">4</property>
               </packing>
-            </child>
-            <child type="tab">
-              <placeholder/>
             </child>
             <child>
               <object class="GtkBox" id="vbox_type">
@@ -1200,9 +1208,6 @@
                 <property name="position">5</property>
               </packing>
             </child>
-            <child type="tab">
-              <placeholder/>
-            </child>
             <child>
               <object class="GtkBox" id="vbox_partitions">
                 <property name="visible">True</property>
@@ -1357,13 +1362,7 @@
                 <property name="position">6</property>
               </packing>
             </child>
-            <child type="tab">
-              <placeholder/>
-            </child>
             <child>
-              <placeholder/>
-            </child>
-            <child type="tab">
               <placeholder/>
             </child>
             <child>
@@ -1399,9 +1398,6 @@
               <packing>
                 <property name="position">8</property>
               </packing>
-            </child>
-            <child type="tab">
-              <placeholder/>
             </child>
             <child>
               <object class="GtkBox" id="vbox_customwarning">
@@ -1599,9 +1595,6 @@
                 <property name="position">9</property>
               </packing>
             </child>
-            <child type="tab">
-              <placeholder/>
-            </child>
             <child>
               <object class="GtkBox" id="vbox_custompause">
                 <property name="visible">True</property>
@@ -1775,9 +1768,6 @@
                 <property name="position">10</property>
               </packing>
             </child>
-            <child type="tab">
-              <placeholder/>
-            </child>
             <child>
               <object class="GtkBox" id="vbox_install">
                 <property name="visible">True</property>
@@ -1796,12 +1786,36 @@
                         <property name="orientation">vertical</property>
                         <property name="spacing">6</property>
                         <child>
-                          <object class="GtkLabel" id="label_install_progress">
+                          <object class="GtkBox">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
-                            <property name="label" translatable="yes">label</property>
-                            <property name="ellipsize">middle</property>
-                            <property name="xalign">0</property>
+                            <child>
+                              <object class="GtkLabel" id="label_install_progress">
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">label</property>
+                                <property name="ellipsize">middle</property>
+                                <property name="xalign">0</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">label</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="pack-type">end</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
                           </object>
                           <packing>
                             <property name="expand">True</property>
@@ -1838,14 +1852,18 @@
                   <object class="GtkBox" id="slidebox">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="halign">center</property>
+                    <property name="valign">end</property>
+                    <property name="hexpand">True</property>
+                    <property name="vexpand">True</property>
                     <property name="orientation">vertical</property>
                     <child>
                       <placeholder/>
                     </child>
                   </object>
                   <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
@@ -1854,12 +1872,9 @@
                 <property name="position">11</property>
               </packing>
             </child>
-            <child type="tab">
-              <placeholder/>
-            </child>
           </object>
           <packing>
-            <property name="expand">False</property>
+            <property name="expand">True</property>
             <property name="fill">True</property>
             <property name="position">1</property>
           </packing>
@@ -2038,17 +2053,6 @@
       <widget name="image_keyboard"/>
     </widgets>
   </object>
-  <object class="GtkListStore" id="model2">
-    <columns>
-      <!-- column-name gchararray -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">ext4 filesystem</col>
-      </row>
-    </data>
-  </object>
   <object class="GtkDialog" id="dialog">
     <property name="can-focus">False</property>
     <property name="border-width">5</property>
@@ -2209,16 +2213,5 @@
       <action-widget response="-6">button_cancel</action-widget>
       <action-widget response="-5">button_ok</action-widget>
     </action-widgets>
-  </object>
-  <object class="GtkListStore" id="model3">
-    <columns>
-      <!-- column-name gchararray -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">/dev/sda</col>
-      </row>
-    </data>
   </object>
 </interface>

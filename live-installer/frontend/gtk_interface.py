@@ -1103,6 +1103,7 @@ class InstallerWindow:
         szPct = int(pct)
         self.builder.get_object("progressbar").set_fraction(pct)
         self.builder.get_object("label_install_progress").set_label(message)
+        self.builder.get_object("label_install_percent").set_label(str(int(pct*100))+"%")
 
     @idle
     def do_progress_pulse(self, message):
@@ -1122,6 +1123,7 @@ class InstallerWindow:
     def slideshow(self):
         self.images=os.listdir("./resources/slides")
         self.slides=Gtk.Notebook()
+        self.slides.set_show_tabs(False)
         self.builder.get_object("slidebox").add(self.slides)
         self.max_slide_page=len(self.images)-1
         for i in self.images:
