@@ -69,6 +69,3 @@ def UpdateInitramfs(initramfs_name):
             commands.append(command)
 
     return commands
-
-
-print(UpdateInitramfs("initramfs_tools"))

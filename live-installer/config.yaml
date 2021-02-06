@@ -10,3 +10,6 @@ exclude_dirs:
 remove_packages:
   - 17g-live-installer
   - archiso 
+post_install_commands:
+  - echo "Ğ"
+  - echo "BRUH"

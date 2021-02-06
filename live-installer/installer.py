@@ -484,7 +484,7 @@ class InstallerEngine:
         #remove pacman
         self.update_progress(our_current, our_total, False, False, _("Clearing Pacman"))
         print(" --> Clearing pacman")
-        self.do_run_in_chroot("yes | pacman -R archiso")
+        self.do_run_in_chroot("yes | {}".format(PackageManager("remove_package_with_unusing_deps", config["remove_packages"])))
 
         if self.setup.luks:
             with open("/target/etc/default/grub.d/61_live-installer.cfg", "w") as f:
@@ -521,7 +521,8 @@ class InstallerEngine:
                     self.error_message(message=_("WARNING: The grub bootloader was not configured properly! You need to configure it manually."))
                     break
         
-
+        # Custom commands
+        self.do_post_install_commands(our_total, our_current)
 
         # now unmount it
         print(" --> Unmounting partitions")
@@ -560,6 +561,12 @@ class InstallerEngine:
         grubfh = open("/var/log/live-installer-grub-output.log", "w")
         grubfh.writelines(grub_output)
         grubfh.close()
+
+    def do_post_install_commands(self, our_total, our_current):
+        self.update_progress(our_current, our_total, True, False, _("Post install commands running"))
+        print(" --> Post install commands running")
+        for command in config["post_install_commands"]:
+            self.do_run_in_chroot(command)
 
     def do_check_grub(self, our_total, our_current):
         self.update_progress(our_current, our_total, True, False, _("Checking bootloader"))
