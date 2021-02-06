@@ -53,7 +53,6 @@ class InstallerWindow:
 
     def __init__(self, expert_mode=False):
 
-        self.expert_mode = expert_mode
 
         # disable the screensaver
         os.system("killall cinnamon-screen")
@@ -85,11 +84,10 @@ class InstallerWindow:
          self.PAGE_USER,
          self.PAGE_TYPE,
          self.PAGE_PARTITIONS,
-         self.PAGE_ADVANCED,
          self.PAGE_OVERVIEW,
          self.PAGE_CUSTOMWARNING,
          self.PAGE_CUSTOMPAUSED,
-         self.PAGE_INSTALL) = list(range(12))
+         self.PAGE_INSTALL) = list(range(11))
 
         # set the button events (wizard_cb)
         self.builder.get_object("button_next").connect("clicked", self.wizard_cb, False)
@@ -142,7 +140,6 @@ class InstallerWindow:
         self.builder.get_object("combo_disk").connect("changed", self.assign_type_options)
 
         # partitions
-        self.builder.get_object("button_expert").connect("clicked", self.show_customwarning)
         self.builder.get_object("button_edit").connect("clicked", partitioning.manually_edit_partitions)
         self.builder.get_object("button_refresh").connect("clicked", lambda _: partitioning.build_partitions(self))
         self.builder.get_object("treeview_disks").get_selection().connect("changed", partitioning.update_html_preview)
@@ -224,6 +221,7 @@ class InstallerWindow:
         self.slideshow()
         self.window.show_all()
 
+
     def fullscreen(self):
         self.window.fullscreen()
 
@@ -236,12 +234,6 @@ class InstallerWindow:
                 window_title = "%s - %s" % (config['DISTRIB_DESCRIPTION'].replace('"', ''), _("Installer"))
         except:
             print("lsb-release not fount. Using default")
-        self.builder.get_object("button_expert").set_no_show_all(True)
-        if self.expert_mode:
-            window_title += ' (expert mode)'
-            self.builder.get_object("button_expert").show()
-        else:
-            self.builder.get_object("button_expert").hide()
         self.window.set_title(window_title)
 
         # Header
@@ -253,7 +245,6 @@ class InstallerWindow:
         self.wizard_pages[self.PAGE_USER] = WizardPage(_("User account"), "avatar-default-symbolic", _("Who are you?"))
         self.wizard_pages[self.PAGE_TYPE] = WizardPage(_("Installation Type"), "drive-harddisk-system-symbolic", _("Where do you want to install system?"))
         self.wizard_pages[self.PAGE_PARTITIONS] = WizardPage(_("Partitioning"), "drive-harddisk-system-symbolic", _("Where do you want to install system?"))
-        self.wizard_pages[self.PAGE_ADVANCED] = WizardPage(_("Advanced options"), "preferences-system-symbolic", "Configure the boot menu")
         self.wizard_pages[self.PAGE_OVERVIEW] = WizardPage(_("Summary"), "object-select-symbolic", "Check that everything is correct")
         self.wizard_pages[self.PAGE_INSTALL] = WizardPage(_("Installing"), "system-run-symbolic", "Please wait...")
         self.wizard_pages[self.PAGE_CUSTOMWARNING] = WizardPage(_("Expert mode"), "drive-harddisk-system-symbolic", "")
@@ -307,7 +298,6 @@ class InstallerWindow:
         # Partitions page
         self.builder.get_object("button_edit").set_label(_("Edit partitions"))
         self.builder.get_object("button_refresh").set_label(_("Refresh"))
-        self.builder.get_object("button_expert").set_label(_("Expert mode"))
         for col, title in zip(self.builder.get_object("treeview_disks").get_columns(),
                               (_("Device"),
                                _("Type"),
@@ -881,7 +871,7 @@ class InstallerWindow:
                         if QuestionDialog(_("Warning"), _("This will delete all the data on %s. Are you sure?") % self.setup.diskname):
                             partitioning.build_partitions(self)
                             partitioning.build_grub_partitions()
-                            self.activate_page(self.PAGE_ADVANCED)
+                            self.activate_page(self.PAGE_OVERVIEW)
                 else:
                     self.activate_page(self.PAGE_PARTITIONS)
                     partitioning.build_partitions(self)
@@ -931,16 +921,11 @@ class InstallerWindow:
                         return
 
                 partitioning.build_grub_partitions()
-                self.activate_page(self.PAGE_ADVANCED)
+                self.activate_page(self.PAGE_OVERVIEW)
 
             elif(sel == self.PAGE_CUSTOMWARNING):
                 partitioning.build_grub_partitions()
-                self.activate_page(self.PAGE_ADVANCED)
-            elif(sel == self.PAGE_ADVANCED):
                 self.activate_page(self.PAGE_OVERVIEW)
-                self.show_overview()
-                self.builder.get_object("treeview_overview").expand_all()
-                self.builder.get_object("button_next").set_label(_("Install"))
             elif(sel == self.PAGE_OVERVIEW):
                 self.activate_page(self.PAGE_INSTALL)
                 self.builder.get_object("button_next").set_sensitive(False)
@@ -962,14 +947,7 @@ class InstallerWindow:
         else:
             self.builder.get_object("button_back").set_sensitive(True)
             if(sel == self.PAGE_OVERVIEW):
-                self.activate_page(self.PAGE_ADVANCED)
-            elif(sel == self.PAGE_ADVANCED):
-                if (self.setup.skip_mount):
-                    self.activate_page(self.PAGE_CUSTOMWARNING)
-                elif self.setup.automated:
-                    self.activate_page(self.PAGE_TYPE)
-                else:
-                    self.activate_page(self.PAGE_PARTITIONS)
+                self.activate_page(self.PAGE_TYPE)
             elif(sel == self.PAGE_CUSTOMWARNING):
                 self.activate_page(self.PAGE_PARTITIONS)
             elif(sel == self.PAGE_PARTITIONS):
