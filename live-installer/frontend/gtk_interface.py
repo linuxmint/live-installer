@@ -212,8 +212,6 @@ class InstallerWindow:
         self.builder.get_object("label_install_progress").set_text(_("Calculating file indexes ..."))
         img = self.builder.get_object("image_welcome")
         img.set_from_file("./resources/welcome.png")
-        imgx = self.builder.get_object("install_image")
-        imgx.set_from_file("./resources/install.png")
 
         # i18n
         self.i18n()
@@ -223,7 +221,7 @@ class InstallerWindow:
 
         # make sure we're on the right page (no pun.)
         self.activate_page(0)
-
+        self.slideshow()
         self.window.show_all()
 
     def fullscreen(self):
@@ -232,10 +230,12 @@ class InstallerWindow:
     def i18n(self):
 
         window_title = _("Installer")
-        with open("/etc/lsb-release") as f:
-            config = dict([line.strip().split("=") for line in f])
-            window_title = "%s - %s" % (config['DISTRIB_DESCRIPTION'].replace('"', ''), _("Installer"))
-
+        try:
+            with open("/etc/lsb-release") as f:
+                config = dict([line.strip().split("=") for line in f])
+                window_title = "%s - %s" % (config['DISTRIB_DESCRIPTION'].replace('"', ''), _("Installer"))
+        except:
+            print("lsb-release not fount. Using default")
         self.builder.get_object("button_expert").set_no_show_all(True)
         if self.expert_mode:
             window_title += ' (expert mode)'
@@ -1101,6 +1101,7 @@ class InstallerWindow:
         Gtk.main_quit()
         sys.exit(0)
 
+
     def error_message(self, message=""):
         self.critical_error_happened = True
         self.critical_error_message = message
@@ -1139,3 +1140,26 @@ class InstallerWindow:
             # asssume we're "pulsing" already
             self.should_pulse = True
             pbar_pulse()
+            
+    def slideshow(self):
+        self.images=os.listdir("./resources/slides")
+        self.slides=Gtk.Notebook()
+        self.builder.get_object("slidebox").add(self.slides)
+        self.max_slide_page=len(self.images)-1
+        for i in self.images:
+            im = Gtk.Image()
+            box = Gtk.Box()
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
+                "./resources/slides/"+i, 752, 423, False)
+            im.set_from_pixbuf(pixbuf)
+            self.slides.append_page(im, Gtk.Label(label="31"))
+        self.cur_slide_pos = 0
+        GLib.timeout_add(100, self.set_slide_page)
+            
+    def set_slide_page(self):
+        print("Current:"+str(self.images[self.cur_slide_pos]))
+        self.slides.set_current_page(self.cur_slide_pos)
+        self.cur_slide_pos = self.cur_slide_pos+1
+        if(self.cur_slide_pos > self.max_slide_page):
+            self.cur_slide_pos = 0
+        GLib.timeout_add(15000, self.set_slide_page)

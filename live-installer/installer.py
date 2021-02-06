@@ -430,8 +430,10 @@ class InstallerEngine:
         #Keyboard settings X11
         self.update_progress(our_current, our_total, False,
                              False, ("Settings X11 keyboard options"))
-        
-        newconsolefh = open("/target/etc/X11/xorg.conf.d/10-keyboard.conf", "w")
+        if os.path.exists("/target/etc/X11/xorg.conf.d"):
+            newconsolefh = open("/target/etc/X11/xorg.conf.d/10-keyboard.conf", "w")
+        else:
+            newconsolefh = open("/target/usr/share/X11/xorg.conf.d/10-keyboard.conf", "w")
         newconsolefh.write('Section "InputClass"\n')
         newconsolefh.write('Identifier "system-keyboard"\n')
         newconsolefh.write('MatchIsKeyboard "on"\n')
@@ -482,8 +484,8 @@ class InstallerEngine:
 
 
         #remove pacman
-        self.update_progress(our_current, our_total, False, False, _("Clearing Pacman"))
-        print(" --> Clearing pacman")
+        self.update_progress(our_current, our_total, False, False, _("Clearing package manager"))
+        print(" --> Clearing package manager")
         self.do_run_in_chroot("yes | {}".format(PackageManager("remove_package_with_unusing_deps", config["remove_packages"])))
 
         if self.setup.luks:
