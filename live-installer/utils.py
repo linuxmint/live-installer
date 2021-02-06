@@ -2,6 +2,7 @@ from glob import glob
 import os
 import yaml
 from shlex import quote
+import subprocess
 
 def memoize(func):
     """ Caches expensive function calls.
@@ -47,3 +48,27 @@ def PackageManager(process, packages=[]):
         return cmd
     else:
         exit("Process doesn't exists on package manager's config file!")
+
+
+def UpdateInitramfs(initramfs_name):
+    try:
+        initramfs = open("resources/initramfs_systems/" + initramfs_name+ ".yaml")
+    except:
+        exit("Initramfs system couldn't find!")
+    
+    initramfs_parsed = yaml.load(initramfs, Loader=yaml.FullLoader)
+    
+    commands = []
+    for command in initramfs_parsed["commands"]:
+        if "{kernel_version}" in command:
+            kernel_version= subprocess.getoutput("uname -r")
+            command = command.replace('{kernel_version}', kernel_version)
+
+            commands.append(command)
+        else:
+            commands.append(command)
+
+    return commands
+
+
+print(UpdateInitramfs("initramfs_tools"))

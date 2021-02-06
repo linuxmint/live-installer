@@ -9,6 +9,7 @@ import sys
 import parted
 import partitioning
 from config import parse_config
+from utils import PackageManager, UpdateInitramfs
 
 gettext.install("live-installer", "/usr/share/locale")
 
@@ -496,9 +497,10 @@ class InstallerEngine:
         print(" --> Configuring Initramfs")
         self.update_progress(our_current, our_total, False, False, _("Genetaring initramfs"))
         our_current += 1
-        kernelversion= subprocess.getoutput("uname -r")
-        self.do_run_in_chroot("/usr/sbin/mkinitcpio -g /boot/initramfs-"+kernelversion+".img")
-        self.do_run_in_chroot("/usr/sbin/mkinitcpio -g /boot/initramfs-"+kernelversion+"-fallback.img")
+        
+        initramfs_commands = UpdateInitramfs(config["initramfs_system"])
+        for command in initramfs_commands:
+            self.do_run_in_chroot(command)
 
 
         # write MBR (grub)

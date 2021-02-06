@@ -1,0 +1,4 @@
+name: mkinitcpio
+commands:
+  - mkinitcpio -g /boot/initramfs-{kernel_version}.img
+  - mkinitcpio -g /boot/initramfs-{kernel_version}-fallback.img
