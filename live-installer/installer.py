@@ -76,7 +76,7 @@ class InstallerEngine:
         EXCLUDE_DIRS = "home/* dev/* proc/* sys/* tmp/* run/* mnt/* media/* lost+found source target".split()
         
         # Add optional entries to EXCLUDE_DIRS
-        for dir in config["exclude_dirst"]:
+        for dir in config["exclude_dirs"]:
             EXCLUDE_DIRS.append(dir)
             
         our_current = 0
