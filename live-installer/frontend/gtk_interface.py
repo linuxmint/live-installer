@@ -14,6 +14,7 @@ import time
 import parted
 import cairo
 import threading
+from config import parse_config
 
 import gi
 gi.require_version('Gtk', '3.0')
@@ -208,7 +209,7 @@ class InstallerWindow:
         # install page
         self.builder.get_object("label_install_progress").set_text(_("Calculating file indexes ..."))
         img = self.builder.get_object("image_welcome")
-        img.set_from_file("./resources/welcome.png")
+        img.set_from_file("/usr/share/live-installer/branding/welcome.png")
 
         # i18n
         self.i18n()
@@ -229,11 +230,10 @@ class InstallerWindow:
 
         window_title = _("Installer")
         try:
-            with open("/etc/lsb-release") as f:
-                config = dict([line.strip().split("=") for line in f])
-                window_title = "%s - %s" % (config['DISTRIB_DESCRIPTION'].replace('"', ''), _("Installer"))
+            config = parse_config()
+            window_title = config["distro_title"] + " - " + _("Installer")
         except:
-            print("lsb-release not fount. Using default")
+            print("\"distro_title\" varible not found on config. Using default.")
         self.window.set_title(window_title)
 
         # Header
@@ -1121,7 +1121,7 @@ class InstallerWindow:
             pbar_pulse()
             
     def slideshow(self):
-        self.images=os.listdir("./resources/slides")
+        self.images=os.listdir("/usr/share/live-installer/branding/slides")
         self.slides=Gtk.Notebook()
         self.slides.set_show_tabs(False)
         self.builder.get_object("slidebox").add(self.slides)
@@ -1130,7 +1130,7 @@ class InstallerWindow:
             im = Gtk.Image()
             box = Gtk.Box()
             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
-                "./resources/slides/"+i, 752, 423, False)
+                "/usr/share/live-installer/branding/slides/"+i, 752, 423, False)
             im.set_from_pixbuf(pixbuf)
             self.slides.append_page(im, Gtk.Label(label="31"))
         self.cur_slide_pos = 0

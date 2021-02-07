@@ -1,7 +1,9 @@
+distro_codename: 17g
+distro_title: 17G
 loop_directory: /dev/loop0
 gtk_theme: Yaru-dark
 initramfs_system: mkinitcpio 
-using_shell: /bin/fish
+using_shell: /bin/bash
 list_users_when_auto_login: true 
 addintional_user_groups:
   - audio

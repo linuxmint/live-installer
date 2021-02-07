@@ -505,13 +505,18 @@ class InstallerEngine:
             self.do_run_in_chroot(command)
 
 
-        # write MBR (grub)
+        # install GRUB bootloader (EFI & Legacy)
         print(" --> Configuring Grub")
         our_current += 1
         if(self.setup.grub_device is not None):
             self.update_progress(our_current, our_total, False, False, _("Installing bootloader"))
             print(" --> Running grub-install")
-            self.do_run_in_chroot("grub-install --force %s" % self.setup.grub_device)
+
+            if os.path.exists("/sys/firmware/efi"):
+                os.system("grub-install --target=x86_64-efi --efi-directory=/target/boot/efi --root-directory=/target --bootloader-id={}".format(config["distro_codename"]))
+            else:
+                self.do_run_in_chroot("grub-install --force %s" % self.setup.grub_device)
+
             #fix not add windows grub entry
             self.do_run_in_chroot("grub-mkconfig -o /boot/grub/grub.cfg")
             self.do_configure_grub(our_total, our_current)
