@@ -27,10 +27,7 @@ from gi.repository import Gtk
 # main entry
 if __name__ == "__main__":
 
-	if ("--expert-mode" in sys.argv):
-		win = InstallerWindow(expert_mode=True)
-	else:
-		win = InstallerWindow()
+	win = InstallerWindow()
 	if ("--fullscreen" in sys.argv):
 		win.fullscreen()
 	Gtk.main()

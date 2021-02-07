@@ -4,12 +4,8 @@ all: clean build
 
 build: buildmo
 	mkdir -p build/usr/lib/ || true
-	mkdir -p build/usr/share/live-installer || true
-	mkdir -p build/etc/live-installer || true
 
 	cp -prfv live-installer build/usr/lib/
-	cp -prfv branding build/usr/share/live-installer
-	cp -a configs/* build/etc/live-installer
 
 	#set parmissions
 	chmod 755 -R build

@@ -70,7 +70,6 @@ class InstallerWindow:
         # should be set early
         self.done = False
         self.fail = False
-        self.paused = False
         self.showing_last_dialog = False
 
         # load the window object
@@ -86,9 +85,7 @@ class InstallerWindow:
          self.PAGE_TYPE,
          self.PAGE_PARTITIONS,
          self.PAGE_OVERVIEW,
-         self.PAGE_CUSTOMWARNING,
-         self.PAGE_CUSTOMPAUSED,
-         self.PAGE_INSTALL) = list(range(11))
+         self.PAGE_INSTALL) = list(range(9))
 
         # set the button events (wizard_cb)
         self.builder.get_object("button_next").connect("clicked", self.wizard_cb, False)
@@ -247,8 +244,6 @@ class InstallerWindow:
         self.wizard_pages[self.PAGE_PARTITIONS] = WizardPage(_("Partitioning"), "drive-harddisk-system-symbolic", _("Where do you want to install system?"))
         self.wizard_pages[self.PAGE_OVERVIEW] = WizardPage(_("Summary"), "object-select-symbolic", "Check that everything is correct")
         self.wizard_pages[self.PAGE_INSTALL] = WizardPage(_("Installing"), "system-run-symbolic", "Please wait...")
-        self.wizard_pages[self.PAGE_CUSTOMWARNING] = WizardPage(_("Expert mode"), "drive-harddisk-system-symbolic", "")
-        self.wizard_pages[self.PAGE_CUSTOMPAUSED] = WizardPage(_("Installation paused"), "system-run-symbolic", "")
 
         # Buttons
         self.builder.get_object("button_quit").set_label(_("Quit"))
@@ -310,20 +305,6 @@ class InstallerWindow:
 
         # Advanced page
         self.builder.get_object("checkbutton_grub").set_label(_("Install the GRUB boot menu on:"))
-
-        # Custom install warning
-        self.builder.get_object("label_custom_install_directions_1").set_label(_("You selected to manage your partitions manually, this feature is for ADVANCED USERS ONLY."))
-        self.builder.get_object("label_custom_install_directions_2").set_label(_("Before continuing, mount your target filesystem(s) on /target."))
-        self.builder.get_object("label_custom_install_directions_3").set_label(_("Do NOT mount virtual devices such as /dev, /proc, /sys, etc on /target/."))
-        self.builder.get_object("label_custom_install_directions_4").set_label(_("During the install, you will be given time to chroot into /target and install any packages that will be needed to boot your new system."))
-        self.builder.get_object("label_custom_install_directions_5").set_label(_("During the install, you will be required to write your own /etc/fstab."))
-
-        # Custom install installation paused directions
-        self.builder.get_object("label_custom_install_paused_1").set_label(_("Do the following and then click Next to finish installation:"))
-        self.builder.get_object("label_custom_install_paused_2").set_label(_("Create /target/etc/fstab for the filesystems as they will be mounted in your new system, matching those currently mounted at /target (without using the /target prefix in the mount paths themselves)."))
-        self.builder.get_object("label_custom_install_paused_3").set_label(_("Install any packages that may be needed for first boot (mdadm, cryptsetup, dmraid, etc) by calling \"sudo chroot /target\" followed by the relevant apt-get/aptitude installations."))
-        self.builder.get_object("label_custom_install_paused_4").set_label(_("Note that in order for update-initramfs to work properly in some cases (such as dm-crypt), you may need to have drives currently mounted using the same block device name as they appear in /target/etc/fstab."))
-        self.builder.get_object("label_custom_install_paused_5").set_label(_("Double-check that your /target/etc/fstab is correct, matches what your new system will have at first boot, and matches what is currently mounted at /target."))
 
         # Refresh the current title and help question in the page header
         self.activate_page(self.PAGE_LANGUAGE)
@@ -458,9 +439,6 @@ class InstallerWindow:
             return False
         else:
             return True
-
-    def show_customwarning(self, widget):
-        self.activate_page(self.PAGE_CUSTOMWARNING)
 
     def build_lang_list(self):
 
@@ -736,9 +714,9 @@ class InstallerWindow:
         for i in range(9):
             img = self.builder.get_object("progress_%d" % i)
             if i <= index:
-                img.set_from_file("./icons/live-installer-progress-dot-on.png")
+                img.set_from_file("./resources/icons/live-installer-progress-dot-on.png")
             else:
-                img.set_from_file("./icons/live-installer-progress-dot-off.png")
+                img.set_from_file("./resources/icons/live-installer-progress-dot-off.png")
         help_text = _(self.wizard_pages[index].help_text)
         self.builder.get_object("help_label").set_markup("<big><b>%s</b></big>" % help_text)
         self.builder.get_object("help_icon").set_from_icon_name(self.wizard_pages[index].icon, Gtk.IconSize.LARGE_TOOLBAR)
@@ -747,8 +725,6 @@ class InstallerWindow:
         # TODO: move other page-depended actions from the wizard_cb into here below
         if index == self.PAGE_PARTITIONS:
             self.setup.skip_mount = False
-        if index == self.PAGE_CUSTOMWARNING:
-            self.setup.skip_mount = True
 
     def wizard_cb(self, widget, goback, data=None):
         ''' wizard buttons '''
@@ -923,9 +899,6 @@ class InstallerWindow:
                 partitioning.build_grub_partitions()
                 self.activate_page(self.PAGE_OVERVIEW)
 
-            elif(sel == self.PAGE_CUSTOMWARNING):
-                partitioning.build_grub_partitions()
-                self.activate_page(self.PAGE_OVERVIEW)
             elif(sel == self.PAGE_OVERVIEW):
                 self.activate_page(self.PAGE_INSTALL)
                 self.builder.get_object("button_next").set_sensitive(False)
@@ -935,21 +908,10 @@ class InstallerWindow:
                 self.builder.get_object("title_eventbox").hide()
                 self.builder.get_object("button_eventbox").hide()
                 #self.window.resize(100, 100)
-            elif(sel == self.PAGE_CUSTOMPAUSED):
-                self.activate_page(self.PAGE_INSTALL)
-                self.builder.get_object("button_next").set_sensitive(False)
-                self.builder.get_object("button_back").set_sensitive(False)
-                self.builder.get_object("button_quit").set_sensitive(False)
-                self.builder.get_object("title_eventbox").hide()
-                self.builder.get_object("button_eventbox").hide()
-                self.window.resize(100, 100)
-                self.paused = False
         else:
             self.builder.get_object("button_back").set_sensitive(True)
             if(sel == self.PAGE_OVERVIEW):
                 self.activate_page(self.PAGE_TYPE)
-            elif(sel == self.PAGE_CUSTOMWARNING):
-                self.activate_page(self.PAGE_PARTITIONS)
             elif(sel == self.PAGE_PARTITIONS):
                 self.activate_page(self.PAGE_TYPE)
             elif(sel == self.PAGE_TYPE):
@@ -1011,17 +973,6 @@ class InstallerWindow:
         if reboot:
             os.system('reboot')
 
-    @idle
-    def pause_installation(self):
-        self.activate_page(self.PAGE_CUSTOMPAUSED)
-        self.builder.get_object("button_next").set_sensitive(True)
-        self.builder.get_object("button_next").set_label(_("Next"))
-        self.builder.get_object("button_back").hide()
-        self.builder.get_object("button_quit").hide()
-        self.builder.get_object("title_eventbox").show()
-        self.builder.get_object("button_eventbox").show()
-        MessageDialog(_("Installation paused"), _("The installation is now paused. Please read the instructions on the page carefully before clicking Next to finish the installation."))
-
     @asynchronous
     def do_install(self):
         print(" ## INSTALLATION ")
@@ -1049,11 +1000,6 @@ class InstallerWindow:
             do_try_finish_install = False
 
         if do_try_finish_install:
-            if(self.setup.skip_mount):
-                self.paused = True
-                self.pause_installation()
-                while(self.paused):
-                    time.sleep(0.1)
 
             try:
                 self.installer.finish_installation()
@@ -1121,7 +1067,7 @@ class InstallerWindow:
             pbar_pulse()
             
     def slideshow(self):
-        self.images=os.listdir("/usr/share/live-installer/branding/slides")
+        self.images=os.listdir("branding/slides")
         self.slides=Gtk.Notebook()
         self.slides.set_show_tabs(False)
         self.builder.get_object("slidebox").add(self.slides)
@@ -1130,7 +1076,7 @@ class InstallerWindow:
             im = Gtk.Image()
             box = Gtk.Box()
             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
-                "/usr/share/live-installer/branding/slides/"+i, 752, 423, False)
+                "branding/slides/"+i, 752, 423, False)
             im.set_from_pixbuf(pixbuf)
             self.slides.append_page(im, Gtk.Label(label="31"))
         self.cur_slide_pos = 0
