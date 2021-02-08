@@ -23,6 +23,7 @@ from gi.repository import Gtk, Gdk, GdkPixbuf, GObject, Pango, GLib
 gettext.install("live-installer", "/usr/share/locale")
 
 LOADING_ANIMATION = './resources/loading.gif'
+config = parse_config()
 
 # Used as a decorator to run things in the background
 def asynchronous(func):
@@ -218,6 +219,19 @@ class InstallerWindow:
         self.activate_page(0)
         self.slideshow()
         self.window.show_all()
+        
+        # Features
+        if not config["auto_partition_enabled"]:
+            self.builder.get_object("box_automated").hide()
+        if not config["manual_partition_enabled"]:
+            self.builder.get_object("box_manual").hide()
+        else:
+            if not config["lvm_enabled"]:
+                self.builder.get_object("box_lvm").hide()
+            if not config["encryption_enabled"]:
+                self.builder.get_object("box_encryption").hide()
+            if not config["fill_disk_enabled"]:
+                self.builder.get_object("box_fill").hide()
 
 
     def fullscreen(self):
@@ -905,8 +919,6 @@ class InstallerWindow:
                 self.builder.get_object("button_back").set_sensitive(False)
                 self.builder.get_object("button_quit").set_sensitive(False)
                 self.do_install()
-                self.builder.get_object("title_eventbox").hide()
-                self.builder.get_object("button_eventbox").hide()
                 #self.window.resize(100, 100)
         else:
             self.builder.get_object("button_back").set_sensitive(True)

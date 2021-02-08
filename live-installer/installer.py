@@ -503,7 +503,11 @@ class InstallerEngine:
         initramfs_commands = UpdateInitramfs(config["initramfs_system"])
         for command in initramfs_commands:
             self.do_run_in_chroot(command)
-
+        
+        """grub_prepare_commands = config["grub_prepare"]
+        for command in grub_prepare_commands:
+            os.system(command)
+        """
 
         # install GRUB bootloader (EFI & Legacy)
         print(" --> Configuring Grub")
@@ -513,7 +517,7 @@ class InstallerEngine:
             print(" --> Running grub-install")
 
             if os.path.exists("/sys/firmware/efi"):
-                os.system("grub-install --target=x86_64-efi --efi-directory=/target/boot/efi --root-directory=/target --bootloader-id={}".format(config["distro_codename"]))
+                self.do_run_in_chroot("grub-install --target=x86_64-efi --efi-directory=/boot/efi -bootloader-id={}".format(config["distro_codename"]))
             else:
                 self.do_run_in_chroot("grub-install --force %s" % self.setup.grub_device)
 

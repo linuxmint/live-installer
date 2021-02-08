@@ -30,7 +30,7 @@ def memoize(func):
     return memodict()
 
 # Package Manager
-for package_manager in glob("/etc/live-installer/package_managers/*"):
+for package_manager in glob("package_managers/*"):
         pm = open(package_manager, 'r')
         pm_contents = yaml.load(pm, Loader=yaml.FullLoader)
     
@@ -52,7 +52,7 @@ def PackageManager(process, packages=[]):
 
 def UpdateInitramfs(initramfs_name):
     try:
-        initramfs = open("/etc/live-installer/initramfs_systems/" + initramfs_name+ ".yaml")
+        initramfs = open("initramfs_systems/" + initramfs_name+ ".yaml")
     except:
         exit("Initramfs system couldn't find!")
     
