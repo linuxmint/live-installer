@@ -14,7 +14,7 @@ import time
 import parted
 import cairo
 import threading
-from config import parse_config
+import config
 
 import gi
 gi.require_version('Gtk', '3.0')
@@ -23,7 +23,6 @@ from gi.repository import Gtk, Gdk, GdkPixbuf, GObject, Pango, GLib
 gettext.install("live-installer", "/usr/share/locale")
 
 LOADING_ANIMATION = './resources/loading.gif'
-config = parse_config()
 
 # Used as a decorator to run things in the background
 def asynchronous(func):
@@ -221,16 +220,16 @@ class InstallerWindow:
         self.window.show_all()
         
         # Features
-        if not config["auto_partition_enabled"]:
+        if not config.main["auto_partition_enabled"]:
             self.builder.get_object("box_automated").hide()
-        if not config["manual_partition_enabled"]:
+        if not config.main["manual_partition_enabled"]:
             self.builder.get_object("box_manual").hide()
         else:
-            if not config["lvm_enabled"]:
+            if not config.main["lvm_enabled"]:
                 self.builder.get_object("box_lvm").hide()
-            if not config["encryption_enabled"]:
+            if not config.main["encryption_enabled"]:
                 self.builder.get_object("box_encryption").hide()
-            if not config["fill_disk_enabled"]:
+            if not config.main["fill_disk_enabled"]:
                 self.builder.get_object("box_fill").hide()
 
 
@@ -241,8 +240,7 @@ class InstallerWindow:
 
         window_title = _("Installer")
         try:
-            config = parse_config()
-            window_title = config["distro_title"] + " - " + _("Installer")
+            window_title = config.main["distro_title"] + " - " + _("Installer")
         except:
             print("\"distro_title\" varible not found on config. Using default.")
         self.window.set_title(window_title)

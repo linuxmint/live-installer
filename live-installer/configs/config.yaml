@@ -1,5 +1,6 @@
 distro_codename: 17g
 distro_title: 17G
+distribution: auto
 loop_directory: /dev/loop0
 gtk_theme: Yaru-dark
 initramfs_system: mkinitcpio 

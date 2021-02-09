@@ -8,14 +8,12 @@ import subprocess
 import sys
 import parted
 import partitioning
-from config import parse_config
-from utils import PackageManager, UpdateInitramfs
+import config
 
 gettext.install("live-installer", "/usr/share/locale")
 
 NON_LATIN_KB_LAYOUTS = ['am', 'af', 'ara', 'ben', 'bd', 'bg', 'bn', 'bt', 'by', 'deva', 'et', 'ge', 'gh', 'gn', 'gr', 'guj', 'guru', 'id', 'il', 'iku', 'in', 'iq', 'ir', 'kan', 'kg', 'kh', 'kz', 'la', 'lao', 'lk', 'ma', 'mk', 'mm', 'mn', 'mv', 'mal', 'my', 'np', 'ori', 'pk', 'ru', 'rs', 'scc', 'sy', 'syr', 'tel', 'th', 'tj', 'tam', 'tz', 'ua', 'uz']
 
-config = parse_config()
 class InstallerEngine:
     ''' This is central to the live installer '''
 
@@ -26,7 +24,7 @@ class InstallerEngine:
         #sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
 
         # find the squashfs..
-        self.media = config["loop_directory"]
+        self.media = config.main["loop_directory"]
 
         if(not os.path.exists(self.media)):
             print("Critical Error: Live medium (%s) not found!" % self.media)
@@ -76,7 +74,7 @@ class InstallerEngine:
         EXCLUDE_DIRS = "home/* dev/* proc/* sys/* tmp/* run/* mnt/* media/* lost+found source target".split()
         
         # Add optional entries to EXCLUDE_DIRS
-        for dir in config["exclude_dirs"]:
+        for dir in config.main["exclude_dirs"]:
             EXCLUDE_DIRS.append(dir)
             
         our_current = 0
@@ -127,10 +125,10 @@ class InstallerEngine:
                              False, ("Adding new user to the system"))
         #TODO: support encryption
         
-        self.do_run_in_chroot('useradd -m -g users -G wheel -s {shell} {username}'.format(shell=config["using_shell"], username=self.setup.username))
+        self.do_run_in_chroot('useradd -m -g users -G wheel -s {shell} {username}'.format(shell=config.main["using_shell"], username=self.setup.username))
         
         # Add user to addintional groups
-        for group in config["addintional_user_groups"]:
+        for group in config.main["addintional_user_groups"]:
             self.do_run_in_chroot("usermod -aG {} {}".format(group, self.setup.username))
 
         self.do_run_in_chroot("echo -ne \"{0}\\n{0}\\n\" | passwd {1}".format(self.setup.password1,self.setup.username))
@@ -138,7 +136,7 @@ class InstallerEngine:
         self.do_run_in_chroot("echo -ne \"{0}\\n{0}\\n\" | passwd".format(self.setup.password1))
 
         # Set LightDM to show user list by default
-        if config["list_users_when_auto_login"]:
+        if config.main["list_users_when_auto_login"]:
             self.do_run_in_chroot(r"sed -i -r 's/^#?(greeter-hide-users)\s*=.*/\1=true/' /etc/lightdm/lightdm.conf")
         else:
             self.do_run_in_chroot(r"sed -i -r 's/^#?(greeter-hide-users)\s*=.*/\1=false/' /etc/lightdm/lightdm.conf")
@@ -486,7 +484,7 @@ class InstallerEngine:
         #remove pacman
         self.update_progress(our_current, our_total, False, False, _("Clearing package manager"))
         print(" --> Clearing package manager")
-        self.do_run_in_chroot("yes | {}".format(PackageManager("remove_package_with_unusing_deps", config["remove_packages"])))
+        self.do_run_in_chroot("yes | {}".format(config.package_manager("remove_package_with_unusing_deps", config.main["remove_packages"])))
 
         if self.setup.luks:
             with open("/target/etc/default/grub.d/61_live-installer.cfg", "w") as f:
@@ -500,8 +498,7 @@ class InstallerEngine:
         self.update_progress(our_current, our_total, False, False, _("Genetaring initramfs"))
         our_current += 1
         
-        initramfs_commands = UpdateInitramfs(config["initramfs_system"])
-        for command in initramfs_commands:
+        for command in config.update_initramfs():
             self.do_run_in_chroot(command)
         
         """grub_prepare_commands = config["grub_prepare"]
@@ -517,7 +514,7 @@ class InstallerEngine:
             print(" --> Running grub-install")
 
             if os.path.exists("/sys/firmware/efi"):
-                self.do_run_in_chroot("grub-install --target=x86_64-efi --efi-directory=/boot/efi -bootloader-id={}".format(config["distro_codename"]))
+                self.do_run_in_chroot("grub-install --target=x86_64-efi --efi-directory=/boot/efi -bootloader-id={}".format(config.main["distro_codename"]))
             else:
                 self.do_run_in_chroot("grub-install --force %s" % self.setup.grub_device)
 
@@ -576,7 +573,7 @@ class InstallerEngine:
     def do_post_install_commands(self, our_total, our_current):
         self.update_progress(our_current, our_total, True, False, _("Post install commands running"))
         print(" --> Post install commands running")
-        for command in config["post_install_commands"]:
+        for command in config.main["post_install_commands"]:
             self.do_run_in_chroot(command)
 
     def do_check_grub(self, our_total, our_current):

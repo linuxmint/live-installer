@@ -1,2 +1,2 @@
 grub_prepare:
-    - bash scrpts/fetch-pkg-debian.sh
+    - bash scripts/fetch-pkg-debian.sh
