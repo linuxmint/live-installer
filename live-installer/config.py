@@ -30,15 +30,15 @@ for package_manager in glob("configs/package_managers/*"):
         pm_contents = load_config(package_manager)   
 
         if os.path.exists(pm_contents["check_this_dir"]):
-            package_manager = pm_contents
+            pm = pm_contents
             break
 
 def package_manager(process, packages=[]):
     if process == "name":
         exit("You can't use this parameter!")
-    if process in package_manager:
+    if process in pm:
         pkgs = " ".join(str(p) for p in packages)
-        cmd = (package_manager[process] + " ").replace("{packages}", pkgs)
+        cmd = (pm[process] + " ").replace("{packages}", pkgs)
 
         return cmd
     else:
@@ -60,3 +60,6 @@ def update_initramfs():
             commands.append(command)
 
     return commands
+
+
+print(package_manager("remove_package_with_unusing_deps", main["remove_packages"]))
