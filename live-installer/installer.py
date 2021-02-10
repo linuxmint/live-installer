@@ -534,10 +534,12 @@ class InstallerEngine:
         for command in config.update_initramfs():
             self.do_run_in_chroot(command)
         
-        """grub_prepare_commands = config["grub_prepare"]
-        for command in grub_prepare_commands:
-            os.system(command)
-        """
+        try;
+            grub_prepare_commands = config.distro["grub_prepare"]
+            for command in grub_prepare_commands:
+                os.system(command)
+        except:
+            print("Grub prepare process not available for your distribution!")
 
         # install GRUB bootloader (EFI & Legacy)
         print(" --> Configuring Grub")
