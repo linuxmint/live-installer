@@ -854,6 +854,7 @@
                         <property name="receives-default">False</property>
                         <property name="active">True</property>
                         <property name="draw-indicator">True</property>
+                        <property name="group">radio_automated</property>
                         <child>
                           <object class="GtkBox">
                             <property name="visible">True</property>
@@ -1162,6 +1163,7 @@
                         <property name="receives-default">False</property>
                         <property name="active">True</property>
                         <property name="draw-indicator">True</property>
+                        <property name="group">radio_automated</property>
                         <child>
                           <object class="GtkBox">
                             <property name="visible">True</property>

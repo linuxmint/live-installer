@@ -16,10 +16,14 @@ def load_config(config_path):
     return contents
 
 
+# Define subconfigs
 main = load_config("configs/config.yaml")
+distro=None
+pm=None
+initramfs=None
 
 if(main["distribution"] == "auto"):
-    if(os.path.exists("/etc/debian/release")):
+    if(os.path.exists("/etc/debian_version")):
         distro = load_config("configs/distribution/debian.yaml")
 else:
     distro = load_config("configs/distribution/{}.yaml".format(main["distribution"]))
@@ -61,5 +65,3 @@ def update_initramfs():
 
     return commands
 
-
-print(package_manager("remove_package_with_unusing_deps", main["remove_packages"]))
