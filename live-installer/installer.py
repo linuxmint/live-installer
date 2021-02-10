@@ -534,7 +534,7 @@ class InstallerEngine:
         for command in config.update_initramfs():
             self.do_run_in_chroot(command)
         
-        try;
+        try:
             grub_prepare_commands = config.distro["grub_prepare"]
             for command in grub_prepare_commands:
                 os.system(command)
