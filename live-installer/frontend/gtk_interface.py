@@ -206,7 +206,7 @@ class InstallerWindow:
         # install page
         self.builder.get_object("label_install_progress").set_text(_("Calculating file indexes ..."))
         img = self.builder.get_object("image_welcome")
-        img.set_from_file("/usr/share/live-installer/branding/welcome.png")
+        img.set_from_file("branding/welcome.png")
 
         # i18n
         self.i18n()
