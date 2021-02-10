@@ -1,16 +1,21 @@
 distro_codename: 17g
 distro_title: 17G
 distribution: auto
+
 loop_directory: /dev/loop0
 gtk_theme: Yaru-dark
+
 initramfs_system: mkinitcpio 
 using_shell: /bin/bash
+
 list_users_when_auto_login: true
+autologin_enabled: true
 auto_partition_enabled: true
 manual_partition_enabled: true 
 lvm_enabled: true
 encryption_enabled: true
 fill_disk_enabled: true
+
 addintional_user_groups:
   - audio
 exclude_dirs:

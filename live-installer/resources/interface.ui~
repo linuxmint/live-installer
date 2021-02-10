@@ -1389,7 +1389,7 @@
                       <object class="GtkTreeView" id="treeview_overview">
                         <property name="visible">True</property>
                         <property name="can-focus">True</property>
-                        <property name="border-width">0</property>
+                        <property name="border-width">12</property>
                         <property name="headers-visible">False</property>
                         <property name="enable-grid-lines">horizontal</property>
                         <child internal-child="selection">

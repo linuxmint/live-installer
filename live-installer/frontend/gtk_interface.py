@@ -231,6 +231,8 @@ class InstallerWindow:
                 self.builder.get_object("box_encryption").hide()
             if not config.main["fill_disk_enabled"]:
                 self.builder.get_object("box_fill").hide()
+        if not config.main["autologin_enabled"]:
+            self.builder.get_object("autologin_box").hide()
 
 
     def fullscreen(self):
@@ -860,6 +862,7 @@ class InstallerWindow:
                             partitioning.build_partitions(self)
                             partitioning.build_grub_partitions()
                             self.activate_page(self.PAGE_OVERVIEW)
+                            self.show_overview()
                 else:
                     self.activate_page(self.PAGE_PARTITIONS)
                     partitioning.build_partitions(self)
@@ -910,6 +913,7 @@ class InstallerWindow:
 
                 partitioning.build_grub_partitions()
                 self.activate_page(self.PAGE_OVERVIEW)
+                self.show_overview()
 
             elif(sel == self.PAGE_OVERVIEW):
                 self.activate_page(self.PAGE_INSTALL)
