@@ -57,7 +57,7 @@ class InstallerWindow:
 
         # disable the screensaver
         os.system("killall cinnamon-screen")
-
+        os.system("killall xfce4-screensaver")
         # build the setup object (where we put all our choices) and the installer
         self.setup = Setup()
         self.installer = InstallerEngine(self.setup)

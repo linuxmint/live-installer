@@ -8,7 +8,7 @@ gtk_theme: Yaru-dark
 initramfs_system: mkinitcpio 
 using_shell: /bin/bash
 
-list_users_when_auto_login: true
+list_users_when_auto_login: false
 autologin_enabled: true
 auto_partition_enabled: true
 manual_partition_enabled: true 
