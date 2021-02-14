@@ -1,7 +1,12 @@
 import yaml
 import os
+import sys
 import subprocess
 from glob import glob
+
+sys.path.insert(1, '/usr/lib/live-installer')
+if (os.path.isdir("/usr/lib/live-installer")):
+    os.chdir("/usr/lib/live-installer")
 
 def load_config(config_path):
     if os.path.isfile(config_path):
