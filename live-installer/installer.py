@@ -549,7 +549,17 @@ class InstallerEngine:
             print(" --> Running grub-install")
 
             if os.path.exists("/sys/firmware/efi"):
-                self.do_run_in_chroot("grub-install --target=x86_64-efi --efi-directory=/boot/efi -bootloader-id={}".format(config.main["distro_codename"]))
+                grub_cmd = config.distro["grub_installation_efi"].split("|")
+                if "{distro_codename}" in grub_cmd[1]:
+                    if grub_cmd[0] == "chroot":
+                        self.do_run_in_chroot(grub_cmd[1].replace("{distro_codename}", config.main["distro_codename"]))
+                    else:
+                        os.system(grub_cmd[1].replace("{distro_codename}", config.main["distro_codename"]))
+                else:
+                    if grub_cmd[0] == "chroot":
+                        self.do_run_in_chroot(grub_cmd[1])
+                    else:
+                        os.system(grub_cmd[1])
             else:
                 self.do_run_in_chroot("grub-install --force %s" % self.setup.grub_device)
 

@@ -1,0 +1,1 @@
+grub_installation_efi: system|grub-install --target=x86_64-efi --efi-directory=/target/boot/efi -root-directory=/target -bootloader-id={distro_codename}

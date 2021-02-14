@@ -23,8 +23,10 @@ pm=None
 initramfs=None
 
 if(main["distribution"] == "auto"):
-    if(os.path.exists("/etc/debian_version")):
+    if os.path.exists("/etc/debian_version"):
         distro = load_config("configs/distribution/debian.yaml")
+    elif os.path.exists("/var/lib/pacman"):
+        distro = load_config("configs/distribution/arch.yaml")
 else:
     distro = load_config("configs/distribution/{}.yaml".format(main["distribution"]))
 
