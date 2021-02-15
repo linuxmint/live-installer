@@ -34,4 +34,4 @@ uninstall:
 	rm -f $(DESTDIR)/usr/share/applications/live-installer.desktop
 clean:
 	rm -rf build
-	find po/ | grep "*.po" | xargs rm -f
+	find po/ | grep "*.mo" | xargs rm -f

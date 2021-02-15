@@ -1,0 +1,888 @@
+# Czech translation for linuxmint
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the linuxmint package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: linuxmint\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2020-03-09 21:17+0000\n"
+"PO-Revision-Date: 2020-03-10 20:08+0000\n"
+"Last-Translator: Pavel Borecki <Unknown>\n"
+"Language-Team: Czech <cs@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2020-03-13 11:20+0000\n"
+"X-Generator: Launchpad (build 3a6db24bbe7280ec09bae73384238390fcc98ad3)\n"
+"Language: cs\n"
+
+#: usr/lib/live-installer/installer.py:47
+msgid ""
+"ERROR: You must first manually mount your target filesystem(s) at /target to "
+"do a custom install!"
+msgstr ""
+"CHYBA: Nejprve je třeba ručně připojit cílové souborové systémy do /target a "
+"až teprve potom pokračovat v ručně prováděné instalaci!"
+
+#: usr/lib/live-installer/installer.py:88
+#, python-format
+msgid "Copying /%s"
+msgstr "Kopíruje se /%s"
+
+#: usr/lib/live-installer/installer.py:96
+msgid "Entering the system ..."
+msgstr "Vstup do systému…"
+
+#: usr/lib/live-installer/installer.py:146
+msgid "Removing live configuration (packages)"
+msgstr "Odstraňování nastavení (balíčků) od provozu z instalačního média"
+
+#: usr/lib/live-installer/installer.py:158
+msgid "Adding new user to the system"
+msgstr "Přidávání nového uživatele do systému"
+
+#: usr/lib/live-installer/installer.py:189
+msgid "Writing filesystem mount information to /etc/fstab"
+msgstr "Zapisování údajů o připojení souborových systémů do /etc/fstab"
+
+#: usr/lib/live-installer/installer.py:195
+#: usr/lib/live-installer/installer.py:332
+#: usr/lib/live-installer/installer.py:346
+#: usr/lib/live-installer/installer.py:366
+#, python-format
+msgid "Mounting %(partition)s on %(mountpoint)s"
+msgstr "Připojuje se %(partition)s do %(mountpoint)s"
+
+#: usr/lib/live-installer/installer.py:254
+#, python-format
+msgid ""
+"Filling %s with random data (please be patient, this can take hours...)"
+msgstr ""
+"Přepisování %s náhodnými daty (prosíme buďte trpěliví, může to trvat hodiny…)"
+
+#: usr/lib/live-installer/installer.py:259
+#, python-format
+msgid "Creating partitions on %s"
+msgstr "Vytváření oddílů na %s"
+
+#: usr/lib/live-installer/installer.py:306
+#, python-format
+msgid "Formatting %(partition)s as %(format)s ..."
+msgstr "Formátování %(partition)s jako %(format)s…"
+
+#: usr/lib/live-installer/installer.py:343
+#: usr/lib/live-installer/installer.py:363
+msgid "ERROR: the use of @subvolumes is limited to btrfs"
+msgstr ""
+"CHYBA: @podsvazky je možné použít jen pro se souborovým systémem btrfs"
+
+#: usr/lib/live-installer/installer.py:489
+msgid "Setting hostname"
+msgstr "Nastavuje se název počítače"
+
+#: usr/lib/live-installer/installer.py:508
+msgid "Setting locale"
+msgstr "Nastavují se místní a jazyková nastavení"
+
+#: usr/lib/live-installer/installer.py:523
+msgid "Localizing packages"
+msgstr "Lokalizace balíčků"
+
+#: usr/lib/live-installer/installer.py:538
+msgid "Installing drivers"
+msgstr "Instalace ovladačů"
+
+#: usr/lib/live-installer/installer.py:569
+msgid "Setting keyboard options"
+msgstr "Natavují se parametry klávesnice"
+
+#: usr/lib/live-installer/installer.py:626
+msgid "Installing bootloader"
+msgstr "Instalace zavaděče"
+
+#: usr/lib/live-installer/installer.py:639
+msgid ""
+"WARNING: The grub bootloader was not configured properly! You need to "
+"configure it manually."
+msgstr ""
+"VAROVÁNÍ: Zavaděč Grub nebyl správně nastaven! Je třeba ho nastavit ručně."
+
+#: usr/lib/live-installer/installer.py:653
+msgid "Cleaning APT"
+msgstr "Čištění APT"
+
+#: usr/lib/live-installer/installer.py:679
+#: usr/lib/live-installer/frontend/gtk_interface.py:1089
+msgid "Installation finished"
+msgstr "Instalace dokončena"
+
+#: usr/lib/live-installer/installer.py:688
+msgid "Configuring bootloader"
+msgstr "Nastavování zavaděče systému"
+
+#: usr/lib/live-installer/installer.py:697
+msgid "Checking bootloader"
+msgstr "Kontrolování zavaděče systému"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:103
+#: usr/lib/live-installer/frontend/gtk_interface.py:272
+#: usr/lib/live-installer/frontend/gtk_interface.py:294
+msgid "Language"
+msgstr "Jazyk"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:111
+#: usr/lib/live-installer/frontend/gtk_interface.py:295
+msgid "Country"
+msgstr "Stát"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:193
+#: usr/lib/live-installer/frontend/gtk_interface.py:299
+msgid "Layout"
+msgstr "Rozvržení"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:199
+#: usr/lib/live-installer/frontend/gtk_interface.py:300
+msgid "Variant"
+msgstr "Varianta"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:213
+msgid "Calculating file indexes ..."
+msgstr "Počítání indexů souborů…"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:254
+#: usr/lib/live-installer/frontend/gtk_interface.py:257
+#: usr/lib/live-installer/frontend/gtk_interface.py:810
+#: usr/lib/live-installer/frontend/gtk_interface.py:895
+#: usr/lib/live-installer/frontend/gtk_interface.py:915
+#: usr/lib/live-installer/frontend/gtk_interface.py:933
+#: usr/lib/live-installer/frontend/gtk_interface.py:937
+#: usr/lib/live-installer/frontend/gtk_interface.py:945
+#: usr/lib/live-installer/frontend/gtk_interface.py:949
+#: usr/lib/live-installer/frontend/gtk_interface.py:965
+#: usr/lib/live-installer/frontend/gtk_interface.py:968
+#: usr/lib/live-installer/frontend/gtk_interface.py:973
+#: usr/lib/live-installer/frontend/gtk_interface.py:977
+#: usr/lib/live-installer/frontend/gtk_interface.py:981
+#: usr/lib/live-installer/partitioning.py:330
+msgid "Installer"
+msgstr "Instalátor"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:271
+msgid "Welcome"
+msgstr "Vítejte"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:272
+msgid "What language would you like to use?"
+msgstr "Který jazyk chcete používat?"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:273
+msgid "Timezone"
+msgstr "Časové pásmo"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:273
+msgid "Where are you?"
+msgstr "Kde se nacházíte?"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:274
+msgid "Keyboard layout"
+msgstr "Rozvržení klávesnice"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:274
+msgid "What is your keyboard layout?"
+msgstr "Jaké je rozvržení vámi používané klávesnice"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:275
+msgid "User account"
+msgstr "Uživatelský účet"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:275
+msgid "Who are you?"
+msgstr "Jak se jmenujete?"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:276
+msgid "Installation Type"
+msgstr "Typ instalace"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:276
+#: usr/lib/live-installer/frontend/gtk_interface.py:277
+msgid "Where do you want to install 17G?"
+msgstr "Kam chcete 17G nainstalovat?"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:277
+msgid "Partitioning"
+msgstr "Dělení úložiště"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:278
+msgid "Advanced options"
+msgstr "Pokročilá nastavení"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:279
+msgid "Summary"
+msgstr "Souhrn"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:280
+msgid "Installing"
+msgstr "Instaluje se"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:281
+#: usr/lib/live-installer/frontend/gtk_interface.py:332
+msgid "Expert mode"
+msgstr "Režim pro pokročilé uživatele"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:282
+#: usr/lib/live-installer/frontend/gtk_interface.py:1104
+msgid "Installation paused"
+msgstr "Instalace pozastavena"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:285
+msgid "Quit"
+msgstr "Ukončit"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:286
+msgid "Back"
+msgstr "Zpět"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:287
+#: usr/lib/live-installer/frontend/gtk_interface.py:1099
+msgid "Next"
+msgstr "Další"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:290
+msgid "Welcome to the 17G Installer."
+msgstr "Vítejte v instalátoru 17G."
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:291
+msgid ""
+"This program will ask you some questions and set up 17G on your computer."
+msgstr ""
+"Tento program vám položí několik dotazů a na základě odpovědí na ně "
+"nainstaluje 17G na váš počítač."
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:298
+msgid "Keyboard Model:"
+msgstr "Model klávesnice:"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:301
+msgid "Type here to test your keyboard layout"
+msgstr "Vyzkoušejte volbu rozložení klávesnice psaním sem."
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:302
+msgid ""
+"* Your username, your computer's name and your password should only contain "
+"Latin characters. In addition to your selected layout, English (US) is set "
+"as the default. You can switch layouts by pressing both Ctrl keys together."
+msgstr ""
+"* Vaše uživatelské jméno, název počítače a heslo by mělo obsahovat pouze "
+"znaky z latinky. Kromě vámi zvoleného rozvržení, je anglické (US) nastaveno "
+"jako výchozí. Přepínat mezi nimi můžete stisknutím obou kláves Ctrl najednou."
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:305
+msgid "Your name:"
+msgstr "Vaše jméno:"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:306
+msgid "Your computer's name:"
+msgstr "Název počítače:"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:307
+msgid "The name it uses when it talks to other computers."
+msgstr "Název se používá při komunikaci s ostatními počítači."
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:308
+msgid "Pick a username:"
+msgstr "Vyberte uživatelské jméno:"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:309
+msgid "Choose a password:"
+msgstr "Zvolte heslo:"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:310
+msgid "Confirm your password:"
+msgstr "Potvrďte zadání hesla:"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:312
+msgid "Log in automatically"
+msgstr "Přihlašovat se automaticky"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:313
+msgid "Require my password to log in"
+msgstr "Požadovat mé heslo pro přihlášení"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:314
+msgid "Encrypt my home folder"
+msgstr "Šifrovat mou domovskou složku"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:317
+msgid "Automated Installation"
+msgstr "Automatizovaná instalace"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:318
+msgid "Erase a disk and install 17G on it."
+msgstr "Vymazat disk a nainstalovat na něj 17G."
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:319
+msgid "Disk:"
+msgstr "Disk:"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:320
+msgid "Encrypt the operating system"
+msgstr "Šifrovat operační systém"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:321
+msgid "Passphrase"
+msgstr "Heslová fráze"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:322
+msgid "Confirm passphrase"
+msgstr "Potvrzení zadání heslové fráze"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:323
+msgid "Use LVM (Logical Volume Management)"
+msgstr "Použít LVM (Logical Volume Management)"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:324
+msgid "Manual Partitioning"
+msgstr "Ruční rozdělení"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:325
+msgid "Manually create, resize or choose partitions for 17G."
+msgstr "Ručně vytvořit, změnit velikost nebo zvolit oddíly pro 17G."
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:326
+msgid "Fill the disk with random data"
+msgstr "Přepsat disk náhodnými daty"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:327
+msgid "This provides extra security but it can take hours."
+msgstr "Toto poskytuje další zabezpečení, ale může trvat hodiny."
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:330
+msgid "Edit partitions"
+msgstr "Upravit oddíly"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:331
+msgid "Refresh"
+msgstr "Načíst znovu"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:334
+msgid "Device"
+msgstr "Zařízení"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:335
+msgid "Type"
+msgstr "Typ"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:336
+msgid "Operating system"
+msgstr "Operační systém"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:337
+msgid "Mount point"
+msgstr "Přípojný bod"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:338
+msgid "Format as"
+msgstr "Formátovat jako"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:339
+msgid "Size"
+msgstr "Velikost"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:340
+#: usr/lib/live-installer/partitioning.py:439
+msgid "Free space"
+msgstr "Volné místo"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:344
+msgid "Install the GRUB boot menu on:"
+msgstr "Nainstalovat nabídku zavaděče GRUB na:"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:347
+msgid ""
+"You selected to manage your partitions manually, this feature is for "
+"ADVANCED USERS ONLY."
+msgstr ""
+"Zvolili jste ruční správu oddílů – tato funkce je POUZE PRO POKROČILÉ "
+"UŽIVATELE."
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:348
+msgid "Before continuing, mount your target filesystem(s) on /target."
+msgstr ""
+"Před pokračováním, připojte (mount) cílové souborové systémy pod /target."
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:349
+msgid ""
+"Do NOT mount virtual devices such as /dev, /proc, /sys, etc on /target/."
+msgstr ""
+"Do /target/ NEpřipojujte virtuální zařízení jako jsou /dev, /proc, /sys, atd."
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:350
+msgid ""
+"During the install, you will be given time to chroot into /target and "
+"install any packages that will be needed to boot your new system."
+msgstr ""
+"V průběhu instalace dostanete prostor pro přepnutí se (chroot) do /target a "
+"instalaci všech balíčků, které budou potřebné pro spuštění nového systému."
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:351
+msgid ""
+"During the install, you will be required to write your own /etc/fstab."
+msgstr ""
+"V průběhu instalace budete vyzváni k sepsání obsahu vlastního souboru "
+"/etc/fstab."
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:354
+msgid "Do the following and then click Next to finish installation:"
+msgstr "Udělejte následující a instalaci dokončete kliknutím na Další:"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:355
+msgid ""
+"Create /target/etc/fstab for the filesystems as they will be mounted in your "
+"new system, matching those currently mounted at /target (without using the "
+"/target prefix in the mount paths themselves)."
+msgstr ""
+"Vytvořte /target/etc/fstab pro souborové systémy tak, jak mají být připojené "
+"ve vaší nové instalaci systému, aby odpovídalo těm, které jsou v tuto chvíli "
+"připojené v /target (bez použítí /target v popisu umistění jejich připojných "
+"bodů)."
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:356
+msgid ""
+"Install any packages that may be needed for first boot (mdadm, cryptsetup, "
+"dmraid, etc) by calling \"sudo chroot /target\" followed by the relevant apt-"
+"get/aptitude installations."
+msgstr ""
+"Nainstalujte všechny balíčky, které mohou být potřebné při prvním spouštění "
+"(mdadm, cryptsetup, dmraid, apod.) spuštěním příkazu „sudo chroot /target“ "
+"následovaným odpovídajícími instalacemi pomocí apt/aptitude."
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:357
+msgid ""
+"Note that in order for update-initramfs to work properly in some cases (such "
+"as dm-crypt), you may need to have drives currently mounted using the same "
+"block device name as they appear in /target/etc/fstab."
+msgstr ""
+"Všimněte si, že aby nástroj update-initramfs v některých případech (např. dm-"
+"crypt) pracoval správně, může být třeba aby jednotky byly už v tuto chvíli "
+"připojeny pomocí stejného názvu blokového zařízení, jako je tomu v "
+"/target/etc/fstab."
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:358
+msgid ""
+"Double-check that your /target/etc/fstab is correct, matches what your new "
+"system will have at first boot, and matches what is currently mounted at "
+"/target."
+msgstr ""
+"Zkontrolujte zda je /target/etc/fstab správný a odpovídá tomu, co vaše nová "
+"instalace systému má mít při prvním spuštění a je ve shodě s tím, co je v "
+"tuto chvíli připojeno pod /target."
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:488
+msgid "Quit?"
+msgstr "Ukončit?"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:488
+msgid "Are you sure you want to quit the installer?"
+msgstr "Opravdu chcete instalátor ukončit?"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:810
+msgid "Please choose a language"
+msgstr "Vyberte jazyk"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:852
+msgid "Please provide your full name."
+msgstr "Zadejte své celé jméno."
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:856
+msgid "Please provide a name for your computer."
+msgstr "Zadejte název pro váš počítač."
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:860
+msgid "Please provide a username."
+msgstr "Zadejte své uživatelské jméno."
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:864
+msgid "Please provide a password for your user account."
+msgstr "Zadejte heslo pro svůj uživatelský účet."
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:868
+msgid "Your passwords do not match."
+msgstr "Zadání hesla se neshodují."
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:874
+msgid "Your username must be lower case."
+msgstr "Je třeba, aby uživatelské jméno neobsahovalo velká písmena."
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:879
+msgid "Your username may not contain whitespace characters."
+msgstr ""
+"Uživatelské jméno nemůže obsahovat prázdné znaky (např. mezera, tabulátor, "
+"atp.)."
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:885
+msgid "The computer's name must be lower case."
+msgstr "Je třeba, aby název počítače byl zadán malými písmeny."
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:890
+msgid "The computer's name may not contain whitespace characters."
+msgstr ""
+"Název počítače nemůže obsahovat mezery, tabulátory a ostatní prázdné znaky"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:906
+msgid "Please select a disk."
+msgstr "Vyberte disk."
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:910
+msgid "Please provide a passphrase for the encryption."
+msgstr "Zadejte heslovou frázi, kterou použít pro šifrování."
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:913
+msgid "Your passphrases do not match."
+msgstr "Zadání heslové fráze se neshodují."
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:917
+msgid "Warning"
+msgstr "Varování"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:917
+#, python-format
+msgid "This will delete all the data on %s. Are you sure?"
+msgstr "Toto smaže veškerá data na %s. Opravdu to chcete?"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:933
+msgid ""
+"Please indicate a filesystem to format the root (/) partition with before "
+"proceeding."
+msgstr ""
+"Než budete pokračovat, zvolte jaký souborový systém použít pro kořenový "
+"oddíl (/)."
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:937
+msgid "A root subvolume (/@) requires to format the partition with btrfs."
+msgstr ""
+"Kořenový dílčí svazek (/@) vyžaduje, aby na oddílu byl vytvořen souborový "
+"systém btrfs."
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:945
+msgid ""
+"A home subvolume (/@home) requires the use of a btrfs formatted partition."
+msgstr ""
+"Dílčí svazek s domovskými složkami (/@home) vyžaduje oddíl se souborovým "
+"systémem btrfs."
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:949
+msgid "Please select a root (/) partition."
+msgstr "Zvolte oddíl pro kořen adresářové struktury (/)."
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:950
+msgid ""
+"A root partition is needed to install Linux Mint on.\n"
+"\n"
+" - Mount point: /\n"
+" - Recommended size: 30GB\n"
+" - Recommended filesystem format: ext4\n"
+"\n"
+"Note: The timeshift btrfs snapshots feature requires the use of:\n"
+" - subvolume Mount-point /@\n"
+" - btrfs as filesystem format\n"
+msgstr ""
+"Je zapotřebí kořenového oddílu, na který Linux MInt nainstalovat.\n"
+"\n"
+" - Přípojný bod: /\n"
+" - Doporučená velikost: 30GB\n"
+" - Doporučený souborový systém: ext4\n"
+"\n"
+"Pozn.: Funkce timeshift btrfs zachyceného stavu vyžaduje použití:\n"
+" - přípojného bodu podsvazku /@\n"
+" - souborového systému btrfs\n"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:965
+msgid "The EFI partition is not bootable. Please edit the partition flags."
+msgstr "EFI oddíl není zaveditelný. Upravte příznaky tohoto oddílu."
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:968
+msgid "The EFI partition is too small. It must be at least 35MB."
+msgstr "EFI oddíl je příliš malý. Je třeba, aby byl nejméně 35 MB velký."
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:973
+#: usr/lib/live-installer/frontend/gtk_interface.py:977
+msgid "The EFI partition must be formatted as vfat."
+msgstr "Je třeba, aby EFI oddíl měl souborový systém vfat."
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:981
+msgid "Please select an EFI partition."
+msgstr "Zvolte EFI oddíl."
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:981
+msgid ""
+"An EFI system partition is needed with the following requirements:\n"
+"\n"
+" - Mount point: /boot/efi\n"
+" - Partition flags: Bootable\n"
+" - Size: at least 35MB (100MB or more recommended)\n"
+" - Format: vfat or fat32\n"
+"\n"
+"To ensure compatibility with Windows we recommend you use the first "
+"partition of the disk as the EFI system partition.\n"
+" "
+msgstr ""
+"Je zapotřebí EFI systémového oddílu s následujícími parametry:\n"
+"\n"
+" - Přípojný bod: /boot/efi\n"
+" - Příznaky oddílu: zaveditelný (bootable)\n"
+" - Velikost: přinejmenším 35 MB (100 MB a více doporučeno)\n"
+" - Souborový systém: vfat nebo fat32\n"
+"\n"
+"To ensure compatibility with Windows we recommend you use the first "
+"partition of the disk as the EFI system partition.\n"
+" "
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:994
+msgid "Install"
+msgstr "Nainstalovat"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1051
+msgid "Localization"
+msgstr "Lokalizace"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1052
+msgid "Language: "
+msgstr "Jazyk: "
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1053
+msgid "Timezone: "
+msgstr "Časové pásmo: "
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1054
+msgid "Keyboard layout: "
+msgstr "Rozvržení klávesnice: "
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1057
+msgid "User settings"
+msgstr "Nastavení uživatele"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1058
+msgid "Real name: "
+msgstr "Jméno a příjmení: "
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1059
+msgid "Username: "
+msgstr "Uživatelské jméno: "
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1060
+msgid "Automatic login: "
+msgstr "Automatické přihlašování: "
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1060
+#: usr/lib/live-installer/frontend/gtk_interface.py:1061
+#: usr/lib/live-installer/frontend/gtk_interface.py:1071
+#: usr/lib/live-installer/frontend/gtk_interface.py:1072
+msgid "enabled"
+msgstr "zapnuto"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1060
+#: usr/lib/live-installer/frontend/gtk_interface.py:1061
+#: usr/lib/live-installer/frontend/gtk_interface.py:1071
+#: usr/lib/live-installer/frontend/gtk_interface.py:1072
+msgid "disabled"
+msgstr "vypnuto"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1061
+msgid "Home encryption: "
+msgstr "Šifrování domovské složky: "
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1062
+msgid "System settings"
+msgstr "Nastavení systému"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1063
+msgid "Computer's name: "
+msgstr "Název počítače: "
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1064
+msgid "Filesystem operations"
+msgstr "Vytváření souborového systému"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1065
+#, python-format
+msgid "Install bootloader on %s"
+msgstr "Nainstalovat zavaděč na %s"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1065
+msgid "Do not install bootloader"
+msgstr "Neinstalovat zavaděč systému"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1067
+msgid "Use already-mounted /target."
+msgstr "Použít už připojený /target"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1070
+#, python-format
+msgid "Automated installation on %s"
+msgstr "Automatizovaná instalace na %s"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1071
+msgid "LVM: "
+msgstr "LVM: "
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1072
+msgid "Disk Encryption: "
+msgstr "Šífrování disku: "
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1076
+#, python-format
+msgid "Format %(path)s as %(filesystem)s"
+msgstr "Formátování %(path)s jako %(filesystem)s"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1079
+#, python-format
+msgid "Mount %(path)s as %(mount)s"
+msgstr "Připojit %(path)s do %(mount)s"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1089
+msgid ""
+"The installation is now complete. Do you want to restart your computer to "
+"use the new system?"
+msgstr ""
+"Instalace je nyní dokončená. Chcete restartovat počítač a začít používat Váš "
+"nový systém?"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1104
+msgid ""
+"The installation is now paused. Please read the instructions on the page "
+"carefully before clicking Next to finish the installation."
+msgstr ""
+"Instalace je nyní pozastavena. Než instalaci dokončíte kliknutím na Další, "
+"pečlivě si přečtete pokyny na této stránce,"
+
+#: usr/lib/live-installer/frontend/gtk_interface.py:1131
+#: usr/lib/live-installer/frontend/gtk_interface.py:1134
+#: usr/lib/live-installer/frontend/gtk_interface.py:1148
+#: usr/lib/live-installer/frontend/gtk_interface.py:1156
+msgid "Installation error"
+msgstr "Chyba instalace"
+
+#: usr/lib/live-installer/partitioning.py:92
+msgid "B"
+msgstr "B"
+
+#: usr/lib/live-installer/partitioning.py:92
+#: usr/lib/live-installer/partitioning.py:393
+msgid "kB"
+msgstr "kB"
+
+#: usr/lib/live-installer/partitioning.py:92
+#: usr/lib/live-installer/partitioning.py:393
+msgid "MB"
+msgstr "MB"
+
+#: usr/lib/live-installer/partitioning.py:92
+#: usr/lib/live-installer/partitioning.py:393
+msgid "GB"
+msgstr "GB"
+
+#: usr/lib/live-installer/partitioning.py:92
+#: usr/lib/live-installer/partitioning.py:393
+msgid "TB"
+msgstr "TB"
+
+#: usr/lib/live-installer/partitioning.py:97
+msgid "Removable:"
+msgstr "Vyjímatelné:"
+
+#: usr/lib/live-installer/partitioning.py:177
+msgid "Edit"
+msgstr "Upravit"
+
+#: usr/lib/live-installer/partitioning.py:182
+msgid "Assign to /"
+msgstr "Přiřadit k /"
+
+#: usr/lib/live-installer/partitioning.py:185
+msgid "Assign to /home"
+msgstr "Přiřadit k /home"
+
+#: usr/lib/live-installer/partitioning.py:191
+msgid "Assign to /boot/efi"
+msgstr "Přiřadit k /boot/efi"
+
+#: usr/lib/live-installer/partitioning.py:246
+msgid "Installation Tool"
+msgstr "Instalační nástroj"
+
+#: usr/lib/live-installer/partitioning.py:247
+#, python-format
+msgid ""
+"No partition table was found on the hard drive: %s. Do you want the "
+"installer to create a set of partitions for you? Note: This will ERASE ALL "
+"DATA present on this disk."
+msgstr ""
+"Na jednotce %s nebyla nalezena tabulka oddílů. Chcete aby na ní instalátor "
+"vytvořil potřebné oddíly? Poznámka: Toto SMAŽE VŠECHNA DATA která se na ní "
+"mohou nacházet."
+
+#: usr/lib/live-installer/partitioning.py:339
+#, python-format
+msgid ""
+"The partition table couldn't be written for %s. Restart the computer and try "
+"again."
+msgstr ""
+"Na %s se nedaří zapsat tabulku rozdělení oddílů. Restartujte počítač a "
+"zkuste to znovu."
+
+#: usr/lib/live-installer/partitioning.py:380
+#, python-format
+msgid ""
+"The partition %s could not be created. The installation will stop. Restart "
+"the computer and try again."
+msgstr ""
+"Oddíl %s se nedaří vytvořit. Instalace se zastaví. Restartujte počítač a "
+"zkuste to znovu."
+
+#: usr/lib/live-installer/partitioning.py:437
+msgid "Logical partition"
+msgstr "Logický oddíl"
+
+#: usr/lib/live-installer/partitioning.py:438
+msgid "Extended partition"
+msgstr "Rozšířený oddíl"
+
+#: usr/lib/live-installer/partitioning.py:442
+msgid "Unknown"
+msgstr "Neznámý"
+
+#: usr/lib/live-installer/partitioning.py:556
+msgid "Edit partition"
+msgstr "Upravit oddíl"
+
+#: usr/lib/live-installer/partitioning.py:557
+msgid "Device:"
+msgstr "Zařízení:"
+
+#: usr/lib/live-installer/partitioning.py:559
+msgid "Format as:"
+msgstr "Formátovat jako:"
+
+#: usr/lib/live-installer/partitioning.py:560
+msgid "Mount point:"
+msgstr "Přípojný bod:"
+
+#: usr/lib/live-installer/partitioning.py:561
+msgid "Cancel"
+msgstr "Storno"
+
+#: usr/lib/live-installer/partitioning.py:562
+#: usr/lib/live-installer/dialogs.py:31 usr/lib/live-installer/dialogs.py:42
+#: usr/lib/live-installer/dialogs.py:47
+msgid "OK"
+msgstr "OK"
+
+#: usr/lib/live-installer/dialogs.py:36
+msgid "No"
+msgstr "Ne"
+
+#: usr/lib/live-installer/dialogs.py:37
+msgid "Yes"
+msgstr "Ano"
