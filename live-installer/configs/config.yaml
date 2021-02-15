@@ -4,9 +4,9 @@ distribution: auto
 copyright: 17g Developer Team
 
 loop_directory: /dev/loop0
-gtk_theme: Yaru-dark
+gtk_theme: default
 
-initramfs_system: mkinitcpio 
+initramfs_system: auto 
 using_shell: /bin/bash
 
 list_users_when_auto_login: false
@@ -18,6 +18,10 @@ manual_partition_enabled: true
 lvm_enabled: true
 encryption_enabled: true
 fill_disk_enabled: true
+
+default_country_code: US
+default_timezone: America/New_York
+
 
 addintional_user_groups:
   - audio

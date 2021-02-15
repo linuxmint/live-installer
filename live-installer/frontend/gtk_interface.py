@@ -345,6 +345,8 @@ class InstallerWindow:
     def assign_username(self, entry, prop):
         self.setup.username = entry.props.text
         errorFound = False
+        if self.setup.username[0] in "0123456789":
+            errorFound = True
         for char in self.setup.username:
             if(char.isupper()):
                 errorFound = True
@@ -462,14 +464,8 @@ class InstallerWindow:
             from urllib.request import urlopen
         except ImportError:  # py3
             from urllib.request import urlopen
-        try:
-            lookup = str(urlopen('http://geoip.ubuntu.com/lookup').read())
-            self.cur_country_code = re.search('<CountryCode>(.*)</CountryCode>', lookup).group(1)
-            self.cur_timezone = re.search('<TimeZone>(.*)</TimeZone>', lookup).group(1)
-            if self.cur_country_code == 'None': self.cur_country_code = "US"
-            if self.cur_timezone == 'None': self.cur_timezone = "America/New_York"
-        except:
-            self.cur_country_code, self.cur_timezone = "US", "America/New_York"  # no internet connection
+        self.cur_country_code = config.main['default_country_code']
+        self.cur_timezone = config.main['default_timezone']
 
         #Load countries into memory
         countries = {}
@@ -808,6 +804,11 @@ class InstallerWindow:
                     errorMessage = _("Your passwords do not match.")
                     focus_widget = self.builder.get_object("entry_confirm")
                 else:
+                    if self.setup.username[0] in "0123456789":
+                        errorFound = True
+                        errorMessage = _(
+                            "Your username cannot start with numbers.")
+                        
                     for char in self.setup.username:
                         if(char.isupper()):
                             errorFound = True

@@ -35,7 +35,13 @@ if(main["distribution"] == "auto"):
 else:
     distro = load_config("configs/distribution/{}.yaml".format(main["distribution"]))
 
-
+if(main["initramfs_system"] == "auto"):
+    if os.path.exists("/etc/debian_version"):
+        initramfs = load_config("configs/initramfs_systems/initramfs_tools.yaml")
+    elif os.path.exists("/var/lib/pacman"):
+        initramfs = load_config("configs/initramfs_systems/mkinitcpio.yaml")
+else:
+    distro = load_config("configs/initramfs_systems/{}.yaml".format(main["initramfs_system"]))
 # Package Manager
 for package_manager in glob("configs/package_managers/*"):
         pm_contents = load_config(package_manager)   
@@ -58,8 +64,6 @@ def package_manager(process, packages=[]):
 
 # Update Initramfs
 def update_initramfs():
-    initramfs = load_config("configs/initramfs_systems/" + main["initramfs_system"] + ".yaml")
-
     commands = []
     for command in initramfs["commands"]:
         if "{kernel_version}" in command:
