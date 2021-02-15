@@ -1,0 +1,5 @@
+grub_prepare:
+    - echo uwu
+grub_installation_efi: echo uwu
+run_before_user_creation:
+    - echo uwu

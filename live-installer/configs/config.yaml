@@ -11,6 +11,8 @@ using_shell: /bin/bash
 list_users_when_auto_login: false
 autologin_enabled: true
 auto_partition_enabled: true
+set_root_password: false
+
 manual_partition_enabled: true 
 lvm_enabled: true
 encryption_enabled: true
@@ -18,6 +20,7 @@ fill_disk_enabled: true
 
 addintional_user_groups:
   - audio
+  - wheel
 exclude_dirs:
   - /home
 remove_packages:

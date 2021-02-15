@@ -128,13 +128,16 @@ class InstallerEngine:
         # add new user
         print(" --> Adding new user")
         our_current += 1
-        self.do_run_in_chroot('ls /home | xargs userdel')
-        self.do_run_in_chroot('rm -rf /home/*')
+        try:
+            for cmd in config.distro["run_before_user_creation"]:
+	        self.do_run_in_chroot(cmd)
+        except:
+            print("This action not supported for your distribution.")
         self.update_progress(our_current, our_total, False,
                              False, ("Adding new user to the system"))
         # TODO: support encryption
 
-        self.do_run_in_chroot('useradd -m -g users -G wheel -s {shell} {username}'.format(
+        self.do_run_in_chroot('useradd -s {shell} {username}'.format(
             shell=config.main["using_shell"], username=self.setup.username))
 
         # Add user to addintional groups
@@ -144,9 +147,9 @@ class InstallerEngine:
 
         self.do_run_in_chroot(
             "echo -ne \"{0}\\n{0}\\n\" | passwd {1}".format(self.setup.password1, self.setup.username))
-        # TODO: sudoers support
-        self.do_run_in_chroot(
-            "echo -ne \"{0}\\n{0}\\n\" | passwd".format(self.setup.password1))
+        if config.main["set_root_password"]:
+            self.do_run_in_chroot(
+                "echo -ne \"{0}\\n{0}\\n\" | passwd".format(self.setup.password1))
 
         # Set LightDM to show user list by default
         if config.main["list_users_when_auto_login"]:
