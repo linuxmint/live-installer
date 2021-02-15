@@ -206,7 +206,9 @@ class InstallerWindow:
         # install page
         self.builder.get_object("label_install_progress").set_text(_("Calculating file indexes ..."))
         img = self.builder.get_object("image_welcome")
-        img.set_from_file("branding/welcome.png")
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
+           "branding/welcome.png", 752, 423, False)
+        img.set_from_pixbuf(pixbuf)
 
         # i18n
         self.i18n()
