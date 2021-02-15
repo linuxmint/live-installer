@@ -23,7 +23,7 @@ default_country_code: US
 default_timezone: America/New_York
 
 
-addintional_user_groups:
+additional_user_groups:
   - audio
   - wheel
 exclude_dirs:

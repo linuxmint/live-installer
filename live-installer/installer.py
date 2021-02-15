@@ -140,8 +140,8 @@ class InstallerEngine:
         self.do_run_in_chroot('useradd -m -s {shell} {username}'.format(
             shell=config.main["using_shell"], username=self.setup.username))
 
-        # Add user to addintional groups
-        for group in config.main["addintional_user_groups"]:
+        # Add user to additional groups
+        for group in config.main["additional_user_groups"]:
             self.do_run_in_chroot(
                 "usermod -aG {} {}".format(group, self.setup.username))
 
