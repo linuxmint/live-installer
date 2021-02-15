@@ -1730,6 +1730,7 @@
             </child>
           </object>
           <packing>
+            <property name="pack-type">end</property>
             <property name="position">2</property>
           </packing>
         </child>
