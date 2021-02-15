@@ -130,7 +130,7 @@ class InstallerEngine:
         our_current += 1
         try:
             for cmd in config.distro["run_before_user_creation"]:
-            self.do_run_in_chroot(cmd)
+                self.do_run_in_chroot(cmd)
         except:
             print("This action not supported for your distribution.")
         self.update_progress(our_current, our_total, False,
