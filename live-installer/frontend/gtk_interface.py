@@ -924,7 +924,8 @@ class InstallerWindow:
                 self.activate_page(self.PAGE_INSTALL)
                 self.builder.get_object("button_next").set_sensitive(False)
                 self.builder.get_object("button_back").set_sensitive(False)
-                self.builder.get_object("button_quit").set_sensitive(False)
+                if not config.main["set_alternative_ui"]:
+                    self.builder.get_object("button_quit").set_sensitive(False)
                 self.do_install()
                 #self.window.resize(100, 100)
         else:
