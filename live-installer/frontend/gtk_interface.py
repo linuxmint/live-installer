@@ -233,6 +233,7 @@ class InstallerWindow:
                 self.builder.get_object("box_fill").hide()
         if not config.main["autologin_enabled"]:
             self.builder.get_object("autologin_box").hide()
+        self.builder.get_object("label_copyright").set_label(config.main["copyright"])
 
 
     def fullscreen(self):
@@ -699,11 +700,6 @@ class InstallerWindow:
         command = "setxkbmap -layout '%s' -variant '%s' -option grp:ctrls_toggle" % (self.setup.keyboard_layout, self.setup.keyboard_variant)
         os.system(command)
         self.setup.print_setup()
-
-        # Remove preview image
-        self.builder.get_object("image_keyboard").hide()
-        self.builder.get_object("kb_spinner").hide()
-
 
     @idle
     def _on_layout_generated(self):

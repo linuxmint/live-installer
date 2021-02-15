@@ -1,6 +1,7 @@
 distro_codename: 17g
 distro_title: 17G
 distribution: auto
+copyright: 17g Developer Team
 
 loop_directory: /dev/loop0
 gtk_theme: Yaru-dark

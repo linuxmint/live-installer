@@ -1722,8 +1722,8 @@
           <object class="GtkLabel" id="label_copyright">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_top">3</property>
-            <property name="margin_bottom">3</property>
+            <property name="margin_top">5</property>
+            <property name="margin_bottom">5</property>
             <property name="label" translatable="yes">17g team</property>
           </object>
           <packing>
