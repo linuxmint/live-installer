@@ -118,9 +118,8 @@
           <object class="GtkNotebook" id="notebook1">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="border-width">5</property>
+            <property name="border-width">0</property>
             <property name="show-tabs">False</property>
-            <property name="show-border">False</property>
             <child>
               <object class="GtkBox" id="vbox_welcome">
                 <property name="visible">True</property>
@@ -1559,13 +1558,12 @@
           <object class="GtkLabel" id="label_copyright">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="margin-top">3</property>
-            <property name="margin-bottom">3</property>
             <property name="label" translatable="yes">17g team</property>
           </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
+            <property name="padding">5</property>
             <property name="position">2</property>
           </packing>
         </child>
@@ -1594,6 +1592,7 @@
               <object class="GtkImage" id="progress_0">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="pixbuf">bullet-point.png</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -1605,6 +1604,7 @@
               <object class="GtkImage" id="progress_1">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="pixbuf">bullet-point.png</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -1616,6 +1616,7 @@
               <object class="GtkImage" id="progress_2">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="pixbuf">bullet-point.png</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -1627,6 +1628,7 @@
               <object class="GtkImage" id="progress_3">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="pixbuf">bullet-point.png</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -1638,6 +1640,7 @@
               <object class="GtkImage" id="progress_4">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="pixbuf">bullet-point.png</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -1649,6 +1652,7 @@
               <object class="GtkImage" id="progress_5">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="pixbuf">bullet-point.png</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -1660,6 +1664,7 @@
               <object class="GtkImage" id="progress_6">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="pixbuf">bullet-point.png</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -1671,6 +1676,7 @@
               <object class="GtkImage" id="progress_7">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="pixbuf">bullet-point.png</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -1682,6 +1688,7 @@
               <object class="GtkImage" id="progress_8">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="pixbuf">bullet-point.png</property>
               </object>
               <packing>
                 <property name="expand">False</property>
