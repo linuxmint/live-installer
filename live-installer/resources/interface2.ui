@@ -120,7 +120,6 @@
             <property name="can-focus">False</property>
             <property name="border-width">5</property>
             <property name="show-tabs">False</property>
-            <property name="show-border">False</property>
             <child>
               <object class="GtkBox" id="vbox_welcome">
                 <property name="visible">True</property>
@@ -1556,12 +1555,68 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="label_copyright">
+          <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="margin-top">3</property>
-            <property name="margin-bottom">3</property>
-            <property name="label" translatable="yes">17g team</property>
+            <child>
+              <object class="GtkLabel" id="label_copyright">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="label" translatable="yes">17g team</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="padding">13</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <object class="GtkButtonBox">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="spacing">6</property>
+                <property name="layout-style">start</property>
+                <child>
+                  <object class="GtkButton" id="button_back">
+                    <property name="label">Back</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="pack-type">end</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="button_next">
+                    <property name="label">Next</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="pack-type">end</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="padding">5</property>
+                <property name="pack-type">end</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -1575,17 +1630,7 @@
       <object class="GtkHeaderBar">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
-        <child>
-          <object class="GtkButton" id="button_quit">
-            <property name="label">Quit</property>
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <property name="receives-default">True</property>
-          </object>
-          <packing>
-            <property name="position">1</property>
-          </packing>
-        </child>
+        <property name="show-close-button">True</property>
         <child>
           <object class="GtkBox">
             <property name="visible">True</property>
@@ -1594,6 +1639,7 @@
               <object class="GtkImage" id="progress_0">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="pixbuf">bullet-point.png</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -1605,6 +1651,7 @@
               <object class="GtkImage" id="progress_1">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="pixbuf">bullet-point.png</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -1616,6 +1663,7 @@
               <object class="GtkImage" id="progress_2">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="pixbuf">bullet-point.png</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -1627,6 +1675,7 @@
               <object class="GtkImage" id="progress_3">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="pixbuf">bullet-point.png</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -1638,6 +1687,7 @@
               <object class="GtkImage" id="progress_4">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="pixbuf">bullet-point.png</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -1649,6 +1699,7 @@
               <object class="GtkImage" id="progress_5">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="pixbuf">bullet-point.png</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -1660,6 +1711,7 @@
               <object class="GtkImage" id="progress_6">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="pixbuf">bullet-point.png</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -1671,6 +1723,7 @@
               <object class="GtkImage" id="progress_7">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="pixbuf">bullet-point.png</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -1682,6 +1735,7 @@
               <object class="GtkImage" id="progress_8">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="pixbuf">bullet-point.png</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -1691,46 +1745,6 @@
             </child>
           </object>
           <packing>
-            <property name="position">2</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkButtonBox">
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <property name="spacing">6</property>
-            <property name="layout-style">start</property>
-            <child>
-              <object class="GtkButton" id="button_back">
-                <property name="label">Back</property>
-                <property name="visible">True</property>
-                <property name="can-focus">True</property>
-                <property name="receives-default">True</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="pack-type">end</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="button_next">
-                <property name="label">Next</property>
-                <property name="visible">True</property>
-                <property name="can-focus">True</property>
-                <property name="receives-default">True</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="pack-type">end</property>
-                <property name="position">2</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
-            <property name="pack-type">end</property>
             <property name="position">2</property>
           </packing>
         </child>

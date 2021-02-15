@@ -63,7 +63,10 @@ class InstallerWindow:
         self.installer = InstallerEngine(self.setup)
 
         self.resource_dir = './resources/'
-        glade_file = os.path.join(self.resource_dir, 'interface.ui')
+        if config.main["set_alternative_ui"]:
+            glade_file = os.path.join(self.resource_dir, 'interface2.ui')
+        else:
+            glade_file = os.path.join(self.resource_dir, 'interface.ui')
         self.builder = Gtk.Builder()
         self.builder.add_from_file(glade_file)
 
@@ -90,7 +93,8 @@ class InstallerWindow:
         # set the button events (wizard_cb)
         self.builder.get_object("button_next").connect("clicked", self.wizard_cb, False)
         self.builder.get_object("button_back").connect("clicked", self.wizard_cb, True)
-        self.builder.get_object("button_quit").connect("clicked", self.quit_cb)
+        if not config.main["set_alternative_ui"]:
+            self.builder.get_object("button_quit").connect("clicked", self.quit_cb)
 
         col = Gtk.TreeViewColumn("", Gtk.CellRendererPixbuf(), pixbuf=2)
         self.builder.get_object("treeview_language_list").append_column(col)
@@ -235,6 +239,7 @@ class InstallerWindow:
                 self.builder.get_object("box_fill").hide()
         if not config.main["autologin_enabled"]:
             self.builder.get_object("autologin_box").hide()
+        
         self.builder.get_object("label_copyright").set_label(config.main["copyright"])
 
 
@@ -263,7 +268,8 @@ class InstallerWindow:
         self.wizard_pages[self.PAGE_INSTALL] = WizardPage(_("Installing"), "system-run-symbolic", "Please wait...")
 
         # Buttons
-        self.builder.get_object("button_quit").set_label(_("Quit"))
+        if not config.main["set_alternative_ui"]:
+            self.builder.get_object("button_quit").set_label(_("Quit"))
         self.builder.get_object("button_back").set_label(_("Back"))
         self.builder.get_object("button_next").set_label(_("Next"))
 
