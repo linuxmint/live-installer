@@ -144,10 +144,10 @@ class InstallerEngine:
                 "usermod -aG {} {}".format(group, self.setup.username))
 
         self.do_run_in_chroot(
-            "echo -ne \"{0}\\n{0}\\n\" | passwd {1}".format(self.setup.password1, self.setup.username))
+            "echo -e \"{0}\\n{0}\\n\" | passwd {1}".format(self.setup.password1, self.setup.username))
         if config.main["set_root_password"]:
             self.do_run_in_chroot(
-                "echo -ne \"{0}\\n{0}\\n\" | passwd".format(self.setup.password1))
+                "echo -e \"{0}\\n{0}\\n\" | passwd".format(self.setup.password1))
 
         # Set LightDM to show user list by default
         if config.main["list_users_when_auto_login"]:
@@ -687,10 +687,11 @@ class InstallerEngine:
         self.update_progress(0, 0, False, True, _("Installation finished"))
         print(" --> All done")
 
-    def do_run_in_chroot(self, command):
+    def do_run_in_chroot(self, command,vital=False):
         command = command.replace('"', "'").strip()
         print("chroot /target/ /bin/sh -c \"%s\"" % command)
-        os.system("chroot /target/ /bin/sh -c \"%s\"" % command)
+        if 0 != os.system("chroot /target/ /bin/sh -c \"%s\"" % command) and vital:
+            self.error_message(message=command)
 
     def do_configure_grub(self, our_total, our_current):
         self.update_progress(our_current, our_total, True,
