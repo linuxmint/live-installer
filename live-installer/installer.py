@@ -119,7 +119,7 @@ class InstallerEngine:
         os.system("cp -f /etc/resolv.conf /target/etc/resolv.conf")
 
         kernelversion = subprocess.getoutput("uname -r")
-        if os.path.exists("/lib/modules/{0}/vmlinuz".format(kernelversion))
+        if os.path.exists("/lib/modules/{0}/vmlinuz".format(kernelversion)):
             os.system(
                 "cp /lib/modules/{0}/vmlinuz /target/boot/vmlinuz-{0}".format(kernelversion))
 
