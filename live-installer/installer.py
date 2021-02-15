@@ -93,9 +93,7 @@ class InstallerEngine:
                                                        dst=DEST, rsync_filter=rsync_filter),
                                  shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         while rsync.poll() is None:
-            line = str(rsync.stdout.readline())
-            line = line.replace("b'", "'")
-            line = line.replace("'", "")
+            line = str(rsync.stdout.readline().decode("utf-8"))
             line = line.replace("\\n", "")
             if not line:  # still copying the previous file, just wait
                 time.sleep(0.1)

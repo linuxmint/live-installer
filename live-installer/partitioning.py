@@ -82,7 +82,7 @@ def get_disks():
                 l10n_unit = [_('B'), _('kB'), _('MB'), _('GB'), _('TB'), 'PB', 'EB', 'ZB', 'YB'][unit_index]
                 size = "%s %s" % (str(int(float(size[:-1]) * (1024/1000)**unit_index)), l10n_unit)
                 model = model.replace("\\x20", " ")
-                description = '{} ({})'.format(model.strip(), size)
+                description = ('{} ({})'.format(model.strip(), size)).replace("\\n'", "")
                 if int(removable):
                     description = _('Removable:') + ' ' + description
                 disks.append((device, description))
