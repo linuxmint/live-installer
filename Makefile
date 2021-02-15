@@ -24,6 +24,8 @@ buildmo:
 install:
 	cp -prfv build/* $(DESTDIR)/
 	install live-installer.desktop $(DESTDIR)/usr/share/applications/live-installer.desktop
+	mkdir -p $(DESTDIR)/etc/X11/Xsession.d/ || true
+	install 00-live $(DESTDIR)/etc/X11/Xsession.d/00-live
 	install live-installer.sh $(DESTDIR)/usr/bin/live-installer
 
 uninstall:

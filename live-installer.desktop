@@ -19,7 +19,7 @@ Path=/usr/lib/live-installer/
 Exec=/usr/bin/live-installer
 
 # The name of the icon that will be used to display this entry
-Icon=/usr/lib/live-installer/resources/icons/17g.svg
+Icon=/usr/lib/live-installer/branding/icon.svg
 
 # Describes whether this application needs to be run in a terminal or not
 Terminal=false
