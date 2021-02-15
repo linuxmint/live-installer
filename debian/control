@@ -1,0 +1,12 @@
+Source: 17g
+Maintainer: Ali Riza KESKIN <ali.riza.keskin@pardus.org.tr>
+Build-Depends: debhelper (>= 8.0.0)
+Standards-Version: 1.0
+Section: utils
+
+Package: 17g
+Priority: extra  
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}, python3-pil, python3-parted, live-boot, live-config, gparted, python3-yaml
+Description: 17g live installer
+ 17G is an alternative live installation tools.
