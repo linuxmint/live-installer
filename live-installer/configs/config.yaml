@@ -12,13 +12,13 @@ using_shell: /bin/bash
 list_users_when_auto_login: false
 autologin_enabled: true
 auto_partition_enabled: true
-set_root_password: false
+set_root_password: true
 
 manual_partition_enabled: true 
 lvm_enabled: true
 encryption_enabled: true
 fill_disk_enabled: true
-set_alternative_ui: true
+set_alternative_ui: false
 
 default_country_code: US
 default_timezone: America/New_York
