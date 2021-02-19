@@ -618,7 +618,7 @@ class InstallerEngine:
         # recreate initramfs (needed in case of skip_mount also, to include things like mdadm/dm-crypt/etc in case its needed to boot a custom install)
         print(" --> Configuring Initramfs")
         self.update_progress(our_current, our_total, False,
-                             False, _("Genetaring initramfs"))
+                             False, _("Generating initramfs"))
         our_current += 1
 
         for command in config.update_initramfs():
