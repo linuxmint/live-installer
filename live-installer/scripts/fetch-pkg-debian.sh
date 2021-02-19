@@ -10,5 +10,5 @@ fetch_deb(){
 fetch_deb "efibootmgr" "grub-common" "grub-efi-amd64" "grub-efi-amd64-bin" \
     "grub-efi-amd64-signed" "grub2-common" "libefiboot1" "libefivar1" \
     "mokutil" "os-prober" "shim-helpers-amd64-signed" "shim-signed" \
-    "shim-signed-common" "shim-unsigned" "grub-pc-bin"
+    "shim-signed-common" "shim-unsigned" "grub-pc-bin" "gettext-base"
 
