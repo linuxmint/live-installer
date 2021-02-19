@@ -958,8 +958,10 @@ class InstallerWindow:
         top = model.append(None, (_("User settings"),))
         model.append(top, (_("Real name: ") + bold(self.setup.real_name),))
         model.append(top, (_("Username: ") + bold(self.setup.username),))
-        model.append(top, (_("Automatic login: ") + bold(_("enabled") if self.setup.autologin else _("disabled")),))
-        model.append(top, (_("Home encryption: ") + bold(_("enabled") if self.setup.ecryptfs else _("disabled")),))
+        if config.main["autologin_enabled"]:
+            model.append(top, (_("Automatic login: ") + bold(_("enabled") if self.setup.autologin else _("disabled")),))
+        if config.main["encryption_enabled"]:
+            model.append(top, (_("Home encryption: ") + bold(_("enabled") if self.setup.ecryptfs else _("disabled")),))
         top = model.append(None, (_("System settings"),))
         model.append(top, (_("Computer's name: ") + bold(self.setup.hostname),))
         top = model.append(None, (_("Filesystem operations"),))
@@ -969,9 +971,10 @@ class InstallerWindow:
             return
         if self.setup.automated:
             model.append(top, (bold(_("Automated installation on %s") % self.setup.diskname),))
+        if config.main["lvm_enabled"]:
             model.append(top, (_("LVM: ") + bold(_("enabled") if self.setup.lvm else _("disabled")),))
-            model.append(top, (_("Disk Encryption: ") + bold(_("enabled") if self.setup.luks else _("disabled")),))
-        else:
+            if config.main["encryption_enabled"]:
+                model.append(top, (_("Disk Encryption: ") + bold(_("enabled") if self.setup.luks else _("disabled")),))
             for p in self.setup.partitions:
                 if p.format_as:
                     model.append(top, (bold(_("Format %(path)s as %(filesystem)s") % {'path':p.path, 'filesystem':p.format_as}),))

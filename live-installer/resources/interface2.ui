@@ -1407,6 +1407,7 @@
                         <property name="can-focus">True</property>
                         <property name="border-width">0</property>
                         <property name="headers-visible">False</property>
+                        <property name="hover-expand">True</property>
                         <property name="enable-grid-lines">horizontal</property>
                         <child internal-child="selection">
                           <object class="GtkTreeSelection"/>
