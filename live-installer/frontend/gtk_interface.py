@@ -982,6 +982,7 @@ class InstallerWindow:
         for p in self.setup.partitions:
             if p.mount_as:
                 model.append(top, (bold(_("Mount %(path)s as %(mount)s") % {'path': p.path, 'mount':p.mount_as}),))
+        self.builder.get_object("treeview_overview").expand_all()
 
     @idle
     def show_error_dialog(self, message, detail):
