@@ -958,6 +958,7 @@ class InstallerWindow:
         top = model.append(None, (_("User settings"),))
         model.append(top, (_("Real name: ") + bold(self.setup.real_name),))
         model.append(top, (_("Username: ") + bold(self.setup.username),))
+        model.append(top, (_("Password: ") + bold(len(self.setup.password1)*"*"),))
         if config.main["autologin_enabled"]:
             model.append(top, (_("Automatic login: ") + bold(_("enabled") if self.setup.autologin else _("disabled")),))
         if config.main["encryption_enabled"]:
@@ -973,14 +974,14 @@ class InstallerWindow:
             model.append(top, (bold(_("Automated installation on %s") % self.setup.diskname),))
         if config.main["lvm_enabled"]:
             model.append(top, (_("LVM: ") + bold(_("enabled") if self.setup.lvm else _("disabled")),))
-            if config.main["encryption_enabled"]:
-                model.append(top, (_("Disk Encryption: ") + bold(_("enabled") if self.setup.luks else _("disabled")),))
-            for p in self.setup.partitions:
-                if p.format_as:
-                    model.append(top, (bold(_("Format %(path)s as %(filesystem)s") % {'path':p.path, 'filesystem':p.format_as}),))
-            for p in self.setup.partitions:
-                if p.mount_as:
-                    model.append(top, (bold(_("Mount %(path)s as %(mount)s") % {'path': p.path, 'mount':p.mount_as}),))
+        if config.main["encryption_enabled"]:
+            model.append(top, (_("Disk Encryption: ") + bold(_("enabled") if self.setup.luks else _("disabled")),))
+        for p in self.setup.partitions:
+            if p.format_as:
+                model.append(top, (bold(_("Format %(path)s as %(filesystem)s") % {'path':p.path, 'filesystem':p.format_as}),))
+        for p in self.setup.partitions:
+            if p.mount_as:
+                model.append(top, (bold(_("Mount %(path)s as %(mount)s") % {'path': p.path, 'mount':p.mount_as}),))
 
     @idle
     def show_error_dialog(self, message, detail):
