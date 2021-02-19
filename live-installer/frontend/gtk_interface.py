@@ -274,7 +274,7 @@ class InstallerWindow:
         self.builder.get_object("button_next").set_label(_("Next"))
 
         # Welcome page
-        self.builder.get_object("label_welcome1").set_text(_("Welcome to the 17g Installer."))
+        self.builder.get_object("label_welcome1").set_text(_("Welcome to the %s Installer.") % config.main["distro_title"])
         self.builder.get_object("label_welcome2").set_text(_("This program will ask you some questions and set up system on your computer."))
 
         # Language page
