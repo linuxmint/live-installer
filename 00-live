@@ -15,3 +15,4 @@ xset s off || true
 xset dpms 0 0 0 || true
 xset -dpms s off || true
 xset s noblank || true
+live-installer --welcome || true

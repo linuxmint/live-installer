@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 xhost +
-pkexec sh -c "DISPLAY=$DISPLAY /usr/lib/live-installer/main.py"
+pkexec sh -c "DISPLAY=$DISPLAY /usr/lib/live-installer/main.py $@"

@@ -1,0 +1,40 @@
+import gi,os
+import gettext
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
+from frontend.gtk_interface import InstallerWindow
+
+gettext.install("live-installer", "/usr/share/locale")
+
+class welcome:
+
+    def __init__(self):
+        self.builder = Gtk.Builder()
+        self.resource_dir = './resources/'
+        glade_file = os.path.join(self.resource_dir, 'welcome.ui')
+        self.builder.add_from_file(glade_file)
+        self.define_objects()
+        self.i18n()
+        self.window.set_position(Gtk.WindowPosition.CENTER)
+
+    def connect_signal(self):
+        self.trybut.connect("clicked",self.but_try)
+        self.instbut.connect("clicked",self.but_install)
+        
+    def define_objects(self):
+        self.window=self.builder.get_object("window")
+        self.wel=self.builder.get_object("welcome")
+        self.trybut=self.builder.get_object("try")
+        self.instbut=self.builder.get_object("install")
+
+    def i18n(self):
+        self.wel.set_text(_("Welcome"))
+        self.builder.get_object("trylabel").set_text(_("Try"))
+        self.builder.get_object("installabel").set_text(_("Install"))
+        
+    def but_try(self,widget):
+        exit(0)
+        
+    def but_install(self,widget):
+        self.window.hide()
+        InstallerWindow()

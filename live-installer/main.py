@@ -15,6 +15,7 @@ if config.main["gtk_theme"] != "default":
 	os.environ['GTK_THEME'] = config.main["gtk_theme"]
 	
 from frontend.gtk_interface import InstallerWindow
+from frontend.welcome import welcome
 
 import gi
 gi.require_version('Gtk', '3.0')
@@ -22,8 +23,11 @@ from gi.repository import Gtk
 
 # main entry
 if __name__ == "__main__":
-
-	win = InstallerWindow()
-	if ("--fullscreen" in sys.argv):
-		win.fullscreen()
-	Gtk.main()
+    if ("--welcome" in sys.argv):
+        win=welcome().window
+        win.show_all()
+    else:
+        win = InstallerWindow()
+        if ("--fullscreen" in sys.argv):
+            win.fullscreen()
+    Gtk.main()

@@ -223,6 +223,7 @@ class InstallerWindow:
         # make sure we're on the right page (no pun.)
         self.activate_page(0)
         self.slideshow()
+        self.window.set_position(Gtk.WindowPosition.CENTER)
         self.window.show_all()
         
         # Features

@@ -1,5 +1,5 @@
 DESTDIR=/
-
+XINITRCDIR=/etc/X11/Xsession.d/
 all: clean build
 
 build: buildmo
@@ -22,14 +22,15 @@ install:
 	mkdir -p $(DESTDIR)/usr/share/applications/ || true
 	mkdir -p $(DESTDIR)/usr/bin/ || true
 	install live-installer.desktop $(DESTDIR)/usr/share/applications/live-installer.desktop
-	mkdir -p $(DESTDIR)/etc/X11/Xsession.d/ || true
-	install 00-live $(DESTDIR)/etc/X11/Xsession.d/00-live
+	mkdir -p $(DESTDIR)/$(XINITRCDIR) || true
+	install 00-live $(DESTDIR)/$(XINITRCDIR)/00-live
 	install live-installer.sh $(DESTDIR)/usr/bin/live-installer
 
 uninstall:
 	rm -rf $(DESTDIR)/usr/lib/live-installer
 	rm -f $(DESTDIR)/usr/bin/live-installer
 	rm -f $(DESTDIR)/usr/share/applications/live-installer.desktop
+	rm -f $(DESTDIR)/$(XINITRCDIR)/00-live
 clean:
 	rm -rf build
 	find po/ | grep "*.mo" | xargs rm -f
