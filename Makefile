@@ -25,12 +25,15 @@ install:
 	mkdir -p $(DESTDIR)/$(XINITRCDIR) || true
 	install 00-live $(DESTDIR)/$(XINITRCDIR)/00-live
 	install live-installer.sh $(DESTDIR)/usr/bin/live-installer
+	mkdir -p $(DESTDIR)/usr/share/polkit-1/actions/ || true
+	install org.17g.installer.policy $(DESTDIR)/usr/share/polkit-1/actions/
 
 uninstall:
 	rm -rf $(DESTDIR)/usr/lib/live-installer
 	rm -f $(DESTDIR)/usr/bin/live-installer
 	rm -f $(DESTDIR)/usr/share/applications/live-installer.desktop
 	rm -f $(DESTDIR)/$(XINITRCDIR)/00-live
+	rm -f $(DESTDIR)/usr/share/polkit-1/actions/org.17g.installer.policy
 clean:
 	rm -rf build
 	find po/ | grep "*.mo" | xargs rm -f
