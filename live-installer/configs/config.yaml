@@ -19,6 +19,7 @@ lvm_enabled: true
 encryption_enabled: true
 fill_disk_enabled: true
 set_alternative_ui: false
+welcome_screen: true
 
 default_country_code: US
 default_timezone: America/New_York

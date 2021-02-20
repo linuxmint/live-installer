@@ -24,8 +24,11 @@ from gi.repository import Gtk
 # main entry
 if __name__ == "__main__":
     if ("--welcome" in sys.argv):
-        win=welcome().window
-        win.show_all()
+        if config.main["welcome_screen"]:
+            win=welcome()
+        else:
+            print("Welcome screen disabled by config.")
+            exit(0)
     else:
         win = InstallerWindow()
         if ("--fullscreen" in sys.argv):

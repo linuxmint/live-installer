@@ -16,6 +16,7 @@ class welcome:
         self.define_objects()
         self.i18n()
         self.window.set_position(Gtk.WindowPosition.CENTER)
+        self.window.show_all()
 
     def connect_signal(self):
         self.trybut.connect("clicked",self.but_try)
