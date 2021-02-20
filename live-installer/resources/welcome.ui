@@ -169,8 +169,12 @@
       <object class="GtkHeaderBar">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
-        <child>
-          <placeholder/>
+        <child type="title">
+          <object class="GtkLabel" id="distro">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">17g</property>
+          </object>
         </child>
       </object>
     </child>

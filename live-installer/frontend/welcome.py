@@ -1,5 +1,6 @@
 import gi,os
 import gettext
+import config
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 from frontend.gtk_interface import InstallerWindow
@@ -32,6 +33,7 @@ class welcome:
         self.wel.set_text(_("Welcome"))
         self.builder.get_object("trylabel").set_text(_("Try"))
         self.builder.get_object("installabel").set_text(_("Install"))
+        self.builder.get_object("distro").set_text(config.main["distro_title"])
         
     def but_try(self,widget):
         exit(0)
