@@ -34,6 +34,7 @@ class welcome:
         self.builder.get_object("trylabel").set_text(_("Try"))
         self.builder.get_object("installabel").set_text(_("Install"))
         self.builder.get_object("distro").set_text(config.main["distro_title"])
+        self.builder.get_object("copyright").set_text(config.main["copyright"])
         
     def but_try(self,widget):
         exit(0)
