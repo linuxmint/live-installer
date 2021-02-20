@@ -15,6 +15,7 @@ class welcome:
         glade_file = os.path.join(self.resource_dir, 'welcome.ui')
         self.builder.add_from_file(glade_file)
         self.define_objects()
+        self.connect_signal()
         self.i18n()
         self.window.set_position(Gtk.WindowPosition.CENTER)
         self.window.show_all()
