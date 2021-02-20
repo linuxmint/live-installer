@@ -7,10 +7,6 @@ build: buildmo
 
 	cp -prfv live-installer build/usr/lib/
 
-	#set parmissions
-	chmod 755 -R build
-	chown root -R build
-
 buildmo:
 	mkdir -p build/usr/share/ || true
 	@echo "Building the mo files"
