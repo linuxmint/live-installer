@@ -26,6 +26,7 @@ main = load_config("configs/config.yaml")
 distro=None
 pm=None
 initramfs=None
+live=None
 
 if(main["distribution"] == "auto"):
     if os.path.exists("/etc/debian_version"):
@@ -49,7 +50,7 @@ for package_manager in glob("configs/package_managers/*"):
         if os.path.exists(pm_contents["check_this_dir"]):
             pm = pm_contents
             break
-
+live=load_config("configs/live.yaml")
 def package_manager(process, packages=[]):
     if process == "name":
         exit("You can't use this parameter!")

@@ -1,0 +1,9 @@
+[Unit]
+Description=live-save
+[Service]
+Type=simple
+Restart=always
+ExecStart=/usr/lib/live-installer/service.py
+
+[Install]
+WantedBy=multi-user.target

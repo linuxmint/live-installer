@@ -13,6 +13,9 @@ if (os.path.isdir("/usr/lib/live-installer")):
 
 if config.main["gtk_theme"] != "default":
 	os.environ['GTK_THEME'] = config.main["gtk_theme"]
+
+# Force show mouse cursor
+os.system("xsetroot -cursor_name left_ptr")
 	
 from frontend.gtk_interface import InstallerWindow
 from frontend.welcome import welcome
