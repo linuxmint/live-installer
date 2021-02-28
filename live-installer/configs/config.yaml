@@ -13,6 +13,7 @@ list_users_when_auto_login: false
 autologin_enabled: true
 auto_partition_enabled: true
 set_root_password: true
+use_chpasswd: true
 
 manual_partition_enabled: true 
 lvm_enabled: true

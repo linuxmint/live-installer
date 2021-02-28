@@ -143,14 +143,14 @@ class InstallerEngine:
             self.do_run_in_chroot(
                 "usermod -aG {} {}".format(group, self.setup.username))
 
-        if os.system("which chpasswd &>/dev/null") == 0:
+        if (os.system("which chpasswd &>/dev/null") == 0) and config.main["use_chpasswd"]:
             fp = open("/target/tmp/.passwd", "w")
             fp.write(self.setup.username +  ":" + self.setup.password1 + "\n")
             if config.main["set_root_password"]:
                 fp.write("root:" + self.setup.password1 + "\n")
             fp.close()
             self.do_run_in_chroot("cat /tmp/.passwd | chpasswd")
-            os.system("rm -f /target/tmp/.passwd")
+            self.do_run_in_chroot("rm -f /tmp/.passwd")
         else:
             self.do_run_in_chroot(
                 "echo -e \"{0}\\n{0}\\n\" | passwd {1}".format(self.setup.password1, self.setup.username))
