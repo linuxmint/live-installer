@@ -1,7 +1,10 @@
 fetch_deb(){
     mkdir -p /target/debs/ || true
     for pkg in $@ ; do
-        cp -pvf $(find /run/live/medium/pool/ -iname ${pkg}_*.deb) /target/debs/
+        f="$(find /run/live/medium/pool/ -type f  -iname ${pkg}_*.deb)"
+        if [ "" !=  "$f" ] ; then
+            cp -pvf "$f" /target/debs/
+        fi
     done
     chroot /target sh -c "dpkg -i /debs/*"
     rm -rf /target/debs
