@@ -161,6 +161,7 @@ class InstallerWindow:
         self.builder.get_object("entry_name").connect("notify::text", self.assign_realname)
         self.builder.get_object("entry_username").connect("notify::text", self.assign_username)
         self.builder.get_object("entry_hostname").connect("notify::text", self.assign_hostname)
+        self.builder.get_object("entry_hostname").set_text(os.uname()[1])
 
         # events for detecting password mismatch..
         self.builder.get_object("entry_password").connect("changed", self.assign_password)
