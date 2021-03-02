@@ -998,7 +998,12 @@ class InstallerWindow:
         if self.showing_last_dialog:
             self.showing_last_dialog = False
         if reboot:
-            os.system('reboot')
+            if config.main["use_reboot"]:
+                os.system('reboot')
+            else:
+                os.system('echo 1 > /proc/sys/kernel/sysrq')
+                os.system('sync')
+                os.system('echo b > /proc/sysrq-trigger')
 
     @asynchronous
     def do_install(self):

@@ -8,6 +8,7 @@ gtk_theme: default
 
 initramfs_system: auto 
 using_shell: /bin/bash
+use_reboot: false
 
 list_users_when_auto_login: false
 autologin_enabled: true
