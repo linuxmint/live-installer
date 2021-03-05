@@ -1,11 +1,13 @@
-import gi,os
+from frontend.gtk_interface import InstallerWindow
+from gi.repository import Gtk
+import gi
+import os
 import gettext
 import config
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk
-from frontend.gtk_interface import InstallerWindow
 
 gettext.install("live-installer", "/usr/share/locale")
+
 
 class welcome:
 
@@ -21,14 +23,14 @@ class welcome:
         self.window.show_all()
 
     def connect_signal(self):
-        self.trybut.connect("clicked",self.but_try)
-        self.instbut.connect("clicked",self.but_install)
-        
+        self.trybut.connect("clicked", self.but_try)
+        self.instbut.connect("clicked", self.but_install)
+
     def define_objects(self):
-        self.window=self.builder.get_object("window")
-        self.wel=self.builder.get_object("welcome")
-        self.trybut=self.builder.get_object("try")
-        self.instbut=self.builder.get_object("install")
+        self.window = self.builder.get_object("window")
+        self.wel = self.builder.get_object("welcome")
+        self.trybut = self.builder.get_object("try")
+        self.instbut = self.builder.get_object("install")
 
     def i18n(self):
         self.wel.set_text(_("Welcome"))
@@ -36,10 +38,10 @@ class welcome:
         self.builder.get_object("installabel").set_text(_("Install"))
         self.builder.get_object("distro").set_text(config.main["distro_title"])
         self.builder.get_object("copyright").set_text(config.main["copyright"])
-        
-    def but_try(self,widget):
+
+    def but_try(self, widget):
         exit(0)
-        
-    def but_install(self,widget):
+
+    def but_install(self, widget):
         self.window.hide()
         InstallerWindow()
