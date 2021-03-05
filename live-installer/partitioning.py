@@ -82,13 +82,13 @@ def get_disks():
                 continue
             elif len(elements) < 5:
                 print("Can't find model in blkid output: %s" % elements)
-                type, device, removable, size, model = elements[
+                typevar, device, removable, size, model = elements[
                     0], elements[1], elements[2], elements[3], elements[1]
             else:
-                type, device, removable, size, model = elements
+                typevar, device, removable, size, model = elements
             device = "/dev/" + device
-            print(str(type))
-            if str(type) == "b'disk" and device not in exclude_devices:
+            print(str(typevar))
+            if str(typevar) == "b'disk" and device not in exclude_devices:
                 # convert size to manufacturer's size for show, e.g. in GB, not GiB!
                 unit_index = 'BKMGTPEZY'.index(size.upper()[-1])
                 l10n_unit = [_('B'), _('kB'), _('MB'), _('GB'), _(
@@ -136,11 +136,11 @@ def update_html_preview(selection):
 
 def edit_partition_dialog(widget, path, viewcol):
     ''' assign the partition ... '''
-    model, iter = installer.builder.get_object(
+    model, itervar = installer.builder.get_object(
         "treeview_disks").get_selection().get_selected()
-    if not iter:
+    if not itervar:
         return
-    row = model[iter]
+    row = model[itervar]
     partition = row[IDX_PART_OBJECT]
     if (partition.partition.type != parted.PARTITION_EXTENDED and
             partition.partition.number != -1):
@@ -176,14 +176,14 @@ def assign_mount_point(partition, mount_point, filesystem):
 def partitions_popup_menu(widget, event):
     if event.button != 3:
         return
-    model, iter = installer.builder.get_object(
+    model, itervar = installer.builder.get_object(
         "treeview_disks").get_selection().get_selected()
-    if not iter:
+    if not itervar:
         return
-    partition = model.get_value(iter, IDX_PART_OBJECT)
+    partition = model.get_value(itervar, IDX_PART_OBJECT)
     if not partition:
         return
-    partition_type = model.get_value(iter, IDX_PART_TYPE)
+    partition_type = model.get_value(itervar, IDX_PART_TYPE)
     if (partition.partition.type == parted.PARTITION_EXTENDED or
         partition.partition.number == -1 or
             "swap" in partition_type):
@@ -218,7 +218,7 @@ def manually_edit_partitions(widget):
     model, iter = installer.builder.get_object(
         "treeview_disks").get_selection().get_selected()
     # prefer disk currently selected and show it first in gparted
-    preferred = model[iter][-1] if iter else ''
+    preferred = model[itervar][-1] if itervar else ''
     disks = ' '.join(sorted((disk for disk, desc in model.disks),
                             key=lambda disk: disk != preferred))
     # umount disks (if possible) so gparted works out-of-the-box
@@ -292,7 +292,7 @@ class PartitionSetup(Gtk.TreeStore):
                     print("Done full disk format")
                     disk = parted.Disk(disk_device)
                     print("Got disk!")
-                except Exception as second_exception:
+                except Exception:
                     installer.window.get_window().set_cursor(None)
                     print(
                         "      - Found another issue while looking for the disk: %s" % detail)
@@ -613,7 +613,7 @@ class Partition(object):
 
 
 class PartitionDialog(object):
-    def __init__(self, path, mount_as, format_as, type):
+    def __init__(self, path, mount_as, format_as, typevar):
         glade_file = RESOURCE_DIR + 'interface.ui'
         self.builder = Gtk.Builder()
         self.builder.add_from_file(glade_file)

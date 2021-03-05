@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from gi.repository import Gdk, GdkPixbuf, GObject, Pango, GLib
+from gi.repository import GdkPixbuf, GObject, Pango, GLib
 from installer import InstallerEngine, Setup, NON_LATIN_KB_LAYOUTS
 from dialogs import QuestionDialog, ErrorDialog, WarningDialog
 import timezones
@@ -621,7 +621,7 @@ class InstallerWindow:
                     pass
                 country = ''
             pixbuf = flag(ccode) if not lang in 'eo ia' else flag('_' + lang)
-            iter = model.append((language, country, pixbuf, locale))
+            model.append((language, country, pixbuf, locale))
             if (ccode == self.cur_country_code and
                 (not set_iter or
                  set_iter and lang == 'en' or  # prefer English, or
@@ -706,8 +706,8 @@ class InstallerWindow:
         ''' Called whenever someone updates the language '''
         model = treeview.get_model()
         selection = treeview.get_selection()
-        (model, iter) = selection.get_selected()
-        if iter is not None:
+        (model, itervar) = selection.get_selected()
+        if itervar is not None:
             self.setup.language = model.get_value(iter, 3)
             self.setup.print_setup()
             gettext.translation('live-installer', "/usr/share/locale",

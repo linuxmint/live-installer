@@ -74,8 +74,8 @@ class InstallerEngine:
         EXCLUDE_DIRS = "home/* dev/* proc/* sys/* tmp/* run/* mnt/* media/* lost+found source target".split()
 
         # Add optional entries to EXCLUDE_DIRS
-        for dir in config.main["exclude_dirs"]:
-            EXCLUDE_DIRS.append(dir)
+        for dirvar in config.main["exclude_dirs"]:
+            EXCLUDE_DIRS.append(dirvar)
 
         our_current = 0
         # (Valid) assumption: num-of-files-to-copy ~= num-of-used-inodes-on-/
@@ -723,20 +723,18 @@ class InstallerEngine:
                              False, _("Checking bootloader"))
         print(" --> Checking Grub configuration")
         time.sleep(5)
-        found_entry = False
         if os.path.exists("/target/boot/grub/grub.cfg"):
             return True
         else:
             print("!No /target/boot/grub/grub.cfg file found!")
             return False
 
-    def do_mount(self, device, dest, type, options=None):
+    def do_mount(self, device, dest, typevar, options=None):
         ''' Mount a filesystem '''
-        p = None
         if(options is not None):
-            cmd = "mount -o %s -t %s %s %s" % (options, type, device, dest)
+            cmd = "mount -o %s -t %s %s %s" % (options, typevar, device, dest)
         else:
-            cmd = "mount -t %s %s %s" % (type, device, dest)
+            cmd = "mount -t %s %s %s" % (typevar, device, dest)
         print("EXECUTING: '%s'" % cmd)
         self.exec_cmd(cmd)
 
