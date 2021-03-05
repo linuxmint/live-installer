@@ -93,7 +93,8 @@ class InstallerEngine:
                                                        dst=DEST, rsync_filter=rsync_filter),
                                  shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         while rsync.poll() is None:
-            line = str(rsync.stdout.readline().decode("utf-8").replace("\n",""))
+            line = str(rsync.stdout.readline().decode(
+                "utf-8").replace("\n", ""))
             if not line:  # still copying the previous file, just wait
                 time.sleep(0.1)
             else:
@@ -145,7 +146,7 @@ class InstallerEngine:
 
         if (os.system("which chpasswd &>/dev/null") == 0) and config.main["use_chpasswd"]:
             fp = open("/target/tmp/.passwd", "w")
-            fp.write(self.setup.username +  ":" + self.setup.password1 + "\n")
+            fp.write(self.setup.username + ":" + self.setup.password1 + "\n")
             if config.main["set_root_password"]:
                 fp.write("root:" + self.setup.password1 + "\n")
             fp.close()
@@ -696,7 +697,7 @@ class InstallerEngine:
         self.update_progress(0, 0, False, True, _("Installation finished"))
         print(" --> All done")
 
-    def do_run_in_chroot(self, command,vital=False):
+    def do_run_in_chroot(self, command, vital=False):
         command = command.replace('"', "'").strip()
         print("chroot /target/ /bin/sh -c \"%s\"" % command)
         if 0 != os.system("chroot /target/ /bin/sh -c \"%s\"" % command) and vital:

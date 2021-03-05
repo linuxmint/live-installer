@@ -33,6 +33,8 @@ if(main["distribution"] == "auto"):
         distro = load_config("configs/distribution/debian.yaml")
     elif os.path.exists("/var/lib/pacman"):
         distro = load_config("configs/distribution/arch.yaml")
+    elif not os.path.exists("/home") and os.path.exists("/data/user"):
+        distro = load_config("configs/distribution/sulin.yaml")
 else:
     distro = load_config("configs/distribution/{}.yaml".format(main["distribution"]))
 
@@ -41,6 +43,8 @@ if(main["initramfs_system"] == "auto"):
         initramfs = load_config("configs/initramfs_systems/initramfs_tools.yaml")
     elif os.path.exists("/var/lib/pacman"):
         initramfs = load_config("configs/initramfs_systems/mkinitcpio.yaml")
+    elif not os.path.exists("/home") and os.path.exists("/data/user"):
+        initramfs = load_config("configs/initramfs_systems/initrd.yaml")
 else:
     distro = load_config("configs/initramfs_systems/{}.yaml".format(main["initramfs_system"]))
 # Package Manager
