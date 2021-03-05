@@ -810,24 +810,6 @@ class InstallerWindow:
         os.system(command)
         self.setup.print_setup()
 
-    @idle
-    def _on_layout_generated(self):
-        filename = "/tmp/live-install-keyboard-layout.png"
-
-        self.builder.get_object("kb_spinner").stop()
-        self.builder.get_object("kb_spinner").hide()
-
-        widget = self.builder.get_object("image_keyboard")
-        widget.show()
-
-        try:
-            pixbuf = GdkPixbuf.Pixbuf.new_from_file(filename)
-            surface = Gdk.cairo_surface_create_from_pixbuf(
-                pixbuf, widget.get_scale_factor(), widget.get_window())
-            widget.set_from_surface(surface)
-        except GLib.Error as e:
-            print(("could not load keyboard layout: %s" % e.message))
-        return False
 
     def activate_page(self, index):
         # progress images
