@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from gi.repository import GdkPixbuf, GObject, Pango, GLib
+from gi.repository import Gtk, GdkPixbuf, GObject, Pango, GLib
 from installer import InstallerEngine, Setup, NON_LATIN_KB_LAYOUTS
 from dialogs import QuestionDialog, ErrorDialog, WarningDialog
 import timezones
@@ -555,10 +555,15 @@ class InstallerWindow:
 
     def build_lang_list(self):
 
+        # Try to find out where we're located...
+        try:
+            from urllib.request import urlopen
+        except ImportError:  # py3
+            from urllib.request import urlopen
         self.cur_country_code = config.main['default_country_code']
         self.cur_timezone = config.main['default_timezone']
 
-        # Load countries into memory
+        #Load countries into memory
         countries = {}
         iso_standard = "3166"
         if os.path.exists("/usr/share/xml/iso-codes/iso_3166-1.xml"):
@@ -567,7 +572,7 @@ class InstallerWindow:
             ccode, cname = line.split(None, 1)
             countries[ccode] = cname
 
-        # Load languages into memory
+        #Load languages into memory
         languages = {}
         iso_standard = "639"
         if os.path.exists("/usr/share/xml/iso-codes/iso_639-2.xml"):
@@ -587,15 +592,12 @@ class InstallerWindow:
         # Construct language selection model
         model = Gtk.ListStore(str, str, GdkPixbuf.Pixbuf, str)
         set_iter = None
-
-        def flag_path(ccode): return self.resource_dir + \
-            '/flags/16/' + ccode.lower() + '.png'
+        flag_path = lambda ccode: self.resource_dir + '/flags/16/' + ccode.lower() + '.png'
         from utils import memoize
-        language = None
+        language=None
 
         def flag(ccode):
-            flag_image = memoize(
-                lambda image: GdkPixbuf.Pixbuf.new_from_file(image))
+            flag_image = memoize(lambda image : GdkPixbuf.Pixbuf.new_from_file(image))
             try:
                 return flag_image(flag_path(ccode))
             except:
@@ -621,7 +623,7 @@ class InstallerWindow:
                     pass
                 country = ''
             pixbuf = flag(ccode) if not lang in 'eo ia' else flag('_' + lang)
-            model.append((language, country, pixbuf, locale))
+            iter = model.append((language, country, pixbuf, locale))
             if (ccode == self.cur_country_code and
                 (not set_iter or
                  set_iter and lang == 'en' or  # prefer English, or
@@ -708,7 +710,7 @@ class InstallerWindow:
         selection = treeview.get_selection()
         (model, itervar) = selection.get_selected()
         if itervar is not None:
-            self.setup.language = model.get_value(iter, 3)
+            self.setup.language = model.get_value(itervar, 3)
             self.setup.print_setup()
             gettext.translation('live-installer', "/usr/share/locale",
                                 languages=[self.setup.language, self.setup.language.split('_')[

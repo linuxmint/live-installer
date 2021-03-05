@@ -7,7 +7,7 @@ from gi.repository import Gtk, Gdk, GdkPixbuf
 from subprocess import getoutput
 from collections import defaultdict, namedtuple
 from datetime import datetime, timedelta
-from PIL import Image
+from PIL import Image, ImageEnhance
 from functools import reduce
 
 TIMEZONE_RESOURCES = './resources/timezone/'
