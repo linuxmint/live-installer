@@ -1,3 +1,65 @@
-# Live-installer
+# 17g installer
 
-Customized lmde installer
+17g is fork of Linuxmint debian edition live-installer. (https://github.com/linuxmint/live-installer)
+
+Features:
+
+* Debian, Arch, Sulin based distribution relations. 
+* Don't use bloat dependencies
+* Uses gtk and python3
+* Configurable and expandable
+
+## Installation
+
+Dependencies:
+
+```
+    rsync
+    python3-pil
+    python3-parted
+    python3-gi
+    gir1.2-gtk-3.0
+    python3-yaml
+    gettext-base
+```
+Getting source:
+
+```
+git clone https://gitlab.com/ggggggggggggggggg/17g.git 17g
+```
+Compile source:
+
+```
+make
+```
+Install source:
+
+```
+make install DESTDIR=/
+```
+
+Install service (Optional):
+
+```
+install 17g.initd /etc/init.d #(for openrc)
+install 17g.service /etc/systemd/system #(for systemd)
+```
+
+# Installation for debian
+
+```shell
+git clone https://gitlab.com/ggggggggggggggggg/17g.git 17g
+cd 17g
+mk-build-deps --install
+debuild -us -uc -b
+dpkg -i ../17g*.deb
+```
+
+## Configuration
+
+1. live-installer/branding/ directory is distribution images directory. Slides directory included slideshow images and images must be 16:9 format
+
+1. configs/config.yaml file is main configuration file. You can disable or enable features.
+
+1.  configs/live.yaml file is live service config. Some distributions not need this service. (for example: debian based) If you dont change anything 17g uses automatic mode and enable all features.
+
