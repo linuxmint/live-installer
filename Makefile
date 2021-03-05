@@ -7,6 +7,10 @@ build: buildmo
 
 	cp -prfv live-installer build/usr/lib/
 
+pot:
+	xgettext --language=Python --keyword=_ --output=live-installer.pot \
+            `find live-installer -type f -iname "*.py"`
+
 buildmo:
 	mkdir -p build/usr/share/ || true
 	@echo "Building the mo files"

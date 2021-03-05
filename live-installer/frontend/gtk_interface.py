@@ -991,9 +991,9 @@ class InstallerWindow:
 
                 if not found_root_partition:
                     ErrorDialog(_("Installer"), "<b>%s</b>" % _("Please select a root (/) partition."), _(
-                        "A root partition is needed to install Linux Mint on.\n\n"
+                        "A root partition is needed to install %s on.\n\n"
                         " - Mount point: /\n - Recommended size: 30GB\n"
-                        " - Recommended filesystem format: ext4\n\n"))
+                        " - Recommended filesystem format: ext4\n\n") % config.main["distro_title"])
                     return
 
                 if self.setup.gptonefi:
