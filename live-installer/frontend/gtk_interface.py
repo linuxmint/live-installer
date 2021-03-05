@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from gi.repository import Gtk, Gdk, GdkPixbuf, GObject, Pango, GLib
+from gi.repository import Gdk, GdkPixbuf, GObject, Pango, GLib
 from installer import InstallerEngine, Setup, NON_LATIN_KB_LAYOUTS
 from dialogs import QuestionDialog, ErrorDialog, WarningDialog
 import timezones

@@ -5,7 +5,6 @@ from frontend.welcome import welcome
 from frontend.gtk_interface import InstallerWindow
 import sys
 import os
-import subprocess
 import gettext
 import config
 

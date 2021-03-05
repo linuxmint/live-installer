@@ -1,11 +1,8 @@
 import os
-import re
 import subprocess
 import time
-import shutil
 import gettext
 import subprocess
-import sys
 import parted
 import partitioning
 import config

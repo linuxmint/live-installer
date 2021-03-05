@@ -15,7 +15,6 @@ Depends: ${shlibs:Depends}, ${misc:Depends},
                     gparted,
                     python3-gi,
                     gir1.2-gtk-3.0,
-                    python3-cairo,
                     python3-yaml,
                     gettext-base
 Description: 17g live installer

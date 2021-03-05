@@ -3,11 +3,11 @@
 
 import math
 import re
-from gi.repository import Gtk, Gdk, GObject, GdkPixbuf
+from gi.repository import Gtk, Gdk, GdkPixbuf
 from subprocess import getoutput
 from collections import defaultdict, namedtuple
 from datetime import datetime, timedelta
-from PIL import Image, ImageEnhance, ImageChops, ImageOps
+from PIL import Image
 from functools import reduce
 
 TIMEZONE_RESOURCES = './resources/timezone/'
