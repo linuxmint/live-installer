@@ -1,11 +1,15 @@
 # 17g installer
 
-17g is fork of Linuxmint debian edition live-installer. (https://github.com/linuxmint/live-installer)
+17g is fork of Linuxmint debian edition live-installer. (https://github.com/linuxmint/live-installer) Main purpose is creating flexible and configurable distro-independed live installation tools. 
+
+17g is full featured calamares alternative. (https://github.com/calamares/calamares)
+
+Better than calamares for gtk desktops because 17g never use qt dependencies.
 
 Features:
 
 * Debian, Arch, Sulin based distribution relations. 
-* Don't use bloat dependencies
+* Don't use bloat dependencies.
 * Uses gtk and python3
 * Configurable and expandable
 
