@@ -67,6 +67,10 @@ dpkg -i ../17g*.deb
 
 1.  configs/live.yaml file is live service config. Some distributions not need this service. (for example: debian based) If you dont change anything 17g uses automatic mode and enable all features.
 
-## Community support
+## Translation
 
+https://www.transifex.com/17g/17g
 
+## Community
+
+https://t.me/iso_calismalari (Turkish telegram group)
