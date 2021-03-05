@@ -4,6 +4,7 @@ import yaml
 from shlex import quote
 import subprocess
 
+
 def memoize(func):
     """ Caches expensive function calls.
 
@@ -24,6 +25,7 @@ def memoize(func):
     class memodict(dict):
         def __call__(self, *args):
             return self[args]
+
         def __missing__(self, key):
             ret = self[key] = func(*key)
             return ret

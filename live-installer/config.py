@@ -8,6 +8,7 @@ sys.path.insert(1, '/usr/lib/live-installer')
 if (os.path.isdir("/usr/lib/live-installer")):
     os.chdir("/usr/lib/live-installer")
 
+
 def load_config(config_path):
     if os.path.isfile(config_path):
         file = open(config_path, "r")
@@ -23,10 +24,10 @@ def load_config(config_path):
 
 # Define subconfigs
 main = load_config("configs/config.yaml")
-distro=None
-pm=None
-initramfs=None
-live=None
+distro = None
+pm = None
+initramfs = None
+live = None
 
 if(main["distribution"] == "auto"):
     if os.path.exists("/etc/debian_version"):
@@ -36,25 +37,30 @@ if(main["distribution"] == "auto"):
     elif not os.path.exists("/home") and os.path.exists("/data/user"):
         distro = load_config("configs/distribution/sulin.yaml")
 else:
-    distro = load_config("configs/distribution/{}.yaml".format(main["distribution"]))
+    distro = load_config(
+        "configs/distribution/{}.yaml".format(main["distribution"]))
 
 if(main["initramfs_system"] == "auto"):
     if os.path.exists("/etc/debian_version"):
-        initramfs = load_config("configs/initramfs_systems/initramfs_tools.yaml")
+        initramfs = load_config(
+            "configs/initramfs_systems/initramfs_tools.yaml")
     elif os.path.exists("/var/lib/pacman"):
         initramfs = load_config("configs/initramfs_systems/mkinitcpio.yaml")
     elif not os.path.exists("/home") and os.path.exists("/data/user"):
         initramfs = load_config("configs/initramfs_systems/initrd.yaml")
 else:
-    distro = load_config("configs/initramfs_systems/{}.yaml".format(main["initramfs_system"]))
+    distro = load_config(
+        "configs/initramfs_systems/{}.yaml".format(main["initramfs_system"]))
 # Package Manager
 for package_manager in glob("configs/package_managers/*"):
-        pm_contents = load_config(package_manager)   
+    pm_contents = load_config(package_manager)
 
-        if os.path.exists(pm_contents["check_this_dir"]):
-            pm = pm_contents
-            break
-live=load_config("configs/live.yaml")
+    if os.path.exists(pm_contents["check_this_dir"]):
+        pm = pm_contents
+        break
+live = load_config("configs/live.yaml")
+
+
 def package_manager(process, packages=[]):
     if process == "name":
         exit("You can't use this parameter!")
@@ -72,7 +78,7 @@ def update_initramfs():
     commands = []
     for command in initramfs["commands"]:
         if "{kernel_version}" in command:
-            kernel_version= subprocess.getoutput("uname -r")
+            kernel_version = subprocess.getoutput("uname -r")
             command = command.replace('{kernel_version}', kernel_version)
 
             commands.append(command)
@@ -80,4 +86,3 @@ def update_initramfs():
             commands.append(command)
 
     return commands
-

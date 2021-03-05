@@ -1,4 +1,8 @@
 #!/usr/bin/python3
+from gi.repository import Gtk
+import gi
+from frontend.welcome import welcome
+from frontend.gtk_interface import InstallerWindow
 import sys
 import os
 import subprocess
@@ -12,23 +16,19 @@ if (os.path.isdir("/usr/lib/live-installer")):
     os.chdir("/usr/lib/live-installer")
 
 if config.main["gtk_theme"] != "default":
-	os.environ['GTK_THEME'] = config.main["gtk_theme"]
+    os.environ['GTK_THEME'] = config.main["gtk_theme"]
 
 # Force show mouse cursor & fix background
 os.system("xsetroot -cursor_name left_ptr")
 os.system("xsetroot -solid black")
-from frontend.gtk_interface import InstallerWindow
-from frontend.welcome import welcome
 
-import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk
 
 # main entry
 if __name__ == "__main__":
     if ("--welcome" in sys.argv):
         if config.main["welcome_screen"]:
-            win=welcome()
+            win = welcome()
         else:
             print("Welcome screen disabled by config.")
             exit(0)

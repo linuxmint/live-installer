@@ -1,7 +1,8 @@
 
+from gi.repository import Gtk
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk
+
 
 class Dialog(Gtk.MessageDialog):
     def __init__(self, style, buttons, title, text, text2=None, parent=None):
@@ -11,7 +12,8 @@ class Dialog(Gtk.MessageDialog):
         self.set_title(title)
         self.set_markup(text)
         self.desc = text[:30] + ' ...' if len(text) > 30 else text
-        if text2: self.format_secondary_markup(text2)
+        if text2:
+            self.format_secondary_markup(text2)
         if parent:
             self.set_transient_for(parent)
             self.set_modal(True)
@@ -26,10 +28,12 @@ class Dialog(Gtk.MessageDialog):
         finally:
             self.destroy()
 
+
 def MessageDialog(*args):
     dialog = Dialog(Gtk.MessageType.INFO, Gtk.ButtonsType.NONE, *args)
     dialog.add_button(_("OK"), Gtk.ResponseType.OK)
     return dialog.show()
+
 
 def QuestionDialog(*args):
     dialog = Dialog(Gtk.MessageType.QUESTION, Gtk.ButtonsType.NONE, *args)
@@ -37,10 +41,12 @@ def QuestionDialog(*args):
     dialog.add_button(_("Yes"), Gtk.ResponseType.YES)
     return dialog.show()
 
+
 def WarningDialog(*args):
     dialog = Dialog(Gtk.MessageType.WARNING, Gtk.ButtonsType.NONE, *args)
     dialog.add_button(_("OK"), Gtk.ResponseType.OK)
     return dialog.show()
+
 
 def ErrorDialog(*args):
     dialog = Dialog(Gtk.MessageType.ERROR, Gtk.ButtonsType.NONE, *args)
