@@ -19,7 +19,7 @@ for i in data:
 # Check live mode and single run
 if "boot" not in kernel_vars:
     exit(0)
-if kernel_vars["boot"] == "live":
+if kernel_vars["boot"] != "live":
     exit(0)
 if os.path.exists("/run/17g"):
     exit(0)
