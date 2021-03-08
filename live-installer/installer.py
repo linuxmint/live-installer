@@ -133,8 +133,9 @@ class InstallerEngine:
                              False, ("Adding new user to the system"))
         # TODO: support encryption
 
-        self.do_run_in_chroot('useradd -m -s {shell} {username}'.format(
-            shell=config.main["using_shell"], username=self.setup.username))
+        self.do_run_in_chroot('useradd -m -s {shell} -c \"{realname}\" {username}'.format(
+            shell=config.main["using_shell"], realname=self.setup.real_name,
+            username=self.setup.username))
 
         # Add user to additional groups
         for group in config.main["additional_user_groups"]:
