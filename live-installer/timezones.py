@@ -198,49 +198,6 @@ def map_clicked(widget, event, data=None):
     select_timezone(closest_timezone)
 
 
-# Timezone offsets color coded in cc.png
-# If someone can make this more robust (maintainable), I buy you lunch!
-TIMEZONE_COLORS = {
-    "2b0000": "-11.0",
-    "550000": "-10.0",
-    "66ff05": "-9.5",
-    "800000": "-9.0",
-    "aa0000": "-8.0",
-    "d40000": "-7.0",
-    "ff0001": "-6.0",
-    "66ff00": "-5.5",
-    "ff2a2a": "-5.0",
-    "c0ff00": "-4.5",
-    "ff5555": "-4.0",
-    "00ff00": "-3.5",
-    "ff8080": "-3.0",
-    "ffaaaa": "-2.0",
-    "ffd5d5": "-1.0",
-    "2b1100": "0.0",
-    "552200": "1.0",
-    "803300": "2.0",
-    "aa4400": "3.0",
-    "00ff66": "3.5",
-    "d45500": "4.0",
-    "00ccff": "4.5",
-    "ff6600": "5.0",
-    "0066ff": "5.5",
-    "00ffcc": "5.75",
-    "ff7f2a": "6.0",
-    "cc00ff": "6.5",
-    "ff9955": "7.0",
-    "ffb380": "8.0",
-    "ffccaa": "9.0",
-    "aa0044": "9.5",
-    "ffe6d5": "10.0",
-    "d10255": "10.5",
-    "d4aa00": "11.0",
-    "fc0266": "11.5",
-    "ffcc00": "12.0",
-    "fd2c80": "12.75",
-    "fc5598": "13.0",
-}
-
 ADJUST_HOURS_MINUTES = re.compile('([+-])([0-9][0-9])([0-9][0-9])')
 
 IS_WINTER = datetime.now().timetuple().tm_yday not in list(

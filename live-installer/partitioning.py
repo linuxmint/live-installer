@@ -348,8 +348,8 @@ class PartitionSetup(Gtk.TreeStore):
                     partition.size_percent / sum_size_percent * 100, 1)
                 installer.setup.partitions.append(partition)
                 self.append(disk_iter, (partition.name,
-                                        '<span foreground="{}">{}</span>'.format(
-                                            partition.color, partition.type),
+                                        '<span>{}</span>'.format(
+                                        partition.type),
                                         partition.description,
                                         partition.format_as,
                                         partition.mount_as,
@@ -358,8 +358,6 @@ class PartitionSetup(Gtk.TreeStore):
                                         partition,
                                         disk_path))
 
-    def get_html(self, disk):
-        return ""
 
 
 @idle
@@ -576,35 +574,6 @@ class Partition(object):
             print("                  . umounting it")
             os.system('umount ' + TMP_MOUNTPOINT + ' 2>/dev/null')
             print("                  . done")
-
-        self.html_name = self.name.split('/')[-1]
-        self.html_description = self.description
-        if (self.size_percent < 10 and len(self.description) > 5):
-            self.html_description = "%s..." % self.description[0:5]
-        if (self.size_percent < 5):
-            # Not enough space, don't write the name
-            self.html_name = ""
-            self.html_description = ""
-
-        self.color = {
-            # colors approximately from gparted (find matching set in usr/share/disk-partitions.html)
-            'btrfs': '#636363',
-            'exfat': '#47872a',
-            'ext2':  '#2582a0',
-            'ext3':  '#2582a0',
-            'ext4':  '#21619e',
-            'fat16': '#47872a',
-            'fat32': '#47872a',
-            'hfs':   '#636363',
-            'jfs':   '#636363',
-            'swap':  '#be3a37',
-            'ntfs':  '#66a6a8',
-            'reiserfs': '#636363',
-            'ufs':   '#636363',
-            'xfs':   '#636363',
-            'zfs':   '#636363',
-            parted.PARTITION_EXTENDED: '#a9a9a9',
-        }.get(self.type, '#a9a9a9')
 
     def print_partition(self):
         print("Device: %s, format as: %s, mount as: %s" %
