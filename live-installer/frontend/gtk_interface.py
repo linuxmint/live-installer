@@ -1,5 +1,8 @@
 #!/usr/bin/python3
 
+import gi
+gi.require_version('Gtk', '3.0')
+
 from gi.repository import Gtk, GdkPixbuf, GObject, Pango, GLib
 from installer import InstallerEngine, Setup, NON_LATIN_KB_LAYOUTS
 from dialogs import QuestionDialog, ErrorDialog, WarningDialog
@@ -12,11 +15,8 @@ import sys
 import threading
 import time
 import parted
-import threading
 import config
 
-import gi
-gi.require_version('Gtk', '3.0')
 
 gettext.install("live-installer", "/usr/share/locale")
 
@@ -58,9 +58,6 @@ class InstallerWindow:
 
     def __init__(self):
 
-        # disable the screensaver
-        os.system("killall cinnamon-screen")
-        os.system("killall xfce4-screensaver")
         # build the setup object (where we put all our choices) and the installer
         self.setup = Setup()
         self.installer = InstallerEngine(self.setup)
@@ -256,7 +253,7 @@ class InstallerWindow:
         img.set_from_pixbuf(pixbuf)
 
         # i18n
-        self.i18n()
+        self.assign_language(None)
 
         # build partition list
         self.should_pulse = False
@@ -423,7 +420,6 @@ class InstallerWindow:
             self.builder.get_object("check_name").hide()
         else:
             self.builder.get_object("check_name").show()
-        self.setup.print_setup()
 
     def assign_username(self, entry, prop):
         self.setup.username = entry.props.text
@@ -441,7 +437,6 @@ class InstallerWindow:
             self.builder.get_object("check_username").hide()
         else:
             self.builder.get_object("check_username").show()
-        self.setup.print_setup()
 
     def assign_hostname(self, entry, prop):
         self.setup.hostname = entry.props.text
@@ -457,7 +452,6 @@ class InstallerWindow:
             self.builder.get_object("check_hostname").hide()
         else:
             self.builder.get_object("check_hostname").show()
-        self.setup.print_setup()
 
     def assign_password(self, widget):
         self.setup.password1 = self.builder.get_object(
@@ -476,7 +470,6 @@ class InstallerWindow:
         else:
             self.builder.get_object("check_confirm").show()
 
-        self.setup.print_setup()
 
     def assign_type_options(self, widget, data=None):
         self.setup.automated = self.builder.get_object(
@@ -537,14 +530,11 @@ class InstallerWindow:
         self.setup.badblocks = self.builder.get_object(
             "check_badblocks").get_active()
 
-        self.setup.print_setup()
-
     def assign_passphrase(self, widget):
         self.setup.passphrase1 = self.builder.get_object(
             "entry_passphrase").get_text()
         self.setup.passphrase2 = self.builder.get_object(
             "entry_passphrase2").get_text()
-        self.setup.print_setup()
 
     def quit_cb(self, widget, data=None):
         if QuestionDialog(_("Quit?"), _("Are you sure you want to quit the installer?")):
@@ -704,21 +694,21 @@ class InstallerWindow:
 
     def assign_language(self, treeview, data=None):
         ''' Called whenever someone updates the language '''
-        model = treeview.get_model()
-        selection = treeview.get_selection()
-        (model, itervar) = selection.get_selected()
-        if itervar is not None:
-            self.setup.language = model.get_value(iter, 3)
-            self.setup.print_setup()
-            gettext.translation('live-installer', "/usr/share/locale",
-                                languages=[self.setup.language, self.setup.language.split('_')[
-                                    0]],
-                                fallback=True).install()  # Try e.g. zh_CN, zh, or fallback to hardcoded English
-            try:
-                self.i18n()
-            except:
-                # Best effort. Fails the first time as self.column1 doesn't exist yet.
-                pass
+        if treeview:
+            model = treeview.get_model()
+            selection = treeview.get_selection()
+            (model, itervar) = selection.get_selected()
+            if itervar and model:
+                self.setup.language = model.get_value(itervar, 3)
+                gettext.translation('live-installer', "/usr/share/locale",
+                                    languages=[self.setup.language, self.setup.language.split('_')[
+                                        0]],
+                                    fallback=True).install()  # Try e.g. zh_CN, zh, or fallback to hardcoded English
+        try:
+            self.i18n()
+        except:
+            # Best effort. Fails the first time as self.column1 doesn't exist yet.
+            pass
 
     def assign_login_options(self, checkbox, data=None):
         if self.builder.get_object("radiobutton_passwordlogin").get_active():
@@ -734,7 +724,6 @@ class InstallerWindow:
             "checkbutton_encrypt_home").get_active()
         self.setup.autologin = self.builder.get_object(
             "radiobutton_autologin").get_active()
-        self.setup.print_setup()
 
     def assign_grub_install(self, checkbox, grub_box, data=None):
         grub_box.set_sensitive(checkbox.get_active())
@@ -742,7 +731,6 @@ class InstallerWindow:
             self.assign_grub_device(grub_box)
         else:
             self.setup.grub_device = None
-        self.setup.print_setup()
 
     def assign_grub_device(self, combobox, data=None):
         ''' Called whenever someone updates the grub device '''
@@ -751,7 +739,6 @@ class InstallerWindow:
         if(active > -1):
             row = model[active]
             self.setup.grub_device = row[0]
-        self.setup.print_setup()
 
     def assign_keyboard_model(self, combobox):
         ''' Called whenever someone updates the keyboard model '''
@@ -760,7 +747,6 @@ class InstallerWindow:
         (self.setup.keyboard_model_description,
          self.setup.keyboard_model) = model[active]
         os.system('setxkbmap -model ' + self.setup.keyboard_model)
-        self.setup.print_setup()
 
     def assign_keyboard_layout(self, treeview):
         ''' Called whenever someone updates the keyboard layout '''
@@ -808,7 +794,6 @@ class InstallerWindow:
         command = "setxkbmap -layout '%s' -variant '%s' -option grp:ctrls_toggle" % (
             self.setup.keyboard_layout, self.setup.keyboard_variant)
         os.system(command)
-        self.setup.print_setup()
 
 
     def activate_page(self, index):
@@ -866,16 +851,16 @@ class InstallerWindow:
                     country_code = self.setup.language
                 treeview = self.builder.get_object("treeview_layouts")
                 model = treeview.get_model()
-                iter = model.get_iter_first()
-                while iter is not None:
-                    iter_country_code = model.get_value(iter, 1)
+                itervar = model.get_iter_first()
+                while itervar is not None:
+                    iter_country_code = model.get_value(itervar, 1)
                     if iter_country_code.lower() == country_code.lower():
                         column = treeview.get_column(0)
-                        path = model.get_path(iter)
+                        path = model.get_path(itervar)
                         treeview.set_cursor(path)
                         treeview.scroll_to_cell(path, column=column)
                         break
-                    iter = model.iter_next(iter)
+                    itervar = model.iter_next(itervar)
                 self.activate_page(self.PAGE_KEYBOARD)
             elif(sel == self.PAGE_KEYBOARD):
                 self.activate_page(self.PAGE_USER)
@@ -1057,7 +1042,7 @@ class InstallerWindow:
                 self.activate_page(self.PAGE_WELCOME)
 
     def show_overview(self):
-        def bold(str): return '<b>' + str + '</b>'
+        def bold(strvar): return '<b>' + strvar + '</b>'
         model = Gtk.TreeStore(str)
         self.builder.get_object("treeview_overview").set_model(model)
         top = model.append(None, (_("Localization"),))
@@ -1236,7 +1221,6 @@ class InstallerWindow:
         GLib.timeout_add(100, self.set_slide_page)
 
     def set_slide_page(self):
-        print("Current:"+str(self.images[self.cur_slide_pos]))
         self.slides.set_current_page(self.cur_slide_pos)
         self.cur_slide_pos = self.cur_slide_pos+1
         if(self.cur_slide_pos > self.max_slide_page):

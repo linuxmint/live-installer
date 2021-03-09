@@ -1,6 +1,7 @@
 # coding: utf-8
 #
-
+import gi
+gi.require_version('Gtk', '3.0')
 
 import time
 import gettext
@@ -11,8 +12,7 @@ import re
 import sys
 import subprocess
 from collections import defaultdict
-import gi
-gi.require_version('Gtk', '3.0')
+
 
 gettext.install("live-installer", "/usr/share/locale")
 
@@ -87,7 +87,6 @@ def get_disks():
             else:
                 typevar, device, removable, size, model = elements
             device = "/dev/" + device
-            print(str(typevar))
             if str(typevar) == "b'disk" and device not in exclude_devices:
                 # convert size to manufacturer's size for show, e.g. in GB, not GiB!
                 unit_index = 'BKMGTPEZY'.index(size.upper()[-1])

@@ -2,7 +2,6 @@ import os
 import subprocess
 import time
 import gettext
-import subprocess
 import parted
 import partitioning
 import config
@@ -44,10 +43,6 @@ class InstallerEngine:
         # mount the media location.
         print(" --> Installation started")
         if(not os.path.exists("/target")):
-            if (self.setup.skip_mount):
-                self.error_message(message=_(
-                    "ERROR: You must first manually mount your target filesystem(s) at /target to do a custom install!"))
-                return
             os.mkdir("/target")
         if(not os.path.exists("/source")):
             os.mkdir("/source")
@@ -61,12 +56,11 @@ class InstallerEngine:
 
         self.mount_source()
 
-        if (not self.setup.skip_mount):
-            if self.setup.automated:
-                self.create_partitions()
-            else:
-                self.format_partitions()
-                self.mount_partitions()
+        if self.setup.automated:
+            self.create_partitions()
+        else:
+            self.format_partitions()
+            self.mount_partitions()
 
         # Transfer the files
         SOURCE = "/source/"
@@ -385,56 +379,55 @@ class InstallerEngine:
                 "echo \"#### Static Filesystem Table File\" > /target/etc/fstab")
         fstab = open("/target/etc/fstab", "a")
         fstab.write("proc\t/proc\tproc\tdefaults\t0\t0\n")
-        if(not self.setup.skip_mount):
-            if self.setup.automated:
-                if self.setup.lvm:
-                    # Don't use UUIDs with LVM
-                    fstab.write("%s /  ext4 defaults 0 1\n" %
-                                self.auto_root_partition)
-                    fstab.write("%s none   swap sw 0 0\n" %
-                                self.auto_swap_partition)
-                else:
-                    fstab.write("# %s\n" % self.auto_root_partition)
-                    fstab.write("%s /  ext4 defaults 0 1\n" %
-                                self.get_blkid(self.auto_root_partition))
-                    fstab.write("# %s\n" % self.auto_swap_partition)
-                    fstab.write("%s none   swap sw 0 0\n" %
-                                self.get_blkid(self.auto_swap_partition))
-                if (self.auto_boot_partition is not None):
-                    fstab.write("# %s\n" % self.auto_boot_partition)
-                    fstab.write("%s /boot  ext4 defaults 0 1\n" %
-                                self.get_blkid(self.auto_boot_partition))
-                if (self.auto_efi_partition is not None):
-                    fstab.write("# %s\n" % self.auto_efi_partition)
-                    fstab.write("%s /boot/efi  vfat defaults 0 1\n" %
-                                self.get_blkid(self.auto_efi_partition))
+        if self.setup.automated:
+            if self.setup.lvm:
+                # Don't use UUIDs with LVM
+                fstab.write("%s /  ext4 defaults 0 1\n" %
+                            self.auto_root_partition)
+                fstab.write("%s none   swap sw 0 0\n" %
+                            self.auto_swap_partition)
             else:
-                for partition in self.setup.partitions:
-                    if (partition.mount_as is not None and partition.mount_as != "" and partition.mount_as != "None"):
-                        fstab.write("# %s\n" % (partition.path))
-                        if(partition.mount_as == "/"):
-                            fstab_fsck_option = "1"
-                        else:
-                            fstab_fsck_option = "0"
+                fstab.write("# %s\n" % self.auto_root_partition)
+                fstab.write("%s /  ext4 defaults 0 1\n" %
+                            self.get_blkid(self.auto_root_partition))
+                fstab.write("# %s\n" % self.auto_swap_partition)
+                fstab.write("%s none   swap sw 0 0\n" %
+                            self.get_blkid(self.auto_swap_partition))
+            if (self.auto_boot_partition is not None):
+                fstab.write("# %s\n" % self.auto_boot_partition)
+                fstab.write("%s /boot  ext4 defaults 0 1\n" %
+                            self.get_blkid(self.auto_boot_partition))
+            if (self.auto_efi_partition is not None):
+                fstab.write("# %s\n" % self.auto_efi_partition)
+                fstab.write("%s /boot/efi  vfat defaults 0 1\n" %
+                            self.get_blkid(self.auto_efi_partition))
+        else:
+            for partition in self.setup.partitions:
+                if (partition.mount_as is not None and partition.mount_as != "" and partition.mount_as != "None"):
+                    fstab.write("# %s\n" % (partition.path))
+                    if(partition.mount_as == "/"):
+                        fstab_fsck_option = "1"
+                    else:
+                        fstab_fsck_option = "0"
 
-                        if("ext" in partition.type):
-                            fstab_mount_options = "rw,errors=remount-ro"
-                        else:
-                            fstab_mount_options = "defaults"
+                    if("ext" in partition.type):
+                        fstab_mount_options = "rw,errors=remount-ro"
+                    else:
+                        fstab_mount_options = "defaults"
 
-                        if partition.type == "fat16" or partition.type == "fat32":
-                            fs = "vfat"
-                        else:
-                            fs = partition.type
+                    if partition.type == "fat16" or partition.type == "fat32":
+                        fs = "vfat"
+                    else:
+                        fs = partition.type
 
-                        partition_uuid = self.get_blkid(partition.path)
-                        if(fs == "swap"):
-                            fstab.write("%s\tswap\tswap\tsw\t0\t0\n" %
-                                        partition_uuid)
-                        else:
-                            fstab.write("%s\t%s\t%s\t%s\t%s\t%s\n" % (
-                                partition_uuid, partition.mount_as, fs, fstab_mount_options, "0", fstab_fsck_option))
-        fstab.close()
+                    partition_uuid = self.get_blkid(partition.path)
+                    if(fs == "swap"):
+                        fstab.write("%s\tswap\tswap\tsw\t0\t0\n" %
+                                    partition_uuid)
+                    else:
+                        fstab.write("%s\t%s\t%s\t%s\t%s\t%s\n" % (
+                            partition_uuid, partition.mount_as, fs, fstab_mount_options, "0", fstab_fsck_option))
+            fstab.close()
 
         if self.setup.lvm:
             os.system("grep -v swap /target/etc/fstab > /target/etc/mtab")
@@ -685,11 +678,10 @@ class InstallerEngine:
         os.system("umount --force /target/run/")
         os.system("rm -f /target/etc/resolv.conf")
         os.system("mv /target/etc/resolv.conf.bk /target/etc/resolv.conf")
-        if(not self.setup.skip_mount):
-            for partition in self.setup.partitions:
-                if(partition.mount_as is not None and partition.mount_as != "" and partition.mount_as != "/" and partition.mount_as != "swap"):
-                    self.do_unmount("/target" + partition.mount_as)
-            self.do_unmount("/target")
+        for partition in self.setup.partitions:
+            if(partition.mount_as is not None and partition.mount_as != "" and partition.mount_as != "/" and partition.mount_as != "swap"):
+                self.do_unmount("/target" + partition.mount_as)
+        self.do_unmount("/target")
         self.do_unmount("/source")
 
         self.update_progress(0, 0, False, True, _("Installation finished"))
@@ -791,39 +783,3 @@ class Setup(object):
     keyboard_model_description = None
     keyboard_layout_description = None
     keyboard_variant_description = None
-
-    def print_setup(self):
-        if True:
-            print(
-                "-------------------------------------------------------------------------")
-            print("language: %s" % self.language)
-            print("timezone: %s" % self.timezone)
-            print("keyboard: %s - %s (%s) - %s - %s (%s)" % (self.keyboard_model, self.keyboard_layout, self.keyboard_variant,
-                                                             self.keyboard_model_description, self.keyboard_layout_description, self.keyboard_variant_description))
-            print("user: %s (%s)" % (self.username, self.real_name))
-            print("autologin: ", self.autologin)
-            print("ecryptfs: ", self.ecryptfs)
-            print("hostname: %s " % self.hostname)
-            print("passwords: %s - %s" % (self.password1, self.password2))
-            print("grub_device: %s " % self.grub_device)
-            print("skip_mount: %s" % self.skip_mount)
-            print("automated: %s" % self.automated)
-            if self.automated:
-                print("disk: %s (%s)" % (self.disk, self.diskname))
-                print("luks: %s" % self.luks)
-                print("badblocks: %s" % self.badblocks)
-                print("lvm: %s" % self.lvm)
-                print("passphrase: %s - %s" %
-                      (self.passphrase1, self.passphrase2))
-            if (not self.skip_mount):
-                print("target_disk: %s " % self.target_disk)
-                if self.gptonefi:
-                    print("GPT partition table: True")
-                else:
-                    print("GPT partition table: False")
-                print("disks: %s " % self.disks)
-                print("partitions:")
-                for partition in self.partitions:
-                    partition.print_partition()
-            print(
-                "-------------------------------------------------------------------------")

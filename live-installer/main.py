@@ -1,6 +1,8 @@
 #!/usr/bin/python3
-from gi.repository import Gtk
 import gi
+gi.require_version('Gtk', '3.0')
+
+from gi.repository import Gtk
 from frontend.welcome import welcome
 from frontend.gtk_interface import InstallerWindow
 import sys
@@ -21,7 +23,6 @@ if config.main["gtk_theme"] != "default":
 os.system("xsetroot -cursor_name left_ptr")
 os.system("xsetroot -solid black")
 
-gi.require_version('Gtk', '3.0')
 
 # main entry
 if __name__ == "__main__":
