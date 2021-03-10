@@ -26,6 +26,12 @@ welcome_screen: true
 default_country_code: US
 default_timezone: America/New_York
 
+skip_language: false
+skip_timezone: false
+skip_keyboard: false
+allow_uppercase_hostname: true
+allow_numeric_password: false
+min_password_length: 1
 
 additional_user_groups:
   - audio

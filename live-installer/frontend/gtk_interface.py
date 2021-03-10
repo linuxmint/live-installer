@@ -424,7 +424,7 @@ class InstallerWindow:
     def assign_username(self, entry, prop):
         self.setup.username = entry.props.text
         errorFound = False
-        if self.setup.username[0] in "0123456789":
+        if len(self.setup.username) > 0 and self.setup.username[0] in "0123456789":
             errorFound = True
         for char in self.setup.username:
             if char.isupper():
@@ -454,16 +454,23 @@ class InstallerWindow:
             self.builder.get_object("check_hostname").show()
 
     def assign_password(self, widget):
+        errorFound=False
         self.setup.password1 = self.builder.get_object(
             "entry_password").get_text()
         self.setup.password2 = self.builder.get_object(
             "entry_confirm").get_text()
 
         if self.setup.password1 == "":
+            errorFound = True
+        if len(self.setup.password1) < config.main["min_password_length"]:
+            errorFound = True
+        if self.setup.password1.isnumeric() and not config.main["allow_numeric_password"]:
+            errorFound = True
+        if errorFound:
             self.builder.get_object("check_password").hide()
         else:
             self.builder.get_object("check_password").show()
-
+        
         # Check the password confirmation
         if(self.setup.password1 == "" or self.setup.password2 == "" or self.setup.password1 != self.setup.password2):
             self.builder.get_object("check_confirm").hide()
@@ -796,59 +803,29 @@ class InstallerWindow:
         os.system(command)
 
 
-    def activate_page(self, index):
-        # progress images
-        for i in range(9):
-            img = self.builder.get_object("progress_%d" % i)
-            if i <= index:
-                img.set_from_file(
-                    "./resources/icons/live-installer-progress-dot-on.png")
+    def activate_page(self, nex=0,index=0):
+        errorFound = False
+        if index == self.PAGE_LANGUAGE:
+            if self.setup.language is None:
+                WarningDialog(_("Installer"), _(
+                    "Please choose a language"))
             else:
-                img.set_from_file(
-                    "./resources/icons/live-installer-progress-dot-off.png")
-        help_text = _(self.wizard_pages[index].help_text)
-        self.builder.get_object("help_label").set_markup(
-            "<big><b>%s</b></big>" % help_text)
-        self.builder.get_object("help_icon").set_from_icon_name(
-            self.wizard_pages[index].icon, Gtk.IconSize.LARGE_TOOLBAR)
-        self.builder.get_object("help_question").set_text(
-            self.wizard_pages[index].question)
-        self.builder.get_object("notebook1").set_current_page(index)
-        # TODO: move other page-depended actions from the wizard_cb into here below
-        if index == self.PAGE_PARTITIONS:
-            self.setup.skip_mount = False
-
-    def wizard_cb(self, widget, goback, data=None):
-        ''' wizard buttons '''
-        sel = self.builder.get_object("notebook1").get_current_page()
-        self.builder.get_object("button_back").set_sensitive(True)
-
-        # check each page for errors
-        if(not goback):
-            if (sel == self.PAGE_WELCOME):
-                self.activate_page(self.PAGE_LANGUAGE)
-            elif(sel == self.PAGE_LANGUAGE):
-                if self.setup.language is None:
-                    WarningDialog(_("Installer"), _(
-                        "Please choose a language"))
-                else:
-                    lang_country_code = self.setup.language.split('_')[-1]
-                    for value in (self.cur_timezone,      # timezone guessed from IP
-                                  self.cur_country_code,  # otherwise pick country from IP
-                                  lang_country_code):     # otherwise use country from language selection
-                        if not value:
-                            continue
-                        for row in timezones.timezones:
-                            if value in row:
-                                timezones.select_timezone(row)
-                                break
-                        break
-                    self.activate_page(self.PAGE_TIMEZONE)
-            elif (sel == self.PAGE_TIMEZONE):
-                if ("_" in self.setup.language):
+                lang_country_code = self.setup.language.split('_')[-1]
+                for value in (self.cur_timezone,      # timezone guessed from IP
+                              self.cur_country_code,  # otherwise pick country from IP
+                              lang_country_code):     # otherwise use country from language selection
+                    if not value:
+                        continue
+                    for row in timezones.timezones:
+                        if value in row:
+                            timezones.select_timezone(row)
+                            break
+                    break
+        elif index == self.PAGE_TIMEZONE:
+            if ("_" in self.setup.language):
                     country_code = self.setup.language.split("_")[1]
-                else:
-                    country_code = self.setup.language
+            else:
+                country_code = self.setup.language
                 treeview = self.builder.get_object("treeview_layouts")
                 model = treeview.get_model()
                 itervar = model.get_iter_first()
@@ -861,185 +838,242 @@ class InstallerWindow:
                         treeview.scroll_to_cell(path, column=column)
                         break
                     itervar = model.iter_next(itervar)
-                self.activate_page(self.PAGE_KEYBOARD)
-            elif(sel == self.PAGE_KEYBOARD):
-                self.activate_page(self.PAGE_USER)
-                self.builder.get_object("entry_name").grab_focus()
-            elif(sel == self.PAGE_USER):
-                errorFound = False
-                errorMessage = ""
-                focus_widget = None
+        elif index == self.PAGE_KEYBOARD:
+            self.builder.get_object("entry_name").grab_focus()
+        elif index == self.PAGE_USER:
+            errorMessage = ""
+            focus_widget = None
 
-                if(self.setup.real_name is None or self.setup.real_name == ""):
-                    errorFound = True
-                    errorMessage = _("Please provide your full name.")
-                    focus_widget = self.builder.get_object("entry_name")
-                elif(self.setup.hostname is None or self.setup.hostname == ""):
+            if(self.setup.real_name is None or self.setup.real_name == ""):
+                errorFound = True
+                errorMessage = _("Please provide your full name.")
+                focus_widget = self.builder.get_object("entry_name")
+            elif(self.setup.hostname is None or self.setup.hostname == ""):
+                errorFound = True
+                errorMessage = _(
+                    "Please provide a name for your computer.")
+                focus_widget = self.builder.get_object("entry_hostname")
+            elif(self.setup.username is None or self.setup.username == ""):
+                errorFound = True
+                errorMessage = _("Please provide a username.")
+                focus_widget = self.builder.get_object("entry_username")
+            elif(self.setup.password1 is None or self.setup.password1 == ""):
+                errorFound = True
+                errorMessage = _(
+                    "Please provide a password for your user account.")
+                focus_widget = self.builder.get_object("entry_password")
+            elif len(self.setup.password1) < config.main["min_password_length"]:
+                errorFound = True
+                errorMessage = _("Your passwords is too short.")
+                focus_widget = self.builder.get_object("entry_password")
+            elif self.setup.password1.isnumeric() and not config.main["allow_numeric_password"]:
+                errorFound = True
+                errorMessage = _("Your passwords is not strong.")
+                focus_widget = self.builder.get_object("entry_password")
+            elif(self.setup.password1 != self.setup.password2):
+                errorFound = True
+                errorMessage = _("Your passwords do not match.")
+                focus_widget = self.builder.get_object("entry_confirm")
+            else:
+                if self.setup.username[0] in "0123456789":
                     errorFound = True
                     errorMessage = _(
-                        "Please provide a name for your computer.")
-                    focus_widget = self.builder.get_object("entry_hostname")
-                elif(self.setup.username is None or self.setup.username == ""):
-                    errorFound = True
-                    errorMessage = _("Please provide a username.")
-                    focus_widget = self.builder.get_object("entry_username")
-                elif(self.setup.password1 is None or self.setup.password1 == ""):
-                    errorFound = True
-                    errorMessage = _(
-                        "Please provide a password for your user account.")
-                    focus_widget = self.builder.get_object("entry_password")
-                elif(self.setup.password1 != self.setup.password2):
-                    errorFound = True
-                    errorMessage = _("Your passwords do not match.")
-                    focus_widget = self.builder.get_object("entry_confirm")
-                else:
-                    if self.setup.username[0] in "0123456789":
+                        "Your username cannot start with numbers.")
+
+                for char in self.setup.username:
+                    if(char.isupper()):
                         errorFound = True
                         errorMessage = _(
-                            "Your username cannot start with numbers.")
-
-                    for char in self.setup.username:
-                        if(char.isupper()):
-                            errorFound = True
-                            errorMessage = _(
-                                "Your username must be lower case.")
-                            focus_widget = self.builder.get_object(
-                                "entry_username")
-                            break
-                        elif(char.isspace()):
-                            errorFound = True
-                            errorMessage = _(
-                                "Your username may not contain whitespace characters.")
-                            focus_widget = self.builder.get_object(
-                                "entry_username")
-                            break
-                    for char in self.setup.hostname:
-                        if(char.isupper()):
-                            errorFound = True
-                            errorMessage = _(
-                                "The computer's name must be lower case.")
-                            focus_widget = self.builder.get_object(
-                                "entry_hostname")
-                            break
-                        elif(char.isspace()):
-                            errorFound = True
-                            errorMessage = _(
-                                "The computer's name may not contain whitespace characters.")
-                            focus_widget = self.builder.get_object(
-                                "entry_hostname")
-                            break
-
-                if (errorFound):
-                    WarningDialog(_("Installer"), errorMessage)
-                    if focus_widget is not None:
-                        focus_widget.grab_focus()
-                else:
-                    self.activate_page(self.PAGE_TYPE)
-            elif(sel == self.PAGE_TYPE):
-                if self.setup.automated:
-                    errorFound = False
-                    errorMessage = ""
-                    if self.setup.disk is None:
+                            "Your username must be lower case.")
+                        focus_widget = self.builder.get_object(
+                            "entry_username")
+                        break
+                    elif(char.isspace()):
                         errorFound = True
-                        errorMessage = _("Please select a disk.")
-                    if self.setup.luks:
-                        if (self.setup.passphrase1 is None or self.setup.passphrase1 == ""):
-                            errorFound = True
-                            errorMessage = _(
-                                "Please provide a passphrase for the encryption.")
-                        elif (self.setup.passphrase1 != self.setup.passphrase1):
-                            errorFound = True
-                            errorMessage = _("Your passphrases do not match.")
-                    if (errorFound):
-                        WarningDialog(_("Installer"), errorMessage)
-                    else:
-                        if QuestionDialog(_("Warning"), _("This will delete all the data on %s. Are you sure?") % self.setup.diskname):
-                            partitioning.build_partitions(self)
-                            partitioning.build_grub_partitions()
-                            self.activate_page(self.PAGE_OVERVIEW)
-                            self.show_overview()
-                else:
-                    self.activate_page(self.PAGE_PARTITIONS)
-                    partitioning.build_partitions(self)
-            elif(sel == self.PAGE_PARTITIONS):
-                model = self.builder.get_object("treeview_disks").get_model()
+                        errorMessage = _(
+                            "Your username may not contain whitespace characters.")
+                        focus_widget = self.builder.get_object(
+                            "entry_username")
+                        break
+                for char in self.setup.hostname:
+                    if(char.isupper()) and not config.main["allow_uppercase_hostname"]:
+                        errorFound = True
+                        errorMessage = _(
+                            "The computer's name must be lower case.")
+                        focus_widget = self.builder.get_object(
+                            "entry_hostname")
+                        break
+                    elif(char.isspace()):
+                        errorFound = True
+                        errorMessage = _(
+                            "The computer's name may not contain whitespace characters.")
+                        focus_widget = self.builder.get_object(
+                            "entry_hostname")
+                        break
+            if (errorFound):
+                WarningDialog(_("Installer"), errorMessage)
+                if focus_widget is not None:
+                    focus_widget.grab_focus()
+        elif index == self.PAGE_PARTITIONS:
+            model = self.builder.get_object("treeview_disks").get_model()
 
-                # Check for root partition
-                found_root_partition = False
-                for partition in self.setup.partitions:
-                    if(partition.mount_as == "/"):
-                        found_root_partition = True
-                        if partition.format_as is None or partition.format_as == "":
-                            ErrorDialog(_("Installer"), _(
-                                "Please indicate a filesystem to format the root (/) partition with before proceeding."))
-                            return
-
-                if not found_root_partition:
-                    ErrorDialog(_("Installer"), "<b>%s</b>" % _("Please select a root (/) partition."), _(
-                        "A root partition is needed to install %s on.\n\n"
-                        " - Mount point: /\n - Recommended size: 30GB\n"
-                        " - Recommended filesystem format: ext4\n\n") % config.main["distro_title"])
-                    return
-
-                if self.setup.gptonefi:
-                    # Check for an EFI partition
-                    found_efi_partition = False
-                    for partition in self.setup.partitions:
-                        if(partition.mount_as == "/boot/efi"):
-                            found_efi_partition = True
-                            if not partition.partition.getFlag(parted.PARTITION_BOOT):
-                                ErrorDialog(_("Installer"), _(
-                                    "The EFI partition is not bootable. Please edit the partition flags."))
-                                return
-                            if int(float(partition.partition.getLength('MB'))) < 35:
-                                ErrorDialog(_("Installer"), _(
-                                    "The EFI partition is too small. It must be at least 35MB."))
-                                return
-                            if partition.format_as == None or partition.format_as == "":
-                                # No partitioning
-                                if partition.type != "vfat" and partition.type != "fat32" and partition.type != "fat16":
-                                    ErrorDialog(_("Installer"), _(
-                                        "The EFI partition must be formatted as vfat."))
-                                    return
-                            else:
-                                if partition.format_as != "vfat":
-                                    ErrorDialog(_("Installer"), _(
-                                        "The EFI partition must be formatted as vfat."))
-                                    return
-
-                    if not found_efi_partition:
-                        ErrorDialog(_("Installer"), "<b>%s</b>" % _("Please select an EFI partition."), _(
-                            "An EFI system partition is needed with the following requirements:\n\n - Mount point: /boot/efi\n - Partition flags: Bootable\n - Size: at least 35MB (100MB or more recommended)\n - Format: vfat or fat32\n\nTo ensure compatibility with Windows we recommend you use the first partition of the disk as the EFI system partition.\n "))
+            # Check for root partition
+            found_root_partition = False
+            for partition in self.setup.partitions:
+                if(partition.mount_as == "/"):
+                    found_root_partition = True
+                    if partition.format_as is None or partition.format_as == "":
+                        ErrorDialog(_("Installer"), _(
+                            "Please indicate a filesystem to format the root (/) partition with before proceeding."))
                         return
 
-                partitioning.build_grub_partitions()
-                self.activate_page(self.PAGE_OVERVIEW)
-                self.show_overview()
+            if not found_root_partition:
+                ErrorDialog(_("Installer"), "<b>%s</b>" % _("Please select a root (/) partition."), _(
+                    "A root partition is needed to install %s on.\n\n"
+                    " - Mount point: /\n - Recommended size: 30GB\n"
+                    " - Recommended filesystem format: ext4\n\n") % config.main["distro_title"])
+                return
 
-            elif(sel == self.PAGE_OVERVIEW):
-                self.activate_page(self.PAGE_INSTALL)
-                self.builder.get_object("button_next").set_sensitive(False)
-                self.builder.get_object("button_back").set_sensitive(False)
-                if not config.main["set_alternative_ui"]:
-                    self.builder.get_object("button_quit").set_sensitive(False)
-                self.do_install()
-                #self.window.resize(100, 100)
+            if self.setup.gptonefi:
+                # Check for an EFI partition
+                found_efi_partition = False
+                for partition in self.setup.partitions:
+                    if(partition.mount_as == "/boot/efi"):
+                        found_efi_partition = True
+                        if not partition.partition.getFlag(parted.PARTITION_BOOT):
+                            ErrorDialog(_("Installer"), _(
+                                "The EFI partition is not bootable. Please edit the partition flags."))
+                            return
+                        if int(float(partition.partition.getLength('MB'))) < 35:
+                            ErrorDialog(_("Installer"), _(
+                                "The EFI partition is too small. It must be at least 35MB."))
+                            return
+                        if partition.format_as == None or partition.format_as == "":
+                            # No partitioning
+                            if partition.type != "vfat" and partition.type != "fat32" and partition.type != "fat16":
+                                ErrorDialog(_("Installer"), _(
+                                    "The EFI partition must be formatted as vfat."))
+                                return
+                        else:
+                            if partition.format_as != "vfat":
+                                ErrorDialog(_("Installer"), _(
+                                    "The EFI partition must be formatted as vfat."))
+                                return
+
+                if not found_efi_partition:
+                    ErrorDialog(_("Installer"), "<b>%s</b>" % _("Please select an EFI partition."), _(
+                        "An EFI system partition is needed with the following requirements:\n\n - Mount point: /boot/efi\n - Partition flags: Bootable\n - Size: at least 35MB (100MB or more recommended)\n - Format: vfat or fat32\n\nTo ensure compatibility with Windows we recommend you use the first partition of the disk as the EFI system partition.\n "))
+                    return
+
+            partitioning.build_grub_partitions()
+        elif index == self.PAGE_OVERVIEW:
+            self.show_overview()
+        elif index == self.PAGE_INSTALL:
+            self.builder.get_object("button_next").set_sensitive(False)
+            self.builder.get_object("button_back").set_sensitive(False)
+            if not config.main["set_alternative_ui"]:
+                self.builder.get_object("button_quit").set_sensitive(False)
+            self.window.resize(0, 0)
+            self.do_install()
+        if errorFound:
+            return
+        # progress images
+        for i in range(9):
+            img = self.builder.get_object("progress_%d" % i)
+            if i <= nex:
+                img.set_from_file(
+                    "./resources/icons/live-installer-progress-dot-on.png")
+            else:
+                img.set_from_file(
+                    "./resources/icons/live-installer-progress-dot-off.png")
+        help_text = _(self.wizard_pages[nex].help_text)
+        self.builder.get_object("help_label").set_markup(
+            "<big><b>%s</b></big>" % help_text)
+        self.builder.get_object("help_icon").set_from_icon_name(
+            self.wizard_pages[nex].icon, Gtk.IconSize.LARGE_TOOLBAR)
+        self.builder.get_object("help_question").set_text(
+            self.wizard_pages[nex].question)
+        self.builder.get_object("notebook1").set_current_page(nex)
+        
+        
+    def activate_page_type(self):
+        if self.setup.automated:
+            errorFound = False
+            errorMessage = ""
+            if self.setup.disk is None:
+                 errorFound = True
+                 errorMessage = _("Please select a disk.")
+            if self.setup.luks:
+                if (self.setup.passphrase1 is None or self.setup.passphrase1 == ""):
+                      errorFound = True
+                      errorMessage = _(
+                          "Please provide a passphrase for the encryption.")
+                elif (self.setup.passphrase1 != self.setup.passphrase1):
+                      errorFound = True
+                      errorMessage = _("Your passphrases do not match.")
+                if (errorFound):
+                    WarningDialog(_("Installer"), errorMessage)
+                else:
+                    if QuestionDialog(_("Warning"), _("This will delete all the data on %s. Are you sure?") % self.setup.diskname):
+                        partitioning.build_partitions(self)
+                        partitioning.build_grub_partitions()
+                        self.activate_page(self.PAGE_OVERVIEW)
+                        self.show_overview()
         else:
-            self.builder.get_object("button_back").set_sensitive(True)
+            self.activate_page(self.PAGE_PARTITIONS)
+            partitioning.build_partitions(self)
+    def wizard_cb(self, widget, goback, data=None):
+        ''' wizard buttons '''
+        sel = self.builder.get_object("notebook1").get_current_page()
+        self.builder.get_object("button_back").set_sensitive(True)
+        nex = None
+        # check each page for errors
+        if(not goback):
+            if (sel == self.PAGE_WELCOME):
+                nex = self.PAGE_LANGUAGE
+                if config.main["skip_language"]:
+                    sel = self.PAGE_LANGUAGE
+            if(sel == self.PAGE_LANGUAGE):
+                nex = self.PAGE_TIMEZONE
+                if config.main["skip_timezone"]:
+                    sel = self.PAGE_TIMEZONE
+            if (sel == self.PAGE_TIMEZONE):
+                nex = self.PAGE_KEYBOARD
+                if config.main["skip_keyboard"]:
+                    sel =self.PAGE_KEYBOARD 
+            if(sel == self.PAGE_KEYBOARD):
+                nex = self.PAGE_USER
+            if(sel == self.PAGE_USER):
+                nex = self.PAGE_TYPE
+            if(sel == self.PAGE_TYPE):
+                self.activate_page_type()
+                return
+            if(sel == self.PAGE_PARTITIONS):
+                nex = self.PAGE_OVERVIEW
             if(sel == self.PAGE_OVERVIEW):
-                self.activate_page(self.PAGE_TYPE)
-            elif(sel == self.PAGE_PARTITIONS):
-                self.activate_page(self.PAGE_TYPE)
-            elif(sel == self.PAGE_TYPE):
-                self.activate_page(self.PAGE_USER)
-            elif(sel == self.PAGE_USER):
-                self.activate_page(self.PAGE_KEYBOARD)
-            elif(sel == self.PAGE_KEYBOARD):
-                self.activate_page(self.PAGE_TIMEZONE)
-            elif(sel == self.PAGE_TIMEZONE):
-                self.activate_page(self.PAGE_LANGUAGE)
-            elif(sel == self.PAGE_LANGUAGE):
-                self.activate_page(self.PAGE_WELCOME)
+                nex = self.PAGE_INSTALL
+        else:
+            if(sel == self.PAGE_OVERVIEW):
+                nex = self.PAGE_TYPE
+            if(sel == self.PAGE_PARTITIONS):
+                nex = self.PAGE_TYPE
+            if(sel == self.PAGE_TYPE):
+                nex = self.PAGE_USER
+            if(sel == self.PAGE_USER):
+                nex = self.PAGE_KEYBOARD
+                if config.main["skip_keyboard"]:
+                    sel = self.PAGE_KEYBOARD
+            if(sel == self.PAGE_KEYBOARD):
+                nex = self.PAGE_TIMEZONE
+                if config.main["skip_timezone"]:
+                    sel = self.PAGE_LANGUAGE
+            if(sel == self.PAGE_TIMEZONE):
+                nex = self.PAGE_LANGUAGE
+                if config.main["skip_language"]:
+                    sel = self.PAGE_WELCOME 
+            if(sel == self.PAGE_LANGUAGE):
+                nex = self.PAGE_WELCOME
+        self.activate_page(nex,sel)
 
     def show_overview(self):
         def bold(strvar): return '<b>' + strvar + '</b>'
