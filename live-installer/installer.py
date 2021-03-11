@@ -291,9 +291,14 @@ class InstallerEngine:
             self.do_mount(self.auto_boot_partition,
                           "/target/boot", "ext4", None)
         if (self.auto_efi_partition is not None):
-            os.system("mkdir -p /target/boot/efi")
-            self.do_mount(self.auto_efi_partition,
-                          "/target/boot/efi", "vfat", None)
+            if os.path.exists("/source/kernel/boot"):
+                os.system("mkdir -p /target/kernel/boot/efi")
+                self.do_mount(self.auto_efi_partition,
+                              "/target/kernel/boot/efi", "vfat", None)
+            else:
+                os.system("mkdir -p /target/boot/efi")
+                self.do_mount(self.auto_efi_partition,
+                              "/target/boot/efi", "vfat", None)
 
     def format_partitions(self):
         for partition in self.setup.partitions:
