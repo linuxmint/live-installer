@@ -74,3 +74,10 @@ https://www.transifex.com/17g/17g
 ## Community
 
 https://t.me/iso_calismalari (Turkish telegram group)
+
+## Mirrors:
+
+* https://gitlab.com/ggggggggggggggggg/17g (Mainline)
+* https://kod.pardus.org.tr/17g-installer/17g
+* https://github.com/17g-installer/17g
+* https://gitlab.gnome.org/sulincix/17g

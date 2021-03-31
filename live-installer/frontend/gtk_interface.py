@@ -424,15 +424,10 @@ class InstallerWindow:
     def assign_username(self, entry, prop):
         self.setup.username = entry.props.text
         errorFound = False
-        if len(self.setup.username) > 0 and self.setup.username[0] in "0123456789":
+        u=self.setup.username.replace("-","")
+        if len(self.setup.username)<=0 or self.setup.username[0] in "-0123456789" \
+           or not (u.isascii() and u.isalnum() and u.islower()):
             errorFound = True
-        for char in self.setup.username:
-            if char.isupper():
-                errorFound = True
-                break
-            elif(char.isspace()):
-                errorFound = True
-                break
         if errorFound or self.setup.username == "":
             self.builder.get_object("check_username").hide()
         else:
