@@ -37,9 +37,9 @@ if config.main["welcome_screen"]:
 
 # live functions
 # Ignore this function with debian (debian uses live-config package)
-if config.live["enable_live"] and (0 != os.system("which live-config")):
+if config.live["enable_live"] and (0 != os.system("which live-config &>/dev/null")):
     if "live_user" in config.live:
-        os.system("useradd \"{}\"".format(config.live["live_user"]))
+        os.system("useradd -m \"{}\" -s \"{}\"".format(config.live["live_user"], config.live["live_shell"]))
         if "live_password" in config.live:
             if os.system("which chpasswd &>/dev/null") == 0:
                 fp = open("/tmp/.passwd", "w")

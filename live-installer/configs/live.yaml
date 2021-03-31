@@ -1,6 +1,7 @@
 enable_live: true
 live_user: user
 live_password: live
+live_shell: /bin/bash
 live_groups:
     - audio
     - video

@@ -169,7 +169,6 @@ def assign_mount_point(partition, mount_point, filesystem):
             partition.mount_as, partition.format_as = mount_point, filesystem
         elif part.mount_as == mount_point:
             part.mount_as, part.format_as = '', ''
-    installer.setup.print_setup()
 
 
 def partitions_popup_menu(widget, event):
@@ -597,9 +596,11 @@ class PartitionDialog(object):
         self.builder.get_object("button_ok").set_label(_("OK"))
         # Build supported filesystems list
         filesystems = ['', 'swap']
-        for path in ["/bin", "/sbin"]:
+        for path in ["/bin", "/sbin", "/usr/bin", "/usr/sbin"]:
             for fs in getoutput('echo %s/mkfs.*' % path).split():
-                filesystems.append(str(fs).split("mkfs.")[1].replace("'", ""))
+                fsname=str(fs).split("mkfs.")[1].replace("'", "")
+                if fsname not in filesystems and "*" not in fsname:
+                    filesystems.append(fsname)
         filesystems = sorted(set(filesystems))
         filesystems = sorted(filesystems, key=lambda x: 0 if x in (
             '', 'ext4') else 1 if x == 'swap' else 2)
