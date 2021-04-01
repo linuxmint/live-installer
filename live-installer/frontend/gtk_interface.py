@@ -761,7 +761,6 @@ class InstallerWindow:
         model = self.layout_variants[self.setup.keyboard_layout]
         self.builder.get_object("treeview_variants").set_model(model)
         # ... and select the first variant (standard)
-        self.builder.get_object("treeview_variants").set_cursor(0)
 
     def assign_keyboard_variant(self, treeview):
         ''' Called whenever someone updates the keyboard layout or variant '''
@@ -798,7 +797,7 @@ class InstallerWindow:
         os.system(command)
 
 
-    def activate_page(self, nex=0,index=0):
+    def activate_page(self, nex=0,index=0,goback=False):
         errorFound = False
         if index == self.PAGE_LANGUAGE:
             if self.setup.language is None:
@@ -835,11 +834,15 @@ class InstallerWindow:
                     itervar = model.iter_next(itervar)
         elif index == self.PAGE_KEYBOARD:
             self.builder.get_object("entry_name").grab_focus()
+            if not goback and not self.setup.keyboard_variant:
+                WarningDialog(_("Installer"), _("Please provide a kayboard layout for your computer."))
+                return
         elif index == self.PAGE_USER:
             errorMessage = ""
             focus_widget = None
-
-            if(self.setup.real_name is None or self.setup.real_name == ""):
+            if goback:
+                errorFount = False
+            elif(self.setup.real_name is None or self.setup.real_name == ""):
                 errorFound = True
                 errorMessage = _("Please provide your full name.")
                 focus_widget = self.builder.get_object("entry_name")
@@ -1035,7 +1038,7 @@ class InstallerWindow:
             if (sel == self.PAGE_TIMEZONE):
                 nex = self.PAGE_KEYBOARD
                 if config.main["skip_keyboard"]:
-                    sel =self.PAGE_KEYBOARD 
+                    sel =self.PAGE_KEYBOARD
             if(sel == self.PAGE_KEYBOARD):
                 nex = self.PAGE_USER
             if(sel == self.PAGE_USER):
@@ -1068,7 +1071,7 @@ class InstallerWindow:
                     sel = self.PAGE_WELCOME 
             if(sel == self.PAGE_LANGUAGE):
                 nex = self.PAGE_WELCOME
-        self.activate_page(nex,sel)
+        self.activate_page(nex,sel,goback)
 
     def show_overview(self):
         def bold(strvar): return '<b>' + strvar + '</b>'
