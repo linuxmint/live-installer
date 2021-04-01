@@ -3,9 +3,9 @@ import subprocess
 import time
 import gettext
 import parted
-import partitioning
+import frontend.partitioning
 import config
-from utils import log, err, inf
+from utils import log, err, inf, run
 
 gettext.install("live-installer", "/usr/share/locale")
 
@@ -247,6 +247,7 @@ class InstallerEngine:
             "Creating partitions on %s") % self.setup.disk)
         log(" --> Creating partitions on %s" % self.setup.disk)
         disk_device = parted.getDevice(self.setup.disk)
+        # replae this whit changeable function
         partitioning.full_disk_format(disk_device, create_boot=(
             self.auto_boot_partition is not None), create_swap=(self.auto_swap_partition is not None))
 
@@ -327,7 +328,7 @@ class InstallerEngine:
                         cmd = "mkfs.%s %s" % (
                             partition.format_as, partition.path)
 
-                self.exec_cmd(cmd)
+                run(cmd)
                 partition.type = partition.format_as
 
     def mount_partitions(self):
@@ -727,17 +728,12 @@ class InstallerEngine:
             cmd = "mount -o %s -t %s %s %s" % (options, typevar, device, dest)
         else:
             cmd = "mount -t %s %s %s" % (typevar, device, dest)
-        self.exec_cmd(cmd)
+        run(cmd)
 
     def do_unmount(self, mountpoint):
         ''' Unmount a filesystem '''
         cmd = "umount %s" % mountpoint
-        self.exec_cmd(cmd)
-
-    # Execute schell command and return exit status
-    def exec_cmd(self, cmd):
-        inf("Executing: "+cmd)
-        return os.system(cmd)
+        run(cmd)
 
 # Represents the choices made by the user
 

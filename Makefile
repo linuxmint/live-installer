@@ -41,3 +41,5 @@ uninstall:
 clean:
 	rm -rf build
 	find po/ | grep "*.mo" | xargs rm -f
+	rm -rf live-installer/__pycache__
+	rm -rf live-installer/frontend/__pycache__

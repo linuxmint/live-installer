@@ -1,19 +1,7 @@
 # coding: utf-8
 #
-from utils import log, err
-from collections import defaultdict
-import subprocess
-import sys
-import re
-import os
-import config
-import gi
-gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, Gdk, GObject
 import parted
-import gettext
-import time
-
+from frontend import *
 
 gettext.install("live-installer", "/usr/share/locale")
 
@@ -254,7 +242,6 @@ class PartitionSetup(Gtk.TreeStore):
                                              str)  # disk device path
         installer.setup.partitions = []
         installer.setup.partition_setup = self
-        self.html_chunks = {}, defaultdict(list)
 
         os.popen('mkdir -p ' + TMP_MOUNTPOINT)
         installer.setup.gptonefi = is_efi_supported()

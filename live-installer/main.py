@@ -1,16 +1,9 @@
 #!/usr/bin/python3
-from utils import log, err, is_root, file
-import config
-import gettext
-import os
-import sys
-import gi
-gi.require_version('Gtk', '3.0')
-from dialogs import ErrorDialog
+from utils import *
 from frontend.gtk_interface import InstallerWindow
 from frontend.welcome import welcome
-from gi.repository import Gtk
-
+from frontend import *
+from frontend.dialogs import ErrorDialog
 
 gettext.install("live-installer", "/usr/share/locale")
 

@@ -1,15 +1,11 @@
 # coding: utf-8
 
-
-import math
-import re
-from gi.repository import Gtk, Gdk, GdkPixbuf
+from frontend import *
 from subprocess import getoutput
 from collections import defaultdict, namedtuple
 from datetime import datetime, timedelta
 from PIL import Image, ImageEnhance
 from functools import reduce
-from utils import log, err, to_float
 
 TIMEZONE_RESOURCES = './resources/timezone/'
 CC_IM = Image.open(TIMEZONE_RESOURCES + 'cc.png').convert('RGB')

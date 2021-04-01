@@ -3,7 +3,7 @@
 # 17g service
 import os
 import config
-from utils import is_root
+from utils import err, is_root, run
 if not is_root():
     print("You must be root!")
     exit(1)
@@ -35,15 +35,14 @@ if config.get("enable_live", True) and (0 != os.system("which live-config &>/dev
             if os.system("which chpasswd &>/dev/null") == 0:
                 fp = open("/tmp/.passwd", "w")
                 fp.write("{}:{}\n".format(
-                    config.get("live_user", "user"), config.get("live_password", "live"))
+                    config.get("live_user", "user"), config.get("live_password", "live")))
                 fp.close()
                 os.system("cat /tmp/.passwd | chpasswd ; rm -f /tmp/.passwd")
             else:
                 os.system("echo -e \"{0}\\n{0}\\n\" | passwd {1}".format(
-                    config.get("live_password", "live"), config.get("live_user", "user"))
-            for i in config.get("additional_user_groups", ["audio", "video", "netdev"]):
-                os.system("usermod -aG \"{}\" \"{}\"".format(i,
-                                                             config.get("live_user", "user"))
+                    config.get("live_password", "live"), config.get("live_user", "user")))
+            for i in config.get("additional_user_groups", (["audio", "video", "netdev"])):
+                os.system("usermod -aG \"{}\" \"{}\"".format(i, config.get("live_user", "user")))
 
 # call custom live commands
 if config.get("custom_scripts", True):

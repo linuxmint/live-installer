@@ -109,3 +109,7 @@ def inf(output):
     sys.stdout.write("\x1b[32;1m")
     log(output, False)
     sys.stdout.write("\x1b[;0m")
+    
+def run(cmd):
+        inf("Running: "+cmd)
+        return os.system(cmd)

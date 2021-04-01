@@ -1,22 +1,14 @@
 #!/usr/bin/python3
 
-import gi
-gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, GdkPixbuf, GObject, Pango, GLib
-from installer import InstallerEngine, Setup, NON_LATIN_KB_LAYOUTS
-from dialogs import QuestionDialog, ErrorDialog, WarningDialog
-import timezones
-import partitioning
-import gettext
-import os
-import subprocess
-import sys
+import frontend.timezones
+import frontend.partitioning
 import threading
 import time
 import parted
-import config
-from utils import idle, asynchronous, log, err
-
+from utils import *
+from frontend import *
+from frontend.dialogs import QuestionDialog, ErrorDialog, WarningDialog
+from installer import InstallerEngine, Setup, NON_LATIN_KB_LAYOUTS
 
 gettext.install("live-installer", "/usr/share/locale")
 

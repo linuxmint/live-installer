@@ -1,8 +1,5 @@
 
-from utils import err
-import gi
-gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk
+from frontend import *
 
 class Dialog(Gtk.MessageDialog):
     def __init__(self, style, buttons, title, text, text2=None, parent=None):
