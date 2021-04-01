@@ -1,3 +1,4 @@
+name: debian
 check_this_dir: /etc/debian_version
 grub_prepare:
     - bash scripts/fetch-pkg-debian.sh

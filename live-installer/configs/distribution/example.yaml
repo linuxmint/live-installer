@@ -1,3 +1,4 @@
+name: example
 check_this_dir: /etc/example_version
 grub_prepare:
     - echo uwu

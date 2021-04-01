@@ -1,3 +1,4 @@
+name: sulin
 check_this_dir: /etc/sulin_version
 grub_prepare:
   - mkdir /target/boot/efi

@@ -1,32 +1,50 @@
+### 17g installer config
+
+## Distro section
 # distro_codename: 17g
 # distro_title: 17G
 # distribution: auto
 # copyright: 17g Developer Team
 
+## Base options section
 # loop_directory: /dev/loop0
 # log_file: /var/log/17g
 # gtk_theme: default
+# welcome_screen: true
+# exclude_dirs:
+#   - /home
 
+## Base system section
 # initramfs_system: auto 
 # using_shell: /bin/bash
 # use_reboot: false
+# remove_packages:
+#   - 17g-installer
 
+## User section
 # list_users_when_auto_login: true
 # autologin_enabled: true
 # auto_partition_enabled: true
 # set_root_password: true
 # use_chpasswd: true
+# additional_user_groups:
+#   - audio
+#   - video
+#   - netdev
 
+## Partitioning section
 # manual_partition_enabled: true 
 # lvm_enabled: true
 # encryption_enabled: true
 # fill_disk_enabled: true
 # set_alternative_ui: false
-# welcome_screen: true
+# partition_editor: gparted
 
+## Timezone and locale section
 # default_country_code: auto
 # default_timezone: America/New_York
 
+## Setup page section
 # skip_language: false
 # skip_timezone: false
 # skip_keyboard: false
@@ -34,13 +52,6 @@
 # allow_numeric_password: false
 # min_password_length: 1
 
-# additional_user_groups:
-#   - audio
-#   - video
-#   - netdev
-# exclude_dirs:
-#   - /home
-# remove_packages:
-#   - 17g-installer
+## Post operations section
 # post_install_commands:
 #   - echo "BRUH"
