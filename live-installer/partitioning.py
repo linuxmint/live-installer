@@ -213,7 +213,7 @@ def partitions_popup_menu(widget, event):
 
 def manually_edit_partitions(widget):
     """ Edit only known disks, selected one first """
-    model, iter = installer.builder.get_object(
+    model, itervar = installer.builder.get_object(
         "treeview_disks").get_selection().get_selected()
     # prefer disk currently selected and show it first
     preferred = model[itervar][-1] if itervar else ''
