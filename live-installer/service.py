@@ -27,7 +27,7 @@ else:
     os.mkdir("/run/17g")
 
 # Write live-installer into /etc/xprofile file
-if config.main["welcome_screen"]:
+if config.get("welcome_screen",True):
     if os.path.exists("/etc/xprofile"):
         xprofile = open("/etc/xprofile", "a")
     else:

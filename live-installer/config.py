@@ -24,12 +24,19 @@ def load_config(config_path):
 
 # Define subconfigs
 main = load_config("configs/config.yaml")
+if not main:
+    main = []
 distro = None
 pm = None
 initramfs = None
 live = None
 
-if(main["distribution"] == "auto"):
+def get(key,default=""):
+    if key in main:
+        return main[key]
+    return default
+    
+if(get("distribution","auto") == "auto"):
     if os.path.exists("/etc/debian_version"):
         distro = load_config("configs/distribution/debian.yaml")
     elif os.path.exists("/var/lib/pacman"):
@@ -40,7 +47,7 @@ else:
     distro = load_config(
         "configs/distribution/{}.yaml".format(main["distribution"]))
 
-if(main["initramfs_system"] == "auto"):
+if(get("initramfs_system","auto") == "auto"):
     if os.path.exists("/etc/debian_version"):
         initramfs = load_config(
             "configs/initramfs_systems/initramfs_tools.yaml")

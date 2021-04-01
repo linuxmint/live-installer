@@ -16,8 +16,8 @@ sys.path.insert(1, '/usr/lib/live-installer')
 if (os.path.isdir("/usr/lib/live-installer")):
     os.chdir("/usr/lib/live-installer")
 
-if config.main["gtk_theme"] != "default":
-    os.environ['GTK_THEME'] = config.main["gtk_theme"]
+if config.get("gtk_theme","default") != "default":
+    os.environ['GTK_THEME'] = config.get("gtk_theme")
 
 # Force show mouse cursor & fix background
 os.system("xsetroot -cursor_name left_ptr")
@@ -27,7 +27,7 @@ os.system("xsetroot -solid black")
 # main entry
 if __name__ == "__main__":
     if ("--welcome" in sys.argv):
-        if config.main["welcome_screen"]:
+        if config.get("welcome_screen",True):
             win = welcome()
         else:
             print("Welcome screen disabled by config.")
