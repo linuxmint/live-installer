@@ -9,7 +9,6 @@ from collections import defaultdict, namedtuple
 from datetime import datetime, timedelta
 from PIL import Image, ImageEnhance
 from functools import reduce
-
 from utils import log, err, to_float
 
 TIMEZONE_RESOURCES = './resources/timezone/'

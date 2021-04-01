@@ -1,10 +1,10 @@
-from frontend.gtk_interface import InstallerWindow
-from gi.repository import Gtk
 import gi
 import os
 import gettext
 import config
 gi.require_version('Gtk', '3.0')
+from frontend.gtk_interface import InstallerWindow
+from gi.repository import Gtk
 
 gettext.install("live-installer", "/usr/share/locale")
 

@@ -6,12 +6,13 @@ import subprocess
 import sys
 import re
 import os
+import config
+import gi
+gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk, GObject
 import parted
 import gettext
 import time
-import gi
-gi.require_version('Gtk', '3.0')
 
 
 gettext.install("live-installer", "/usr/share/locale")

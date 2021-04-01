@@ -2,7 +2,6 @@
 
 import gi
 gi.require_version('Gtk', '3.0')
-
 from gi.repository import Gtk, GdkPixbuf, GObject, Pango, GLib
 from installer import InstallerEngine, Setup, NON_LATIN_KB_LAYOUTS
 from dialogs import QuestionDialog, ErrorDialog, WarningDialog

@@ -4,12 +4,12 @@ import config
 import gettext
 import os
 import sys
+import gi
+gi.require_version('Gtk', '3.0')
 from dialogs import ErrorDialog
 from frontend.gtk_interface import InstallerWindow
 from frontend.welcome import welcome
 from gi.repository import Gtk
-import gi
-gi.require_version('Gtk', '3.0')
 
 
 gettext.install("live-installer", "/usr/share/locale")
