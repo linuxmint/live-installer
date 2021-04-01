@@ -1,0 +1,3 @@
+name: example
+commands:
+  - example initramfs command
