@@ -1,4 +1,3 @@
-import yaml
 import os
 import sys
 import subprocess
@@ -16,6 +15,11 @@ def load_config(config_path):
         exit("{} doesn't exists. Please create config file!".format(config_path))
 
     try:
+        import yaml
+    except:
+        print("Yaml not found. Using default configs for:"+config_path)
+        return []                
+    try:
         contents = yaml.load(file, Loader=yaml.FullLoader)
     except:
         contents = yaml.load(file)
@@ -29,9 +33,17 @@ if not main:
 distro = None
 pm = None
 initramfs = None
-live = None
+live = load_config("configs/live.yaml")
+kernel_vars = {}
+
+if not live:
+    live=[]
 
 def get(key,default=""):
+    if key in kernel_vars:
+        return kernel_vars[key]
+    if key in live:
+        return live[key]
     if key in main:
         return main[key]
     return default
@@ -62,10 +74,11 @@ else:
 for package_manager in glob("configs/package_managers/*"):
     pm_contents = load_config(package_manager)
 
-    if os.path.exists(pm_contents["check_this_dir"]):
+    if not pm_contents:
+        print("Failed to load:"+package_manager)
+    elif os.path.exists(pm_contents["check_this_dir"]):
         pm = pm_contents
         break
-live = load_config("configs/live.yaml")
 
 
 def package_manager(process, packages=[]):
@@ -93,3 +106,13 @@ def update_initramfs():
             commands.append(command)
 
     return commands
+
+# Get variables from cmdline
+cmdline = open("/proc/cmdline", "r")
+data = cmdline.read().split(" ")
+cmdline.close()
+# Kernel vars
+for i in data:
+    if "=" in i:
+        j = i.split("=")
+        kernel_vars[j[0]] = j[1]
