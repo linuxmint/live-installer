@@ -1034,6 +1034,8 @@ class InstallerWindow:
                 nex = self.PAGE_OVERVIEW
             if(sel == self.PAGE_OVERVIEW):
                 nex = self.PAGE_INSTALL
+                self.activate_page(nex,nex)
+                return
         else:
             if(sel == self.PAGE_OVERVIEW):
                 nex = self.PAGE_TYPE
