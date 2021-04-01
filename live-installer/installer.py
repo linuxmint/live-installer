@@ -491,6 +491,8 @@ class InstallerEngine:
                   self.setup.timezone)
 
         # Keyboard settings X11
+        if not self.setup.keyboard_variant:
+                self.setup.keyboard_variant = ""
         self.update_progress(our_current, our_total, False,
                              False, ("Settings X11 keyboard options"))
         if os.path.exists("/target/etc/X11/xorg.conf.d"):
@@ -528,7 +530,7 @@ class InstallerEngine:
                 elif(line.startswith("XKBLAYOUT=")):
                     newconsolefh.write("XKBLAYOUT=\"%s\"\n" %
                                        self.setup.keyboard_layout)
-                elif(line.startswith("XKBVARIANT=") and self.setup.keyboard_variant is not None and self.setup.keyboard_variant != ""):
+                elif(line.startswith("XKBVARIANT=") and self.setup.keyboard_variant != ""):
                     newconsolefh.write("XKBVARIANT=\"%s\"\n" %
                                        self.setup.keyboard_variant)
                 else:
@@ -546,7 +548,7 @@ class InstallerEngine:
             for line in consolefh:
                 line = line.rstrip("\r\n")
                 if(line.startswith("KEYMAP=")):
-                    if(self.setup.keyboard_variant is not None and self.setup.keyboard_variant != ""):
+                    if(self.setup.keyboard_variant != ""):
                         newconsolefh.write(
                             "KEYMAP=\"{0}-{1}\"\n".format(self.setup.keyboard_layout, self.setup.keyboard_variant))
                     else:
@@ -572,7 +574,7 @@ class InstallerEngine:
                 elif(line.startswith("XKBLAYOUT=")):
                     newconsolefh.write("XKBLAYOUT=\"%s\"\n" %
                                        self.setup.keyboard_layout)
-                elif(line.startswith("XKBVARIANT=") and self.setup.keyboard_variant is not None and self.setup.keyboard_variant != ""):
+                elif(line.startswith("XKBVARIANT=") and self.setup.keyboard_variant != ""):
                     newconsolefh.write("XKBVARIANT=\"%s\"\n" %
                                        self.setup.keyboard_variant)
                 elif(line.startswith("XKBOPTIONS=")):
@@ -590,8 +592,6 @@ class InstallerEngine:
             newconsolefh = open("/target/etc/conf.d/keymaps", "w")
             if not self.setup.keyboard_layout:
                 self.setup.keyboard_layout = "en"
-            if not self.setup.keyboard_variant:
-                self.setup.keyboard_variant = ""
             newconsolefh.write("keymap=\"{}{}\"\n".format(
                 self.setup.keyboard_layout, self.setup.keyboard_variant))
             newconsolefh.close()
