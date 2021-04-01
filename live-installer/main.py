@@ -10,7 +10,7 @@ import sys
 import os
 import gettext
 import config
-from utils import log, err, is_root
+from utils import log, err, is_root, file
 
 gettext.install("live-installer", "/usr/share/locale")
 

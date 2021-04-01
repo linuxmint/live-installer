@@ -2,10 +2,12 @@
 from gi.repository import Gtk
 import gi
 gi.require_version('Gtk', '3.0')
+from utils import err
 
 
 class Dialog(Gtk.MessageDialog):
     def __init__(self, style, buttons, title, text, text2=None, parent=None):
+        err(text)
         Gtk.MessageDialog.__init__(self, parent, 0, style, buttons)
         self.set_position(Gtk.WindowPosition.CENTER)
         self.set_icon_from_file("./branding/icon.svg")

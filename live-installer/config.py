@@ -11,19 +11,20 @@ if (os.path.isdir("/usr/lib/live-installer")):
 
 
 def load_config(config_path):
+    """read config file"""
     if os.path.isfile(config_path):
         file = open(config_path, "r")
+        content=file.read()
         inf("#Reading yaml file:"+config_path)
-        log(file.read())
+        log(content)
     else:
         err("{} doesn't exists. Please create config file!".format(config_path))
         return []
 
     try:
-        contents = yaml.load(file.read(), Loader=yaml.FullLoader) or {}
+        return yaml.load(content, Loader=yaml.FullLoader) or {}
     except:
-        contents = yaml.load(file.read()) or {}
-    return contents
+        return yaml.load(content) or {}
 
 
 # Define subconfigs

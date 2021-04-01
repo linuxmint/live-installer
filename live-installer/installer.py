@@ -19,15 +19,13 @@ class InstallerEngine:
     def __init__(self, setup):
         self.setup = setup
 
-        # Flush print when it's called
-        #sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
-
         # find the squashfs..
         self.media = config.get("loop_directory","/dev/loop0")
 
         if(not os.path.exists(self.media)):
             err("Critical Error: Live medium (%s) not found!" % self.media)
             # sys.exit(1)
+        inf("Using live medium: "+self.media)
 
     def set_progress_hook(self, progresshook):
         ''' Set a callback to be called on progress updates '''
@@ -93,7 +91,7 @@ class InstallerEngine:
                 our_current = min(our_current + 1, our_total)
                 self.update_progress(our_current, our_total,
                                      False, False, _("Copying /%s") % line)
-        log("rsync exited with returncode: " + str(rsync.poll()))
+        err("rsync exited with returncode: " + str(rsync.poll()))
 
         # Steps:
         our_total = 11
@@ -329,7 +327,6 @@ class InstallerEngine:
                         cmd = "mkfs.%s %s" % (
                             partition.format_as, partition.path)
 
-                log("EXECUTING: '%s'" % cmd)
                 self.exec_cmd(cmd)
                 partition.type = partition.format_as
 
@@ -703,12 +700,9 @@ class InstallerEngine:
         self.update_progress(our_current, our_total, True,
                              False, _("Configuring bootloader"))
         log(" --> Running grub-mkconfig")
-        self.do_run_in_chroot("grub-mkconfig -o /boot/grub/grub.cfg")
         grub_output = subprocess.getoutput(
             "chroot /target/ /bin/sh -c \"grub-mkconfig -o /boot/grub/grub.cfg\"")
-        grubfh = open("/var/log/live-installer-grub-output.log", "w")
-        grubfh.writelines(grub_output)
-        grubfh.close()
+        log("grub_output")
 
     def do_post_install_commands(self, our_total, our_current):
         self.update_progress(our_current, our_total, True,
@@ -721,7 +715,6 @@ class InstallerEngine:
         self.update_progress(our_current, our_total, True,
                              False, _("Checking bootloader"))
         log(" --> Checking Grub configuration")
-        time.sleep(5)
         if os.path.exists("/target/boot/grub/grub.cfg"):
             return True
         else:
@@ -734,17 +727,16 @@ class InstallerEngine:
             cmd = "mount -o %s -t %s %s %s" % (options, typevar, device, dest)
         else:
             cmd = "mount -t %s %s %s" % (typevar, device, dest)
-        log("EXECUTING: '%s'" % cmd)
         self.exec_cmd(cmd)
 
     def do_unmount(self, mountpoint):
         ''' Unmount a filesystem '''
         cmd = "umount %s" % mountpoint
-        log("EXECUTING: '%s'" % cmd)
         self.exec_cmd(cmd)
 
-    # Execute schell command and return output in a list
+    # Execute schell command and return exit status
     def exec_cmd(self, cmd):
+        inf("Executing: "+cmd)
         return os.system(cmd)
 
 # Represents the choices made by the user
