@@ -252,8 +252,6 @@ class InstallerWindow:
             "branding/welcome.png", 752, 423, False)
         img.set_from_pixbuf(pixbuf)
 
-        # i18n
-        self.assign_language(None)
 
         # build partition list
         self.should_pulse = False
@@ -547,8 +545,18 @@ class InstallerWindow:
 
     def build_lang_list(self):
 
-        self.cur_country_code = config.main['default_country_code']
         self.cur_timezone = config.main['default_timezone']
+        
+        if "default_country_code" not in config.main or config.main['default_country_code'] == "auto":
+            lang=subprocess.getoutput("echo $LANG")
+            lc_all=subprocess.getoutput("echo $LC_ALL")
+            if lc_all=="":
+                self.cur_country_code = lang.split("_")[0].upper()
+            elif lang == "":
+                self.cur_country_code = lc_all.split("_")[0].upper()
+            self.assign_language(None)
+        else:
+            self.cur_country_code = config.main['default_country_code']
 
         # Load countries into memory
         countries = {}
@@ -803,6 +811,7 @@ class InstallerWindow:
             if self.setup.language is None:
                 WarningDialog(_("Installer"), _(
                     "Please choose a language"))
+                return
             else:
                 lang_country_code = self.setup.language.split('_')[-1]
                 for value in (self.cur_timezone,      # timezone guessed from IP
