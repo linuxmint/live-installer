@@ -5,7 +5,7 @@ import gettext
 import parted
 import partitioning
 import config
-from utils import log, err
+from utils import log, err, inf
 
 gettext.install("live-installer", "/usr/share/locale")
 
