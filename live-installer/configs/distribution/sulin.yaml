@@ -1,3 +1,6 @@
+check_this_dir: /etc/sulin_version
 grub_prepare:
   - mkdir /target/boot/efi
 grub_installation_efi: chroot|grub-install --force {disk}
+run_before_user_creation: 
+   - echo "Creating users"

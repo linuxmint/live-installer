@@ -49,36 +49,42 @@ def get(key,default=""):
         return main[key]
     return default
     
+# Distribution
 if(get("distribution","auto") == "auto"):
-    if os.path.exists("/etc/debian_version"):
-        distro = load_config("configs/distribution/debian.yaml")
-    elif os.path.exists("/var/lib/pacman"):
-        distro = load_config("configs/distribution/arch.yaml")
-    elif not os.path.exists("/home") and os.path.exists("/data/user"):
-        distro = load_config("configs/distribution/sulin.yaml")
+    for distro_system in glob("configs/distribution/*"):
+        distro = load_config(distro_system)
+        if not distro:
+            err("Failed to load: "+distro_system)
+        elif os.path.exists(distro["check_this_dir"]):
+            break
 else:
     distro = load_config(
         "configs/distribution/{}.yaml".format(main["distribution"]))
 
+# Initramfs system
 if(get("initramfs_system","auto") == "auto"):
-    if os.path.exists("/etc/debian_version"):
-        initramfs = load_config(
-            "configs/initramfs_systems/initramfs_tools.yaml")
-    elif os.path.exists("/var/lib/pacman"):
-        initramfs = load_config("configs/initramfs_systems/mkinitcpio.yaml")
-    elif not os.path.exists("/home") and os.path.exists("/data/user"):
-        initramfs = load_config("configs/initramfs_systems/initrd.yaml")
+    for initramfs_system in glob("configs/package_managers/*"):
+        initramfs = load_config(initramfs_system)
+        if not initramfs:
+            err("Failed to load: "+package_manager)
+        elif os.path.exists(initramfs["check_this_dir"]):
+            break
 else:
     distro = load_config(
         "configs/initramfs_systems/{}.yaml".format(main["initramfs_system"]))
+    
+
 # Package Manager
-for package_manager in glob("configs/package_managers/*"):
-    pm_contents = load_config(package_manager)
-    if  not pm_contents:
-        err("Failed to load: "+package_manager)
-    elif os.path.exists(pm_contents["check_this_dir"]):
-        pm = pm_contents
-        break
+if(get("initramfs_system","auto") == "auto"):
+    for package_manager in glob("configs/package_managers/*"):
+        pm = load_config(package_manager)
+        if  not pm:
+            err("Failed to load: "+package_manager)
+        elif os.path.exists(pm["check_this_dir"]):
+            break
+else:
+    pm = load_config(
+        "configs/package_managers/{}.yaml".format(main["package_manager"]))
 
 
 def package_manager(process, packages=[]):
