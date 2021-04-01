@@ -1,0 +1,30 @@
+#!/bin/bash
+name="17g-installer"
+version="4.0"
+summary="live installation tools"
+executable="unibuild"
+description="Distro independed live installation tools written gtk"
+builddepends=("make" "intltool")
+if [ "$TARGET" == "debian" ] ; then
+    depends=("python3-pil" "python3-parted" "live-boot" "live-config"
+             "gparted" "python3-gi" "gir1.2-gtk-3.0" "python3-yaml"
+              "gettext-base")
+elif [ "$TARGET" == "inary" ] ; then
+    depends=("python3-pillow" "pyparted" "python3-pygobject3" "python3-PyYAML"
+             "gettext" "gparted" "gtk3")
+fi
+license="gplv3"
+release="1"
+source=(git+https://gitlab.com/ggggggggggggggggg/17g)
+
+_setup(){
+        echo "Setup not needed"
+}
+
+_build(){
+	make
+}
+
+_install(){
+	make install DESTDIR=$INSTALLDIR
+}
