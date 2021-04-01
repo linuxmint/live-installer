@@ -1,7 +1,9 @@
 import os
 import sys
 import subprocess
+import yaml
 from glob import glob
+from utils import log, err, inf
 
 sys.path.insert(1, '/usr/lib/live-installer')
 if (os.path.isdir("/usr/lib/live-installer")):
@@ -11,18 +13,16 @@ if (os.path.isdir("/usr/lib/live-installer")):
 def load_config(config_path):
     if os.path.isfile(config_path):
         file = open(config_path, "r")
+        inf("#Reading yaml file:"+config_path)
+        log(file.read())
     else:
-        exit("{} doesn't exists. Please create config file!".format(config_path))
+        err("{} doesn't exists. Please create config file!".format(config_path))
+        return []
 
     try:
-        import yaml
+        contents = yaml.load(file.read(), Loader=yaml.FullLoader) or {}
     except:
-        print("Yaml not found. Using default configs for:"+config_path)
-        return []                
-    try:
-        contents = yaml.load(file, Loader=yaml.FullLoader)
-    except:
-        contents = yaml.load(file)
+        contents = yaml.load(file.read()) or {}
     return contents
 
 
@@ -73,9 +73,8 @@ else:
 # Package Manager
 for package_manager in glob("configs/package_managers/*"):
     pm_contents = load_config(package_manager)
-
-    if not pm_contents:
-        print("Failed to load:"+package_manager)
+    if  not pm_contents:
+        err("Failed to load: "+package_manager)
     elif os.path.exists(pm_contents["check_this_dir"]):
         pm = pm_contents
         break

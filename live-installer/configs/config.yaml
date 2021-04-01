@@ -4,6 +4,7 @@
 # copyright: 17g Developer Team
 
 # loop_directory: /dev/loop0
+# log_file: /var/log/17g
 # gtk_theme: default
 
 # initramfs_system: auto 

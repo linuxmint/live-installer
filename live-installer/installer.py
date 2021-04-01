@@ -5,6 +5,7 @@ import gettext
 import parted
 import partitioning
 import config
+from utils import log, err
 
 gettext.install("live-installer", "/usr/share/locale")
 
@@ -25,7 +26,7 @@ class InstallerEngine:
         self.media = config.get("loop_directory","/dev/loop0")
 
         if(not os.path.exists(self.media)):
-            print("Critical Error: Live medium (%s) not found!" % self.media)
+            err("Critical Error: Live medium (%s) not found!" % self.media)
             # sys.exit(1)
 
     def set_progress_hook(self, progresshook):
@@ -41,7 +42,7 @@ class InstallerEngine:
     def start_installation(self):
 
         # mount the media location.
-        print(" --> Installation started")
+        log(" --> Installation started")
         if(not os.path.exists("/target")):
             os.mkdir("/target")
         if(not os.path.exists("/source")):
@@ -75,7 +76,7 @@ class InstallerEngine:
         # (Valid) assumption: num-of-files-to-copy ~= num-of-used-inodes-on-/
         our_total = int(subprocess.getoutput(
             "df --inodes /{src} | awk 'END{{ print $3 }}'".format(src=SOURCE.strip('/'))))
-        print(" --> Copying {} files".format(our_total))
+        log(" --> Copying {} files".format(our_total))
         rsync_filter = ' '.join(
             '--exclude=' + SOURCE + d for d in EXCLUDE_DIRS)
         rsync = subprocess.Popen("rsync --verbose --archive --no-D --acls "
@@ -92,13 +93,13 @@ class InstallerEngine:
                 our_current = min(our_current + 1, our_total)
                 self.update_progress(our_current, our_total,
                                      False, False, _("Copying /%s") % line)
-        print("rsync exited with returncode: " + str(rsync.poll()))
+        log("rsync exited with returncode: " + str(rsync.poll()))
 
         # Steps:
         our_total = 11
         our_current = 0
         # chroot
-        print(" --> Chrooting")
+        log(" --> Chrooting")
         self.update_progress(our_current, our_total, False,
                              False, _("Entering the system ..."))
         os.system("mount --bind /dev/ /target/dev/")
@@ -116,13 +117,13 @@ class InstallerEngine:
                 "cp /lib/modules/{0}/vmlinuz /target/boot/vmlinuz-{0}".format(kernelversion))
 
         # add new user
-        print(" --> Adding new user")
+        log(" --> Adding new user")
         our_current += 1
         try:
             for cmd in config.distro["run_before_user_creation"]:
                 self.do_run_in_chroot(cmd)
         except:
-            print("This action not supported for your distribution.")
+            err("This action not supported for your distribution.")
         self.update_progress(our_current, our_total, False,
                              False, ("Adding new user to the system"))
         # TODO: support encryption
@@ -176,10 +177,10 @@ class InstallerEngine:
 
     def mount_source(self):
         # Mount the installation media
-        print(" --> Mounting partitions")
+        log(" --> Mounting partitions")
         self.update_progress(2, 4, False, False, _("Mounting %(partition)s on %(mountpoint)s") % {
                              'partition': self.media, 'mountpoint': "/source/"})
-        print(" ------ Mounting %s on %s" % (self.media, "/source/"))
+        log(" ------ Mounting %s on %s" % (self.media, "/source/"))
         self.do_mount(self.media, "/source/", "squashfs", options="loop")
 
     def create_partitions(self):
@@ -239,48 +240,48 @@ class InstallerEngine:
         if self.setup.badblocks:
             self.update_progress(1, 4, False, False, _(
                 "Filling %s with random data (please be patient, this can take hours...)") % self.setup.disk)
-            print(" --> Filling %s with random data" % self.setup.disk)
+            log(" --> Filling %s with random data" % self.setup.disk)
             os.system("badblocks -c 10240 -s -w -t random -v %s" %
                       self.setup.disk)
 
         # Create partitions
         self.update_progress(1, 4, False, False, _(
             "Creating partitions on %s") % self.setup.disk)
-        print(" --> Creating partitions on %s" % self.setup.disk)
+        log(" --> Creating partitions on %s" % self.setup.disk)
         disk_device = parted.getDevice(self.setup.disk)
         partitioning.full_disk_format(disk_device, create_boot=(
             self.auto_boot_partition is not None), create_swap=(self.auto_swap_partition is not None))
 
         # Encrypt root partition
         if self.setup.luks:
-            print(" --> Encrypting root partition %s" %
+            log(" --> Encrypting root partition %s" %
                   self.auto_root_partition)
             os.system("printf \"%s\" | cryptsetup luksFormat -c aes-xts-plain64 -h sha256 -s 512 %s" %
                       (self.setup.passphrase1, self.auto_root_partition))
-            print(" --> Opening root partition %s" % self.auto_root_partition)
+            log(" --> Opening root partition %s" % self.auto_root_partition)
             os.system("printf \"%s\" | cryptsetup luksOpen %s lvmlmde" %
                       (self.setup.passphrase1, self.auto_root_partition))
             self.auto_root_partition = "/dev/mapper/lvmlmde"
 
         # Setup LVM
         if self.setup.lvm:
-            print(" --> LVM: Creating PV")
+            log(" --> LVM: Creating PV")
             os.system("pvcreate -y %s" % self.auto_root_partition)
-            print(" --> LVM: Creating VG")
+            log(" --> LVM: Creating VG")
             os.system("vgcreate -y lvmlmde %s" % self.auto_root_partition)
-            print(" --> LVM: Creating LV root")
+            log(" --> LVM: Creating LV root")
             os.system("lvcreate -y -n root -L 1GB lvmlmde")
-            print(" --> LVM: Creating LV swap")
+            log(" --> LVM: Creating LV swap")
             swap_size = int(round(int(subprocess.getoutput(
                 "awk '/^MemTotal/{ print $2 }' /proc/meminfo")) / 1024, 0))
             os.system("lvcreate -y -n swap -L %dMB lvmlmde" % swap_size)
-            print(" --> LVM: Extending LV root")
+            log(" --> LVM: Extending LV root")
             os.system("lvextend -l 100\%FREE /dev/lvmlmde/root")
-            print(" --> LVM: Formatting LV root")
+            log(" --> LVM: Formatting LV root")
             os.system("mkfs.ext4 /dev/mapper/lvmlmde-root -FF")
-            print(" --> LVM: Formatting LV swap")
+            log(" --> LVM: Formatting LV swap")
             os.system("mkswap -f /dev/mapper/lvmlmde-swap")
-            print(" --> LVM: Enabling LV swap")
+            log(" --> LVM: Enabling LV swap")
             os.system("swapon /dev/mapper/lvmlmde-swap")
             self.auto_root_partition = "/dev/mapper/lvmlmde-root"
             self.auto_swap_partition = "/dev/mapper/lvmlmde-swap"
@@ -328,7 +329,7 @@ class InstallerEngine:
                         cmd = "mkfs.%s %s" % (
                             partition.format_as, partition.path)
 
-                print("EXECUTING: '%s'" % cmd)
+                log("EXECUTING: '%s'" % cmd)
                 self.exec_cmd(cmd)
                 partition.type = partition.format_as
 
@@ -339,7 +340,7 @@ class InstallerEngine:
                 if partition.mount_as == "/":
                     self.update_progress(3, 4, False, False, _("Mounting %(partition)s on %(mountpoint)s") % {
                                          'partition': partition.path, 'mountpoint': "/target/"})
-                    print(" ------ Mounting partition %s on %s" %
+                    log(" ------ Mounting partition %s on %s" %
                           (partition.path, "/target/"))
                     if partition.type == "fat32":
                         fs = "vfat"
@@ -351,7 +352,7 @@ class InstallerEngine:
         # Mount the other partitions
         for partition in self.setup.partitions:
             if(partition.mount_as is not None and partition.mount_as != "" and partition.mount_as != "/" and partition.mount_as != "swap"):
-                print(" ------ Mounting %s on %s" %
+                log(" ------ Mounting %s on %s" %
                       (partition.path, "/target" + partition.mount_as))
                 os.system("mkdir -p /target" + partition.mount_as)
                 if partition.type == "fat16" or partition.type == "fat32":
@@ -377,7 +378,7 @@ class InstallerEngine:
 
     def write_fstab(self):
         # write the /etc/fstab
-        print(" --> Writing fstab")
+        log(" --> Writing fstab")
         # make sure fstab has default /proc and /sys entries
         if(not os.path.exists("/target/etc/fstab")):
             os.system(
@@ -447,7 +448,7 @@ class InstallerEngine:
         our_current = 4
 
         # write host+hostname infos
-        print(" --> Writing hostname")
+        log(" --> Writing hostname")
         our_current += 1
         self.update_progress(our_current, our_total, False,
                              False, _("Setting hostname"))
@@ -468,7 +469,7 @@ class InstallerEngine:
         hostsfh.close()
 
         # set the locale
-        print(" --> Setting the locale")
+        log(" --> Setting the locale")
         our_current += 1
         self.update_progress(our_current, our_total, False,
                              False, _("Setting locale"))
@@ -484,7 +485,7 @@ class InstallerEngine:
                                                    self.setup.language)
 
         # set the timezone
-        print(" --> Setting the timezone")
+        log(" --> Setting the timezone")
         os.system("echo \"%s\" > /target/etc/timezone" % self.setup.timezone)
         os.system("rm -f /target/etc/localtime")
         os.system("ln -s /usr/share/zoneinfo/%s /target/etc/localtime" %
@@ -515,7 +516,7 @@ class InstallerEngine:
         newconsolefh.close()
 
         # set the keyboard options..
-        print(" --> Setting the keyboard")
+        log(" --> Setting the keyboard")
         our_current += 1
         self.update_progress(our_current, our_total, False,
                              False, _("Setting keyboard options"))
@@ -599,7 +600,7 @@ class InstallerEngine:
         # remove pacman
         self.update_progress(our_current, our_total, False,
                              False, _("Clearing package manager"))
-        print(" --> Clearing package manager")
+        log(" --> Clearing package manager")
         self.do_run_in_chroot("yes | {}".format(config.package_manager(
             "remove_package_with_unusing_deps", config.get("remove_packages"),["17g-installer"])))
 
@@ -613,7 +614,7 @@ class InstallerEngine:
                 "echo \"power/disk = shutdown\" >> /etc/sysfs.d/local.conf")
 
         # recreate initramfs (needed in case of skip_mount also, to include things like mdadm/dm-crypt/etc in case its needed to boot a custom install)
-        print(" --> Configuring Initramfs")
+        log(" --> Configuring Initramfs")
         self.update_progress(our_current, our_total, False,
                              False, _("Generating initramfs"))
         our_current += 1
@@ -626,15 +627,15 @@ class InstallerEngine:
             for command in grub_prepare_commands:
                 os.system(command)
         except:
-            print("Grub prepare process not available for your distribution!")
+            err("Grub prepare process not available for your distribution!")
 
         # install GRUB bootloader (EFI & Legacy)
-        print(" --> Configuring Grub")
+        log(" --> Configuring Grub")
         our_current += 1
         if(self.setup.grub_device is not None):
             self.update_progress(our_current, our_total,
                                  False, False, _("Installing bootloader"))
-            print(" --> Running grub-install")
+            log(" --> Running grub-install")
 
             if os.path.exists("/sys/firmware/efi"):
                 grub_cmd = config.distro["grub_installation_efi"].split("|")
@@ -670,7 +671,7 @@ class InstallerEngine:
         self.do_post_install_commands(our_total, our_current)
 
         # now unmount it
-        print(" --> Unmounting partitions")
+        log(" --> Unmounting partitions")
         os.system("umount --force /target/dev/shm")
         os.system("umount --force /target/dev/pts")
         if self.setup.gptonefi:
@@ -690,18 +691,18 @@ class InstallerEngine:
         self.do_unmount("/source")
 
         self.update_progress(0, 0, False, True, _("Installation finished"))
-        print(" --> All done")
+        log(" --> All done")
 
     def do_run_in_chroot(self, command, vital=False):
         command = command.replace('"', "'").strip()
-        print("chroot /target/ /bin/sh -c \"%s\"" % command)
+        log("chroot /target/ /bin/sh -c \"%s\"" % command)
         if 0 != os.system("chroot /target/ /bin/sh -c \"%s\"" % command) and vital:
             self.error_message(message=command)
 
     def do_configure_grub(self, our_total, our_current):
         self.update_progress(our_current, our_total, True,
                              False, _("Configuring bootloader"))
-        print(" --> Running grub-mkconfig")
+        log(" --> Running grub-mkconfig")
         self.do_run_in_chroot("grub-mkconfig -o /boot/grub/grub.cfg")
         grub_output = subprocess.getoutput(
             "chroot /target/ /bin/sh -c \"grub-mkconfig -o /boot/grub/grub.cfg\"")
@@ -712,19 +713,19 @@ class InstallerEngine:
     def do_post_install_commands(self, our_total, our_current):
         self.update_progress(our_current, our_total, True,
                              False, _("Post install commands running"))
-        print(" --> Post install commands running")
+        log(" --> Post install commands running")
         for command in config.get("post_install_commands",[]):
             self.do_run_in_chroot(command)
 
     def do_check_grub(self, our_total, our_current):
         self.update_progress(our_current, our_total, True,
                              False, _("Checking bootloader"))
-        print(" --> Checking Grub configuration")
+        log(" --> Checking Grub configuration")
         time.sleep(5)
         if os.path.exists("/target/boot/grub/grub.cfg"):
             return True
         else:
-            print("!No /target/boot/grub/grub.cfg file found!")
+            err("!No /target/boot/grub/grub.cfg file found!")
             return False
 
     def do_mount(self, device, dest, typevar, options=None):
@@ -733,13 +734,13 @@ class InstallerEngine:
             cmd = "mount -o %s -t %s %s %s" % (options, typevar, device, dest)
         else:
             cmd = "mount -t %s %s %s" % (typevar, device, dest)
-        print("EXECUTING: '%s'" % cmd)
+        log("EXECUTING: '%s'" % cmd)
         self.exec_cmd(cmd)
 
     def do_unmount(self, mountpoint):
         ''' Unmount a filesystem '''
         cmd = "umount %s" % mountpoint
-        print("EXECUTING: '%s'" % cmd)
+        log("EXECUTING: '%s'" % cmd)
         self.exec_cmd(cmd)
 
     # Execute schell command and return output in a list

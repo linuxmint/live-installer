@@ -10,6 +10,8 @@ from datetime import datetime, timedelta
 from PIL import Image, ImageEnhance
 from functools import reduce
 
+from utils import log, err, to_float
+
 TIMEZONE_RESOURCES = './resources/timezone/'
 CC_IM = Image.open(TIMEZONE_RESOURCES + 'cc.png').convert('RGB')
 BACK_IM = Image.open(TIMEZONE_RESOURCES + 'bg.png').convert('RGB')
@@ -26,33 +28,6 @@ MAP_CENTER = (351, 246)
 MAP_SIZE = BACK_IM.size  # size of the map image
 assert MAP_SIZE == (
     752, 384), 'MAP_CENTER (et al.?) calculations depend on this size'
-
-
-def debug(func):
-    '''Decorator to print function call details - parameters names and effective values'''
-    def wrapper(*func_args, **func_kwargs):
-        # print 'func_code.co_varnames =', func.func_code.co_varnames
-        # print 'func_code.co_argcount =', func.func_code.co_argcount
-        # print 'func_args =', func_args
-        # print 'func_kwargs =', func_kwargs
-        params = []
-        for argNo in range(func.__code__.co_argcount):
-            argName = func.__code__.co_varnames[argNo]
-            argValue = func_args[argNo] if argNo < len(func_args) else func.__defaults__[
-                argNo - func.__code__.co_argcount]
-            params.append((argName, argValue))
-        for argName, argValue in list(func_kwargs.items()):
-            params.append((argName, argValue))
-        params = [argName + ' = ' + repr(argValue)
-                  for argName, argValue in params]
-        #print(func.__name__ + '(' +  ', '.join(params) + ')')
-        return func(*func_args, **func_kwargs)
-    return wrapper
-
-
-def to_float(position, wholedigits):
-    assert position and len(position) > 4 and wholedigits < 9
-    return float(position[:wholedigits + 1] + '.' + position[wholedigits + 1:])
 
 
 def pixel_position(lat, lon):
@@ -75,7 +50,6 @@ region_menus = {}
 Timezone = namedtuple('Timezone', 'name ccode x y'.split())
 
 
-@debug
 def build_timezones(_installer):
     global installer, time_label, time_label_box, timezone
     installer = _installer

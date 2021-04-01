@@ -3,7 +3,8 @@
 # 17g service
 import os
 import config
-if os.getuid() != 0:
+from utils import is_root
+if not is_root():
     print("You must be root!")
     exit(1)
 

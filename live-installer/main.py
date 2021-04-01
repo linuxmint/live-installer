@@ -5,10 +5,12 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 from frontend.welcome import welcome
 from frontend.gtk_interface import InstallerWindow
+from dialogs import ErrorDialog
 import sys
 import os
 import gettext
 import config
+from utils import log, err, is_root
 
 gettext.install("live-installer", "/usr/share/locale")
 
@@ -26,11 +28,14 @@ os.system("xsetroot -solid black")
 
 # main entry
 if __name__ == "__main__":
+    if not is_root() and "--test" not in sys.argv:
+        ErrorDialog(config.get("distro_title","17g"),_("You must be root!"))
+        exit(1)
     if ("--welcome" in sys.argv):
         if config.get("welcome_screen",True):
             win = welcome()
         else:
-            print("Welcome screen disabled by config.")
+            err("Welcome screen disabled by config.")
             exit(0)
     else:
         win = InstallerWindow()

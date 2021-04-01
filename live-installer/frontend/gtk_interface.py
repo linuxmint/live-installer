@@ -16,31 +16,12 @@ import threading
 import time
 import parted
 import config
+from utils import idle, asynchronous, log, err
 
 
 gettext.install("live-installer", "/usr/share/locale")
 
 LOADING_ANIMATION = './resources/loading.gif'
-
-# Used as a decorator to run things in the background
-
-
-def asynchronous(func):
-    def wrapper(*args, **kwargs):
-        thread = threading.Thread(target=func, args=args, kwargs=kwargs)
-        thread.daemon = True
-        thread.start()
-        return thread
-    return wrapper
-
-# Used as a decorator to run things in the main loop, from another thread
-
-
-def idle(func):
-    def wrapper(*args, **kwargs):
-        GObject.idle_add(func, *args, **kwargs)
-    return wrapper
-
 
 class WizardPage:
 
@@ -55,6 +36,9 @@ class InstallerWindow:
     # quite expensive, so avoid drawing it if only scrolling through
     # the keyboard layout list
     kbd_preview_generation = -1
+    
+    def start(self):
+        Gtk.main()
 
     def __init__(self):
 
@@ -289,7 +273,7 @@ class InstallerWindow:
         try:
             window_title = config.get("distro_title","17g") + " - " + _("Installer")
         except:
-            print("\"distro_title\" varible not found on config. Using default.")
+            err("\"distro_title\" varible not found on config. Using default.")
         self.window.set_title(window_title)
 
         # Header
@@ -1153,7 +1137,7 @@ class InstallerWindow:
 
     @asynchronous
     def do_install(self):
-        print(" ## INSTALLATION ")
+        log(" ## INSTALLATION ")
         ''' Actually perform the installation .. '''
 
         self.installer.set_progress_hook(self.update_progress)
@@ -1168,7 +1152,7 @@ class InstallerWindow:
         try:
             self.installer.start_installation()
         except Exception as detail1:
-            print(detail1)
+            err(detail1)
             do_try_finish_install = False
             self.show_error_dialog(_("Installation error"), str(detail1))
 
@@ -1182,7 +1166,7 @@ class InstallerWindow:
             try:
                 self.installer.finish_installation()
             except Exception as detail1:
-                print(detail1)
+                err(detail1)
                 self.show_error_dialog(_("Installation error"), str(detail1))
 
             # show a message dialog thingum
@@ -1199,7 +1183,7 @@ class InstallerWindow:
             while(self.showing_last_dialog):
                 time.sleep(0.1)
 
-            print(" ## INSTALLATION COMPLETE ")
+            log(" ## INSTALLATION COMPLETE ")
 
         Gtk.main_quit()
         sys.exit(0)
