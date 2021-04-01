@@ -993,14 +993,14 @@ class InstallerWindow:
                 elif (self.setup.passphrase1 != self.setup.passphrase1):
                       errorFound = True
                       errorMessage = _("Your passphrases do not match.")
-                if (errorFound):
-                    WarningDialog(_("Installer"), errorMessage)
-                else:
-                    if QuestionDialog(_("Warning"), _("This will delete all the data on %s. Are you sure?") % self.setup.diskname):
-                        partitioning.build_partitions(self)
-                        partitioning.build_grub_partitions()
-                        self.activate_page(self.PAGE_OVERVIEW)
-                        self.show_overview()
+            if (errorFound):
+                WarningDialog(_("Installer"), errorMessage)
+            else:
+                if QuestionDialog(_("Warning"), _("This will delete all the data on %s. Are you sure?") % self.setup.diskname):
+                    partitioning.build_partitions(self)
+                    partitioning.build_grub_partitions()
+                    self.activate_page(self.PAGE_OVERVIEW)
+                    self.show_overview()
         else:
             self.activate_page(self.PAGE_PARTITIONS)
             partitioning.build_partitions(self)
