@@ -1,8 +1,8 @@
 
+from utils import err
 from gi.repository import Gtk
 import gi
 gi.require_version('Gtk', '3.0')
-from utils import err
 
 
 class Dialog(Gtk.MessageDialog):

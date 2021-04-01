@@ -1,7 +1,9 @@
 
-import os, sys
+import os
+import sys
 
-logfile=None
+logfile = None
+
 
 def memoize(func):
     """ Caches expensive function calls.
@@ -45,11 +47,13 @@ def debug(func):
             params.append((argName, argValue))
         params = [argName + ' = ' + repr(argValue)
                   for argName, argValue in params]
-        print(func.__name__ + '(' +  ', '.join(params) + ')')
+        print(func.__name__ + '(' + ', '.join(params) + ')')
         return func(*func_args, **func_kwargs)
     return wrapper
 
 # Used as a decorator to run things in the background
+
+
 def asynchronous(func):
     def wrapper(*args, **kwargs):
         thread = threading.Thread(target=func, args=args, kwargs=kwargs)
@@ -59,6 +63,8 @@ def asynchronous(func):
     return wrapper
 
 # Used as a decorator to run things in the main loop, from another thread
+
+
 def idle(func):
     def wrapper(*args, **kwargs):
         GObject.idle_add(func, *args, **kwargs)
@@ -70,20 +76,21 @@ def to_float(position, wholedigits):
     return float(position[:wholedigits + 1] + '.' + position[wholedigits + 1:])
 
 
-file="/var/log/17g-installer"
+file = "/var/log/17g-installer"
 if os.getuid() != 0:
-    file="/tmp/17g-installer.log"
+    file = "/tmp/17g-installer.log"
 if os.path.isfile(file):
     os.unlink(file)
-logfile=open(file,"a")
-    
+logfile = open(file, "a")
+
 
 def is_root():
     return os.getuid() == 0
 
-def log(output,err=False):
-    output=str(output)
-    output+="\n"
+
+def log(output, err=False):
+    output = str(output)
+    output += "\n"
     logfile.write(output)
     logfile.flush()
     if err:
@@ -91,12 +98,14 @@ def log(output,err=False):
     else:
         sys.stdout.write(output)
 
+
 def err(output):
     sys.stderr.write("\x1b[31;1m")
-    log(output,True)
+    log(output, True)
     sys.stderr.write("\x1b[;0m")
-    
+
+
 def inf(output):
     sys.stdout.write("\x1b[32;1m")
-    log(output,False)
+    log(output, False)
     sys.stdout.write("\x1b[;0m")

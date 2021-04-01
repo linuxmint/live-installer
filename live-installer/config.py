@@ -14,7 +14,7 @@ def load_config(config_path):
     """read config file"""
     if os.path.isfile(config_path):
         file = open(config_path, "r")
-        content=file.read()
+        content = file.read()
         inf("#Reading yaml file:"+config_path)
         log(content)
     else:
@@ -38,9 +38,10 @@ live = load_config("configs/live.yaml")
 kernel_vars = {}
 
 if not live:
-    live=[]
+    live = []
 
-def get(key,default=""):
+
+def get(key, default=""):
     if key in kernel_vars:
         return kernel_vars[key]
     if key in live:
@@ -48,9 +49,10 @@ def get(key,default=""):
     if key in main:
         return main[key]
     return default
-    
+
+
 # Distribution
-if(get("distribution","auto") == "auto"):
+if(get("distribution", "auto") == "auto"):
     for distro_system in glob("configs/distribution/*"):
         distro = load_config(distro_system)
         if not distro:
@@ -62,7 +64,7 @@ else:
         "configs/distribution/{}.yaml".format(main["distribution"]))
 
 # Initramfs system
-if(get("initramfs_system","auto") == "auto"):
+if(get("initramfs_system", "auto") == "auto"):
     for initramfs_system in glob("configs/package_managers/*"):
         initramfs = load_config(initramfs_system)
         if not initramfs:
@@ -72,13 +74,13 @@ if(get("initramfs_system","auto") == "auto"):
 else:
     distro = load_config(
         "configs/initramfs_systems/{}.yaml".format(main["initramfs_system"]))
-    
+
 
 # Package Manager
-if(get("initramfs_system","auto") == "auto"):
+if(get("initramfs_system", "auto") == "auto"):
     for package_manager in glob("configs/package_managers/*"):
         pm = load_config(package_manager)
-        if  not pm:
+        if not pm:
             err("Failed to load: "+package_manager)
         elif os.path.exists(pm["check_this_dir"]):
             break
@@ -112,6 +114,7 @@ def update_initramfs():
             commands.append(command)
 
     return commands
+
 
 # Get variables from cmdline
 cmdline = open("/proc/cmdline", "r")

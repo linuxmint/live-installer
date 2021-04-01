@@ -1,16 +1,16 @@
 #!/usr/bin/python3
+from utils import log, err, is_root, file
+import config
+import gettext
+import os
+import sys
+from dialogs import ErrorDialog
+from frontend.gtk_interface import InstallerWindow
+from frontend.welcome import welcome
+from gi.repository import Gtk
 import gi
 gi.require_version('Gtk', '3.0')
 
-from gi.repository import Gtk
-from frontend.welcome import welcome
-from frontend.gtk_interface import InstallerWindow
-from dialogs import ErrorDialog
-import sys
-import os
-import gettext
-import config
-from utils import log, err, is_root, file
 
 gettext.install("live-installer", "/usr/share/locale")
 
@@ -18,7 +18,7 @@ sys.path.insert(1, '/usr/lib/live-installer')
 if (os.path.isdir("/usr/lib/live-installer")):
     os.chdir("/usr/lib/live-installer")
 
-if config.get("gtk_theme","default") != "default":
+if config.get("gtk_theme", "default") != "default":
     os.environ['GTK_THEME'] = config.get("gtk_theme")
 
 # Force show mouse cursor & fix background
@@ -29,10 +29,10 @@ os.system("xsetroot -solid black")
 # main entry
 if __name__ == "__main__":
     if not is_root() and "--test" not in sys.argv:
-        ErrorDialog(config.get("distro_title","17g"),_("You must be root!"))
+        ErrorDialog(config.get("distro_title", "17g"), _("You must be root!"))
         exit(1)
     if ("--welcome" in sys.argv):
-        if config.get("welcome_screen",True):
+        if config.get("welcome_screen", True):
             win = welcome()
         else:
             err("Welcome screen disabled by config.")

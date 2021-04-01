@@ -20,7 +20,7 @@ class InstallerEngine:
         self.setup = setup
 
         # find the squashfs..
-        self.media = config.get("loop_directory","/dev/loop0")
+        self.media = config.get("loop_directory", "/dev/loop0")
 
         if(not os.path.exists(self.media)):
             err("Critical Error: Live medium (%s) not found!" % self.media)
@@ -67,7 +67,7 @@ class InstallerEngine:
         EXCLUDE_DIRS = "home/* dev/* proc/* sys/* tmp/* run/* mnt/* media/* lost+found source target".split()
 
         # Add optional entries to EXCLUDE_DIRS
-        for dirvar in config.get("exclude_dirs",["/home"]):
+        for dirvar in config.get("exclude_dirs", ["/home"]):
             EXCLUDE_DIRS.append(dirvar)
 
         our_current = 0
@@ -127,18 +127,18 @@ class InstallerEngine:
         # TODO: support encryption
 
         self.do_run_in_chroot('useradd -m -s {shell} -c \"{realname}\" {username}'.format(
-            shell=config.get("using_shell","/bin/bash"), realname=self.setup.real_name,
+            shell=config.get("using_shell", "/bin/bash"), realname=self.setup.real_name,
             username=self.setup.username))
 
         # Add user to additional groups
-        for group in config.get("additional_user_groups",["audio","video"]):
+        for group in config.get("additional_user_groups", ["audio", "video", "netdev"]):
             self.do_run_in_chroot(
                 "usermod -aG {} {}".format(group, self.setup.username))
 
-        if (os.system("which chpasswd &>/dev/null") == 0) and config.get("use_chpasswd",True):
+        if (os.system("which chpasswd &>/dev/null") == 0) and config.get("use_chpasswd", True):
             fp = open("/target/tmp/.passwd", "w")
             fp.write(self.setup.username + ":" + self.setup.password1 + "\n")
-            if config.get("set_root_password",True):
+            if config.get("set_root_password", True):
                 fp.write("root:" + self.setup.password1 + "\n")
             fp.close()
             self.do_run_in_chroot("cat /tmp/.passwd | chpasswd")
@@ -146,12 +146,12 @@ class InstallerEngine:
         else:
             self.do_run_in_chroot(
                 "echo -e \"{0}\\n{0}\\n\" | passwd {1}".format(self.setup.password1, self.setup.username))
-            if config.get("set_root_password",True):
+            if config.get("set_root_password", True):
                 self.do_run_in_chroot(
                     "echo -e \"{0}\\n{0}\\n\" | passwd".format(self.setup.password1))
 
         # Set LightDM to show user list by default
-        if config.get("list_users_when_auto_login",True):
+        if config.get("list_users_when_auto_login", True):
             self.do_run_in_chroot(
                 r"sed -i -r 's/^#?(greeter-hide-users)\s*=.*/\1=true/' /etc/lightdm/lightdm.conf")
         else:
@@ -253,7 +253,7 @@ class InstallerEngine:
         # Encrypt root partition
         if self.setup.luks:
             log(" --> Encrypting root partition %s" %
-                  self.auto_root_partition)
+                self.auto_root_partition)
             os.system("printf \"%s\" | cryptsetup luksFormat -c aes-xts-plain64 -h sha256 -s 512 %s" %
                       (self.setup.passphrase1, self.auto_root_partition))
             log(" --> Opening root partition %s" % self.auto_root_partition)
@@ -338,7 +338,7 @@ class InstallerEngine:
                     self.update_progress(3, 4, False, False, _("Mounting %(partition)s on %(mountpoint)s") % {
                                          'partition': partition.path, 'mountpoint': "/target/"})
                     log(" ------ Mounting partition %s on %s" %
-                          (partition.path, "/target/"))
+                        (partition.path, "/target/"))
                     if partition.type == "fat32":
                         fs = "vfat"
                     else:
@@ -350,7 +350,7 @@ class InstallerEngine:
         for partition in self.setup.partitions:
             if(partition.mount_as is not None and partition.mount_as != "" and partition.mount_as != "/" and partition.mount_as != "swap"):
                 log(" ------ Mounting %s on %s" %
-                      (partition.path, "/target" + partition.mount_as))
+                    (partition.path, "/target" + partition.mount_as))
                 os.system("mkdir -p /target" + partition.mount_as)
                 if partition.type == "fat16" or partition.type == "fat32":
                     fs = "vfat"
@@ -490,7 +490,7 @@ class InstallerEngine:
 
         # Keyboard settings X11
         if not self.setup.keyboard_variant:
-                self.setup.keyboard_variant = ""
+            self.setup.keyboard_variant = ""
         self.update_progress(our_current, our_total, False,
                              False, ("Settings X11 keyboard options"))
         if os.path.exists("/target/etc/X11/xorg.conf.d"):
@@ -599,7 +599,7 @@ class InstallerEngine:
                              False, _("Clearing package manager"))
         log(" --> Clearing package manager")
         self.do_run_in_chroot("yes | {}".format(config.package_manager(
-            "remove_package_with_unusing_deps", config.get("remove_packages"),["17g-installer"])))
+            "remove_package_with_unusing_deps", config.get("remove_packages"), ["17g-installer"])))
 
         if self.setup.luks:
             with open("/target/etc/default/grub.d/61_live-installer.cfg", "w") as f:
@@ -639,10 +639,10 @@ class InstallerEngine:
                 if "{distro_codename}" in grub_cmd[1]:
                     if grub_cmd[0] == "chroot":
                         self.do_run_in_chroot(grub_cmd[1].replace(
-                            "{distro_codename}", config.get("distro_codename","17g")))
+                            "{distro_codename}", config.get("distro_codename", "17g")))
                     else:
                         os.system(grub_cmd[1].replace(
-                            "{distro_codename}", config.get("distro_codename","17g")))
+                            "{distro_codename}", config.get("distro_codename", "17g")))
                 else:
                     if grub_cmd[0] == "chroot":
                         self.do_run_in_chroot(grub_cmd[1])
@@ -708,7 +708,7 @@ class InstallerEngine:
         self.update_progress(our_current, our_total, True,
                              False, _("Post install commands running"))
         log(" --> Post install commands running")
-        for command in config.get("post_install_commands",[]):
+        for command in config.get("post_install_commands", []):
             self.do_run_in_chroot(command)
 
     def do_check_grub(self, our_total, our_current):

@@ -1,19 +1,17 @@
 # coding: utf-8
 #
+from utils import log, err
+from collections import defaultdict
+import subprocess
+import sys
+import re
+import os
+from gi.repository import Gtk, Gdk, GObject
+import parted
+import gettext
+import time
 import gi
 gi.require_version('Gtk', '3.0')
-
-import time
-import gettext
-import parted
-from gi.repository import Gtk, Gdk, GObject
-import os
-import re
-import sys
-import subprocess
-from collections import defaultdict
-
-from utils import log, err
 
 
 gettext.install("live-installer", "/usr/share/locale")
@@ -265,7 +263,7 @@ class PartitionSetup(Gtk.TreeStore):
         already_done_full_disk_format = False
         for disk_path, disk_description in self.disks:
             log("    Analyzing path='%s' description='%s'" %
-                  (disk_path, disk_description))
+                (disk_path, disk_description))
             disk_device = parted.getDevice(disk_path)
             log("      - Found the device...")
             try:
@@ -303,13 +301,13 @@ class PartitionSetup(Gtk.TreeStore):
             log("      - Looking at partitions...")
             free_space_partition = disk.getFreeSpacePartitions()
             log("           -> %d free space partitions" %
-                  len(free_space_partition))
+                len(free_space_partition))
             primary_partitions = disk.getPrimaryPartitions()
             log("           -> %d primary partitions" %
-                  len(primary_partitions))
+                len(primary_partitions))
             logical_partitions = disk.getLogicalPartitions()
             log("           -> %d logical partitions" %
-                  len(logical_partitions))
+                len(logical_partitions))
             raid_partitions = disk.getRaidPartitions()
             log("           -> %d raid partitions" % len(raid_partitions))
             lvm_partitions = disk.getLVMPartitions()
@@ -350,7 +348,7 @@ class PartitionSetup(Gtk.TreeStore):
                 installer.setup.partitions.append(partition)
                 self.append(disk_iter, (partition.name,
                                         '<span>{}</span>'.format(
-                                        partition.type),
+                                            partition.type),
                                         partition.description,
                                         partition.format_as,
                                         partition.mount_as,
@@ -358,7 +356,6 @@ class PartitionSetup(Gtk.TreeStore):
                                         partition.free_space,
                                         partition,
                                         disk_path))
-
 
 
 @idle
@@ -565,7 +562,7 @@ class Partition(object):
                 except Exception as detail:
                     # best effort
                     err("Could not read partition flags for %s: %s" %
-                          (self.path, detail))
+                        (self.path, detail))
             self.description = description
             self.os_fs_info = ': {0.description} ({0.type}; {0.size}; {0.free_space})'.format(
                 self) if description else ': ' + self.type
@@ -578,7 +575,7 @@ class Partition(object):
 
     def print_partition(self):
         log("Device: %s, format as: %s, mount as: %s" %
-              (self.path, self.format_as, self.mount_as))
+            (self.path, self.format_as, self.mount_as))
 
 
 class PartitionDialog(object):
@@ -600,7 +597,7 @@ class PartitionDialog(object):
         filesystems = ['', 'swap']
         for path in ["/bin", "/sbin", "/usr/bin", "/usr/sbin"]:
             for fs in getoutput('echo %s/mkfs.*' % path).split():
-                fsname=str(fs).split("mkfs.")[1].replace("'", "")
+                fsname = str(fs).split("mkfs.")[1].replace("'", "")
                 if fsname not in filesystems and "*" not in fsname:
                     filesystems.append(fsname)
         filesystems = sorted(set(filesystems))

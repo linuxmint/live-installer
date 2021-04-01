@@ -37,6 +37,7 @@
 # additional_user_groups:
 #   - audio
 #   - video
+#   - netdev
 # exclude_dirs:
 #   - /home
 # remove_packages:
