@@ -3,7 +3,7 @@ import subprocess
 import time
 import gettext
 import parted
-import frontend.partitioning
+import frontend.partitioning as partitioning
 import config
 from utils import log, err, inf, run
 
@@ -247,7 +247,7 @@ class InstallerEngine:
             "Creating partitions on %s") % self.setup.disk)
         log(" --> Creating partitions on %s" % self.setup.disk)
         disk_device = parted.getDevice(self.setup.disk)
-        # replae this whit changeable function
+        # replae this with changeable function
         partitioning.full_disk_format(disk_device, create_boot=(
             self.auto_boot_partition is not None), create_swap=(self.auto_swap_partition is not None))
 
