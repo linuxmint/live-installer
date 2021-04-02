@@ -65,14 +65,14 @@ else:
 
 # Initramfs system
 if(get("initramfs_system", "auto") == "auto"):
-    for initramfs_system in glob("configs/package_managers/*"):
+    for initramfs_system in glob("configs/initramfs_systems/*"):
         initramfs = load_config(initramfs_system)
         if not initramfs:
-            err("Failed to load: "+package_manager)
+            err("Failed to load: "+initramfs_system)
         elif os.path.exists(initramfs["check_this_dir"]):
             break
 else:
-    distro = load_config(
+    initramfs = load_config(
         "configs/initramfs_systems/{}.yaml".format(main["initramfs_system"]))
 
 

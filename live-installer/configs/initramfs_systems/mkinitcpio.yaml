@@ -1,4 +1,5 @@
 name: mkinitcpio
+check_this_dir: /lib/initcpio
 commands:
   - mkinitcpio -g /boot/initramfs-linux.img
   - mkinitcpio -g /boot/initramfs-linux-fallback.img
