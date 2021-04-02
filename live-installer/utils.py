@@ -2,6 +2,7 @@
 import os
 import sys
 import threading
+from gi.repository import GObject 
 
 logfile = None
 
