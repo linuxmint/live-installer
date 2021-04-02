@@ -82,7 +82,7 @@ if(get("package_manager", "auto") == "auto"):
         pm = load_config(package_manager)
         if not initramfs:
             err("Failed to load: "+package_manager)
-        elif os.path.exists(initramfs["check_this_dir"]):
+        elif os.path.exists(package_manager["check_this_dir"]):
             break
 else:
     pm = load_config(
