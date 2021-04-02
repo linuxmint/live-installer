@@ -599,6 +599,7 @@ class InstallerEngine:
         self.update_progress(our_current, our_total, False,
                              False, _("Clearing package manager"))
         log(" --> Clearing package manager")
+        log(config.get("remove_packages",["17g-installer"]))
         self.do_run_in_chroot("yes | {}".format(config.package_manager(
             "remove_package_with_unusing_deps", config.get("remove_packages",["17g-installer"]))))
 

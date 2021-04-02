@@ -77,19 +77,20 @@ else:
 
 
 # Package Manager
-if(get("initramfs_system", "auto") == "auto"):
+if(get("package_manager", "auto") == "auto"):
     for package_manager in glob("configs/package_managers/*"):
-        initramfs = load_config(package_manager)
+        pm = load_config(package_manager)
         if not initramfs:
             err("Failed to load: "+package_manager)
         elif os.path.exists(initramfs["check_this_dir"]):
             break
 else:
-    initramfs = load_config(
+    pm = load_config(
         "configs/package_managers/{}.yaml".format(main["package_manager"]))
 
 
 def package_manager(process, packages=[]):
+    print(pm)
     if process == "name":
         exit("You can't use this parameter!")
     if process in pm:
@@ -105,6 +106,7 @@ def package_manager(process, packages=[]):
 def update_initramfs():
     commands = []
     for command in initramfs["commands"]:
+        log(initramfs)
         if "{kernel_version}" in command:
             kernel_version = subprocess.getoutput("uname -r")
             command = command.replace('{kernel_version}', kernel_version)
