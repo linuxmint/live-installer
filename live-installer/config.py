@@ -19,7 +19,7 @@ def load_config(config_path):
         log(content)
     else:
         err("{} doesn't exists. Please create config file!".format(config_path))
-        return []
+        return {}
 
     try:
         return yaml.load(content, Loader=yaml.FullLoader) or {}
@@ -57,7 +57,7 @@ if(get("distribution", "auto") == "auto"):
         distro = load_config(distro_system)
         if not distro:
             err("Failed to load: "+distro_system)
-        elif os.path.exists(distro["check_this_dir"]):
+        elif "check_this_dir" in distro and os.path.exists(distro["check_this_dir"]):
             break
 else:
     distro = load_config(
@@ -69,7 +69,7 @@ if(get("initramfs_system", "auto") == "auto"):
         initramfs = load_config(initramfs_system)
         if not initramfs:
             err("Failed to load: "+initramfs_system)
-        elif os.path.exists(initramfs["check_this_dir"]):
+        elif "check_this_dir" in initramfs and os.path.exists(initramfs["check_this_dir"]):
             break
 else:
     initramfs = load_config(
@@ -82,7 +82,7 @@ if(get("package_manager", "auto") == "auto"):
         pm = load_config(package_manager)
         if not initramfs:
             err("Failed to load: "+package_manager)
-        elif os.path.exists(package_manager["check_this_dir"]):
+        elif "check_this_dir" in package_manager and os.path.exists(package_manager["check_this_dir"]):
             break
 else:
     pm = load_config(
