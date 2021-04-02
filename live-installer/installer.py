@@ -600,7 +600,7 @@ class InstallerEngine:
                              False, _("Clearing package manager"))
         log(" --> Clearing package manager")
         self.do_run_in_chroot("yes | {}".format(config.package_manager(
-            "remove_package_with_unusing_deps", config.get("remove_packages"), ["17g-installer"])))
+            "remove_package_with_unusing_deps", config.get("remove_packages",["17g-installer"]))))
 
         if self.setup.luks:
             with open("/target/etc/default/grub.d/61_live-installer.cfg", "w") as f:
