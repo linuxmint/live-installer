@@ -153,10 +153,10 @@ class InstallerEngine:
         # Set LightDM to show user list by default
         if config.get("list_users_when_auto_login", True):
             self.do_run_in_chroot(
-                r"sed -i -r 's/^#?(greeter-hide-users)\s*=.*/\1=true/' /etc/lightdm/lightdm.conf")
+                r"sed -i -r 's/^#?(greeter-hide-users)\s*=.*/\1=false/' /etc/lightdm/lightdm.conf")
         else:
             self.do_run_in_chroot(
-                r"sed -i -r 's/^#?(greeter-hide-users)\s*=.*/\1=false/' /etc/lightdm/lightdm.conf")
+                r"sed -i -r 's/^#?(greeter-hide-users)\s*=.*/\1=true/' /etc/lightdm/lightdm.conf")
 
         # Set autologin for user if they so elected
         if self.setup.autologin:

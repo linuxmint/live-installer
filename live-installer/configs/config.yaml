@@ -8,7 +8,7 @@
 
 ## Base options section
 # loop_directory: /dev/loop0
-# log_file: /var/log/17g
+# log_file: /var/log/17g-installer.log
 # gtk_theme: default
 # welcome_screen: true
 # exclude_dirs:
