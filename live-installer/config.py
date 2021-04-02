@@ -79,13 +79,13 @@ else:
 # Package Manager
 if(get("initramfs_system", "auto") == "auto"):
     for package_manager in glob("configs/package_managers/*"):
-        pm = load_config(package_manager)
-        if not pm:
+        initramfs = load_config(package_manager)
+        if not initramfs:
             err("Failed to load: "+package_manager)
-        elif os.path.exists(pm["check_this_dir"]):
+        elif os.path.exists(initramfs["check_this_dir"]):
             break
 else:
-    pm = load_config(
+    initramfs = load_config(
         "configs/package_managers/{}.yaml".format(main["package_manager"]))
 
 
