@@ -80,9 +80,9 @@ else:
 if(get("package_manager", "auto") == "auto"):
     for package_manager in glob("configs/package_managers/*"):
         pm = load_config(package_manager)
-        if not initramfs:
+        if not pm:
             err("Failed to load: "+package_manager)
-        elif "check_this_dir" in package_manager and os.path.exists(package_manager["check_this_dir"]):
+        elif "check_this_dir" in pm and os.path.exists(pm["check_this_dir"]):
             break
 else:
     pm = load_config(
