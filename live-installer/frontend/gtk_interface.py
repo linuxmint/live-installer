@@ -1033,6 +1033,7 @@ class InstallerWindow:
             if(sel == self.PAGE_PARTITIONS):
                 if self.grub_check.get_active() and \
                    not self.setup.grub_device:
+                       WarningDialog(_("Installer"), _("Please provide a device to install grub."))
                        return
                 nex = self.PAGE_OVERVIEW
             if(sel == self.PAGE_OVERVIEW):
