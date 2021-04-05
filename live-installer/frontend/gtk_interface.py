@@ -182,7 +182,7 @@ class InstallerWindow:
 
         # install Grub by default
         grub_check.set_active(True)
-        grub_box.set_sensitive(True)
+        grub_box.set_sensitive(False)
 
         # kb models
         cell = Gtk.CellRendererText()
@@ -985,6 +985,7 @@ class InstallerWindow:
             if self.setup.disk is None:
                  errorFound = True
                  errorMessage = _("Please select a disk.")
+            self.setup.grub_device = self.setup.disk
             if self.setup.luks:
                 if (self.setup.passphrase1 is None or self.setup.passphrase1 == ""):
                       errorFound = True
