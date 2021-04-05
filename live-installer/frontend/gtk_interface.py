@@ -979,6 +979,7 @@ class InstallerWindow:
         
         
     def activate_page_type(self):
+        self.show_overview()
         if self.setup.automated:
             errorFound = False
             errorMessage = ""
@@ -1000,7 +1001,6 @@ class InstallerWindow:
                     partitioning.build_partitions(self)
                     partitioning.build_grub_partitions()
                     self.activate_page(self.PAGE_OVERVIEW)
-                    self.show_overview()
         else:
             self.activate_page(self.PAGE_PARTITIONS)
             partitioning.build_partitions(self)
