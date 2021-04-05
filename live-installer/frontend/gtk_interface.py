@@ -175,14 +175,14 @@ class InstallerWindow:
             "toggled", self.assign_login_options)
 
         # link the checkbutton to the combobox
-        grub_check = self.builder.get_object("checkbutton_grub")
-        grub_box = self.builder.get_object("combobox_grub")
-        grub_check.connect("toggled", self.assign_grub_install, grub_box)
-        grub_box.connect("changed", self.assign_grub_device)
+        self.grub_check = self.builder.get_object("checkbutton_grub")
+        self.grub_box = self.builder.get_object("combobox_grub")
+        self.grub_check.connect("toggled", self.assign_grub_install)
+        self.grub_box.connect("changed", self.assign_grub_device)
 
         # install Grub by default
-        grub_check.set_active(True)
-        grub_box.set_sensitive(False)
+        self.grub_check.set_active(False)
+        self.grub_box.set_sensitive(False)
 
         # kb models
         cell = Gtk.CellRendererText()
@@ -710,10 +710,10 @@ class InstallerWindow:
         self.setup.autologin = self.builder.get_object(
             "radiobutton_autologin").get_active()
 
-    def assign_grub_install(self, checkbox, grub_box, data=None):
-        grub_box.set_sensitive(checkbox.get_active())
+    def assign_grub_install(self, checkbox, data=None):
+        self.grub_box.set_sensitive(checkbox.get_active())
         if checkbox.get_active():
-            self.assign_grub_device(grub_box)
+            self.assign_grub_device(self.grub_box)
         else:
             self.setup.grub_device = None
 
@@ -1031,6 +1031,9 @@ class InstallerWindow:
                 self.activate_page_type()
                 return
             if(sel == self.PAGE_PARTITIONS):
+                if self.grub_check.get_active() and \
+                   not self.setup.grub_device:
+                       return
                 nex = self.PAGE_OVERVIEW
             if(sel == self.PAGE_OVERVIEW):
                 nex = self.PAGE_INSTALL
