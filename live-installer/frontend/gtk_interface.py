@@ -181,8 +181,8 @@ class InstallerWindow:
         self.grub_box.connect("changed", self.assign_grub_device)
 
         # install Grub by default
-        self.grub_check.set_active(False)
-        self.grub_box.set_sensitive(False)
+        self.grub_check.set_active(True)
+        self.grub_box.set_sensitive(True)
 
         # kb models
         cell = Gtk.CellRendererText()
