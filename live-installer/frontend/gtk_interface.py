@@ -782,6 +782,7 @@ class InstallerWindow:
 
     def activate_page(self, nex=0,index=0,goback=False):
         errorFound = False
+        self.show_overview()
         if index == self.PAGE_LANGUAGE:
             if self.setup.language is None:
                 WarningDialog(_("Installer"), _(
@@ -948,8 +949,6 @@ class InstallerWindow:
                     return
 
             partitioning.build_grub_partitions()
-        elif index == self.PAGE_OVERVIEW:
-            self.show_overview()
         elif index == self.PAGE_INSTALL:
             self.builder.get_object("button_next").set_sensitive(False)
             self.builder.get_object("button_back").set_sensitive(False)
@@ -1060,7 +1059,8 @@ class InstallerWindow:
         self.activate_page(nex,sel,goback)
 
     def show_overview(self):
-        def bold(strvar): return '<b>' + strvar + '</b>'
+        def bold(strvar):
+            return '<b>' + str(strvar) + '</b>'
         model = Gtk.TreeStore(str)
         self.builder.get_object("treeview_overview").set_model(model)
         top = model.append(None, (_("Localization"),))
@@ -1073,7 +1073,7 @@ class InstallerWindow:
         model.append(top, (_("Real name: ") + bold(self.setup.real_name),))
         model.append(top, (_("Username: ") + bold(self.setup.username),))
         model.append(
-            top, (_("Password: ") + bold(len(self.setup.password1)*"*"),))
+            top, (_("Password: ") + bold(len(str(self.setup.password1))*"*"),))
         if config.get("autologin_enabled",True):
             model.append(top, (_("Automatic login: ") + bold(_("enabled")
                                                              if self.setup.autologin else _("disabled")),))
