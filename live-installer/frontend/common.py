@@ -50,3 +50,6 @@ def get_country_list():
         ccodes.append(ccode+":"+language+":"+country+":"+locale)
             
     return ccodes
+    
+def get_timezone_list():
+    return subprocess.getoutput("cat ./resources/timezones").split('\n')

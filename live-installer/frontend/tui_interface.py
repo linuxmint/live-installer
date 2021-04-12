@@ -11,12 +11,9 @@ class InstallerWindow:
         self.setup = Setup()
         self.installer = InstallerEngine(self.setup)
         self.d = Dialog(dialog="dialog",autowidgetsize=True)
-        for c in common.get_country_list():
-            c = c.split(":")
-            print(c)
-        #exit(0)
         self.page_welcome()
         self.page_language()
+        self.page_timezone()
 
     def page_welcome(self):
         self.d.set_background_title(_("Welcome to the %s Installer.") % config.get("distro_title","17g"))
@@ -27,11 +24,12 @@ class InstallerWindow:
         lang_menu = []
         for c in common.get_country_list():
             c = c.split(":")
-            ccode = c[0]
-            language = c[1]
-            country = c[2]
-            locale = c[3]
-            lang_menu.append((locale, "{} - {}".format(language,country)))
+            lang_menu.append((locale, "{} - {}".format(c[1],c[2])))
         c, self.setup.language = self.d.menu(_("Language"),choices=lang_menu)
-
-InstallerWindow()
+        
+    def page_timezone(self):
+        tz_menu = []
+        for tz in common.get_timezone_list():
+            tz_menu.append((tz.split(" ")[1],tz.split(" ")[0]))
+        tz, self.setup.timezone = self.d.menu(_("Timezone"),choices=tz_menu)
+            
