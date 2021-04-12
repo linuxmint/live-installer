@@ -1,19 +1,26 @@
+import config
+from dialog import Dialog
 from installer import InstallerEngine, Setup
-from frontend.curses import *
+import gettext, locale
+gettext.install("live-installer", "/usr/share/locale")
 
 class InstallerWindow:
     def __init__(self):
         self.setup = Setup()
         self.installer = InstallerEngine(self.setup)
-        self.draw_page("Hello world\nOther line")
-        
-    def draw_page(self,msg):
-        initscr()
-        x=get_width()
-        y=get_height()
-        drawbox(1,1,x,y)
-        i=0
-        for line in msg.split("\n"):
-            move((x-max_line_len(msg)[0])/2,((y-max_line_len(msg)[1])/2)+i)
-            printw(line)
-            i+=1
+        self.d = Dialog(dialog="dialog")
+        self.page_welcome()
+        self.page_language()
+
+    def page_welcome(self):
+        self.d.set_background_title(_("Welcome to the %s Installer.") % config.get("distro_title","17g"))
+        self.d.msgbox(_("This program will ask you some questions and set up system on your computer."))
+
+    def page_language(self):
+        self.d.set_background_title(_("What language would you like to use?"))
+        c, self.setup.language = self.d.menu(_("Language"),choices=[
+                                 ("tr_TR","Turkish"),
+                                 ("en_US", "English")
+                                 ])
+
+InstallerWindow()

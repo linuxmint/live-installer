@@ -49,6 +49,12 @@ install 17g.initd /etc/init.d #(for openrc)
 install 17g.service /etc/systemd/system #(for systemd)
 ```
 
+# Building with unibuild
+
+```shell
+unibuild https://gitlab.com/ggggggggggggggggg/17g/-/raw/master/17g-installer.unibuild
+```
+
 # Installation for debian
 
 ```shell
