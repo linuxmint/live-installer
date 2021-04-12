@@ -598,23 +598,24 @@ class InstallerWindow:
         except ImportError:
             import xml.etree.ElementTree as ET
         xml = ET.parse('/usr/share/X11/xkb/rules/xorg.xml')
-        for node in xml.iterfind('.//modelList/model/configItem'):
-            name, desc = node.find('name').text, node.find('description').text
-            iterator = models.append((desc, name))
-            if name == keyboard_geom:
+        # Keyboard model
+        for model in common.get_keyboard_model_list():
+            iterator = models.append(model)
+            if model[1] == keyboard_geom:
                 set_keyboard_model = iterator
-        for node in xml.iterfind('.//layoutList/layout'):
-            name, desc = node.find(
-                'configItem/name').text, node.find('configItem/description').text
-            nonedesc = desc
+        # Keyboard layout
+        for  model in common.get_keyboard_layout_list():
+            desc = model[0]
+            nonedesc = model[0]
+            name = model[1]
+            node = model[2]
             if name in NON_LATIN_KB_LAYOUTS:
                 nonedesc = "English (US) + %s" % nonedesc
-            variants[name].append((nonedesc, None))
-            for variant in node.iterfind('variantList/variant/configItem'):
-                var_name, var_desc = variant.find(
-                    'name').text, variant.find('description').text
-                var_desc = var_desc if var_desc.startswith(
-                    desc) else '{} - {}'.format(desc, var_desc)
+            # Keyboard variant
+            for variant in common.get_keyboard_veriant_list(model):
+                var_name = variant[0]
+                var_desc = variant[1]
+                var_desc = var_name if len(var_desc) == 0 else '{} - {}'.format(desc, var_desc)
                 if name in NON_LATIN_KB_LAYOUTS and "Latin" not in var_desc:
                     var_desc = "English (US) + %s" % var_desc
                 variants[name].append((var_desc, var_name))

@@ -1,6 +1,10 @@
 import os
 import subprocess
-
+try:
+    import xml.etree.cElementTree as ET
+except ImportError:
+    import xml.etree.ElementTree as ET
+kbdxml = ET.parse('/usr/share/X11/xkb/rules/xorg.xml')
 
 def get_country_list():
     countries = {}
@@ -53,3 +57,26 @@ def get_country_list():
     
 def get_timezone_list():
     return subprocess.getoutput("cat ./resources/timezones").split('\n')
+    
+def get_keyboard_model_list():
+    models = []
+    for node in kbdxml.iterfind('.//modelList/model/configItem'):
+            name, desc = node.find('name').text, node.find('description').text
+            models.append((desc, name))
+    return models
+    
+def get_keyboard_layout_list():
+    models = []
+    for node in kbdxml.iterfind('.//layoutList/layout'):
+        name, desc = node.find(
+            'configItem/name').text, node.find('configItem/description').text
+        models.append((desc, name, node))
+    return models
+    
+def get_keyboard_veriant_list(model):
+    models = [(model[0],"")]
+    for variant in model[2].iterfind('variantList/variant/configItem'):
+        var_name, var_desc = variant.find(
+            'name').text, variant.find('description').text
+        models.append((var_name, var_desc))
+    return models
