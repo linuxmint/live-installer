@@ -2,6 +2,7 @@
 
 import frontend.timezones
 import frontend.partitioning
+import frontend.common
 import threading
 import time
 import parted
@@ -534,30 +535,7 @@ class InstallerWindow:
             self.cur_country_code = config.get('default_country_code')
 
         # Load countries into memory
-        countries = {}
-        iso_standard = "3166"
-        if os.path.exists("/usr/share/xml/iso-codes/iso_3166-1.xml"):
-            iso_standard = "3166-1"
-        for line in subprocess.getoutput("isoquery --iso %s | cut -f1,4-" % iso_standard).split('\n'):
-            ccode, cname = line.split(None, 1)
-            countries[ccode] = cname
-
-        # Load languages into memory
-        languages = {}
-        iso_standard = "639"
-        if os.path.exists("/usr/share/xml/iso-codes/iso_639-2.xml"):
-            iso_standard = "639-2"
-        for line in subprocess.getoutput("isoquery --iso %s | cut -f3,4-" % iso_standard).split('\n'):
-            cols = line.split(None, 1)
-            if len(cols) > 1:
-                name = cols[1].replace(";", ",")
-                languages[cols[0]] = name
-        for line in subprocess.getoutput("isoquery --iso %s | cut -f1,4-" % iso_standard).split('\n'):
-            cols = line.split(None, 1)
-            if len(cols) > 1:
-                if cols[0] not in list(languages.keys()):
-                    name = cols[1].replace(";", ",")
-                    languages[cols[0]] = name
+        ccodes = common.get_country_list()
 
         # Construct language selection model
         model = Gtk.ListStore(str, str, GdkPixbuf.Pixbuf, str)
@@ -575,26 +553,12 @@ class InstallerWindow:
                 return flag_image(flag_path(ccode))
             except:
                 return flag_image("./resources/flags/16/_United Nations.png")
-        for locale in subprocess.getoutput("cat ./resources/locales").split('\n'):
-            if '_' in locale:
-                lang, ccode = locale.split('_')
-                language = lang
-                country = ccode
-                try:
-                    language = languages[lang]
-                except:
-                    pass
-                try:
-                    country = countries[ccode]
-                except:
-                    pass
-            else:
-                lang = locale
-                try:
-                    language = languages[lang]
-                except:
-                    pass
-                country = ''
+        for c in ccodes:
+            c = c.split(":")
+            ccode = c[0]
+            language = c[1]
+            country = c[2]
+            locale = c[3]
             pixbuf = flag(ccode) if not lang in 'eo ia' else flag('_' + lang)
             itervar = model.append((language, country, pixbuf, locale))
             if (ccode == self.cur_country_code and
