@@ -47,7 +47,7 @@ class InstallerWindow:
             i += 1
         m, index=self.d.menu(_("Keyboard Model"),choices=kbd_model_menu)
         if m != self.d.OK: return m
-        sel = models[int(index)[1]]
+        sel = models[int(index)]
         self.setup.keyboard_model_description = sel[0].strip()
         self.setup.keyboard_model = sel[1].strip()
         return m
