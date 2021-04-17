@@ -900,7 +900,7 @@ class InstallerWindow:
                             if partition.format_as == None or partition.format_as == "":
                                 # No partitioning
                                 if partition.type != "vfat" and partition.type != "fat32" and partition.type != "fat16":
-                                ErrorDialog(_("Installer"), _(
+                                    ErrorDialog(_("Installer"), _(
                                         "The EFI partition must be formatted as vfat."))
                                     return
                             else:
@@ -917,12 +917,6 @@ class InstallerWindow:
                 partitioning.build_grub_partitions()
         elif index == self.PAGE_OVERVIEW:
             self.show_overview()
-                if not found_efi_partition:
-                    ErrorDialog(_("Installer"), "<b>%s</b>" % _("Please select an EFI partition."), _(
-                        "An EFI system partition is needed with the following requirements:\n\n - Mount point: /boot/efi\n - Partition flags: Bootable\n - Size: at least 35MB (100MB or more recommended)\n - Format: vfat or fat32\n\nTo ensure compatibility with Windows we recommend you use the first partition of the disk as the EFI system partition.\n "))
-                    return
-
-            partitioning.build_grub_partitions()
         elif index == self.PAGE_INSTALL:
             self.builder.get_object("button_next").set_sensitive(False)
             self.builder.get_object("button_back").set_sensitive(False)

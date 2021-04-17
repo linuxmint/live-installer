@@ -384,6 +384,7 @@ def full_disk_format(device, create_boot=False, create_swap=True):
     if device.path.startswith("/dev/nvme"):
         partition_prefix = "p"
     for partition in mkpart:
+        log(partition)
         if partition[0]:
             partition_number = partition_number + 1
             mkfs = partition[3]
