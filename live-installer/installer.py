@@ -344,7 +344,7 @@ class InstallerEngine:
                         fs = "vfat"
                     else:
                         fs = partition.type
-                    if 0 != self.do_mount(partition.path, "/target", fs, None)
+                    if 0 != self.do_mount(partition.path, "/target", fs, None):
                         self.error_message("Cannot mount rootfs: {}".format(partition.path))
                     break
 
