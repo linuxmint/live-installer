@@ -738,7 +738,7 @@ class InstallerEngine:
             cmd = "mount -o %s -t %s %s %s" % (options, typevar, device, dest)
         else:
             cmd = "mount -t %s %s %s" % (typevar, device, dest)
-        retun run(cmd)
+        return run(cmd)
 
     def do_unmount(self, mountpoint):
         ''' Unmount a filesystem '''
