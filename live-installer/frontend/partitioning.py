@@ -254,7 +254,7 @@ class PartitionSetup(Gtk.TreeStore):
             try:
                 disk = parted.Disk(disk_device)
             except Exception as detail:
-                log("      - Found an issue while looking for the disk: %s" % detail)
+                log("Found an issue while looking for the disk: %s" % detail)
                 from frontend.gtk_interface import QuestionDialog
                 dialog = QuestionDialog(_("Installation Tool"),
                                         _("No partition table was found on the hard drive: %s. Do you want the installer to create a set of partitions for you? Note: This will ERASE ALL DATA present on this disk.") % disk_description,
@@ -264,17 +264,15 @@ class PartitionSetup(Gtk.TreeStore):
                 try:
                     installer.window.get_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
                     if not already_done_full_disk_format:
-                        assign_mount_format = full_disk_format(disk_device)
+                        assign_mount_format = full_disk_format(disk_device,config.get("create_boot",True),config.get("create_swap",False))
                         already_done_full_disk_format = True
                     else:
                         # Format but don't assign mount points
-                        full_disk_format(disk_device)
+                        full_disk_format(disk_device,config.get("create_boot",True),config.get("create_swap",False))
                     installer.window.get_window().set_cursor(None)
                     disk = parted.Disk(disk_device)
                 except Exception:
                     installer.window.get_window().set_cursor(None)
-                    log(
-                        "      - Found another issue while looking for the disk: %s" % detail)
                     continue  # Something is wrong with this disk, skip it
 
             disk_iter = self.append(
@@ -289,7 +287,7 @@ class PartitionSetup(Gtk.TreeStore):
             partitions = []
             for partition in partition_set:
                 part = Partition(partition)
-                log((partition.path, part.size, part.raw_size))
+                log("{} {}".format(partition.path.replace("-",""), part.size))
                 # skip ranges <5MB
                 if part.raw_size > 5242880:
                     partitions.append(part)
@@ -328,11 +326,15 @@ def show_error(message):
     ErrorDialog(_("Installer"), message)
 
 
-def full_disk_format(device, create_boot=False, create_swap=True):
+def full_disk_format(device, create_boot=True, create_swap=False):
     # Create a default partition set up
     disk_label = ('gpt' if device.getLength('B') > 2**32*.9 * device.sectorSize  # size of disk > ~2TB
                   or is_efi_supported()
                   else 'msdos')
+    # Force lazy umount 
+    os.system("umount -lf {}*".format(device.path))
+    # Wipe first 512 byte
+    open(device.path,"w").write("\x00"*512)
     return_code = os.system("parted -s %s mklabel %s" %
                             (device.path, disk_label))
     if return_code != 0:

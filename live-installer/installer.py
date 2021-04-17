@@ -415,7 +415,7 @@ class InstallerEngine:
                         fstab_fsck_option = "0"
 
                     if("ext" in partition.type):
-                        fstab_mount_options = "rw,errors=remount-ro"
+                        fstab_mount_options = "defaults,rw"
                     else:
                         fstab_mount_options = "defaults"
 
@@ -481,6 +481,14 @@ class InstallerEngine:
             "localectl set-locale LANG=%s.UTF-8" % self.setup.language)
         open("/target/etc/locale.conf", "w").write("LANG=%s.UTF-8" %
                                                    self.setup.language)
+        # set the locale for gentoo / sulin 
+        if os.path.exists("/target/etc/env.d"):
+            l = open("/target/etc/env.d/20language","w")
+            l.write("LANG={}.UTF-8".format(self.setup.language))
+            l.write("LC_ALL={}.UTF-8".format(self.setup.language))
+            l.flush()
+            l.close()
+            self.do_run_in_chroot("env-update")
 
         # set the timezone
         log(" --> Setting the timezone")
