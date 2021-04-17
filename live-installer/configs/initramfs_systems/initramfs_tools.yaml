@@ -1,3 +1,4 @@
 name: initramfs_tools
+check_this_dir: /etc/initramfs-tools
 commands:
   - update-initramfs -u -t -k all

@@ -1,7 +1,5 @@
 #!/usr/bin/python3
 from utils import *
-from frontend.gtk_interface import InstallerWindow
-from frontend.welcome import welcome
 from frontend import *
 from frontend.dialogs import ErrorDialog
 
@@ -26,12 +24,18 @@ if __name__ == "__main__":
         exit(1)
     if ("--welcome" in sys.argv):
         if config.get("welcome_screen", True):
+            from frontend.welcome import welcome
             win = welcome()
         else:
             err("Welcome screen disabled by config.")
             exit(0)
     else:
-        win = InstallerWindow()
-        if ("--fullscreen" in sys.argv):
-            win.fullscreen()
+        if "--tui" in sys.argv:
+            from frontend.tui_interface import InstallerWindow
+            term = InstallerWindow()
+        else:
+            from frontend.gtk_interface import InstallerWindow
+            win = InstallerWindow()
+            if ("--fullscreen" in sys.argv):
+                win.fullscreen()
     Gtk.main()

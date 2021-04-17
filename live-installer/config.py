@@ -19,7 +19,7 @@ def load_config(config_path):
         log(content)
     else:
         err("{} doesn't exists. Please create config file!".format(config_path))
-        return []
+        return {}
 
     try:
         return yaml.load(content, Loader=yaml.FullLoader) or {}
@@ -57,7 +57,7 @@ if(get("distribution", "auto") == "auto"):
         distro = load_config(distro_system)
         if not distro:
             err("Failed to load: "+distro_system)
-        elif os.path.exists(distro["check_this_dir"]):
+        elif "check_this_dir" in distro and os.path.exists(distro["check_this_dir"]):
             break
 else:
     distro = load_config(
@@ -65,24 +65,24 @@ else:
 
 # Initramfs system
 if(get("initramfs_system", "auto") == "auto"):
-    for initramfs_system in glob("configs/package_managers/*"):
+    for initramfs_system in glob("configs/initramfs_systems/*"):
         initramfs = load_config(initramfs_system)
         if not initramfs:
-            err("Failed to load: "+package_manager)
-        elif os.path.exists(initramfs["check_this_dir"]):
+            err("Failed to load: "+initramfs_system)
+        elif "check_this_dir" in initramfs and os.path.exists(initramfs["check_this_dir"]):
             break
 else:
-    distro = load_config(
+    initramfs = load_config(
         "configs/initramfs_systems/{}.yaml".format(main["initramfs_system"]))
 
 
 # Package Manager
-if(get("initramfs_system", "auto") == "auto"):
+if(get("package_manager", "auto") == "auto"):
     for package_manager in glob("configs/package_managers/*"):
         pm = load_config(package_manager)
         if not pm:
             err("Failed to load: "+package_manager)
-        elif os.path.exists(pm["check_this_dir"]):
+        elif "check_this_dir" in pm and os.path.exists(pm["check_this_dir"]):
             break
 else:
     pm = load_config(
@@ -90,6 +90,7 @@ else:
 
 
 def package_manager(process, packages=[]):
+    print(pm)
     if process == "name":
         exit("You can't use this parameter!")
     if process in pm:
@@ -105,6 +106,7 @@ def package_manager(process, packages=[]):
 def update_initramfs():
     commands = []
     for command in initramfs["commands"]:
+        log(initramfs)
         if "{kernel_version}" in command:
             kernel_version = subprocess.getoutput("uname -r")
             command = command.replace('{kernel_version}', kernel_version)

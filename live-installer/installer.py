@@ -3,7 +3,7 @@ import subprocess
 import time
 import gettext
 import parted
-import frontend.partitioning
+import frontend.partitioning as partitioning
 import config
 from utils import log, err, inf, run
 
@@ -153,10 +153,10 @@ class InstallerEngine:
         # Set LightDM to show user list by default
         if config.get("list_users_when_auto_login", True):
             self.do_run_in_chroot(
-                r"sed -i -r 's/^#?(greeter-hide-users)\s*=.*/\1=true/' /etc/lightdm/lightdm.conf")
+                r"sed -i -r 's/^#?(greeter-hide-users)\s*=.*/\1=false/' /etc/lightdm/lightdm.conf")
         else:
             self.do_run_in_chroot(
-                r"sed -i -r 's/^#?(greeter-hide-users)\s*=.*/\1=false/' /etc/lightdm/lightdm.conf")
+                r"sed -i -r 's/^#?(greeter-hide-users)\s*=.*/\1=true/' /etc/lightdm/lightdm.conf")
 
         # Set autologin for user if they so elected
         if self.setup.autologin:
@@ -247,7 +247,7 @@ class InstallerEngine:
             "Creating partitions on %s") % self.setup.disk)
         log(" --> Creating partitions on %s" % self.setup.disk)
         disk_device = parted.getDevice(self.setup.disk)
-        # replae this whit changeable function
+        # replae this with changeable function
         partitioning.full_disk_format(disk_device, create_boot=(
             self.auto_boot_partition is not None), create_swap=(self.auto_swap_partition is not None))
 
@@ -599,8 +599,9 @@ class InstallerEngine:
         self.update_progress(our_current, our_total, False,
                              False, _("Clearing package manager"))
         log(" --> Clearing package manager")
+        log(config.get("remove_packages",["17g-installer"]))
         self.do_run_in_chroot("yes | {}".format(config.package_manager(
-            "remove_package_with_unusing_deps", config.get("remove_packages"), ["17g-installer"])))
+            "remove_package_with_unusing_deps", config.get("remove_packages",["17g-installer"]))))
 
         if self.setup.luks:
             with open("/target/etc/default/grub.d/61_live-installer.cfg", "w") as f:

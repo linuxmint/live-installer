@@ -1,7 +1,10 @@
 [Unit]
 Description=live-save
+Before=display-manager.service
+
 [Service]
-Type=simple
+Type=oneshot
+RemainAfterExit=yes
 ExecStart=/usr/lib/live-installer/service.py
 
 [Install]

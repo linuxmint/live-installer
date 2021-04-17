@@ -1,3 +1,4 @@
 name: example
+check_this_dir: /example/path
 commands:
   - example initramfs command

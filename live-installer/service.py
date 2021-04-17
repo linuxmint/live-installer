@@ -2,6 +2,7 @@
 
 # 17g service
 import os
+import sys
 import config
 from utils import err, is_root, run
 if not is_root():

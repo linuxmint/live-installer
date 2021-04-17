@@ -2,6 +2,7 @@
 
 import frontend.timezones
 import frontend.partitioning
+import frontend.common
 import threading
 import time
 import parted
@@ -175,14 +176,14 @@ class InstallerWindow:
             "toggled", self.assign_login_options)
 
         # link the checkbutton to the combobox
-        grub_check = self.builder.get_object("checkbutton_grub")
-        grub_box = self.builder.get_object("combobox_grub")
-        grub_check.connect("toggled", self.assign_grub_install, grub_box)
-        grub_box.connect("changed", self.assign_grub_device)
+        self.grub_check = self.builder.get_object("checkbutton_grub")
+        self.grub_box = self.builder.get_object("combobox_grub")
+        self.grub_check.connect("toggled", self.assign_grub_install)
+        self.grub_box.connect("changed", self.assign_grub_device)
 
         # install Grub by default
-        grub_check.set_active(True)
-        grub_box.set_sensitive(True)
+        self.grub_check.set_active(True)
+        self.grub_box.set_sensitive(True)
 
         # kb models
         cell = Gtk.CellRendererText()
@@ -534,30 +535,7 @@ class InstallerWindow:
             self.cur_country_code = config.get('default_country_code')
 
         # Load countries into memory
-        countries = {}
-        iso_standard = "3166"
-        if os.path.exists("/usr/share/xml/iso-codes/iso_3166-1.xml"):
-            iso_standard = "3166-1"
-        for line in subprocess.getoutput("isoquery --iso %s | cut -f1,4-" % iso_standard).split('\n'):
-            ccode, cname = line.split(None, 1)
-            countries[ccode] = cname
-
-        # Load languages into memory
-        languages = {}
-        iso_standard = "639"
-        if os.path.exists("/usr/share/xml/iso-codes/iso_639-2.xml"):
-            iso_standard = "639-2"
-        for line in subprocess.getoutput("isoquery --iso %s | cut -f3,4-" % iso_standard).split('\n'):
-            cols = line.split(None, 1)
-            if len(cols) > 1:
-                name = cols[1].replace(";", ",")
-                languages[cols[0]] = name
-        for line in subprocess.getoutput("isoquery --iso %s | cut -f1,4-" % iso_standard).split('\n'):
-            cols = line.split(None, 1)
-            if len(cols) > 1:
-                if cols[0] not in list(languages.keys()):
-                    name = cols[1].replace(";", ",")
-                    languages[cols[0]] = name
+        ccodes = common.get_country_list()
 
         # Construct language selection model
         model = Gtk.ListStore(str, str, GdkPixbuf.Pixbuf, str)
@@ -575,26 +553,12 @@ class InstallerWindow:
                 return flag_image(flag_path(ccode))
             except:
                 return flag_image("./resources/flags/16/_United Nations.png")
-        for locale in subprocess.getoutput("cat ./resources/locales").split('\n'):
-            if '_' in locale:
-                lang, ccode = locale.split('_')
-                language = lang
-                country = ccode
-                try:
-                    language = languages[lang]
-                except:
-                    pass
-                try:
-                    country = countries[ccode]
-                except:
-                    pass
-            else:
-                lang = locale
-                try:
-                    language = languages[lang]
-                except:
-                    pass
-                country = ''
+        for c in ccodes:
+            c = c.split(":")
+            ccode = c[0]
+            language = c[1]
+            country = c[2]
+            locale = c[3]
             pixbuf = flag(ccode) if not lang in 'eo ia' else flag('_' + lang)
             itervar = model.append((language, country, pixbuf, locale))
             if (ccode == self.cur_country_code and
@@ -634,23 +598,24 @@ class InstallerWindow:
         except ImportError:
             import xml.etree.ElementTree as ET
         xml = ET.parse('/usr/share/X11/xkb/rules/xorg.xml')
-        for node in xml.iterfind('.//modelList/model/configItem'):
-            name, desc = node.find('name').text, node.find('description').text
-            iterator = models.append((desc, name))
-            if name == keyboard_geom:
+        # Keyboard model
+        for model in common.get_keyboard_model_list():
+            iterator = models.append(model)
+            if model[1] == keyboard_geom:
                 set_keyboard_model = iterator
-        for node in xml.iterfind('.//layoutList/layout'):
-            name, desc = node.find(
-                'configItem/name').text, node.find('configItem/description').text
-            nonedesc = desc
+        # Keyboard layout
+        for  model in common.get_keyboard_layout_list():
+            desc = model[0]
+            nonedesc = model[0]
+            name = model[1]
+            node = model[2]
             if name in NON_LATIN_KB_LAYOUTS:
                 nonedesc = "English (US) + %s" % nonedesc
-            variants[name].append((nonedesc, None))
-            for variant in node.iterfind('variantList/variant/configItem'):
-                var_name, var_desc = variant.find(
-                    'name').text, variant.find('description').text
-                var_desc = var_desc if var_desc.startswith(
-                    desc) else '{} - {}'.format(desc, var_desc)
+            # Keyboard variant
+            for variant in common.get_keyboard_veriant_list(model):
+                var_name = variant[0]
+                var_desc = variant[1]
+                var_desc = var_name if len(var_desc) == 0 else '{} - {}'.format(desc, var_desc)
                 if name in NON_LATIN_KB_LAYOUTS and "Latin" not in var_desc:
                     var_desc = "English (US) + %s" % var_desc
                 variants[name].append((var_desc, var_name))
@@ -710,10 +675,10 @@ class InstallerWindow:
         self.setup.autologin = self.builder.get_object(
             "radiobutton_autologin").get_active()
 
-    def assign_grub_install(self, checkbox, grub_box, data=None):
-        grub_box.set_sensitive(checkbox.get_active())
+    def assign_grub_install(self, checkbox, data=None):
+        self.grub_box.set_sensitive(checkbox.get_active())
         if checkbox.get_active():
-            self.assign_grub_device(grub_box)
+            self.assign_grub_device(self.grub_box)
         else:
             self.setup.grub_device = None
 
@@ -754,9 +719,9 @@ class InstallerWindow:
         (self.setup.keyboard_variant_description,
          self.setup.keyboard_variant) = model[active[0]]
 
-        if self.setup.keyboard_variant is None:
+        if not self.setup.keyboard_variant:
             self.setup.keyboard_variant = ""
-
+        
         if self.setup.keyboard_layout in NON_LATIN_KB_LAYOUTS:
             # Add US layout for non-latin layouts
             self.setup.keyboard_layout = 'us,%s' % self.setup.keyboard_layout
@@ -782,6 +747,7 @@ class InstallerWindow:
 
     def activate_page(self, nex=0,index=0,goback=False):
         errorFound = False
+        self.show_overview()
         if index == self.PAGE_LANGUAGE:
             if self.setup.language is None:
                 WarningDialog(_("Installer"), _(
@@ -818,7 +784,7 @@ class InstallerWindow:
                     itervar = model.iter_next(itervar)
         elif index == self.PAGE_KEYBOARD:
             self.builder.get_object("entry_name").grab_focus()
-            if not goback and not self.setup.keyboard_variant:
+            if not goback and (not self.setup.keyboard_variant and self.setup.keyboard_variant != "") :
                 WarningDialog(_("Installer"), _("Please provide a kayboard layout for your computer."))
                 return
         elif index == self.PAGE_USER:
@@ -951,6 +917,12 @@ class InstallerWindow:
                 partitioning.build_grub_partitions()
         elif index == self.PAGE_OVERVIEW:
             self.show_overview()
+                if not found_efi_partition:
+                    ErrorDialog(_("Installer"), "<b>%s</b>" % _("Please select an EFI partition."), _(
+                        "An EFI system partition is needed with the following requirements:\n\n - Mount point: /boot/efi\n - Partition flags: Bootable\n - Size: at least 35MB (100MB or more recommended)\n - Format: vfat or fat32\n\nTo ensure compatibility with Windows we recommend you use the first partition of the disk as the EFI system partition.\n "))
+                    return
+
+            partitioning.build_grub_partitions()
         elif index == self.PAGE_INSTALL:
             self.builder.get_object("button_next").set_sensitive(False)
             self.builder.get_object("button_back").set_sensitive(False)
@@ -980,12 +952,14 @@ class InstallerWindow:
         
         
     def activate_page_type(self):
+        self.show_overview()
         if self.setup.automated:
             errorFound = False
             errorMessage = ""
             if self.setup.disk is None:
                  errorFound = True
                  errorMessage = _("Please select a disk.")
+            self.setup.grub_device = self.setup.disk
             if self.setup.luks:
                 if (self.setup.passphrase1 is None or self.setup.passphrase1 == ""):
                       errorFound = True
@@ -1001,7 +975,6 @@ class InstallerWindow:
                     partitioning.build_partitions(self)
                     partitioning.build_grub_partitions()
                     self.activate_page(self.PAGE_OVERVIEW)
-                    self.show_overview()
         else:
             self.activate_page(self.PAGE_PARTITIONS)
             partitioning.build_partitions(self)
@@ -1032,6 +1005,10 @@ class InstallerWindow:
                 self.activate_page_type()
                 return
             if(sel == self.PAGE_PARTITIONS):
+                if self.grub_check.get_active() and \
+                   not self.setup.grub_device:
+                       WarningDialog(_("Installer"), _("Please provide a device to install grub."))
+                       return
                 nex = self.PAGE_OVERVIEW
             if(sel == self.PAGE_OVERVIEW):
                 nex = self.PAGE_INSTALL
@@ -1061,7 +1038,8 @@ class InstallerWindow:
         self.activate_page(nex,sel,goback)
 
     def show_overview(self):
-        def bold(strvar): return '<b>' + strvar + '</b>'
+        def bold(strvar):
+            return '<b>' + str(strvar) + '</b>'
         model = Gtk.TreeStore(str)
         self.builder.get_object("treeview_overview").set_model(model)
         top = model.append(None, (_("Localization"),))
@@ -1074,7 +1052,7 @@ class InstallerWindow:
         model.append(top, (_("Real name: ") + bold(self.setup.real_name),))
         model.append(top, (_("Username: ") + bold(self.setup.username),))
         model.append(
-            top, (_("Password: ") + bold(len(self.setup.password1)*"*"),))
+            top, (_("Password: ") + bold(len(str(self.setup.password1))*"*"),))
         if config.get("autologin_enabled",True):
             model.append(top, (_("Automatic login: ") + bold(_("enabled")
                                                              if self.setup.autologin else _("disabled")),))

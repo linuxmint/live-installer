@@ -1,3 +1,4 @@
 name: initrd
+check_this_dir: /lib/initrd
 commands:
   - update-initrd
