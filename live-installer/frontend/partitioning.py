@@ -189,7 +189,7 @@ def partitions_popup_menu(widget, event):
     menuItem.connect("activate", lambda w: assign_mount_point(
         partition, '/home', ''))
     menu.append(menuItem)
-    if installer.setup.gptonefi:
+    if is_efi_supported():
         menuItem = Gtk.SeparatorMenuItem()
         menu.append(menuItem)
         menuItem = Gtk.MenuItem(_("Assign to /boot/efi"))
@@ -244,7 +244,6 @@ class PartitionSetup(Gtk.TreeStore):
         installer.setup.partition_setup = self
 
         os.popen('mkdir -p ' + TMP_MOUNTPOINT)
-        installer.setup.gptonefi = is_efi_supported()
         self.disks = get_disks()
         log('Disks: ', self.disks)
         already_done_full_disk_format = False
@@ -354,7 +353,7 @@ def show_error(message):
 def full_disk_format(device, create_boot=False, create_swap=True):
     # Create a default partition set up
     disk_label = ('gpt' if device.getLength('B') > 2**32*.9 * device.sectorSize  # size of disk > ~2TB
-                  or installer.setup.gptonefi
+                  or is_efi_supported()
                   else 'msdos')
     return_code = os.system("parted -s %s mklabel %s" %
                             (device.path, disk_label))
@@ -367,7 +366,7 @@ def full_disk_format(device, create_boot=False, create_swap=True):
     mkpart = (
         # (condition, mount_as, format_as, mkfs command, size_mb)
         # EFI
-        (installer.setup.gptonefi, EFI_MOUNT_POINT,
+        (is_efi_supported(), EFI_MOUNT_POINT,
          'vfat', 'mkfs.vfat {} -F 32 ', 300),
         # boot
         (create_boot, '/boot', 'ext4', 'mkfs.ext4 -F {}', 1024),
@@ -413,7 +412,7 @@ def full_disk_format(device, create_boot=False, create_swap=True):
             log("Executing: "+mkfs)
             os.system(mkfs)
             start_mb += size_mb + 1
-    if installer.setup.gptonefi:
+    if is_efi_supported():
         run_parted('set 1 boot on')
     return ((i[1], i[2]) for i in mkpart if i[0])
 
