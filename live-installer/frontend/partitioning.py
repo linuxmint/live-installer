@@ -251,10 +251,8 @@ class PartitionSetup(Gtk.TreeStore):
             log("    Analyzing path='%s' description='%s'" %
                 (disk_path, disk_description))
             disk_device = parted.getDevice(disk_path)
-            log("      - Found the device...")
             try:
                 disk = parted.Disk(disk_device)
-                log("      - Found the disk...")
             except Exception as detail:
                 log("      - Found an issue while looking for the disk: %s" % detail)
                 from frontend.gtk_interface import QuestionDialog
@@ -265,7 +263,6 @@ class PartitionSetup(Gtk.TreeStore):
                     continue  # the user said No, skip this disk
                 try:
                     installer.window.get_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
-                    log("Performing a full disk format")
                     if not already_done_full_disk_format:
                         assign_mount_format = full_disk_format(disk_device)
                         already_done_full_disk_format = True
@@ -273,9 +270,7 @@ class PartitionSetup(Gtk.TreeStore):
                         # Format but don't assign mount points
                         full_disk_format(disk_device)
                     installer.window.get_window().set_cursor(None)
-                    log("Done full disk format")
                     disk = parted.Disk(disk_device)
-                    log("Got disk!")
                 except Exception:
                     installer.window.get_window().set_cursor(None)
                     log(
@@ -284,25 +279,13 @@ class PartitionSetup(Gtk.TreeStore):
 
             disk_iter = self.append(
                 None, (disk_description, '', '', '', '', '', '', None, disk_path))
-            log("      - Looking at partitions...")
             free_space_partition = disk.getFreeSpacePartitions()
-            log("           -> %d free space partitions" %
-                len(free_space_partition))
             primary_partitions = disk.getPrimaryPartitions()
-            log("           -> %d primary partitions" %
-                len(primary_partitions))
             logical_partitions = disk.getLogicalPartitions()
-            log("           -> %d logical partitions" %
-                len(logical_partitions))
             raid_partitions = disk.getRaidPartitions()
-            log("           -> %d raid partitions" % len(raid_partitions))
             lvm_partitions = disk.getLVMPartitions()
-            log("           -> %d LVM partitions" % len(lvm_partitions))
-
             partition_set = tuple(free_space_partition + primary_partitions +
                                   logical_partitions + raid_partitions + lvm_partitions)
-            log("           -> set of %d partitions" % len(partition_set))
-
             partitions = []
             for partition in partition_set:
                 part = Partition(partition)
@@ -310,12 +293,9 @@ class PartitionSetup(Gtk.TreeStore):
                 # skip ranges <5MB
                 if part.raw_size > 5242880:
                     partitions.append(part)
-                else:
-                    log(("skipping ", partition.path, part.raw_size))
             partitions = sorted(
                 partitions, key=lambda part: part.partition.geometry.start)
 
-            log("      - Found partitions...")
             try:  # assign mount_as and format_as if disk was just auto-formatted
                 for partition, (mount_as, format_as) in zip(partitions, assign_mount_format):
                     partition.mount_as = mount_as
@@ -323,12 +303,10 @@ class PartitionSetup(Gtk.TreeStore):
                 del assign_mount_format
             except NameError:
                 pass
-            log("      - Iterating partitions...")
             # Needed to fix the 1% minimum Partition.size_percent
             # .5 for good measure
             sum_size_percent = sum(p.size_percent for p in partitions) + .5
             for partition in partitions:
-                log("        . Appending partition %s..." % partition.name)
                 partition.size_percent = round(
                     partition.size_percent / sum_size_percent * 100, 1)
                 installer.setup.partitions.append(partition)
@@ -432,26 +410,16 @@ class Partition(object):
     def __init__(self, partition):
         assert partition.type not in (
             parted.PARTITION_METADATA, parted.PARTITION_EXTENDED)
-        self.path = str(partition.path)
-
-        log("              -> Building partition object for %s" % self.path)
+        self.path = str(partition.path).replace("-","") # /dev/sda-1 to /dev/sda1
 
         self.partition = partition
         self.length = partition.getLength()
-        log("                  . length %d" % self.length)
-
         self.size_percent = max(
             1, round(80*self.length/partition.disk.device.getLength(), 1))
-        log("                  . size_percent %d" % self.size_percent)
-
         self.size = to_human_readable(partition.getLength('B'))
         self.raw_size = partition.getLength('B')
-        log("                  . size %s" % self.size)
-
         # if not normal partition with /dev/sdXN path, set its name to '' and discard it from model
         self.name = self.path if partition.number != -1 else ''
-        log("                  . name %s" % self.name)
-
         try:
             self.type = partition.fileSystem.type
             # normalize fs variations (parted.filesystem.fileSystemType.keys())
@@ -459,7 +427,6 @@ class Partition(object):
                 if fs in self.type:
                     self.type = fs
             self.style = self.type
-            log("                  . type %s" % self.type)
         except AttributeError:  # non-formatted partitions
             self.type = {
                 parted.PARTITION_LVM: 'LVM',
@@ -478,14 +445,11 @@ class Partition(object):
                 parted.PARTITION_SWAP: 'swap',
                 parted.PARTITION_FREESPACE: 'freespace',
             }.get(partition.type, '')
-            log("                  . type %s" % self.type)
-
         if "swap" in self.type:
             self.mount_as = SWAP_MOUNT_POINT
 
         # identify partition's description and used space
         try:
-            log("                  . About to mount it...")
             os.system('mount --read-only {} {}'.format(self.path, TMP_MOUNTPOINT))
             size, free, self.used_percent, mount_point = str(getoutput(
                 "df {0} | grep '^{0}' | awk '{{print $2,$4,$5,$6}}' | tail -1".format(self.path)).split(None, 3))
@@ -493,19 +457,13 @@ class Partition(object):
             log("                  . size %s, free %s, self.used_percent %s, mount_point %s" % (
                 size, free, self.used_percent, mount_point))
         except ValueError:
-            log("                  . value error!")
             if "swap" in self.type:
                 self.os_fs_info, self.description, self.free_space, self.used_percent = ': ' + \
                     self.type, 'swap', '', 0
             else:
-                log('WARNING: Partition {} or type {} failed to mount!'.format(
-                    self.path, partition.type))
                 self.os_fs_info, self.description, self.free_space, self.used_percent = ': ' + \
                     self.type, '', '', 0
-            log("                  . self.os_fs_info %s, self.description %s, self.free_space %s, self.used_percent %s" % (
-                self.os_fs_info, self.description, self.free_space, self.used_percent))
         else:
-            log("                  . About to find more about it...")
             # for mountable partitions, more accurate than the getLength size above
             self.size = to_human_readable(int(size)*1024)
             # df returns values in 1024B-blocks by default
@@ -556,9 +514,7 @@ class Partition(object):
             log("                  . self.description %s self.os_fs_info %s" % (
                 self.description, self.os_fs_info))
         finally:
-            log("                  . umounting it")
             os.system('umount ' + TMP_MOUNTPOINT + ' 2>/dev/null')
-            log("                  . done")
 
     def print_partition(self):
         log("Device: %s, format as: %s, mount as: %s" %
