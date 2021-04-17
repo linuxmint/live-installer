@@ -264,11 +264,11 @@ class PartitionSetup(Gtk.TreeStore):
                 try:
                     installer.window.get_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
                     if not already_done_full_disk_format:
-                        assign_mount_format = full_disk_format(disk_device,config.get("create_boot",True),config.get("create_swap",False))
+                        assign_mount_format = full_disk_format(disk_device)
                         already_done_full_disk_format = True
                     else:
                         # Format but don't assign mount points
-                        full_disk_format(disk_device,config.get("create_boot",True),config.get("create_swap",False))
+                        full_disk_format(disk_device)
                     installer.window.get_window().set_cursor(None)
                     disk = parted.Disk(disk_device)
                 except Exception:
@@ -326,7 +326,7 @@ def show_error(message):
     ErrorDialog(_("Installer"), message)
 
 
-def full_disk_format(device, create_boot=True, create_swap=False):
+def full_disk_format(device, create_boot=False, create_swap=False):
     # Create a default partition set up
     disk_label = ('gpt' if device.getLength('B') > 2**32*.9 * device.sectorSize  # size of disk > ~2TB
                   or is_efi_supported()

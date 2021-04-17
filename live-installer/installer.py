@@ -219,18 +219,18 @@ class InstallerEngine:
         else:
             if self.setup.gptonefi:
                 # EFI
-                # sdx1=EFI, sdx2=SWAP, sdx3=ROOT
+                # sdx1=EFI, sdx2=ROOT
                 self.auto_efi_partition = self.setup.disk + partition_prefix + "1"
                 self.auto_boot_partition = None
-                self.auto_swap_partition = self.setup.disk + partition_prefix + "2"
-                self.auto_root_partition = self.setup.disk + partition_prefix + "3"
+                self.auto_swap_partition = None
+                self.auto_root_partition = self.setup.disk + partition_prefix + "2"
             else:
                 # BIOS:
-                # sdx1=SWAP, sdx2=ROOT
+                # sdx1=ROOT
                 self.auto_efi_partition = None
                 self.auto_boot_partition = None
-                self.auto_swap_partition = self.setup.disk + partition_prefix + "1"
-                self.auto_root_partition = self.setup.disk + partition_prefix + "2"
+                self.auto_swap_partition = None
+                self.auto_root_partition = self.setup.disk + partition_prefix + "1"
 
         self.auto_root_physical_partition = self.auto_root_partition
 

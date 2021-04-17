@@ -39,8 +39,6 @@
 # fill_disk_enabled: true
 # set_alternative_ui: false
 # partition_editor: gparted
-# create_swap: false
-# create_boot: true
 
 ## Timezone and locale section
 # default_country_code: auto
