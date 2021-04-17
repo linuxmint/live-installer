@@ -8,20 +8,6 @@ gettext.install("live-installer", "/usr/share/locale")
 # Used as a decorator to run things in the main loop, from another thread
 
 
-def idle(func):
-    def wrapper(*args, **kwargs):
-        GObject.idle_add(func, *args, **kwargs)
-    return wrapper
-
-
-def shell_exec(command):
-    return subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
-
-
-def getoutput(command):
-    return shell_exec(command).stdout.read().strip()
-
-
 (IDX_PART_PATH,
  IDX_PART_TYPE,
  IDX_PART_DESCRIPTION,
@@ -32,15 +18,6 @@ def getoutput(command):
  IDX_PART_OBJECT,
  IDX_PART_DISK) = list(range(9))
 
-
-def is_efi_supported():
-    # Are we running under with efi ?
-    os.system("modprobe efivars >/dev/null 2>&1")
-    return os.path.exists("/proc/efi") or os.path.exists("/sys/firmware/efi")
-
-
-def path_exists(*args):
-    return os.path.exists(os.path.join(*args))
 
 
 TMP_MOUNTPOINT = '/tmp/live-installer/tmpmount'
@@ -110,17 +87,6 @@ def build_partitions(_installer):
     installer.builder.get_object("treeview_disks").expand_all()
     installer.window.get_window().set_cursor(None)
     installer.window.set_sensitive(True)
-
-
-def update_html_preview(selection):
-    model, row = selection.get_selected()
-    try:
-        disk = model[row][IDX_PART_DISK]
-    except TypeError as IndexError:
-        return  # no disk is selected or no disk available
-    if disk != installer._selected_disk:
-        installer._selected_disk = disk
-
 
 def edit_partition_dialog(widget, path, viewcol):
     ''' assign the partition ... '''

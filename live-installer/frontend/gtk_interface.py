@@ -138,8 +138,6 @@ class InstallerWindow:
             "clicked", partitioning.manually_edit_partitions)
         self.builder.get_object("button_refresh").connect(
             "clicked", lambda _: partitioning.build_partitions(self))
-        self.builder.get_object("treeview_disks").get_selection().connect(
-            "changed", partitioning.update_html_preview)
         self.builder.get_object("treeview_disks").connect(
             "row_activated", partitioning.edit_partition_dialog)
         self.builder.get_object("treeview_disks").connect(

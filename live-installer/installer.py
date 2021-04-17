@@ -232,6 +232,9 @@ class InstallerEngine:
                 self.auto_swap_partition = None
                 self.auto_root_partition = self.setup.disk + partition_prefix + "1"
 
+        log("EFI:"+str(self.auto_efi_partition))
+        log("BOOT:"+str(self.auto_boot_partition))
+        log("Root:"+str(self.auto_root_partition))
         self.auto_root_physical_partition = self.auto_root_partition
 
         # Wipe HDD
@@ -742,8 +745,7 @@ class InstallerEngine:
 
     def do_unmount(self, mountpoint):
         ''' Unmount a filesystem '''
-        cmd = "umount %s" % mountpoint
-        run(cmd)
+        return run("umount %s" % mountpoint)
 
 # Represents the choices made by the user
 
@@ -773,7 +775,7 @@ class Setup(object):
     luks = False
     badblocks = False
     target_disk = None
-    gptonefi = False
+    gptonefi = partitioning.is_efi_supported()
     # Optionally skip all mouting/partitioning for advanced users with custom setups (raid/dmcrypt/etc)
     # Make sure the user knows that they need to:
     #  * Mount their target directory structure at /target

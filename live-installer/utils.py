@@ -1,5 +1,6 @@
 
 import os
+import subprocess
 import sys
 import threading
 from gi.repository import GObject 
@@ -115,3 +116,21 @@ def inf(output):
 def run(cmd):
         inf("Running: "+cmd)
         return os.system(cmd)
+
+def is_efi_supported():
+    # Are we running under with efi ?
+    run("modprobe efivars &>/dev/null")
+    return os.path.exists("/proc/efi") or os.path.exists("/sys/firmware/efi")
+
+
+def path_exists(*args):
+    return os.path.exists(os.path.join(*args))
+
+
+def shell_exec(command):
+    return subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
+
+
+def getoutput(command):
+    return shell_exec(command).stdout.read().strip()
+
