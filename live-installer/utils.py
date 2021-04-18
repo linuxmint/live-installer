@@ -84,8 +84,8 @@ def is_root():
 def run(cmd, vital=True):
     inf("Running: "+cmd)
     if "||" in cmd:
-        mode = cmd.split("||")[0]
-        cmd = cmd.split("||")[1]
+        mode = cmd.split("||")[0].strip()
+        cmd = cmd.split("||")[1].strip()
         if "{distro_codename}" in cmd:
             cmd = cmd.replace("{distro_codename}",
                               config.get("distro_codename", "17g"))
@@ -119,7 +119,5 @@ def getoutput(command):
 
 
 def do_run_in_chroot(self, command=None, vital=False):
-    if not command:
-        return 0
     command = command.replace('"', "'").strip()
-    return os.system("chroot /target/ /bin/sh -c \"%s\"" % command)
+    return os.system("chroot /target/ /bin/sh -c \"%s\"" % str(command))

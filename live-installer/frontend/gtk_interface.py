@@ -1175,7 +1175,7 @@ class InstallerWindow:
             self.done = done
             self.builder.get_object("progressbar").set_fraction(1)
             self.builder.get_object(
-                "label_install_progress").set_label(message)
+                "label_install_progress").set_label(str(message))
             return
         self.should_pulse = False
         _total = float(total)

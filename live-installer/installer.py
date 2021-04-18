@@ -27,6 +27,8 @@ class InstallerEngine:
             err("Critical Error: Live medium (%s) not found!" % self.media)
             # sys.exit(1)
         inf("Using live medium: "+self.media)
+        self.our_total = 0
+        self.our_current = 0
 
     def set_progress_hook(self, progresshook):
         ''' Set a callback to be called on progress updates '''
@@ -129,7 +131,7 @@ class InstallerEngine:
                 run("chroot||"+cmd)
         except:
             err("This action not supported for your distribution.")
-        self.update_progress(("Adding new user to the system"))
+        self.update_progress(_("Adding new user to the system"))
         # TODO: support encryption
 
         run('chroot||useradd -m -s {shell} -c \"{realname}\" {username}'.format(
@@ -647,7 +649,7 @@ class InstallerEngine:
 
             # fix not add windows grub entry
             run("chroot||grub-mkconfig -o /boot/grub/grub.cfg")
-            self.update_progress(True, False, _("Configuring bootloader"))
+            self.update_progress(_("Configuring bootloader"),True)
             self.do_configure_grub()
             grub_retries = 0
             while (not self.do_check_grub()):
