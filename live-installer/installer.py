@@ -61,6 +61,9 @@ class InstallerEngine:
             self.format_partitions()
             self.mount_partitions()
 
+        # Custom commands
+        self.do_pre_install_commands()
+        
         # Transfer the files
         SOURCE = "/source/"
         DEST = "/target/"
@@ -306,23 +309,24 @@ class InstallerEngine:
                 # Format it
                 if partition.format_as == "swap":
                     cmd = "mkswap %s" % partition.path
+                elif (partition.format_as in ['ext2', 'ext3', 'ext4']):
+                    cmd = "mkfs.%s -F %s" % (partition.format_as,
+                                             partition.path)
+                elif (partition.format_as == "jfs"):
+                    cmd = "mkfs.%s -q %s" % (partition.format_as,
+                                             partition.path)
+                elif (partition.format_as == "xfs"):
+                    cmd = "mkfs.%s -f %s" % (partition.format_as,
+                                             partition.path)
+                elif (partition.format_as == "vfat"):
+                    cmd = "mkfs.%s %s -F 32" % (partition.format_as,
+                                                partition.path)
+                elif (partition.format_as == "none"):
+                    cmd = "echo 'Format disabled for %s.'" % partition.path
                 else:
-                    if (partition.format_as in ['ext2', 'ext3', 'ext4']):
-                        cmd = "mkfs.%s -F %s" % (partition.format_as,
-                                                 partition.path)
-                    elif (partition.format_as == "jfs"):
-                        cmd = "mkfs.%s -q %s" % (partition.format_as,
-                                                 partition.path)
-                    elif (partition.format_as == "xfs"):
-                        cmd = "mkfs.%s -f %s" % (partition.format_as,
-                                                 partition.path)
-                    elif (partition.format_as == "vfat"):
-                        cmd = "mkfs.%s %s -F 32" % (partition.format_as,
-                                                    partition.path)
-                    else:
-                        # works with bfs, minix, msdos, ntfs, vfat
-                        cmd = "mkfs.%s %s" % (
-                            partition.format_as, partition.path)
+                    # works with bfs, minix, msdos, ntfs, vfat
+                    cmd = "mkfs.%s %s" % (
+                        partition.format_as, partition.path)
 
                 run(cmd)
                 partition.type = partition.format_as
@@ -655,7 +659,9 @@ class InstallerEngine:
                     break
 
         # Custom commands
-        self.do_post_install_commands(our_total, our_current)
+        self.update_progress(our_current, our_total, True,
+                             False, _("Post install commands running"))
+        self.do_post_install_commands()
 
         # now unmount it
         log(" --> Unmounting partitions")
@@ -694,12 +700,15 @@ class InstallerEngine:
             "chroot /target/ /bin/sh -c \"grub-mkconfig -o /boot/grub/grub.cfg\"")
         log("grub_output")
 
-    def do_post_install_commands(self, our_total, our_current):
-        self.update_progress(our_current, our_total, True,
-                             False, _("Post install commands running"))
+    def do_post_install_commands(self):
         log(" --> Post install commands running")
         for command in config.get("post_install_commands", []):
-            run("chroot||"+command)
+            run(command)
+            
+    def do_pre_install_commands(self):
+        log(" --> Post install commands running")
+        for command in config.get("pre_install_commands", []):
+            run(command)
 
     def do_check_grub(self, our_total, our_current):
         self.update_progress(our_current, our_total, True,

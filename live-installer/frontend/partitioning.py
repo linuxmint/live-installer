@@ -147,21 +147,26 @@ def partitions_popup_menu(widget, event):
     menu.append(menuItem)
     menuItem = Gtk.SeparatorMenuItem()
     menu.append(menuItem)
-    menuItem = Gtk.MenuItem(_("Assign to /"))
+    menuItem = Gtk.MenuItem(_("Assign to %s" % "/"))
     menuItem.connect("activate", lambda w: assign_mount_point(
         partition, '/', 'ext4'))
-    menu.append(menuItem)
-    menuItem = Gtk.MenuItem(_("Assign to /home"))
+    menuItem = Gtk.MenuItem(_("Assign to %s" % "swap"))
     menuItem.connect("activate", lambda w: assign_mount_point(
-        partition, '/home', ''))
+        partition, 'swap', ''))
     menu.append(menuItem)
+    for i in config.distro["additional_mountpoints"]:
+        menuItem = Gtk.MenuItem(_("Assign to %s" % i))
+        menuItem.connect("activate", lambda w: assign_mount_point(
+            partition, i, 'ext4'))
+        menu.append(menuItem)
     if is_efi_supported():
         menuItem = Gtk.SeparatorMenuItem()
         menu.append(menuItem)
-        menuItem = Gtk.MenuItem(_("Assign to /boot/efi"))
-        menuItem.connect("activate", lambda w: assign_mount_point(
-            partition, EFI_MOUNT_POINT, ''))
-        menu.append(menuItem)
+        for i in config.distro["additional_efi_mountpoints"]:
+            menuItem = Gtk.MenuItem(_("Assign to %s" % i))
+            menuItem.connect("activate", lambda w: assign_mount_point(
+                partition, i, 'vfat'))
+            menu.append(menuItem)
     menu.show_all()
     menu.popup(None, None, None, None, 0, event.time)
 
@@ -505,7 +510,7 @@ class PartitionDialog(object):
         self.builder.get_object("button_cancel").set_label(_("Cancel"))
         self.builder.get_object("button_ok").set_label(_("OK"))
         # Build supported filesystems list
-        filesystems = ['', 'swap']
+        filesystems = ['', 'swap', 'none']
         for path in ["/bin", "/sbin", "/usr/bin", "/usr/sbin"]:
             for fs in getoutput('echo %s/mkfs.*' % path).split():
                 fsname = str(fs).split("mkfs.")[1].replace("'", "")
@@ -523,8 +528,13 @@ class PartitionDialog(object):
         # Build list of pre-provided mountpoints
         combobox = self.builder.get_object("comboboxentry_mount_point")
         model = Gtk.ListStore(str, str)
-        for i in ["/", "/home", "/boot", "/boot/efi", "/srv", "/tmp", "swap"]:
+        model.append(["", "/"])
+        model.append(["", "swap"])
+        for i in config.distro["additional_mountpoints"]:
             model.append(["", i])
+        if is_efi_supported():
+            for i in config.distro["additional_efi_mountpoints"]:
+                model.append(["", i])
         combobox.set_model(model)
         combobox.set_entry_text_column(1)
         combobox.set_id_column(1)

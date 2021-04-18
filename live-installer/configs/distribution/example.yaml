@@ -6,3 +6,7 @@ grub_installation_efi: echo uwu
 grub_installation_legacy: echo uwu
 run_before_user_creation:
     - echo uwu
+additional_mountpoints:
+    - /home
+additional_efi_mountpoints:
+    - /boot/efi

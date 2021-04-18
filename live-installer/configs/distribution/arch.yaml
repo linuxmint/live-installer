@@ -1,7 +1,17 @@
 name: arch
 check_this_dir: /var/lib/pacman
+grub_prepare:
+  - mkdir -p /target/boot/efi
 grub_installation_efi: system||grub-install --target=x86_64-efi --efi-directory=/target/boot/efi --root-directory=/target --bootloader-id={distro_codename}
 grub_installation_legacy: chroot||grub-install --force {disk}
 run_before_user_creation: 
     - ls /home/ | xargs userdel 
     - rm -rf /home/*
+additional_mountpoints:
+    - /home
+    - /boot
+    - /tmp
+    - /var
+    - /srv
+additional_efi_mountpoints:
+    - /boot/efi

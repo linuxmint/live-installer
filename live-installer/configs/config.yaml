@@ -52,6 +52,8 @@
 # allow_numeric_password: false
 # min_password_length: 1
 
-## Post operations section
+## Pre/Post operations section
 # post_install_commands:
+#   - echo "BRUH"
+# pre_install_commands:
 #   - echo "BRUH"

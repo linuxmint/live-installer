@@ -6,3 +6,11 @@ grub_installation_efi: chroot||grub-install --force {disk}
 grub_installation_legacy: chroot||grub-install --force {disk}
 run_before_user_creation: 
    - echo "Creating users"
+additional_mountpoints:
+    - /home
+    - /boot
+    - /tmp
+    - /var
+    - /srv
+additional_efi_mountpoints:
+    - /boot/efi
