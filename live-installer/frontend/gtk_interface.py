@@ -1158,7 +1158,9 @@ class InstallerWindow:
 
     @idle
     def update_progress(self, current, total, pulse, done, message):
-        inf(message)
+        log(message)
+        if not current or not total:
+            return
         if(pulse):
             self.builder.get_object(
                 "label_install_progress").set_label(message)
