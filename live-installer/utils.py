@@ -115,6 +115,14 @@ def inf(output):
     
 def run(cmd):
         inf("Running: "+cmd)
+        if "||" in cmd:
+            cmd = cmd.split("||")[1]
+            if "{distro_codename}" in cmd:
+                cmd = cmd.replace("{distro_codename}",config.get("distro_codename", "17g"))
+            if cmd.split("||")[0] == "chroot"
+                return do_run_in_chroot(cmd)
+            else:
+                return shell_exec(cmd)
         return os.system(cmd)
 
 def is_efi_supported():
@@ -134,3 +142,8 @@ def shell_exec(command):
 def getoutput(command):
     return shell_exec(command).stdout.read().strip()
 
+def do_run_in_chroot(self, command, vital=False):
+    command = command.replace('"', "'").strip()
+    log("chroot /target/ /bin/sh -c \"%s\"" % command)
+    if 0 != os.system("chroot /target/ /bin/sh -c \"%s\"" % command) and vital:
+        self.error_message(message=command)

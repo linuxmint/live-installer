@@ -649,22 +649,11 @@ class InstallerEngine:
             log(" --> Running grub-install")
 
             if os.path.exists("/sys/firmware/efi"):
-                grub_cmd = config.distro["grub_installation_efi"].split("|")
-                if "{distro_codename}" in grub_cmd[1]:
-                    if grub_cmd[0] == "chroot":
-                        self.do_run_in_chroot(grub_cmd[1].replace(
-                            "{distro_codename}", config.get("distro_codename", "17g")))
-                    else:
-                        os.system(grub_cmd[1].replace(
-                            "{distro_codename}", config.get("distro_codename", "17g")))
-                else:
-                    if grub_cmd[0] == "chroot":
-                        self.do_run_in_chroot(grub_cmd[1])
-                    else:
-                        os.system(grub_cmd[1])
+                grub_cmd = config.distro["grub_installation_efi"]
+                run(grub_cmd.replace("{disk}",self.setup.grub_device))
             else:
-                self.do_run_in_chroot(
-                    "grub-install --force %s" % self.setup.grub_device)
+                grub_cmd = config.distro["grub_installation_legacy"]
+                run(grub_cmd.replace("{disk}",self.setup.grub_device))
 
             # fix not add windows grub entry
             self.do_run_in_chroot("grub-mkconfig -o /boot/grub/grub.cfg")
