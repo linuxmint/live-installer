@@ -73,7 +73,7 @@ def get_keyboard_layout_list():
         models.append((desc, name, node))
     return models
     
-def get_keyboard_veriant_list(model):
+def get_keyboard_variant_list(model):
     models = [(model[0],"")]
     for variant in model[2].iterfind('variantList/variant/configItem'):
         var_name, var_desc = variant.find(

@@ -16,9 +16,10 @@ if config.get("gtk_theme", "default") != "default":
 # Force show mouse cursor & fix background
 os.system("xsetroot -cursor_name left_ptr")
 os.system("xsetroot -solid black")
+
 def exceptdebug(e,v,tb):
-    print(e)
-    print(v)
+    sys.stderr.write("Error: {}\n".format(str(e)))
+    sys.stderr.write("Value: {}\n".format(str(v)))
     traceback.print_tb(tb)
 sys.excapthook = exceptdebug
 
