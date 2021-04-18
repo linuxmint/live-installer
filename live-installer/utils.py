@@ -148,7 +148,9 @@ def shell_exec(command):
 def getoutput(command):
     return shell_exec(command).stdout.read().strip()
 
-def do_run_in_chroot(self, command, vital=False):
+def do_run_in_chroot(self, command=None, vital=False):
+    if not command:
+        return
     command = command.replace('"', "'").strip()
     log("chroot /target/ /bin/sh -c \"%s\"" % command)
     if 0 != os.system("chroot /target/ /bin/sh -c \"%s\"" % command) and vital:
