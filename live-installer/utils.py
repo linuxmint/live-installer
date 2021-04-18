@@ -3,6 +3,7 @@ import os
 import subprocess
 import sys
 import threading
+import config
 from gi.repository import GObject
 from logger import log, err, inf
 
