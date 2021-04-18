@@ -119,11 +119,11 @@ def run(cmd):
             cmd = cmd.split("||")[1]
             if "{distro_codename}" in cmd:
                 cmd = cmd.replace("{distro_codename}",config.get("distro_codename", "17g"))
-            if cmd.split("||")[0] == "chroot"
+            if cmd.split("||")[0] == "chroot":
                 return do_run_in_chroot(cmd)
             else:
                 return shell_exec(cmd)
-        return os.system(cmd)
+        return shell_exec(cmd)
 
 def is_efi_supported():
     # Are we running under with efi ?

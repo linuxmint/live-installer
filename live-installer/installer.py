@@ -46,12 +46,12 @@ class InstallerEngine:
         if(not os.path.exists("/source")):
             os.mkdir("/source")
 
-        os.system("umount --force /target/dev/shm")
-        os.system("umount --force /target/dev/pts")
-        os.system("umount --force /target/dev/")
-        os.system("umount --force /target/sys/")
-        os.system("umount --force /target/proc/")
-        os.system("umount --force /target/run/")
+        run("umount --force /target/dev/shm")
+        run("umount --force /target/dev/pts")
+        run("umount --force /target/dev/")
+        run("umount --force /target/sys/")
+        run("umount --force /target/proc/")
+        run("umount --force /target/run/")
 
         self.mount_source()
 
@@ -100,18 +100,18 @@ class InstallerEngine:
         log(" --> Chrooting")
         self.update_progress(our_current, our_total, False,
                              False, _("Entering the system ..."))
-        os.system("mount --bind /dev/ /target/dev/")
-        os.system("mount --bind /dev/shm /target/dev/shm")
-        os.system("mount --bind /dev/pts /target/dev/pts")
-        os.system("mount --bind /sys/ /target/sys/")
-        os.system("mount --bind /proc/ /target/proc/")
-        os.system("mount --bind /run/ /target/run/")
-        os.system("mv /target/etc/resolv.conf /target/etc/resolv.conf.bk")
-        os.system("cp -f /etc/resolv.conf /target/etc/resolv.conf")
+        run("mount --bind /dev/ /target/dev/")
+        run("mount --bind /dev/shm /target/dev/shm")
+        run("mount --bind /dev/pts /target/dev/pts")
+        run("mount --bind /sys/ /target/sys/")
+        run("mount --bind /proc/ /target/proc/")
+        run("mount --bind /run/ /target/run/")
+        run("mv /target/etc/resolv.conf /target/etc/resolv.conf.bk")
+        run("cp -f /etc/resolv.conf /target/etc/resolv.conf")
 
         kernelversion = subprocess.getoutput("uname -r")
         if os.path.exists("/lib/modules/{0}/vmlinuz".format(kernelversion)):
-            os.system(
+            run(
                 "cp /lib/modules/{0}/vmlinuz /target/boot/vmlinuz-{0}".format(kernelversion))
 
         # add new user
@@ -119,53 +119,46 @@ class InstallerEngine:
         our_current += 1
         try:
             for cmd in config.distro["run_before_user_creation"]:
-                self.do_run_in_chroot(cmd)
+                run("chroot||"+cmd)
         except:
             err("This action not supported for your distribution.")
         self.update_progress(our_current, our_total, False,
                              False, ("Adding new user to the system"))
         # TODO: support encryption
 
-        self.do_run_in_chroot('useradd -m -s {shell} -c \"{realname}\" {username}'.format(
+        run('chroot||useradd -m -s {shell} -c \"{realname}\" {username}'.format(
             shell=config.get("using_shell", "/bin/bash"), realname=self.setup.real_name,
             username=self.setup.username))
 
         # Add user to additional groups
         for group in config.get("additional_user_groups", ["audio", "video", "netdev"]):
-            self.do_run_in_chroot(
-                "usermod -aG {} {}".format(group, self.setup.username))
+            run("chroot||usermod -aG {} {}".format(group, self.setup.username))
 
-        if (os.system("which chpasswd &>/dev/null") == 0) and config.get("use_chpasswd", True):
+        if (run("which chpasswd &>/dev/null") == 0) and config.get("use_chpasswd", True):
             fp = open("/target/tmp/.passwd", "w")
             fp.write(self.setup.username + ":" + self.setup.password1 + "\n")
             if config.get("set_root_password", True):
                 fp.write("root:" + self.setup.password1 + "\n")
             fp.close()
-            self.do_run_in_chroot("cat /tmp/.passwd | chpasswd")
-            self.do_run_in_chroot("rm -f /tmp/.passwd")
+            run("chroot||cat /tmp/.passwd | chpasswd")
+            run("chroot||rm -f /tmp/.passwd")
         else:
-            self.do_run_in_chroot(
-                "echo -e \"{0}\\n{0}\\n\" | passwd {1}".format(self.setup.password1, self.setup.username))
+            run("chroot||echo -e \"{0}\\n{0}\\n\" | passwd {1}".format(self.setup.password1, self.setup.username))
             if config.get("set_root_password", True):
-                self.do_run_in_chroot(
-                    "echo -e \"{0}\\n{0}\\n\" | passwd".format(self.setup.password1))
+                run("chroot||echo -e \"{0}\\n{0}\\n\" | passwd".format(self.setup.password1))
 
         # Set LightDM to show user list by default
         if config.get("list_users_when_auto_login", True):
-            self.do_run_in_chroot(
-                r"sed -i -r 's/^#?(greeter-hide-users)\s*=.*/\1=false/' /etc/lightdm/lightdm.conf")
+            run(r"chroot||sed -i -r 's/^#?(greeter-hide-users)\s*=.*/\1=false/' /etc/lightdm/lightdm.conf")
         else:
-            self.do_run_in_chroot(
-                r"sed -i -r 's/^#?(greeter-hide-users)\s*=.*/\1=true/' /etc/lightdm/lightdm.conf")
+            run(r"chroot||sed -i -r 's/^#?(greeter-hide-users)\s*=.*/\1=true/' /etc/lightdm/lightdm.conf")
 
         # Set autologin for user if they so elected
         if self.setup.autologin:
             # LightDM and Auto Login Groups
-            self.do_run_in_chroot("""groupadd -r autologin && gpasswd -a {user} autologin
+            run("""chroot||groupadd -r autologin && gpasswd -a {user} autologin
                                   && groupadd -r nopasswdlogin & & gpasswd -a {user} nopasswdlogin""".format(user=self.setup.username))
-
-            self.do_run_in_chroot(
-                r"sed -i -r 's/^#?(autologin-user)\s*=.*/\1={user}/' /etc/lightdm/lightdm.conf".format(user=self.setup.username))
+            run(r"chroot||sed -i -r 's/^#?(autologin-user)\s*=.*/\1={user}/' /etc/lightdm/lightdm.conf".format(user=self.setup.username))
 
         # /etc/fstab, mtab and crypttab
         our_current += 1
@@ -242,7 +235,7 @@ class InstallerEngine:
             self.update_progress(1, 4, False, False, _(
                 "Filling %s with random data (please be patient, this can take hours...)") % self.setup.disk)
             log(" --> Filling %s with random data" % self.setup.disk)
-            os.system("badblocks -c 10240 -s -w -t random -v %s" %
+            run("badblocks -c 10240 -s -w -t random -v %s" %
                       self.setup.disk)
 
         # Create partitions
@@ -258,48 +251,48 @@ class InstallerEngine:
         if self.setup.luks:
             log(" --> Encrypting root partition %s" %
                 self.auto_root_partition)
-            os.system("printf \"%s\" | cryptsetup luksFormat -c aes-xts-plain64 -h sha256 -s 512 %s" %
+            run("printf \"%s\" | cryptsetup luksFormat -c aes-xts-plain64 -h sha256 -s 512 %s" %
                       (self.setup.passphrase1, self.auto_root_partition))
             log(" --> Opening root partition %s" % self.auto_root_partition)
-            os.system("printf \"%s\" | cryptsetup luksOpen %s lvmlmde" %
+            run("printf \"%s\" | cryptsetup luksOpen %s lvmlmde" %
                       (self.setup.passphrase1, self.auto_root_partition))
             self.auto_root_partition = "/dev/mapper/lvmlmde"
 
         # Setup LVM
         if self.setup.lvm:
             log(" --> LVM: Creating PV")
-            os.system("pvcreate -y %s" % self.auto_root_partition)
+            run("pvcreate -y %s" % self.auto_root_partition)
             log(" --> LVM: Creating VG")
-            os.system("vgcreate -y lvmlmde %s" % self.auto_root_partition)
+            run("vgcreate -y lvmlmde %s" % self.auto_root_partition)
             log(" --> LVM: Creating LV root")
-            os.system("lvcreate -y -n root -L 1GB lvmlmde")
+            run("lvcreate -y -n root -L 1GB lvmlmde")
             log(" --> LVM: Creating LV swap")
             swap_size = int(round(int(subprocess.getoutput(
                 "awk '/^MemTotal/{ print $2 }' /proc/meminfo")) / 1024, 0))
-            os.system("lvcreate -y -n swap -L %dMB lvmlmde" % swap_size)
+            run("lvcreate -y -n swap -L %dMB lvmlmde" % swap_size)
             log(" --> LVM: Extending LV root")
-            os.system("lvextend -l 100\%FREE /dev/lvmlmde/root")
+            run("lvextend -l 100\%FREE /dev/lvmlmde/root")
             log(" --> LVM: Formatting LV root")
-            os.system("mkfs.ext4 /dev/mapper/lvmlmde-root -FF")
+            run("mkfs.ext4 /dev/mapper/lvmlmde-root -FF")
             log(" --> LVM: Formatting LV swap")
-            os.system("mkswap -f /dev/mapper/lvmlmde-swap")
+            run("mkswap -f /dev/mapper/lvmlmde-swap")
             log(" --> LVM: Enabling LV swap")
-            os.system("swapon /dev/mapper/lvmlmde-swap")
+            run("swapon /dev/mapper/lvmlmde-swap")
             self.auto_root_partition = "/dev/mapper/lvmlmde-root"
             self.auto_swap_partition = "/dev/mapper/lvmlmde-swap"
 
         self.do_mount(self.auto_root_partition, "/target", "ext4", None)
         if (self.auto_boot_partition is not None):
-            os.system("mkdir -p /target/boot")
+            run("mkdir -p /target/boot")
             self.do_mount(self.auto_boot_partition,
                           "/target/boot", "ext4", None)
         if (self.auto_efi_partition is not None):
             if os.path.exists("/source/kernel/boot"):
-                os.system("mkdir -p /target/kernel/boot/efi")
+                run("mkdir -p /target/kernel/boot/efi")
                 self.do_mount(self.auto_efi_partition,
                               "/target/kernel/boot/efi", "vfat", None)
             else:
-                os.system("mkdir -p /target/boot/efi")
+                run("mkdir -p /target/boot/efi")
                 self.do_mount(self.auto_efi_partition,
                               "/target/boot/efi", "vfat", None)
 
@@ -356,7 +349,7 @@ class InstallerEngine:
             if(partition.mount_as is not None and partition.mount_as != "" and partition.mount_as != "/" and partition.mount_as != "swap"):
                 log(" ------ Mounting %s on %s" %
                     (partition.path, "/target" + partition.mount_as))
-                os.system("mkdir -p /target" + partition.mount_as)
+                run("mkdir -p /target" + partition.mount_as)
                 if partition.type == "fat16" or partition.type == "fat32":
                     fs = "vfat"
                 else:
@@ -383,7 +376,7 @@ class InstallerEngine:
         log(" --> Writing fstab")
         # make sure fstab has default /proc and /sys entries
         if(not os.path.exists("/target/etc/fstab")):
-            os.system(
+            run(
                 "echo \"#### Static Filesystem Table File\" > /target/etc/fstab")
         fstab = open("/target/etc/fstab", "a")
         fstab.write("proc\t/proc\tproc\tdefaults\t0\t0\n")
@@ -438,10 +431,10 @@ class InstallerEngine:
             fstab.close()
 
         if self.setup.lvm:
-            os.system("grep -v swap /target/etc/fstab > /target/etc/mtab")
+            run("grep -v swap /target/etc/fstab > /target/etc/mtab")
 
         if self.setup.luks:
-            os.system("echo 'lvmlmde   %s   none   luks,tries=3' >> /target/etc/crypttab" %
+            run("echo 'lvmlmde   %s   none   luks,tries=3' >> /target/etc/crypttab" %
                       self.auto_root_physical_partition)
 
     def finish_installation(self):
@@ -475,14 +468,12 @@ class InstallerEngine:
         our_current += 1
         self.update_progress(our_current, our_total, False,
                              False, _("Setting locale"))
-        os.system("echo \"%s.UTF-8 UTF-8\" >> /target/etc/locale.gen" %
+        run("echo \"%s.UTF-8 UTF-8\" >> /target/etc/locale.gen" %
                   self.setup.language)
-        self.do_run_in_chroot("locale-gen")
-        os.system("echo \"\" > /target/etc/default/locale")
-        self.do_run_in_chroot(
-            "localectl set-locale LANG=\"%s.UTF-8\"" % self.setup.language)
-        self.do_run_in_chroot(
-            "localectl set-locale LANG=%s.UTF-8" % self.setup.language)
+        run("chroot||locale-gen")
+        run("echo \"\" > /target/etc/default/locale")
+        run("chroot||localectl set-locale LANG=\"%s.UTF-8\"" % self.setup.language)
+        run("chroot||localectl set-locale LANG=%s.UTF-8" % self.setup.language)
         open("/target/etc/locale.conf", "w").write("LANG=%s.UTF-8" %
                                                    self.setup.language)
         # set the locale for gentoo / sulin 
@@ -492,13 +483,13 @@ class InstallerEngine:
             l.write("LC_ALL={}.UTF-8".format(self.setup.language))
             l.flush()
             l.close()
-            self.do_run_in_chroot("env-update")
+            run("chroot||env-update")
 
         # set the timezone
         log(" --> Setting the timezone")
-        os.system("echo \"%s\" > /target/etc/timezone" % self.setup.timezone)
-        os.system("rm -f /target/etc/localtime")
-        os.system("ln -s /usr/share/zoneinfo/%s /target/etc/localtime" %
+        run("echo \"%s\" > /target/etc/timezone" % self.setup.timezone)
+        run("rm -f /target/etc/localtime")
+        run("ln -s /usr/share/zoneinfo/%s /target/etc/localtime" %
                   self.setup.timezone)
 
         # Keyboard settings X11
@@ -548,9 +539,8 @@ class InstallerEngine:
                     newconsolefh.write("%s\n" % line)
             consolefh.close()
             newconsolefh.close()
-            self.do_run_in_chroot("rm /etc/default/console-setup")
-            self.do_run_in_chroot(
-                "mv /etc/default/console-setup.new /etc/default/console-setup")
+            run("chroot||rm /etc/default/console-setup")
+            run("chroot||mv /etc/default/console-setup.new /etc/default/console-setup")
 
         # lfs like systems uses vconsole.conf (systemd)
         if os.path.exists("/target/etc/vconsole.conf"):
@@ -569,9 +559,8 @@ class InstallerEngine:
                     newconsolefh.write("%s\n" % line)
             consolefh.close()
             newconsolefh.close()
-            self.do_run_in_chroot("rm /etc/vconsole.conf")
-            self.do_run_in_chroot(
-                "mv /etc/vconsole.conf.new /etc/vconsole.conf")
+            run("chroot||rm /etc/vconsole.conf")
+            run("chroot||mv /etc/vconsole.conf.new /etc/vconsole.conf")
 
         # debian like systems uses this (systemd)
         if os.path.exists("/target/etc/default/keyboard"):
@@ -594,9 +583,8 @@ class InstallerEngine:
                     newconsolefh.write("%s\n" % line)
             consolefh.close()
             newconsolefh.close()
-            self.do_run_in_chroot("rm /etc/default/keyboard")
-            self.do_run_in_chroot(
-                "mv /etc/default/keyboard.new /etc/default/keyboard")
+            run("chroot||rm /etc/default/keyboard")
+            run("chroot||mv /etc/default/keyboard.new /etc/default/keyboard")
 
         # Keyboard settings openrc
         if os.path.exists("/target/etc/conf.d/keymaps"):
@@ -612,7 +600,7 @@ class InstallerEngine:
                              False, _("Clearing package manager"))
         log(" --> Clearing package manager")
         log(config.get("remove_packages",["17g-installer"]))
-        self.do_run_in_chroot("yes | {}".format(config.package_manager(
+        run("chroot||yes | {}".format(config.package_manager(
             "remove_package_with_unusing_deps", config.get("remove_packages",["17g-installer"]))))
 
         if self.setup.luks:
@@ -621,8 +609,7 @@ class InstallerEngine:
                 f.write("set -e\n\n")
                 f.write('GRUB_CMDLINE_LINUX="cryptdevice=%s:lvmlmde root=/dev/mapper/lvmlmde-root resume=/dev/mapper/lvmlmde-swap"\n' %
                         self.auto_root_physical_partition)
-            self.do_run_in_chroot(
-                "echo \"power/disk = shutdown\" >> /etc/sysfs.d/local.conf")
+            run("chroot||echo \"power/disk = shutdown\" >> /etc/sysfs.d/local.conf")
 
         # recreate initramfs (needed in case of skip_mount also, to include things like mdadm/dm-crypt/etc in case its needed to boot a custom install)
         log(" --> Configuring Initramfs")
@@ -631,12 +618,12 @@ class InstallerEngine:
         our_current += 1
 
         for command in config.update_initramfs():
-            self.do_run_in_chroot(command)
+            run("chroot||"+command)
 
         try:
             grub_prepare_commands = config.distro["grub_prepare"]
             for command in grub_prepare_commands:
-                os.system(command)
+                run(command)
         except:
             err("Grub prepare process not available for your distribution!")
 
@@ -656,7 +643,7 @@ class InstallerEngine:
                 run(grub_cmd.replace("{disk}",self.setup.grub_device))
 
             # fix not add windows grub entry
-            self.do_run_in_chroot("grub-mkconfig -o /boot/grub/grub.cfg")
+            run("chroot||grub-mkconfig -o /boot/grub/grub.cfg")
             self.do_configure_grub(our_total, our_current)
             grub_retries = 0
             while (not self.do_check_grub(our_total, our_current)):
@@ -672,18 +659,18 @@ class InstallerEngine:
 
         # now unmount it
         log(" --> Unmounting partitions")
-        os.system("umount --force /target/dev/shm")
-        os.system("umount --force /target/dev/pts")
+        run("umount --force /target/dev/shm")
+        run("umount --force /target/dev/pts")
         if self.setup.gptonefi:
-            os.system("umount --force /target/boot/efi")
-            os.system("umount --force /target/media/cdrom")
-        os.system("umount --force /target/boot")
-        os.system("umount --force /target/dev/")
-        os.system("umount --force /target/sys/")
-        os.system("umount --force /target/proc/")
-        os.system("umount --force /target/run/")
-        os.system("rm -f /target/etc/resolv.conf")
-        os.system("mv /target/etc/resolv.conf.bk /target/etc/resolv.conf")
+            run("umount --force /target/boot/efi")
+            run("umount --force /target/media/cdrom")
+        run("umount --force /target/boot")
+        run("umount --force /target/dev/")
+        run("umount --force /target/sys/")
+        run("umount --force /target/proc/")
+        run("umount --force /target/run/")
+        run("rm -f /target/etc/resolv.conf")
+        run("mv /target/etc/resolv.conf.bk /target/etc/resolv.conf")
         for partition in self.setup.partitions:
             if(partition.mount_as is not None and partition.mount_as != "" and partition.mount_as != "/" and partition.mount_as != "swap"):
                 self.do_unmount("/target" + partition.mount_as)
@@ -696,7 +683,7 @@ class InstallerEngine:
     def do_run_in_chroot(self, command, vital=False):
         command = command.replace('"', "'").strip()
         log("chroot /target/ /bin/sh -c \"%s\"" % command)
-        if 0 != os.system("chroot /target/ /bin/sh -c \"%s\"" % command) and vital:
+        if 0 != run("chroot /target/ /bin/sh -c \"%s\"" % command) and vital:
             self.error_message(message=command)
 
     def do_configure_grub(self, our_total, our_current):
@@ -712,7 +699,7 @@ class InstallerEngine:
                              False, _("Post install commands running"))
         log(" --> Post install commands running")
         for command in config.get("post_install_commands", []):
-            self.do_run_in_chroot(command)
+            run("chroot||"+command)
 
     def do_check_grub(self, our_total, our_current):
         self.update_progress(our_current, our_total, True,
