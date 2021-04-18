@@ -46,12 +46,12 @@ class InstallerEngine:
         if(not os.path.exists("/source")):
             os.mkdir("/source")
 
-        run("umount --force /target/dev/shm")
-        run("umount --force /target/dev/pts")
-        run("umount --force /target/dev/")
-        run("umount --force /target/sys/")
-        run("umount --force /target/proc/")
-        run("umount --force /target/run/")
+        run("umount -lf /target/dev/shm")
+        run("umount -lf /target/dev/pts")
+        run("umount -lf /target/dev/")
+        run("umount -lf /target/sys/")
+        run("umount -lf /target/proc/")
+        run("umount -lf /target/run/")
 
         self.mount_source()
 
@@ -659,16 +659,16 @@ class InstallerEngine:
 
         # now unmount it
         log(" --> Unmounting partitions")
-        run("umount --force /target/dev/shm")
-        run("umount --force /target/dev/pts")
+        run("umount -lf /target/dev/shm")
+        run("umount -lf /target/dev/pts")
         if self.setup.gptonefi:
-            run("umount --force /target/boot/efi")
-            run("umount --force /target/media/cdrom")
-        run("umount --force /target/boot")
-        run("umount --force /target/dev/")
-        run("umount --force /target/sys/")
-        run("umount --force /target/proc/")
-        run("umount --force /target/run/")
+            run("umount -lf /target/boot/efi")
+            run("umount -lf /target/media/cdrom")
+        run("umount -lf /target/boot")
+        run("umount -lf /target/dev/")
+        run("umount -lf /target/sys/")
+        run("umount -lf /target/proc/")
+        run("umount -lf /target/run/")
         run("rm -f /target/etc/resolv.conf")
         run("mv /target/etc/resolv.conf.bk /target/etc/resolv.conf")
         for partition in self.setup.partitions:
@@ -721,7 +721,7 @@ class InstallerEngine:
 
     def do_unmount(self, mountpoint):
         ''' Unmount a filesystem '''
-        return run("umount %s" % mountpoint)
+        return run("umount -lf %s" % mountpoint)
 
 # Represents the choices made by the user
 
