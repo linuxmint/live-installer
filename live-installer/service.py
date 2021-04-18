@@ -31,7 +31,7 @@ if config.get("welcome_screen", True):
 if config.get("enable_live", True) and (0 != os.system("which live-config &>/dev/null")):
     if config.get("live_user", "user"):
         os.system("useradd -m \"{}\" -s \"{}\"".format(config.get("live_user",
-                  "user"), config.get("using_shell", "/bin/bash")))
+                                                                  "user"), config.get("using_shell", "/bin/bash")))
         if config.get("live_password", "live"):
             if os.system("which chpasswd &>/dev/null") == 0:
                 fp = open("/tmp/.passwd", "w")
@@ -43,7 +43,8 @@ if config.get("enable_live", True) and (0 != os.system("which live-config &>/dev
                 os.system("echo -e \"{0}\\n{0}\\n\" | passwd {1}".format(
                     config.get("live_password", "live"), config.get("live_user", "user")))
             for i in config.get("additional_user_groups", (["audio", "video", "netdev"])):
-                os.system("usermod -aG \"{}\" \"{}\"".format(i, config.get("live_user", "user")))
+                os.system("usermod -aG \"{}\" \"{}\"".format(i,
+                                                             config.get("live_user", "user")))
 
 # call custom live commands
 if config.get("custom_scripts", True):

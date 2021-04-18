@@ -19,7 +19,6 @@ gettext.install("live-installer", "/usr/share/locale")
  IDX_PART_DISK) = list(range(9))
 
 
-
 TMP_MOUNTPOINT = '/tmp/live-installer/tmpmount'
 RESOURCE_DIR = './resources/'
 
@@ -87,6 +86,7 @@ def build_partitions(_installer):
     installer.builder.get_object("treeview_disks").expand_all()
     installer.window.get_window().set_cursor(None)
     installer.window.set_sensitive(True)
+
 
 def edit_partition_dialog(widget, path, viewcol):
     ''' assign the partition ... '''
@@ -180,7 +180,8 @@ def manually_edit_partitions(widget):
     disks = ' '.join(sorted((disk for disk, desc in model.disks),
                             key=lambda disk: disk != preferred))
     os.system('umount -f ' + disks)
-    os.system('{} {} &'.format(config.get("partition_editor","gparted"),disks))
+    os.system('{} {} &'.format(config.get(
+        "partition_editor", "gparted"), disks))
 
 
 def build_grub_partitions():
@@ -258,7 +259,7 @@ class PartitionSetup(Gtk.TreeStore):
             partitions = []
             for partition in partition_set:
                 part = Partition(partition)
-                log("{} {}".format(partition.path.replace("-",""), part.size))
+                log("{} {}".format(partition.path.replace("-", ""), part.size))
                 # skip ranges <5MB
                 if part.raw_size > 5242880:
                     partitions.append(part)
@@ -302,10 +303,10 @@ def full_disk_format(device, create_boot=False, create_swap=False):
     disk_label = ('gpt' if device.getLength('B') > 2**32*.9 * device.sectorSize  # size of disk > ~2TB
                   or is_efi_supported()
                   else 'msdos')
-    # Force lazy umount 
+    # Force lazy umount
     os.system("umount -lf {}*".format(device.path))
     # Wipe first 512 byte
-    open(device.path,"w").write("\x00"*512)
+    open(device.path, "w").write("\x00"*512)
     return_code = os.system("parted -s %s mklabel %s" %
                             (device.path, disk_label))
     if return_code != 0:
@@ -383,7 +384,8 @@ class Partition(object):
     def __init__(self, partition):
         assert partition.type not in (
             parted.PARTITION_METADATA, parted.PARTITION_EXTENDED)
-        self.path = str(partition.path).replace("-","") # /dev/sda-1 to /dev/sda1
+        self.path = str(partition.path).replace(
+            "-", "")  # /dev/sda-1 to /dev/sda1
 
         self.partition = partition
         self.length = partition.getLength()

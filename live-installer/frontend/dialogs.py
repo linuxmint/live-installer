@@ -1,6 +1,7 @@
 
 from frontend import *
 
+
 class Dialog(Gtk.MessageDialog):
     def __init__(self, style, buttons, title, text, text2=None, parent=None):
         err(text)

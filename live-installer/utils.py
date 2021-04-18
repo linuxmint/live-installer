@@ -3,9 +3,8 @@ import os
 import subprocess
 import sys
 import threading
-from gi.repository import GObject 
-
-logfile = None
+from gi.repository import GObject
+from logger import log, err, inf
 
 
 def memoize(func):
@@ -65,9 +64,8 @@ def asynchronous(func):
         return thread
     return wrapper
 
+
 # Used as a decorator to run things in the main loop, from another thread
-
-
 def idle(func):
     def wrapper(*args, **kwargs):
         GObject.idle_add(func, *args, **kwargs)
@@ -79,56 +77,27 @@ def to_float(position, wholedigits):
     return float(position[:wholedigits + 1] + '.' + position[wholedigits + 1:])
 
 
-file = "/var/log/17g-installer"
-if os.getuid() != 0:
-    file = "/tmp/17g-installer.log"
-if os.path.isfile(file):
-    os.unlink(file)
-logfile = open(file, "a")
-
-
 def is_root():
     return os.getuid() == 0
 
 
-def log(output, err=False):
-    output = str(output)
-    output += "\n"
-    logfile.write(output)
-    logfile.flush()
-    if err:
-        sys.stderr.write(output)
-    else:
-        sys.stdout.write(output)
-
-
-def err(output):
-    sys.stderr.write("\x1b[31;1m")
-    log(output, True)
-    sys.stderr.write("\x1b[;0m")
-
-
-def inf(output):
-    sys.stdout.write("\x1b[32;1m")
-    log(output, False)
-    sys.stdout.write("\x1b[;0m")
-    
-def run(cmd,vital=True):
-        inf("Running: "+cmd)
-        if "||" in cmd:
-            mode = cmd.split("||")[0] 
-            cmd = cmd.split("||")[1]
-            if "{distro_codename}" in cmd:
-                cmd = cmd.replace("{distro_codename}",config.get("distro_codename", "17g"))
-            if mode == "chroot":
-                i=do_run_in_chroot(cmd)
-            else:
-                i=os.system(cmd)
+def run(cmd, vital=True):
+    inf("Running: "+cmd)
+    if "||" in cmd:
+        mode = cmd.split("||")[0]
+        cmd = cmd.split("||")[1]
+        if "{distro_codename}" in cmd:
+            cmd = cmd.replace("{distro_codename}",
+                              config.get("distro_codename", "17g"))
+        if mode == "chroot":
+            i = do_run_in_chroot(cmd)
         else:
             i = os.system(cmd)
-        if vital and i != 0:
-            err("Failed to run command (Exited with {}): {}".format(str(int(i/512)),cmd))
-        return i
+    else:
+        i = os.system(cmd)
+    if vital and i != 0:
+        err("Failed to run command (Exited with {}): {}".format(str(int(i/512)), cmd))
+    return i
 
 
 def is_efi_supported():
@@ -148,9 +117,9 @@ def shell_exec(command):
 def getoutput(command):
     return shell_exec(command).stdout.read().strip()
 
+
 def do_run_in_chroot(self, command=None, vital=False):
     if not command:
         return 0
     command = command.replace('"', "'").strip()
-    log("chroot /target/ /bin/sh -c \"%s\"" % command)
     return os.system("chroot /target/ /bin/sh -c \"%s\"" % command)

@@ -5,7 +5,8 @@ import gettext
 import parted
 import frontend.partitioning as partitioning
 import config
-from utils import log, err, inf, run
+from utils import run
+from logger import log, err, inf
 
 gettext.install("live-installer", "/usr/share/locale")
 
@@ -63,7 +64,7 @@ class InstallerEngine:
 
         # Custom commands
         self.do_pre_install_commands()
-        
+
         # Transfer the files
         SOURCE = "/source/"
         DEST = "/target/"
@@ -146,9 +147,11 @@ class InstallerEngine:
             run("chroot||cat /tmp/.passwd | chpasswd")
             run("chroot||rm -f /tmp/.passwd")
         else:
-            run("chroot||echo -e \"{0}\\n{0}\\n\" | passwd {1}".format(self.setup.password1, self.setup.username))
+            run("chroot||echo -e \"{0}\\n{0}\\n\" | passwd {1}".format(
+                self.setup.password1, self.setup.username))
             if config.get("set_root_password", True):
-                run("chroot||echo -e \"{0}\\n{0}\\n\" | passwd".format(self.setup.password1))
+                run("chroot||echo -e \"{0}\\n{0}\\n\" | passwd".format(
+                    self.setup.password1))
 
         # Set LightDM to show user list by default
         if config.get("list_users_when_auto_login", True):
@@ -161,7 +164,8 @@ class InstallerEngine:
             # LightDM and Auto Login Groups
             run("""chroot||groupadd -r autologin && gpasswd -a {user} autologin
                                   && groupadd -r nopasswdlogin & & gpasswd -a {user} nopasswdlogin""".format(user=self.setup.username))
-            run(r"chroot||sed -i -r 's/^#?(autologin-user)\s*=.*/\1={user}/' /etc/lightdm/lightdm.conf".format(user=self.setup.username))
+            run(r"chroot||sed -i -r 's/^#?(autologin-user)\s*=.*/\1={user}/' /etc/lightdm/lightdm.conf".format(
+                user=self.setup.username))
 
         # /etc/fstab, mtab and crypttab
         our_current += 1
@@ -239,7 +243,7 @@ class InstallerEngine:
                 "Filling %s with random data (please be patient, this can take hours...)") % self.setup.disk)
             log(" --> Filling %s with random data" % self.setup.disk)
             run("badblocks -c 10240 -s -w -t random -v %s" %
-                      self.setup.disk)
+                self.setup.disk)
 
         # Create partitions
         self.update_progress(1, 4, False, False, _(
@@ -255,10 +259,10 @@ class InstallerEngine:
             log(" --> Encrypting root partition %s" %
                 self.auto_root_partition)
             run("printf \"%s\" | cryptsetup luksFormat -c aes-xts-plain64 -h sha256 -s 512 %s" %
-                      (self.setup.passphrase1, self.auto_root_partition))
+                (self.setup.passphrase1, self.auto_root_partition))
             log(" --> Opening root partition %s" % self.auto_root_partition)
             run("printf \"%s\" | cryptsetup luksOpen %s lvmlmde" %
-                      (self.setup.passphrase1, self.auto_root_partition))
+                (self.setup.passphrase1, self.auto_root_partition))
             self.auto_root_partition = "/dev/mapper/lvmlmde"
 
         # Setup LVM
@@ -345,7 +349,8 @@ class InstallerEngine:
                     else:
                         fs = partition.type
                     if fs != "none" and 0 != self.do_mount(partition.path, "/target", fs, None):
-                        self.error_message("Cannot mount rootfs (type: {}): {}".format(fs,partition.path))
+                        self.error_message(
+                            "Cannot mount rootfs (type: {}): {}".format(fs, partition.path))
                     break
 
         # Mount the other partitions
@@ -439,7 +444,7 @@ class InstallerEngine:
 
         if self.setup.luks:
             run("echo 'lvmlmde   %s   none   luks,tries=3' >> /target/etc/crypttab" %
-                      self.auto_root_physical_partition)
+                self.auto_root_physical_partition)
 
     def finish_installation(self):
         # Steps:
@@ -473,16 +478,17 @@ class InstallerEngine:
         self.update_progress(our_current, our_total, False,
                              False, _("Setting locale"))
         run("echo \"%s.UTF-8 UTF-8\" >> /target/etc/locale.gen" %
-                  self.setup.language)
+            self.setup.language)
         run("chroot||locale-gen")
         run("echo \"\" > /target/etc/default/locale")
-        run("chroot||localectl set-locale LANG=\"%s.UTF-8\"" % self.setup.language)
+        run("chroot||localectl set-locale LANG=\"%s.UTF-8\"" %
+            self.setup.language)
         run("chroot||localectl set-locale LANG=%s.UTF-8" % self.setup.language)
         open("/target/etc/locale.conf", "w").write("LANG=%s.UTF-8" %
                                                    self.setup.language)
-        # set the locale for gentoo / sulin 
+        # set the locale for gentoo / sulin
         if os.path.exists("/target/etc/env.d"):
-            l = open("/target/etc/env.d/20language","w")
+            l = open("/target/etc/env.d/20language", "w")
             l.write("LANG={}.UTF-8".format(self.setup.language))
             l.write("LC_ALL={}.UTF-8".format(self.setup.language))
             l.flush()
@@ -494,7 +500,7 @@ class InstallerEngine:
         run("echo \"%s\" > /target/etc/timezone" % self.setup.timezone)
         run("rm -f /target/etc/localtime")
         run("ln -s /usr/share/zoneinfo/%s /target/etc/localtime" %
-                  self.setup.timezone)
+            self.setup.timezone)
 
         # Keyboard settings X11
         if not self.setup.keyboard_variant:
@@ -603,9 +609,9 @@ class InstallerEngine:
         self.update_progress(our_current, our_total, False,
                              False, _("Clearing package manager"))
         log(" --> Clearing package manager")
-        log(config.get("remove_packages",["17g-installer"]))
+        log(config.get("remove_packages", ["17g-installer"]))
         run("chroot||yes | {}".format(config.package_manager(
-            "remove_package_with_unusing_deps", config.get("remove_packages",["17g-installer"]))))
+            "remove_package_with_unusing_deps", config.get("remove_packages", ["17g-installer"]))))
 
         if self.setup.luks:
             with open("/target/etc/default/grub.d/61_live-installer.cfg", "w") as f:
@@ -641,10 +647,10 @@ class InstallerEngine:
 
             if os.path.exists("/sys/firmware/efi"):
                 grub_cmd = config.distro["grub_installation_efi"]
-                run(grub_cmd.replace("{disk}",self.setup.grub_device))
+                run(grub_cmd.replace("{disk}", self.setup.grub_device))
             else:
                 grub_cmd = config.distro["grub_installation_legacy"]
-                run(grub_cmd.replace("{disk}",self.setup.grub_device))
+                run(grub_cmd.replace("{disk}", self.setup.grub_device))
 
             # fix not add windows grub entry
             run("chroot||grub-mkconfig -o /boot/grub/grub.cfg")
@@ -704,7 +710,7 @@ class InstallerEngine:
         log(" --> Post install commands running")
         for command in config.get("post_install_commands", []):
             run(command)
-            
+
     def do_pre_install_commands(self):
         log(" --> Post install commands running")
         for command in config.get("pre_install_commands", []):

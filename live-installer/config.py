@@ -3,7 +3,7 @@ import sys
 import subprocess
 import yaml
 from glob import glob
-from utils import log, err, inf
+from logger import log, err, inf
 
 sys.path.insert(1, '/usr/lib/live-installer')
 if (os.path.isdir("/usr/lib/live-installer")):
