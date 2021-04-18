@@ -113,17 +113,22 @@ def inf(output):
     log(output, False)
     sys.stdout.write("\x1b[;0m")
     
-def run(cmd):
+def run(cmd,vital=True):
         inf("Running: "+cmd)
         if "||" in cmd:
             cmd = cmd.split("||")[1]
             if "{distro_codename}" in cmd:
                 cmd = cmd.replace("{distro_codename}",config.get("distro_codename", "17g"))
             if cmd.split("||")[0] == "chroot":
-                return do_run_in_chroot(cmd)
+                i=do_run_in_chroot(cmd)
             else:
-                return shell_exec(cmd)
-        return shell_exec(cmd)
+                i=shell_exec(cmd)
+        else:
+            i = shell_exec(cmd)
+        if vital and i != 0:
+            err("Failed to run command:{}".format(cmd))
+        return i
+
 
 def is_efi_supported():
     # Are we running under with efi ?
