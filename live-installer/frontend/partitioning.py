@@ -150,6 +150,7 @@ def partitions_popup_menu(widget, event):
     menuItem = Gtk.MenuItem(_("Assign to %s" % "/"))
     menuItem.connect("activate", lambda w: assign_mount_point(
         partition, '/', 'ext4'))
+    menu.append(menuItem)
     menuItem = Gtk.MenuItem(_("Assign to %s" % "swap"))
     menuItem.connect("activate", lambda w: assign_mount_point(
         partition, 'swap', ''))
