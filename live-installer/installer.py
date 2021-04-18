@@ -344,8 +344,8 @@ class InstallerEngine:
                         fs = "vfat"
                     else:
                         fs = partition.type
-                    if 0 != self.do_mount(partition.path, "/target", fs, None):
-                        self.error_message("Cannot mount rootfs: {}".format(partition.path))
+                    if fs != "none" and 0 != self.do_mount(partition.path, "/target", fs, None):
+                        self.error_message("Cannot mount rootfs (type: {}): {}".format(fs,partition.path))
                     break
 
         # Mount the other partitions
@@ -722,6 +722,8 @@ class InstallerEngine:
 
     def do_mount(self, device, dest, typevar="auto", options=None):
         ''' Mount a filesystem '''
+        if typevar == "none" or typevar == "":
+            return 0
         if(options is not None):
             cmd = "mount -o %s -t %s %s %s" % (options, typevar, device, dest)
         else:
