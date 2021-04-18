@@ -32,11 +32,16 @@ class InstallerEngine:
         ''' Set a callback to be called on progress updates '''
         ''' i.e. def my_callback(progress_type, message, current_progress, total) '''
         ''' Where progress_type is any off PROGRESS_START, PROGRESS_UPDATE, PROGRESS_COMPLETE, PROGRESS_ERROR '''
-        self.update_progress = progresshook
+        self.progresshook = progresshook
+        self.update_progress()
 
     def set_error_hook(self, errorhook):
         ''' Set a callback to be called on errors '''
         self.error_message = errorhook
+
+    def update_progress(self, message="", pulse=False, done=False):
+        if self.progresshook:
+            self.progresshook(self.our_current, self.our_total, pulse, done, message)
 
     def start_installation(self):
 
@@ -74,11 +79,11 @@ class InstallerEngine:
         for dirvar in config.get("exclude_dirs", ["/home"]):
             EXCLUDE_DIRS.append(dirvar)
 
-        our_current = 0
+        self.our_current = 0
         # (Valid) assumption: num-of-files-to-copy ~= num-of-used-inodes-on-/
-        our_total = int(subprocess.getoutput(
+        self.our_total = int(subprocess.getoutput(
             "df --inodes /{src} | awk 'END{{ print $3 }}'".format(src=SOURCE.strip('/'))))
-        log(" --> Copying {} files".format(our_total))
+        log(" --> Copying {} files".format(self.our_total))
         rsync_filter = ' '.join(
             '--exclude=' + SOURCE + d for d in EXCLUDE_DIRS)
         rsync = subprocess.Popen("rsync --verbose --archive --no-D --acls "
@@ -92,18 +97,16 @@ class InstallerEngine:
             if not line:  # still copying the previous file, just wait
                 time.sleep(0.1)
             else:
-                our_current = min(our_current + 1, our_total)
-                self.update_progress(our_current, our_total,
-                                     False, False, _("Copying /%s") % line)
-        log("rsync exited with return code: " + str(rsync.poll()))
+                self.our_current = min(self.our_current + 1, self.our_total)
+                self.update_progress(_("Copying /%s") % line)
+        log(_("rsync exited with return code: %s") % str(rsync.poll()))
 
         # Steps:
-        our_total = 11
-        our_current = 0
+        self.our_total = 11
+        self.our_current = 0
         # chroot
         log(" --> Chrooting")
-        self.update_progress(our_current, our_total, False,
-                             False, _("Entering the system ..."))
+        self.update_progress(_("Entering the system ..."))
         run("mount --bind /dev/ /target/dev/")
         run("mount --bind /dev/shm /target/dev/shm")
         run("mount --bind /dev/pts /target/dev/pts")
@@ -120,14 +123,13 @@ class InstallerEngine:
 
         # add new user
         log(" --> Adding new user")
-        our_current += 1
+        self.our_current += 1
         try:
             for cmd in config.distro["run_before_user_creation"]:
                 run("chroot||"+cmd)
         except:
             err("This action not supported for your distribution.")
-        self.update_progress(our_current, our_total, False,
-                             False, ("Adding new user to the system"))
+        self.update_progress(("Adding new user to the system"))
         # TODO: support encryption
 
         run('chroot||useradd -m -s {shell} -c \"{realname}\" {username}'.format(
@@ -168,15 +170,14 @@ class InstallerEngine:
                 user=self.setup.username))
 
         # /etc/fstab, mtab and crypttab
-        our_current += 1
-        self.update_progress(our_current, our_total, False, False, _(
-            "Writing filesystem mount information to /etc/fstab"))
+        self.our_current += 1
+        self.update_progress(_("Writing filesystem mount information to /etc/fstab"))
         self.write_fstab()
 
     def mount_source(self):
         # Mount the installation media
         log(" --> Mounting partitions")
-        self.update_progress(2, 4, False, False, _("Mounting %(partition)s on %(mountpoint)s") % {
+        self.update_progress(_("Mounting %(partition)s on %(mountpoint)s") % {
                              'partition': self.media, 'mountpoint': "/source/"})
         log(" ------ Mounting %s on %s" % (self.media, "/source/"))
         self.do_mount(self.media, "/source/")
@@ -239,15 +240,14 @@ class InstallerEngine:
 
         # Wipe HDD
         if self.setup.badblocks:
-            self.update_progress(1, 4, False, False, _(
+            self.update_progress(_(
                 "Filling %s with random data (please be patient, this can take hours...)") % self.setup.disk)
             log(" --> Filling %s with random data" % self.setup.disk)
             run("badblocks -c 10240 -s -w -t random -v %s" %
                 self.setup.disk)
 
         # Create partitions
-        self.update_progress(1, 4, False, False, _(
-            "Creating partitions on %s") % self.setup.disk)
+        self.update_progress(_("Creating partitions on %s") % self.setup.disk)
         log(" --> Creating partitions on %s" % self.setup.disk)
         disk_device = parted.getDevice(self.setup.disk)
         # replae this with changeable function
@@ -307,8 +307,8 @@ class InstallerEngine:
         for partition in self.setup.partitions:
             if(partition.format_as is not None and partition.format_as != ""):
                 # report it. should grab the total count of filesystems to be formatted ..
-                self.update_progress(1, 4, True, False, _("Formatting %(partition)s as %(format)s ...") % {
-                                     'partition': partition.path, 'format': partition.format_as})
+                self.update_progress(_("Formatting %(partition)s as %(format)s ...") % {
+                                     'partition': partition.path, 'format': partition.format_as},True)
 
                 # Format it
                 if partition.format_as == "swap":
@@ -340,7 +340,7 @@ class InstallerEngine:
         for partition in self.setup.partitions:
             if(partition.mount_as is not None and partition.mount_as != ""):
                 if partition.mount_as == "/":
-                    self.update_progress(3, 4, False, False, _("Mounting %(partition)s on %(mountpoint)s") % {
+                    self.update_progress(_("Mounting %(partition)s on %(mountpoint)s") % {
                                          'partition': partition.path, 'mountpoint': "/target/"})
                     log(" ------ Mounting partition %s on %s" %
                         (partition.path, "/target/"))
@@ -448,14 +448,13 @@ class InstallerEngine:
 
     def finish_installation(self):
         # Steps:
-        our_total = 11
-        our_current = 4
+        self.our_total = 11
+        self.our_current = 4
 
         # write host+hostname infos
         log(" --> Writing hostname")
-        our_current += 1
-        self.update_progress(our_current, our_total, False,
-                             False, _("Setting hostname"))
+        self.our_current += 1
+        self.update_progress(_("Setting hostname"))
         hostnamefh = open("/target/etc/hostname", "w")
         hostnamefh.write("%s\n" % self.setup.hostname)
         hostnamefh.close()
@@ -474,9 +473,8 @@ class InstallerEngine:
 
         # set the locale
         log(" --> Setting the locale")
-        our_current += 1
-        self.update_progress(our_current, our_total, False,
-                             False, _("Setting locale"))
+        self.our_current += 1
+        self.update_progress(_("Setting locale"))
         run("echo \"%s.UTF-8 UTF-8\" >> /target/etc/locale.gen" %
             self.setup.language)
         run("chroot||locale-gen")
@@ -505,8 +503,7 @@ class InstallerEngine:
         # Keyboard settings X11
         if not self.setup.keyboard_variant:
             self.setup.keyboard_variant = ""
-        self.update_progress(our_current, our_total, False,
-                             False, ("Settings X11 keyboard options"))
+        self.update_progress(("Settings X11 keyboard options"))
         if os.path.exists("/target/etc/X11/xorg.conf.d"):
             newconsolefh = open(
                 "/target/etc/X11/xorg.conf.d/10-keyboard.conf", "w")
@@ -528,9 +525,8 @@ class InstallerEngine:
 
         # set the keyboard options..
         log(" --> Setting the keyboard")
-        our_current += 1
-        self.update_progress(our_current, our_total, False,
-                             False, _("Setting keyboard options"))
+        self.our_current += 1
+        self.update_progress(_("Setting keyboard options"))
         if os.path.exists("/target/etc/default/console-setup"):
             consolefh = open("/target/etc/default/console-setup", "r")
             newconsolefh = open("/target/etc/default/console-setup.new", "w")
@@ -606,8 +602,7 @@ class InstallerEngine:
             newconsolefh.close()
 
         # remove pacman
-        self.update_progress(our_current, our_total, False,
-                             False, _("Clearing package manager"))
+        self.update_progress(_("Clearing package manager"))
         log(" --> Clearing package manager")
         log(config.get("remove_packages", ["17g-installer"]))
         run("chroot||yes | {}".format(config.package_manager(
@@ -623,9 +618,8 @@ class InstallerEngine:
 
         # recreate initramfs (needed in case of skip_mount also, to include things like mdadm/dm-crypt/etc in case its needed to boot a custom install)
         log(" --> Configuring Initramfs")
-        self.update_progress(our_current, our_total, False,
-                             False, _("Generating initramfs"))
-        our_current += 1
+        self.update_progress(_("Generating initramfs"))
+        self.our_current += 1
 
         for command in config.update_initramfs():
             run("chroot||"+command)
@@ -639,10 +633,9 @@ class InstallerEngine:
 
         # install GRUB bootloader (EFI & Legacy)
         log(" --> Configuring Grub")
-        our_current += 1
+        self.our_current += 1
         if(self.setup.grub_device is not None):
-            self.update_progress(our_current, our_total,
-                                 False, False, _("Installing bootloader"))
+            self.update_progress(_("Installing bootloader"))
             log(" --> Running grub-install")
 
             if os.path.exists("/sys/firmware/efi"):
@@ -654,10 +647,11 @@ class InstallerEngine:
 
             # fix not add windows grub entry
             run("chroot||grub-mkconfig -o /boot/grub/grub.cfg")
-            self.do_configure_grub(our_total, our_current)
+            self.update_progress(True, False, _("Configuring bootloader"))
+            self.do_configure_grub()
             grub_retries = 0
-            while (not self.do_check_grub(our_total, our_current)):
-                self.do_configure_grub(our_total, our_current)
+            while (not self.do_check_grub()):
+                self.do_configure_grub()
                 grub_retries = grub_retries + 1
                 if grub_retries >= 5:
                     self.error_message(message=_(
@@ -665,8 +659,7 @@ class InstallerEngine:
                     break
 
         # Custom commands
-        self.update_progress(our_current, our_total, True,
-                             False, _("Post install commands running"))
+        self.update_progress(_("Post install commands running"),True)
         self.do_post_install_commands()
 
         # now unmount it
@@ -689,18 +682,10 @@ class InstallerEngine:
         self.do_unmount("/target")
         self.do_unmount("/source")
 
-        self.update_progress(0, 0, False, True, _("Installation finished"))
+        self.update_progress(_("Installation finished"),done=True)
         log(" --> All done")
 
-    def do_run_in_chroot(self, command, vital=False):
-        command = command.replace('"', "'").strip()
-        log("chroot /target/ /bin/sh -c \"%s\"" % command)
-        if 0 != run("chroot /target/ /bin/sh -c \"%s\"" % command) and vital:
-            self.error_message(message=command)
-
-    def do_configure_grub(self, our_total, our_current):
-        self.update_progress(our_current, our_total, True,
-                             False, _("Configuring bootloader"))
+    def do_configure_grub(self):
         log(" --> Running grub-mkconfig")
         grub_output = subprocess.getoutput(
             "chroot /target/ /bin/sh -c \"grub-mkconfig -o /boot/grub/grub.cfg\"")
@@ -716,9 +701,8 @@ class InstallerEngine:
         for command in config.get("pre_install_commands", []):
             run(command)
 
-    def do_check_grub(self, our_total, our_current):
-        self.update_progress(our_current, our_total, True,
-                             False, _("Checking bootloader"))
+    def do_check_grub(self):
+        self.update_progress(_("Checking bootloader"),True)
         log(" --> Checking Grub configuration")
         if os.path.exists("/target/boot/grub/grub.cfg"):
             return True
