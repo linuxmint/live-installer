@@ -116,10 +116,11 @@ def inf(output):
 def run(cmd,vital=True):
         inf("Running: "+cmd)
         if "||" in cmd:
+            mode = cmd.split("||")[0] 
             cmd = cmd.split("||")[1]
             if "{distro_codename}" in cmd:
                 cmd = cmd.replace("{distro_codename}",config.get("distro_codename", "17g"))
-            if cmd.split("||")[0] == "chroot":
+            if mode == "chroot":
                 i=do_run_in_chroot(cmd)
             else:
                 i=os.system(cmd)
