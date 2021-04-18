@@ -42,12 +42,15 @@ if not live:
 
 
 def get(key, default=""):
-    if key in kernel_vars:
-        return kernel_vars[key]
-    if key in live:
-        return live[key]
-    if key in main:
-        return main[key]
+    try:
+        if key in kernel_vars:
+            return kernel_vars[key]
+        if key in live:
+            return live[key]
+        if key in main:
+            return main[key]
+    except:
+        return default
     return default
 
 

@@ -150,8 +150,7 @@ def getoutput(command):
 
 def do_run_in_chroot(self, command=None, vital=False):
     if not command:
-        return
+        return 0
     command = command.replace('"', "'").strip()
     log("chroot /target/ /bin/sh -c \"%s\"" % command)
-    if 0 != os.system("chroot /target/ /bin/sh -c \"%s\"" % command) and vital:
-        self.error_message(message=command)
+    return os.system("chroot /target/ /bin/sh -c \"%s\"" % command)

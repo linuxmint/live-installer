@@ -1116,7 +1116,7 @@ class InstallerWindow:
         try:
             self.installer.start_installation()
         except Exception as detail1:
-            err(detail1)
+            raise detail1
             do_try_finish_install = False
             self.show_error_dialog(_("Installation error"), str(detail1))
 
@@ -1130,7 +1130,7 @@ class InstallerWindow:
             try:
                 self.installer.finish_installation()
             except Exception as detail1:
-                err(detail1)
+                raise detail1
                 self.show_error_dialog(_("Installation error"), str(detail1))
 
             # show a message dialog thingum
@@ -1159,8 +1159,10 @@ class InstallerWindow:
     @idle
     def update_progress(self, current, total, pulse, done, message):
         log(message)
-        if not current or not total:
-            return
+        if not current:
+            current=1
+        if not total:
+            total = 1
         if(pulse):
             self.builder.get_object(
                 "label_install_progress").set_label(message)

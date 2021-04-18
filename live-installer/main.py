@@ -1,10 +1,11 @@
 #!/usr/bin/python3
+import sys
+import traceback
 from utils import *
 from frontend import *
 from frontend.dialogs import ErrorDialog
 
 gettext.install("live-installer", "/usr/share/locale")
-
 sys.path.insert(1, '/usr/lib/live-installer')
 if (os.path.isdir("/usr/lib/live-installer")):
     os.chdir("/usr/lib/live-installer")
@@ -15,7 +16,11 @@ if config.get("gtk_theme", "default") != "default":
 # Force show mouse cursor & fix background
 os.system("xsetroot -cursor_name left_ptr")
 os.system("xsetroot -solid black")
-
+def exceptdebug(e,v,tb):
+    print(e)
+    print(v)
+    traceback.print_tb(tb)
+sys.excapthook = exceptdebug
 
 # main entry
 if __name__ == "__main__":
