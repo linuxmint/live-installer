@@ -17,6 +17,8 @@ if config.get("gtk_theme", "default") != "default":
 os.system("xsetroot -cursor_name left_ptr")
 os.system("xsetroot -solid black")
 
+VERSION="4.1"
+
 def exceptdebug(e,v,tb):
     sys.stderr.write("Error: {}\n".format(str(e)))
     sys.stderr.write("Value: {}\n".format(str(v)))
@@ -35,13 +37,15 @@ if __name__ == "__main__":
         else:
             err("Welcome screen disabled by config.")
             exit(0)
+    elif "--tui" in sys.argv:
+        from frontend.tui_interface import InstallerWindow
+        term = InstallerWindow()
+    elif "--version" in sys.argv:
+        sys.stdout.write(VERSION+"\n")
+        exit(0)
     else:
-        if "--tui" in sys.argv:
-            from frontend.tui_interface import InstallerWindow
-            term = InstallerWindow()
-        else:
-            from frontend.gtk_interface import InstallerWindow
-            win = InstallerWindow()
-            if ("--fullscreen" in sys.argv):
-                win.fullscreen()
+        from frontend.gtk_interface import InstallerWindow
+        win = InstallerWindow()
+        if ("--fullscreen" in sys.argv):
+            win.fullscreen()
     Gtk.main()
