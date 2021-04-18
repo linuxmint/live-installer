@@ -88,7 +88,7 @@ def run(cmd, vital=True):
         cmd = cmd.split("||")[1].strip()
         if "{distro_codename}" in cmd:
             cmd = cmd.replace("{distro_codename}",
-                              config.get("distro_codename", "17g"))
+                              config.get("distro_codename", "linux"))
         if mode == "chroot":
             i = do_run_in_chroot(cmd)
         else:
@@ -118,6 +118,6 @@ def getoutput(command):
     return shell_exec(command).stdout.read().strip()
 
 
-def do_run_in_chroot(self, command=None, vital=False):
-    command = command.replace('"', "'").strip()
-    return os.system("chroot /target/ /bin/sh -c \"%s\"" % str(command))
+def do_run_in_chroot(command=None, vital=False):
+    command = str(command).replace('"', "'").strip()
+    return os.system("chroot /target/ /bin/sh -c \"%s\"" % command)
