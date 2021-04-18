@@ -122,11 +122,11 @@ def run(cmd,vital=True):
             if cmd.split("||")[0] == "chroot":
                 i=do_run_in_chroot(cmd)
             else:
-                i=shell_exec(cmd)
+                i=os.system(cmd)
         else:
-            i = shell_exec(cmd)
+            i = os.system(cmd)
         if vital and i != 0:
-            err("Failed to run command:{}".format(cmd))
+            err("Failed to run command (Exited with {}): {}".format(str(int(i/512)),cmd))
         return i
 
 

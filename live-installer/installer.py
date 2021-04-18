@@ -91,7 +91,7 @@ class InstallerEngine:
                 our_current = min(our_current + 1, our_total)
                 self.update_progress(our_current, our_total,
                                      False, False, _("Copying /%s") % line)
-        err("rsync exited with returncode: " + str(rsync.poll()))
+        log("rsync exited with return code: " + str(rsync.poll()))
 
         # Steps:
         our_total = 11
@@ -172,7 +172,7 @@ class InstallerEngine:
         self.update_progress(2, 4, False, False, _("Mounting %(partition)s on %(mountpoint)s") % {
                              'partition': self.media, 'mountpoint': "/source/"})
         log(" ------ Mounting %s on %s" % (self.media, "/source/"))
-        self.do_mount(self.media, "/source/", "squashfs", options="loop")
+        self.do_mount(self.media, "/source/")
 
     def create_partitions(self):
         # Create partitions on the selected disk (automated installation)
@@ -711,7 +711,7 @@ class InstallerEngine:
             err("!No /target/boot/grub/grub.cfg file found!")
             return False
 
-    def do_mount(self, device, dest, typevar, options=None):
+    def do_mount(self, device, dest, typevar="auto", options=None):
         ''' Mount a filesystem '''
         if(options is not None):
             cmd = "mount -o %s -t %s %s %s" % (options, typevar, device, dest)
