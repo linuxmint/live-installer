@@ -1052,6 +1052,11 @@ class InstallerWindow:
         top = model.append(None, (_("System settings"),))
         model.append(top, (_("Computer's name: ") +
                            bold(self.setup.hostname),))
+        if utils.is_efi_supported():
+            model.append(top, (_("Bios type: ") + bold("UEFI")))
+        else:
+            model.append(top, (_("Bios type: ") + bold("Legacy")))
+
         top = model.append(None, (_("Filesystem operations"),))
         model.append(top, (bold(_("Install bootloader on %s") % self.setup.grub_device)
                            if self.setup.grub_device else _("Do not install bootloader"),))
