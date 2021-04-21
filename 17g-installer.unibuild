@@ -1,6 +1,6 @@
 #!/bin/bash
 name="17g-installer"
-version="4.0"
+version="4.1"
 summary="live installation tools"
 executable="unibuild"
 description="Distro independed live installation tools written gtk"
