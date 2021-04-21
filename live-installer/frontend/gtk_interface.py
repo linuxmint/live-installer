@@ -614,7 +614,7 @@ class InstallerWindow:
                 var_name = variant[0]
                 var_desc = variant[1]
                 var_desc = var_name if len(
-                    var_desc) == 0 else '{} - {}'.format(desc, var_desc)
+                    var_desc) == 0 else var_desc
                 if name in NON_LATIN_KB_LAYOUTS and "Latin" not in var_desc:
                     var_desc = "English (US) + %s" % var_desc
                 variants[name].append((var_desc, var_name))
