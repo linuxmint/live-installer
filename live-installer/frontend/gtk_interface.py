@@ -571,10 +571,6 @@ class InstallerWindow:
         # Set the model and pre-select the correct language
         treeview = self.builder.get_object("treeview_language_list")
         treeview.set_model(model)
-        if set_iter:
-            path = model.get_path(set_iter)
-            treeview.set_cursor(path)
-            treeview.scroll_to_cell(path)
 
     def build_kb_lists(self):
         ''' Do some xml kung-fu and load the keyboard stuffs '''
