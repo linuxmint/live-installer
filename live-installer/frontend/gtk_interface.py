@@ -909,7 +909,6 @@ class InstallerWindow:
                             "An EFI system partition is needed with the following requirements:\n\n - Mount point: /boot/efi\n - Partition flags: Bootable\n - Size: at least 35MB (100MB or more recommended)\n - Format: vfat or fat32\n\nTo ensure compatibility with Windows we recommend you use the first partition of the disk as the EFI system partition.\n "))
                         return
 
-                partitioning.build_grub_partitions()
         elif index == self.PAGE_OVERVIEW:
             self.show_overview()
         elif index == self.PAGE_INSTALL:
@@ -966,6 +965,7 @@ class InstallerWindow:
         else:
             self.activate_page(self.PAGE_PARTITIONS)
             partitioning.build_partitions(self)
+            partitioning.build_grub_partitions()
 
     def wizard_cb(self, widget, goback, data=None):
         ''' wizard buttons '''
