@@ -104,7 +104,7 @@ class InstallerEngine:
         log(_("rsync exited with return code: %s") % str(rsync.poll()))
 
         # Steps:
-        self.our_total = 11
+        self.our_total = 12
         self.our_current = 0
         # chroot
         log(" --> Chrooting")
@@ -157,6 +157,8 @@ class InstallerEngine:
                 run("chroot||echo -e \"{0}\\n{0}\\n\" | passwd".format(
                     self.setup.password1))
 
+        self.our_current += 1
+        self.update_progress(_("Applying login settings"))
         # Set LightDM to show user list by default
         if config.get("list_users_when_auto_login", True):
             run(r"chroot||sed -i -r 's/^#?(greeter-hide-users)\s*=.*/\1=false/' /etc/lightdm/lightdm.conf")
@@ -447,10 +449,11 @@ class InstallerEngine:
         if self.setup.luks:
             run("echo 'lvmlmde   %s   none   luks,tries=3' >> /target/etc/crypttab" %
                 self.auto_root_physical_partition)
+        inf(open("/target/etc/fstab", "r").read())
 
     def finish_installation(self):
         # Steps:
-        self.our_total = 11
+        self.our_total = 12
         self.our_current = 4
 
         # write host+hostname infos
@@ -471,6 +474,11 @@ class InstallerEngine:
         hostsfh.write("ff02::1 ip6-allnodes\n")
         hostsfh.write("ff02::2 ip6-allrouters\n")
         hostsfh.write("ff02::3 ip6-allhosts\n")
+        # Append hosts file from branding
+        if os.path.isfile("./branding/hosts"):
+            f = open("./branding/hosts","r").readlines()
+            for line in f:
+                hostsfh.write(line)
         hostsfh.close()
 
         # set the locale
@@ -497,6 +505,8 @@ class InstallerEngine:
 
         # set the timezone
         log(" --> Setting the timezone")
+        self.our_current += 1
+        self.update_progress(_("Setting timezone"))
         run("echo \"%s\" > /target/etc/timezone" % self.setup.timezone)
         run("rm -f /target/etc/localtime")
         run("ln -s /usr/share/zoneinfo/%s /target/etc/localtime" %
@@ -604,7 +614,7 @@ class InstallerEngine:
             newconsolefh.close()
 
         # remove pacman
-        self.update_progress(_("Clearing package manager"))
+        self.update_progress(_("Clearing package manager"),True)
         log(" --> Clearing package manager")
         log(config.get("remove_packages", ["17g-installer"]))
         run("chroot||yes | {}".format(config.package_manager(
@@ -620,12 +630,12 @@ class InstallerEngine:
 
         # recreate initramfs (needed in case of skip_mount also, to include things like mdadm/dm-crypt/etc in case its needed to boot a custom install)
         log(" --> Configuring Initramfs")
-        self.update_progress(_("Generating initramfs"))
         self.our_current += 1
+        self.update_progress(_("Generating initramfs"))
 
         for command in config.update_initramfs():
             run("chroot||"+command)
-
+        self.update_progress(_("Preparing bootloader installation"),True)
         try:
             grub_prepare_commands = config.distro["grub_prepare"]
             for command in grub_prepare_commands:
