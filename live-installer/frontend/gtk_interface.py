@@ -1053,9 +1053,9 @@ class InstallerWindow:
         model.append(top, (_("Computer's name: ") +
                            bold(self.setup.hostname),))
         if self.setup.gptonefi:
-            model.append(top, (_("Bios type: ") + bold("UEFI")))
+            model.append(top, (_("Bios type: ") + bold("UEFI"),))
         else:
-            model.append(top, (_("Bios type: ") + bold("Legacy")))
+            model.append(top, (_("Bios type: ") + bold("Legacy"),))
 
         top = model.append(None, (_("Filesystem operations"),))
         model.append(top, (bold(_("Install bootloader on %s") % self.setup.grub_device)
