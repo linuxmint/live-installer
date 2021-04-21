@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-18 18:48+0300\n"
+"POT-Creation-Date: 2021-04-21 02:49+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,10 +16,6 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#: live-installer/main.py:29
-msgid "You must be root!"
-msgstr ""
 
 #: live-installer/installer.py:103
 #, python-format
@@ -123,177 +119,11 @@ msgstr ""
 msgid "Install"
 msgstr ""
 
-#: live-installer/frontend/tui_interface.py:23
-#: live-installer/frontend/gtk_interface.py:299
-#, python-format
-msgid "Welcome to the %s Installer."
-msgstr ""
-
-#: live-installer/frontend/tui_interface.py:25
-#: live-installer/frontend/gtk_interface.py:301
-msgid ""
-"This program will ask you some questions and set up system on your computer."
-msgstr ""
-
-#: live-installer/frontend/tui_interface.py:28
-#: live-installer/frontend/gtk_interface.py:275
-msgid "What language would you like to use?"
-msgstr ""
-
-#: live-installer/frontend/tui_interface.py:33
 #: live-installer/frontend/gtk_interface.py:82
 #: live-installer/frontend/gtk_interface.py:275
 #: live-installer/frontend/gtk_interface.py:304
+#: live-installer/frontend/tui_interface.py:33
 msgid "Language"
-msgstr ""
-
-#: live-installer/frontend/tui_interface.py:37
-#: live-installer/frontend/gtk_interface.py:277
-msgid "Where are you?"
-msgstr ""
-
-#: live-installer/frontend/tui_interface.py:41
-#: live-installer/frontend/gtk_interface.py:277
-msgid "Timezone"
-msgstr ""
-
-#: live-installer/frontend/tui_interface.py:45
-msgid "What keyboard would you like to use?"
-msgstr ""
-
-#: live-installer/frontend/tui_interface.py:52
-msgid "Keyboard Model"
-msgstr ""
-
-#: live-installer/frontend/timezones.py:152
-msgid "Select timezone"
-msgstr ""
-
-#: live-installer/frontend/partitioning.py:58
-msgid "B"
-msgstr ""
-
-#: live-installer/frontend/partitioning.py:58
-#: live-installer/frontend/partitioning.py:374
-msgid "kB"
-msgstr ""
-
-#: live-installer/frontend/partitioning.py:58
-#: live-installer/frontend/partitioning.py:374
-msgid "MB"
-msgstr ""
-
-#: live-installer/frontend/partitioning.py:58
-#: live-installer/frontend/partitioning.py:374
-msgid "GB"
-msgstr ""
-
-#: live-installer/frontend/partitioning.py:59
-#: live-installer/frontend/partitioning.py:374
-msgid "TB"
-msgstr ""
-
-#: live-installer/frontend/partitioning.py:66
-msgid "Removable:"
-msgstr ""
-
-#: live-installer/frontend/partitioning.py:145
-msgid "Edit"
-msgstr ""
-
-#: live-installer/frontend/partitioning.py:150
-#: live-installer/frontend/partitioning.py:153
-#: live-installer/frontend/partitioning.py:158
-#: live-installer/frontend/partitioning.py:166
-#, python-format
-msgid "Assign to %s"
-msgstr ""
-
-#: live-installer/frontend/partitioning.py:231
-msgid "Installation Tool"
-msgstr ""
-
-#: live-installer/frontend/partitioning.py:232
-#, python-format
-msgid ""
-"No partition table was found on the hard drive: %s. Do you want the "
-"installer to create a set of partitions for you? Note: This will ERASE ALL "
-"DATA present on this disk."
-msgstr ""
-
-#: live-installer/frontend/partitioning.py:298
-#: live-installer/frontend/gtk_interface.py:262
-#: live-installer/frontend/gtk_interface.py:265
-#: live-installer/frontend/gtk_interface.py:751
-#: live-installer/frontend/gtk_interface.py:786
-#: live-installer/frontend/gtk_interface.py:861
-#: live-installer/frontend/gtk_interface.py:874
-#: live-installer/frontend/gtk_interface.py:879
-#: live-installer/frontend/gtk_interface.py:892
-#: live-installer/frontend/gtk_interface.py:896
-#: live-installer/frontend/gtk_interface.py:902
-#: live-installer/frontend/gtk_interface.py:907
-#: live-installer/frontend/gtk_interface.py:912
-#: live-installer/frontend/gtk_interface.py:964
-#: live-installer/frontend/gtk_interface.py:1003
-msgid "Installer"
-msgstr ""
-
-#: live-installer/frontend/partitioning.py:314
-#, python-format
-msgid ""
-"The partition table couldn't be written for %s. Restart the computer and try "
-"again."
-msgstr ""
-
-#: live-installer/frontend/partitioning.py:361
-#, python-format
-msgid ""
-"The partition %s could not be created. The installation will stop. Restart "
-"the computer and try again."
-msgstr ""
-
-#: live-installer/frontend/partitioning.py:413
-msgid "Logical partition"
-msgstr ""
-
-#: live-installer/frontend/partitioning.py:414
-msgid "Extended partition"
-msgstr ""
-
-#: live-installer/frontend/partitioning.py:415
-#: live-installer/frontend/gtk_interface.py:370
-msgid "Free space"
-msgstr ""
-
-#: live-installer/frontend/partitioning.py:418
-msgid "Unknown"
-msgstr ""
-
-#: live-installer/frontend/partitioning.py:505
-msgid "Edit partition"
-msgstr ""
-
-#: live-installer/frontend/partitioning.py:507
-msgid "Device:"
-msgstr ""
-
-#: live-installer/frontend/partitioning.py:509
-msgid "Format as:"
-msgstr ""
-
-#: live-installer/frontend/partitioning.py:511
-msgid "Mount point:"
-msgstr ""
-
-#: live-installer/frontend/partitioning.py:512
-msgid "Cancel"
-msgstr ""
-
-#: live-installer/frontend/partitioning.py:513
-#: live-installer/frontend/dialogs.py:33 live-installer/frontend/dialogs.py:46
-#: live-installer/frontend/dialogs.py:52
-msgid "OK"
 msgstr ""
 
 #: live-installer/frontend/gtk_interface.py:91
@@ -313,6 +143,39 @@ msgstr ""
 
 #: live-installer/frontend/gtk_interface.py:224
 msgid "Calculating file indexes ..."
+msgstr ""
+
+#: live-installer/frontend/gtk_interface.py:262
+#: live-installer/frontend/gtk_interface.py:265
+#: live-installer/frontend/gtk_interface.py:751
+#: live-installer/frontend/gtk_interface.py:786
+#: live-installer/frontend/gtk_interface.py:861
+#: live-installer/frontend/gtk_interface.py:874
+#: live-installer/frontend/gtk_interface.py:879
+#: live-installer/frontend/gtk_interface.py:892
+#: live-installer/frontend/gtk_interface.py:896
+#: live-installer/frontend/gtk_interface.py:902
+#: live-installer/frontend/gtk_interface.py:907
+#: live-installer/frontend/gtk_interface.py:912
+#: live-installer/frontend/gtk_interface.py:964
+#: live-installer/frontend/gtk_interface.py:1003
+#: live-installer/frontend/partitioning.py:299
+msgid "Installer"
+msgstr ""
+
+#: live-installer/frontend/gtk_interface.py:275
+#: live-installer/frontend/tui_interface.py:28
+msgid "What language would you like to use?"
+msgstr ""
+
+#: live-installer/frontend/gtk_interface.py:277
+#: live-installer/frontend/tui_interface.py:41
+msgid "Timezone"
+msgstr ""
+
+#: live-installer/frontend/gtk_interface.py:277
+#: live-installer/frontend/tui_interface.py:37
+msgid "Where are you?"
 msgstr ""
 
 #: live-installer/frontend/gtk_interface.py:279
@@ -370,6 +233,18 @@ msgstr ""
 
 #: live-installer/frontend/gtk_interface.py:295
 msgid "Next"
+msgstr ""
+
+#: live-installer/frontend/gtk_interface.py:299
+#: live-installer/frontend/tui_interface.py:23
+#, python-format
+msgid "Welcome to the %s Installer."
+msgstr ""
+
+#: live-installer/frontend/gtk_interface.py:301
+#: live-installer/frontend/tui_interface.py:25
+msgid ""
+"This program will ask you some questions and set up system on your computer."
 msgstr ""
 
 #: live-installer/frontend/gtk_interface.py:309
@@ -497,6 +372,11 @@ msgstr ""
 
 #: live-installer/frontend/gtk_interface.py:369
 msgid "Size"
+msgstr ""
+
+#: live-installer/frontend/gtk_interface.py:370
+#: live-installer/frontend/partitioning.py:416
+msgid "Free space"
 msgstr ""
 
 #: live-installer/frontend/gtk_interface.py:375
@@ -759,10 +639,134 @@ msgstr ""
 msgid "Installation error"
 msgstr ""
 
+#: live-installer/frontend/dialogs.py:33 live-installer/frontend/dialogs.py:46
+#: live-installer/frontend/dialogs.py:52
+#: live-installer/frontend/partitioning.py:514
+msgid "OK"
+msgstr ""
+
 #: live-installer/frontend/dialogs.py:39
 msgid "No"
 msgstr ""
 
 #: live-installer/frontend/dialogs.py:40
 msgid "Yes"
+msgstr ""
+
+#: live-installer/frontend/partitioning.py:58
+msgid "B"
+msgstr ""
+
+#: live-installer/frontend/partitioning.py:58
+#: live-installer/frontend/partitioning.py:375
+msgid "kB"
+msgstr ""
+
+#: live-installer/frontend/partitioning.py:58
+#: live-installer/frontend/partitioning.py:375
+msgid "MB"
+msgstr ""
+
+#: live-installer/frontend/partitioning.py:58
+#: live-installer/frontend/partitioning.py:375
+msgid "GB"
+msgstr ""
+
+#: live-installer/frontend/partitioning.py:59
+#: live-installer/frontend/partitioning.py:375
+msgid "TB"
+msgstr ""
+
+#: live-installer/frontend/partitioning.py:66
+msgid "Removable:"
+msgstr ""
+
+#: live-installer/frontend/partitioning.py:145
+msgid "Edit"
+msgstr ""
+
+#: live-installer/frontend/partitioning.py:150
+#: live-installer/frontend/partitioning.py:154
+#: live-installer/frontend/partitioning.py:159
+#: live-installer/frontend/partitioning.py:167
+#, python-format
+msgid "Assign to %s"
+msgstr ""
+
+#: live-installer/frontend/partitioning.py:232
+msgid "Installation Tool"
+msgstr ""
+
+#: live-installer/frontend/partitioning.py:233
+#, python-format
+msgid ""
+"No partition table was found on the hard drive: %s. Do you want the "
+"installer to create a set of partitions for you? Note: This will ERASE ALL "
+"DATA present on this disk."
+msgstr ""
+
+#: live-installer/frontend/partitioning.py:315
+#, python-format
+msgid ""
+"The partition table couldn't be written for %s. Restart the computer and try "
+"again."
+msgstr ""
+
+#: live-installer/frontend/partitioning.py:362
+#, python-format
+msgid ""
+"The partition %s could not be created. The installation will stop. Restart "
+"the computer and try again."
+msgstr ""
+
+#: live-installer/frontend/partitioning.py:414
+msgid "Logical partition"
+msgstr ""
+
+#: live-installer/frontend/partitioning.py:415
+msgid "Extended partition"
+msgstr ""
+
+#: live-installer/frontend/partitioning.py:419
+msgid "Unknown"
+msgstr ""
+
+#: live-installer/frontend/partitioning.py:506
+msgid "Edit partition"
+msgstr ""
+
+#: live-installer/frontend/partitioning.py:508
+msgid "Device:"
+msgstr ""
+
+#: live-installer/frontend/partitioning.py:510
+msgid "Format as:"
+msgstr ""
+
+#: live-installer/frontend/partitioning.py:512
+msgid "Mount point:"
+msgstr ""
+
+#: live-installer/frontend/partitioning.py:513
+msgid "Cancel"
+msgstr ""
+
+#: live-installer/frontend/tui_interface.py:45
+msgid "What keyboard would you like to use?"
+msgstr ""
+
+#: live-installer/frontend/tui_interface.py:52
+msgid "Keyboard Model"
+msgstr ""
+
+#: live-installer/frontend/common.py:82
+msgid "No Variant"
+msgstr ""
+
+#: live-installer/frontend/timezones.py:152
+msgid "Select timezone"
+msgstr ""
+
+#: live-installer/main.py:31
+msgid "You must be root!"
 msgstr ""

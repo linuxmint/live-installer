@@ -554,11 +554,11 @@ class InstallerWindow:
         for c in ccodes:
             c = c.split(":")
             ccode = c[0]
-            language = c[1]
+            lang = c[1]
             country = c[2]
             locale = c[3]
             pixbuf = flag(ccode) if not lang in 'eo ia' else flag('_' + lang)
-            itervar = model.append((language, country, pixbuf, locale))
+            itervar = model.append((lang, country, pixbuf, locale))
             if (ccode == self.cur_country_code and
                 (not set_iter or
                  set_iter and lang == 'en' or  # prefer English, or
