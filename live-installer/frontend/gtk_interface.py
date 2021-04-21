@@ -1052,7 +1052,7 @@ class InstallerWindow:
         top = model.append(None, (_("System settings"),))
         model.append(top, (_("Computer's name: ") +
                            bold(self.setup.hostname),))
-        if utils.is_efi_supported():
+        if self.setup.gptonefi:
             model.append(top, (_("Bios type: ") + bold("UEFI")))
         else:
             model.append(top, (_("Bios type: ") + bold("Legacy")))
