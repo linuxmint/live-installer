@@ -32,7 +32,20 @@ def get_country_list():
                 name = cols[1].replace(";", ",")
                 languages[cols[0]] = name
     ccodes = []
-    for locale in subprocess.getoutput("cat ./resources/locales").split('\n'):
+    langlist = ""
+    if os.path.isfile("/usr/share/i18n/SUPPORTED"):
+        i18n = open("/usr/share/i18n/SUPPORTED","r").read().split('\n')
+        for line in i18n:
+            if " " in line and "_" in line and "@" not in line:
+                if "UTF-8" in line:
+                    if "." in line.split(" ")[0]:
+                        langlist+=line.split(" ")[0].split(".")[0]+"\n"
+                    else:
+                        langlist+=line.split(" ")[0]+"\n"
+    else:
+        langlist = open("./resources/locales","r").read()
+
+    for locale in langlist.split('\n'):
         if '_' in locale:
             lang, ccode = locale.split('_')
             language = lang
