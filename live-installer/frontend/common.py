@@ -62,7 +62,6 @@ def get_country_list():
                 country = ccode
             ccodes.append(ccode+":"+language+":"+country+":"+locale)
     ccodes.sort()
-    print(ccodes)
     return ccodes
 
 
