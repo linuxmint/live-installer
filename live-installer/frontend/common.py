@@ -39,7 +39,7 @@ def get_country_list():
             l = line.split(" ")[0]
             if "." in l:
                 l = l.split(".")[0]
-            if l not in langlist:
+            if l not in langlist and "@" not in l:
                 langlist+=l+"\n"
     else:
         langlist = open("./resources/locales","r").read()
@@ -48,7 +48,7 @@ def get_country_list():
         langlist+="en_US\n"
 
     for locale in langlist.split('\n'):
-        if '_' in locale and '@' not in locale:
+        if '_' in locale:
             lang, ccode = locale.split('_')
             language = lang
             country = ccode
