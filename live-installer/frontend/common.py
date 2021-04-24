@@ -36,38 +36,33 @@ def get_country_list():
     if os.path.isfile("/usr/share/i18n/SUPPORTED"):
         i18n = open("/usr/share/i18n/SUPPORTED","r").read().split('\n')
         for line in i18n:
-            if " " in line and "_" in line and "@" not in line:
-                if "UTF-8" in line:
-                    if "." in line.split(" ")[0]:
-                        langlist+=line.split(" ")[0].split(".")[0]+"\n"
-                    else:
-                        langlist+=line.split(" ")[0]+"\n"
+            l = line.split(" ")[0]
+            if "." in l:
+                l = l.split(".")[0]
+            if l not in langlist:
+                langlist+=l+"\n"
     else:
         langlist = open("./resources/locales","r").read()
 
+    if "en_US" not in langlist:
+        langlist+="en_US\n"
+
     for locale in langlist.split('\n'):
-        if '_' in locale:
+        if '_' in locale and '@' not in locale:
             lang, ccode = locale.split('_')
             language = lang
             country = ccode
             try:
                 language = languages[lang]
             except:
-                pass
+                language = lang
             try:
                 country = countries[ccode]
             except:
-                pass
-        else:
-            lang = locale
-            try:
-                language = languages[lang]
-            except:
-                pass
-            country = ''
-        if country.isalnum() and language.isalnum() :
+                country = ccode
             ccodes.append(ccode+":"+language+":"+country+":"+locale)
-
+    ccodes.sort()
+    print(ccodes)
     return ccodes
 
 

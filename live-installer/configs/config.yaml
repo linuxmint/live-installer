@@ -41,7 +41,7 @@
 # partition_editor: gparted
 
 ## Timezone and locale section
-# default_country_code: auto
+# default_locale: auto
 # default_timezone: America/New_York
 
 ## Setup page section

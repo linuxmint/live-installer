@@ -522,16 +522,17 @@ class InstallerWindow:
 
         self.cur_timezone = config.get('default_timezone', "America/New_York")
 
-        if config.get('default_country_code', "auto") == "auto":
+        if config.get('default_locale', "auto") == "auto":
+            self.cur_country_code = "en_US" # fallback language
             lang = subprocess.getoutput("echo $LANG")
             lc_all = subprocess.getoutput("echo $LC_ALL")
             if lc_all == "":
-                self.cur_country_code = lang.split("_")[0].upper()
+                self.cur_country_code = lang.split(".")[0]
             elif lang == "":
-                self.cur_country_code = lc_all.split("_")[0].upper()
+                self.cur_country_code = lc_all.split(".")[0]
             self.assign_language(None)
         else:
-            self.cur_country_code = config.get('default_country_code')
+            self.cur_country_code = config.get('default_locale')
 
         # Load countries into memory
         ccodes = common.get_country_list()
@@ -560,7 +561,7 @@ class InstallerWindow:
             locale = c[3]
             pixbuf = flag(ccode) if not lang in 'eo ia' else flag('_' + lang)
             itervar = model.append((country, lang, pixbuf, locale))
-            if (ccode == self.cur_country_code and
+            if (locale == self.cur_country_code and
                 (not set_iter or
                  set_iter and lang == 'en' or  # prefer English, or
                  set_iter and lang == ccode.lower())):  # fuzzy: lang matching ccode (fr_FR, de_DE, es_ES, ...)
@@ -572,6 +573,10 @@ class InstallerWindow:
         # Set the model and pre-select the correct language
         treeview = self.builder.get_object("treeview_language_list")
         treeview.set_model(model)
+        if set_iter:
+            path = model.get_path(set_iter)
+            treeview.set_cursor(path)
+            treeview.scroll_to_cell(path)
 
     def build_kb_lists(self):
         ''' Do some xml kung-fu and load the keyboard stuffs '''
