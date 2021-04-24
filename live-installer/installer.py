@@ -531,7 +531,8 @@ class InstallerEngine:
             self.setup.keyboard_model))
         newconsolefh.write('Option "XkbVariant" "{}"\n'.format(
             self.setup.keyboard_variant))
-        newconsolefh.write('#Option "XkbOptions" "grp:alt_shift_toggle"\n')
+        if "," in self.setup.keyboard_layout:
+            newconsolefh.write('Option "XkbOptions" "grp:ctrls_toggle"\n')
         newconsolefh.write('EndSection\n')
         newconsolefh.close()
 
