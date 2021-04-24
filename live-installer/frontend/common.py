@@ -65,7 +65,8 @@ def get_country_list():
             except:
                 pass
             country = ''
-        ccodes.append(ccode+":"+language+":"+country+":"+locale)
+        if country.isalnum() and language.isalnum() :
+            ccodes.append(ccode+":"+language+":"+country+":"+locale)
 
     return ccodes
 

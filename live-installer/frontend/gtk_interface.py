@@ -78,23 +78,24 @@ class InstallerWindow:
 
         col = Gtk.TreeViewColumn("", Gtk.CellRendererPixbuf(), pixbuf=2)
         self.builder.get_object("treeview_language_list").append_column(col)
-        ren = Gtk.CellRendererText()
-        self.language_column = Gtk.TreeViewColumn(_("Language"), ren, text=0)
-        self.language_column.set_sort_column_id(0)
-        self.language_column.set_expand(True)
-        self.language_column.set_resizable(True)
-        ren.set_property("ellipsize", Pango.EllipsizeMode.MIDDLE)
-        self.builder.get_object("treeview_language_list").append_column(
-            self.language_column)
 
         ren = Gtk.CellRendererText()
-        self.country_column = Gtk.TreeViewColumn(_("Country"), ren, text=1)
-        self.country_column.set_sort_column_id(1)
+        self.country_column = Gtk.TreeViewColumn(_("Country"), ren, text=0)
+        self.country_column.set_sort_column_id(0)
         self.country_column.set_expand(True)
         self.country_column.set_resizable(True)
         ren.set_property("ellipsize", Pango.EllipsizeMode.MIDDLE)
         self.builder.get_object(
             "treeview_language_list").append_column(self.country_column)
+
+        ren = Gtk.CellRendererText()
+        self.language_column = Gtk.TreeViewColumn(_("Language"), ren, text=1)
+        self.language_column.set_sort_column_id(1)
+        self.language_column.set_expand(True)
+        self.language_column.set_resizable(True)
+        ren.set_property("ellipsize", Pango.EllipsizeMode.MIDDLE)
+        self.builder.get_object("treeview_language_list").append_column(
+            self.language_column)
 
         self.builder.get_object("treeview_language_list").connect(
             "cursor-changed", self.assign_language)
@@ -558,7 +559,7 @@ class InstallerWindow:
             country = c[2]
             locale = c[3]
             pixbuf = flag(ccode) if not lang in 'eo ia' else flag('_' + lang)
-            itervar = model.append((lang, country, pixbuf, locale))
+            itervar = model.append((country, lang, pixbuf, locale))
             if (ccode == self.cur_country_code and
                 (not set_iter or
                  set_iter and lang == 'en' or  # prefer English, or
