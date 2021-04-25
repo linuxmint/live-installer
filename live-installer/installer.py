@@ -115,6 +115,8 @@ class InstallerEngine:
         run("mount --bind /sys/ /target/sys/")
         run("mount --bind /proc/ /target/proc/")
         run("mount --bind /run/ /target/run/")
+        if os.path.exists("/sys/firmware/efi"):
+            run("mount --bind /sys/firmware/efi/ /target/sys/firmware/efi/")
         run("mv /target/etc/resolv.conf /target/etc/resolv.conf.bk")
         run("cp -f /etc/resolv.conf /target/etc/resolv.conf")
 
@@ -679,6 +681,8 @@ class InstallerEngine:
         log(" --> Unmounting partitions")
         run("umount -lf /target/dev/shm")
         run("umount -lf /target/dev/pts")
+        if os.path.exists("/sys/firmware/efi"):
+            run("umount -lf /target/sys/firmware/efi/")
         if self.setup.gptonefi:
             run("umount -lf /target/boot/efi")
             run("umount -lf /target/media/cdrom")
