@@ -1,5 +1,8 @@
 fetch_deb(){
     mkdir -p /target/debs/ || true
+    cp /run/live/medium/pool/non-free/i/intel-microcode/* /target/debs/
+    cp /run/live/medium/pool/non-free/a/amd64-microcode/* /target/debs/
+    cp /run/live/medium/pool/contrib/i/iucode-tool/* /target/debs/
     for pkg in $@ ; do
         f="$(find /run/live/medium/pool/ -type f  -iname ${pkg}_*.deb)"
         if [ "" !=  "$f" ] ; then
