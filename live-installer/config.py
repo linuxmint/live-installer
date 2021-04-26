@@ -98,14 +98,13 @@ if(get("display_manager", "auto") == "auto"):
         display_manager = load_config(display_manager)
         if not display_manager:
             err("Failed to load: "+display_manager)
-        elif "check_this_dir" in distro and os.path.exists(distro["check_this_dir"]):
+        elif "check_this_dir" in display_manager and os.path.exists(display_manager["check_this_dir"]):
             break
 else:
     display_manager = load_config(
         "configs/display_managers/{}.yaml".format(main["display_manager"]))
 
 def package_manager(process, packages=[]):
-    print(pm)
     if process == "name":
         exit("You can't use this parameter!")
     if process in pm:
