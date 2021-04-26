@@ -53,7 +53,11 @@
 # min_password_length: 1
 
 ## Pre/Post operations section
-# post_install_commands:
+# post_install_hook:
 #   - echo "BRUH"
-# pre_install_commands:
+# pre_install_hook:
+#   - echo "BRUH"
+# pre_rsync_hook:
+#   - echo "BRUH"
+# post_rsync_hook:
 #   - echo "BRUH"

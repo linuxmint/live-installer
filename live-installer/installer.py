@@ -54,6 +54,9 @@ class InstallerEngine:
         if(not os.path.exists("/source")):
             os.mkdir("/source")
 
+        # Custom commands
+        self.do_hook_commands("pre_install_hook")
+
         run("umount -lf /target/dev/shm")
         run("umount -lf /target/dev/pts")
         run("umount -lf /target/dev/")
@@ -70,7 +73,7 @@ class InstallerEngine:
             self.mount_partitions()
 
         # Custom commands
-        self.do_pre_install_commands()
+        self.do_hook_commands("pre_rsync_hook")
 
         # Transfer the files
         SOURCE = "/source/"
@@ -102,6 +105,9 @@ class InstallerEngine:
                 self.our_current = min(self.our_current + 1, self.our_total)
                 self.update_progress(_("Copying /%s") % line)
         log(_("rsync exited with return code: %s") % str(rsync.poll()))
+
+        # Custom commands
+        self.do_hook_commands("post_rsync_hook")
 
         # Steps:
         self.our_total = 12
@@ -674,8 +680,7 @@ class InstallerEngine:
                     break
 
         # Custom commands
-        self.update_progress(_("Post install commands running"),True)
-        self.do_post_install_commands()
+        self.do_hook_commands("post_install_hook")
 
         # now unmount it
         log(" --> Unmounting partitions")
@@ -708,15 +713,19 @@ class InstallerEngine:
             "chroot /target/ /bin/sh -c \"grub-mkconfig -o /boot/grub/grub.cfg\"")
         log("grub_output")
 
-    def do_post_install_commands(self):
-        log(" --> Post install commands running")
-        for command in config.get("post_install_commands", []):
-            run(command)
-
-    def do_pre_install_commands(self):
-        log(" --> Post install commands running")
-        for command in config.get("pre_install_commands", []):
-            run(command)
+    def do_hook_commands(self,hook=""):
+        log(" --> {} running".format(str(hook)))
+        
+        for command in config.get(hook, []):
+            cmd = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE,
+                                     stderr=subprocess.STDOUT)
+            while cmd.poll() is None:
+                line = str(cmd.stdout.readline().decode(
+                    "utf-8").replace("\n", ""))
+                if not line:
+                    time.sleep(0.1)
+                else:
+                    self.update_progress(line)
 
     def do_check_grub(self):
         self.update_progress(_("Checking bootloader"),True)
