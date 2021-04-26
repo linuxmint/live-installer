@@ -4,6 +4,7 @@
 # distro_codename: linux
 # distro_title: 17G
 # distribution: auto
+# display_manager: auto
 # copyright: 17g Developer Team
 
 ## Base options section
@@ -22,7 +23,6 @@
 #   - 17g-installer
 
 ## User section
-# list_users_when_auto_login: true
 # autologin_enabled: true
 # auto_partition_enabled: true
 # set_root_password: true
