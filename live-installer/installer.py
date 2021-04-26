@@ -166,20 +166,11 @@ class InstallerEngine:
                     self.setup.password1))
 
         self.our_current += 1
-        self.update_progress(_("Applying login settings"))
-        # Set LightDM to show user list by default
-        if config.get("list_users_when_auto_login", True):
-            run(r"chroot||sed -i -r 's/^#?(greeter-hide-users)\s*=.*/\1=false/' /etc/lightdm/lightdm.conf")
-        else:
-            run(r"chroot||sed -i -r 's/^#?(greeter-hide-users)\s*=.*/\1=true/' /etc/lightdm/lightdm.conf")
-
         # Set autologin for user if they so elected
         if self.setup.autologin:
-            # LightDM and Auto Login Groups
-            run("""chroot||groupadd -r autologin && gpasswd -a {user} autologin
-                                  && groupadd -r nopasswdlogin & & gpasswd -a {user} nopasswdlogin""".format(user=self.setup.username))
-            run(r"chroot||sed -i -r 's/^#?(autologin-user)\s*=.*/\1={user}/' /etc/lightdm/lightdm.conf".format(
-                user=self.setup.username))
+            # Auto Login Groups
+            for i in config.display_manager["set_autologin"]:
+                run(i.replace("{user}",self.setup.username))
 
         # /etc/fstab, mtab and crypttab
         self.our_current += 1

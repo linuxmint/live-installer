@@ -33,6 +33,7 @@ if not main:
     main = []
 distro = None
 pm = None
+display_manager = None
 initramfs = None
 live = load_config("configs/live.yaml")
 kernel_vars = {}
@@ -91,6 +92,17 @@ else:
     pm = load_config(
         "configs/package_managers/{}.yaml".format(main["package_manager"]))
 
+# Distribution
+if(get("display_manager", "auto") == "auto"):
+    for display_manager in glob("configs/display_managers/*"):
+        display_manager = load_config(display_manager)
+        if not display_manager:
+            err("Failed to load: "+display_manager)
+        elif "check_this_dir" in distro and os.path.exists(distro["check_this_dir"]):
+            break
+else:
+    display_manager = load_config(
+        "configs/display_managers/{}.yaml".format(main["display_manager"]))
 
 def package_manager(process, packages=[]):
     print(pm)
