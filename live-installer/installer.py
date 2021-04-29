@@ -5,7 +5,7 @@ import gettext
 import parted
 import frontend.partitioning as partitioning
 import config
-from utils import run
+from utils import run, set_governor
 from logger import log, err, inf
 
 gettext.install("live-installer", "/usr/share/locale")
@@ -19,7 +19,10 @@ class InstallerEngine:
 
     def __init__(self, setup):
         self.setup = setup
-
+        
+        # change to performance governor
+        set_governor("performance")
+        
         # find the squashfs..
         self.media = config.get("loop_directory", "/dev/loop0")
 
