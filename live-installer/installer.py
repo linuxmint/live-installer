@@ -81,8 +81,6 @@ class InstallerEngine:
         if config.get("netinstall",False):
             self.run_and_update(config.package_manager("create_rootfs"))
             pkgs = open("branding/netinstall_packages.txt").read().split("\n")
-            cmd = config.package_manager("install_package",pkgs)
-            self.run_and_update("chroot /target {}".format(cmd))
             
         else:
             # Transfer the files
@@ -136,11 +134,15 @@ class InstallerEngine:
         run("mv /target/etc/resolv.conf /target/etc/resolv.conf.bk")
         run("cp -f /etc/resolv.conf /target/etc/resolv.conf")
 
+        if config.get("netinstall",False):
+            cmd = config.package_manager("install_package",pkgs)
+            self.run_and_update("chroot /target {}".format(cmd))
+        
         kernelversion = subprocess.getoutput("uname -r")
         if os.path.exists("/lib/modules/{0}/vmlinuz".format(kernelversion)):
             run(
                 "cp /lib/modules/{0}/vmlinuz /target/boot/vmlinuz-{0}".format(kernelversion))
-
+        
         # add new user
         log(" --> Adding new user")
         self.our_current += 1
