@@ -1,5 +1,5 @@
 ##Example netinstall package list
-#linux-image-amd64
-#grub-pc-bin
-#grub-efi-bin
+linux
+grub
+mkinitcpio
 
