@@ -111,7 +111,7 @@ def package_manager(process, packages=[]):
         pkgs = ""
         for p in packages:
             if len(p) > 0 and p[0] != "#":
-                pkgs += " ".join(str(p))
+                pkgs += " "+p
         cmd = (pm[process] + " ").replace("{packages}", pkgs)
         return cmd
     else:
