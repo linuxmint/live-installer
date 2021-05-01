@@ -19,10 +19,10 @@ class InstallerEngine:
 
     def __init__(self, setup):
         self.setup = setup
-        
+
         # change to performance governor
         set_governor("performance")
-        
+
         # find the squashfs..
         self.media = config.get("loop_directory", "/dev/loop0")
 
@@ -81,7 +81,7 @@ class InstallerEngine:
         if config.get("netinstall",False):
             self.run_and_update(config.package_manager("create_rootfs"))
             pkgs = open("branding/netinstall_packages.txt").read().split("\n")
-            
+
         else:
             # Transfer the files
             SOURCE = "/source/"
@@ -130,19 +130,19 @@ class InstallerEngine:
         run("mount --bind /proc/ /target/proc/")
         run("mount --bind /run/ /target/run/")
         if os.path.exists("/sys/firmware/efi"):
-            run("mount --bind /sys/firmware/efi/ /target/sys/firmware/efi/")
+            run("mount --bind /sys/firmware/efi/efivars /target/sys/firmware/efi/efivars")
         run("mv /target/etc/resolv.conf /target/etc/resolv.conf.bk")
         run("cp -f /etc/resolv.conf /target/etc/resolv.conf")
 
         if config.get("netinstall",False):
             cmd = config.package_manager("install_package",pkgs)
             self.run_and_update("chroot /target {}".format(cmd))
-        
+
         kernelversion = subprocess.getoutput("uname -r")
         if os.path.exists("/lib/modules/{0}/vmlinuz".format(kernelversion)):
             run(
                 "cp /lib/modules/{0}/vmlinuz /target/boot/vmlinuz-{0}".format(kernelversion))
-        
+
         # add new user
         log(" --> Adding new user")
         self.our_current += 1
@@ -721,7 +721,6 @@ class InstallerEngine:
 
     def do_hook_commands(self,hook=""):
         log(" --> {} running".format(str(hook)))
-        
         for command in config.get(hook, []):
             cmd = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE,
                                      stderr=subprocess.STDOUT)
