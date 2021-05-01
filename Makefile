@@ -25,12 +25,14 @@ install:
 	cp -prfv build/* $(DESTDIR)/
 	mkdir -p $(DESTDIR)/usr/share/applications/ || true
 	mkdir -p $(DESTDIR)/usr/bin/ || true
-	install live-installer.desktop $(DESTDIR)/usr/share/applications/live-installer.desktop
+	mkdir -p $(DESTDIR)/etc/xdg/autostart/
 	mkdir -p $(DESTDIR)/$(XINITRCDIR) || true
-	install 00-live $(DESTDIR)/$(XINITRCDIR)/00-live
-	install live-installer.sh $(DESTDIR)/usr/bin/live-installer
 	mkdir -p $(DESTDIR)/usr/share/polkit-1/actions/ || true
-	install org.17g.installer.policy $(DESTDIR)/usr/share/polkit-1/actions/
+	install data/welcome.desktop $(DESTDIR)/etc/xdg/autostart/
+	install data/live-installer.desktop $(DESTDIR)/usr/share/applications/live-installer.desktop
+	install data/00-live $(DESTDIR)/$(XINITRCDIR)/00-live
+	install data/live-installer.sh $(DESTDIR)/usr/bin/live-installer
+	install data/org.17g.installer.policy $(DESTDIR)/usr/share/polkit-1/actions/
 
 uninstall:
 	rm -rf $(DESTDIR)/usr/lib/live-installer
@@ -38,6 +40,7 @@ uninstall:
 	rm -f $(DESTDIR)/usr/share/applications/live-installer.desktop
 	rm -f $(DESTDIR)/$(XINITRCDIR)/00-live
 	rm -f $(DESTDIR)/usr/share/polkit-1/actions/org.17g.installer.policy
+	rm -f $(DESTDIR)/etc/xdg/autostart/welcome.desktop
 clean:
 	rm -rf build
 	find po/ | grep "*.mo" | xargs rm -f

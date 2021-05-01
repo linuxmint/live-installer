@@ -1,0 +1,28 @@
+[Desktop Entry]
+
+# The type as listed above
+Type=Application
+
+# The version of the desktop entry specification to which this file complies
+Version=1.0
+
+# The name of the application
+Name=Welcome to 17G Linux Installer
+
+# A comment which can/will be used as a tooltip
+Comment=GUI Installation Tool for GNU/Linux
+
+# The path to the folder in which the executable is run
+Path=/usr/lib/live-installer/
+
+# The executable of the application, possibly with arguments.
+Exec=/usr/bin/live-installer --welcome
+
+# The name of the icon that will be used to display this entry
+Icon=/usr/lib/live-installer/branding/icon.svg
+
+# Describes whether this application needs to be run in a terminal or not
+Terminal=false
+
+# Describes the categories in which this entry should be shown
+Categories=Settings;System;
