@@ -78,36 +78,42 @@ class InstallerEngine:
         # Custom commands
         self.do_hook_commands("pre_rsync_hook")
 
-        # Transfer the files
-        SOURCE = "/source/"
-        DEST = "/target/"
-        EXCLUDE_DIRS = "home/* dev/* proc/* sys/* tmp/* run/* mnt/* media/* lost+found source target".split()
+        if config.get("netinstall",False):
+            run(config.package_manager("create_rootfs"))
+            pkgs = open("branding/netinstall.txt").read().split("\n")
+            cmdd = config.package_manager("install_package",pkgs)
+            run("chroot||{}".format(cmd))
+        else:
+            # Transfer the files
+            SOURCE = "/source/"
+            DEST = "/target/"
+            EXCLUDE_DIRS = "dev/* proc/* sys/* tmp/* run/* mnt/* media/* lost+found source target".split()
 
-        # Add optional entries to EXCLUDE_DIRS
-        for dirvar in config.get("exclude_dirs", ["/home"]):
-            EXCLUDE_DIRS.append(dirvar)
+            # Add optional entries to EXCLUDE_DIRS
+            for dirvar in config.get("exclude_dirs", ["home/*", "data/user/*"]):
+                EXCLUDE_DIRS.append(dirvar)
 
-        self.our_current = 0
-        # (Valid) assumption: num-of-files-to-copy ~= num-of-used-inodes-on-/
-        self.our_total = int(subprocess.getoutput(
-            "df --inodes /{src} | awk 'END{{ print $3 }}'".format(src=SOURCE.strip('/'))))
-        log(" --> Copying {} files".format(self.our_total))
-        rsync_filter = ' '.join(
-            '--exclude=' + SOURCE + d for d in EXCLUDE_DIRS)
-        rsync = subprocess.Popen("rsync --verbose --archive --no-D --acls "
+            self.our_current = 0
+            # (Valid) assumption: num-of-files-to-copy ~= num-of-used-inodes-on-/
+            self.our_total = int(subprocess.getoutput(
+                "df --inodes /{src} | awk 'END{{ print $3 }}'".format(src=SOURCE.strip('/'))))
+            log(" --> Copying {} files".format(self.our_total))
+            rsync_filter = ' '.join(
+                '--exclude=' + SOURCE + d for d in EXCLUDE_DIRS)
+            rsync = subprocess.Popen("rsync --verbose --archive --no-D --acls "
                                  "--hard-links --xattrs {rsync_filter} "
                                  "{src}* {dst}".format(src=SOURCE,
                                                        dst=DEST, rsync_filter=rsync_filter),
                                  shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        while rsync.poll() is None:
-            line = str(rsync.stdout.readline().decode(
-                "utf-8").replace("\n", ""))
-            if not line:  # still copying the previous file, just wait
-                time.sleep(0.1)
-            else:
-                self.our_current = min(self.our_current + 1, self.our_total)
-                self.update_progress(_("Copying /%s") % line)
-        log(_("rsync exited with return code: %s") % str(rsync.poll()))
+           while rsync.poll() is None:
+                line = str(rsync.stdout.readline().decode(
+                    "utf-8").replace("\n", ""))
+                if not line:  # still copying the previous file, just wait
+                    time.sleep(0.1)
+                else:
+                    self.our_current = min(self.our_current + 1, self.our_total)
+                    self.update_progress(_("Copying /%s") % line)
+            log(_("rsync exited with return code: %s") % str(rsync.poll()))
 
         # Custom commands
         self.do_hook_commands("post_rsync_hook")

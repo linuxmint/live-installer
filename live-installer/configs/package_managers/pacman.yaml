@@ -1,5 +1,6 @@
 name: pacman
 check_this_dir: /var/lib/pacman
+create_rootfs: pacstrap /target base
 install_package: pacman -S {packages}
 remove_package: pacman -R {packages}
 remove_package_with_unusing_deps: pacman -Rsn {packages}

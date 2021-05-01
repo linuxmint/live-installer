@@ -108,8 +108,10 @@ def package_manager(process, packages=[]):
     if process == "name":
         exit("You can't use this parameter!")
     if process in pm:
-        pkgs = " ".join(str(p) for p in packages)
-        cmd = (pm[process] + " ").replace("{packages}", pkgs)
+        for p in packages:
+            if p[0] != "#"
+                pkgs = " ".join(str(p))
+                cmd = (pm[process] + " ").replace("{packages}", pkgs)
 
         return cmd
     else:

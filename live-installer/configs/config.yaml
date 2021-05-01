@@ -19,6 +19,7 @@
 # initramfs_system: auto 
 # using_shell: /bin/bash
 # use_reboot: false
+# netinstall: false
 # remove_packages:
 #   - 17g-installer
 
