@@ -528,25 +528,27 @@ class InstallerEngine:
         if not self.setup.keyboard_variant:
             self.setup.keyboard_variant = ""
         self.update_progress(("Settings X11 keyboard options"))
+        newconsolefh = None
         if os.path.exists("/target/etc/X11/xorg.conf.d"):
             newconsolefh = open(
                 "/target/etc/X11/xorg.conf.d/10-keyboard.conf", "w")
-        else:
+        elif os.path.exists("/target/usr/share/X11/xorg.conf.d/"):
             newconsolefh = open(
                 "/target/usr/share/X11/xorg.conf.d/10-keyboard.conf", "w")
-        newconsolefh.write('Section "InputClass"\n')
-        newconsolefh.write('Identifier "system-keyboard"\n')
-        newconsolefh.write('MatchIsKeyboard "on"\n')
-        newconsolefh.write('Option "XkbLayout" "{}"\n'.format(
-            self.setup.keyboard_layout))
-        newconsolefh.write('Option "XkbModel" "{}"\n'.format(
-            self.setup.keyboard_model))
-        newconsolefh.write('Option "XkbVariant" "{}"\n'.format(
-            self.setup.keyboard_variant))
-        if "," in self.setup.keyboard_layout:
-            newconsolefh.write('Option "XkbOptions" "grp:ctrls_toggle"\n')
-        newconsolefh.write('EndSection\n')
-        newconsolefh.close()
+        if newconsolefh:
+            newconsolefh.write('Section "InputClass"\n')
+            newconsolefh.write('Identifier "system-keyboard"\n')
+            newconsolefh.write('MatchIsKeyboard "on"\n')
+            newconsolefh.write('Option "XkbLayout" "{}"\n'.format(
+                self.setup.keyboard_layout))
+            newconsolefh.write('Option "XkbModel" "{}"\n'.format(
+                self.setup.keyboard_model))
+            newconsolefh.write('Option "XkbVariant" "{}"\n'.format(
+                self.setup.keyboard_variant))
+            if "," in self.setup.keyboard_layout:
+                newconsolefh.write('Option "XkbOptions" "grp:ctrls_toggle"\n')
+            newconsolefh.write('EndSection\n')
+            newconsolefh.close()
 
         # set the keyboard options..
         log(" --> Setting the keyboard")
