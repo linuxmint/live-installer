@@ -79,10 +79,11 @@ class InstallerEngine:
         self.do_hook_commands("pre_rsync_hook")
 
         if config.get("netinstall",False):
-            run(config.package_manager("create_rootfs"))
+            self.run_and_update(config.package_manager("create_rootfs"))
             pkgs = open("branding/netinstall.txt").read().split("\n")
-            cmdd = config.package_manager("install_package",pkgs)
-            run("chroot||{}".format(cmd))
+            cmd = config.package_manager("install_package",pkgs)
+            self.run_and_update("chroot /target {}".format(cmd))
+            
         else:
             # Transfer the files
             SOURCE = "/source/"
@@ -750,6 +751,12 @@ class InstallerEngine:
     def do_unmount(self, mountpoint):
         ''' Unmount a filesystem '''
         return run("umount -lf %s" % mountpoint)
+
+    def run_and_update(self,cmd):
+        p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            while p.poll() is None:
+                line = str(p.stdout.readline().decode("utf-8").replace("\n", ""))
+                self.update_progress(line)
 
 # Represents the choices made by the user
 
