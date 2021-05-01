@@ -754,9 +754,9 @@ class InstallerEngine:
 
     def run_and_update(self,cmd):
         p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-            while p.poll() is None:
-                line = str(p.stdout.readline().decode("utf-8").replace("\n", ""))
-                self.update_progress(line)
+        while p.poll() is None:
+            line = str(p.stdout.readline().decode("utf-8").replace("\n", ""))
+            self.update_progress(line)
 
 # Represents the choices made by the user
 
