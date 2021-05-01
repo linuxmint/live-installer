@@ -110,9 +110,8 @@ def package_manager(process, packages=[]):
     if process in pm:
         for p in packages:
             if p[0] != "#":
-                pkgs = " ".join(str(p))
-                cmd = (pm[process] + " ").replace("{packages}", pkgs)
-
+                pkgs += " ".join(str(p))
+        cmd = (pm[process] + " ").replace("{packages}", pkgs)
         return cmd
     else:
         exit("Process doesn't exists on package manager's config file!")
