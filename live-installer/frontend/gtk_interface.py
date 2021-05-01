@@ -748,6 +748,7 @@ class InstallerWindow:
     def activate_page(self, nex=0, index=0, goback=False):
         errorFound = False
         self.show_overview()
+        self.builder.get_object("button_next").set_label(_("Next"))
         if index == self.PAGE_LANGUAGE:
             if self.setup.language is None:
                 WarningDialog(_("Installer"), _(
@@ -917,6 +918,7 @@ class InstallerWindow:
 
         elif index == self.PAGE_OVERVIEW:
             self.show_overview()
+            self.builder.get_object("button_next").set_text(_("Install"))
         elif index == self.PAGE_INSTALL:
             self.builder.get_object("button_next").set_sensitive(False)
             self.builder.get_object("button_back").set_sensitive(False)
