@@ -45,7 +45,5 @@ if __name__ == "__main__":
         exit(0)
     else:
         from frontend.gtk_interface import InstallerWindow
-        win = InstallerWindow()
-        if ("--fullscreen" in sys.argv):
-            win.fullscreen()
+        win = InstallerWindow("--fullscreen" in sys.argv)
     Gtk.main()

@@ -33,14 +33,15 @@ class InstallerWindow:
     def start(self):
         Gtk.main()
 
-    def __init__(self):
+    def __init__(self,fullscreen):
 
         # build the setup object (where we put all our choices) and the installer
         self.setup = Setup()
         self.installer = InstallerEngine(self.setup)
 
         self.resource_dir = './resources/'
-        if config.get("set_alternative_ui", False):
+        fullscreen = fullscreen or config.get("fullscreen",False)
+        if fullscreen or config.get("set_alternative_ui", False):
             glade_file = os.path.join(self.resource_dir, 'interface2.ui')
         else:
             glade_file = os.path.join(self.resource_dir, 'interface.ui')
@@ -72,9 +73,8 @@ class InstallerWindow:
             "clicked", self.wizard_cb, False)
         self.builder.get_object("button_back").connect(
             "clicked", self.wizard_cb, True)
-        if not config.get("set_alternative_ui", False):
-            self.builder.get_object("button_quit").connect(
-                "clicked", self.quit_cb)
+        self.builder.get_object("button_quit").connect(
+            "clicked", self.quit_cb)
 
         col = Gtk.TreeViewColumn("", Gtk.CellRendererPixbuf(), pixbuf=2)
         self.builder.get_object("treeview_language_list").append_column(col)
@@ -236,6 +236,10 @@ class InstallerWindow:
         self.slideshow()
         self.window.set_position(Gtk.WindowPosition.CENTER)
         self.window.show_all()
+        if not fullscreen and config.get("set_alternative_ui", False):
+            self.builder.get_object("button_quit").hide()
+        if fullscreen:
+            self.fullscreen()
 
         # Features
         if not config.get("auto_partition_enabled", True):
@@ -257,6 +261,7 @@ class InstallerWindow:
 
     def fullscreen(self):
         self.window.fullscreen()
+        self.builder.get_object("button_quit").show()
 
     def i18n(self):
 
@@ -290,8 +295,7 @@ class InstallerWindow:
             _("Installing"), "system-run-symbolic", _("Please wait..."))
 
         # Buttons
-        if not config.get("set_alternative_ui", False):
-            self.builder.get_object("button_quit").set_label(_("Quit"))
+        self.builder.get_object("button_quit").set_label(_("Quit"))
         self.builder.get_object("button_back").set_label(_("Back"))
         self.builder.get_object("button_next").set_label(_("Next"))
 
@@ -922,8 +926,7 @@ class InstallerWindow:
         elif index == self.PAGE_INSTALL:
             self.builder.get_object("button_next").set_sensitive(False)
             self.builder.get_object("button_back").set_sensitive(False)
-            if not config.get("set_alternative_ui", False):
-                self.builder.get_object("button_quit").set_sensitive(False)
+            self.builder.get_object("button_quit").set_sensitive(False)
             self.window.resize(0, 0)
             self.do_install()
         if errorFound:

@@ -1605,6 +1605,19 @@
                 <property name="spacing">6</property>
                 <property name="layout-style">start</property>
                 <child>
+                  <object class="GtkButton" id="button_quit">
+                    <property name="label" translatable="yes">Quit</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
                   <object class="GtkButton" id="button_back">
                     <property name="label">Back</property>
                     <property name="visible">True</property>

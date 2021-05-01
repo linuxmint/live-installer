@@ -39,6 +39,7 @@
 # encryption_enabled: true
 # fill_disk_enabled: true
 # set_alternative_ui: false
+# fullscreen: false
 # partition_editor: gparted
 
 ## Timezone and locale section
