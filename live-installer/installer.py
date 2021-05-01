@@ -80,7 +80,7 @@ class InstallerEngine:
 
         if config.get("netinstall",False):
             self.run_and_update(config.package_manager("create_rootfs"))
-            pkgs = open("branding/netinstall.txt").read().split("\n")
+            pkgs = open("branding/netinstall_packages.txt").read().split("\n")
             cmd = config.package_manager("install_package",pkgs)
             self.run_and_update("chroot /target {}".format(cmd))
             
