@@ -170,7 +170,7 @@
                   <object class="GtkLabel" id="msglabel2">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="label" translatable="yes">You can install 17g now, or chose "Install to Hard Drive" in the Appication Menu.</property>
+                    <property name="label" translatable="yes">You can install 17g now, or chose "Install to Hard Drive" in the Appication Menu later.</property>
                     <property name="justify">center</property>
                     <property name="single-line-mode">True</property>
                   </object>
