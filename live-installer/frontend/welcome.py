@@ -33,7 +33,7 @@ class welcome:
             _("Install to Hard Drive"))
         self.builder.get_object("msglabel1").set_text(_("You are currently running %s from live media.") % config.get("distro_title", "17g"))
         self.builder.get_object("msglabel2").set_text(_("You can install %s now, or chose \"Install to Hard Drive\" in the Appication Menu later.") % config.get("distro_title", "17g"))
-        self.builder.get_object("distro").set_text(
+        self.builder.get_object("title").set_text(_("Welcome to %s") %
             config.get("distro_title", "17g"))
         self.builder.get_object("copyright").set_text(
             config.get("copyright", "17g Developer Team"))

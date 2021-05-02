@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-02 10:25+0000\n"
+"POT-Creation-Date: 2021-05-02 10:40+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -133,6 +133,11 @@ msgstr ""
 msgid ""
 "You can install %s now, or chose \"Install to Hard Drive\" in the Appication "
 "Menu later."
+msgstr ""
+
+#: live-installer/frontend/welcome.py:36
+#, python-format
+msgid "Welcome to %s"
 msgstr ""
 
 #: live-installer/frontend/gtk_interface.py:83

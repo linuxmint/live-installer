@@ -15,6 +15,8 @@
       <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
+        <property name="margin-start">15</property>
+        <property name="margin-end">15</property>
         <property name="orientation">vertical</property>
         <child>
           <object class="GtkBox">
@@ -23,10 +25,9 @@
             <property name="can-focus">False</property>
             <property name="halign">center</property>
             <property name="valign">center</property>
-            <property name="margin-start">13</property>
-            <property name="margin-end">13</property>
             <property name="margin-top">23</property>
             <property name="margin-bottom">23</property>
+            <property name="spacing">5</property>
             <child>
               <object class="GtkButton" id="try">
                 <property name="visible">True</property>
@@ -151,6 +152,8 @@
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="margin-start">5</property>
+                <property name="margin-end">5</property>
                 <property name="margin-top">15</property>
                 <property name="margin-bottom">15</property>
                 <property name="orientation">vertical</property>
@@ -214,10 +217,12 @@
         <property name="visible">True</property>
         <property name="can-focus">False</property>
         <child type="title">
-          <object class="GtkLabel" id="distro">
+          <object class="GtkLabel" id="title">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="label" translatable="yes">17g</property>
+            <property name="margin-top">10</property>
+            <property name="margin-bottom">10</property>
+            <property name="label" translatable="yes">Welcome to 17g</property>
           </object>
         </child>
       </object>
