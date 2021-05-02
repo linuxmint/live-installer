@@ -15,6 +15,7 @@ class welcome:
         self.connect_signal()
         self.i18n()
         self.window.set_position(Gtk.WindowPosition.CENTER)
+        self.window.connect("destroy",Gtk.main_quit)
         self.window.show_all()
 
     def connect_signal(self):
