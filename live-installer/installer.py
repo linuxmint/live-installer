@@ -45,6 +45,9 @@ class InstallerEngine:
         self.error_message = errorhook
 
     def update_progress(self, message="", pulse=False, done=False):
+        if done:
+            self.our_total = 1
+            self.our_current = 1
         if self.progresshook:
             self.progresshook(self.our_current, self.our_total, pulse, done, message)
 
@@ -83,37 +86,45 @@ class InstallerEngine:
             pkgs = open("branding/netinstall_packages.txt").read().split("\n")
 
         else:
-            # Transfer the files
-            SOURCE = "/source/"
-            DEST = "/target/"
-            EXCLUDE_DIRS = "dev/* proc/* sys/* tmp/* run/* mnt/* media/* lost+found source target".split()
+            if config.get("use_rsync",True):
+                # Transfer the files
+                SOURCE = "/source/"
+                DEST = "/target/"
+                EXCLUDE_DIRS = "dev/* proc/* sys/* tmp/* run/* mnt/* media/* lost+found source target".split()
 
-            # Add optional entries to EXCLUDE_DIRS
-            for dirvar in config.get("exclude_dirs", ["home/*", "data/user/*"]):
-                EXCLUDE_DIRS.append(dirvar)
+                # Add optional entries to EXCLUDE_DIRS
+                for dirvar in config.get("exclude_dirs", ["home/*", "data/user/*"]):
+                    EXCLUDE_DIRS.append(dirvar)
 
-            self.our_current = 0
-            # (Valid) assumption: num-of-files-to-copy ~= num-of-used-inodes-on-/
-            self.our_total = int(subprocess.getoutput(
-                "df --inodes /{src} | awk 'END{{ print $3 }}'".format(src=SOURCE.strip('/'))))
-            log(" --> Copying {} files".format(self.our_total))
-            rsync_filter = ' '.join(
-                '--exclude=' + SOURCE + d for d in EXCLUDE_DIRS)
-            rsync = subprocess.Popen("rsync --verbose --archive --no-D --acls "
-                                 "--hard-links --xattrs {rsync_filter} "
-                                 "{src}* {dst}".format(src=SOURCE,
-                                                       dst=DEST, rsync_filter=rsync_filter),
-                                 shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-            while rsync.poll() is None:
-                line = str(rsync.stdout.readline().decode(
-                    "utf-8").replace("\n", ""))
-                if not line:  # still copying the previous file, just wait
-                    time.sleep(0.1)
-                else:
-                    self.our_current = min(self.our_current + 1, self.our_total)
-                    self.update_progress(_("Copying /%s") % line)
-            log(_("rsync exited with return code: %s") % str(rsync.poll()))
-
+                self.our_current = 0
+                # (Valid) assumption: num-of-files-to-copy ~= num-of-used-inodes-on-/
+                self.our_total = int(subprocess.getoutput(
+                    "df --inodes /{src} | awk 'END{{ print $3 }}'".format(src=SOURCE.strip('/'))))
+                log(" --> Copying {} files".format(self.our_total))
+                rsync_filter = ' '.join(
+                    '--exclude=' + SOURCE + d for d in EXCLUDE_DIRS)
+                rsync = subprocess.Popen("rsync --verbose --archive --no-D --acls "
+                                     "--hard-links --xattrs {rsync_filter} "
+                                     "{src}* {dst}".format(src=SOURCE,
+                                                           dst=DEST, rsync_filter=rsync_filter),
+                                     shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                while rsync.poll() is None:
+                    line = str(rsync.stdout.readline().decode(
+                        "utf-8").replace("\n", ""))
+                    if not line:  # still copying the previous file, just wait
+                        time.sleep(0.1)
+                    else:
+                        self.our_current = min(self.our_current + 1, self.our_total)
+                        self.update_progress(_("Copying /%s") % line)
+                log(_("rsync exited with return code: %s") % str(rsync.poll()))
+            else:
+                pwd = os.getcwd()
+                os.chdir("/target")
+                self.update_progress(_("Extracting rootfs."),pulse=True)
+                run("unsquashfs /dev/loop0")
+                run("mv /target/squashfs-root/* /target")
+                run("rm -rf /target/squashfs-root")
+                os.chdir(pwd)
         # Custom commands
         self.do_hook_commands("post_rsync_hook")
 
@@ -646,11 +657,11 @@ class InstallerEngine:
         # recreate initramfs (needed in case of skip_mount also, to include things like mdadm/dm-crypt/etc in case its needed to boot a custom install)
         log(" --> Configuring Initramfs")
         self.our_current += 1
-        self.update_progress(_("Generating initramfs"))
+        self.update_progress(_("Generating initramfs"),pulse=True)
 
         for command in config.update_initramfs():
             run("chroot||"+command)
-        self.update_progress(_("Preparing bootloader installation"),True)
+        self.update_progress(_("Preparing bootloader installation"),pulse=True)
         try:
             grub_prepare_commands = config.distro["grub_prepare"]
             for command in grub_prepare_commands:
@@ -662,7 +673,7 @@ class InstallerEngine:
         log(" --> Configuring Grub")
         self.our_current += 1
         if(self.setup.grub_device is not None):
-            self.update_progress(_("Installing bootloader"))
+            self.update_progress(_("Installing bootloader"),pulse=True)
             log(" --> Running grub-install")
 
             if os.path.exists("/sys/firmware/efi"):
@@ -674,7 +685,7 @@ class InstallerEngine:
 
             # fix not add windows grub entry
             run("chroot||grub-mkconfig -o /boot/grub/grub.cfg")
-            self.update_progress(_("Configuring bootloader"),True)
+            self.update_progress(_("Configuring bootloader"),pulse=True)
             self.do_configure_grub()
             grub_retries = 0
             while (not self.do_check_grub()):

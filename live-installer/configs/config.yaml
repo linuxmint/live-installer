@@ -20,6 +20,7 @@
 # using_shell: /bin/bash
 # use_reboot: false
 # netinstall: false
+# use_rsync: true
 # remove_packages:
 #   - 17g-installer
 
