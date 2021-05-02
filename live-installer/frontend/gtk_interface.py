@@ -33,7 +33,7 @@ class InstallerWindow:
     def start(self):
         Gtk.main()
 
-    def __init__(self,fullscreen):
+    def __init__(self,fullscreen=False):
 
         # build the setup object (where we put all our choices) and the installer
         self.setup = Setup()

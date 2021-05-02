@@ -23,14 +23,16 @@ class welcome:
 
     def define_objects(self):
         self.window = self.builder.get_object("window")
-        self.wel = self.builder.get_object("welcome")
         self.trybut = self.builder.get_object("try")
         self.instbut = self.builder.get_object("install")
 
     def i18n(self):
-        self.wel.set_text(_("Welcome"))
-        self.builder.get_object("trylabel").set_text(_("Try"))
-        self.builder.get_object("installabel").set_text(_("Install"))
+        self.builder.get_object("trylabel").set_text(
+            _("Try %s") % config.get("distro_title", "17g"))
+        self.builder.get_object("installabel").set_text(
+            _("Install to Hard Drive"))
+        self.builder.get_object("msglabel1").set_text(_("You are currently running %s from live media.") % config.get("distro_title", "17g"))
+        self.builder.get_object("msglabel2").set_text(_("You can install %s now, or chose \"Install to Hard Drive\" in the Appication Menu.") % config.get("distro_title", "17g"))
         self.builder.get_object("distro").set_text(
             config.get("distro_title", "17g"))
         self.builder.get_object("copyright").set_text(
