@@ -272,6 +272,7 @@ class InstallerWindow:
         except:
             err("\"distro_title\" varible not found on config. Using default.")
         self.window.set_title(window_title)
+        self.window.set_wmclass(window_title, window_title)
 
         # Header
         self.wizard_pages = list(range(12))
