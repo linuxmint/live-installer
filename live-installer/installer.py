@@ -81,21 +81,22 @@ class InstallerEngine:
         # Custom commands
         self.do_hook_commands("pre_rsync_hook")
 
+        # Transfer the files
+        SOURCE = "/source/"
+        DEST = "/target/"
+
         self.our_current = 0
         # (Valid) assumption: num-of-files-to-copy ~= num-of-used-inodes-on-/
         self.our_total = int(subprocess.getoutput(
             "df --inodes /{src} | awk 'END{{ print $3 }}'".format(src=SOURCE.strip('/'))))
         log(" --> Copying {} files".format(self.our_total))
-                
+
         if config.get("netinstall",False):
             self.run_and_update(config.package_manager("create_rootfs"))
             pkgs = open("branding/netinstall_packages.txt").read().split("\n")
 
         else:
             if config.get("use_rsync",True) and os.system("which rsync &>/dev/null"):
-                # Transfer the files
-                SOURCE = "/source/"
-                DEST = "/target/"
                 EXCLUDE_DIRS = "dev/* proc/* sys/* tmp/* run/* mnt/* media/* lost+found source target".split()
 
                 # Add optional entries to EXCLUDE_DIRS
@@ -127,11 +128,11 @@ class InstallerEngine:
                 run("rm -rf /target/squashfs-root")
                 os.chdir(pwd)
             else:
-                cp = subprocess.Popen("cp -prvf{src}* {dst}".format(src=SOURCE, dst=DEST),
+                cp = subprocess.Popen("cp -prvf {src}* {dst}".format(src=SOURCE, dst=DEST),
                                      shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
                 while cp.poll() is None:
-                    line = str(rsync.stdout.readline().decode(
-                        "utf-8")).split("->")[0]
+                    line = str(cp.stdout.readline().decode(
+                        "utf-8")).split("'")[1]
                     if not line:  # still copying the previous file, just wait
                         time.sleep(0.1)
                     else:
