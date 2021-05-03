@@ -81,12 +81,18 @@ class InstallerEngine:
         # Custom commands
         self.do_hook_commands("pre_rsync_hook")
 
+        self.our_current = 0
+        # (Valid) assumption: num-of-files-to-copy ~= num-of-used-inodes-on-/
+        self.our_total = int(subprocess.getoutput(
+            "df --inodes /{src} | awk 'END{{ print $3 }}'".format(src=SOURCE.strip('/'))))
+        log(" --> Copying {} files".format(self.our_total))
+                
         if config.get("netinstall",False):
             self.run_and_update(config.package_manager("create_rootfs"))
             pkgs = open("branding/netinstall_packages.txt").read().split("\n")
 
         else:
-            if config.get("use_rsync",True):
+            if config.get("use_rsync",True) and os.system("which rsync &>/dev/null"):
                 # Transfer the files
                 SOURCE = "/source/"
                 DEST = "/target/"
@@ -96,11 +102,6 @@ class InstallerEngine:
                 for dirvar in config.get("exclude_dirs", ["home/*", "data/user/*"]):
                     EXCLUDE_DIRS.append(dirvar)
 
-                self.our_current = 0
-                # (Valid) assumption: num-of-files-to-copy ~= num-of-used-inodes-on-/
-                self.our_total = int(subprocess.getoutput(
-                    "df --inodes /{src} | awk 'END{{ print $3 }}'".format(src=SOURCE.strip('/'))))
-                log(" --> Copying {} files".format(self.our_total))
                 rsync_filter = ' '.join(
                     '--exclude=' + SOURCE + d for d in EXCLUDE_DIRS)
                 rsync = subprocess.Popen("rsync --verbose --archive --no-D --acls "
@@ -117,7 +118,7 @@ class InstallerEngine:
                         self.our_current = min(self.our_current + 1, self.our_total)
                         self.update_progress(_("Copying /%s") % line)
                 log(_("rsync exited with return code: %s") % str(rsync.poll()))
-            else:
+            elif config.get("use_unsquashfs",False)  and os.system("which unsquashfs &>/dev/null"):
                 pwd = os.getcwd()
                 os.chdir("/target")
                 self.update_progress(_("Extracting rootfs."),pulse=True)
@@ -125,6 +126,17 @@ class InstallerEngine:
                 run("mv /target/squashfs-root/* /target")
                 run("rm -rf /target/squashfs-root")
                 os.chdir(pwd)
+            else:
+                cp = subprocess.Popen("cp -prvf{src}* {dst}".format(src=SOURCE, dst=DEST),
+                                     shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                while cp.poll() is None:
+                    line = str(rsync.stdout.readline().decode(
+                        "utf-8")).split("->")[0]
+                    if not line:  # still copying the previous file, just wait
+                        time.sleep(0.1)
+                    else:
+                        self.our_current = min(self.our_current + 1, self.our_total)
+                        self.update_progress(_("Copying /%s") % line)
         # Custom commands
         self.do_hook_commands("post_rsync_hook")
 
