@@ -96,7 +96,7 @@ class InstallerEngine:
             pkgs = open("branding/netinstall_packages.txt").read().split("\n")
 
         else:
-            if config.get("use_rsync",True) and os.system("which rsync &>/dev/null"):
+            if config.get("use_rsync",True) and 0 == os.system("which rsync &>/dev/null"):
                 EXCLUDE_DIRS = "dev/* proc/* sys/* tmp/* run/* mnt/* media/* lost+found source target".split()
 
                 # Add optional entries to EXCLUDE_DIRS
@@ -119,7 +119,7 @@ class InstallerEngine:
                         self.our_current = min(self.our_current + 1, self.our_total)
                         self.update_progress(_("Copying /%s") % line)
                 log(_("rsync exited with return code: %s") % str(rsync.poll()))
-            elif config.get("use_unsquashfs",False)  and os.system("which unsquashfs &>/dev/null"):
+            elif config.get("use_unsquashfs",True)  and 0 == os.system("which unsquashfs &>/dev/null"):
                 pwd = os.getcwd()
                 os.chdir("/target")
                 self.update_progress(_("Extracting rootfs."),pulse=True)

@@ -21,7 +21,7 @@
 # use_reboot: false
 # netinstall: false
 # use_rsync: true
-# use_unsquashfs: false
+# use_unsquashfs: true
 # remove_packages:
 #   - 17g-installer
 
