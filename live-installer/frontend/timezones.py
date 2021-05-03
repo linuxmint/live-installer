@@ -4,26 +4,13 @@ from frontend import *
 from subprocess import getoutput
 from collections import defaultdict, namedtuple
 from datetime import datetime, timedelta
-from PIL import Image, ImageEnhance
 from functools import reduce
 
 TIMEZONE_RESOURCES = './resources/timezone/'
-CC_IM = Image.open(TIMEZONE_RESOURCES + 'cc.png').convert('RGB')
-BACK_IM = Image.open(TIMEZONE_RESOURCES + 'bg.png').convert('RGB')
-BACK_ENHANCED_IM = reduce(lambda im, mod: mod[0](im).enhance(mod[1]),
-                          ((ImageEnhance.Color, 2),
-                           (ImageEnhance.Contrast, 1.3),
-                           (ImageEnhance.Brightness, 0.7)), BACK_IM)
-NIGHT_IM = Image.open(TIMEZONE_RESOURCES + 'night.png').convert('RGBA')
-LIGHTS_IM = Image.open(TIMEZONE_RESOURCES + 'lights.png').convert('RGBA')
-DOT_IM = Image.open(TIMEZONE_RESOURCES + 'dot.png').convert('RGBA')
 
 # pixel center of where equatorial line and 0th meridian cross on our bg map; WARNING: cc.png relies on this exactly!
 MAP_CENTER = (351, 246)
-MAP_SIZE = BACK_IM.size  # size of the map image
-assert MAP_SIZE == (
-    752, 384), 'MAP_CENTER (et al.?) calculations depend on this size'
-
+MAP_SIZE =(752, 384)
 
 def pixel_position(lat, lon):
     """Transform latlong pair into map pixel coordinates"""
@@ -215,17 +202,3 @@ def _get_x_offset():
     # night is centered at UTC noon (12)
     return - int((now.tm_hour*60 + now.tm_min - 12*60) / (24*60) * MAP_SIZE[0])
 
-
-def _get_image(overlay, x, y):
-    """Superpose the picture of the timezone on the map"""
-    im = BACK_IM.copy()
-    if overlay:
-        overlay_im = Image.open(TIMEZONE_RESOURCES + overlay)
-        im.paste(BACK_ENHANCED_IM, overlay_im)
-    # night_im = ImageChops.offset(NIGHT_IM, _get_x_offset(), 0)
-    # if IS_WINTER: night_im = ImageOps.flip(night_im)
-    # im.paste(Image.alpha_composite(night_im, LIGHTS_IM), night_im)
-    im.paste(
-        DOT_IM, (int(x - DOT_IM.size[1]/2), int(y - DOT_IM.size[0]/2)), DOT_IM)
-    return GdkPixbuf.Pixbuf.new_from_data(im.tobytes(), GdkPixbuf.Colorspace.RGB,
-                                          False, 8, im.size[0], im.size[1], im.size[0] * 3)

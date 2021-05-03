@@ -7,8 +7,8 @@ Section: utils
 Package: 17g
 Priority: extra  
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, 
-                    python3-pil,
+Depends: ${shlibs:Depends}, ${misc:Depends},
+                    rysnc,
                     python3-parted,
                     live-boot,
                     live-config,
@@ -16,6 +16,7 @@ Depends: ${shlibs:Depends}, ${misc:Depends},
                     python3-gi,
                     gir1.2-gtk-3.0,
                     python3-yaml,
-                    gettext-base
+                    gettext-base,
+                    isoquery
 Description: 17g live installer
  17G is an alternative live installation tools.

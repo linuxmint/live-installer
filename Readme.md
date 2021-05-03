@@ -18,13 +18,13 @@ Features:
 Dependencies:
 
 ```
-    rsync
-    python3-pil
+    rsync (optional)
     python3-parted
     python3-gi
     gir1.2-gtk-3.0
     python3-yaml
     gettext-base
+    isoquery (optional)
 ```
 Getting source:
 
