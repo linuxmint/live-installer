@@ -32,8 +32,10 @@ if config.get("enable_live", True) and (0 != os.system("which live-config &>/dev
     if config.get("live_user", "user"):
         os.system("useradd -m \"{}\" -s \"{}\"".format(config.get("live_user",
                                                                   "user"), config.get("using_shell", "/bin/bash")))
-        if config.get("live_password", "live"):
-            if os.system("which chpasswd &>/dev/null") == 0:
+        if config.get("live_password", "empty"):
+            if config.get("live_password", "empty") == "empty":
+                os.system("passwd -d {}".format(config.get("live_user", "user")))
+            elif os.system("which chpasswd &>/dev/null") == 0:
                 fp = open("/tmp/.passwd", "w")
                 fp.write("{}:{}\n".format(
                     config.get("live_user", "user"), config.get("live_password", "live")))

@@ -2,5 +2,5 @@
 
 # enable_live: true
 # live_user: user
-# live_password: live
+# live_password: empty
 # custom_scripts: true
