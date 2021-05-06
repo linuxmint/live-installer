@@ -1,4 +1,6 @@
 name: initramfs_tools
 check_this_dir: /etc/initramfs-tools
+enable_lvm:
+  - echo "This operations not required."
 commands:
   - update-initramfs -u -t -k all

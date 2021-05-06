@@ -326,6 +326,11 @@ class InstallerEngine:
             run("swapon /dev/mapper/lvmlmde-swap")
             self.auto_root_partition = "/dev/mapper/lvmlmde-root"
             self.auto_swap_partition = "/dev/mapper/lvmlmde-swap"
+            
+            #lvm enable for initramfs-systems
+            if "enable_lvm" in config.initramfs:
+                for cmd in config.initramfs["enable_lvm"]:
+                    run(cmd)
 
         self.do_mount(self.auto_root_partition, "/target", "ext4", None)
         if (self.auto_boot_partition is not None):
