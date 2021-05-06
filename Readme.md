@@ -87,3 +87,4 @@ https://t.me/iso_calismalari (Turkish telegram group)
 * https://kod.pardus.org.tr/17g-installer/17g
 * https://github.com/17g-installer/17g
 * https://gitlab.gnome.org/sulincix/17g
+* https://notabug.org/17g-installer
