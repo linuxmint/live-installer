@@ -23,7 +23,7 @@ class InstallerEngine:
         # change to performance governor
         set_governor("performance")
         # set umask value
-        os.umask(0022)
+        os.umask(0o022)
 
         # find the squashfs..
         self.media = config.get("loop_directory", "/dev/loop0")
