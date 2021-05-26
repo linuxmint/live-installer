@@ -5,7 +5,7 @@ Before=display-manager.service
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStart=/usr/lib/live-installer/service.py
+ExecStart=/lib/live-installer/service.py
 
 [Install]
 WantedBy=multi-user.target

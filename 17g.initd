@@ -4,5 +4,5 @@
  # $Header: $
 
 start() {
-    /usr/lib/live-install/service.py
+    /lib/live-install/service.py
 }
