@@ -6,9 +6,9 @@ from frontend import *
 from frontend.dialogs import ErrorDialog
 
 gettext.install("live-installer", "/usr/share/locale")
-sys.path.insert(1, '/usr/lib/live-installer')
-if (os.path.isdir("/usr/lib/live-installer")):
-    os.chdir("/usr/lib/live-installer")
+sys.path.insert(1, '/lib/live-installer')
+if (os.path.isdir("/lib/live-installer")):
+    os.chdir("/lib/live-installer")
 
 if config.get("gtk_theme", "default") != "default":
     os.environ['GTK_THEME'] = config.get("gtk_theme")

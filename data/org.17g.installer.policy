@@ -12,7 +12,7 @@
         <allow_inactive>yes</allow_inactive>
         <allow_active>yes</allow_active>
       </defaults>
-      <annotate key="org.freedesktop.policykit.exec.path">/usr/lib/live-installer/main.py</annotate>
+      <annotate key="org.freedesktop.policykit.exec.path">/lib/live-installer/main.py</annotate>
       <annotate key="org.freedesktop.policykit.exec.allow_gui">true</annotate>
     </action>
 </policyconfig>
