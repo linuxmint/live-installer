@@ -8,7 +8,7 @@ Package: 17g
 Priority: extra  
 Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends},
-                    rysnc,
+                    rsync,
                     python3-parted,
                     live-boot,
                     live-config,
