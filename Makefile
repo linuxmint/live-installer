@@ -3,9 +3,9 @@ XINITRCDIR=/etc/X11/Xsession.d/
 all: clean build
 
 build: buildmo
-	mkdir -p build/usr/lib/ || true
-	cp -prfv live-installer build/usr/lib/
-	chmod +x -R build/usr/lib/
+	mkdir -p build/lib/ || true
+	cp -prfv live-installer build/lib/
+	chmod +x -R build/lib/
 
 pot:
 	xgettext --language=Python --keyword=_ --output=live-installer.pot \
