@@ -22,7 +22,9 @@ buildmo:
 	done \
 
 install:
-	cp -prfv build/* $(DESTDIR)/
+	mkdir -p $(DESTDIR)/{lib,usr} || true
+	cp -prfv build/usr/* $(DESTDIR)/usr/
+	cp -prfv build/lib/* $(DESTDIR)/lib/
 	mkdir -p $(DESTDIR)/usr/share/applications/ || true
 	mkdir -p $(DESTDIR)/usr/bin/ || true
 	mkdir -p $(DESTDIR)/etc/xdg/autostart/
