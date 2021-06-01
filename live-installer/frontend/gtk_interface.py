@@ -617,8 +617,6 @@ class InstallerWindow:
             if name in NON_LATIN_KB_LAYOUTS:
                 nonedesc = "English (US) + %s" % nonedesc
             # Keyboard variant
-            layouts.append(("",""))
-            variants[name].append(("No Variant", ""))
             for variant in common.get_keyboard_variant_list(model):
                 var_name = variant[0]
                 var_desc = variant[1]

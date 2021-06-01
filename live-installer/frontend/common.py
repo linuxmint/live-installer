@@ -87,7 +87,7 @@ def get_keyboard_layout_list():
 
 
 def get_keyboard_variant_list(model):
-    models = []
+    models = [("",_("No Variant"))]
     for variant in model[2].iterfind('variantList/variant/configItem'):
         var_name = variant.find('name').text
         var_desc = variant.find('description').text
