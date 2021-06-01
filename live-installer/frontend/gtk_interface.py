@@ -259,6 +259,9 @@ class InstallerWindow:
         self.builder.get_object("label_copyright").set_label(
             config.get("copyright", "17g Developer Team"))
 
+        if config.get("hide_keyboard_model",False):
+            self.builder.get_object("hbox10").hide()
+
     def fullscreen(self):
         self.window.fullscreen()
         self.builder.get_object("button_quit").show()
