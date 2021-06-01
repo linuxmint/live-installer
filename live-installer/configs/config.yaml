@@ -54,6 +54,7 @@
 # skip_keyboard: false
 # allow_uppercase_hostname: true
 # allow_numeric_password: false
+# allow_auto_novariant: false
 # min_password_length: 1
 
 ## Pre/Post operations section

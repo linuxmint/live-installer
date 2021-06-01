@@ -617,6 +617,8 @@ class InstallerWindow:
             if name in NON_LATIN_KB_LAYOUTS:
                 nonedesc = "English (US) + %s" % nonedesc
             # Keyboard variant
+            layouts.append(("",""))
+            variants[name].append(("No Variant", ""))
             for variant in common.get_keyboard_variant_list(model):
                 var_name = variant[0]
                 var_desc = variant[1]
@@ -714,7 +716,14 @@ class InstallerWindow:
         # Set the correct variant list model ...
         model = self.layout_variants[self.setup.keyboard_layout]
         self.builder.get_object("treeview_variants").set_model(model)
-        # ... and select the first variant (standard)
+        # ... and select novariant (if enabled in config)
+        if not config.get("allow_auto_novariant",True):
+            return
+        k=0
+        for i in model:
+            if str(i[1])=="":
+                self.builder.get_object("treeview_variants").set_cursor(k)
+            k+=1
 
     def assign_keyboard_variant(self, treeview):
         ''' Called whenever someone updates the keyboard layout or variant '''
@@ -790,7 +799,9 @@ class InstallerWindow:
                     itervar = model.iter_next(itervar)
         elif index == self.PAGE_KEYBOARD:
             self.builder.get_object("entry_name").grab_focus()
-            if not goback and (not self.setup.keyboard_variant and self.setup.keyboard_variant != ""):
+            if config.get("allow_auto_novariant",True):
+                self.setup.keyboard_variant = ""
+            elif not goback and (not self.setup.keyboard_variant and self.setup.keyboard_variant != ""):
                 WarningDialog(_("Installer"), _(
                     "Please provide a kayboard layout for your computer."))
                 return
