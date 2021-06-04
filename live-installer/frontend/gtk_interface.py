@@ -1024,6 +1024,7 @@ class InstallerWindow:
                     efifs.format_as='fat32'
                     efifs.mount_as='/boot/efi'
                     self.setup.partitions.append(efifs)
+                self.setup.grub_device=partitioning.find_mbr(self.setup.winroot)
             self.activate_page(self.PAGE_OVERVIEW)
             self.builder.get_object("button_next").set_label(_("Install"))
         else:
