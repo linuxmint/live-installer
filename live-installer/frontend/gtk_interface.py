@@ -825,7 +825,7 @@ class InstallerWindow:
                     itervar = model.iter_next(itervar)
         elif index == self.PAGE_KEYBOARD:
             self.builder.get_object("entry_name").grab_focus()
-            if not goback and not self.setup.keyboard_variant:
+            if not goback and self.setup.keyboard_variant == None:
                 WarningDialog(_("Installer"), _(
                     "Please provide a kayboard layout for your computer."))
                 return
