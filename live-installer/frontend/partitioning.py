@@ -78,6 +78,15 @@ def get_partitions():
             i+=1
     return partitions
 
+def find_mbr(part):
+    for disk in get_disks():
+        i=1
+        while os.path.exists("{}{}".format(disk[0],str(i))):
+            if part == "{}{}".format(disk[0],str(i)):
+                return disk[0]
+            i+=1
+    return ""
+
 def build_partitions(_installer):
     global installer
     installer = _installer
