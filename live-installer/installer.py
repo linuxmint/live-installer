@@ -812,6 +812,7 @@ class Setup(object):
     grub_device = None
     disks = []
     automated = True
+    replace_windows = True
     disk = None
     diskname = None
     passphrase1 = None
@@ -819,7 +820,8 @@ class Setup(object):
     lvm = False
     luks = False
     badblocks = False
-    target_disk = None
+    winroot = None
+    winefi = None
     gptonefi = partitioning.is_efi_supported()
     # Optionally skip all mouting/partitioning for advanced users with custom setups (raid/dmcrypt/etc)
     # Make sure the user knows that they need to:

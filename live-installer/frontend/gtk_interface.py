@@ -39,10 +39,6 @@ class InstallerWindow:
         self.setup = Setup()
         self.installer = InstallerEngine(self.setup)
 
-        # Winzort section
-        self.winroot=None
-        self.winefi=None
-
         self.resource_dir = './resources/'
         fullscreen = fullscreen or config.get("fullscreen",False)
         if fullscreen or config.get("set_alternative_ui", False):
@@ -267,13 +263,13 @@ class InstallerWindow:
                 log("Searching: {}".format(disk_path))
                 if 0 == os.system("mount -o ro {} /tmp/winroot".format(disk_path)):
                     if os.path.exists("/tmp/winroot/Windows/System32/ntoskrnl.exe"):
-                        self.winroot=disk_path
+                        self.setup.winroot=disk_path
                         log("Found windows rootfs: {}".format(disk_path))
                     elif os.path.exists("/tmp/winroot/EFI/Microsoft/Boot/bootmgfw.efi"):
-                        self.winefi=disk_path
+                        self.setup.winefi=disk_path
                         log("Found windows efifs: {}".format(disk_path))
                 os.system("umount -lf /tmp/winroot")
-            if self.winroot and (not self.setup.gptonefi or self.winefi):
+            if self.setup.winroot and (not self.setup.gptonefi or self.setup.winefi):
                 self.builder.get_object("box_replace_win").show_all()                
         
         self.builder.get_object("label_copyright").set_label(
@@ -964,7 +960,6 @@ class InstallerWindow:
 
         elif index == self.PAGE_OVERVIEW:
             self.show_overview()
-            self.builder.get_object("button_next").set_text(_("Install"))
         elif index == self.PAGE_INSTALL:
             self.builder.get_object("button_next").set_sensitive(False)
             self.builder.get_object("button_back").set_sensitive(False)
@@ -1015,6 +1010,21 @@ class InstallerWindow:
                     partitioning.build_partitions(self)
                     partitioning.build_grub_partitions()
                     self.activate_page(self.PAGE_OVERVIEW)
+        elif self.setup.replace_windows:
+            if self.setup.replace_windows:
+                rootfs=partitioning.PartitionBase()
+                rootfs.path=self.setup.winroot
+                rootfs.format_as='ext4'
+                rootfs.mount_as='/'
+                self.setup.partitions.append(rootfs)
+                if self.setup.gptonefi:
+                    efifs=partitioning.PartitionBase()
+                    efifs.path=self.setup.winefi
+                    efifs.format_as='fat32'
+                    efifs.mount_as='/boot/efi'
+                    self.setup.partitions.append(efifs)
+            self.activate_page(self.PAGE_OVERVIEW)
+            self.builder.get_object("button_next").set_label(_("Install"))
         else:
             self.activate_page(self.PAGE_PARTITIONS)
             partitioning.build_partitions(self)

@@ -386,6 +386,14 @@ def to_human_readable(size):
         size /= 1000
 
 
+class PartitionBase(object):
+    # Partition object but only struct
+    def __init__(self):
+        self.format_as = ''
+        self.mount_as = ''
+        self.type = ''
+        self.path = ''
+
 class Partition(object):
     format_as = ''
     mount_as = ''
