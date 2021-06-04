@@ -256,6 +256,7 @@ class InstallerWindow:
         if not config.get("autologin_enabled", True):
             self.builder.get_object("autologin_box").hide()
 
+        self.builder.get_object("box_replace_win").hide()
         if config.get("replace_windows_enabled", True):
             if not os.path.exists("/tmp/winroot"):
                 os.mkdir("/tmp/winroot")
