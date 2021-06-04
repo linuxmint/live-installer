@@ -556,8 +556,6 @@ class InstallerEngine:
             self.setup.timezone)
 
         # Keyboard settings X11
-        if not self.setup.keyboard_variant:
-            self.setup.keyboard_variant = ""
         self.update_progress(("Settings X11 keyboard options"))
         newconsolefh = None
         if os.path.exists("/target/etc/X11/xorg.conf.d"):

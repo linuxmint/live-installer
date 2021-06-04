@@ -556,7 +556,8 @@ class InstallerWindow:
 
         self.cur_timezone = config.get('default_timezone', "America/New_York")
 
-        if config.get('default_locale', "auto") == "auto":
+        self.cur_country_code = config.get('default_locale',"auto")
+        if self.cur_country_code == "auto":
             self.cur_country_code = "en_US" # fallback language
             lang = subprocess.getoutput("echo $LANG")
             lc_all = subprocess.getoutput("echo $LC_ALL")
@@ -564,9 +565,7 @@ class InstallerWindow:
                 self.cur_country_code = lang.split(".")[0]
             elif lang == "":
                 self.cur_country_code = lc_all.split(".")[0]
-            self.assign_language(None)
-        else:
-            self.cur_country_code = config.get('default_locale')
+        self.assign_language(self.builder.get_object("treeview_language_list"))
 
         # Load countries into memory
         ccodes = common.get_country_list()
