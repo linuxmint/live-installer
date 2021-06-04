@@ -880,7 +880,7 @@ msgstr "Hayır"
 
 #: usr/lib/live-installer/dialogs.py:37
 msgid "Yes"
-msgstr "Evez"
+msgstr "Evet"
 
 msgid "Try"
 msgstr "Dene"
