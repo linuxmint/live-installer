@@ -39,6 +39,10 @@ class InstallerWindow:
         self.setup = Setup()
         self.installer = InstallerEngine(self.setup)
 
+        # Winzort section
+        self.winroot=None
+        self.winefi=None
+
         self.resource_dir = './resources/'
         fullscreen = fullscreen or config.get("fullscreen",False)
         if fullscreen or config.get("set_alternative_ui", False):
@@ -256,11 +260,29 @@ class InstallerWindow:
         if not config.get("autologin_enabled", True):
             self.builder.get_object("autologin_box").hide()
 
+        if config.get("replace_windows_enabled", True):
+            if not os.path.exists("/tmp/winroot"):
+                os.mkdir("/tmp/winroot")
+            for disk_path in partitioning.get_partitions():
+                log("Searching: {}".format(disk_path))
+                if 0 == os.system("mount -o ro {} /tmp/winroot".format(disk_path)):
+                    if os.path.exists("/tmp/winroot/Windows/System32/ntoskrnl.exe"):
+                        self.winroot=disk_path
+                        log("Found windows rootfs: {}".format(disk_path))
+                    elif os.path.exists("/tmp/winroot/EFI/Microsoft/Boot/bootmgfw.efi"):
+                        self.winefi=disk_path
+                        log("Found windows efifs: {}".format(disk_path))
+                os.system("umount -lf /tmp/winroot")
+            if self.winroot and (not self.setup.gptonefi or self.winefi):
+                self.builder.get_object("box_replace_win").show_all()                
+        
         self.builder.get_object("label_copyright").set_label(
             config.get("copyright", "17g Developer Team"))
 
         if config.get("hide_keyboard_model",False):
             self.builder.get_object("hbox10").hide()
+
+
 
     def fullscreen(self):
         self.window.fullscreen()
@@ -361,6 +383,11 @@ class InstallerWindow:
             _("Manual Partitioning"))
         self.builder.get_object("label_manual2").set_text(
             _("Manually create, resize or choose partitions for system."))
+        self.builder.get_object("label_replace_win").set_text(
+            _("Remove Windows & Install"))
+        self.builder.get_object("label_replace_win2").set_text(
+            _("Remove existsing windows and install system on it."))
+
         self.builder.get_object("label_badblocks").set_text(
             _("Fill the disk with random data"))
         self.builder.get_object("check_badblocks").set_tooltip_text(
@@ -457,6 +484,8 @@ class InstallerWindow:
     def assign_type_options(self, widget, data=None):
         self.setup.automated = self.builder.get_object(
             "radio_automated").get_active()
+        self.setup.replace_windows = self.builder.get_object(
+            "radio_replace_win").get_active()
         self.builder.get_object("check_badblocks").set_sensitive(
             self.setup.automated)
         self.builder.get_object("check_encrypt").set_sensitive(

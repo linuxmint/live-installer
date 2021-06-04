@@ -69,6 +69,14 @@ def get_disks():
             log("Could not parse blkid output: %s (%s)" % (line, detail))
     return disks
 
+def get_partitions():
+    partitions = []
+    for disk in get_disks():
+        i=1
+        while os.path.exists("{}{}".format(disk[0],str(i))):
+            partitions.append("{}{}".format(disk[0],str(i)))
+            i+=1
+    return partitions
 
 def build_partitions(_installer):
     global installer
