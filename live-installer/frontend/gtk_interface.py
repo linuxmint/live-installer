@@ -974,10 +974,10 @@ class InstallerWindow:
             img = self.builder.get_object("progress_%d" % i)
             if i <= nex:
                 img.set_from_file(
-                    "./resources/icons/live-installer-progress-dot-on.png")
+                    "./resources/icons/live-installer-progress-dot-on.svg")
             else:
                 img.set_from_file(
-                    "./resources/icons/live-installer-progress-dot-off.png")
+                    "./resources/icons/live-installer-progress-dot-off.svg")
         help_text = _(self.wizard_pages[nex].help_text)
         self.builder.get_object("help_label").set_markup(
             "<big><b>%s</b></big>" % help_text)

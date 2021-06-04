@@ -1560,7 +1560,7 @@
                   <object class="GtkImage" id="progress_0">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="pixbuf">icons/live-installer-progress-dot-on.png</property>
+                    <property name="pixbuf">icons/live-installer-progress-dot-on.svg</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -1572,7 +1572,7 @@
                   <object class="GtkImage" id="progress_1">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="pixbuf">icons/live-installer-progress-dot-on.png</property>
+                    <property name="pixbuf">icons/live-installer-progress-dot-on.svg</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -1584,7 +1584,7 @@
                   <object class="GtkImage" id="progress_2">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="pixbuf">icons/live-installer-progress-dot-on.png</property>
+                    <property name="pixbuf">icons/live-installer-progress-dot-on.svg</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -1596,7 +1596,7 @@
                   <object class="GtkImage" id="progress_3">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="pixbuf">icons/live-installer-progress-dot-on.png</property>
+                    <property name="pixbuf">icons/live-installer-progress-dot-on.svg</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -1608,7 +1608,7 @@
                   <object class="GtkImage" id="progress_4">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="pixbuf">icons/live-installer-progress-dot-on.png</property>
+                    <property name="pixbuf">icons/live-installer-progress-dot-on.svg</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -1620,7 +1620,7 @@
                   <object class="GtkImage" id="progress_5">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="pixbuf">icons/live-installer-progress-dot-on.png</property>
+                    <property name="pixbuf">icons/live-installer-progress-dot-on.svg</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -1632,7 +1632,7 @@
                   <object class="GtkImage" id="progress_6">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="pixbuf">icons/live-installer-progress-dot-on.png</property>
+                    <property name="pixbuf">icons/live-installer-progress-dot-on.svg</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -1644,7 +1644,7 @@
                   <object class="GtkImage" id="progress_7">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="pixbuf">icons/live-installer-progress-dot-on.png</property>
+                    <property name="pixbuf">icons/live-installer-progress-dot-on.svg</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -1656,7 +1656,7 @@
                   <object class="GtkImage" id="progress_8">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="pixbuf">icons/live-installer-progress-dot-on.png</property>
+                    <property name="pixbuf">icons/live-installer-progress-dot-on.svg</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
