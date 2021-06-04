@@ -610,6 +610,9 @@ class InstallerWindow:
             path = model.get_path(set_iter)
             treeview.set_cursor(path)
             treeview.scroll_to_cell(path)
+        if config.get("allow_auto_novariant",True):
+            self.setup.keyboard_variant = ""
+
 
     def build_kb_lists(self):
         ''' Do some xml kung-fu and load the keyboard stuffs '''
@@ -760,9 +763,6 @@ class InstallerWindow:
         (self.setup.keyboard_variant_description,
          self.setup.keyboard_variant) = model[active[0]]
 
-        if not self.setup.keyboard_variant:
-            self.setup.keyboard_variant = ""
-
         if self.setup.keyboard_layout in NON_LATIN_KB_LAYOUTS:
             # Add US layout for non-latin layouts
             self.setup.keyboard_layout = 'us,%s' % self.setup.keyboard_layout
@@ -825,9 +825,7 @@ class InstallerWindow:
                     itervar = model.iter_next(itervar)
         elif index == self.PAGE_KEYBOARD:
             self.builder.get_object("entry_name").grab_focus()
-            if config.get("allow_auto_novariant",True):
-                self.setup.keyboard_variant = ""
-            elif not goback and (not self.setup.keyboard_variant and self.setup.keyboard_variant != ""):
+            if not goback and not self.setup.keyboard_variant:
                 WarningDialog(_("Installer"), _(
                     "Please provide a kayboard layout for your computer."))
                 return
