@@ -439,32 +439,6 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkImage" id="check_name">
-                        <property name="name">check_name</property>
-                        <property name="can-focus">False</property>
-                        <property name="no-show-all">True</property>
-                        <property name="halign">start</property>
-                        <property name="icon-name">gtk-yes</property>
-                      </object>
-                      <packing>
-                        <property name="left-attach">2</property>
-                        <property name="top-attach">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkImage" id="check_hostname">
-                        <property name="name">check_hostname</property>
-                        <property name="can-focus">False</property>
-                        <property name="no-show-all">True</property>
-                        <property name="halign">start</property>
-                        <property name="icon-name">gtk-yes</property>
-                      </object>
-                      <packing>
-                        <property name="left-attach">2</property>
-                        <property name="top-attach">1</property>
-                      </packing>
-                    </child>
-                    <child>
                       <object class="GtkEntry" id="entry_name">
                         <property name="name">entry_name</property>
                         <property name="visible">True</property>
@@ -614,45 +588,6 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkImage" id="check_confirm">
-                        <property name="name">check_confirm</property>
-                        <property name="can-focus">False</property>
-                        <property name="no-show-all">True</property>
-                        <property name="halign">start</property>
-                        <property name="icon-name">gtk-yes</property>
-                      </object>
-                      <packing>
-                        <property name="left-attach">2</property>
-                        <property name="top-attach">5</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkImage" id="check_password">
-                        <property name="name">check_password</property>
-                        <property name="can-focus">False</property>
-                        <property name="no-show-all">True</property>
-                        <property name="halign">start</property>
-                        <property name="icon-name">gtk-yes</property>
-                      </object>
-                      <packing>
-                        <property name="left-attach">2</property>
-                        <property name="top-attach">4</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkImage" id="check_username">
-                        <property name="name">check_username</property>
-                        <property name="can-focus">False</property>
-                        <property name="no-show-all">True</property>
-                        <property name="halign">start</property>
-                        <property name="icon-name">gtk-yes</property>
-                      </object>
-                      <packing>
-                        <property name="left-attach">2</property>
-                        <property name="top-attach">3</property>
-                      </packing>
-                    </child>
-                    <child>
                       <object class="GtkBox" id="autologin_box">
                         <property name="name">autologin_box</property>
                         <property name="visible">True</property>
@@ -710,20 +645,6 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkLabel">
-                        <property name="width-request">40</property>
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                      </object>
-                      <packing>
-                        <property name="left-attach">2</property>
-                        <property name="top-attach">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
                       <placeholder/>
                     </child>
                     <child>
@@ -747,34 +668,34 @@
             <child>
               <object class="GtkBox" id="vbox_type">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="can-focus">False</property>
                 <property name="orientation">vertical</property>
                 <property name="spacing">20</property>
                 <child>
                   <object class="GtkBox" id="box_automated">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="border_width">10</property>
+                    <property name="can-focus">False</property>
+                    <property name="border-width">10</property>
                     <property name="orientation">vertical</property>
                     <property name="spacing">6</property>
                     <child>
                       <object class="GtkRadioButton" id="radio_automated">
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">False</property>
+                        <property name="can-focus">True</property>
+                        <property name="receives-default">False</property>
                         <property name="active">True</property>
-                        <property name="draw_indicator">True</property>
+                        <property name="draw-indicator">True</property>
                         <property name="group">radio_automated</property>
                         <child>
                           <object class="GtkBox">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="border_width">0</property>
+                            <property name="can-focus">False</property>
+                            <property name="border-width">0</property>
                             <property name="orientation">vertical</property>
                             <child>
                               <object class="GtkLabel" id="label_automated">
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
+                                <property name="can-focus">False</property>
                                 <property name="halign">start</property>
                                 <property name="label" translatable="yes">Automated Installation</property>
                                 <attributes>
@@ -790,7 +711,7 @@
                             <child>
                               <object class="GtkLabel" id="label_automated2">
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
+                                <property name="can-focus">False</property>
                                 <property name="halign">start</property>
                                 <property name="label" translatable="yes">Erase a disk and install LMDE on it.</property>
                               </object>
@@ -812,12 +733,12 @@
                     <child>
                       <object class="GtkBox">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
+                        <property name="can-focus">False</property>
                         <property name="spacing">12</property>
                         <child>
                           <object class="GtkLabel" id="label_disk">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
+                            <property name="can-focus">False</property>
                             <property name="label" translatable="yes">Disk:</property>
                           </object>
                           <packing>
@@ -829,7 +750,7 @@
                         <child>
                           <object class="GtkComboBox" id="combo_disk">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
+                            <property name="can-focus">False</property>
                             <property name="hexpand">True</property>
                           </object>
                           <packing>
@@ -848,23 +769,23 @@
                     <child>
                       <object class="GtkBox" id="box_lvm">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
+                        <property name="can-focus">False</property>
                         <property name="orientation">vertical</property>
                         <child>
                           <object class="GtkCheckButton" id="check_lvm">
                             <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">False</property>
-                            <property name="draw_indicator">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">False</property>
+                            <property name="draw-indicator">True</property>
                             <child>
                               <object class="GtkBox">
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
+                                <property name="can-focus">False</property>
                                 <property name="spacing">12</property>
                                 <child>
                                   <object class="GtkLabel" id="label_lvm">
                                     <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
+                                    <property name="can-focus">False</property>
                                     <property name="halign">start</property>
                                     <property name="label" translatable="yes">Use LVM (Logical Volume Management)</property>
                                   </object>
@@ -886,30 +807,30 @@
                         <child>
                           <object class="GtkBox" id="box_encryption">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
+                            <property name="can-focus">False</property>
                             <property name="orientation">vertical</property>
                             <child>
                               <object class="GtkBox">
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
+                                <property name="can-focus">False</property>
                                 <property name="spacing">12</property>
                                 <child>
                                   <object class="GtkCheckButton" id="check_encrypt">
                                     <property name="visible">True</property>
                                     <property name="sensitive">False</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="receives_default">False</property>
-                                    <property name="draw_indicator">True</property>
+                                    <property name="can-focus">True</property>
+                                    <property name="receives-default">False</property>
+                                    <property name="draw-indicator">True</property>
                                     <child>
                                       <object class="GtkBox">
                                         <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
+                                        <property name="can-focus">False</property>
                                         <property name="hexpand">True</property>
                                         <property name="spacing">12</property>
                                         <child>
                                           <object class="GtkLabel" id="label_encrypt">
                                             <property name="visible">True</property>
-                                            <property name="can_focus">False</property>
+                                            <property name="can-focus">False</property>
                                             <property name="halign">start</property>
                                             <property name="label" translatable="yes">Encrypt the operating system</property>
                                           </object>
@@ -931,19 +852,19 @@
                                 <child>
                                   <object class="GtkBox">
                                     <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
+                                    <property name="can-focus">False</property>
                                     <property name="hexpand">True</property>
                                     <property name="spacing">12</property>
                                     <child>
                                       <object class="GtkEntry" id="entry_passphrase">
                                         <property name="visible">True</property>
                                         <property name="sensitive">False</property>
-                                        <property name="can_focus">True</property>
+                                        <property name="can-focus">True</property>
                                         <property name="hexpand">True</property>
                                         <property name="visibility">False</property>
-                                        <property name="invisible_char">•</property>
-                                        <property name="placeholder_text" translatable="yes">Passphrase</property>
-                                        <property name="input_purpose">password</property>
+                                        <property name="invisible-char">•</property>
+                                        <property name="placeholder-text" translatable="yes">Passphrase</property>
+                                        <property name="input-purpose">password</property>
                                       </object>
                                       <packing>
                                         <property name="expand">False</property>
@@ -955,11 +876,11 @@
                                       <object class="GtkEntry" id="entry_passphrase2">
                                         <property name="visible">True</property>
                                         <property name="sensitive">False</property>
-                                        <property name="can_focus">True</property>
+                                        <property name="can-focus">True</property>
                                         <property name="hexpand">True</property>
                                         <property name="visibility">False</property>
-                                        <property name="placeholder_text" translatable="yes">Confirm passphrase</property>
-                                        <property name="input_purpose">password</property>
+                                        <property name="placeholder-text" translatable="yes">Confirm passphrase</property>
+                                        <property name="input-purpose">password</property>
                                       </object>
                                       <packing>
                                         <property name="expand">False</property>
@@ -984,25 +905,25 @@
                             <child>
                               <object class="GtkBox" id="box_fill">
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
+                                <property name="can-focus">False</property>
                                 <property name="orientation">vertical</property>
                                 <child>
                                   <object class="GtkCheckButton" id="check_badblocks">
                                     <property name="visible">True</property>
                                     <property name="sensitive">False</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="receives_default">False</property>
-                                    <property name="tooltip_text" translatable="yes">This provides extra security but it can take hours.</property>
-                                    <property name="draw_indicator">True</property>
+                                    <property name="can-focus">True</property>
+                                    <property name="receives-default">False</property>
+                                    <property name="tooltip-text" translatable="yes">This provides extra security but it can take hours.</property>
+                                    <property name="draw-indicator">True</property>
                                     <child>
                                       <object class="GtkBox">
                                         <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
+                                        <property name="can-focus">False</property>
                                         <property name="spacing">12</property>
                                         <child>
                                           <object class="GtkLabel" id="label_badblocks">
                                             <property name="visible">True</property>
-                                            <property name="can_focus">False</property>
+                                            <property name="can-focus">False</property>
                                             <property name="halign">start</property>
                                             <property name="label" translatable="yes">Fill the disk with random data</property>
                                             <property name="wrap">True</property>
@@ -1053,7 +974,7 @@
                 <child>
                   <object class="GtkSeparator">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
+                    <property name="can-focus">False</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -1064,25 +985,25 @@
                 <child>
                   <object class="GtkBox" id="box_manual">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
+                    <property name="can-focus">False</property>
                     <property name="orientation">vertical</property>
                     <child>
                       <object class="GtkRadioButton" id="radio_manual">
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">False</property>
+                        <property name="can-focus">True</property>
+                        <property name="receives-default">False</property>
                         <property name="active">True</property>
-                        <property name="draw_indicator">True</property>
+                        <property name="draw-indicator">True</property>
                         <property name="group">radio_automated</property>
                         <child>
                           <object class="GtkBox">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
+                            <property name="can-focus">False</property>
                             <property name="orientation">vertical</property>
                             <child>
                               <object class="GtkLabel" id="label_manual">
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
+                                <property name="can-focus">False</property>
                                 <property name="halign">start</property>
                                 <property name="label" translatable="yes">Manual Partitioning</property>
                                 <attributes>
@@ -1098,7 +1019,7 @@
                             <child>
                               <object class="GtkLabel" id="label_manual2">
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
+                                <property name="can-focus">False</property>
                                 <property name="halign">start</property>
                                 <property name="label" translatable="yes">Manually create, resize or choose partitions for LMDE.</property>
                               </object>
@@ -1127,7 +1048,7 @@
                 <child>
                   <object class="GtkSeparator">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
+                    <property name="can-focus">False</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -1138,24 +1059,24 @@
                 <child>
                   <object class="GtkBox" id="box_replace_win">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
+                    <property name="can-focus">False</property>
                     <property name="orientation">vertical</property>
                     <child>
                       <object class="GtkRadioButton" id="radio_replace_win">
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">False</property>
-                        <property name="draw_indicator">True</property>
+                        <property name="can-focus">True</property>
+                        <property name="receives-default">False</property>
+                        <property name="draw-indicator">True</property>
                         <property name="group">radio_automated</property>
                         <child>
                           <object class="GtkBox">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
+                            <property name="can-focus">False</property>
                             <property name="orientation">vertical</property>
                             <child>
                               <object class="GtkLabel" id="label_replace_win">
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
+                                <property name="can-focus">False</property>
                                 <property name="halign">start</property>
                                 <property name="label" translatable="yes">Remove windows &amp; Install</property>
                                 <attributes>
@@ -1171,7 +1092,7 @@
                             <child>
                               <object class="GtkLabel" id="label_replace_win2">
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
+                                <property name="can-focus">False</property>
                                 <property name="halign">start</property>
                                 <property name="label" translatable="yes">Remove existsing windows and install LMDE on it.</property>
                               </object>

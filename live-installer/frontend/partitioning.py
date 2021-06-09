@@ -241,7 +241,7 @@ class PartitionSetup(Gtk.TreeStore):
             log("    Analyzing path='%s' description='%s'" %
                 (disk_path, disk_description))
             try:
-				disk_device = parted.getDevice(disk_path)
+                disk_device = parted.getDevice(disk_path)
                 disk = parted.Disk(disk_device)
             except Exception as detail:
                 log("Found an issue while looking for the disk: %s" % detail)

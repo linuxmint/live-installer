@@ -47,6 +47,12 @@ class InstallerWindow:
             glade_file = os.path.join(self.resource_dir, 'interface.ui')
         self.builder = Gtk.Builder()
         self.builder.add_from_file(glade_file)
+        screen = Gdk.Screen.get_default()
+        cssProvider = Gtk.CssProvider()
+        cssProvider.load_from_path('./resources/style.css')
+        styleContext = Gtk.StyleContext()
+        styleContext.add_provider_for_screen(
+        screen, cssProvider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
 
         # should be set early
         self.done = False
@@ -255,6 +261,13 @@ class InstallerWindow:
                 self.builder.get_object("box_fill").hide()
         if not config.get("autologin_enabled", True):
             self.builder.get_object("autologin_box").hide()
+            
+        # styling
+        self.assign_entry("entry_name")
+        self.assign_entry("entry_username")
+        self.assign_entry("entry_hostname")
+        self.assign_entry("entry_password")
+        self.assign_entry("entry_confirm")
 
         self.builder.get_object("box_replace_win").hide()
         if config.get("replace_windows_enabled", True):
@@ -423,9 +436,10 @@ class InstallerWindow:
         except:
             pass
         if self.setup.real_name == "":
-            self.builder.get_object("check_name").hide()
+            self.assign_entry("entry_name",False)
         else:
-            self.builder.get_object("check_name").show()
+            self.assign_entry("entry_name",True)
+
 
     def assign_username(self, entry, prop):
         self.setup.username = entry.props.text
@@ -435,9 +449,9 @@ class InstallerWindow:
            or not (u.isascii() and u.isalnum() and u.islower()):
             errorFound = True
         if errorFound or self.setup.username == "":
-            self.builder.get_object("check_username").hide()
+            self.assign_entry("entry_username",False)
         else:
-            self.builder.get_object("check_username").show()
+            self.assign_entry("entry_username",True)
 
     def assign_hostname(self, entry, prop):
         self.setup.hostname = entry.props.text
@@ -450,9 +464,9 @@ class InstallerWindow:
                 errorFound = True
                 break
         if errorFound or self.setup.hostname == "":
-            self.builder.get_object("check_hostname").hide()
+            self.assign_entry("entry_hostname",False)
         else:
-            self.builder.get_object("check_hostname").show()
+            self.assign_entry("entry_hostname",True)
 
     def assign_password(self, widget):
         errorFound = False
@@ -468,15 +482,15 @@ class InstallerWindow:
         if self.setup.password1.isnumeric() and not config.get("allow_numeric_password", True):
             errorFound = True
         if errorFound:
-            self.builder.get_object("check_password").hide()
+            self.assign_entry("entry_password",False)
         else:
-            self.builder.get_object("check_password").show()
+            self.assign_entry("entry_password",True)
 
         # Check the password confirmation
         if(self.setup.password1 == "" or self.setup.password2 == "" or self.setup.password1 != self.setup.password2):
-            self.builder.get_object("check_confirm").hide()
+            self.assign_entry("entry_confirm",False)
         else:
-            self.builder.get_object("check_confirm").show()
+            self.assign_entry("entry_confirm",True)
 
     def assign_type_options(self, widget, data=None):
         self.setup.automated = self.builder.get_object(
@@ -551,6 +565,13 @@ class InstallerWindow:
             return False
         else:
             return True
+    def assign_entry(self,name="",value=False):
+        if value:
+            self.builder.get_object(name).get_style_context().add_class("entry_enabled")
+            self.builder.get_object(name).get_style_context().remove_class("entry_disabled")
+        else:
+            self.builder.get_object(name).get_style_context().add_class("entry_disabled")
+            self.builder.get_object(name).get_style_context().remove_class("entry_enabled")
 
     def build_lang_list(self):
 
