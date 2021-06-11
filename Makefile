@@ -22,7 +22,8 @@ buildmo:
 	done \
 
 install:
-	mkdir -p $(DESTDIR)/{lib,usr} || true
+	mkdir -p $(DESTDIR)/lib || true
+	mkdir -p $(DESTDIR)/usr || true
 	cp -prfv build/usr/* $(DESTDIR)/usr/
 	cp -prfv build/lib/* $(DESTDIR)/lib/
 	mkdir -p $(DESTDIR)/usr/share/applications/ || true
