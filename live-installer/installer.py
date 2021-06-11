@@ -232,14 +232,14 @@ class InstallerEngine:
             if self.setup.gptonefi:
                 # EFI+LUKS/LVM
                 # sdx1=EFI, sdx2=BOOT, sdx3=ROOT
-                self.auto_efi_partition = self.setup.disk + partition_prefix + "1"
+                self.auto_efi_partition  = self.setup.disk + partition_prefix + "1"
                 self.auto_boot_partition = self.setup.disk + partition_prefix + "2"
                 self.auto_swap_partition = None
                 self.auto_root_partition = self.setup.disk + partition_prefix + "3"
             else:
                 # BIOS+LUKS/LVM
                 # sdx1=BOOT, sdx2=ROOT
-                self.auto_efi_partition = None
+                self.auto_efi_partition  = None
                 self.auto_boot_partition = self.setup.disk + partition_prefix + "1"
                 self.auto_swap_partition = None
                 self.auto_root_partition = self.setup.disk + partition_prefix + "2"
@@ -247,32 +247,32 @@ class InstallerEngine:
             if self.setup.gptonefi:
                 # EFI+LVM
                 # sdx1=EFI, sdx2=ROOT
-                self.auto_efi_partition = self.setup.disk + partition_prefix + "1"
+                self.auto_efi_partition  = self.setup.disk + partition_prefix + "1"
                 self.auto_boot_partition = None
                 self.auto_swap_partition = None
                 self.auto_root_partition = self.setup.disk + partition_prefix + "2"
             else:
                 # BIOS+LVM:
                 # sdx1=ROOT
-                self.auto_efi_partition = None
+                self.auto_efi_partition  = None
                 self.auto_boot_partition = None
                 self.auto_swap_partition = None
                 self.auto_root_partition = self.setup.disk + partition_prefix + "1"
         else:
             if self.setup.gptonefi:
                 # EFI
-                # sdx1=EFI, sdx2=ROOT
-                self.auto_efi_partition = self.setup.disk + partition_prefix + "1"
+                # sdx1=EFI, sdx2=SWAP, sdx3=ROOT
+                self.auto_efi_partition  = self.setup.disk + partition_prefix + "1"
                 self.auto_boot_partition = None
-                self.auto_swap_partition = None
-                self.auto_root_partition = self.setup.disk + partition_prefix + "2"
+                self.auto_swap_partition = self.setup.disk + partition_prefix + "2"
+                self.auto_root_partition = self.setup.disk + partition_prefix + "3"
             else:
                 # BIOS:
-                # sdx1=ROOT
-                self.auto_efi_partition = None
+                # sdx1=SWAP, sdx2=ROOT
+                self.auto_efi_partition  = None
                 self.auto_boot_partition = None
-                self.auto_swap_partition = None
-                self.auto_root_partition = self.setup.disk + partition_prefix + "1"
+                self.auto_swap_partition = self.setup.disk + partition_prefix + "1"
+                self.auto_root_partition = self.setup.disk + partition_prefix + "2"
 
         log("EFI:"+str(self.auto_efi_partition))
         log("BOOT:"+str(self.auto_boot_partition))
