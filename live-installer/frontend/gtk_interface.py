@@ -163,11 +163,11 @@ class InstallerWindow:
             self.builder.get_object("treeview_disks").append_column(col)
 
         self.builder.get_object("entry_name").connect(
-            "notify::text", self.assign_realname)
+            "changed", self.assign_realname)
         self.builder.get_object("entry_username").connect(
-            "notify::text", self.assign_username)
+            "changed", self.assign_username)
         self.builder.get_object("entry_hostname").connect(
-            "notify::text", self.assign_hostname)
+            "changed", self.assign_hostname)
         self.builder.get_object("entry_hostname").set_text(os.uname()[1])
 
         # events for detecting password mismatch..
@@ -268,6 +268,8 @@ class InstallerWindow:
         self.assign_entry("entry_hostname")
         self.assign_entry("entry_password")
         self.assign_entry("entry_confirm")
+        
+        self.assign_hostname(self.builder.get_object("entry_hostname"))
 
         self.builder.get_object("box_replace_win").hide()
         if config.get("replace_windows_enabled", True):
@@ -423,7 +425,7 @@ class InstallerWindow:
         # Refresh the current title and help question in the page header
         self.activate_page(self.PAGE_LANGUAGE)
 
-    def assign_realname(self, entry, prop):
+    def assign_realname(self, entry):
         self.setup.real_name = entry.props.text
         # Try to set the username (doesn't matter if it fails)
         try:
@@ -441,7 +443,7 @@ class InstallerWindow:
             self.assign_entry("entry_name",True)
 
 
-    def assign_username(self, entry, prop):
+    def assign_username(self, entry):
         self.setup.username = entry.props.text
         errorFound = False
         u = self.setup.username.replace("-", "")
@@ -453,7 +455,7 @@ class InstallerWindow:
         else:
             self.assign_entry("entry_username",True)
 
-    def assign_hostname(self, entry, prop):
+    def assign_hostname(self, entry):
         self.setup.hostname = entry.props.text
         errorFound = False
         for char in self.setup.hostname:
