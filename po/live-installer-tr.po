@@ -174,7 +174,7 @@ msgstr "%s kurucuya Hoş Geldiniz."
 msgid ""
 "This program will ask you some questions and set up system on your computer."
 msgstr ""
-"Bu uygulama size bazı sorular soracak ve bilgisayarınıza %s kuracaktır."
+"Bu uygulama size bazı sorular soracak ve bilgisayarınıza sistemi kuracaktır."
 
 #: live-installer/frontend/tui_interface.py:28
 #: live-installer/frontend/gtk_interface.py:319
@@ -296,7 +296,7 @@ msgstr "Özet"
 
 #: live-installer/frontend/gtk_interface.py:331
 msgid "Check that everything is correct"
-msgstr "Herşeyin doğru olduğunu gözden geçirin"
+msgstr "Her şeyin doğru olduğunu gözden geçirin"
 
 #: live-installer/frontend/gtk_interface.py:333
 msgid "Installing"
