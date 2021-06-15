@@ -710,10 +710,14 @@ class InstallerWindow:
             (model, itervar) = selection.get_selected()
             if itervar and model:
                 self.setup.language = model.get_value(itervar, 3)
-                gettext.translation('live-installer', "/usr/share/locale",
-                                    languages=[self.setup.language, self.setup.language.split('_')[
-                                        0]],
-                                    fallback=True).install()  # Try e.g. zh_CN, zh, or fallback to hardcoded English
+                self.set_language(self.setup.language)
+                
+
+    def set_language(self,language):
+        gettext.translation('live-installer', "/usr/share/locale",
+                            languages=[language, language.split('_')[
+                                0]],
+                            fallback=True).install()  # Try e.g. zh_CN, zh, or fallback to hardcoded English
         try:
             self.i18n()
         except:
@@ -818,6 +822,7 @@ class InstallerWindow:
                     "Please choose a language"))
                 return
             else:
+                self.set_language(self.setup.language)
                 lang_country_code = self.setup.language.split('_')[-1]
                 for value in (self.cur_timezone,      # timezone guessed from IP
                               self.cur_country_code,  # otherwise pick country from IP
