@@ -718,6 +718,8 @@ class InstallerWindow:
                             languages=[language, language.split('_')[
                                 0]],
                             fallback=True).install()  # Try e.g. zh_CN, zh, or fallback to hardcoded English
+        os.environ["LANG"]="{}.UTF-8".format(language)
+        os.environ["LANGUAGE"]="{}.UTF-8".format(language)
         try:
             self.i18n()
         except:
