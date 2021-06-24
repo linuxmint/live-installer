@@ -1270,7 +1270,7 @@ class InstallerWindow:
             self.builder.get_object("progressbar").set_fraction(1)
             self.builder.get_object(
                 "label_install_progress").set_label(str(message))
-            self.builder.get_object("label_install_percent").set_label("100%")
+            self.builder.get_object("label_install_percent").set_label("100.0%")
             return
         self.should_pulse = False
         _total = float(total)
@@ -1279,7 +1279,7 @@ class InstallerWindow:
         self.builder.get_object("progressbar").set_fraction(pct)
         self.builder.get_object("label_install_progress").set_label(message)
         self.builder.get_object("label_install_percent").set_label(
-            str(int(pct*10000)/100)+"%")
+            str(int(pct*1000)/10)+"%")
 
     @idle
     def do_progress_pulse(self, message):
