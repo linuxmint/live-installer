@@ -608,7 +608,6 @@ class InstallerWindow:
         def flag_path(ccode): return self.resource_dir + \
             '/flags/16/' + ccode.lower() + '.png'
         from utils import memoize
-        language = None
 
         def flag(ccode):
             flag_image = memoize(
@@ -659,22 +658,18 @@ class InstallerWindow:
         models = _ListStore_factory()
         layouts = _ListStore_factory()
         variants = defaultdict(_ListStore_factory)
-        try:
-            import xml.etree.cElementTree as ET
-        except ImportError:
-            import xml.etree.ElementTree as ET
-        xml = ET.parse('/usr/share/X11/xkb/rules/xorg.xml')
+
         # Keyboard model
         for model in common.get_keyboard_model_list():
             iterator = models.append(model)
             if model[1] == keyboard_geom:
                 set_keyboard_model = iterator
+
         # Keyboard layout
         for model in common.get_keyboard_layout_list():
             desc = model[0]
             nonedesc = model[0]
             name = model[1]
-            node = model[2]
             if name in NON_LATIN_KB_LAYOUTS:
                 nonedesc = "English (US) + %s" % nonedesc
             # Keyboard variant
@@ -691,6 +686,7 @@ class InstallerWindow:
             iterator = layouts.append((desc, name))
             if name == self.setup.keyboard_layout:
                 set_keyboard_layout = iterator
+
         # Set the models
         self.builder.get_object("combobox_kb_model").set_model(models)
         self.builder.get_object("treeview_layouts").set_model(layouts)
@@ -871,7 +867,7 @@ class InstallerWindow:
             errorMessage = ""
             focus_widget = None
             if goback:
-                errorFount = False
+                errorFound = False
             elif(self.setup.real_name is None or self.setup.real_name == ""):
                 errorFound = True
                 errorMessage = _("Please provide your full name.")

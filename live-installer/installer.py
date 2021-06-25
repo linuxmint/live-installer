@@ -10,8 +10,10 @@ from logger import log, err, inf
 
 gettext.install("live-installer", "/usr/share/locale")
 
-NON_LATIN_KB_LAYOUTS = ['am', 'af', 'ara', 'ben', 'bd', 'bg', 'bn', 'bt', 'by', 'deva', 'et', 'ge', 'gh', 'gn', 'gr', 'guj', 'guru', 'id', 'il', 'iku', 'in', 'iq', 'ir', 'kan',
-                        'kg', 'kh', 'kz', 'la', 'lao', 'lk', 'ma', 'mk', 'mm', 'mn', 'mv', 'mal', 'my', 'np', 'ori', 'pk', 'ru', 'rs', 'scc', 'sy', 'syr', 'tel', 'th', 'tj', 'tam', 'tz', 'ua', 'uz']
+NON_LATIN_KB_LAYOUTS = ['am', 'af', 'ara', 'ben', 'bd', 'bg', 'bn', 'bt', 'by', 'deva', 'et', 'ge', 'gh', 'gn', 'gr',
+                        'guj', 'guru', 'id', 'il', 'iku', 'in', 'iq', 'ir', 'kan', 'kg', 'kh', 'kz', 'la', 'lao', 'lk',
+                        'ma', 'mk', 'mm', 'mn', 'mv', 'mal', 'my', 'np', 'ori', 'pk', 'ru', 'rs', 'scc', 'sy', 'syr', 
+                        'tel', 'th', 'tj', 'tam', 'tz', 'ua', 'uz']
 
 
 class InstallerEngine:
@@ -760,7 +762,7 @@ class InstallerEngine:
         log(" --> Running grub-mkconfig")
         grub_output = subprocess.getoutput(
             "chroot /target/ /bin/sh -c \"grub-mkconfig -o /boot/grub/grub.cfg\"")
-        log("grub_output")
+        log(grub_output)
 
     def do_hook_commands(self, hook=""):
         log(" --> {} running".format(str(hook)))
