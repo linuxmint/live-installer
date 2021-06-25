@@ -1066,7 +1066,7 @@ class InstallerWindow:
                 if self.setup.winboot:
                     boot = partitioning.PartitionBase()
                     boot.path = self.setup.winboot
-                    boot.format_as = 'fat32'
+                    boot.format_as = 'vfat'
                     boot.mount_as = None
                     self.setup.partitions.append(boot)
             self.activate_page(self.PAGE_OVERVIEW)
