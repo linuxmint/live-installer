@@ -1068,6 +1068,7 @@ class InstallerWindow:
                     boot.path = self.setup.winboot
                     boot.format_as = 'fat32'
                     boot.mount_as = None
+                    self.setup.partitions.append(boot)
             self.activate_page(self.PAGE_OVERVIEW)
             self.builder.get_object("button_next").set_label(_("Install"))
         else:
