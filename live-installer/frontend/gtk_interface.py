@@ -287,6 +287,9 @@ class InstallerWindow:
                     elif os.path.exists("/tmp/winroot/EFI/Microsoft/Boot/bootmgfw.efi"):
                         self.setup.winefi = disk_path
                         log("Found windows efifs: {}".format(disk_path))
+                    elif os.path.exists("/tmp/winroot/bootmgr"):
+                        self.setup.winboot = disk_path
+                        log("Found windows boot: {}".format(disk_path))
                 os.system("umount -lf /tmp/winroot")
             if self.setup.winroot and (
                     not self.setup.gptonefi or self.setup.winefi):
@@ -1060,6 +1063,11 @@ class InstallerWindow:
                     self.setup.partitions.append(efifs)
                 self.setup.grub_device = partitioning.find_mbr(
                     self.setup.winroot)
+                if self.setup.winboot:
+                    boot = partitioning.PartitionBase()
+                    boot.path = self.setup.winboot
+                    boot.format_as = 'fat32'
+                    boot.mount_as = None
             self.activate_page(self.PAGE_OVERVIEW)
             self.builder.get_object("button_next").set_label(_("Install"))
         else:

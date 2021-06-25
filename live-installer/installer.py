@@ -836,6 +836,7 @@ class Setup(object):
     luks = False
     badblocks = False
     winroot = None
+    winboot = None
     winefi = None
     gptonefi = partitioning.is_efi_supported()
     # Optionally skip all mouting/partitioning for advanced users with custom setups (raid/dmcrypt/etc)
