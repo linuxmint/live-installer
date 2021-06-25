@@ -35,7 +35,8 @@ class InstallerWindow:
 
     def __init__(self, fullscreen=False):
 
-        # build the setup object (where we put all our choices) and the installer
+        # build the setup object (where we put all our choices) and the
+        # installer
         self.setup = Setup()
         self.installer = InstallerEngine(self.setup)
 
@@ -277,15 +278,18 @@ class InstallerWindow:
                 os.mkdir("/tmp/winroot")
             for disk_path in partitioning.get_partitions():
                 log("Searching: {}".format(disk_path))
-                if 0 == os.system("mount -o ro {} /tmp/winroot".format(disk_path)):
-                    if os.path.exists("/tmp/winroot/Windows/System32/ntoskrnl.exe"):
+                if 0 == os.system(
+                        "mount -o ro {} /tmp/winroot".format(disk_path)):
+                    if os.path.exists(
+                            "/tmp/winroot/Windows/System32/ntoskrnl.exe"):
                         self.setup.winroot = disk_path
                         log("Found windows rootfs: {}".format(disk_path))
                     elif os.path.exists("/tmp/winroot/EFI/Microsoft/Boot/bootmgfw.efi"):
                         self.setup.winefi = disk_path
                         log("Found windows efifs: {}".format(disk_path))
                 os.system("umount -lf /tmp/winroot")
-            if self.setup.winroot and (not self.setup.gptonefi or self.setup.winefi):
+            if self.setup.winroot and (
+                    not self.setup.gptonefi or self.setup.winefi):
                 self.builder.get_object("box_replace_win").show_all()
 
         self.builder.get_object("label_copyright").set_label(
@@ -304,7 +308,7 @@ class InstallerWindow:
         try:
             window_title = config.get(
                 "distro_title", "17g") + " - " + _("Installer")
-        except:
+        except BaseException:
             err("\"distro_title\" varible not found on config. Using default.")
         self.window.set_title(window_title)
         self.window.set_wmclass(window_title, window_title)
@@ -433,7 +437,7 @@ class InstallerWindow:
                 text = elements[0]
             self.setup.username = text
             self.builder.get_object("entry_username").set_text(text)
-        except:
+        except BaseException:
             pass
         if self.setup.real_name == "":
             self.assign_entry("entry_name", False)
@@ -478,7 +482,8 @@ class InstallerWindow:
             errorFound = True
         if len(self.setup.password1) < config.get("min_password_length", 1):
             errorFound = True
-        if self.setup.password1.isnumeric() and not config.get("allow_numeric_password", True):
+        if self.setup.password1.isnumeric() and not config.get(
+                "allow_numeric_password", True):
             errorFound = True
         if errorFound:
             self.assign_entry("entry_password", False)
@@ -559,7 +564,8 @@ class InstallerWindow:
             "entry_passphrase2").get_text()
 
     def quit_cb(self, widget, data=None):
-        if QuestionDialog(_("Quit?"), _("Are you sure you want to quit the installer?")):
+        if QuestionDialog(_("Quit?"), _(
+                "Are you sure you want to quit the installer?")):
             Gtk.main_quit()
             return False
         else:
@@ -609,7 +615,7 @@ class InstallerWindow:
                 lambda image: GdkPixbuf.Pixbuf.new_from_file(image))
             try:
                 return flag_image(flag_path(ccode))
-            except:
+            except BaseException:
                 return flag_image("./resources/flags/16/_United Nations.png")
         for c in ccodes:
             c = c.split(":")
@@ -722,8 +728,9 @@ class InstallerWindow:
         os.environ["LANGUAGE"] = "{}.UTF-8".format(language)
         try:
             self.i18n()
-        except:
-            # Best effort. Fails the first time as self.column1 doesn't exist yet.
+        except BaseException:
+            # Best effort. Fails the first time as self.column1 doesn't exist
+            # yet.
             pass
 
     def assign_login_options(self, checkbox, data=None):
@@ -785,7 +792,8 @@ class InstallerWindow:
 
     def assign_keyboard_variant(self, treeview):
         ''' Called whenever someone updates the keyboard layout or variant '''
-        # GObject.source_remove(self.kbd_preview_generation)  # stop previous preview generation, if any
+        # GObject.source_remove(self.kbd_preview_generation)  # stop previous
+        # preview generation, if any
         model, active = treeview.get_selection().get_selected_rows()
         if not active:
             return
@@ -855,7 +863,7 @@ class InstallerWindow:
                     itervar = model.iter_next(itervar)
         elif index == self.PAGE_KEYBOARD:
             self.builder.get_object("entry_name").grab_focus()
-            if not goback and self.setup.keyboard_variant == None:
+            if not goback and self.setup.keyboard_variant is None:
                 WarningDialog(_("Installer"), _(
                     "Please provide a kayboard layout for your computer."))
                 return
@@ -961,15 +969,17 @@ class InstallerWindow:
                     for partition in self.setup.partitions:
                         if(partition.mount_as == "/boot/efi"):
                             found_efi_partition = True
-                            if not partition.partition.getFlag(parted.PARTITION_BOOT):
+                            if not partition.partition.getFlag(
+                                    parted.PARTITION_BOOT):
                                 ErrorDialog(_("Installer"), _(
                                     "The EFI partition is not bootable. Please edit the partition flags."))
                                 return
-                            if int(float(partition.partition.getLength('MB'))) < 35:
+                            if int(
+                                    float(partition.partition.getLength('MB'))) < 35:
                                 ErrorDialog(_("Installer"), _(
                                     "The EFI partition is too small. It must be at least 35MB."))
                                 return
-                            if partition.format_as == None or partition.format_as == "":
+                            if partition.format_as is None or partition.format_as == "":
                                 # No partitioning
                                 if partition.type != "vfat" and partition.type != "fat32" and partition.type != "fat16":
                                     ErrorDialog(_("Installer"), _(
@@ -1034,7 +1044,8 @@ class InstallerWindow:
             if (errorFound):
                 WarningDialog(_("Installer"), errorMessage)
             else:
-                if QuestionDialog(_("Warning"), _("This will delete all the data on %s. Are you sure?") % self.setup.diskname):
+                if QuestionDialog(_("Warning"), _(
+                        "This will delete all the data on %s. Are you sure?") % self.setup.diskname):
                     partitioning.build_partitions(self)
                     partitioning.build_grub_partitions()
                     self.activate_page(self.PAGE_OVERVIEW)
@@ -1135,7 +1146,7 @@ class InstallerWindow:
         model.append(top, (_("Real name: ") + bold(self.setup.real_name),))
         model.append(top, (_("Username: ") + bold(self.setup.username),))
         model.append(
-            top, (_("Password: ") + bold(len(str(self.setup.password1))*"*"),))
+            top, (_("Password: ") + bold(len(str(self.setup.password1)) * "*"),))
         if config.get("autologin_enabled", True):
             model.append(top, (_("Automatic login: ") + bold(_("enabled")
                                                              if self.setup.autologin else _("disabled")),))
@@ -1277,11 +1288,11 @@ class InstallerWindow:
         self.should_pulse = False
         _total = float(total)
         _current = float(current)
-        pct = float(_current/_total)
+        pct = float(_current / _total)
         self.builder.get_object("progressbar").set_fraction(pct)
         self.builder.get_object("label_install_progress").set_label(message)
         self.builder.get_object("label_install_percent").set_label(
-            str(int(pct*1000)/10)+"%")
+            str(int(pct * 1000) / 10) + "%")
 
     @idle
     def do_progress_pulse(self, message):
@@ -1303,11 +1314,11 @@ class InstallerWindow:
         self.slides = Gtk.Notebook()
         self.slides.set_show_tabs(False)
         self.builder.get_object("slidebox").add(self.slides)
-        self.max_slide_page = len(self.images)-1
+        self.max_slide_page = len(self.images) - 1
         for i in self.images:
             im = Gtk.Image()
             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
-                "branding/slides/"+i, 752, 423, False)
+                "branding/slides/" + i, 752, 423, False)
             im.set_from_pixbuf(pixbuf)
             self.slides.append_page(im, Gtk.Label(label="31"))
         self.cur_slide_pos = 0
@@ -1315,7 +1326,7 @@ class InstallerWindow:
 
     def set_slide_page(self):
         self.slides.set_current_page(self.cur_slide_pos)
-        self.cur_slide_pos = self.cur_slide_pos+1
+        self.cur_slide_pos = self.cur_slide_pos + 1
         if(self.cur_slide_pos > self.max_slide_page):
             self.cur_slide_pos = 0
         GLib.timeout_add(15000, self.set_slide_page)

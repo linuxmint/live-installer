@@ -20,7 +20,8 @@ class Dialog(Gtk.MessageDialog):
     def show(self):
         try:
             response = self.run()
-            if response in (Gtk.ResponseType.YES, Gtk.ResponseType.APPLY, Gtk.ResponseType.OK, Gtk.ResponseType.ACCEPT):
+            if response in (Gtk.ResponseType.YES, Gtk.ResponseType.APPLY,
+                            Gtk.ResponseType.OK, Gtk.ResponseType.ACCEPT):
                 return True
             else:
                 return False

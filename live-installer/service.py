@@ -28,7 +28,8 @@ if config.get("welcome_screen", True):
 
 # live functions
 # Ignore this function with debian (debian uses live-config package)
-if config.get("enable_live", True) and (0 != os.system("which live-config &>/dev/null")):
+if config.get("enable_live", True) and (
+        0 != os.system("which live-config &>/dev/null")):
     if config.get("live_user", "user"):
         os.system("useradd -m \"{}\" -s \"{}\"".format(config.get("live_user",
                                                                   "user"), config.get("using_shell", "/bin/bash")))
@@ -42,7 +43,8 @@ if config.get("enable_live", True) and (0 != os.system("which live-config &>/dev
             else:
                 os.system("echo -e \"{0}\\n{0}\\n\" | passwd {1}".format(
                     config.get("live_password", "live"), config.get("live_user", "user")))
-            for i in config.get("additional_user_groups", (["audio", "video", "netdev"])):
+            for i in config.get("additional_user_groups",
+                                (["audio", "video", "netdev"])):
                 os.system("usermod -aG \"{}\" \"{}\"".format(i,
                                                              config.get("live_user", "user")))
         else:

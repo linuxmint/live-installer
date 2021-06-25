@@ -31,7 +31,7 @@ class InstallerEngine:
         if(not os.path.exists(self.media)):
             err("Critical Error: Live medium (%s) not found!" % self.media)
             # sys.exit(1)
-        inf("Using live medium: "+self.media)
+        inf("Using live medium: " + self.media)
         self.our_total = 0
         self.our_current = 0
 
@@ -99,11 +99,13 @@ class InstallerEngine:
             pkgs = open("branding/netinstall_packages.txt").read().split("\n")
 
         else:
-            if config.get("use_rsync", True) and 0 == os.system("which rsync &>/dev/null"):
+            if config.get("use_rsync", True) and 0 == os.system(
+                    "which rsync &>/dev/null"):
                 EXCLUDE_DIRS = "dev/* proc/* sys/* tmp/* run/* mnt/* media/* lost+found source target".split()
 
                 # Add optional entries to EXCLUDE_DIRS
-                for dirvar in config.get("exclude_dirs", ["home/*", "data/user/*"]):
+                for dirvar in config.get(
+                        "exclude_dirs", ["home/*", "data/user/*"]):
                     EXCLUDE_DIRS.append(dirvar)
 
                 rsync_filter = ' '.join(
@@ -177,8 +179,8 @@ class InstallerEngine:
         self.our_current += 1
         try:
             for cmd in config.distro["run_before_user_creation"]:
-                run("chroot||"+cmd)
-        except:
+                run("chroot||" + cmd)
+        except BaseException:
             err("This action not supported for your distribution.")
         self.update_progress(_("Adding new user to the system"))
         # TODO: support encryption
@@ -188,10 +190,12 @@ class InstallerEngine:
             username=self.setup.username))
 
         # Add user to additional groups
-        for group in config.get("additional_user_groups", ["audio", "video", "netdev"]):
+        for group in config.get("additional_user_groups", [
+                                "audio", "video", "netdev"]):
             run("chroot||usermod -aG {} {}".format(group, self.setup.username))
 
-        if (run("which chpasswd &>/dev/null") == 0) and config.get("use_chpasswd", True):
+        if (run("which chpasswd &>/dev/null") ==
+                0) and config.get("use_chpasswd", True):
             fp = open("/target/tmp/.passwd", "w")
             fp.write(self.setup.username + ":" + self.setup.password1 + "\n")
             if config.get("set_root_password", True):
@@ -278,9 +282,9 @@ class InstallerEngine:
                 self.auto_swap_partition = self.setup.disk + partition_prefix + "1"
                 self.auto_root_partition = self.setup.disk + partition_prefix + "2"
 
-        log("EFI:"+str(self.auto_efi_partition))
-        log("BOOT:"+str(self.auto_boot_partition))
-        log("Root:"+str(self.auto_root_partition))
+        log("EFI:" + str(self.auto_efi_partition))
+        log("BOOT:" + str(self.auto_boot_partition))
+        log("Root:" + str(self.auto_root_partition))
         self.auto_root_physical_partition = self.auto_root_partition
 
         # Wipe HDD
@@ -323,7 +327,7 @@ class InstallerEngine:
                 "awk '/^MemTotal/{ print $2 }' /proc/meminfo")) / 1024, 0))
             run("lvcreate -y -n swap -L %dMB lvmlmde" % swap_size)
             log(" --> LVM: Extending LV root")
-            run("lvextend -l 100\%FREE /dev/lvmlmde/root")
+            run("lvextend -l 100\\%FREE /dev/lvmlmde/root")
             log(" --> LVM: Formatting LV root")
             run("mkfs.ext4 /dev/mapper/lvmlmde-root -FF")
             log(" --> LVM: Formatting LV swap")
@@ -356,7 +360,8 @@ class InstallerEngine:
     def format_partitions(self):
         for partition in self.setup.partitions:
             if(partition.format_as is not None and partition.format_as != ""):
-                # report it. should grab the total count of filesystems to be formatted ..
+                # report it. should grab the total count of filesystems to be
+                # formatted ..
                 self.update_progress(_("Formatting %(partition)s as %(format)s ...") % {
                                      'partition': partition.path, 'format': partition.format_as}, True)
 
@@ -398,7 +403,8 @@ class InstallerEngine:
                         fs = "vfat"
                     else:
                         fs = partition.type
-                    if fs != "none" and 0 != self.do_mount(partition.path, "/target", fs, None):
+                    if fs != "none" and 0 != self.do_mount(
+                            partition.path, "/target", fs, None):
                         self.error_message(
                             "Cannot mount rootfs (type: {}): {}".format(fs, partition.path))
                     break
@@ -464,7 +470,8 @@ class InstallerEngine:
                             self.get_blkid(self.auto_efi_partition))
         else:
             for partition in self.setup.partitions:
-                if (partition.mount_as is not None and partition.mount_as != "" and partition.mount_as != "None"):
+                if (partition.mount_as is not None and partition.mount_as !=
+                        "" and partition.mount_as != "None"):
                     fstab.write("# %s\n" % (partition.path))
                     if(partition.mount_as == "/"):
                         fstab_fsck_option = "1"
@@ -676,20 +683,22 @@ class InstallerEngine:
                         self.auto_root_physical_partition)
             run("chroot||echo \"power/disk = shutdown\" >> /etc/sysfs.d/local.conf")
 
-        # recreate initramfs (needed in case of skip_mount also, to include things like mdadm/dm-crypt/etc in case its needed to boot a custom install)
+        # recreate initramfs (needed in case of skip_mount also, to include
+        # things like mdadm/dm-crypt/etc in case its needed to boot a custom
+        # install)
         log(" --> Configuring Initramfs")
         self.our_current += 1
         self.update_progress(_("Generating initramfs"), pulse=True)
 
         for command in config.update_initramfs():
-            run("chroot||"+command)
+            run("chroot||" + command)
         self.update_progress(
             _("Preparing bootloader installation"), pulse=True)
         try:
             grub_prepare_commands = config.distro["grub_prepare"]
             for command in grub_prepare_commands:
                 run(command)
-        except:
+        except BaseException:
             err("Grub prepare process not available for your distribution!")
 
         # install GRUB bootloader (EFI & Legacy)

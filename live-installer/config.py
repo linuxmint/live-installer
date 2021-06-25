@@ -15,7 +15,7 @@ def load_config(config_path):
     if os.path.isfile(config_path):
         file = open(config_path, "r")
         content = file.read()
-        inf("#Reading yaml file:"+config_path)
+        inf("#Reading yaml file:" + config_path)
         log(content)
     else:
         err("{} doesn't exists. Please create config file!".format(config_path))
@@ -23,7 +23,7 @@ def load_config(config_path):
 
     try:
         return yaml.load(content, Loader=yaml.FullLoader) or {}
-    except:
+    except BaseException:
         return yaml.load(content) or {}
 
 
@@ -50,7 +50,7 @@ def get(key, default=""):
             return live[key]
         if key in main:
             return main[key]
-    except:
+    except BaseException:
         return default
     return default
 
@@ -60,7 +60,7 @@ if(get("distribution", "auto") == "auto"):
     for distro_system in glob("configs/distribution/*"):
         distro = load_config(distro_system)
         if not distro:
-            err("Failed to load: "+distro_system)
+            err("Failed to load: " + distro_system)
         elif "check_this_dir" in distro and os.path.exists(distro["check_this_dir"]):
             break
 else:
@@ -72,7 +72,7 @@ if(get("initramfs_system", "auto") == "auto"):
     for initramfs_system in glob("configs/initramfs_systems/*"):
         initramfs = load_config(initramfs_system)
         if not initramfs:
-            err("Failed to load: "+initramfs_system)
+            err("Failed to load: " + initramfs_system)
         elif "check_this_dir" in initramfs and os.path.exists(initramfs["check_this_dir"]):
             break
 else:
@@ -85,7 +85,7 @@ if(get("package_manager", "auto") == "auto"):
     for package_manager in glob("configs/package_managers/*"):
         pm = load_config(package_manager)
         if not pm:
-            err("Failed to load: "+package_manager)
+            err("Failed to load: " + package_manager)
         elif "check_this_dir" in pm and os.path.exists(pm["check_this_dir"]):
             break
 else:
@@ -97,7 +97,7 @@ if(get("display_manager", "auto") == "auto"):
     for display_manager in glob("configs/display_managers/*"):
         display_manager = load_config(display_manager)
         if not display_manager:
-            err("Failed to load: "+display_manager)
+            err("Failed to load: " + display_manager)
         elif "check_this_dir" in display_manager and os.path.exists(display_manager["check_this_dir"]):
             break
 else:
@@ -117,7 +117,7 @@ def package_manager(process, packages=[]):
 
         for p in packages:
             if len(p) > 0 and p[0] != "#":
-                pkgs += " "+p
+                pkgs += " " + p
 
         cmd = (pm[process] + " ").replace("{packages}", pkgs)
         return cmd

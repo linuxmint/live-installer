@@ -53,12 +53,13 @@ def get_disks():
                 typevar, device, removable, size, model = elements
             device = "/dev/" + device
             if str(typevar) == "b'disk" and device not in exclude_devices:
-                # convert size to manufacturer's size for show, e.g. in GB, not GiB!
+                # convert size to manufacturer's size for show, e.g. in GB, not
+                # GiB!
                 unit_index = 'BKMGTPEZY'.index(size.upper()[-1])
                 l10n_unit = [_('B'), _('kB'), _('MB'), _('GB'), _(
                     'TB'), 'PB', 'EB', 'ZB', 'YB'][unit_index]
                 size = "%s %s" % (
-                    str(int(float(size[:-1]) * (1024/1000)**unit_index)), l10n_unit)
+                    str(int(float(size[:-1]) * (1024 / 1000)**unit_index)), l10n_unit)
                 model = model.replace("\\x20", " ")
                 description = ('{} ({})'.format(
                     model.strip(), size)).replace("\\n'", "")
@@ -288,7 +289,8 @@ class PartitionSetup(Gtk.TreeStore):
                 partitions, key=lambda part: part.partition.geometry.start)
 
             try:  # assign mount_as and format_as if disk was just auto-formatted
-                for partition, (mount_as, format_as) in zip(partitions, assign_mount_format):
+                for partition, (mount_as, format_as) in zip(
+                        partitions, assign_mount_format):
                     partition.mount_as = mount_as
                     partition.format_as = format_as
                 del assign_mount_format
@@ -321,13 +323,13 @@ def show_error(message):
 
 def full_disk_format(device, create_boot=False, create_swap=False):
     # Create a default partition set up
-    disk_label = ('gpt' if device.getLength('B') > 2**32*.9 * device.sectorSize  # size of disk > ~2TB
+    disk_label = ('gpt' if device.getLength('B') > 2**32 * .9 * device.sectorSize  # size of disk > ~2TB
                   or is_efi_supported()
                   else 'msdos')
     # Force lazy umount
     os.system("umount -lf {}*".format(device.path))
     # Wipe first 512 byte
-    open(device.path, "w").write("\x00"*512)
+    open(device.path, "w").write("\x00" * 512)
     return_code = os.system("parted -s %s mklabel %s" %
                             (device.path, disk_label))
     if return_code != 0:
@@ -345,7 +347,7 @@ def full_disk_format(device, create_boot=False, create_swap=False):
         (create_boot, '/boot', 'ext4', 'mkfs.ext4 -F {}', 1024),
         # swap - equal to RAM for hibernate to work well (but capped at ~8GB)
         (create_swap, SWAP_MOUNT_POINT, 'swap', 'mkswap {}', min(8800, int(round(
-            1.1/1024 * int(getoutput("awk '/^MemTotal/{ print $2 }' /proc/meminfo")), -2)))),
+            1.1 / 1024 * int(getoutput("awk '/^MemTotal/{ print $2 }' /proc/meminfo")), -2)))),
         # root
         (True, '/', 'ext4', 'mkfs.ext4 -F {}', 0),
     )
@@ -364,7 +366,7 @@ def full_disk_format(device, create_boot=False, create_swap=False):
             size_mb = partition[4]
             end = '{}MB'.format(start_mb + size_mb) if size_mb else '100%'
             mkpart_cmd = 'mkpart primary {}MB {}'.format(start_mb, end)
-            log("Executing: "+mkpart_cmd)
+            log("Executing: " + mkpart_cmd)
             run_parted(mkpart_cmd)
             partition_path = "%s%s%d" % (
                 device.path, partition_prefix, partition_number)
@@ -383,7 +385,7 @@ def full_disk_format(device, create_boot=False, create_swap=False):
                     Gtk.main_quit()
                     sys.exit(1)
             mkfs = mkfs.format(partition_path)
-            log("Executing: "+mkfs)
+            log("Executing: " + mkfs)
             os.system(mkfs)
             start_mb += size_mb + 1
     if is_efi_supported():
@@ -392,7 +394,8 @@ def full_disk_format(device, create_boot=False, create_swap=False):
 
 
 def to_human_readable(size):
-    for unit in [' ', _('kB'), _('MB'), _('GB'), _('TB'), 'PB', 'EB', 'ZB', 'YB']:
+    for unit in [' ', _('kB'), _('MB'), _(
+            'GB'), _('TB'), 'PB', 'EB', 'ZB', 'YB']:
         if size < 1000:
             return "{:.1f} {}".format(size, unit)
         size /= 1000
@@ -420,10 +423,11 @@ class Partition(object):
         self.partition = partition
         self.length = partition.getLength()
         self.size_percent = max(
-            1, round(80*self.length/partition.disk.device.getLength(), 1))
+            1, round(80 * self.length / partition.disk.device.getLength(), 1))
         self.size = to_human_readable(partition.getLength('B'))
         self.raw_size = partition.getLength('B')
-        # if not normal partition with /dev/sdXN path, set its name to '' and discard it from model
+        # if not normal partition with /dev/sdXN path, set its name to '' and
+        # discard it from model
         self.name = self.path if partition.number != -1 else ''
         try:
             self.type = partition.fileSystem.type
@@ -458,7 +462,7 @@ class Partition(object):
             os.system('mount --read-only {} {}'.format(self.path, TMP_MOUNTPOINT))
             size, free, self.used_percent, mount_point = str(getoutput(
                 "df {0} | grep '^{0}' | awk '{{print $2,$4,$5,$6}}' | tail -1".format(self.path)).split(None, 3))
-            self.raw_size = int(size)*1024
+            self.raw_size = int(size) * 1024
             log("                  . size %s, free %s, self.used_percent %s, mount_point %s" % (
                 size, free, self.used_percent, mount_point))
         except ValueError:
@@ -469,10 +473,11 @@ class Partition(object):
                 self.os_fs_info, self.description, self.free_space, self.used_percent = ': ' + \
                     self.type, '', '', 0
         else:
-            # for mountable partitions, more accurate than the getLength size above
-            self.size = to_human_readable(int(size)*1024)
+            # for mountable partitions, more accurate than the getLength size
+            # above
+            self.size = to_human_readable(int(size) * 1024)
             # df returns values in 1024B-blocks by default
-            self.free_space = to_human_readable(int(free)*1024)
+            self.free_space = to_human_readable(int(free) * 1024)
             self.used_percent = self.used_percent.strip(b'%') or 0
             description = ''
             if path_exists(str(mount_point), str('etc/linuxmint/info')):
@@ -579,7 +584,8 @@ class PartitionDialog(object):
         w = self.builder.get_object("combobox_use_as")
         format_as = w.get_model()[w.get_active()][0]
         self.window.destroy()
-        if response in (Gtk.ResponseType.YES, Gtk.ResponseType.APPLY, Gtk.ResponseType.OK, Gtk.ResponseType.ACCEPT):
+        if response in (Gtk.ResponseType.YES, Gtk.ResponseType.APPLY,
+                        Gtk.ResponseType.OK, Gtk.ResponseType.ACCEPT):
             response_is_ok = True
         else:
             response_is_ok = False

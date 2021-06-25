@@ -8,7 +8,8 @@ from functools import reduce
 
 TIMEZONE_RESOURCES = './resources/timezone/'
 
-# pixel center of where equatorial line and 0th meridian cross on our bg map; WARNING: cc.png relies on this exactly!
+# pixel center of where equatorial line and 0th meridian cross on our bg
+# map; WARNING: cc.png relies on this exactly!
 MAP_CENTER = (351, 246)
 MAP_SIZE = (752, 384)
 
@@ -21,7 +22,7 @@ def pixel_position(lat, lon):
     x = MAP_CENTER[0] + dx * lon
     y = MAP_CENTER[1] - dy * \
         math.degrees(
-            5/4 * math.log(math.tan(math.pi/4 + 2/5 * math.radians(lat))))
+            5 / 4 * math.log(math.tan(math.pi / 4 + 2 / 5 * math.radians(lat))))
     return int(x), int(y)
 
 
@@ -60,7 +61,8 @@ def build_timezones(_installer):
         return defaultdict(autovivified)
     hierarchy = autovivified()
 
-    for line in getoutput("awk '/^[^#]/{ print $1,$2,$3 }' /usr/share/zoneinfo/zone.tab | sort -k3").split('\n'):
+    for line in getoutput(
+            "awk '/^[^#]/{ print $1,$2,$3 }' /usr/share/zoneinfo/zone.tab | sort -k3").split('\n'):
         ccode, coords, name = line.split()
         lat, lon = TZ_SPLIT_COORDS.search(coords).groups()
         x, y = pixel_position(to_float(lat, 2), to_float(lon, 3))
@@ -147,7 +149,8 @@ def tz_menu_selected(widget, tz):
 
 def map_clicked(widget, event, data=None):
     x, y = event.x, event.y
-    if event.window != installer.builder.get_object("event_timezones").get_window():
+    if event.window != installer.builder.get_object(
+            "event_timezones").get_window():
         dx, dy = event.window.get_position()
         x, y = x + dx, y + dy
     closest_timezone = min(timezones, key=lambda tz: math.sqrt(
@@ -162,7 +165,8 @@ IS_WINTER = datetime.now().timetuple().tm_yday not in list(
 
 
 def select_timezone(tz):
-    # Adjust time preview to current timezone (using `date` removes need for pytz package)
+    # Adjust time preview to current timezone (using `date` removes need for
+    # pytz package)
     offset = getoutput('TZ={} date +%z'.format(tz.name))
     tzadj = ADJUST_HOURS_MINUTES.search(offset).groups()
     global adjust_time
@@ -201,4 +205,5 @@ def select_timezone(tz):
 def _get_x_offset():
     now = datetime.utcnow().timetuple()
     # night is centered at UTC noon (12)
-    return - int((now.tm_hour*60 + now.tm_min - 12*60) / (24*60) * MAP_SIZE[0])
+    return - int((now.tm_hour * 60 + now.tm_min - 12 * 60) /
+                 (24 * 60) * MAP_SIZE[0])

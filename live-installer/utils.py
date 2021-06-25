@@ -83,7 +83,7 @@ def is_root():
 
 
 def run(cmd, vital=True):
-    inf("Running: "+cmd)
+    inf("Running: " + cmd)
     if "||" in cmd:
         mode = cmd.split("||")[0].strip()
         cmd = cmd.split("||")[1].strip()
@@ -97,7 +97,8 @@ def run(cmd, vital=True):
     else:
         i = os.system(cmd)
     if vital and i != 0:
-        err("Failed to run command (Exited with {}): {}".format(str(int(i/512)), cmd))
+        err("Failed to run command (Exited with {}): {}".format(
+            str(int(i / 512)), cmd))
     return i
 
 

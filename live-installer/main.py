@@ -44,7 +44,7 @@ if __name__ == "__main__":
         from frontend.tui_interface import InstallerWindow
         term = InstallerWindow()
     elif "--version" in sys.argv:
-        sys.stdout.write(VERSION+"\n")
+        sys.stdout.write(VERSION + "\n")
         exit(0)
     else:
         from frontend.gtk_interface import InstallerWindow
