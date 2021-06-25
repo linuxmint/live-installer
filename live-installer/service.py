@@ -32,7 +32,7 @@ if config.get("enable_live", True) and (0 != os.system("which live-config &>/dev
     if config.get("live_user", "user"):
         os.system("useradd -m \"{}\" -s \"{}\"".format(config.get("live_user",
                                                                   "user"), config.get("using_shell", "/bin/bash")))
-        if len(config.get("live_password", ""))>0:
+        if len(config.get("live_password", "")) > 0:
             if os.system("which chpasswd &>/dev/null") == 0:
                 fp = open("/tmp/.passwd", "w")
                 fp.write("{}:{}\n".format(
@@ -44,7 +44,7 @@ if config.get("enable_live", True) and (0 != os.system("which live-config &>/dev
                     config.get("live_password", "live"), config.get("live_user", "user")))
             for i in config.get("additional_user_groups", (["audio", "video", "netdev"])):
                 os.system("usermod -aG \"{}\" \"{}\"".format(i,
-                                                        config.get("live_user", "user")))
+                                                             config.get("live_user", "user")))
         else:
             os.system("passwd -d {}".format(config.get("live_user", "user")))
 

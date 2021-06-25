@@ -51,7 +51,8 @@ class InstallerEngine:
             self.our_total = 1
             self.our_current = 1
         if self.progresshook:
-            self.progresshook(self.our_current, self.our_total, pulse, done, message)
+            self.progresshook(self.our_current,
+                              self.our_total, pulse, done, message)
 
     def start_installation(self):
 
@@ -93,12 +94,12 @@ class InstallerEngine:
             "df --inodes /{src} | awk 'END{{ print $3 }}'".format(src=SOURCE.strip('/'))))
         log(" --> Copying {} files".format(self.our_total))
 
-        if config.get("netinstall",False):
+        if config.get("netinstall", False):
             self.run_and_update(config.package_manager("create_rootfs"))
             pkgs = open("branding/netinstall_packages.txt").read().split("\n")
 
         else:
-            if config.get("use_rsync",True) and 0 == os.system("which rsync &>/dev/null"):
+            if config.get("use_rsync", True) and 0 == os.system("which rsync &>/dev/null"):
                 EXCLUDE_DIRS = "dev/* proc/* sys/* tmp/* run/* mnt/* media/* lost+found source target".split()
 
                 # Add optional entries to EXCLUDE_DIRS
@@ -108,37 +109,39 @@ class InstallerEngine:
                 rsync_filter = ' '.join(
                     '--exclude=' + SOURCE + d for d in EXCLUDE_DIRS)
                 rsync = subprocess.Popen("rsync --verbose --archive --no-D --acls "
-                                     "--hard-links --xattrs {rsync_filter} "
-                                     "{src}* {dst}".format(src=SOURCE,
-                                                           dst=DEST, rsync_filter=rsync_filter),
-                                     shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                                         "--hard-links --xattrs {rsync_filter} "
+                                         "{src}* {dst}".format(src=SOURCE,
+                                                               dst=DEST, rsync_filter=rsync_filter),
+                                         shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
                 while rsync.poll() is None:
                     line = str(rsync.stdout.readline().decode(
                         "utf-8").replace("\n", ""))
                     if not line:  # still copying the previous file, just wait
                         time.sleep(0.1)
                     else:
-                        self.our_current = min(self.our_current + 1, self.our_total)
+                        self.our_current = min(
+                            self.our_current + 1, self.our_total)
                         self.update_progress(_("Copying /%s") % line)
                 log(_("rsync exited with return code: %s") % str(rsync.poll()))
-            elif config.get("use_unsquashfs",True)  and 0 == os.system("which unsquashfs &>/dev/null"):
+            elif config.get("use_unsquashfs", True) and 0 == os.system("which unsquashfs &>/dev/null"):
                 pwd = os.getcwd()
                 os.chdir("/target")
-                self.update_progress(_("Extracting rootfs."),pulse=True)
+                self.update_progress(_("Extracting rootfs."), pulse=True)
                 run("unsquashfs /dev/loop0")
                 run("mv /target/squashfs-root/* /target")
                 run("rm -rf /target/squashfs-root")
                 os.chdir(pwd)
             else:
                 cp = subprocess.Popen("cp -prvf {src}* {dst}".format(src=SOURCE, dst=DEST),
-                                     shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                                      shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
                 while cp.poll() is None:
                     line = str(cp.stdout.readline().decode(
                         "utf-8")).split("'")[1]
                     if not line:  # still copying the previous file, just wait
                         time.sleep(0.1)
                     else:
-                        self.our_current = min(self.our_current + 1, self.our_total)
+                        self.our_current = min(
+                            self.our_current + 1, self.our_total)
                         self.update_progress(_("Copying /%s") % line)
         # Custom commands
         self.do_hook_commands("post_rsync_hook")
@@ -160,8 +163,8 @@ class InstallerEngine:
         run("mv /target/etc/resolv.conf /target/etc/resolv.conf.bk")
         run("cp -f /etc/resolv.conf /target/etc/resolv.conf")
 
-        if config.get("netinstall",False):
-            cmd = config.package_manager("install_package",pkgs)
+        if config.get("netinstall", False):
+            cmd = config.package_manager("install_package", pkgs)
             self.run_and_update("chroot /target {}".format(cmd))
 
         kernelversion = subprocess.getoutput("uname -r")
@@ -208,11 +211,12 @@ class InstallerEngine:
         if self.setup.autologin:
             # Auto Login Groups
             for i in config.display_manager["set_autologin"]:
-                run(i.replace("{user}",self.setup.username))
+                run(i.replace("{user}", self.setup.username))
 
         # /etc/fstab, mtab and crypttab
         self.our_current += 1
-        self.update_progress(_("Writing filesystem mount information to /etc/fstab"))
+        self.update_progress(
+            _("Writing filesystem mount information to /etc/fstab"))
         self.write_fstab()
 
     def mount_source(self):
@@ -232,14 +236,14 @@ class InstallerEngine:
             if self.setup.gptonefi:
                 # EFI+LUKS/LVM
                 # sdx1=EFI, sdx2=BOOT, sdx3=ROOT
-                self.auto_efi_partition  = self.setup.disk + partition_prefix + "1"
+                self.auto_efi_partition = self.setup.disk + partition_prefix + "1"
                 self.auto_boot_partition = self.setup.disk + partition_prefix + "2"
                 self.auto_swap_partition = None
                 self.auto_root_partition = self.setup.disk + partition_prefix + "3"
             else:
                 # BIOS+LUKS/LVM
                 # sdx1=BOOT, sdx2=ROOT
-                self.auto_efi_partition  = None
+                self.auto_efi_partition = None
                 self.auto_boot_partition = self.setup.disk + partition_prefix + "1"
                 self.auto_swap_partition = None
                 self.auto_root_partition = self.setup.disk + partition_prefix + "2"
@@ -247,14 +251,14 @@ class InstallerEngine:
             if self.setup.gptonefi:
                 # EFI+LVM
                 # sdx1=EFI, sdx2=ROOT
-                self.auto_efi_partition  = self.setup.disk + partition_prefix + "1"
+                self.auto_efi_partition = self.setup.disk + partition_prefix + "1"
                 self.auto_boot_partition = None
                 self.auto_swap_partition = None
                 self.auto_root_partition = self.setup.disk + partition_prefix + "2"
             else:
                 # BIOS+LVM:
                 # sdx1=ROOT
-                self.auto_efi_partition  = None
+                self.auto_efi_partition = None
                 self.auto_boot_partition = None
                 self.auto_swap_partition = None
                 self.auto_root_partition = self.setup.disk + partition_prefix + "1"
@@ -262,14 +266,14 @@ class InstallerEngine:
             if self.setup.gptonefi:
                 # EFI
                 # sdx1=EFI, sdx2=SWAP, sdx3=ROOT
-                self.auto_efi_partition  = self.setup.disk + partition_prefix + "1"
+                self.auto_efi_partition = self.setup.disk + partition_prefix + "1"
                 self.auto_boot_partition = None
                 self.auto_swap_partition = self.setup.disk + partition_prefix + "2"
                 self.auto_root_partition = self.setup.disk + partition_prefix + "3"
             else:
                 # BIOS:
                 # sdx1=SWAP, sdx2=ROOT
-                self.auto_efi_partition  = None
+                self.auto_efi_partition = None
                 self.auto_boot_partition = None
                 self.auto_swap_partition = self.setup.disk + partition_prefix + "1"
                 self.auto_root_partition = self.setup.disk + partition_prefix + "2"
@@ -328,8 +332,8 @@ class InstallerEngine:
             run("swapon /dev/mapper/lvmlmde-swap")
             self.auto_root_partition = "/dev/mapper/lvmlmde-root"
             self.auto_swap_partition = "/dev/mapper/lvmlmde-swap"
-            
-            #lvm enable for initramfs-systems
+
+            # lvm enable for initramfs-systems
             if "enable_lvm" in config.initramfs:
                 for cmd in config.initramfs["enable_lvm"]:
                     run(cmd)
@@ -354,7 +358,7 @@ class InstallerEngine:
             if(partition.format_as is not None and partition.format_as != ""):
                 # report it. should grab the total count of filesystems to be formatted ..
                 self.update_progress(_("Formatting %(partition)s as %(format)s ...") % {
-                                     'partition': partition.path, 'format': partition.format_as},True)
+                                     'partition': partition.path, 'format': partition.format_as}, True)
 
                 # Format it
                 if partition.format_as == "swap":
@@ -519,7 +523,7 @@ class InstallerEngine:
         hostsfh.write("ff02::3 ip6-allhosts\n")
         # Append hosts file from branding
         if os.path.isfile("./branding/hosts"):
-            f = open("./branding/hosts","r").readlines()
+            f = open("./branding/hosts", "r").readlines()
             for line in f:
                 hostsfh.write(line)
         hostsfh.close()
@@ -658,7 +662,7 @@ class InstallerEngine:
             newconsolefh.close()
 
         # remove pacman
-        self.update_progress(_("Clearing package manager"),True)
+        self.update_progress(_("Clearing package manager"), True)
         log(" --> Clearing package manager")
         log(config.get("remove_packages", ["17g-installer"]))
         run("chroot||yes | {}".format(config.package_manager(
@@ -675,11 +679,12 @@ class InstallerEngine:
         # recreate initramfs (needed in case of skip_mount also, to include things like mdadm/dm-crypt/etc in case its needed to boot a custom install)
         log(" --> Configuring Initramfs")
         self.our_current += 1
-        self.update_progress(_("Generating initramfs"),pulse=True)
+        self.update_progress(_("Generating initramfs"), pulse=True)
 
         for command in config.update_initramfs():
             run("chroot||"+command)
-        self.update_progress(_("Preparing bootloader installation"),pulse=True)
+        self.update_progress(
+            _("Preparing bootloader installation"), pulse=True)
         try:
             grub_prepare_commands = config.distro["grub_prepare"]
             for command in grub_prepare_commands:
@@ -691,7 +696,7 @@ class InstallerEngine:
         log(" --> Configuring Grub")
         self.our_current += 1
         if(self.setup.grub_device is not None):
-            self.update_progress(_("Installing bootloader"),pulse=True)
+            self.update_progress(_("Installing bootloader"), pulse=True)
             log(" --> Running grub-install")
 
             if os.path.exists("/sys/firmware/efi"):
@@ -703,7 +708,7 @@ class InstallerEngine:
 
             # fix not add windows grub entry
             run("chroot||grub-mkconfig -o /boot/grub/grub.cfg")
-            self.update_progress(_("Configuring bootloader"),pulse=True)
+            self.update_progress(_("Configuring bootloader"), pulse=True)
             self.do_configure_grub()
             grub_retries = 0
             while (not self.do_check_grub()):
@@ -739,7 +744,7 @@ class InstallerEngine:
         self.do_unmount("/target")
         self.do_unmount("/source")
 
-        self.update_progress(_("Installation finished"),done=True)
+        self.update_progress(_("Installation finished"), done=True)
         log(" --> All done")
 
     def do_configure_grub(self):
@@ -748,11 +753,11 @@ class InstallerEngine:
             "chroot /target/ /bin/sh -c \"grub-mkconfig -o /boot/grub/grub.cfg\"")
         log("grub_output")
 
-    def do_hook_commands(self,hook=""):
+    def do_hook_commands(self, hook=""):
         log(" --> {} running".format(str(hook)))
         for command in config.get(hook, []):
             cmd = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE,
-                                     stderr=subprocess.STDOUT)
+                                   stderr=subprocess.STDOUT)
             while cmd.poll() is None:
                 line = str(cmd.stdout.readline().decode(
                     "utf-8").replace("\n", ""))
@@ -762,7 +767,7 @@ class InstallerEngine:
                     self.update_progress(line)
 
     def do_check_grub(self):
-        self.update_progress(_("Checking bootloader"),True)
+        self.update_progress(_("Checking bootloader"), True)
         log(" --> Checking Grub configuration")
         if os.path.exists("/target/boot/grub/grub.cfg"):
             return True
@@ -784,8 +789,9 @@ class InstallerEngine:
         ''' Unmount a filesystem '''
         return run("umount -lf %s" % mountpoint)
 
-    def run_and_update(self,cmd):
-        p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    def run_and_update(self, cmd):
+        p = subprocess.Popen(
+            cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         while p.poll() is None:
             line = str(p.stdout.readline().decode("utf-8").replace("\n", ""))
             self.update_progress(line)

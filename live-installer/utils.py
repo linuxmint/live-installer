@@ -123,10 +123,11 @@ def do_run_in_chroot(command=None, vital=False):
     command = str(command).replace('"', "'").strip()
     return os.system("chroot /target/ /bin/sh -c \"%s\"" % command)
 
+
 def set_governor(governor):
-    i=0
-    path="/sys/devices/system/cpu/"
-    node="/cpufreq/scaling_governor"
-    while os.path.exists("{}cpu{}{}".format(path,str(i),node)):
-        os.system("echo {} > {}cpu{}{}".format(governor,path,str(i),node))
-        i+=1
+    i = 0
+    path = "/sys/devices/system/cpu/"
+    node = "/cpufreq/scaling_governor"
+    while os.path.exists("{}cpu{}{}".format(path, str(i), node)):
+        os.system("echo {} > {}cpu{}{}".format(governor, path, str(i), node))
+        i += 1

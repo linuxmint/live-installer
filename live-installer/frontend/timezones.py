@@ -10,7 +10,8 @@ TIMEZONE_RESOURCES = './resources/timezone/'
 
 # pixel center of where equatorial line and 0th meridian cross on our bg map; WARNING: cc.png relies on this exactly!
 MAP_CENTER = (351, 246)
-MAP_SIZE =(752, 384)
+MAP_SIZE = (752, 384)
+
 
 def pixel_position(lat, lon):
     """Transform latlong pair into map pixel coordinates"""
@@ -201,4 +202,3 @@ def _get_x_offset():
     now = datetime.utcnow().timetuple()
     # night is centered at UTC noon (12)
     return - int((now.tm_hour*60 + now.tm_min - 12*60) / (24*60) * MAP_SIZE[0])
-

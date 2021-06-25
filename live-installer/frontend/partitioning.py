@@ -69,23 +69,26 @@ def get_disks():
             log("Could not parse blkid output: %s (%s)" % (line, detail))
     return disks
 
+
 def get_partitions():
     partitions = []
     for disk in get_disks():
-        i=1
-        while os.path.exists("{}{}".format(disk[0],str(i))):
-            partitions.append("{}{}".format(disk[0],str(i)))
-            i+=1
+        i = 1
+        while os.path.exists("{}{}".format(disk[0], str(i))):
+            partitions.append("{}{}".format(disk[0], str(i)))
+            i += 1
     return partitions
+
 
 def find_mbr(part):
     for disk in get_disks():
-        i=1
-        while os.path.exists("{}{}".format(disk[0],str(i))):
-            if part == "{}{}".format(disk[0],str(i)):
+        i = 1
+        while os.path.exists("{}{}".format(disk[0], str(i))):
+            if part == "{}{}".format(disk[0], str(i)):
                 return disk[0]
-            i+=1
+            i += 1
     return ""
+
 
 def build_partitions(_installer):
     global installer
@@ -402,6 +405,7 @@ class PartitionBase(object):
         self.mount_as = ''
         self.type = ''
         self.path = ''
+
 
 class Partition(object):
     format_as = ''

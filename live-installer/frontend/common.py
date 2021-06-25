@@ -34,18 +34,18 @@ def get_country_list():
     ccodes = []
     langlist = ""
     if os.path.isfile("/usr/share/i18n/SUPPORTED"):
-        i18n = open("/usr/share/i18n/SUPPORTED","r").read().split('\n')
+        i18n = open("/usr/share/i18n/SUPPORTED", "r").read().split('\n')
         for line in i18n:
             l = line.split(" ")[0]
             if "." in l:
                 l = l.split(".")[0]
             if l not in langlist and "@" not in l:
-                langlist+=l+"\n"
+                langlist += l+"\n"
     else:
-        langlist = open("./resources/locales","r").read()
+        langlist = open("./resources/locales", "r").read()
 
     if "en_US" not in langlist:
-        langlist+="en_US\n"
+        langlist += "en_US\n"
 
     for locale in langlist.split('\n'):
         if '_' in locale:
@@ -87,7 +87,7 @@ def get_keyboard_layout_list():
 
 
 def get_keyboard_variant_list(model):
-    models = [("",model[0])]
+    models = [("", model[0])]
     for variant in model[2].iterfind('variantList/variant/configItem'):
         var_name = variant.find('name').text
         var_desc = variant.find('description').text

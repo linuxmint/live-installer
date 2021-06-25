@@ -17,12 +17,15 @@ if config.get("gtk_theme", "default") != "default":
 os.system("xsetroot -cursor_name left_ptr")
 os.system("xsetroot -solid black")
 
-VERSION="4.1"
+VERSION = "4.1"
 
-def exceptdebug(e,v,tb):
+
+def exceptdebug(e, v, tb):
     sys.stderr.write("Error: {}\n".format(str(e)))
     sys.stderr.write("Value: {}\n".format(str(v)))
     traceback.print_tb(tb)
+
+
 sys.excapthook = exceptdebug
 
 # main entry

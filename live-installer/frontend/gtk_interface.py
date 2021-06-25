@@ -33,14 +33,14 @@ class InstallerWindow:
     def start(self):
         Gtk.main()
 
-    def __init__(self,fullscreen=False):
+    def __init__(self, fullscreen=False):
 
         # build the setup object (where we put all our choices) and the installer
         self.setup = Setup()
         self.installer = InstallerEngine(self.setup)
 
         self.resource_dir = './resources/'
-        fullscreen = fullscreen or config.get("fullscreen",False)
+        fullscreen = fullscreen or config.get("fullscreen", False)
         if fullscreen or config.get("set_alternative_ui", False):
             glade_file = os.path.join(self.resource_dir, 'interface2.ui')
         else:
@@ -52,7 +52,7 @@ class InstallerWindow:
         cssProvider.load_from_path('./resources/style.css')
         styleContext = Gtk.StyleContext()
         styleContext.add_provider_for_screen(
-        screen, cssProvider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
+            screen, cssProvider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
 
         # should be set early
         self.done = False
@@ -261,14 +261,14 @@ class InstallerWindow:
                 self.builder.get_object("box_fill").hide()
         if not config.get("autologin_enabled", True):
             self.builder.get_object("autologin_box").hide()
-            
+
         # styling
         self.assign_entry("entry_name")
         self.assign_entry("entry_username")
         self.assign_entry("entry_hostname")
         self.assign_entry("entry_password")
         self.assign_entry("entry_confirm")
-        
+
         self.assign_hostname(self.builder.get_object("entry_hostname"))
 
         self.builder.get_object("box_replace_win").hide()
@@ -279,22 +279,20 @@ class InstallerWindow:
                 log("Searching: {}".format(disk_path))
                 if 0 == os.system("mount -o ro {} /tmp/winroot".format(disk_path)):
                     if os.path.exists("/tmp/winroot/Windows/System32/ntoskrnl.exe"):
-                        self.setup.winroot=disk_path
+                        self.setup.winroot = disk_path
                         log("Found windows rootfs: {}".format(disk_path))
                     elif os.path.exists("/tmp/winroot/EFI/Microsoft/Boot/bootmgfw.efi"):
-                        self.setup.winefi=disk_path
+                        self.setup.winefi = disk_path
                         log("Found windows efifs: {}".format(disk_path))
                 os.system("umount -lf /tmp/winroot")
             if self.setup.winroot and (not self.setup.gptonefi or self.setup.winefi):
-                self.builder.get_object("box_replace_win").show_all()                
-        
+                self.builder.get_object("box_replace_win").show_all()
+
         self.builder.get_object("label_copyright").set_label(
             config.get("copyright", "17g Developer Team"))
 
-        if config.get("hide_keyboard_model",False):
+        if config.get("hide_keyboard_model", False):
             self.builder.get_object("hbox10").hide()
-
-
 
     def fullscreen(self):
         self.window.fullscreen()
@@ -438,10 +436,9 @@ class InstallerWindow:
         except:
             pass
         if self.setup.real_name == "":
-            self.assign_entry("entry_name",False)
+            self.assign_entry("entry_name", False)
         else:
-            self.assign_entry("entry_name",True)
-
+            self.assign_entry("entry_name", True)
 
     def assign_username(self, entry):
         self.setup.username = entry.props.text
@@ -451,9 +448,9 @@ class InstallerWindow:
            or not (u.isascii() and u.isalnum() and u.islower()):
             errorFound = True
         if errorFound or self.setup.username == "":
-            self.assign_entry("entry_username",False)
+            self.assign_entry("entry_username", False)
         else:
-            self.assign_entry("entry_username",True)
+            self.assign_entry("entry_username", True)
 
     def assign_hostname(self, entry):
         self.setup.hostname = entry.props.text
@@ -466,9 +463,9 @@ class InstallerWindow:
                 errorFound = True
                 break
         if errorFound or self.setup.hostname == "":
-            self.assign_entry("entry_hostname",False)
+            self.assign_entry("entry_hostname", False)
         else:
-            self.assign_entry("entry_hostname",True)
+            self.assign_entry("entry_hostname", True)
 
     def assign_password(self, widget):
         errorFound = False
@@ -484,15 +481,15 @@ class InstallerWindow:
         if self.setup.password1.isnumeric() and not config.get("allow_numeric_password", True):
             errorFound = True
         if errorFound:
-            self.assign_entry("entry_password",False)
+            self.assign_entry("entry_password", False)
         else:
-            self.assign_entry("entry_password",True)
+            self.assign_entry("entry_password", True)
 
         # Check the password confirmation
         if(self.setup.password1 == "" or self.setup.password2 == "" or self.setup.password1 != self.setup.password2):
-            self.assign_entry("entry_confirm",False)
+            self.assign_entry("entry_confirm", False)
         else:
-            self.assign_entry("entry_confirm",True)
+            self.assign_entry("entry_confirm", True)
 
     def assign_type_options(self, widget, data=None):
         self.setup.automated = self.builder.get_object(
@@ -567,21 +564,26 @@ class InstallerWindow:
             return False
         else:
             return True
-    def assign_entry(self,name="",value=False):
+
+    def assign_entry(self, name="", value=False):
         if value:
-            self.builder.get_object(name).get_style_context().add_class("entry_enabled")
-            self.builder.get_object(name).get_style_context().remove_class("entry_disabled")
+            self.builder.get_object(
+                name).get_style_context().add_class("entry_enabled")
+            self.builder.get_object(
+                name).get_style_context().remove_class("entry_disabled")
         else:
-            self.builder.get_object(name).get_style_context().add_class("entry_disabled")
-            self.builder.get_object(name).get_style_context().remove_class("entry_enabled")
+            self.builder.get_object(
+                name).get_style_context().add_class("entry_disabled")
+            self.builder.get_object(
+                name).get_style_context().remove_class("entry_enabled")
 
     def build_lang_list(self):
 
         self.cur_timezone = config.get('default_timezone', "America/New_York")
 
-        self.cur_country_code = config.get('default_locale',"auto")
+        self.cur_country_code = config.get('default_locale', "auto")
         if self.cur_country_code == "auto":
-            self.cur_country_code = "en_US" # fallback language
+            self.cur_country_code = "en_US"  # fallback language
             lang = subprocess.getoutput("echo $LANG")
             lc_all = subprocess.getoutput("echo $LC_ALL")
             if lc_all == "":
@@ -633,9 +635,8 @@ class InstallerWindow:
             path = model.get_path(set_iter)
             treeview.set_cursor(path)
             treeview.scroll_to_cell(path)
-        if config.get("allow_auto_novariant",True):
+        if config.get("allow_auto_novariant", True):
             self.setup.keyboard_variant = ""
-
 
     def build_kb_lists(self):
         ''' Do some xml kung-fu and load the keyboard stuffs '''
@@ -711,15 +712,14 @@ class InstallerWindow:
             if itervar and model:
                 self.setup.language = model.get_value(itervar, 3)
                 self.set_language(self.setup.language)
-                
 
-    def set_language(self,language):
+    def set_language(self, language):
         gettext.translation('live-installer', "/usr/share/locale",
                             languages=[language, language.split('_')[
                                 0]],
                             fallback=True).install()  # Try e.g. zh_CN, zh, or fallback to hardcoded English
-        os.environ["LANG"]="{}.UTF-8".format(language)
-        os.environ["LANGUAGE"]="{}.UTF-8".format(language)
+        os.environ["LANG"] = "{}.UTF-8".format(language)
+        os.environ["LANGUAGE"] = "{}.UTF-8".format(language)
         try:
             self.i18n()
         except:
@@ -775,13 +775,13 @@ class InstallerWindow:
         model = self.layout_variants[self.setup.keyboard_layout]
         self.builder.get_object("treeview_variants").set_model(model)
         # ... and select novariant (if enabled in config)
-        if not config.get("allow_auto_novariant",True):
+        if not config.get("allow_auto_novariant", True):
             return
-        k=0
+        k = 0
         for i in model:
-            if str(i[1])=="":
+            if str(i[1]) == "":
                 self.builder.get_object("treeview_variants").set_cursor(k)
-            k+=1
+            k += 1
 
     def assign_keyboard_variant(self, treeview):
         ''' Called whenever someone updates the keyboard layout or variant '''
@@ -1040,18 +1040,19 @@ class InstallerWindow:
                     self.activate_page(self.PAGE_OVERVIEW)
         elif self.setup.replace_windows:
             if self.setup.replace_windows:
-                rootfs=partitioning.PartitionBase()
-                rootfs.path=self.setup.winroot
-                rootfs.format_as='ext4'
-                rootfs.mount_as='/'
+                rootfs = partitioning.PartitionBase()
+                rootfs.path = self.setup.winroot
+                rootfs.format_as = 'ext4'
+                rootfs.mount_as = '/'
                 self.setup.partitions.append(rootfs)
                 if self.setup.gptonefi:
-                    efifs=partitioning.PartitionBase()
-                    efifs.path=self.setup.winefi
-                    efifs.format_as='fat32'
-                    efifs.mount_as='/boot/efi'
+                    efifs = partitioning.PartitionBase()
+                    efifs.path = self.setup.winefi
+                    efifs.format_as = 'fat32'
+                    efifs.mount_as = '/boot/efi'
                     self.setup.partitions.append(efifs)
-                self.setup.grub_device=partitioning.find_mbr(self.setup.winroot)
+                self.setup.grub_device = partitioning.find_mbr(
+                    self.setup.winroot)
             self.activate_page(self.PAGE_OVERVIEW)
             self.builder.get_object("button_next").set_label(_("Install"))
         else:
@@ -1270,7 +1271,8 @@ class InstallerWindow:
             self.builder.get_object("progressbar").set_fraction(1)
             self.builder.get_object(
                 "label_install_progress").set_label(str(message))
-            self.builder.get_object("label_install_percent").set_label("100.0%")
+            self.builder.get_object(
+                "label_install_percent").set_label("100.0%")
             return
         self.should_pulse = False
         _total = float(total)

@@ -15,7 +15,7 @@ class welcome:
         self.connect_signal()
         self.i18n()
         self.window.set_position(Gtk.WindowPosition.CENTER)
-        self.window.connect("destroy",Gtk.main_quit)
+        self.window.connect("destroy", Gtk.main_quit)
         self.window.show_all()
 
     def connect_signal(self):
@@ -32,10 +32,12 @@ class welcome:
             _("Try %s") % config.get("distro_title", "17g"))
         self.builder.get_object("installabel").set_text(
             _("Install to Hard Drive"))
-        self.builder.get_object("msglabel1").set_text(_("You are currently running %s from live media.") % config.get("distro_title", "17g"))
-        self.builder.get_object("msglabel2").set_text(_("You can install %s now, or chose \"Install to Hard Drive\" in the Appication Menu later.") % config.get("distro_title", "17g"))
+        self.builder.get_object("msglabel1").set_text(
+            _("You are currently running %s from live media.") % config.get("distro_title", "17g"))
+        self.builder.get_object("msglabel2").set_text(
+            _("You can install %s now, or chose \"Install to Hard Drive\" in the Appication Menu later.") % config.get("distro_title", "17g"))
         self.builder.get_object("title").set_text(_("Welcome to %s") %
-            config.get("distro_title", "17g"))
+                                                  config.get("distro_title", "17g"))
         self.builder.get_object("copyright").set_text(
             config.get("copyright", "17g Developer Team"))
 
