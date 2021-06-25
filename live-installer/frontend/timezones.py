@@ -175,7 +175,7 @@ def select_timezone(tz):
 
     installer.setup.timezone = tz.name
     cont, separator, tz_str = tz.name.partition("/")
-    del(seperator)
+    del(separator)
 
     installer.builder.get_object("cont_button").set_label(cont)
     installer.builder.get_object(
