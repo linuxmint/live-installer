@@ -101,7 +101,7 @@
             <property name="margin-end">5</property>
             <property name="border-width">0</property>
             <property name="transition-duration">250</property>
-            <property name="transition-type">over-left-right</property>
+            <property name="transition-type">slide-left-right</property>
             <child>
               <object class="GtkBox" id="vbox_welcome">
                 <property name="visible">True</property>
