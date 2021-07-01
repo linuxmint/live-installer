@@ -28,7 +28,7 @@
         <property name="can-focus">False</property>
         <property name="orientation">vertical</property>
         <child>
-          <object class="GtkNotebook" id="notebook1">
+          <object class="GtkStack" id="notebook1">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <property name="margin-start">5</property>
@@ -36,8 +36,8 @@
             <property name="margin-top">5</property>
             <property name="margin-bottom">5</property>
             <property name="border-width">0</property>
-            <property name="show-tabs">False</property>
-            <property name="show-border">False</property>
+            <property name="transition-duration">250</property>
+            <property name="transition-type">over-left-right</property>
             <child>
               <object class="GtkBox" id="vbox_welcome">
                 <property name="visible">True</property>
@@ -91,9 +91,9 @@
                   </packing>
                 </child>
               </object>
-            </child>
-            <child type="tab">
-              <placeholder/>
+              <packing>
+                <property name="name">0</property>
+              </packing>
             </child>
             <child>
               <object class="GtkBox" id="vbox_language">
@@ -125,11 +125,9 @@
                 </child>
               </object>
               <packing>
+                <property name="name">1</property>
                 <property name="position">1</property>
               </packing>
-            </child>
-            <child type="tab">
-              <placeholder/>
             </child>
             <child>
               <object class="GtkBox" id="vbox_timezones">
@@ -268,11 +266,9 @@
                 </child>
               </object>
               <packing>
+                <property name="name">2</property>
                 <property name="position">2</property>
               </packing>
-            </child>
-            <child type="tab">
-              <placeholder/>
             </child>
             <child>
               <object class="GtkBox" id="vbox_keyboard">
@@ -401,11 +397,9 @@
                 </child>
               </object>
               <packing>
+                <property name="name">3</property>
                 <property name="position">3</property>
               </packing>
-            </child>
-            <child type="tab">
-              <placeholder/>
             </child>
             <child>
               <object class="GtkBox" id="vbox_user">
@@ -659,11 +653,9 @@
                 </child>
               </object>
               <packing>
+                <property name="name">4</property>
                 <property name="position">4</property>
               </packing>
-            </child>
-            <child type="tab">
-              <placeholder/>
             </child>
             <child>
               <object class="GtkBox" id="vbox_type">
@@ -1120,11 +1112,9 @@
                 </child>
               </object>
               <packing>
+                <property name="name">5</property>
                 <property name="position">5</property>
               </packing>
-            </child>
-            <child type="tab">
-              <placeholder/>
             </child>
             <child>
               <object class="GtkBox" id="vbox_partitions">
@@ -1277,17 +1267,9 @@
                 </child>
               </object>
               <packing>
+                <property name="name">6</property>
                 <property name="position">6</property>
               </packing>
-            </child>
-            <child type="tab">
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child type="tab">
-              <placeholder/>
             </child>
             <child>
               <object class="GtkBox" id="vbox_overview">
@@ -1320,23 +1302,9 @@
                 </child>
               </object>
               <packing>
-                <property name="position">8</property>
+                <property name="name">7</property>
+                <property name="position">7</property>
               </packing>
-            </child>
-            <child type="tab">
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child type="tab">
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child type="tab">
-              <placeholder/>
             </child>
             <child>
               <object class="GtkBox" id="vbox_install">
@@ -1430,11 +1398,9 @@
                 </child>
               </object>
               <packing>
-                <property name="position">11</property>
+                <property name="name">8</property>
+                <property name="position">8</property>
               </packing>
-            </child>
-            <child type="tab">
-              <placeholder/>
             </child>
           </object>
           <packing>

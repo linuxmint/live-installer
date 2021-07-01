@@ -1005,6 +1005,8 @@ class InstallerWindow:
             self.do_install()
         if errorFound:
             return
+        if nex == None:
+            nex=0
         # progress images
         for i in range(9):
             img = self.builder.get_object("progress_%d" % i)
@@ -1021,7 +1023,7 @@ class InstallerWindow:
             self.wizard_pages[nex].icon, Gtk.IconSize.LARGE_TOOLBAR)
         self.builder.get_object("help_question").set_text(
             self.wizard_pages[nex].question)
-        self.builder.get_object("notebook1").set_current_page(nex)
+        self.builder.get_object("notebook1").set_visible_child_name(str(nex))
 
     def activate_page_type(self):
         self.show_overview()
@@ -1078,7 +1080,7 @@ class InstallerWindow:
 
     def wizard_cb(self, widget, goback, data=None):
         ''' wizard buttons '''
-        sel = self.builder.get_object("notebook1").get_current_page()
+        sel = int(self.builder.get_object("notebook1").get_visible_child_name())
         self.builder.get_object("button_back").set_sensitive(True)
         nex = None
         # check each page for errors
