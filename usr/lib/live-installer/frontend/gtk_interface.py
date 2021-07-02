@@ -731,7 +731,7 @@ class InstallerWindow:
         else:
             self.builder.get_object("label_non_latin").hide()
 
-        command = "setxkbmap -layout '%s' -variant '%s' -option grp:ctrls_toggle" % (self.setup.keyboard_layout, self.setup.keyboard_variant)
+        command = "setxkbmap -layout '%s' -variant '%s' -option grp:win_space_toggle" % (self.setup.keyboard_layout, self.setup.keyboard_variant)
         if not __debug__:
             os.system(command)
             self.setup.print_setup()

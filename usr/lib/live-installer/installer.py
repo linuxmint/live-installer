@@ -595,7 +595,7 @@ class InstallerEngine:
             elif(line.startswith("XKBVARIANT=") and self.setup.keyboard_variant is not None and self.setup.keyboard_variant != ""):
                 newconsolefh.write("XKBVARIANT=\"%s\"\n" % self.setup.keyboard_variant)
             elif(line.startswith("XKBOPTIONS=")):
-                newconsolefh.write("XKBOPTIONS=grp:ctrls_toggle")
+                newconsolefh.write("XKBOPTIONS=grp:win_space_toggle")
             else:
                 newconsolefh.write("%s\n" % line)
         consolefh.close()
