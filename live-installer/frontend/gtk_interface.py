@@ -651,6 +651,8 @@ class InstallerWindow:
         # Determine the layouts in use
         (keyboard_geom,
          self.setup.keyboard_layout) = subprocess.getoutput("setxkbmap -query | awk '/^(model|layout)/{print $2}'").split()
+         if "," in self.setup.keyboard_layout:
+             self.setup.keyboard_layout = self.setup.keyboard_layout.split(",")[0]
         # Build the models
         from collections import defaultdict
 
