@@ -1320,8 +1320,9 @@ class InstallerWindow:
 
     def slideshow(self):
         self.images = os.listdir("branding/slides")
-        self.slides = Gtk.Notebook()
-        self.slides.set_show_tabs(False)
+        self.slides = Gtk.Stack()
+        self.slides.set_transition_type(Gtk.StackTransitionType.SLIDE_LEFT_RIGHT)
+        self.slides.set_transition_duration(250)
         self.builder.get_object("slidebox").add(self.slides)
         self.max_slide_page = len(self.images) - 1
         for i in self.images:
@@ -1329,12 +1330,13 @@ class InstallerWindow:
             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
                 "branding/slides/" + i, 752, 423, False)
             im.set_from_pixbuf(pixbuf)
-            self.slides.append_page(im, Gtk.Label(label="31"))
+            page_num=self.images.index(i)
+            self.slides.add_titled(im, str(page_num),str(page_num))
         self.cur_slide_pos = 0
         GLib.timeout_add(100, self.set_slide_page)
 
     def set_slide_page(self):
-        self.slides.set_current_page(self.cur_slide_pos)
+        self.slides.set_visible_child_name(str(self.cur_slide_pos))
         self.cur_slide_pos = self.cur_slide_pos + 1
         if(self.cur_slide_pos > self.max_slide_page):
             self.cur_slide_pos = 0
