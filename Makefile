@@ -37,6 +37,14 @@ install:
 	install data/live-installer.sh $(DESTDIR)/usr/bin/live-installer
 	install data/org.17g.installer.policy $(DESTDIR)/usr/share/polkit-1/actions/
 
+install-systemd:
+	mkdir -p $(DESTDIR)/lib/systemd/system/
+	install 17g.service $(DESTDIR)/lib/systemd/system/
+
+install-openrc:
+	mkdir -p $(DESTDIR)/lib/init.d/
+	install 17g.service $(DESTDIR)/$(DESTDIR)/lib/init.d/17g
+
 uninstall:
 	rm -rf $(DESTDIR)/usr/lib/live-installer
 	rm -f $(DESTDIR)/usr/bin/live-installer
