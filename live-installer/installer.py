@@ -588,7 +588,7 @@ class InstallerEngine:
             newconsolefh.write('Option "XkbVariant" "{}"\n'.format(
                 self.setup.keyboard_variant))
             if "," in self.setup.keyboard_layout:
-                newconsolefh.write('Option "XkbOptions" "grp:ctrls_toggle"\n')
+                newconsolefh.write('Option "XkbOptions" "grp:win_space_toggle"\n')
             newconsolefh.write('EndSection\n')
             newconsolefh.close()
 
@@ -653,7 +653,7 @@ class InstallerEngine:
                     newconsolefh.write("XKBVARIANT=\"%s\"\n" %
                                        self.setup.keyboard_variant)
                 elif(line.startswith("XKBOPTIONS=")):
-                    newconsolefh.write("XKBOPTIONS=grp:ctrls_toggle")
+                    newconsolefh.write("XKBOPTIONS=grp:win_space_toggle")
                 else:
                     newconsolefh.write("%s\n" % line)
             consolefh.close()
