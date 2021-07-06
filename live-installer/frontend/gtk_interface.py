@@ -1003,6 +1003,7 @@ class InstallerWindow:
             self.builder.get_object("button_next").set_sensitive(False)
             self.builder.get_object("button_back").set_sensitive(False)
             self.builder.get_object("button_quit").set_sensitive(False)
+            self.builder.get_object("dot_box").hide()
             self.window.resize(0, 0)
             self.do_install()
         if errorFound:

@@ -1438,7 +1438,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkBox" id="dot_box">
+              <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="halign">center</property>
