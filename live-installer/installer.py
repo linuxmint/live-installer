@@ -98,7 +98,7 @@ class InstallerEngine:
         log(" --> Copying {} files".format(self.our_total))
 
         if config.get("netinstall", False):
-            self.self.run_and_update(config.package_manager("create_rootfs"))
+            self.run_and_update(config.package_manager("create_rootfs"))
             pkgs = open("branding/netinstall_packages.txt").read().split("\n")
 
         else:
