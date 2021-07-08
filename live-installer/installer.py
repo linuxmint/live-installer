@@ -812,7 +812,7 @@ class InstallerEngine:
         i = run(cmd,vital)
         if 0 != i and not vital:
             self.error_message(err("Failed to run command (Exited with {}): {}".format(
-            str(int(i / 512)), cmd))
+            str(int(i / 512)), cmd)))
 
 # Represents the choices made by the user
 
