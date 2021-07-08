@@ -809,10 +809,10 @@ class InstallerEngine:
             self.update_progress(line)
             
     def run(self,cmd,vital=True):
-        if 0 != run(cmd,vital):
-            self.error_message(_("Failed to run %s") % cmd)
-        else:
-            inf("Failed to run non-vital %s" % cmd )
+        i = run(cmd,vital)
+        if 0 != i and not vital:
+            self.error_message(err("Failed to run command (Exited with {}): {}".format(
+            str(int(i / 512)), cmd))
 
 # Represents the choices made by the user
 
