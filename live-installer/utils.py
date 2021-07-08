@@ -122,7 +122,7 @@ def getoutput(command):
 
 def do_run_in_chroot(command=None, vital=False):
     command = str(command).replace('"', "'").strip()
-    return os.system("chroot /target/ /bin/sh -c \"%s\"" % command)
+    return os.system("chroot /target/ /bin/bash -c \"%s\"" % command)
 
 
 def set_governor(governor):
