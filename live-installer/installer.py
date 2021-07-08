@@ -68,13 +68,13 @@ class InstallerEngine:
         # Custom commands
         self.do_hook_commands("pre_install_hook")
 
-        self.run("umount -lf /source", False)
-        self.run("umount -lf /target/dev/shm", False)
-        self.run("umount -lf /target/dev/pts", False)
-        self.run("umount -lf /target/dev/", False)
-        self.run("umount -lf /target/sys/", False)
-        self.run("umount -lf /target/proc/", False)
-        self.run("umount -lf /target/run/", False)
+        self.do_unmount("/source")
+        self.do_unmount("/target/dev/shm")
+        self.do_unmount("/target/dev/pts")
+        self.do_unmount("/target/dev/")
+        self.do_unmount("/target/sys/")
+        self.do_unmount("/target/proc/")
+        self.do_unmount("/target/run/")
 
         self.mount_source()
 
@@ -736,18 +736,18 @@ class InstallerEngine:
 
         # now unmount it
         log(" --> Unmounting partitions")
-        self.run("umount -lf /target/dev/shm", False)
-        self.run("umount -lf /target/dev/pts", False)
+        self.do_unmount("/target/dev/shm")
+        self.do_unmount("/target/dev/pts")
         if os.path.exists("/sys/firmware/efi"):
-            self.run("umount -lf /target/sys/firmware/efi/", False)
+            self.do_unmount("/target/sys/firmware/efi/")
         if self.setup.gptonefi:
-            self.run("umount -lf /target/boot/efi", False)
-            self.run("umount -lf /target/media/cdrom", False)
-        self.run("umount -lf /target/boot", False)
-        self.run("umount -lf /target/dev/", False)
-        self.run("umount -lf /target/sys/", False)
-        self.run("umount -lf /target/proc/", False)
-        self.run("umount -lf /target/run/", False)
+            self.do_unmount("/target/boot/efi")
+            self.do_unmount("/target/media/cdrom")
+        self.do_unmount("/target/boot")
+        self.do_unmount("/target/dev/")
+        self.do_unmount("/target/sys/")
+        self.do_unmount("/target/proc/")
+        self.do_unmount("/target/run/")
         self.run("rm -f /target/etc/resolv.conf")
         self.run("mv /target/etc/resolv.conf.bk /target/etc/resolv.conf")
         for partition in self.setup.partitions:
@@ -799,7 +799,7 @@ class InstallerEngine:
 
     def do_unmount(self, mountpoint):
         ''' Unmount a filesystem '''
-        return self.run("umount -lf %s" % mountpoint,False)
+        os.system("umount -lf %s" % mountpoint)
 
     def run_and_update(self, cmd):
         p = subprocess.Popen(
