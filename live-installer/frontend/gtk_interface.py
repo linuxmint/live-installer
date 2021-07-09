@@ -1226,6 +1226,7 @@ class InstallerWindow:
 
         # do we dare? ..
         self.critical_error_happened = False
+        self.critical_error_message = ""
 
         # Start installing
         do_try_finish_install = True

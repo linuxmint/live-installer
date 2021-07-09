@@ -164,7 +164,7 @@ class InstallerEngine:
         self.run("mount --bind /run/ /target/run/")
         if os.path.exists("/sys/firmware/efi"):
             self.run("mount --bind /sys/firmware/efi/efivars /target/sys/firmware/efi/efivars")
-        self.run("rm -fr /target/etc/resolv.conf",False)
+        self.run("rm -rf /target/etc/resolv.conf",False)
         self.run("cp -f /etc/resolv.conf /target/etc/resolv.conf",False)
 
         if config.get("netinstall", False):
@@ -754,8 +754,6 @@ class InstallerEngine:
         self.do_unmount("/target/sys/")
         self.do_unmount("/target/proc/")
         self.do_unmount("/target/run/")
-        self.run("rm -f /target/etc/resolv.conf")
-        self.run("mv /target/etc/resolv.conf.bk /target/etc/resolv.conf")
         for partition in self.setup.partitions:
             if(partition.mount_as is not None and partition.mount_as != "" and partition.mount_as != "/" and partition.mount_as != "swap"):
                 self.do_unmount("/target" + partition.mount_as)
