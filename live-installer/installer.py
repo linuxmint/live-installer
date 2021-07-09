@@ -197,7 +197,15 @@ class InstallerEngine:
                                 "audio", "video", "netdev"]):
             self.run("chroot||usermod -aG {} {}".format(group, self.setup.username), False)
 
-        if (self.run("which chpasswd &>/dev/null") ==
+        if (self.run("which usermod &>/dev/null") == 0)
+                and config.get("use_usermod", True):
+            fp = open("/target/tmp/.passwd", "w")
+            fp.write(self.setup.password1)
+            fp.close()
+            self.run("chroot||usermod -p $(openssl passwd -in /tmp/.passwd) {1}".format(self.setup.username))
+            if config.get("set_root_password", True):
+                self.run("chroot||usermod -p $(openssl passwd -in /tmp/.passwd) root")
+        elif (self.run("which chpasswd &>/dev/null") ==
                 0) and config.get("use_chpasswd", True):
             fp = open("/target/tmp/.passwd", "w")
             fp.write(self.setup.username + ":" + self.setup.password1 + "\n")
@@ -207,11 +215,12 @@ class InstallerEngine:
             self.run("chroot||cat /tmp/.passwd | chpasswd")
             self.run("chroot||rm -f /tmp/.passwd")
         else:
-            self.run("chroot||echo -e \"{0}\\n{0}\\n\" | passwd {1}".format(
-                self.setup.password1, self.setup.username))
+            fp = open("/target/tmp/.passwd", "w")
+            fp.write(self.setup.password1+"\n"+self.setup.password2+"\n")
+            fp.close()
+            self.run("chroot||cat /tmp/.passwd | passwd {1}".format(self.setup.username))
             if config.get("set_root_password", True):
-                self.run("chroot||echo -e \"{0}\\n{0}\\n\" | passwd".format(
-                    self.setup.password1))
+                self.run("chroot||cat /tmp/.passwd | passwd")
 
         self.our_current += 1
         # Set autologin for user if they so elected
