@@ -8,7 +8,7 @@ build: buildmo
 	chmod +x -R build/lib/
 
 pot:
-	xgettext -o power-manager.pot --from-code="utf-8" live-installer/resources/*.ui `find live-installer -type f -iname "*.py"`
+	xgettext -o live-installer.pot --from-code="utf-8" live-installer/resources/*.ui `find live-installer -type f -iname "*.py"`
 	for file in `ls po/*.po`; do \
             msgmerge $$file live-installer.pot -o $$file.new ; \
 	    rm -f $$file ; \
