@@ -202,7 +202,7 @@ class InstallerEngine:
             fp = open("/target/tmp/.passwd", "w")
             fp.write(self.setup.password1)
             fp.close()
-            self.run("chroot||usermod -p $(openssl passwd -in /tmp/.passwd) {1}".format(self.setup.username))
+            self.run("chroot||usermod -p $(openssl passwd -in /tmp/.passwd) {0}".format(self.setup.username))
             if config.get("set_root_password", True):
                 self.run("chroot||usermod -p $(openssl passwd -in /tmp/.passwd) root")
         elif (self.run("which chpasswd &>/dev/null") ==
@@ -218,7 +218,7 @@ class InstallerEngine:
             fp = open("/target/tmp/.passwd", "w")
             fp.write(self.setup.password1+"\n"+self.setup.password2+"\n")
             fp.close()
-            self.run("chroot||cat /tmp/.passwd | passwd {1}".format(self.setup.username))
+            self.run("chroot||cat /tmp/.passwd | passwd {0}".format(self.setup.username))
             if config.get("set_root_password", True):
                 self.run("chroot||cat /tmp/.passwd | passwd")
 
