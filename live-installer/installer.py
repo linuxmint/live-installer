@@ -5,7 +5,7 @@ import gettext
 import parted
 import frontend.partitioning as partitioning
 import config
-from utils import run, set_governor
+from utils import run, set_governor, is_cmd
 from logger import log, err, inf
 
 gettext.install("live-installer", "/usr/share/locale")
@@ -102,8 +102,7 @@ class InstallerEngine:
             pkgs = open("branding/netinstall_packages.txt").read().split("\n")
 
         else:
-            if config.get("use_rsync", True) and 0 == os.system(
-                    "which rsync &>/dev/null"):
+            if config.get("use_rsync", True) and is_cmd("rsync"):
                 EXCLUDE_DIRS = "dev/* proc/* sys/* tmp/* run/* mnt/* media/* lost+found source target".split()
 
                 # Add optional entries to EXCLUDE_DIRS
@@ -128,7 +127,7 @@ class InstallerEngine:
                             self.our_current + 1, self.our_total)
                         self.update_progress(_("Copying /%s") % line)
                 log(_("rsync exited with return code: %s") % str(rsync.poll()))
-            elif config.get("use_unsquashfs", True) and 0 == os.system("which unsquashfs &>/dev/null"):
+            elif config.get("use_unsquashfs", True) and is_cmd("unsquashfs"):
                 pwd = os.getcwd()
                 os.chdir("/target")
                 self.update_progress(_("Extracting rootfs."), pulse=True)
@@ -197,16 +196,14 @@ class InstallerEngine:
                                 "audio", "video", "netdev"]):
             self.run("chroot||usermod -aG {} {}".format(group, self.setup.username), False)
 
-        if (self.run("which openssl &>/dev/null") == 0) \
-                and config.get("use_usermod", True):
+        if is_cmd("openssl") and config.get("use_usermod", True):
             fp = open("/target/tmp/.passwd", "w")
             fp.write(self.setup.password1)
             fp.close()
             self.run("chroot||usermod -p $(openssl passwd -in /tmp/.passwd) {0}".format(self.setup.username))
             if config.get("set_root_password", True):
                 self.run("chroot||usermod -p $(openssl passwd -in /tmp/.passwd) root")
-        elif (self.run("which chpasswd &>/dev/null") ==
-                0) and config.get("use_chpasswd", True):
+        elif is_cmd("chpasswd") and config.get("use_chpasswd", True):
             fp = open("/target/tmp/.passwd", "w")
             fp.write(self.setup.username + ":" + self.setup.password1 + "\n")
             if config.get("set_root_password", True):

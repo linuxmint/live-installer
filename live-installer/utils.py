@@ -81,6 +81,8 @@ def to_float(position, wholedigits):
 def is_root():
     return os.getuid() == 0
 
+def is_cmd(cmd):
+    return o.system("which"+cmd) == 0
 
 def run(cmd, vital=True):
     inf("Running: " + cmd)
