@@ -30,6 +30,7 @@
 # auto_partition_enabled: true
 # set_root_password: true
 # use_chpasswd: true
+# use_usermod: true
 # additional_user_groups:
 #   - audio
 #   - video

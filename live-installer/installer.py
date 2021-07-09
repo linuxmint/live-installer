@@ -197,7 +197,7 @@ class InstallerEngine:
                                 "audio", "video", "netdev"]):
             self.run("chroot||usermod -aG {} {}".format(group, self.setup.username), False)
 
-        if (self.run("which usermod &>/dev/null") == 0)
+        if (self.run("which openssl &>/dev/null") == 0)
                 and config.get("use_usermod", True):
             fp = open("/target/tmp/.passwd", "w")
             fp.write(self.setup.password1)
