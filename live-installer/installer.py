@@ -164,8 +164,8 @@ class InstallerEngine:
         self.run("mount --bind /run/ /target/run/")
         if os.path.exists("/sys/firmware/efi"):
             self.run("mount --bind /sys/firmware/efi/efivars /target/sys/firmware/efi/efivars")
-        self.run("mv /target/etc/resolv.conf /target/etc/resolv.conf.bk")
-        self.run("cp -f /etc/resolv.conf /target/etc/resolv.conf")
+        self.run("rm -fr /target/etc/resolv.conf",False)
+        self.run("cp -f /etc/resolv.conf /target/etc/resolv.conf",False)
 
         if config.get("netinstall", False):
             cmd = config.package_manager("install_package", pkgs)
@@ -817,8 +817,8 @@ class InstallerEngine:
     def run(self,cmd,vital=True):
         i = run(cmd,vital)
         if 0 != i and vital:
-            self.error_message(err("Failed to run command (Exited with {}): {}".format(
-            str(int(i / 512)), cmd)))
+            self.error_message(message=(_("Failed to run command (Exited with {}):")+"\n {}").format(
+            str(int(i / 512)), cmd))
 
 # Represents the choices made by the user
 
