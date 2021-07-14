@@ -494,6 +494,7 @@ class Partition(object):
                     'NAME=', '').replace('"', '').strip()
             elif path_exists(str(self.mount_point), str('Windows/servicing/Version')):
                 self.description = 'Windows ' + {
+                    '10.': '10',
                     '6.4': '10',
                     '6.3': '8.1',
                     '6.2': '8',
@@ -505,9 +506,9 @@ class Partition(object):
                     '4.9': 'ME',
                     '4.1': '98',
                     '4.0': '95',
-                }.get(getoutput('ls {}/Windows/servicing/Version'.format(mount_point))[:3], '')
+                }.get(getoutput('ls {}/Windows/servicing/Version'.format(self.mount_point))[:3].decode("utf-8"), '')
             elif path_exists(self.mount_point, 'Boot/BCD'):
-                self.description = 'Windows bootloader/recovery'
+                self.description = 'Windows ' + _('bootloader/recovery')
             elif path_exists(self.mount_point, 'Windows/System32'):
                 self.description = 'Windows'
             elif path_exists(self.mount_point, 'System/Library/CoreServices/SystemVersion.plist'):
