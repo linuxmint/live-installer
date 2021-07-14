@@ -285,8 +285,8 @@ class PartitionSetup(Gtk.TreeStore):
                 # skip ranges <5MB
                 if part.raw_size > 5242880:
                     partitions.append(part)
-            partitions = sorted(
-                partitions, key=lambda part: part.partition.geometry.start)
+            #partitions = sorted(
+            #    partitions, key=lambda part: part.partition.geometry.start)
 
             try:  # assign mount_as and format_as if disk was just auto-formatted
                 for partition, (mount_as, format_as) in zip(
@@ -303,7 +303,8 @@ class PartitionSetup(Gtk.TreeStore):
                 partition.size_percent = round(
                     partition.size_percent / sum_size_percent * 100, 1)
                 installer.setup.partitions.append(partition)
-                self.append(disk_iter, (partition.name,
+                if partition.type != _('Free space'):
+                    self.append(disk_iter, (partition.name,
                                         '<span>{}</span>'.format(
                                             partition.type),
                                         partition.description,
@@ -313,7 +314,6 @@ class PartitionSetup(Gtk.TreeStore):
                                         partition.free_space,
                                         partition,
                                         disk_path))
-
 
 @idle
 def show_error(message):
@@ -429,6 +429,8 @@ class Partition(object):
         # if not normal partition with /dev/sdXN path, set its name to '' and
         # discard it from model
         self.name = self.path if partition.number != -1 else ''
+        self.mount_point = None
+        self.description = ""
         try:
             self.type = partition.fileSystem.type
             # normalize fs variations (parted.filesystem.fileSystemType.keys())
@@ -460,31 +462,38 @@ class Partition(object):
         # identify partition's description and used space
         try:
             os.system('mount --read-only {} {}'.format(self.path, TMP_MOUNTPOINT))
-            size, free, self.used_percent, mount_point = str(getoutput(
-                "df {0} | grep '^{0}' | awk '{{print $2,$4,$5,$6}}' | tail -1".format(self.path)).split(None, 3))
+            df = getoutput("df {0} | grep '^{0}' | awk '{{print $2,$4,$5,$6}}' | tail -1".format(self.path)).decode("utf-8").split(" ")
+            size = df[0]
+            free = df[1]
+            self.used_percent = df[2]
+            self.mount_point = df[3]
             self.raw_size = int(size) * 1024
-            log("                  . size %s, free %s, self.used_percent %s, mount_point %s" % (
-                size, free, self.used_percent, mount_point))
-        except ValueError:
+            log("size %s, free %s, self.used_percent %s, mount_point %s" % (
+                size, free, self.used_percent, self.mount_point))
+
+            self.size = to_human_readable(int(size) * 1024)
+            # df returns values in 1024B-blocks by default
+            self.free_space = to_human_readable(int(free) * 1024)
+            self.used_percent = self.used_percent.replace("%","") or 0
+        except:
+            self.description = ""
             if "swap" in self.type:
                 self.os_fs_info, self.description, self.free_space, self.used_percent = ': ' + \
                     self.type, 'swap', '', 0
             else:
                 self.os_fs_info, self.description, self.free_space, self.used_percent = ': ' + \
                     self.type, '', '', 0
-        else:
+        if True:
             # for mountable partitions, more accurate than the getLength size
             # above
-            self.size = to_human_readable(int(size) * 1024)
-            # df returns values in 1024B-blocks by default
-            self.free_space = to_human_readable(int(free) * 1024)
-            self.used_percent = self.used_percent.strip(b'%') or 0
-            description = ''
-            if path_exists(str(mount_point), str('etc/linuxmint/info')):
-                description = getoutput("cat %s/etc/linuxmint/info | grep GRUB_TITLE" % mount_point).replace(
-                    'GRUB_TITLE', '').replace('=', '').replace('"', '').strip()
-            elif path_exists(str(mount_point), str('Windows/servicing/Version')):
-                description = 'Windows ' + {
+            self.description = ""
+            if not self.mount_point:
+                self.mount_point = TMP_MOUNTPOINT
+            if path_exists(str(self.mount_point), str('etc/os-release')):
+                self.description = getoutput("cat %s/etc/os-release | grep ^NAME=" % self.mount_point).decode("utf-8").replace(
+                    'NAME=', '').replace('"', '').strip()
+            elif path_exists(str(self.mount_point), str('Windows/servicing/Version')):
+                self.description = 'Windows ' + {
                     '6.4': '10',
                     '6.3': '8.1',
                     '6.2': '8',
@@ -497,34 +506,31 @@ class Partition(object):
                     '4.1': '98',
                     '4.0': '95',
                 }.get(getoutput('ls {}/Windows/servicing/Version'.format(mount_point))[:3], '')
-            elif path_exists(mount_point, 'Boot/BCD'):
-                description = 'Windows bootloader/recovery'
-            elif path_exists(mount_point, 'Windows/System32'):
-                description = 'Windows'
-            elif path_exists(mount_point, 'System/Library/CoreServices/SystemVersion.plist'):
-                description = 'Mac OS X'
-            elif path_exists(mount_point, 'etc/'):
-                description = getoutput("su -c '{{ . {0}/etc/lsb-release && echo $DISTRIB_DESCRIPTION; }} || \
-                                                {{ . {0}/etc/os-release && echo $PRETTY_NAME; }}' mint".format(mount_point)) or 'Unix'
+            elif path_exists(self.mount_point, 'Boot/BCD'):
+                self.description = 'Windows bootloader/recovery'
+            elif path_exists(self.mount_point, 'Windows/System32'):
+                self.description = 'Windows'
+            elif path_exists(self.mount_point, 'System/Library/CoreServices/SystemVersion.plist'):
+                self.description = 'Mac OS X'
+            elif path_exists(self.mount_point, 'etc/'):
+                self.description = 'Linux/Unix'
             else:
                 try:
                     if partition.active:
                         for flag in partition.getFlagsAsString().split(", "):
-                            if flag in ["boot", "esp"]:
-                                description = 'EFI System Partition'
-                                self.mount_as = EFI_MOUNT_POINT
+                            print(self.type)
+                            if flag in ["boot", "esp"] and self.type == "fat32":
+                                self.description = _('EFI System Partition')
                                 break
                 except Exception as detail:
                     # best effort
                     err("Could not read partition flags for %s: %s" %
                         (self.path, detail))
-            self.description = description
             self.os_fs_info = ': {0.description} ({0.type}; {0.size}; {0.free_space})'.format(
-                self) if description else ': ' + self.type
+                self) if self.description else ': ' + self.type
             log("                  . self.description %s self.os_fs_info %s" % (
                 self.description, self.os_fs_info))
-        finally:
-            os.system('umount ' + TMP_MOUNTPOINT + ' 2>/dev/null')
+        os.system('umount ' + TMP_MOUNTPOINT + ' 2>/dev/null')
 
     def print_partition(self):
         log("Device: %s, format as: %s, mount as: %s" %
