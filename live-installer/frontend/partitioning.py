@@ -168,16 +168,16 @@ def partitions_popup_menu(widget, event):
     menu.append(menuItem)
     menuItem = Gtk.SeparatorMenuItem()
     menu.append(menuItem)
-    menuItem = Gtk.MenuItem(_("Assign to %s" % "/"))
+    menuItem = Gtk.MenuItem(_("Assign to %s") % "/")
     menuItem.connect("activate", lambda w: assign_mount_point(
         partition, '/', 'ext4'))
     menu.append(menuItem)
-    menuItem = Gtk.MenuItem(_("Assign to %s" % "swap"))
+    menuItem = Gtk.MenuItem(_("Assign to %s") % "swap")
     menuItem.connect("activate", lambda w: assign_mount_point(
         partition, 'swap', ''))
     menu.append(menuItem)
     for i in config.distro["additional_mountpoints"]:
-        menuItem = Gtk.MenuItem(_("Assign to %s" % i))
+        menuItem = Gtk.MenuItem(_("Assign to %s") % i)
         menuItem.connect("activate", lambda w: assign_mount_point(
             partition, i, 'ext4'))
         menu.append(menuItem)
@@ -185,7 +185,7 @@ def partitions_popup_menu(widget, event):
         menuItem = Gtk.SeparatorMenuItem()
         menu.append(menuItem)
         for i in config.distro["additional_efi_mountpoints"]:
-            menuItem = Gtk.MenuItem(_("Assign to %s" % i))
+            menuItem = Gtk.MenuItem(_("Assign to %s") % i)
             menuItem.connect("activate", lambda w: assign_mount_point(
                 partition, i, 'vfat'))
             menu.append(menuItem)
