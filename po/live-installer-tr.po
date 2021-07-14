@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-07-14 15:47+0300\n"
-"PO-Revision-Date: 2021-06-15 13:29+0300\n"
+"PO-Revision-Date: 2021-07-14 15:53+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: tr\n"
@@ -51,12 +51,12 @@ msgstr ""
 #: live-installer/resources/interface2.ui:1770
 #: live-installer/resources/interface2.ui:1782
 msgid "label"
-msgstr ""
+msgstr "etiket"
 
 #: live-installer/resources/interface.ui:298
 #: live-installer/resources/interface2.ui:234
 msgid "Continent"
-msgstr ""
+msgstr "Bölge"
 
 #: live-installer/resources/interface.ui:312
 #: live-installer/resources/interface2.ui:248
@@ -73,7 +73,6 @@ msgstr "Klavye modeli:"
 
 #: live-installer/resources/interface.ui:454
 #: live-installer/resources/interface2.ui:390
-#, fuzzy
 msgid "Type here to test your keyboard"
 msgstr "Klavyenizi test etmek için buraya yazın"
 
@@ -139,7 +138,6 @@ msgstr "Kendiliğinden kurulum"
 
 #: live-installer/resources/interface.ui:772
 #: live-installer/resources/interface2.ui:708
-#, fuzzy
 msgid "Erase a disk and install LMDE on it."
 msgstr "Diski sil ve sistemi üstüne kur."
 
@@ -193,7 +191,6 @@ msgstr "Elle bölümlendirme"
 
 #: live-installer/resources/interface.ui:1080
 #: live-installer/resources/interface2.ui:1016
-#, fuzzy
 msgid "Manually create, resize or choose partitions for LMDE."
 msgstr ""
 "Sistem için disk bölümlerini elle oluşturun, yeniden boyutlandırın veya "
@@ -201,13 +198,11 @@ msgstr ""
 
 #: live-installer/resources/interface.ui:1137
 #: live-installer/resources/interface2.ui:1073
-#, fuzzy
 msgid "Remove windows & Install"
 msgstr "Winsowsu sil ve yerine yükle"
 
 #: live-installer/resources/interface.ui:1153
 #: live-installer/resources/interface2.ui:1089
-#, fuzzy
 msgid "Remove existsing windows and install LMDE on it."
 msgstr "Mevcut Windowsu sil ve yerine yükle."
 
@@ -227,12 +222,12 @@ msgstr "Bölümleri düzenle"
 #: live-installer/resources/interface2.ui:1431
 #: live-installer/resources/welcome.ui:206
 msgid "17g team"
-msgstr ""
+msgstr "17g takımı"
 
 #: live-installer/resources/interface.ui:1763
 #: live-installer/resources/interface2.ui:1794
 msgid "/dev/sda1"
-msgstr ""
+msgstr "/dev/sda1"
 
 #: live-installer/resources/interface2.ui:1569
 #: live-installer/frontend/gtk_interface.py:341
@@ -240,7 +235,6 @@ msgid "Quit"
 msgstr "Çıkış"
 
 #: live-installer/resources/welcome.ui:61
-#, fuzzy
 msgid "Try 17g"
 msgstr "%s dene"
 
@@ -254,12 +248,10 @@ msgid "Install to Hard Drive"
 msgstr "Diske yükle"
 
 #: live-installer/resources/welcome.ui:166
-#, fuzzy
 msgid "You are currently running 17g from live media."
 msgstr "Şu anda %s canlı ortamdan çalışıyor."
 
 #: live-installer/resources/welcome.ui:178
-#, fuzzy
 msgid ""
 "You can install 17g now, or chose \"Install to Hard Drive\" in the "
 "Appication Menu later."
@@ -268,7 +260,6 @@ msgstr ""
 "\" seçebilirsiniz."
 
 #: live-installer/resources/welcome.ui:228
-#, fuzzy
 msgid "Welcome to 17g"
 msgstr "Hoş geldiniz"
 
@@ -379,7 +370,7 @@ msgstr "Önyükleyici denetleniyor"
 
 #: live-installer/installer.py:818
 msgid "Failed to run command (Exited with {}):"
-msgstr ""
+msgstr "Komut ile çalıştırılamadı. ({} ile çıktı.)"
 
 #: live-installer/frontend/partitioning.py:59
 msgid "B"
@@ -492,12 +483,11 @@ msgstr "Bilinmeyen"
 
 #: live-installer/frontend/partitioning.py:511
 msgid "bootloader/recovery"
-msgstr ""
+msgstr "önyükleyici/kurtarma"
 
 #: live-installer/frontend/partitioning.py:524
-#, fuzzy
 msgid "EFI System Partition"
-msgstr "Bölümleri düzenle"
+msgstr "EFI Sistem Bölümü"
 
 #: live-installer/frontend/partitioning.py:547
 msgid "Edit partition"
