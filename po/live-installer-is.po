@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: live-installer_live-installer-is\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-07-14 15:47+0300\n"
+"POT-Creation-Date: 2021-07-26 11:56+0300\n"
 "PO-Revision-Date: 2020-02-25 13:31+0000\n"
 "Last-Translator: Sveinn í Felli <sv1@fellsnet.is>\n"
 "Language-Team: Icelandic <translation-team-is@lists.sourceforge.net>\n"
@@ -20,8 +20,8 @@ msgstr ""
 "X-Generator: Launchpad (build 3a6db24bbe7280ec09bae73384238390fcc98ad3)\n"
 
 #: live-installer/resources/interface.ui:57
-#: live-installer/resources/interface2.ui:1669
-#: live-installer/frontend/gtk_interface.py:322
+#: live-installer/resources/interface2.ui:1706
+#: live-installer/frontend/gtk_interface.py:329
 msgid "Welcome"
 msgstr "Velkomin"
 
@@ -33,24 +33,24 @@ msgstr "Velkomin í 17G uppsetningarforritið."
 
 #: live-installer/resources/interface.ui:147
 #: live-installer/resources/interface2.ui:83
+#: live-installer/frontend/gtk_interface.py:358
 #: live-installer/frontend/tui_interface.py:25
-#: live-installer/frontend/gtk_interface.py:349
 msgid ""
 "This program will ask you some questions and set up system on your computer."
 msgstr ""
 
 #: live-installer/resources/interface.ui:248
-#: live-installer/resources/interface.ui:1394
-#: live-installer/resources/interface.ui:1408
-#: live-installer/resources/interface.ui:1727
-#: live-installer/resources/interface.ui:1739
-#: live-installer/resources/interface.ui:1751
+#: live-installer/resources/interface.ui:1431
+#: live-installer/resources/interface.ui:1445
+#: live-installer/resources/interface.ui:1764
+#: live-installer/resources/interface.ui:1776
+#: live-installer/resources/interface.ui:1788
 #: live-installer/resources/interface2.ui:184
-#: live-installer/resources/interface2.ui:1330
-#: live-installer/resources/interface2.ui:1344
-#: live-installer/resources/interface2.ui:1758
-#: live-installer/resources/interface2.ui:1770
-#: live-installer/resources/interface2.ui:1782
+#: live-installer/resources/interface2.ui:1367
+#: live-installer/resources/interface2.ui:1381
+#: live-installer/resources/interface2.ui:1795
+#: live-installer/resources/interface2.ui:1807
+#: live-installer/resources/interface2.ui:1819
 msgid "label"
 msgstr ""
 
@@ -61,14 +61,14 @@ msgstr ""
 
 #: live-installer/resources/interface.ui:312
 #: live-installer/resources/interface2.ui:248
+#: live-installer/frontend/gtk_interface.py:333
 #: live-installer/frontend/tui_interface.py:41
-#: live-installer/frontend/gtk_interface.py:326
 msgid "Timezone"
 msgstr "Tímabelti"
 
 #: live-installer/resources/interface.ui:352
 #: live-installer/resources/interface2.ui:288
-#: live-installer/frontend/gtk_interface.py:357
+#: live-installer/frontend/gtk_interface.py:366
 msgid "Keyboard Model:"
 msgstr "Tegund lyklaborðs:"
 
@@ -80,61 +80,61 @@ msgstr "Skrifaðu hér til að prófa lyklaborðsuppsetninguna"
 
 #: live-installer/resources/interface.ui:490
 #: live-installer/resources/interface2.ui:426
-#: live-installer/frontend/gtk_interface.py:366
+#: live-installer/frontend/gtk_interface.py:375
 msgid "Your name:"
 msgstr "Nafnið þitt:"
 
 #: live-installer/resources/interface.ui:533
 #: live-installer/resources/interface2.ui:469
-#: live-installer/frontend/gtk_interface.py:368
+#: live-installer/frontend/gtk_interface.py:377
 msgid "Your computer's name:"
 msgstr "Heiti tölvunnar þinnar:"
 
 #: live-installer/resources/interface.ui:548
 #: live-installer/resources/interface2.ui:484
-#: live-installer/frontend/gtk_interface.py:372
+#: live-installer/frontend/gtk_interface.py:381
 msgid "Pick a username:"
 msgstr "Veldu þér notandanafn:"
 
 #: live-installer/resources/interface.ui:561
 #: live-installer/resources/interface2.ui:497
-#: live-installer/frontend/gtk_interface.py:370
+#: live-installer/frontend/gtk_interface.py:379
 msgid "The name it uses when it talks to other computers."
 msgstr "Nafnið sem hún notar þegar hún talar við aðrar tölvur."
 
 #: live-installer/resources/interface.ui:594
 #: live-installer/resources/interface2.ui:530
-#: live-installer/frontend/gtk_interface.py:374
+#: live-installer/frontend/gtk_interface.py:383
 msgid "Choose a password:"
 msgstr "Veldu þér lykilorð:"
 
 #: live-installer/resources/interface.ui:639
 #: live-installer/resources/interface2.ui:575
-#: live-installer/frontend/gtk_interface.py:376
+#: live-installer/frontend/gtk_interface.py:385
 msgid "Confirm your password:"
 msgstr "Staðfestu lykilorðið þitt:"
 
 #: live-installer/resources/interface.ui:657
 #: live-installer/resources/interface2.ui:593
-#: live-installer/frontend/gtk_interface.py:379
+#: live-installer/frontend/gtk_interface.py:388
 msgid "Log in automatically"
 msgstr "Skrá inn sjálfkrafa"
 
 #: live-installer/resources/interface.ui:672
 #: live-installer/resources/interface2.ui:608
-#: live-installer/frontend/gtk_interface.py:381
+#: live-installer/frontend/gtk_interface.py:390
 msgid "Require my password to log in"
 msgstr "Krefjast lykilorðs míns til að skrá inn"
 
 #: live-installer/resources/interface.ui:687
 #: live-installer/resources/interface2.ui:623
-#: live-installer/frontend/gtk_interface.py:383
+#: live-installer/frontend/gtk_interface.py:392
 msgid "Encrypt my home folder"
 msgstr "Dulrita heimamöppuna mína"
 
 #: live-installer/resources/interface.ui:756
 #: live-installer/resources/interface2.ui:692
-#: live-installer/frontend/gtk_interface.py:387
+#: live-installer/frontend/gtk_interface.py:396
 msgid "Automated Installation"
 msgstr "Sjálfvirk uppsetning"
 
@@ -146,49 +146,49 @@ msgstr "Hreinsa disk og setja 17G upp á honum."
 
 #: live-installer/resources/interface.ui:798
 #: live-installer/resources/interface2.ui:734
-#: live-installer/frontend/gtk_interface.py:390
+#: live-installer/frontend/gtk_interface.py:399
 msgid "Disk:"
 msgstr "Diskur:"
 
 #: live-installer/resources/interface.ui:846
 #: live-installer/resources/interface2.ui:782
-#: live-installer/frontend/gtk_interface.py:398
+#: live-installer/frontend/gtk_interface.py:407
 msgid "Use LVM (Logical Volume Management)"
 msgstr "Nota LVM (umsýsla sýndardiska)"
 
 #: live-installer/resources/interface.ui:891
 #: live-installer/resources/interface2.ui:827
-#: live-installer/frontend/gtk_interface.py:392
+#: live-installer/frontend/gtk_interface.py:401
 msgid "Encrypt the operating system"
 msgstr "Dulrita stýrikerfið"
 
 #: live-installer/resources/interface.ui:922
 #: live-installer/resources/interface2.ui:858
-#: live-installer/frontend/gtk_interface.py:394
+#: live-installer/frontend/gtk_interface.py:403
 msgid "Passphrase"
 msgstr "Lykilsetning"
 
 #: live-installer/resources/interface.ui:938
 #: live-installer/resources/interface2.ui:874
-#: live-installer/frontend/gtk_interface.py:396
+#: live-installer/frontend/gtk_interface.py:405
 msgid "Confirm passphrase"
 msgstr "Staðfestu lykilsetningu"
 
 #: live-installer/resources/interface.ui:972
 #: live-installer/resources/interface2.ui:908
-#: live-installer/frontend/gtk_interface.py:411
+#: live-installer/frontend/gtk_interface.py:420
 msgid "This provides extra security but it can take hours."
 msgstr ""
 
 #: live-installer/resources/interface.ui:984
 #: live-installer/resources/interface2.ui:920
-#: live-installer/frontend/gtk_interface.py:409
+#: live-installer/frontend/gtk_interface.py:418
 msgid "Fill the disk with random data"
 msgstr ""
 
 #: live-installer/resources/interface.ui:1064
 #: live-installer/resources/interface2.ui:1000
-#: live-installer/frontend/gtk_interface.py:400
+#: live-installer/frontend/gtk_interface.py:409
 msgid "Manual Partitioning"
 msgstr "Handvirk disksneiðing"
 
@@ -210,29 +210,29 @@ msgstr ""
 
 #: live-installer/resources/interface.ui:1247
 #: live-installer/resources/interface2.ui:1183
-#: live-installer/frontend/gtk_interface.py:428
+#: live-installer/frontend/gtk_interface.py:437
 msgid "Install the GRUB boot menu on:"
 msgstr "Setja GRUB ræsivalmynd upp á:"
 
 #: live-installer/resources/interface.ui:1305
 #: live-installer/resources/interface2.ui:1241
-#: live-installer/frontend/gtk_interface.py:414
+#: live-installer/frontend/gtk_interface.py:423
 msgid "Edit partitions"
 msgstr "Breyta disksneiðum"
 
-#: live-installer/resources/interface.ui:1480
-#: live-installer/resources/interface2.ui:1431
+#: live-installer/resources/interface.ui:1517
+#: live-installer/resources/interface2.ui:1468
 #: live-installer/resources/welcome.ui:206
 msgid "17g team"
 msgstr ""
 
-#: live-installer/resources/interface.ui:1763
-#: live-installer/resources/interface2.ui:1794
+#: live-installer/resources/interface.ui:1800
+#: live-installer/resources/interface2.ui:1831
 msgid "/dev/sda1"
 msgstr ""
 
-#: live-installer/resources/interface2.ui:1569
-#: live-installer/frontend/gtk_interface.py:341
+#: live-installer/resources/interface2.ui:1606
+#: live-installer/frontend/gtk_interface.py:350
 msgid "Quit"
 msgstr "Hætta"
 
@@ -332,27 +332,31 @@ msgstr "Stilla vélarheiti"
 msgid "Setting keyboard options"
 msgstr "Stilla valmöguleika lyklaborðsuppsetningar"
 
-#: live-installer/installer.py:681
+#: live-installer/installer.py:682
+msgid "Trying to install updates"
+msgstr ""
+
+#: live-installer/installer.py:686
 msgid "Clearing package manager"
 msgstr ""
 
-#: live-installer/installer.py:700
+#: live-installer/installer.py:705
 msgid "Generating initramfs"
 msgstr ""
 
-#: live-installer/installer.py:705
+#: live-installer/installer.py:710
 msgid "Preparing bootloader installation"
 msgstr ""
 
-#: live-installer/installer.py:717
+#: live-installer/installer.py:722
 msgid "Installing bootloader"
 msgstr "Set upp ræsistjóra"
 
-#: live-installer/installer.py:729
+#: live-installer/installer.py:734
 msgid "Configuring bootloader"
 msgstr "Stilli ræsistjóra"
 
-#: live-installer/installer.py:737
+#: live-installer/installer.py:742
 msgid ""
 "WARNING: The grub bootloader was not configured properly! You need to "
 "configure it manually."
@@ -360,18 +364,543 @@ msgstr ""
 "AÐVÖRUN: GRUB ræsistjórinn var ekki rétt uppsettur! Þú verður að stilla hann "
 "handvirkt."
 
-#: live-installer/installer.py:763
-#: live-installer/frontend/gtk_interface.py:1207
+#: live-installer/installer.py:768
+#: live-installer/frontend/gtk_interface.py:1228
 msgid "Installation finished"
 msgstr "Uppsetningu lokið"
 
-#: live-installer/installer.py:786
+#: live-installer/installer.py:791
 msgid "Checking bootloader"
 msgstr "Athugai ræsistjóra"
 
-#: live-installer/installer.py:818
+#: live-installer/installer.py:823
 msgid "Failed to run command (Exited with {}):"
 msgstr ""
+
+#: live-installer/frontend/gtk_interface.py:94
+#: live-installer/frontend/gtk_interface.py:362
+msgid "Country"
+msgstr "Land"
+
+#: live-installer/frontend/gtk_interface.py:103
+#: live-installer/frontend/gtk_interface.py:331
+#: live-installer/frontend/gtk_interface.py:361
+#: live-installer/frontend/tui_interface.py:33
+msgid "Language"
+msgstr "Tungumál"
+
+#: live-installer/frontend/gtk_interface.py:210
+#: live-installer/frontend/gtk_interface.py:367
+msgid "Layout"
+msgstr "Uppsetning"
+
+#: live-installer/frontend/gtk_interface.py:218
+#: live-installer/frontend/gtk_interface.py:368
+msgid "Variant"
+msgstr "Tilbrigði"
+
+#: live-installer/frontend/gtk_interface.py:236
+msgid "Calculating file indexes ..."
+msgstr "Reikna skráayfirlit ..."
+
+#: live-installer/frontend/gtk_interface.py:317
+#: live-installer/frontend/gtk_interface.py:320
+#: live-installer/frontend/gtk_interface.py:841
+#: live-installer/frontend/gtk_interface.py:877
+#: live-installer/frontend/gtk_interface.py:952
+#: live-installer/frontend/gtk_interface.py:965
+#: live-installer/frontend/gtk_interface.py:970
+#: live-installer/frontend/gtk_interface.py:984
+#: live-installer/frontend/gtk_interface.py:989
+#: live-installer/frontend/gtk_interface.py:995
+#: live-installer/frontend/gtk_interface.py:1000
+#: live-installer/frontend/gtk_interface.py:1005
+#: live-installer/frontend/gtk_interface.py:1058
+#: live-installer/frontend/gtk_interface.py:1126
+#: live-installer/frontend/partitioning.py:321
+msgid "Installer"
+msgstr "Uppsetningarforrit"
+
+#: live-installer/frontend/gtk_interface.py:331
+#: live-installer/frontend/tui_interface.py:28
+msgid "What language would you like to use?"
+msgstr "Hvaða tungumál viltu nota?"
+
+#: live-installer/frontend/gtk_interface.py:333
+#: live-installer/frontend/tui_interface.py:37
+msgid "Where are you?"
+msgstr "Hvar ertu?"
+
+#: live-installer/frontend/gtk_interface.py:335
+msgid "Keyboard layout"
+msgstr "Lyklaborðsútfærsla"
+
+#: live-installer/frontend/gtk_interface.py:335
+msgid "What is your keyboard layout?"
+msgstr "Hvaða lyklaborðsuppsetningu ertu með?"
+
+#: live-installer/frontend/gtk_interface.py:337
+msgid "User account"
+msgstr "Notandaaðgangur"
+
+#: live-installer/frontend/gtk_interface.py:337
+msgid "Who are you?"
+msgstr "Hver ertu?"
+
+#: live-installer/frontend/gtk_interface.py:339
+msgid "Installation Type"
+msgstr "Gerð uppsetningar"
+
+#: live-installer/frontend/gtk_interface.py:339
+#: live-installer/frontend/gtk_interface.py:341
+#, fuzzy
+msgid "Where do you want to install system?"
+msgstr "Hvar viltu setja upp 17G?"
+
+#: live-installer/frontend/gtk_interface.py:341
+msgid "Partitioning"
+msgstr "Disksneiðing"
+
+#: live-installer/frontend/gtk_interface.py:343
+msgid "Options"
+msgstr ""
+
+#: live-installer/frontend/gtk_interface.py:343
+#, fuzzy
+msgid "Select additional options"
+msgstr "Stilla valmöguleika lyklaborðsuppsetningar"
+
+#: live-installer/frontend/gtk_interface.py:345
+msgid "Summary"
+msgstr "Yfirlit"
+
+#: live-installer/frontend/gtk_interface.py:345
+msgid "Check that everything is correct"
+msgstr ""
+
+#: live-installer/frontend/gtk_interface.py:347
+msgid "Installing"
+msgstr "Uppsetning"
+
+#: live-installer/frontend/gtk_interface.py:347
+msgid "Please wait..."
+msgstr ""
+
+#: live-installer/frontend/gtk_interface.py:351
+msgid "Back"
+msgstr "Til baka"
+
+#: live-installer/frontend/gtk_interface.py:352
+#: live-installer/frontend/gtk_interface.py:838
+msgid "Next"
+msgstr "Næsta"
+
+#: live-installer/frontend/gtk_interface.py:356
+#: live-installer/frontend/tui_interface.py:23
+#, fuzzy, python-format
+msgid "Welcome to the %s Installer."
+msgstr "Velkomin í 17G uppsetningarforritið."
+
+#: live-installer/frontend/gtk_interface.py:370
+msgid "Type here to test your keyboard layout"
+msgstr "Skrifaðu hér til að prófa lyklaborðsuppsetninguna"
+
+#: live-installer/frontend/gtk_interface.py:372
+msgid ""
+"* Your username, your computer's name and your password should only contain "
+"Latin characters. In addition to your selected layout, English (US) is set "
+"as the default. You can switch layouts by pressing both Ctrl keys together."
+msgstr ""
+
+#: live-installer/frontend/gtk_interface.py:398
+#, fuzzy
+msgid "Erase a disk and install system on it."
+msgstr "Hreinsa disk og setja 17G upp á honum."
+
+#: live-installer/frontend/gtk_interface.py:411
+#, fuzzy
+msgid "Manually create, resize or choose partitions for system."
+msgstr "Skilgreina, eyða og endurstilla disksneiðar fyrir 17G."
+
+#: live-installer/frontend/gtk_interface.py:413
+msgid "Remove Windows & Install"
+msgstr ""
+
+#: live-installer/frontend/gtk_interface.py:415
+msgid "Remove existsing windows and install system on it."
+msgstr ""
+
+#: live-installer/frontend/gtk_interface.py:424
+msgid "Refresh"
+msgstr "Endurlesa"
+
+#: live-installer/frontend/gtk_interface.py:426
+msgid "Device"
+msgstr "Tæki"
+
+#: live-installer/frontend/gtk_interface.py:427
+msgid "Type"
+msgstr "Tegund"
+
+#: live-installer/frontend/gtk_interface.py:428
+msgid "Operating system"
+msgstr "Stýrikerfi"
+
+#: live-installer/frontend/gtk_interface.py:429
+msgid "Mount point"
+msgstr "Tengipunktur"
+
+#: live-installer/frontend/gtk_interface.py:430
+msgid "Format as"
+msgstr "Forsníða sem"
+
+#: live-installer/frontend/gtk_interface.py:431
+msgid "Size"
+msgstr "Stærð"
+
+#: live-installer/frontend/gtk_interface.py:432
+#: live-installer/frontend/partitioning.py:306
+#: live-installer/frontend/partitioning.py:451
+msgid "Free space"
+msgstr "Laust pláss"
+
+#: live-installer/frontend/gtk_interface.py:579
+msgid "Quit?"
+msgstr "Hætta?"
+
+#: live-installer/frontend/gtk_interface.py:580
+msgid "Are you sure you want to quit the installer?"
+msgstr "Ertu viss að þú viljir hætta í uppsetningarforritinu?"
+
+#: live-installer/frontend/gtk_interface.py:842
+msgid "Please choose a language"
+msgstr "Veldu þér tungumál"
+
+#: live-installer/frontend/gtk_interface.py:878
+#, fuzzy
+msgid "Please provide a kayboard layout for your computer."
+msgstr "Veldu lykilorð fyrir notandaaðganginn þinn."
+
+#: live-installer/frontend/gtk_interface.py:887
+msgid "Please provide your full name."
+msgstr "Settu inn fullt nafn."
+
+#: live-installer/frontend/gtk_interface.py:892
+msgid "Please provide a name for your computer."
+msgstr ""
+
+#: live-installer/frontend/gtk_interface.py:896
+msgid "Please provide a username."
+msgstr "Settu inn notandanafn."
+
+#: live-installer/frontend/gtk_interface.py:901
+msgid "Please provide a password for your user account."
+msgstr "Veldu lykilorð fyrir notandaaðganginn þinn."
+
+#: live-installer/frontend/gtk_interface.py:905
+#, fuzzy
+msgid "Your passwords is too short."
+msgstr "Lykilorðin stemma ekki."
+
+#: live-installer/frontend/gtk_interface.py:909
+#, fuzzy
+msgid "Your passwords is not strong."
+msgstr "Lykilorðin stemma ekki."
+
+#: live-installer/frontend/gtk_interface.py:913
+msgid "Your passwords do not match."
+msgstr "Lykilorðin stemma ekki."
+
+#: live-installer/frontend/gtk_interface.py:919
+#, fuzzy
+msgid "Your username cannot start with numbers."
+msgstr "Notandanafnið má ekki innihalda bil."
+
+#: live-installer/frontend/gtk_interface.py:925
+msgid "Your username must be lower case."
+msgstr "Notandanafnið verður að vera lagstafa."
+
+#: live-installer/frontend/gtk_interface.py:932
+msgid "Your username may not contain whitespace characters."
+msgstr "Notandanafnið má ekki innihalda bil."
+
+#: live-installer/frontend/gtk_interface.py:940
+msgid "The computer's name must be lower case."
+msgstr ""
+
+#: live-installer/frontend/gtk_interface.py:947
+msgid "The computer's name may not contain whitespace characters."
+msgstr ""
+
+#: live-installer/frontend/gtk_interface.py:966
+msgid ""
+"Please indicate a filesystem to format the root (/) partition with before "
+"proceeding."
+msgstr ""
+"Veldu skráakerfi sem nota á við forsníðingu á grunndisksneiðinni (/ - root) "
+"áður en haldið er áfram."
+
+#: live-installer/frontend/gtk_interface.py:970
+msgid "Please select a root (/) partition."
+msgstr "Veldu einhverja disksneið sem grunndisksneið (/ - root)."
+
+#: live-installer/frontend/gtk_interface.py:971
+#, fuzzy, python-format
+msgid ""
+"A root partition is needed to install %s on.\n"
+"\n"
+" - Mount point: /\n"
+" - Recommended size: 30GB\n"
+" - Recommended filesystem format: ext4\n"
+"\n"
+msgstr ""
+"Nauðsynlegt er að ákveða grunndisksneið (rót) til að geta sett upp Linux "
+"Mint.\n"
+"\n"
+" - Tengipunktur: /\n"
+" - Kjörstærð: 30 GB\n"
+" - Skráakerfi sem mælt er með: ext4\n"
+"\n"
+"\n"
+"Athugaðu: Til að nota btrfs tímahliðrunaröryggisafritin (timeshift "
+"snapshots) þarf:\n"
+" - Tengipunkt undirsýndardisks /@\n"
+" - btrfs sem snið skráakerfis\n"
+
+#: live-installer/frontend/gtk_interface.py:985
+msgid "The EFI partition is not bootable. Please edit the partition flags."
+msgstr ""
+"EFI disksneiðin er ekki ræsanleg (bootable). Breyttu disksneiðaflöggunum."
+
+#: live-installer/frontend/gtk_interface.py:990
+msgid "The EFI partition is too small. It must be at least 35MB."
+msgstr "EFI disksneiðin er of lítil. Hún þarf að vera a.m.k 35 MB."
+
+#: live-installer/frontend/gtk_interface.py:996
+#: live-installer/frontend/gtk_interface.py:1001
+msgid "The EFI partition must be formatted as vfat."
+msgstr "EFI disksneiðin verður að vera forsniðin sem vfat."
+
+#: live-installer/frontend/gtk_interface.py:1005
+msgid "Please select an EFI partition."
+msgstr "Veldu einhverja EFI disksneið."
+
+#: live-installer/frontend/gtk_interface.py:1006
+msgid ""
+"An EFI system partition is needed with the following requirements:\n"
+"\n"
+" - Mount point: /boot/efi\n"
+" - Partition flags: Bootable\n"
+" - Size: at least 35MB (100MB or more recommended)\n"
+" - Format: vfat or fat32\n"
+"\n"
+"To ensure compatibility with Windows we recommend you use the first "
+"partition of the disk as the EFI system partition.\n"
+" "
+msgstr ""
+"EFI kerfisdisksneið er nauðsynleg, með eftirfarandi eiginleikum:\n"
+"\n"
+" - Tengipunktur: /boot/efi\n"
+" - Disksneiðaflagg: Bootable\n"
+" - Stærð: Stærri en 35MB (mælt er með 100MB eða meira)\n"
+" - Skráakerfi: vfat eða fat32\n"
+"\n"
+"Til að tryggja samhæfni við Windows mælum við með því að notuð sé fyrsta "
+"disksneið disksins undir EFI kerfisdisksneiðina.\n"
+" "
+
+#: live-installer/frontend/gtk_interface.py:1047
+msgid "Please select a disk."
+msgstr "Veldu disk."
+
+#: live-installer/frontend/gtk_interface.py:1053
+msgid "Please provide a passphrase for the encryption."
+msgstr ""
+
+#: live-installer/frontend/gtk_interface.py:1056
+msgid "Your passphrases do not match."
+msgstr "Lykilsetningarnar stemma ekki."
+
+#: live-installer/frontend/gtk_interface.py:1060
+msgid "Warning"
+msgstr "Aðvörun"
+
+#: live-installer/frontend/gtk_interface.py:1061
+#, python-format
+msgid "This will delete all the data on %s. Are you sure?"
+msgstr "Þetta mun eyða öllum gögnum á %s. Ertu viss?"
+
+#: live-installer/frontend/gtk_interface.py:1091
+msgid "Install"
+msgstr "Setja upp"
+
+#: live-installer/frontend/gtk_interface.py:1127
+#, fuzzy
+msgid "Please provide a device to install grub."
+msgstr "Settu inn notandanafn."
+
+#: live-installer/frontend/gtk_interface.py:1170
+msgid "Localization"
+msgstr "Staðfærsla"
+
+#: live-installer/frontend/gtk_interface.py:1171
+msgid "Language: "
+msgstr "Tungumál: "
+
+#: live-installer/frontend/gtk_interface.py:1172
+msgid "Timezone: "
+msgstr "Tímabelti: "
+
+#: live-installer/frontend/gtk_interface.py:1173
+msgid "Keyboard layout: "
+msgstr "Uppsetning lyklaborðs: "
+
+#: live-installer/frontend/gtk_interface.py:1176
+msgid "User settings"
+msgstr "Notandastillingar"
+
+#: live-installer/frontend/gtk_interface.py:1177
+msgid "Real name: "
+msgstr "Fullt nafn: "
+
+#: live-installer/frontend/gtk_interface.py:1178
+msgid "Username: "
+msgstr "Notandanafn: "
+
+#: live-installer/frontend/gtk_interface.py:1180
+msgid "Password: "
+msgstr ""
+
+#: live-installer/frontend/gtk_interface.py:1182
+msgid "Automatic login: "
+msgstr "Sjálfvirk innskráning: "
+
+#: live-installer/frontend/gtk_interface.py:1182
+#: live-installer/frontend/gtk_interface.py:1185
+#: live-installer/frontend/gtk_interface.py:1205
+#: live-installer/frontend/gtk_interface.py:1209
+msgid "enabled"
+msgstr "virkt"
+
+#: live-installer/frontend/gtk_interface.py:1183
+#: live-installer/frontend/gtk_interface.py:1186
+#: live-installer/frontend/gtk_interface.py:1206
+#: live-installer/frontend/gtk_interface.py:1209
+msgid "disabled"
+msgstr "óvirkt"
+
+#: live-installer/frontend/gtk_interface.py:1185
+msgid "Home encryption: "
+msgstr "Dulritun heimamöppu: "
+
+#: live-installer/frontend/gtk_interface.py:1187
+msgid "System settings"
+msgstr "Kerfisstillingar"
+
+#: live-installer/frontend/gtk_interface.py:1188
+msgid "Computer's name: "
+msgstr ""
+
+#: live-installer/frontend/gtk_interface.py:1191
+#: live-installer/frontend/gtk_interface.py:1193
+msgid "Bios type: "
+msgstr ""
+
+#: live-installer/frontend/gtk_interface.py:1195
+msgid "Filesystem operations"
+msgstr "Aðgerðir með skráakerfi"
+
+#: live-installer/frontend/gtk_interface.py:1196
+#, python-format
+msgid "Install bootloader on %s"
+msgstr "Setja ræsistjóra upp á %s"
+
+#: live-installer/frontend/gtk_interface.py:1197
+msgid "Do not install bootloader"
+msgstr "Ekki setja upp ræsistjóra"
+
+#: live-installer/frontend/gtk_interface.py:1199
+msgid "Use already-mounted /target."
+msgstr "Nota þegar tengt /target."
+
+#: live-installer/frontend/gtk_interface.py:1203
+#, python-format
+msgid "Automated installation on %s"
+msgstr "Sjálfvirk uppsetning á %s"
+
+#: live-installer/frontend/gtk_interface.py:1205
+msgid "LVM: "
+msgstr "LVM: "
+
+#: live-installer/frontend/gtk_interface.py:1208
+msgid "Disk Encryption: "
+msgstr "Dulritun disks: "
+
+#: live-installer/frontend/gtk_interface.py:1212
+#, python-format
+msgid "Format %(path)s as %(filesystem)s"
+msgstr "Forsníða %(path)s sem %(filesystem)s"
+
+#: live-installer/frontend/gtk_interface.py:1216
+#, python-format
+msgid "Mount %(path)s as %(mount)s"
+msgstr "Tengja %(path)s sem %(mount)s"
+
+#: live-installer/frontend/gtk_interface.py:1229
+msgid ""
+"The installation is now complete. Do you want to restart your computer to "
+"use the new system?"
+msgstr ""
+"Uppsetningu er lokið. Viltu endurræsa tölvuna svo að getir þú notað nýja "
+"stýrikerfið þitt?"
+
+#: live-installer/frontend/gtk_interface.py:1260
+#: live-installer/frontend/gtk_interface.py:1264
+#: live-installer/frontend/gtk_interface.py:1273
+#: live-installer/frontend/gtk_interface.py:1282
+msgid "Installation error"
+msgstr "Uppsetningarvilla"
+
+#: live-installer/frontend/gtk_interface.py:1373
+msgid "Install system with updates"
+msgstr ""
+
+#: live-installer/frontend/welcome.py:32
+#, python-format
+msgid "Try %s"
+msgstr ""
+
+#: live-installer/frontend/welcome.py:36
+#, python-format
+msgid "You are currently running %s from live media."
+msgstr ""
+
+#: live-installer/frontend/welcome.py:38
+#, python-format
+msgid ""
+"You can install %s now, or chose \"Install to Hard Drive\" in the Appication "
+"Menu later."
+msgstr ""
+
+#: live-installer/frontend/welcome.py:39
+#, fuzzy, python-format
+msgid "Welcome to %s"
+msgstr "Velkomin"
+
+#: live-installer/frontend/tui_interface.py:45
+#, fuzzy
+msgid "What keyboard would you like to use?"
+msgstr "Hvaða tungumál viltu nota?"
+
+#: live-installer/frontend/tui_interface.py:52
+#, fuzzy
+msgid "Keyboard Model"
+msgstr "Tegund lyklaborðs:"
+
+#: live-installer/frontend/timezones.py:142
+#, fuzzy
+msgid "Select timezone"
+msgstr "Tímabelti"
 
 #: live-installer/frontend/partitioning.py:59
 msgid "B"
@@ -427,30 +956,6 @@ msgstr ""
 "Engin disksneiðatafla fannst á harða disknum: %s. Viltu að "
 "uppsetningarforritið búi til sett af disksneiðum fyrir þig? Athugaðu að það "
 "myndi EYÐA út öllum gögnum sem eru á disknum."
-
-#: live-installer/frontend/partitioning.py:306
-#: live-installer/frontend/partitioning.py:451
-#: live-installer/frontend/gtk_interface.py:423
-msgid "Free space"
-msgstr "Laust pláss"
-
-#: live-installer/frontend/partitioning.py:321
-#: live-installer/frontend/gtk_interface.py:310
-#: live-installer/frontend/gtk_interface.py:313
-#: live-installer/frontend/gtk_interface.py:832
-#: live-installer/frontend/gtk_interface.py:868
-#: live-installer/frontend/gtk_interface.py:943
-#: live-installer/frontend/gtk_interface.py:956
-#: live-installer/frontend/gtk_interface.py:961
-#: live-installer/frontend/gtk_interface.py:975
-#: live-installer/frontend/gtk_interface.py:980
-#: live-installer/frontend/gtk_interface.py:986
-#: live-installer/frontend/gtk_interface.py:991
-#: live-installer/frontend/gtk_interface.py:996
-#: live-installer/frontend/gtk_interface.py:1049
-#: live-installer/frontend/gtk_interface.py:1113
-msgid "Installer"
-msgstr "Uppsetningarforrit"
 
 #: live-installer/frontend/partitioning.py:337
 #, python-format
@@ -512,494 +1017,6 @@ msgstr "Hætta við"
 #: live-installer/frontend/dialogs.py:54
 msgid "OK"
 msgstr "Í lagi"
-
-#: live-installer/frontend/welcome.py:32
-#, python-format
-msgid "Try %s"
-msgstr ""
-
-#: live-installer/frontend/welcome.py:36
-#, python-format
-msgid "You are currently running %s from live media."
-msgstr ""
-
-#: live-installer/frontend/welcome.py:38
-#, python-format
-msgid ""
-"You can install %s now, or chose \"Install to Hard Drive\" in the Appication "
-"Menu later."
-msgstr ""
-
-#: live-installer/frontend/welcome.py:39
-#, fuzzy, python-format
-msgid "Welcome to %s"
-msgstr "Velkomin"
-
-#: live-installer/frontend/tui_interface.py:23
-#: live-installer/frontend/gtk_interface.py:347
-#, fuzzy, python-format
-msgid "Welcome to the %s Installer."
-msgstr "Velkomin í 17G uppsetningarforritið."
-
-#: live-installer/frontend/tui_interface.py:28
-#: live-installer/frontend/gtk_interface.py:324
-msgid "What language would you like to use?"
-msgstr "Hvaða tungumál viltu nota?"
-
-#: live-installer/frontend/tui_interface.py:33
-#: live-installer/frontend/gtk_interface.py:99
-#: live-installer/frontend/gtk_interface.py:324
-#: live-installer/frontend/gtk_interface.py:352
-msgid "Language"
-msgstr "Tungumál"
-
-#: live-installer/frontend/tui_interface.py:37
-#: live-installer/frontend/gtk_interface.py:326
-msgid "Where are you?"
-msgstr "Hvar ertu?"
-
-#: live-installer/frontend/tui_interface.py:45
-#, fuzzy
-msgid "What keyboard would you like to use?"
-msgstr "Hvaða tungumál viltu nota?"
-
-#: live-installer/frontend/tui_interface.py:52
-#, fuzzy
-msgid "Keyboard Model"
-msgstr "Tegund lyklaborðs:"
-
-#: live-installer/frontend/timezones.py:142
-#, fuzzy
-msgid "Select timezone"
-msgstr "Tímabelti"
-
-#: live-installer/frontend/gtk_interface.py:90
-#: live-installer/frontend/gtk_interface.py:353
-msgid "Country"
-msgstr "Land"
-
-#: live-installer/frontend/gtk_interface.py:206
-#: live-installer/frontend/gtk_interface.py:358
-msgid "Layout"
-msgstr "Uppsetning"
-
-#: live-installer/frontend/gtk_interface.py:214
-#: live-installer/frontend/gtk_interface.py:359
-msgid "Variant"
-msgstr "Tilbrigði"
-
-#: live-installer/frontend/gtk_interface.py:232
-msgid "Calculating file indexes ..."
-msgstr "Reikna skráayfirlit ..."
-
-#: live-installer/frontend/gtk_interface.py:328
-msgid "Keyboard layout"
-msgstr "Lyklaborðsútfærsla"
-
-#: live-installer/frontend/gtk_interface.py:328
-msgid "What is your keyboard layout?"
-msgstr "Hvaða lyklaborðsuppsetningu ertu með?"
-
-#: live-installer/frontend/gtk_interface.py:330
-msgid "User account"
-msgstr "Notandaaðgangur"
-
-#: live-installer/frontend/gtk_interface.py:330
-msgid "Who are you?"
-msgstr "Hver ertu?"
-
-#: live-installer/frontend/gtk_interface.py:332
-msgid "Installation Type"
-msgstr "Gerð uppsetningar"
-
-#: live-installer/frontend/gtk_interface.py:332
-#: live-installer/frontend/gtk_interface.py:334
-#, fuzzy
-msgid "Where do you want to install system?"
-msgstr "Hvar viltu setja upp 17G?"
-
-#: live-installer/frontend/gtk_interface.py:334
-msgid "Partitioning"
-msgstr "Disksneiðing"
-
-#: live-installer/frontend/gtk_interface.py:336
-msgid "Summary"
-msgstr "Yfirlit"
-
-#: live-installer/frontend/gtk_interface.py:336
-msgid "Check that everything is correct"
-msgstr ""
-
-#: live-installer/frontend/gtk_interface.py:338
-msgid "Installing"
-msgstr "Uppsetning"
-
-#: live-installer/frontend/gtk_interface.py:338
-msgid "Please wait..."
-msgstr ""
-
-#: live-installer/frontend/gtk_interface.py:342
-msgid "Back"
-msgstr "Til baka"
-
-#: live-installer/frontend/gtk_interface.py:343
-#: live-installer/frontend/gtk_interface.py:829
-msgid "Next"
-msgstr "Næsta"
-
-#: live-installer/frontend/gtk_interface.py:361
-msgid "Type here to test your keyboard layout"
-msgstr "Skrifaðu hér til að prófa lyklaborðsuppsetninguna"
-
-#: live-installer/frontend/gtk_interface.py:363
-msgid ""
-"* Your username, your computer's name and your password should only contain "
-"Latin characters. In addition to your selected layout, English (US) is set "
-"as the default. You can switch layouts by pressing both Ctrl keys together."
-msgstr ""
-
-#: live-installer/frontend/gtk_interface.py:389
-#, fuzzy
-msgid "Erase a disk and install system on it."
-msgstr "Hreinsa disk og setja 17G upp á honum."
-
-#: live-installer/frontend/gtk_interface.py:402
-#, fuzzy
-msgid "Manually create, resize or choose partitions for system."
-msgstr "Skilgreina, eyða og endurstilla disksneiðar fyrir 17G."
-
-#: live-installer/frontend/gtk_interface.py:404
-msgid "Remove Windows & Install"
-msgstr ""
-
-#: live-installer/frontend/gtk_interface.py:406
-msgid "Remove existsing windows and install system on it."
-msgstr ""
-
-#: live-installer/frontend/gtk_interface.py:415
-msgid "Refresh"
-msgstr "Endurlesa"
-
-#: live-installer/frontend/gtk_interface.py:417
-msgid "Device"
-msgstr "Tæki"
-
-#: live-installer/frontend/gtk_interface.py:418
-msgid "Type"
-msgstr "Tegund"
-
-#: live-installer/frontend/gtk_interface.py:419
-msgid "Operating system"
-msgstr "Stýrikerfi"
-
-#: live-installer/frontend/gtk_interface.py:420
-msgid "Mount point"
-msgstr "Tengipunktur"
-
-#: live-installer/frontend/gtk_interface.py:421
-msgid "Format as"
-msgstr "Forsníða sem"
-
-#: live-installer/frontend/gtk_interface.py:422
-msgid "Size"
-msgstr "Stærð"
-
-#: live-installer/frontend/gtk_interface.py:570
-msgid "Quit?"
-msgstr "Hætta?"
-
-#: live-installer/frontend/gtk_interface.py:571
-msgid "Are you sure you want to quit the installer?"
-msgstr "Ertu viss að þú viljir hætta í uppsetningarforritinu?"
-
-#: live-installer/frontend/gtk_interface.py:833
-msgid "Please choose a language"
-msgstr "Veldu þér tungumál"
-
-#: live-installer/frontend/gtk_interface.py:869
-#, fuzzy
-msgid "Please provide a kayboard layout for your computer."
-msgstr "Veldu lykilorð fyrir notandaaðganginn þinn."
-
-#: live-installer/frontend/gtk_interface.py:878
-msgid "Please provide your full name."
-msgstr "Settu inn fullt nafn."
-
-#: live-installer/frontend/gtk_interface.py:883
-msgid "Please provide a name for your computer."
-msgstr ""
-
-#: live-installer/frontend/gtk_interface.py:887
-msgid "Please provide a username."
-msgstr "Settu inn notandanafn."
-
-#: live-installer/frontend/gtk_interface.py:892
-msgid "Please provide a password for your user account."
-msgstr "Veldu lykilorð fyrir notandaaðganginn þinn."
-
-#: live-installer/frontend/gtk_interface.py:896
-#, fuzzy
-msgid "Your passwords is too short."
-msgstr "Lykilorðin stemma ekki."
-
-#: live-installer/frontend/gtk_interface.py:900
-#, fuzzy
-msgid "Your passwords is not strong."
-msgstr "Lykilorðin stemma ekki."
-
-#: live-installer/frontend/gtk_interface.py:904
-msgid "Your passwords do not match."
-msgstr "Lykilorðin stemma ekki."
-
-#: live-installer/frontend/gtk_interface.py:910
-#, fuzzy
-msgid "Your username cannot start with numbers."
-msgstr "Notandanafnið má ekki innihalda bil."
-
-#: live-installer/frontend/gtk_interface.py:916
-msgid "Your username must be lower case."
-msgstr "Notandanafnið verður að vera lagstafa."
-
-#: live-installer/frontend/gtk_interface.py:923
-msgid "Your username may not contain whitespace characters."
-msgstr "Notandanafnið má ekki innihalda bil."
-
-#: live-installer/frontend/gtk_interface.py:931
-msgid "The computer's name must be lower case."
-msgstr ""
-
-#: live-installer/frontend/gtk_interface.py:938
-msgid "The computer's name may not contain whitespace characters."
-msgstr ""
-
-#: live-installer/frontend/gtk_interface.py:957
-msgid ""
-"Please indicate a filesystem to format the root (/) partition with before "
-"proceeding."
-msgstr ""
-"Veldu skráakerfi sem nota á við forsníðingu á grunndisksneiðinni (/ - root) "
-"áður en haldið er áfram."
-
-#: live-installer/frontend/gtk_interface.py:961
-msgid "Please select a root (/) partition."
-msgstr "Veldu einhverja disksneið sem grunndisksneið (/ - root)."
-
-#: live-installer/frontend/gtk_interface.py:962
-#, fuzzy, python-format
-msgid ""
-"A root partition is needed to install %s on.\n"
-"\n"
-" - Mount point: /\n"
-" - Recommended size: 30GB\n"
-" - Recommended filesystem format: ext4\n"
-"\n"
-msgstr ""
-"Nauðsynlegt er að ákveða grunndisksneið (rót) til að geta sett upp Linux "
-"Mint.\n"
-"\n"
-" - Tengipunktur: /\n"
-" - Kjörstærð: 30 GB\n"
-" - Skráakerfi sem mælt er með: ext4\n"
-"\n"
-"\n"
-"Athugaðu: Til að nota btrfs tímahliðrunaröryggisafritin (timeshift "
-"snapshots) þarf:\n"
-" - Tengipunkt undirsýndardisks /@\n"
-" - btrfs sem snið skráakerfis\n"
-
-#: live-installer/frontend/gtk_interface.py:976
-msgid "The EFI partition is not bootable. Please edit the partition flags."
-msgstr ""
-"EFI disksneiðin er ekki ræsanleg (bootable). Breyttu disksneiðaflöggunum."
-
-#: live-installer/frontend/gtk_interface.py:981
-msgid "The EFI partition is too small. It must be at least 35MB."
-msgstr "EFI disksneiðin er of lítil. Hún þarf að vera a.m.k 35 MB."
-
-#: live-installer/frontend/gtk_interface.py:987
-#: live-installer/frontend/gtk_interface.py:992
-msgid "The EFI partition must be formatted as vfat."
-msgstr "EFI disksneiðin verður að vera forsniðin sem vfat."
-
-#: live-installer/frontend/gtk_interface.py:996
-msgid "Please select an EFI partition."
-msgstr "Veldu einhverja EFI disksneið."
-
-#: live-installer/frontend/gtk_interface.py:997
-msgid ""
-"An EFI system partition is needed with the following requirements:\n"
-"\n"
-" - Mount point: /boot/efi\n"
-" - Partition flags: Bootable\n"
-" - Size: at least 35MB (100MB or more recommended)\n"
-" - Format: vfat or fat32\n"
-"\n"
-"To ensure compatibility with Windows we recommend you use the first "
-"partition of the disk as the EFI system partition.\n"
-" "
-msgstr ""
-"EFI kerfisdisksneið er nauðsynleg, með eftirfarandi eiginleikum:\n"
-"\n"
-" - Tengipunktur: /boot/efi\n"
-" - Disksneiðaflagg: Bootable\n"
-" - Stærð: Stærri en 35MB (mælt er með 100MB eða meira)\n"
-" - Skráakerfi: vfat eða fat32\n"
-"\n"
-"Til að tryggja samhæfni við Windows mælum við með því að notuð sé fyrsta "
-"disksneið disksins undir EFI kerfisdisksneiðina.\n"
-" "
-
-#: live-installer/frontend/gtk_interface.py:1038
-msgid "Please select a disk."
-msgstr "Veldu disk."
-
-#: live-installer/frontend/gtk_interface.py:1044
-msgid "Please provide a passphrase for the encryption."
-msgstr ""
-
-#: live-installer/frontend/gtk_interface.py:1047
-msgid "Your passphrases do not match."
-msgstr "Lykilsetningarnar stemma ekki."
-
-#: live-installer/frontend/gtk_interface.py:1051
-msgid "Warning"
-msgstr "Aðvörun"
-
-#: live-installer/frontend/gtk_interface.py:1052
-#, python-format
-msgid "This will delete all the data on %s. Are you sure?"
-msgstr "Þetta mun eyða öllum gögnum á %s. Ertu viss?"
-
-#: live-installer/frontend/gtk_interface.py:1078
-msgid "Install"
-msgstr "Setja upp"
-
-#: live-installer/frontend/gtk_interface.py:1114
-#, fuzzy
-msgid "Please provide a device to install grub."
-msgstr "Settu inn notandanafn."
-
-#: live-installer/frontend/gtk_interface.py:1149
-msgid "Localization"
-msgstr "Staðfærsla"
-
-#: live-installer/frontend/gtk_interface.py:1150
-msgid "Language: "
-msgstr "Tungumál: "
-
-#: live-installer/frontend/gtk_interface.py:1151
-msgid "Timezone: "
-msgstr "Tímabelti: "
-
-#: live-installer/frontend/gtk_interface.py:1152
-msgid "Keyboard layout: "
-msgstr "Uppsetning lyklaborðs: "
-
-#: live-installer/frontend/gtk_interface.py:1155
-msgid "User settings"
-msgstr "Notandastillingar"
-
-#: live-installer/frontend/gtk_interface.py:1156
-msgid "Real name: "
-msgstr "Fullt nafn: "
-
-#: live-installer/frontend/gtk_interface.py:1157
-msgid "Username: "
-msgstr "Notandanafn: "
-
-#: live-installer/frontend/gtk_interface.py:1159
-msgid "Password: "
-msgstr ""
-
-#: live-installer/frontend/gtk_interface.py:1161
-msgid "Automatic login: "
-msgstr "Sjálfvirk innskráning: "
-
-#: live-installer/frontend/gtk_interface.py:1161
-#: live-installer/frontend/gtk_interface.py:1164
-#: live-installer/frontend/gtk_interface.py:1184
-#: live-installer/frontend/gtk_interface.py:1188
-msgid "enabled"
-msgstr "virkt"
-
-#: live-installer/frontend/gtk_interface.py:1162
-#: live-installer/frontend/gtk_interface.py:1165
-#: live-installer/frontend/gtk_interface.py:1185
-#: live-installer/frontend/gtk_interface.py:1188
-msgid "disabled"
-msgstr "óvirkt"
-
-#: live-installer/frontend/gtk_interface.py:1164
-msgid "Home encryption: "
-msgstr "Dulritun heimamöppu: "
-
-#: live-installer/frontend/gtk_interface.py:1166
-msgid "System settings"
-msgstr "Kerfisstillingar"
-
-#: live-installer/frontend/gtk_interface.py:1167
-msgid "Computer's name: "
-msgstr ""
-
-#: live-installer/frontend/gtk_interface.py:1170
-#: live-installer/frontend/gtk_interface.py:1172
-msgid "Bios type: "
-msgstr ""
-
-#: live-installer/frontend/gtk_interface.py:1174
-msgid "Filesystem operations"
-msgstr "Aðgerðir með skráakerfi"
-
-#: live-installer/frontend/gtk_interface.py:1175
-#, python-format
-msgid "Install bootloader on %s"
-msgstr "Setja ræsistjóra upp á %s"
-
-#: live-installer/frontend/gtk_interface.py:1176
-msgid "Do not install bootloader"
-msgstr "Ekki setja upp ræsistjóra"
-
-#: live-installer/frontend/gtk_interface.py:1178
-msgid "Use already-mounted /target."
-msgstr "Nota þegar tengt /target."
-
-#: live-installer/frontend/gtk_interface.py:1182
-#, python-format
-msgid "Automated installation on %s"
-msgstr "Sjálfvirk uppsetning á %s"
-
-#: live-installer/frontend/gtk_interface.py:1184
-msgid "LVM: "
-msgstr "LVM: "
-
-#: live-installer/frontend/gtk_interface.py:1187
-msgid "Disk Encryption: "
-msgstr "Dulritun disks: "
-
-#: live-installer/frontend/gtk_interface.py:1191
-#, python-format
-msgid "Format %(path)s as %(filesystem)s"
-msgstr "Forsníða %(path)s sem %(filesystem)s"
-
-#: live-installer/frontend/gtk_interface.py:1195
-#, python-format
-msgid "Mount %(path)s as %(mount)s"
-msgstr "Tengja %(path)s sem %(mount)s"
-
-#: live-installer/frontend/gtk_interface.py:1208
-msgid ""
-"The installation is now complete. Do you want to restart your computer to "
-"use the new system?"
-msgstr ""
-"Uppsetningu er lokið. Viltu endurræsa tölvuna svo að getir þú notað nýja "
-"stýrikerfið þitt?"
-
-#: live-installer/frontend/gtk_interface.py:1239
-#: live-installer/frontend/gtk_interface.py:1243
-#: live-installer/frontend/gtk_interface.py:1252
-#: live-installer/frontend/gtk_interface.py:1261
-msgid "Installation error"
-msgstr "Uppsetningarvilla"
 
 #: live-installer/frontend/dialogs.py:41
 msgid "No"
