@@ -736,6 +736,7 @@ class InstallerWindow:
                             fallback=True).install()  # Try e.g. zh_CN, zh, or fallback to hardcoded English
         os.environ["LANG"] = "{}.UTF-8".format(language)
         os.environ["LANGUAGE"] = "{}.UTF-8".format(language)
+        self.build_kb_lists()
         try:
             self.i18n()
         except BaseException:
