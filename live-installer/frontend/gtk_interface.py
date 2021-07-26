@@ -11,6 +11,9 @@ from frontend import *
 from frontend.dialogs import QuestionDialog, ErrorDialog, WarningDialog
 from installer import InstallerEngine, Setup, NON_LATIN_KB_LAYOUTS
 
+gettext.bindtextdomain('xkeyboard-config', '/usr/share/locale')
+gettext.textdomain('xkeyboard-config')
+l = gettext.gettext
 gettext.install("live-installer", "/usr/share/locale")
 
 LOADING_ANIMATION = './resources/loading.gif'
@@ -678,7 +681,7 @@ class InstallerWindow:
 
         # Keyboard layout
         for model in common.get_keyboard_layout_list():
-            desc = model[0]
+            desc = l(model[0])
             nonedesc = model[0]
             name = model[1]
             if name in NON_LATIN_KB_LAYOUTS:
@@ -686,7 +689,7 @@ class InstallerWindow:
             # Keyboard variant
             for variant in common.get_keyboard_variant_list(model):
                 var_name = variant[0]
-                var_desc = variant[1]
+                var_desc = l(variant[1])
                 var_desc = var_name if len(
                     var_desc) == 0 else var_desc
                 if name in NON_LATIN_KB_LAYOUTS and "Latin" not in var_desc:
