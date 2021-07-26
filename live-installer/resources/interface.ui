@@ -1336,6 +1336,43 @@
               </packing>
             </child>
             <child>
+              <object class="GtkBox" id="vbox_options">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="orientation">vertical</property>
+                <property name="spacing">15</property>
+                <child>
+                  <object class="GtkBox" id="options_box">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="margin-start">25</property>
+                    <property name="margin-end">25</property>
+                    <property name="margin-top">25</property>
+                    <property name="margin-bottom">25</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="name">7</property>
+                <property name="position">7</property>
+              </packing>
+            </child>
+            <child>
               <object class="GtkBox" id="vbox_overview">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
@@ -1366,8 +1403,8 @@
                 </child>
               </object>
               <packing>
-                <property name="name">7</property>
-                <property name="position">7</property>
+                <property name="name">8</property>
+                <property name="position">8</property>
               </packing>
             </child>
             <child>
@@ -1462,8 +1499,8 @@
                 </child>
               </object>
               <packing>
-                <property name="name">8</property>
-                <property name="position">8</property>
+                <property name="name">9</property>
+                <property name="position">9</property>
               </packing>
             </child>
           </object>

@@ -677,6 +677,11 @@ class InstallerEngine:
                 self.setup.keyboard_layout, self.setup.keyboard_variant))
             newconsolefh.close()
 
+        # Update if enabled
+        if self.setup.install_updates:
+            self.update_progress(_("Trying to install updates"), True)
+            self.run("chroot||yes | {}".format(config.package_manager(
+                "full_system_update")))
         # remove pacman
         self.update_progress(_("Clearing package manager"), True)
         log(" --> Clearing package manager")
@@ -863,3 +868,6 @@ class Setup(object):
     keyboard_model_description = None
     keyboard_layout_description = None
     keyboard_variant_description = None
+    
+    # Additional options
+    install_updates = False

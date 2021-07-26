@@ -1272,6 +1272,59 @@
               </packing>
             </child>
             <child>
+              <object class="GtkBox" id="vbox_options">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="halign">center</property>
+                <property name="valign">center</property>
+                <property name="orientation">vertical</property>
+                <property name="spacing">15</property>
+                <child>
+                  <object class="GtkBox" id="options_box">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label_welcome4">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="margin-bottom">31</property>
+                    <property name="label" translatable="yes">This program will ask you some questions and set up system on your computer.</property>
+                    <property name="use-markup">True</property>
+                    <property name="justify">center</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="name">7</property>
+                <property name="position">7</property>
+              </packing>
+            </child>
+            <child>
               <object class="GtkBox" id="vbox_overview">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
@@ -1302,8 +1355,8 @@
                 </child>
               </object>
               <packing>
-                <property name="name">7</property>
-                <property name="position">7</property>
+                <property name="name">8</property>
+                <property name="position">8</property>
               </packing>
             </child>
             <child>
@@ -1398,8 +1451,8 @@
                 </child>
               </object>
               <packing>
-                <property name="name">8</property>
-                <property name="position">8</property>
+                <property name="name">9</property>
+                <property name="position">9</property>
               </packing>
             </child>
           </object>
@@ -1438,7 +1491,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkBox">
+              <object class="GtkBox" id="dot_box">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="halign">center</property>

@@ -54,6 +54,7 @@
 # skip_language: false
 # skip_timezone: false
 # skip_keyboard: false
+# skip_options: false
 # hide_keyboard_model: false
 # allow_uppercase_hostname: true
 # allow_numeric_password: false

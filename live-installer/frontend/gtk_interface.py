@@ -72,8 +72,9 @@ class InstallerWindow:
          self.PAGE_USER,
          self.PAGE_TYPE,
          self.PAGE_PARTITIONS,
+         self.PAGE_OPTIONS,
          self.PAGE_OVERVIEW,
-         self.PAGE_INSTALL) = list(range(9))
+         self.PAGE_INSTALL) = list(range(10))
 
         # set the button events (wizard_cb)
         self.builder.get_object("button_next").connect(
@@ -238,6 +239,9 @@ class InstallerWindow:
         # build partition list
         self.should_pulse = False
 
+        # build options page
+        self.options_init()
+
         # make sure we're on the right page (no pun.)
         self.activate_page(0)
         self.slideshow()
@@ -317,7 +321,7 @@ class InstallerWindow:
         self.window.set_wmclass(window_title, window_title)
 
         # Header
-        self.wizard_pages = list(range(12))
+        self.wizard_pages = list(range(13))
         self.wizard_pages[self.PAGE_WELCOME] = WizardPage(
             _("Welcome"), "mark-location-symbolic", "")
         self.wizard_pages[self.PAGE_LANGUAGE] = WizardPage(
@@ -332,6 +336,8 @@ class InstallerWindow:
             _("Installation Type"), "drive-harddisk-system-symbolic", _("Where do you want to install system?"))
         self.wizard_pages[self.PAGE_PARTITIONS] = WizardPage(
             _("Partitioning"), "drive-harddisk-system-symbolic", _("Where do you want to install system?"))
+        self.wizard_pages[self.PAGE_OPTIONS] = WizardPage(
+            _("Options"), "object-select-symbolic", _("Select additional options"))
         self.wizard_pages[self.PAGE_OVERVIEW] = WizardPage(
             _("Summary"), "object-select-symbolic", _("Check that everything is correct"))
         self.wizard_pages[self.PAGE_INSTALL] = WizardPage(
@@ -1087,57 +1093,65 @@ class InstallerWindow:
         self.builder.get_object("button_back").set_sensitive(True)
         nex = None
         # check each page for errors
-        if(not goback):
-            if (sel == self.PAGE_WELCOME):
+        if not goback:
+            if sel == self.PAGE_WELCOME:
                 nex = self.PAGE_LANGUAGE
                 if config.get("skip_language", False):
                     sel = self.PAGE_LANGUAGE
-            if(sel == self.PAGE_LANGUAGE):
+            if sel == self.PAGE_LANGUAGE:
                 nex = self.PAGE_TIMEZONE
                 if config.get("skip_timezone", False):
                     sel = self.PAGE_TIMEZONE
-            if (sel == self.PAGE_TIMEZONE):
+            if sel == self.PAGE_TIMEZONE:
                 nex = self.PAGE_KEYBOARD
                 if config.get("skip_keyboard", False):
                     sel = self.PAGE_KEYBOARD
-            if(sel == self.PAGE_KEYBOARD):
+            if sel == self.PAGE_KEYBOARD:
                 nex = self.PAGE_USER
-            if(sel == self.PAGE_USER):
+            if sel == self.PAGE_USER:
                 nex = self.PAGE_TYPE
-            if(sel == self.PAGE_TYPE):
+            if sel == self.PAGE_TYPE:
                 self.activate_page_type()
                 return
-            if(sel == self.PAGE_PARTITIONS):
+            if sel == self.PAGE_PARTITIONS :
                 if self.grub_check.get_active() and \
                    not self.setup.grub_device:
                     WarningDialog(_("Installer"), _(
                         "Please provide a device to install grub."))
                     return
+                nex = self.PAGE_OPTIONS
+                if config.get("skip_options", False):
+                    nex = self.PAGE_OVERVIEW
+            if sel == self.PAGE_OPTIONS:
                 nex = self.PAGE_OVERVIEW
-            if(sel == self.PAGE_OVERVIEW):
+            if sel == self.PAGE_OVERVIEW:
                 nex = self.PAGE_INSTALL
                 self.activate_page(nex, nex)
                 return
         else:
-            if(sel == self.PAGE_OVERVIEW):
+            if sel == self.PAGE_OVERVIEW:
+                nex = self.PAGE_OPTIONS
+                if config.get("skip_options", False):
+                    nex = self.PAGE_TYPE
+            if sel == self.PAGE_OPTIONS:
                 nex = self.PAGE_TYPE
-            if(sel == self.PAGE_PARTITIONS):
+            if sel == self.PAGE_PARTITIONS:
                 nex = self.PAGE_TYPE
-            if(sel == self.PAGE_TYPE):
+            if sel == self.PAGE_TYPE:
                 nex = self.PAGE_USER
-            if(sel == self.PAGE_USER):
+            if sel == self.PAGE_USER:
                 nex = self.PAGE_KEYBOARD
                 if config.get("skip_keyboard", False):
                     sel = self.PAGE_KEYBOARD
-            if(sel == self.PAGE_KEYBOARD):
+            if sel == self.PAGE_KEYBOARD:
                 nex = self.PAGE_TIMEZONE
                 if config.get("skip_timezone", False):
                     sel = self.PAGE_LANGUAGE
-            if(sel == self.PAGE_TIMEZONE):
+            if sel == self.PAGE_TIMEZONE:
                 nex = self.PAGE_LANGUAGE
                 if config.get("skip_language", False):
                     sel = self.PAGE_WELCOME
-            if(sel == self.PAGE_LANGUAGE):
+            if sel == self.PAGE_LANGUAGE:
                 nex = self.PAGE_WELCOME
         self.activate_page(nex, sel, goback)
 
@@ -1343,3 +1357,12 @@ class InstallerWindow:
         if(self.cur_slide_pos > self.max_slide_page):
             self.cur_slide_pos = 0
         GLib.timeout_add(15000, self.set_slide_page)
+        
+    def options_init(self):
+        def chk_updates(button):
+            self.setup.install_updates = button.get_active()
+        obox = self.builder.get_object("options_box")
+        updates = Gtk.CheckButton()
+        updates.set_label(_("Install system with updates"))
+        updates.connect("toggled", chk_updates)
+        obox.add(updates)
