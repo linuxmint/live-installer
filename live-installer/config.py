@@ -109,10 +109,12 @@ def package_manager(process, packages=[]):
     if process == "name":
         exit("You can't use this parameter!")
 
-    if len(packages) == 0:
-        return ":"
 
     if process in pm:
+        if "{packages}" not in pm[process]:
+            return pm[process]
+        elif len(packages) == 0:
+            return ":" 
         pkgs = ""
 
         for p in packages:

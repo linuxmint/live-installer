@@ -1058,7 +1058,9 @@ class InstallerWindow:
                         "This will delete all the data on %s. Are you sure?") % self.setup.diskname):
                     partitioning.build_partitions(self)
                     partitioning.build_grub_partitions()
-                    self.activate_page(self.PAGE_OVERVIEW)
+                    self.activate_page(self.PAGE_OPTIONS)
+                    if config.get("skip_options", False):
+                        self.activate_page(self.PAGE_OVERVIEW)
         elif self.setup.replace_windows:
             if self.setup.replace_windows:
                 rootfs = partitioning.PartitionBase()
@@ -1080,7 +1082,9 @@ class InstallerWindow:
                     boot.format_as = 'vfat'
                     boot.mount_as = None
                     self.setup.partitions.append(boot)
-            self.activate_page(self.PAGE_OVERVIEW)
+                self.activate_page(self.PAGE_OPTIONS)
+                if config.get("skip_options", False):
+                    self.activate_page(self.PAGE_OVERVIEW)
             self.builder.get_object("button_next").set_label(_("Install"))
         else:
             self.activate_page(self.PAGE_PARTITIONS)
