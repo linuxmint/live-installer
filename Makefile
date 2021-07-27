@@ -47,7 +47,7 @@ install-systemd:
 
 install-openrc:
 	mkdir -p $(DESTDIR)/lib/init.d/
-	install 17g.service $(DESTDIR)/$(DESTDIR)/lib/init.d/17g
+	install 17g.initd $(DESTDIR)/$(DESTDIR)/lib/init.d/17g
 
 uninstall:
 	rm -rf $(DESTDIR)/usr/lib/live-installer
