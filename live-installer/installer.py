@@ -680,8 +680,8 @@ class InstallerEngine:
         # Update if enabled
         if self.setup.install_updates:
             self.update_progress(_("Trying to install updates"), True)
-            self.run_and_update(format(config.package_manager(
-                "full_system_update")))
+            self.run_and_update(config.package_manager(
+                "full_system_update"))
         # remove pacman
         self.update_progress(_("Clearing package manager"), True)
         log(" --> Clearing package manager")
