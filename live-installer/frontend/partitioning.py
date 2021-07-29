@@ -483,54 +483,52 @@ class Partition(object):
             else:
                 self.os_fs_info, self.description, self.free_space, self.used_percent = ': ' + \
                     self.type, '', '', 0
-        if True:
-            # for mountable partitions, more accurate than the getLength size
-            # above
-            self.description = ""
-            if not self.mount_point:
-                self.mount_point = TMP_MOUNTPOINT
-            if path_exists(str(self.mount_point), str('etc/os-release')):
-                self.description = getoutput("cat %s/etc/os-release | grep ^NAME=" % self.mount_point).decode("utf-8").replace(
-                    'NAME=', '').replace('"', '').strip()
-            elif path_exists(str(self.mount_point), str('Windows/servicing/Version')):
-                self.description = 'Windows ' + {
-                    '10.': '10',
-                    '6.4': '10',
-                    '6.3': '8.1',
-                    '6.2': '8',
-                    '6.1': '7',
-                    '6.0': 'Vista',
-                    '5.2': 'XP Pro x64',
-                    '5.1': 'XP',
-                    '5.0': '2000',
-                    '4.9': 'ME',
-                    '4.1': '98',
-                    '4.0': '95',
-                }.get(getoutput('ls {}/Windows/servicing/Version'.format(self.mount_point))[:3].decode("utf-8"), '')
-            elif path_exists(self.mount_point, 'Boot/BCD'):
-                self.description = 'Windows ' + _('bootloader/recovery')
-            elif path_exists(self.mount_point, 'Windows/System32'):
-                self.description = 'Windows'
-            elif path_exists(self.mount_point, 'System/Library/CoreServices/SystemVersion.plist'):
-                self.description = 'Mac OS X'
-            elif path_exists(self.mount_point, 'etc/'):
-                self.description = 'Linux/Unix'
-            else:
-                try:
-                    if partition.active:
-                        for flag in partition.getFlagsAsString().split(", "):
-                            print(self.type)
-                            if flag in ["boot", "esp"] and self.type == "fat32":
-                                self.description = _('EFI System Partition')
-                                break
-                except Exception as detail:
-                    # best effort
-                    err("Could not read partition flags for %s: %s" %
-                        (self.path, detail))
-            self.os_fs_info = ': {0.description} ({0.type}; {0.size}; {0.free_space})'.format(
-                self) if self.description else ': ' + self.type
-            log("                  . self.description %s self.os_fs_info %s" % (
-                self.description, self.os_fs_info))
+        # for mountable partitions, more accurate than the getLength size
+        # above
+        self.description = ""
+        if not self.mount_point:
+            self.mount_point = TMP_MOUNTPOINT
+        if path_exists(str(self.mount_point), str('etc/os-release')):
+            self.description = getoutput("cat %s/etc/os-release | grep ^NAME=" % self.mount_point).decode("utf-8").replace(
+                'NAME=', '').replace('"', '').strip()
+        elif path_exists(str(self.mount_point), str('Windows/servicing/Version')):
+            self.description = 'Windows ' + {
+                '10.': '10',
+                '6.4': '10',
+                '6.3': '8.1',
+                '6.2': '8',
+                '6.1': '7',
+                '6.0': 'Vista',
+                '5.2': 'XP Pro x64',
+                '5.1': 'XP',
+                '5.0': '2000',
+                '4.9': 'ME',
+                '4.1': '98',
+                '4.0': '95',
+            }.get(getoutput('ls {}/Windows/servicing/Version'.format(self.mount_point))[:3].decode("utf-8"), '')
+        elif path_exists(self.mount_point, 'Boot/BCD'):
+            self.description = 'Windows ' + _('bootloader/recovery')
+        elif path_exists(self.mount_point, 'Windows/System32'):
+            self.description = 'Windows'
+        elif path_exists(self.mount_point, 'System/Library/CoreServices/SystemVersion.plist'):
+            self.description = 'Mac OS X'
+        elif path_exists(self.mount_point, 'etc/'):
+            self.description = 'Linux/Unix'
+        else:
+            try:
+                if partition.active:
+                    for flag in partition.getFlagsAsString().split(", "):
+                        if flag in ["boot", "esp"] and self.type == "fat32":
+                            self.description = _('EFI System Partition')
+                            break
+            except Exception as detail:
+                # best effort
+                err("Could not read partition flags for %s: %s" %
+                    (self.path, detail))
+        self.os_fs_info = ': {0.description} ({0.type}; {0.size}; {0.free_space})'.format(
+            self) if self.description else ': ' + self.type
+        log("                  . self.description %s self.os_fs_info %s" % (
+            self.description, self.os_fs_info))
         os.system('umount ' + TMP_MOUNTPOINT + ' 2>/dev/null')
 
     def print_partition(self):
