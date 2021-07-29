@@ -5,4 +5,4 @@ install_package: apt install {packages} --yes
 remove_package: apt remove {packages} --yes
 remove_package_with_unusing_deps: apt purge {packages} --yes && apt autoremove --yes
 remove_package_with_needed_packages: apt purge {packages} --yes
-full_system_update: apt update && apt dist-upgrade --yes
+full_system_update: chroot /target apt update && chroot /target apt dist-upgrade --yes
