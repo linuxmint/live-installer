@@ -49,7 +49,7 @@ class InstallerEngine:
         self.error_message = errorhook
 
     def update_progress(self, message="", pulse=False, done=False):
-        if len(message.strip())>0:
+        if len(message.strip())==0:
             return
         if done:
             self.our_total = 1
