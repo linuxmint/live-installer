@@ -9,7 +9,7 @@ build: buildmo
 	    cp -prfv custom/configs build/lib/live-installer/; \
 	fi
 	@if [ -d custom/branding ]; then \
-	    rm -rf custom/lib/live-installer/branding/slides/; \
+	    rm -rf build/lib/live-installer/branding/slides/; \
 	    cp -prfv custom/branding build/lib/live-installer/; \
 	fi
 	chmod +x -R build/lib/
