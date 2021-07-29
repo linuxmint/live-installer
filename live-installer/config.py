@@ -5,9 +5,9 @@ import yaml
 from glob import glob
 from logger import log, err, inf
 
-sys.path.insert(1, '/usr/lib/live-installer')
-if (os.path.isdir("/usr/lib/live-installer")):
-    os.chdir("/usr/lib/live-installer")
+sys.path.insert(1, '/lib/live-installer')
+if (os.path.isdir("/lib/live-installer")):
+    os.chdir("/lib/live-installer")
 
 
 def load_config(config_path):

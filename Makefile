@@ -50,7 +50,7 @@ install-openrc:
 	install 17g.initd $(DESTDIR)/$(DESTDIR)/lib/init.d/17g
 
 uninstall:
-	rm -rf $(DESTDIR)/usr/lib/live-installer
+	rm -rf $(DESTDIR)/lib/live-installer
 	rm -f $(DESTDIR)/usr/bin/live-installer
 	rm -f $(DESTDIR)/usr/share/applications/live-installer.desktop
 	rm -f $(DESTDIR)/$(XINITRCDIR)/00-live

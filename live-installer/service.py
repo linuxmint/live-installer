@@ -53,6 +53,6 @@ if config.get("enable_live", True) and (
 
 # call custom live commands
 if config.get("custom_scripts", True):
-    if os.path.isdir("/usr/lib/live-scripts"):
-        for i in os.listdir("/usr/lib/live-scripts"):
-            os.system("/usr/lib/live-scripts/{}".format(i))
+    if os.path.isdir("/lib/live-scripts"):
+        for i in os.listdir("/lib/live-scripts"):
+            os.system("/lib/live-scripts/{}".format(i))
