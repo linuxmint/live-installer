@@ -5,6 +5,13 @@ all: clean build
 build: buildmo
 	mkdir -p build/lib/ || true
 	cp -prfv live-installer build/lib/
+	@if [  -d custom/configs ]; then \
+	    cp -prfv custom/configs build/lib/live-installer/; \
+	fi
+	@if [ -d custom/branding ]; then \
+	    rm -rf custom/lib/live-installer/branding/slides/; \
+	    cp -prfv custom/branding build/lib/live-installer/; \
+	fi
 	chmod +x -R build/lib/
 
 pot:
@@ -26,6 +33,7 @@ buildmo:
 	done \
 
 install:
+	rm -rf  $(DESTDIR)/lib/live-installer || true
 	mkdir -p $(DESTDIR)/lib || true
 	mkdir -p $(DESTDIR)/usr || true
 	cp -prfv build/usr/* $(DESTDIR)/usr/
