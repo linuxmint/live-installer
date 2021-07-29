@@ -679,7 +679,7 @@ class InstallerEngine:
 
         # Update if enabled
         if self.setup.install_updates:
-            self.update_progress(_("Trying to install updates"), True)
+            self.update_progress(_("Trying to install updates"), pulse=False)
             self.run_and_update(config.package_manager(
                 "full_system_update"))
         # remove pacman
