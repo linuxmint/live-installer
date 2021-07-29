@@ -33,8 +33,8 @@ if __name__ == "__main__":
     if not is_root() and "--test" not in sys.argv:
         ErrorDialog(config.get("distro_title", "17g"), _("You must be root!"))
         exit(1)
-    if ("--welcome" in sys.argv):
-        if config.get("welcome_screen", True):
+    elif ("--welcome" in sys.argv):
+        if config.get("welcome_screen", True) or "--force" in sys.argv:
             from frontend.welcome import welcome
             win = welcome()
         else:

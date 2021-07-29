@@ -333,7 +333,7 @@ msgstr "Klavye ayarlanıyor"
 
 #: live-installer/installer.py:682
 msgid "Trying to install updates"
-msgstr ""
+msgstr "Güncellemeler yapılmaya çalışıyor"
 
 #: live-installer/installer.py:686
 msgid "Clearing package manager"

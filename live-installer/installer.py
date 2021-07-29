@@ -49,6 +49,8 @@ class InstallerEngine:
         self.error_message = errorhook
 
     def update_progress(self, message="", pulse=False, done=False):
+        if len(message.strip())>0:
+            return
         if done:
             self.our_total = 1
             self.our_current = 1
@@ -388,6 +390,9 @@ class InstallerEngine:
                                              partition.path)
                 elif (partition.format_as == "vfat"):
                     cmd = "mkfs.%s %s -F 32" % (partition.format_as,
+                                                partition.path)
+                elif (partition.format_as == "ntfs"):
+                    cmd = "mkfs.%s -f %s " % (partition.format_as,
                                                 partition.path)
                 elif (partition.format_as == "none"):
                     cmd = "echo 'Format disabled for %s.'" % partition.path

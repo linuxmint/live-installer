@@ -14,6 +14,9 @@ build: buildmo
 	fi
 	chmod +x -R build/lib/
 
+run: build
+	build/lib/live-installer/main.py
+
 pot:
 	xgettext -o live-installer.pot --from-code="utf-8" live-installer/resources/*.ui `find live-installer -type f -iname "*.py"`
 	for file in `ls po/*.po`; do \
