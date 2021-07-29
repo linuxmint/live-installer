@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-07-26 11:56+0300\n"
+"POT-Creation-Date: 2021-07-29 11:46+0000\n"
 "PO-Revision-Date: 2020-02-15 20:21+0000\n"
 "Last-Translator: Litty <Unknown>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -18,20 +18,14 @@ msgstr ""
 "X-Launchpad-Export-Date: 2020-03-13 11:20+0000\n"
 "X-Generator: Launchpad (build 3a6db24bbe7280ec09bae73384238390fcc98ad3)\n"
 
-#: live-installer/resources/interface.ui:57
-#: live-installer/resources/interface2.ui:1706
-#: live-installer/frontend/gtk_interface.py:329
-msgid "Welcome"
-msgstr "환영합니다"
-
-#: live-installer/resources/interface.ui:130
 #: live-installer/resources/interface2.ui:66
+#: live-installer/resources/interface.ui:130
 #, fuzzy
 msgid "Welcome to the 17g Installer."
 msgstr "17G 설치관리자에 오신 걸 환영합니다."
 
-#: live-installer/resources/interface.ui:147
 #: live-installer/resources/interface2.ui:83
+#: live-installer/resources/interface.ui:147
 #: live-installer/frontend/gtk_interface.py:358
 #: live-installer/frontend/tui_interface.py:25
 #, fuzzy
@@ -39,200 +33,206 @@ msgid ""
 "This program will ask you some questions and set up system on your computer."
 msgstr "이 프로그램은 몇 가지 질문을 하고 17G를 컴퓨터에 설치할 것입니다."
 
-#: live-installer/resources/interface.ui:248
-#: live-installer/resources/interface.ui:1431
-#: live-installer/resources/interface.ui:1445
-#: live-installer/resources/interface.ui:1764
-#: live-installer/resources/interface.ui:1776
-#: live-installer/resources/interface.ui:1788
 #: live-installer/resources/interface2.ui:184
 #: live-installer/resources/interface2.ui:1367
-#: live-installer/resources/interface2.ui:1381
-#: live-installer/resources/interface2.ui:1795
-#: live-installer/resources/interface2.ui:1807
-#: live-installer/resources/interface2.ui:1819
+#: live-installer/resources/interface2.ui:1382
+#: live-installer/resources/interface2.ui:1796
+#: live-installer/resources/interface2.ui:1808
+#: live-installer/resources/interface2.ui:1820
+#: live-installer/resources/interface.ui:248
+#: live-installer/resources/interface.ui:1431
+#: live-installer/resources/interface.ui:1446
+#: live-installer/resources/interface.ui:1765
+#: live-installer/resources/interface.ui:1777
+#: live-installer/resources/interface.ui:1789
 msgid "label"
 msgstr ""
 
-#: live-installer/resources/interface.ui:298
 #: live-installer/resources/interface2.ui:234
+#: live-installer/resources/interface.ui:298
 msgid "Continent"
 msgstr ""
 
-#: live-installer/resources/interface.ui:312
 #: live-installer/resources/interface2.ui:248
+#: live-installer/resources/interface.ui:312
 #: live-installer/frontend/gtk_interface.py:333
 #: live-installer/frontend/tui_interface.py:41
 msgid "Timezone"
 msgstr "시간대"
 
-#: live-installer/resources/interface.ui:352
 #: live-installer/resources/interface2.ui:288
+#: live-installer/resources/interface.ui:352
 #: live-installer/frontend/gtk_interface.py:366
 msgid "Keyboard Model:"
 msgstr "키보드 모델:"
 
-#: live-installer/resources/interface.ui:454
 #: live-installer/resources/interface2.ui:390
+#: live-installer/resources/interface.ui:454
 #, fuzzy
 msgid "Type here to test your keyboard"
 msgstr "자판 배열이 어떻게 되나요?"
 
-#: live-installer/resources/interface.ui:490
 #: live-installer/resources/interface2.ui:426
+#: live-installer/resources/interface.ui:490
 #: live-installer/frontend/gtk_interface.py:375
 msgid "Your name:"
 msgstr "이름:"
 
-#: live-installer/resources/interface.ui:533
 #: live-installer/resources/interface2.ui:469
+#: live-installer/resources/interface.ui:533
 #: live-installer/frontend/gtk_interface.py:377
 msgid "Your computer's name:"
 msgstr "컴퓨터 이름:"
 
-#: live-installer/resources/interface.ui:548
 #: live-installer/resources/interface2.ui:484
+#: live-installer/resources/interface.ui:548
 #: live-installer/frontend/gtk_interface.py:381
 msgid "Pick a username:"
 msgstr "사용자 이름 선택:"
 
-#: live-installer/resources/interface.ui:561
 #: live-installer/resources/interface2.ui:497
+#: live-installer/resources/interface.ui:561
 #: live-installer/frontend/gtk_interface.py:379
 msgid "The name it uses when it talks to other computers."
 msgstr "다른 컴퓨터에서 보여지는 이름"
 
-#: live-installer/resources/interface.ui:594
 #: live-installer/resources/interface2.ui:530
+#: live-installer/resources/interface.ui:594
 #: live-installer/frontend/gtk_interface.py:383
 msgid "Choose a password:"
 msgstr "암호 선택:"
 
-#: live-installer/resources/interface.ui:639
 #: live-installer/resources/interface2.ui:575
+#: live-installer/resources/interface.ui:639
 #: live-installer/frontend/gtk_interface.py:385
 msgid "Confirm your password:"
 msgstr "암호 확인:"
 
-#: live-installer/resources/interface.ui:657
 #: live-installer/resources/interface2.ui:593
+#: live-installer/resources/interface.ui:657
 #: live-installer/frontend/gtk_interface.py:388
 msgid "Log in automatically"
 msgstr "자동으로 로그인합니다"
 
-#: live-installer/resources/interface.ui:672
 #: live-installer/resources/interface2.ui:608
+#: live-installer/resources/interface.ui:672
 #: live-installer/frontend/gtk_interface.py:390
 msgid "Require my password to log in"
 msgstr "로그인할 때 암호 입력"
 
-#: live-installer/resources/interface.ui:687
 #: live-installer/resources/interface2.ui:623
+#: live-installer/resources/interface.ui:687
 #: live-installer/frontend/gtk_interface.py:392
 msgid "Encrypt my home folder"
 msgstr "홈 폴더 암호화"
 
-#: live-installer/resources/interface.ui:756
 #: live-installer/resources/interface2.ui:692
+#: live-installer/resources/interface.ui:756
 #: live-installer/frontend/gtk_interface.py:396
 msgid "Automated Installation"
 msgstr "자동 설치"
 
-#: live-installer/resources/interface.ui:772
 #: live-installer/resources/interface2.ui:708
+#: live-installer/resources/interface.ui:772
 msgid "Erase a disk and install LMDE on it."
 msgstr ""
 
-#: live-installer/resources/interface.ui:798
 #: live-installer/resources/interface2.ui:734
+#: live-installer/resources/interface.ui:798
 #: live-installer/frontend/gtk_interface.py:399
 msgid "Disk:"
 msgstr "디스크:"
 
-#: live-installer/resources/interface.ui:846
 #: live-installer/resources/interface2.ui:782
+#: live-installer/resources/interface.ui:846
 #: live-installer/frontend/gtk_interface.py:407
 msgid "Use LVM (Logical Volume Management)"
 msgstr ""
 
-#: live-installer/resources/interface.ui:891
 #: live-installer/resources/interface2.ui:827
+#: live-installer/resources/interface.ui:891
 #: live-installer/frontend/gtk_interface.py:401
 msgid "Encrypt the operating system"
 msgstr "운영체제 암호화"
 
-#: live-installer/resources/interface.ui:922
 #: live-installer/resources/interface2.ui:858
+#: live-installer/resources/interface.ui:922
 #: live-installer/frontend/gtk_interface.py:403
 msgid "Passphrase"
 msgstr ""
 
-#: live-installer/resources/interface.ui:938
 #: live-installer/resources/interface2.ui:874
+#: live-installer/resources/interface.ui:938
 #: live-installer/frontend/gtk_interface.py:405
 msgid "Confirm passphrase"
 msgstr ""
 
-#: live-installer/resources/interface.ui:972
 #: live-installer/resources/interface2.ui:908
+#: live-installer/resources/interface.ui:972
 #: live-installer/frontend/gtk_interface.py:420
 msgid "This provides extra security but it can take hours."
 msgstr ""
 
-#: live-installer/resources/interface.ui:984
 #: live-installer/resources/interface2.ui:920
+#: live-installer/resources/interface.ui:984
 #: live-installer/frontend/gtk_interface.py:418
 msgid "Fill the disk with random data"
 msgstr ""
 
-#: live-installer/resources/interface.ui:1064
 #: live-installer/resources/interface2.ui:1000
+#: live-installer/resources/interface.ui:1064
 #: live-installer/frontend/gtk_interface.py:409
 msgid "Manual Partitioning"
 msgstr "수동 파티션 작업"
 
-#: live-installer/resources/interface.ui:1080
 #: live-installer/resources/interface2.ui:1016
+#: live-installer/resources/interface.ui:1080
 msgid "Manually create, resize or choose partitions for LMDE."
 msgstr ""
 
-#: live-installer/resources/interface.ui:1137
 #: live-installer/resources/interface2.ui:1073
+#: live-installer/resources/interface.ui:1137
 msgid "Remove windows & Install"
 msgstr ""
 
-#: live-installer/resources/interface.ui:1153
 #: live-installer/resources/interface2.ui:1089
+#: live-installer/resources/interface.ui:1153
 msgid "Remove existsing windows and install LMDE on it."
 msgstr ""
 
-#: live-installer/resources/interface.ui:1247
 #: live-installer/resources/interface2.ui:1183
+#: live-installer/resources/interface.ui:1247
 #: live-installer/frontend/gtk_interface.py:437
 msgid "Install the GRUB boot menu on:"
 msgstr ""
 
-#: live-installer/resources/interface.ui:1305
 #: live-installer/resources/interface2.ui:1241
+#: live-installer/resources/interface.ui:1305
 #: live-installer/frontend/gtk_interface.py:423
 msgid "Edit partitions"
 msgstr "파티션 편집하기"
 
-#: live-installer/resources/interface.ui:1517
-#: live-installer/resources/interface2.ui:1468
+#: live-installer/resources/interface2.ui:1469
+#: live-installer/resources/interface.ui:1518
 #: live-installer/resources/welcome.ui:206
 msgid "17g team"
 msgstr ""
 
-#: live-installer/resources/interface.ui:1800
-#: live-installer/resources/interface2.ui:1831
-msgid "/dev/sda1"
-msgstr ""
-
-#: live-installer/resources/interface2.ui:1606
+#: live-installer/resources/interface2.ui:1607
 #: live-installer/frontend/gtk_interface.py:350
 msgid "Quit"
 msgstr "끝내기"
+
+#: live-installer/resources/interface2.ui:1707
+#: live-installer/resources/interface.ui:57
+#: live-installer/frontend/gtk_interface.py:329
+msgid "Welcome"
+msgstr "환영합니다"
+
+#: live-installer/resources/interface2.ui:1832
+#: live-installer/resources/interface.ui:1801
+msgid "/dev/sda1"
+msgstr ""
 
 #: live-installer/resources/welcome.ui:61
 msgid "Try 17g"
@@ -263,98 +263,94 @@ msgstr ""
 msgid "Welcome to 17g"
 msgstr "환영합니다"
 
-#: live-installer/main.py:34
-msgid "You must be root!"
-msgstr ""
-
-#: live-installer/installer.py:128 live-installer/installer.py:149
+#: live-installer/installer.py:130 live-installer/installer.py:151
 #, python-format
 msgid "Copying /%s"
 msgstr ""
 
-#: live-installer/installer.py:129
+#: live-installer/installer.py:131
 #, python-format
 msgid "rsync exited with return code: %s"
 msgstr ""
 
-#: live-installer/installer.py:133
+#: live-installer/installer.py:135
 msgid "Extracting rootfs."
 msgstr ""
 
-#: live-installer/installer.py:158
+#: live-installer/installer.py:160
 msgid "Entering the system ..."
 msgstr "시스템으로 진입하는 중입니다 ..."
 
-#: live-installer/installer.py:187
+#: live-installer/installer.py:189
 msgid "Adding new user to the system"
 msgstr "시스템에 새로운 사용자를 추가하는 중입니다"
 
-#: live-installer/installer.py:232
+#: live-installer/installer.py:234
 msgid "Writing filesystem mount information to /etc/fstab"
 msgstr "/etc/fstab에 파일시스템 장착 정보를 쓰는 중입니다"
 
-#: live-installer/installer.py:238 live-installer/installer.py:407
+#: live-installer/installer.py:240 live-installer/installer.py:412
 #, python-format
 msgid "Mounting %(partition)s on %(mountpoint)s"
 msgstr "%(partition)s를 %(mountpoint)s에 장착하는 중입니다"
 
-#: live-installer/installer.py:302
+#: live-installer/installer.py:304
 #, python-format
 msgid "Filling %s with random data (please be patient, this can take hours...)"
 msgstr ""
 
-#: live-installer/installer.py:308
+#: live-installer/installer.py:310
 #, python-format
 msgid "Creating partitions on %s"
 msgstr "%s에 파티션 만드는 중"
 
-#: live-installer/installer.py:374
+#: live-installer/installer.py:376
 #, python-format
 msgid "Formatting %(partition)s as %(format)s ..."
 msgstr "%(partition)s를 %(format)s로 포맷하는 중입니다 ..."
 
-#: live-installer/installer.py:525
+#: live-installer/installer.py:530
 msgid "Setting hostname"
 msgstr "호스트 이름을 설정하는 중입니다"
 
-#: live-installer/installer.py:550
+#: live-installer/installer.py:555
 msgid "Setting locale"
 msgstr "로케일을 설정하는 중입니다"
 
-#: live-installer/installer.py:572
+#: live-installer/installer.py:577
 #, fuzzy
 msgid "Setting timezone"
 msgstr "호스트 이름을 설정하는 중입니다"
 
-#: live-installer/installer.py:605
+#: live-installer/installer.py:610
 msgid "Setting keyboard options"
 msgstr "키보드 선택 사항을 설정하는 중입니다"
 
-#: live-installer/installer.py:682
+#: live-installer/installer.py:687
 msgid "Trying to install updates"
 msgstr ""
 
-#: live-installer/installer.py:686
+#: live-installer/installer.py:691
 msgid "Clearing package manager"
 msgstr ""
 
-#: live-installer/installer.py:705
+#: live-installer/installer.py:710
 msgid "Generating initramfs"
 msgstr ""
 
-#: live-installer/installer.py:710
+#: live-installer/installer.py:715
 msgid "Preparing bootloader installation"
 msgstr ""
 
-#: live-installer/installer.py:722
+#: live-installer/installer.py:727
 msgid "Installing bootloader"
 msgstr "부트로더를 설치하는 중입니다"
 
-#: live-installer/installer.py:734
+#: live-installer/installer.py:739
 msgid "Configuring bootloader"
 msgstr "부트로더를 설정하는 중입니다"
 
-#: live-installer/installer.py:742
+#: live-installer/installer.py:747
 msgid ""
 "WARNING: The grub bootloader was not configured properly! You need to "
 "configure it manually."
@@ -362,16 +358,16 @@ msgstr ""
 "주의: grub 부트로더가 올바르게 설정되지 않았습니다! 수동으로 설정하셔야 합니"
 "다."
 
-#: live-installer/installer.py:768
-#: live-installer/frontend/gtk_interface.py:1228
+#: live-installer/installer.py:773
+#: live-installer/frontend/gtk_interface.py:1229
 msgid "Installation finished"
 msgstr "설치가 완료되었습니다"
 
-#: live-installer/installer.py:791
+#: live-installer/installer.py:796
 msgid "Checking bootloader"
 msgstr "부트로더를 확인하는 중입니다"
 
-#: live-installer/installer.py:823
+#: live-installer/installer.py:828
 msgid "Failed to run command (Exited with {}):"
 msgstr ""
 
@@ -403,18 +399,18 @@ msgstr "파일 색인을 계산하는 중입니다 ..."
 
 #: live-installer/frontend/gtk_interface.py:317
 #: live-installer/frontend/gtk_interface.py:320
-#: live-installer/frontend/gtk_interface.py:841
-#: live-installer/frontend/gtk_interface.py:877
-#: live-installer/frontend/gtk_interface.py:952
-#: live-installer/frontend/gtk_interface.py:965
-#: live-installer/frontend/gtk_interface.py:970
-#: live-installer/frontend/gtk_interface.py:984
-#: live-installer/frontend/gtk_interface.py:989
-#: live-installer/frontend/gtk_interface.py:995
-#: live-installer/frontend/gtk_interface.py:1000
-#: live-installer/frontend/gtk_interface.py:1005
-#: live-installer/frontend/gtk_interface.py:1058
-#: live-installer/frontend/gtk_interface.py:1126
+#: live-installer/frontend/gtk_interface.py:842
+#: live-installer/frontend/gtk_interface.py:878
+#: live-installer/frontend/gtk_interface.py:953
+#: live-installer/frontend/gtk_interface.py:966
+#: live-installer/frontend/gtk_interface.py:971
+#: live-installer/frontend/gtk_interface.py:985
+#: live-installer/frontend/gtk_interface.py:990
+#: live-installer/frontend/gtk_interface.py:996
+#: live-installer/frontend/gtk_interface.py:1001
+#: live-installer/frontend/gtk_interface.py:1006
+#: live-installer/frontend/gtk_interface.py:1059
+#: live-installer/frontend/gtk_interface.py:1127
 #: live-installer/frontend/partitioning.py:321
 msgid "Installer"
 msgstr ""
@@ -489,7 +485,7 @@ msgid "Back"
 msgstr "뒤로"
 
 #: live-installer/frontend/gtk_interface.py:352
-#: live-installer/frontend/gtk_interface.py:838
+#: live-installer/frontend/gtk_interface.py:839
 msgid "Next"
 msgstr "다음"
 
@@ -568,77 +564,77 @@ msgstr "종료하시겠습니까?"
 msgid "Are you sure you want to quit the installer?"
 msgstr "정말 설치 프로그램을 종료하시겠습니까?"
 
-#: live-installer/frontend/gtk_interface.py:842
+#: live-installer/frontend/gtk_interface.py:843
 msgid "Please choose a language"
 msgstr "언어를 선택해주십시오"
 
-#: live-installer/frontend/gtk_interface.py:878
+#: live-installer/frontend/gtk_interface.py:879
 #, fuzzy
 msgid "Please provide a kayboard layout for your computer."
 msgstr "사용자 계정에 대한 비밀번호를 입력해주십시오."
 
-#: live-installer/frontend/gtk_interface.py:887
+#: live-installer/frontend/gtk_interface.py:888
 msgid "Please provide your full name."
 msgstr "사용자의 실명을 입력해주십시오."
 
-#: live-installer/frontend/gtk_interface.py:892
+#: live-installer/frontend/gtk_interface.py:893
 msgid "Please provide a name for your computer."
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:896
+#: live-installer/frontend/gtk_interface.py:897
 msgid "Please provide a username."
 msgstr "사용자 이름을 입력해주십시오."
 
-#: live-installer/frontend/gtk_interface.py:901
+#: live-installer/frontend/gtk_interface.py:902
 msgid "Please provide a password for your user account."
 msgstr "사용자 계정에 대한 비밀번호를 입력해주십시오."
 
-#: live-installer/frontend/gtk_interface.py:905
+#: live-installer/frontend/gtk_interface.py:906
 #, fuzzy
 msgid "Your passwords is too short."
 msgstr "비밀번호가 일치하지 않습니다."
 
-#: live-installer/frontend/gtk_interface.py:909
+#: live-installer/frontend/gtk_interface.py:910
 #, fuzzy
 msgid "Your passwords is not strong."
 msgstr "비밀번호가 일치하지 않습니다."
 
-#: live-installer/frontend/gtk_interface.py:913
+#: live-installer/frontend/gtk_interface.py:914
 msgid "Your passwords do not match."
 msgstr "비밀번호가 일치하지 않습니다."
 
-#: live-installer/frontend/gtk_interface.py:919
+#: live-installer/frontend/gtk_interface.py:920
 #, fuzzy
 msgid "Your username cannot start with numbers."
 msgstr "사용자 이름은 공백 문자를 포함해서는 안됩니다."
 
-#: live-installer/frontend/gtk_interface.py:925
+#: live-installer/frontend/gtk_interface.py:926
 msgid "Your username must be lower case."
 msgstr "사용자 이름은 소문자여야 합니다."
 
-#: live-installer/frontend/gtk_interface.py:932
+#: live-installer/frontend/gtk_interface.py:933
 msgid "Your username may not contain whitespace characters."
 msgstr "사용자 이름은 공백 문자를 포함해서는 안됩니다."
 
-#: live-installer/frontend/gtk_interface.py:940
+#: live-installer/frontend/gtk_interface.py:941
 msgid "The computer's name must be lower case."
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:947
+#: live-installer/frontend/gtk_interface.py:948
 msgid "The computer's name may not contain whitespace characters."
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:966
+#: live-installer/frontend/gtk_interface.py:967
 msgid ""
 "Please indicate a filesystem to format the root (/) partition with before "
 "proceeding."
 msgstr "진행하기 전에 루트(/) 파티션으로 포맷할 파일시스템을 지정해주십시오."
 
-#: live-installer/frontend/gtk_interface.py:970
+#: live-installer/frontend/gtk_interface.py:971
 msgid "Please select a root (/) partition."
 msgstr "루트(/) 파티션을 선택해주십시오."
 
-#: live-installer/frontend/gtk_interface.py:971
+#: live-installer/frontend/gtk_interface.py:972
 #, python-format
 msgid ""
 "A root partition is needed to install %s on.\n"
@@ -649,25 +645,25 @@ msgid ""
 "\n"
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:985
+#: live-installer/frontend/gtk_interface.py:986
 msgid "The EFI partition is not bootable. Please edit the partition flags."
 msgstr ""
 "EFI 파티션이 부팅 불가능으로 되어있습니다. 파티션 플래그를 편집해주십시오."
 
-#: live-installer/frontend/gtk_interface.py:990
+#: live-installer/frontend/gtk_interface.py:991
 msgid "The EFI partition is too small. It must be at least 35MB."
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:996
-#: live-installer/frontend/gtk_interface.py:1001
+#: live-installer/frontend/gtk_interface.py:997
+#: live-installer/frontend/gtk_interface.py:1002
 msgid "The EFI partition must be formatted as vfat."
 msgstr "EFI 파티션은 vfat 형식으로 포맷되어야 합니다."
 
-#: live-installer/frontend/gtk_interface.py:1005
+#: live-installer/frontend/gtk_interface.py:1006
 msgid "Please select an EFI partition."
 msgstr "EFI 파티션을 선택해주십시오."
 
-#: live-installer/frontend/gtk_interface.py:1006
+#: live-installer/frontend/gtk_interface.py:1007
 msgid ""
 "An EFI system partition is needed with the following requirements:\n"
 "\n"
@@ -681,144 +677,144 @@ msgid ""
 " "
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1047
+#: live-installer/frontend/gtk_interface.py:1048
 msgid "Please select a disk."
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1053
+#: live-installer/frontend/gtk_interface.py:1054
 msgid "Please provide a passphrase for the encryption."
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1056
+#: live-installer/frontend/gtk_interface.py:1057
 msgid "Your passphrases do not match."
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1060
+#: live-installer/frontend/gtk_interface.py:1061
 msgid "Warning"
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1061
+#: live-installer/frontend/gtk_interface.py:1062
 #, python-format
 msgid "This will delete all the data on %s. Are you sure?"
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1091
+#: live-installer/frontend/gtk_interface.py:1092
 msgid "Install"
 msgstr "설치하기"
 
-#: live-installer/frontend/gtk_interface.py:1127
+#: live-installer/frontend/gtk_interface.py:1128
 #, fuzzy
 msgid "Please provide a device to install grub."
 msgstr "사용자 이름을 입력해주십시오."
 
-#: live-installer/frontend/gtk_interface.py:1170
+#: live-installer/frontend/gtk_interface.py:1171
 msgid "Localization"
 msgstr "지역화"
 
-#: live-installer/frontend/gtk_interface.py:1171
+#: live-installer/frontend/gtk_interface.py:1172
 msgid "Language: "
 msgstr "언어: "
 
-#: live-installer/frontend/gtk_interface.py:1172
+#: live-installer/frontend/gtk_interface.py:1173
 msgid "Timezone: "
 msgstr "시간대: "
 
-#: live-installer/frontend/gtk_interface.py:1173
+#: live-installer/frontend/gtk_interface.py:1174
 msgid "Keyboard layout: "
 msgstr "키보드 배치: "
 
-#: live-installer/frontend/gtk_interface.py:1176
+#: live-installer/frontend/gtk_interface.py:1177
 msgid "User settings"
 msgstr "사용자 설정"
 
-#: live-installer/frontend/gtk_interface.py:1177
+#: live-installer/frontend/gtk_interface.py:1178
 msgid "Real name: "
 msgstr "실명: "
 
-#: live-installer/frontend/gtk_interface.py:1178
+#: live-installer/frontend/gtk_interface.py:1179
 msgid "Username: "
 msgstr "사용자 이름: "
 
-#: live-installer/frontend/gtk_interface.py:1180
+#: live-installer/frontend/gtk_interface.py:1181
 msgid "Password: "
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1182
+#: live-installer/frontend/gtk_interface.py:1183
 msgid "Automatic login: "
 msgstr "자동 로그인: "
-
-#: live-installer/frontend/gtk_interface.py:1182
-#: live-installer/frontend/gtk_interface.py:1185
-#: live-installer/frontend/gtk_interface.py:1205
-#: live-installer/frontend/gtk_interface.py:1209
-msgid "enabled"
-msgstr "활성화됨"
 
 #: live-installer/frontend/gtk_interface.py:1183
 #: live-installer/frontend/gtk_interface.py:1186
 #: live-installer/frontend/gtk_interface.py:1206
-#: live-installer/frontend/gtk_interface.py:1209
+#: live-installer/frontend/gtk_interface.py:1210
+msgid "enabled"
+msgstr "활성화됨"
+
+#: live-installer/frontend/gtk_interface.py:1184
+#: live-installer/frontend/gtk_interface.py:1187
+#: live-installer/frontend/gtk_interface.py:1207
+#: live-installer/frontend/gtk_interface.py:1210
 msgid "disabled"
 msgstr "비활성화됨"
 
-#: live-installer/frontend/gtk_interface.py:1185
+#: live-installer/frontend/gtk_interface.py:1186
 msgid "Home encryption: "
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1187
+#: live-installer/frontend/gtk_interface.py:1188
 msgid "System settings"
 msgstr "시스템 설정"
 
-#: live-installer/frontend/gtk_interface.py:1188
+#: live-installer/frontend/gtk_interface.py:1189
 msgid "Computer's name: "
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1191
-#: live-installer/frontend/gtk_interface.py:1193
+#: live-installer/frontend/gtk_interface.py:1192
+#: live-installer/frontend/gtk_interface.py:1194
 msgid "Bios type: "
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1195
+#: live-installer/frontend/gtk_interface.py:1196
 msgid "Filesystem operations"
 msgstr "파일시스템 작업"
 
-#: live-installer/frontend/gtk_interface.py:1196
+#: live-installer/frontend/gtk_interface.py:1197
 #, python-format
 msgid "Install bootloader on %s"
 msgstr "%s에 부트로더를 설치합니다"
 
-#: live-installer/frontend/gtk_interface.py:1197
+#: live-installer/frontend/gtk_interface.py:1198
 msgid "Do not install bootloader"
 msgstr "부트로더를 설치하지 않습니다"
 
-#: live-installer/frontend/gtk_interface.py:1199
+#: live-installer/frontend/gtk_interface.py:1200
 msgid "Use already-mounted /target."
 msgstr "이미-장착된 /target을 사용합니다."
 
-#: live-installer/frontend/gtk_interface.py:1203
+#: live-installer/frontend/gtk_interface.py:1204
 #, python-format
 msgid "Automated installation on %s"
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1205
+#: live-installer/frontend/gtk_interface.py:1206
 msgid "LVM: "
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1208
+#: live-installer/frontend/gtk_interface.py:1209
 msgid "Disk Encryption: "
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1212
+#: live-installer/frontend/gtk_interface.py:1213
 #, python-format
 msgid "Format %(path)s as %(filesystem)s"
 msgstr "%(path)s를 %(filesystem)s로 포맷합니다"
 
-#: live-installer/frontend/gtk_interface.py:1216
+#: live-installer/frontend/gtk_interface.py:1217
 #, python-format
 msgid "Mount %(path)s as %(mount)s"
 msgstr "%(path)s를 %(mount)s로 장착합니다"
 
-#: live-installer/frontend/gtk_interface.py:1229
+#: live-installer/frontend/gtk_interface.py:1230
 msgid ""
 "The installation is now complete. Do you want to restart your computer to "
 "use the new system?"
@@ -826,14 +822,14 @@ msgstr ""
 "지금 설치가 완료되었습니다. 사용자의 컴퓨터를 다시 시작하셔서 새로운 시스템"
 "을 사용하시겠습니까?"
 
-#: live-installer/frontend/gtk_interface.py:1260
-#: live-installer/frontend/gtk_interface.py:1264
-#: live-installer/frontend/gtk_interface.py:1273
-#: live-installer/frontend/gtk_interface.py:1282
+#: live-installer/frontend/gtk_interface.py:1261
+#: live-installer/frontend/gtk_interface.py:1265
+#: live-installer/frontend/gtk_interface.py:1274
+#: live-installer/frontend/gtk_interface.py:1283
 msgid "Installation error"
 msgstr "설치 오류가 발생했습니다"
 
-#: live-installer/frontend/gtk_interface.py:1373
+#: live-installer/frontend/gtk_interface.py:1374
 msgid "Install system with updates"
 msgstr ""
 
@@ -868,11 +864,6 @@ msgstr "자판 배열이 어떻게 되나요?"
 #, fuzzy
 msgid "Keyboard Model"
 msgstr "키보드 모델:"
-
-#: live-installer/frontend/timezones.py:142
-#, fuzzy
-msgid "Select timezone"
-msgstr "시간대"
 
 #: live-installer/frontend/partitioning.py:59
 msgid "B"
@@ -955,36 +946,36 @@ msgstr "확장 파티션"
 msgid "Unknown"
 msgstr "알 수 없음"
 
-#: live-installer/frontend/partitioning.py:511
+#: live-installer/frontend/partitioning.py:510
 msgid "bootloader/recovery"
 msgstr ""
 
-#: live-installer/frontend/partitioning.py:524
+#: live-installer/frontend/partitioning.py:522
 #, fuzzy
 msgid "EFI System Partition"
 msgstr "파티션 편집하기"
 
-#: live-installer/frontend/partitioning.py:547
+#: live-installer/frontend/partitioning.py:545
 msgid "Edit partition"
 msgstr "파티션 편집하기"
 
-#: live-installer/frontend/partitioning.py:549
+#: live-installer/frontend/partitioning.py:547
 msgid "Device:"
 msgstr "장치:"
 
-#: live-installer/frontend/partitioning.py:551
+#: live-installer/frontend/partitioning.py:549
 msgid "Format as:"
 msgstr "포맷하기:"
 
-#: live-installer/frontend/partitioning.py:553
+#: live-installer/frontend/partitioning.py:551
 msgid "Mount point:"
 msgstr "장착 지점:"
 
-#: live-installer/frontend/partitioning.py:554
+#: live-installer/frontend/partitioning.py:552
 msgid "Cancel"
 msgstr "취소"
 
-#: live-installer/frontend/partitioning.py:555
+#: live-installer/frontend/partitioning.py:553
 #: live-installer/frontend/dialogs.py:35 live-installer/frontend/dialogs.py:48
 #: live-installer/frontend/dialogs.py:54
 msgid "OK"
@@ -997,6 +988,15 @@ msgstr "아니요"
 #: live-installer/frontend/dialogs.py:42
 msgid "Yes"
 msgstr "예"
+
+#: live-installer/frontend/timezones.py:142
+#, fuzzy
+msgid "Select timezone"
+msgstr "시간대"
+
+#: live-installer/main.py:34
+msgid "You must be root!"
+msgstr ""
 
 #~ msgid ""
 #~ "ERROR: You must first manually mount your target filesystem(s) at /target "
