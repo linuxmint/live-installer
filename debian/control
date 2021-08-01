@@ -17,6 +17,7 @@ Depends: ${shlibs:Depends}, ${misc:Depends},
                     gir1.2-gtk-3.0,
                     python3-yaml,
                     gettext-base,
-                    isoquery
+                    isoquery,
+                    librsvg2-common
 Description: 17g live installer
  17G is an alternative live installation tools.
