@@ -19,6 +19,7 @@ Depends: ${shlibs:Depends}, ${misc:Depends},
                     gettext-base,
                     isoquery,
                     librsvg2-common,
-                    parted
+                    parted,
+                    dosfstools
 Description: 17g live installer
  17G is an alternative live installation tools.
