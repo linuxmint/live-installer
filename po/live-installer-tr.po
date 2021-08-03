@@ -852,7 +852,7 @@ msgstr "Kurulum hatası"
 
 #: live-installer/frontend/gtk_interface.py:1374
 msgid "Install system with updates"
-msgstr ""
+msgstr "Sistemi güncellemeler ile birlikte yükle"
 
 #: live-installer/frontend/welcome.py:32
 #, python-format
