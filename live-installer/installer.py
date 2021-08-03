@@ -245,54 +245,27 @@ class InstallerEngine:
     def create_partitions(self):
         # Create partitions on the selected disk (automated installation)
         partition_prefix = ""
+        self.max_part_num = 0
         if self.setup.disk.startswith("/dev/nvme"):
             partition_prefix = "p"
-        if self.setup.luks:
-            if self.setup.gptonefi:
-                # EFI+LUKS/LVM
-                # sdx1=EFI, sdx2=BOOT, sdx3=ROOT
-                self.auto_efi_partition = self.setup.disk + partition_prefix + "1"
-                self.auto_boot_partition = self.setup.disk + partition_prefix + "2"
-                self.auto_swap_partition = None
-                self.auto_root_partition = self.setup.disk + partition_prefix + "3"
-            else:
-                # BIOS+LUKS/LVM
-                # sdx1=BOOT, sdx2=ROOT
-                self.auto_efi_partition = None
-                self.auto_boot_partition = self.setup.disk + partition_prefix + "1"
-                self.auto_swap_partition = None
-                self.auto_root_partition = self.setup.disk + partition_prefix + "2"
-        elif self.setup.lvm:
-            if self.setup.gptonefi:
-                # EFI+LVM
-                # sdx1=EFI, sdx2=ROOT
-                self.auto_efi_partition = self.setup.disk + partition_prefix + "1"
-                self.auto_boot_partition = None
-                self.auto_swap_partition = None
-                self.auto_root_partition = self.setup.disk + partition_prefix + "2"
-            else:
-                # BIOS+LVM:
-                # sdx1=ROOT
-                self.auto_efi_partition = None
-                self.auto_boot_partition = None
-                self.auto_swap_partition = None
-                self.auto_root_partition = self.setup.disk + partition_prefix + "1"
-        else:
-            if self.setup.gptonefi:
-                # EFI
-                # sdx1=EFI, sdx2=SWAP, sdx3=ROOT
-                self.auto_efi_partition = self.setup.disk + partition_prefix + "1"
-                self.auto_boot_partition = None
-                self.auto_swap_partition = self.setup.disk + partition_prefix + "2"
-                self.auto_root_partition = self.setup.disk + partition_prefix + "3"
-            else:
-                # BIOS:
-                # sdx1=SWAP, sdx2=ROOT
-                self.auto_efi_partition = None
-                self.auto_boot_partition = None
-                self.auto_swap_partition = self.setup.disk + partition_prefix + "1"
-                self.auto_root_partition = self.setup.disk + partition_prefix + "2"
+        def get_next():
+            self.max_part_num +=1
+            return self.setup.disk + partition_prefix + str(self.max_part_num)
 
+        self.auto_boot_partition = None
+        self.auto_efi_partition = None
+        self.auto_swap_partition = None
+        if self.setup.gptonefi:
+            self.auto_efi_partition = get_next()
+        if self.setup.luks:
+            self.auto_boot_partition = get_next()
+        elif self.setup.lvm:
+            self.auto_swap_partition = None
+        else:
+            if config.get("use_swap",False):
+                self.auto_swap_partition = get_next()
+        self.auto_root_partition = get_next()
+        
         log("EFI:" + str(self.auto_efi_partition))
         log("BOOT:" + str(self.auto_boot_partition))
         log("Root:" + str(self.auto_root_partition))

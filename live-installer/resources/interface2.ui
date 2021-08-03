@@ -682,6 +682,7 @@
                           <object class="GtkBox">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
+                            <property name="margin-start">5</property>
                             <property name="border-width">0</property>
                             <property name="orientation">vertical</property>
                             <child>
@@ -726,6 +727,7 @@
                       <object class="GtkBox">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
+                        <property name="margin-start">5</property>
                         <property name="spacing">12</property>
                         <child>
                           <object class="GtkLabel" id="label_disk">
@@ -779,6 +781,7 @@
                                     <property name="visible">True</property>
                                     <property name="can-focus">False</property>
                                     <property name="halign">start</property>
+                                    <property name="margin-start">5</property>
                                     <property name="label" translatable="yes">Use LVM (Logical Volume Management)</property>
                                   </object>
                                   <packing>
@@ -824,6 +827,7 @@
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
                                             <property name="halign">start</property>
+                                            <property name="margin-start">5</property>
                                             <property name="label" translatable="yes">Encrypt the operating system</property>
                                           </object>
                                           <packing>
@@ -917,6 +921,7 @@
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
                                             <property name="halign">start</property>
+                                            <property name="margin-start">5</property>
                                             <property name="label" translatable="yes">Fill the disk with random data</property>
                                             <property name="wrap">True</property>
                                           </object>
@@ -991,6 +996,7 @@
                           <object class="GtkBox">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
+                            <property name="margin-start">5</property>
                             <property name="orientation">vertical</property>
                             <child>
                               <object class="GtkLabel" id="label_manual">
@@ -1064,6 +1070,7 @@
                           <object class="GtkBox">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
+                            <property name="margin-start">5</property>
                             <property name="orientation">vertical</property>
                             <child>
                               <object class="GtkLabel" id="label_replace_win">

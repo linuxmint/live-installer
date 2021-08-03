@@ -38,7 +38,6 @@ initramfs = None
 live = load_config("configs/live.yaml")
 kernel_vars = {}
 os.environ["DEBIAN_FRONTEND"]="noninteractive"
-
 if not live:
     live = []
 

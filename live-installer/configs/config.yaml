@@ -38,6 +38,7 @@
 
 ## Partitioning section
 # manual_partition_enabled: true 
+# use_swap: false
 # replace_windows_enabled: true
 # lvm_enabled: true
 # encryption_enabled: true

@@ -286,7 +286,7 @@ class InstallerWindow:
             for disk_path in partitioning.get_partitions():
                 log("Searching: {}".format(disk_path))
                 if 0 == os.system(
-                        "mount -o ro {} /tmp/winroot".format(disk_path)):
+                        "mount -o ro {} /tmp/winroot 2>/dev/null".format(disk_path)):
                     if os.path.exists(
                             "/tmp/winroot/Windows/System32/ntoskrnl.exe"):
                         self.setup.winroot = disk_path
@@ -1192,7 +1192,8 @@ class InstallerWindow:
             model.append(top, (_("Bios type: ") + bold("UEFI"),))
         else:
             model.append(top, (_("Bios type: ") + bold("Legacy"),))
-
+        if self.setup.install_updates:
+            model.append(top, (_("Install updates after installation"),))
         top = model.append(None, (_("Filesystem operations"),))
         model.append(top, (bold(_("Install bootloader on %s") % self.setup.grub_device)
                            if self.setup.grub_device else _("Do not install bootloader"),))
@@ -1202,20 +1203,21 @@ class InstallerWindow:
         if self.setup.automated:
             model.append(
                 top, (bold(_("Automated installation on %s") % self.setup.diskname),))
-        if config.get("lvm_enabled", True):
-            model.append(top, (_("LVM: ") + bold(_("enabled")
-                                                 if self.setup.lvm else _("disabled")),))
-        if config.get("encryption_enabled", True):
-            model.append(top, (_("Disk Encryption: ") +
-                               bold(_("enabled") if self.setup.luks else _("disabled")),))
-        for p in self.setup.partitions:
-            if p.format_as:
-                model.append(top, (bold(_("Format %(path)s as %(filesystem)s") % {
-                             'path': p.path, 'filesystem': p.format_as}),))
-        for p in self.setup.partitions:
-            if p.mount_as:
-                model.append(top, (bold(_("Mount %(path)s as %(mount)s") % {
-                             'path': p.path, 'mount': p.mount_as}),))
+        else:
+            if config.get("lvm_enabled", True):
+                model.append(top, (_("LVM: ") + bold(_("enabled")
+                                                     if self.setup.lvm else _("disabled")),))
+            if config.get("encryption_enabled", True):
+                model.append(top, (_("Disk Encryption: ") +
+                                   bold(_("enabled") if self.setup.luks else _("disabled")),))
+            for p in self.setup.partitions:
+                if p.format_as:
+                    model.append(top, (bold(_("Format %(path)s as %(filesystem)s") % {
+                                 'path': p.path, 'filesystem': p.format_as}),))
+            for p in self.setup.partitions:
+                if p.mount_as:
+                    model.append(top, (bold(_("Mount %(path)s as %(mount)s") % {
+                                 'path': p.path, 'mount': p.mount_as}),))
         self.builder.get_object("treeview_overview").expand_all()
 
     @idle
@@ -1367,10 +1369,21 @@ class InstallerWindow:
         GLib.timeout_add(15000, self.set_slide_page)
         
     def options_init(self):
+        def option_box(text1,text2,event):
+            mbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+            check = Gtk.CheckButton()
+            check.set_label("")
+            check.connect("toggled",event)
+            mbox.add(check)
+            label = Gtk.Label()
+            label.set_markup(" <b>{}</b>\n {}".format(text1,text2))
+            mbox.add(label)
+            mbox.set_margin_bottom(13)
+            return mbox
+        
         def chk_updates(button):
             self.setup.install_updates = button.get_active()
+            self.show_overview()
         obox = self.builder.get_object("options_box")
-        updates = Gtk.CheckButton()
-        updates.set_label(_("Install system with updates"))
-        updates.connect("toggled", chk_updates)
-        obox.add(updates)
+        obox.add(option_box(_("Install system with updates"),_("If you connect internet, updates will install."),chk_updates))
+        obox.add(Gtk.Separator())
