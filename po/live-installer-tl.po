@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-07-29 11:46+0000\n"
+"POT-Creation-Date: 2021-08-04 12:51+0000\n"
 "PO-Revision-Date: 2015-02-26 14:34+0000\n"
 "Last-Translator: Ueliton <Unknown>\n"
 "Language-Team: Tagalog <tl@li.org>\n"
@@ -32,17 +32,17 @@ msgid ""
 msgstr ""
 
 #: live-installer/resources/interface2.ui:184
-#: live-installer/resources/interface2.ui:1367
-#: live-installer/resources/interface2.ui:1382
-#: live-installer/resources/interface2.ui:1796
-#: live-installer/resources/interface2.ui:1808
-#: live-installer/resources/interface2.ui:1820
+#: live-installer/resources/interface2.ui:1374
+#: live-installer/resources/interface2.ui:1389
+#: live-installer/resources/interface2.ui:1803
+#: live-installer/resources/interface2.ui:1815
+#: live-installer/resources/interface2.ui:1827
 #: live-installer/resources/interface.ui:248
-#: live-installer/resources/interface.ui:1431
-#: live-installer/resources/interface.ui:1446
-#: live-installer/resources/interface.ui:1765
-#: live-installer/resources/interface.ui:1777
-#: live-installer/resources/interface.ui:1789
+#: live-installer/resources/interface.ui:1438
+#: live-installer/resources/interface.ui:1453
+#: live-installer/resources/interface.ui:1772
+#: live-installer/resources/interface.ui:1784
+#: live-installer/resources/interface.ui:1796
 msgid "label"
 msgstr ""
 
@@ -123,111 +123,111 @@ msgstr ""
 msgid "Encrypt my home folder"
 msgstr ""
 
-#: live-installer/resources/interface2.ui:692
-#: live-installer/resources/interface.ui:756
+#: live-installer/resources/interface2.ui:693
+#: live-installer/resources/interface.ui:757
 #: live-installer/frontend/gtk_interface.py:396
 msgid "Automated Installation"
 msgstr ""
 
-#: live-installer/resources/interface2.ui:708
-#: live-installer/resources/interface.ui:772
+#: live-installer/resources/interface2.ui:709
+#: live-installer/resources/interface.ui:773
 msgid "Erase a disk and install LMDE on it."
 msgstr ""
 
-#: live-installer/resources/interface2.ui:734
-#: live-installer/resources/interface.ui:798
+#: live-installer/resources/interface2.ui:736
+#: live-installer/resources/interface.ui:800
 #: live-installer/frontend/gtk_interface.py:399
 msgid "Disk:"
 msgstr ""
 
-#: live-installer/resources/interface2.ui:782
-#: live-installer/resources/interface.ui:846
+#: live-installer/resources/interface2.ui:785
+#: live-installer/resources/interface.ui:849
 #: live-installer/frontend/gtk_interface.py:407
 msgid "Use LVM (Logical Volume Management)"
 msgstr ""
 
-#: live-installer/resources/interface2.ui:827
-#: live-installer/resources/interface.ui:891
+#: live-installer/resources/interface2.ui:831
+#: live-installer/resources/interface.ui:895
 #: live-installer/frontend/gtk_interface.py:401
 msgid "Encrypt the operating system"
 msgstr ""
 
-#: live-installer/resources/interface2.ui:858
-#: live-installer/resources/interface.ui:922
+#: live-installer/resources/interface2.ui:862
+#: live-installer/resources/interface.ui:926
 #: live-installer/frontend/gtk_interface.py:403
 msgid "Passphrase"
 msgstr ""
 
-#: live-installer/resources/interface2.ui:874
-#: live-installer/resources/interface.ui:938
+#: live-installer/resources/interface2.ui:878
+#: live-installer/resources/interface.ui:942
 #: live-installer/frontend/gtk_interface.py:405
 msgid "Confirm passphrase"
 msgstr ""
 
-#: live-installer/resources/interface2.ui:908
-#: live-installer/resources/interface.ui:972
+#: live-installer/resources/interface2.ui:912
+#: live-installer/resources/interface.ui:976
 #: live-installer/frontend/gtk_interface.py:420
 msgid "This provides extra security but it can take hours."
 msgstr ""
 
-#: live-installer/resources/interface2.ui:920
-#: live-installer/resources/interface.ui:984
+#: live-installer/resources/interface2.ui:925
+#: live-installer/resources/interface.ui:989
 #: live-installer/frontend/gtk_interface.py:418
 msgid "Fill the disk with random data"
 msgstr ""
 
-#: live-installer/resources/interface2.ui:1000
-#: live-installer/resources/interface.ui:1064
+#: live-installer/resources/interface2.ui:1006
+#: live-installer/resources/interface.ui:1070
 #: live-installer/frontend/gtk_interface.py:409
 msgid "Manual Partitioning"
 msgstr ""
 
-#: live-installer/resources/interface2.ui:1016
-#: live-installer/resources/interface.ui:1080
+#: live-installer/resources/interface2.ui:1022
+#: live-installer/resources/interface.ui:1086
 msgid "Manually create, resize or choose partitions for LMDE."
 msgstr ""
 
-#: live-installer/resources/interface2.ui:1073
-#: live-installer/resources/interface.ui:1137
+#: live-installer/resources/interface2.ui:1080
+#: live-installer/resources/interface.ui:1144
 msgid "Remove windows & Install"
 msgstr ""
 
-#: live-installer/resources/interface2.ui:1089
-#: live-installer/resources/interface.ui:1153
+#: live-installer/resources/interface2.ui:1096
+#: live-installer/resources/interface.ui:1160
 msgid "Remove existsing windows and install LMDE on it."
 msgstr ""
 
-#: live-installer/resources/interface2.ui:1183
-#: live-installer/resources/interface.ui:1247
+#: live-installer/resources/interface2.ui:1190
+#: live-installer/resources/interface.ui:1254
 #: live-installer/frontend/gtk_interface.py:437
 msgid "Install the GRUB boot menu on:"
 msgstr ""
 
-#: live-installer/resources/interface2.ui:1241
-#: live-installer/resources/interface.ui:1305
+#: live-installer/resources/interface2.ui:1248
+#: live-installer/resources/interface.ui:1312
 #: live-installer/frontend/gtk_interface.py:423
 msgid "Edit partitions"
 msgstr ""
 
-#: live-installer/resources/interface2.ui:1469
-#: live-installer/resources/interface.ui:1518
+#: live-installer/resources/interface2.ui:1476
+#: live-installer/resources/interface.ui:1525
 #: live-installer/resources/welcome.ui:206
 msgid "17g team"
 msgstr ""
 
-#: live-installer/resources/interface2.ui:1607
+#: live-installer/resources/interface2.ui:1614
 #: live-installer/frontend/gtk_interface.py:350
 msgid "Quit"
 msgstr ""
 
-#: live-installer/resources/interface2.ui:1707
+#: live-installer/resources/interface2.ui:1714
 #: live-installer/resources/interface.ui:57
 #: live-installer/frontend/gtk_interface.py:329
 msgid "Welcome"
 msgstr ""
 
-#: live-installer/resources/interface2.ui:1832
-#: live-installer/resources/interface.ui:1801
+#: live-installer/resources/interface2.ui:1839
+#: live-installer/resources/interface.ui:1808
 msgid "/dev/sda1"
 msgstr ""
 
@@ -285,68 +285,68 @@ msgstr "Ang pagdaragdag ng bagong user sa system"
 msgid "Writing filesystem mount information to /etc/fstab"
 msgstr ""
 
-#: live-installer/installer.py:240 live-installer/installer.py:412
+#: live-installer/installer.py:240 live-installer/installer.py:385
 #, python-format
 msgid "Mounting %(partition)s on %(mountpoint)s"
 msgstr "Ikinakabit ang %(partition)s sa %(mountpoint)s"
 
-#: live-installer/installer.py:304
+#: live-installer/installer.py:277
 #, python-format
 msgid "Filling %s with random data (please be patient, this can take hours...)"
 msgstr ""
 
-#: live-installer/installer.py:310
+#: live-installer/installer.py:283
 #, python-format
 msgid "Creating partitions on %s"
 msgstr ""
 
-#: live-installer/installer.py:376
+#: live-installer/installer.py:349
 #, python-format
 msgid "Formatting %(partition)s as %(format)s ..."
 msgstr "Pag-format ng %(partition)s sa %(format)s ..."
 
-#: live-installer/installer.py:530
+#: live-installer/installer.py:503
 msgid "Setting hostname"
 msgstr "Itinatakda ang hostname"
 
-#: live-installer/installer.py:555
+#: live-installer/installer.py:528
 msgid "Setting locale"
 msgstr "Hanay ng lokasyon"
 
-#: live-installer/installer.py:577
+#: live-installer/installer.py:550
 #, fuzzy
 msgid "Setting timezone"
 msgstr "Itinatakda ang hostname"
 
-#: live-installer/installer.py:610
+#: live-installer/installer.py:583
 msgid "Setting keyboard options"
 msgstr "Itinatakda ang mga option para sa keyboard"
 
-#: live-installer/installer.py:687
+#: live-installer/installer.py:660
 msgid "Trying to install updates"
 msgstr ""
 
-#: live-installer/installer.py:691
+#: live-installer/installer.py:664
 msgid "Clearing package manager"
 msgstr ""
 
-#: live-installer/installer.py:710
+#: live-installer/installer.py:683
 msgid "Generating initramfs"
 msgstr ""
 
-#: live-installer/installer.py:715
+#: live-installer/installer.py:688
 msgid "Preparing bootloader installation"
 msgstr ""
 
-#: live-installer/installer.py:727
+#: live-installer/installer.py:700
 msgid "Installing bootloader"
 msgstr "Iniinstall ang bootloader"
 
-#: live-installer/installer.py:739
+#: live-installer/installer.py:712
 msgid "Configuring bootloader"
 msgstr "Inaayos ang bootloader"
 
-#: live-installer/installer.py:747
+#: live-installer/installer.py:720
 msgid ""
 "WARNING: The grub bootloader was not configured properly! You need to "
 "configure it manually."
@@ -354,16 +354,16 @@ msgstr ""
 "BABALA: grub bootloader ay hindi naisaayos nang tama! Kailangan mo upang "
 "mano-manong i-configure ito."
 
-#: live-installer/installer.py:773
-#: live-installer/frontend/gtk_interface.py:1229
+#: live-installer/installer.py:746
+#: live-installer/frontend/gtk_interface.py:1231
 msgid "Installation finished"
 msgstr "Natapos na ang pag-iinstall"
 
-#: live-installer/installer.py:796
+#: live-installer/installer.py:769
 msgid "Checking bootloader"
 msgstr "Sinusuri bootloader"
 
-#: live-installer/installer.py:828
+#: live-installer/installer.py:801
 msgid "Failed to run command (Exited with {}):"
 msgstr ""
 
@@ -734,15 +734,15 @@ msgstr ""
 
 #: live-installer/frontend/gtk_interface.py:1183
 #: live-installer/frontend/gtk_interface.py:1186
-#: live-installer/frontend/gtk_interface.py:1206
-#: live-installer/frontend/gtk_interface.py:1210
+#: live-installer/frontend/gtk_interface.py:1208
+#: live-installer/frontend/gtk_interface.py:1212
 msgid "enabled"
 msgstr ""
 
 #: live-installer/frontend/gtk_interface.py:1184
 #: live-installer/frontend/gtk_interface.py:1187
-#: live-installer/frontend/gtk_interface.py:1207
-#: live-installer/frontend/gtk_interface.py:1210
+#: live-installer/frontend/gtk_interface.py:1209
+#: live-installer/frontend/gtk_interface.py:1212
 msgid "disabled"
 msgstr ""
 
@@ -764,60 +764,68 @@ msgid "Bios type: "
 msgstr ""
 
 #: live-installer/frontend/gtk_interface.py:1196
+msgid "Install updates after installation"
+msgstr ""
+
+#: live-installer/frontend/gtk_interface.py:1197
 msgid "Filesystem operations"
 msgstr "Mga operasyon ng filesystem"
 
-#: live-installer/frontend/gtk_interface.py:1197
+#: live-installer/frontend/gtk_interface.py:1198
 #, python-format
 msgid "Install bootloader on %s"
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1198
+#: live-installer/frontend/gtk_interface.py:1199
 msgid "Do not install bootloader"
 msgstr "Huwag i-install ang bootloader"
 
-#: live-installer/frontend/gtk_interface.py:1200
+#: live-installer/frontend/gtk_interface.py:1201
 msgid "Use already-mounted /target."
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1204
+#: live-installer/frontend/gtk_interface.py:1205
 #, python-format
 msgid "Automated installation on %s"
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1206
+#: live-installer/frontend/gtk_interface.py:1208
 msgid "LVM: "
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1209
+#: live-installer/frontend/gtk_interface.py:1211
 msgid "Disk Encryption: "
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1213
+#: live-installer/frontend/gtk_interface.py:1215
 #, python-format
 msgid "Format %(path)s as %(filesystem)s"
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1217
+#: live-installer/frontend/gtk_interface.py:1219
 #, python-format
 msgid "Mount %(path)s as %(mount)s"
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1230
+#: live-installer/frontend/gtk_interface.py:1232
 msgid ""
 "The installation is now complete. Do you want to restart your computer to "
 "use the new system?"
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1261
-#: live-installer/frontend/gtk_interface.py:1265
-#: live-installer/frontend/gtk_interface.py:1274
-#: live-installer/frontend/gtk_interface.py:1283
+#: live-installer/frontend/gtk_interface.py:1263
+#: live-installer/frontend/gtk_interface.py:1267
+#: live-installer/frontend/gtk_interface.py:1276
+#: live-installer/frontend/gtk_interface.py:1285
 msgid "Installation error"
 msgstr "May pagkakamali sa pag-iinstall"
 
-#: live-installer/frontend/gtk_interface.py:1374
+#: live-installer/frontend/gtk_interface.py:1388
 msgid "Install system with updates"
+msgstr ""
+
+#: live-installer/frontend/gtk_interface.py:1388
+msgid "If you connect internet, updates will install."
 msgstr ""
 
 #: live-installer/frontend/welcome.py:32
