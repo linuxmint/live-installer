@@ -5,8 +5,7 @@ grub_prepare:
 grub_installation_efi: chroot||grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id={distro_codename}
 grub_installation_legacy: chroot||grub-install --force {disk}
 run_before_user_creation: 
-    - ls /home/ | xargs userdel 
-    - rm -rf /home/*
+    - bash scripts/remove-users.sh
 additional_mountpoints:
     - /home
     - /boot
