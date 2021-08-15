@@ -17,15 +17,6 @@ if os.path.exists("/run/17g") or "--force" in sys.argv:
 else:
     os.mkdir("/run/17g")
 
-# Write live-installer into /etc/xprofile file
-if config.get("welcome_screen", True):
-    if os.path.exists("/etc/xprofile"):
-        xprofile = open("/etc/xprofile", "a")
-    else:
-        xprofile = open("/etc/xprofile", "w")
-    xprofile.write("live-installer --welcome")
-    xprofile.close()
-
 # live functions
 # Ignore this function with debian (debian uses live-config package)
 if config.get("enable_live", True) and (
