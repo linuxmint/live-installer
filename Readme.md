@@ -1,3 +1,4 @@
+
 # 17g installer
 
 17g is fork of Linuxmint debian edition live-installer. (https://github.com/linuxmint/live-installer) Main purpose is creating flexible and configurable distro-independed live installation tools. 
@@ -88,3 +89,8 @@ https://t.me/iso_calismalari (Turkish telegram group)
 * https://github.com/17g-installer/17g
 * https://gitlab.gnome.org/sulincix/17g
 * https://notabug.org/17g-installer
+
+### Notes:
+
+* Archlinux packagers must move /lib/live-installer to /usr/lib/live-instaler.
+* Default hosts file source : https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts

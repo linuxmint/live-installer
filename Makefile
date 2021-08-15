@@ -35,6 +35,7 @@ buildmo:
 		msgfmt -o build/usr/share/locale/$$lang/LC_MESSAGES/live-installer.mo $$file; \
 	done \
 
+
 install:
 	rm -rf  $(DESTDIR)/lib/live-installer || true
 	mkdir -p $(DESTDIR)/lib || true
