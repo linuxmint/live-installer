@@ -85,6 +85,8 @@ class InstallerEngine:
         else:
             self.format_partitions()
             self.mount_partitions()
+        if os.path.isdir("/lib/live-installer"):
+            os.chdir("/lib/live-installer")
 
         # Custom commands
         self.do_hook_commands("pre_rsync_hook")
@@ -183,7 +185,7 @@ class InstallerEngine:
         self.our_current += 1
         try:
             for cmd in config.distro["run_before_user_creation"]:
-                self.run("chroot||" + cmd)
+                self.run(cmd)
         except BaseException:
             err("This action not supported for your distribution.")
         self.update_progress(_("Adding new user to the system"))
