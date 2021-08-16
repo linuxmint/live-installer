@@ -48,7 +48,7 @@ class InstallerEngine:
         ''' Set a callback to be called on errors '''
         self.error_message = errorhook
 
-    def update_progress(self, message="", pulse=False, done=False):
+    def update_progress(self, message="", pulse=False, done=False, nolog=False):
         if len(message.strip())==0:
             return
         if done:
@@ -56,7 +56,7 @@ class InstallerEngine:
             self.our_current = 1
         if self.progresshook:
             self.progresshook(self.our_current,
-                              self.our_total, pulse, done, message)
+                              self.our_total, pulse, done, message, nolog)
 
     def start_installation(self):
 
@@ -129,7 +129,7 @@ class InstallerEngine:
                     else:
                         self.our_current = min(
                             self.our_current + 1, self.our_total)
-                        self.update_progress(_("Copying /%s") % line)
+                        self.update_progress(_("Copying /%s") % line,nolog=True)
                 log(_("rsync exited with return code: %s") % str(rsync.poll()))
             elif config.get("use_unsquashfs", True) and is_cmd("unsquashfs"):
                 pwd = os.getcwd()

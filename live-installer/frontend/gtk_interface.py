@@ -1300,8 +1300,9 @@ class InstallerWindow:
         self.critical_error_message += message + "\n"
 
     @idle
-    def update_progress(self, current, total, pulse, done, message):
-        log(message)
+    def update_progress(self, current, total, pulse, done, message, nolog):
+        if not nolog:
+            log(message)
         if not current:
             current = 1
         if not total:
