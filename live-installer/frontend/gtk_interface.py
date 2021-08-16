@@ -704,6 +704,7 @@ class InstallerWindow:
         # Set the models
         self.builder.get_object("combobox_kb_model").set_model(models)
         self.builder.get_object("treeview_layouts").set_model(layouts)
+        self.builder.get_object("label_non_latin").hide()
         self.layout_variants = variants
         # Preselect currently active keyboard info
         try:
