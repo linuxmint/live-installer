@@ -1010,6 +1010,7 @@ class InstallerWindow:
 
         elif index == self.PAGE_OVERVIEW:
             self.show_overview()
+            self.builder.get_object("button_next").set_label(_("Install"))
         elif index == self.PAGE_INSTALL:
             self.builder.get_object("button_next").set_sensitive(False)
             self.builder.get_object("button_back").set_sensitive(False)
@@ -1090,7 +1091,6 @@ class InstallerWindow:
                 self.activate_page(self.PAGE_OPTIONS)
                 if config.get("skip_options", False):
                     self.activate_page(self.PAGE_OVERVIEW)
-            self.builder.get_object("button_next").set_label(_("Install"))
         else:
             self.activate_page(self.PAGE_PARTITIONS)
             partitioning.build_partitions(self)
