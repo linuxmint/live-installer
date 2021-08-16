@@ -35,7 +35,6 @@ buildmo:
 		msgfmt -o build/usr/share/locale/$$lang/LC_MESSAGES/live-installer.mo $$file; \
 	done \
 
-
 install:
 	rm -rf  $(DESTDIR)/lib/live-installer || true
 	mkdir -p $(DESTDIR)/lib || true
@@ -52,6 +51,9 @@ install:
 	install data/00-live $(DESTDIR)/$(XINITRCDIR)/00-live
 	install data/live-installer.sh $(DESTDIR)/usr/bin/live-installer
 	install data/org.17g.installer.policy $(DESTDIR)/usr/share/polkit-1/actions/
+	@if [ -d custom/live-installer.desktop ] ; then \
+	    install custom/live-installer.desktop $(DESTDIR)/usr/share/applications/live-installer.desktop ; \
+	fi
 
 install-systemd:
 	mkdir -p $(DESTDIR)/lib/systemd/system/
