@@ -250,7 +250,6 @@ class InstallerWindow:
         self.slideshow()
         self.window.set_position(Gtk.WindowPosition.CENTER)
         self.window.show_all()
-        self.window.set_resizable(False)
         if not fullscreen and config.get("set_alternative_ui", False):
             self.builder.get_object("button_quit").hide()
         if fullscreen:
