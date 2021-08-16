@@ -51,7 +51,7 @@ install:
 	install data/00-live $(DESTDIR)/$(XINITRCDIR)/00-live
 	install data/live-installer.sh $(DESTDIR)/usr/bin/live-installer
 	install data/org.17g.installer.policy $(DESTDIR)/usr/share/polkit-1/actions/
-	@if [ -d custom/live-installer.desktop ] ; then \
+	@if [ -f custom/live-installer.desktop ] ; then \
 	    install custom/live-installer.desktop $(DESTDIR)/usr/share/applications/live-installer.desktop ; \
 	fi
 
