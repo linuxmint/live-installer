@@ -18,6 +18,8 @@
     </columns>
   </object>
   <object class="GtkWindow" id="main_window">
+    <property name="width-request">0</property>
+    <property name="height-request">0</property>
     <property name="can-focus">False</property>
     <property name="window-position">center</property>
     <property name="default-width">1</property>
@@ -31,7 +33,7 @@
           <object class="GtkBox" id="title_eventbox">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="border-width">10</property>
+            <property name="border-width">13</property>
             <property name="orientation">vertical</property>
             <child>
               <object class="GtkBox" id="hbox5">
@@ -97,9 +99,6 @@
           <object class="GtkStack" id="notebook1">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="margin-start">5</property>
-            <property name="margin-end">5</property>
-            <property name="border-width">0</property>
             <property name="transition-duration">250</property>
             <property name="transition-type">slide-left-right</property>
             <child>
@@ -1418,13 +1417,13 @@
               <object class="GtkBox" id="vbox_install">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="border-width">13</property>
                 <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkBox" id="vbox16">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="valign">end</property>
-                    <property name="border-width">20</property>
                     <property name="orientation">vertical</property>
                     <property name="spacing">6</property>
                     <child>
@@ -1490,18 +1489,16 @@
                   <object class="GtkBox" id="slidebox">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="halign">center</property>
-                    <property name="valign">end</property>
-                    <property name="hexpand">True</property>
-                    <property name="vexpand">True</property>
+                    <property name="hexpand">False</property>
+                    <property name="vexpand">False</property>
                     <property name="orientation">vertical</property>
                     <child>
                       <placeholder/>
                     </child>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
