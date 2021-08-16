@@ -661,7 +661,8 @@ class InstallerWindow:
         (keyboard_geom,
          self.setup.keyboard_layout) = subprocess.getoutput("setxkbmap -query | awk '/^(model|layout)/{print $2}'").split()
         if "," in self.setup.keyboard_layout:
-             self.setup.keyboard_layout = self.setup.keyboard_layout.split(",")[0]
+            self.setup.keyboard_layout = self.setup.keyboard_layout.split(",")[
+                0]
         # Build the models
         from collections import defaultdict
 
@@ -1021,7 +1022,7 @@ class InstallerWindow:
         if errorFound:
             return
         if nex == None:
-            nex=0
+            nex = 0
         # progress images
         for i in range(9):
             img = self.builder.get_object("progress_%d" % i)
@@ -1098,7 +1099,8 @@ class InstallerWindow:
 
     def wizard_cb(self, widget, goback, data=None):
         ''' wizard buttons '''
-        sel = int(self.builder.get_object("notebook1").get_visible_child_name())
+        sel = int(self.builder.get_object(
+            "notebook1").get_visible_child_name())
         self.builder.get_object("button_back").set_sensitive(True)
         nex = None
         # check each page for errors
@@ -1122,7 +1124,7 @@ class InstallerWindow:
             if sel == self.PAGE_TYPE:
                 self.activate_page_type()
                 return
-            if sel == self.PAGE_PARTITIONS :
+            if sel == self.PAGE_PARTITIONS:
                 if self.grub_check.get_active() and \
                    not self.setup.grub_device:
                     WarningDialog(_("Installer"), _(
@@ -1349,7 +1351,8 @@ class InstallerWindow:
     def slideshow(self):
         self.images = os.listdir("branding/slides")
         self.slides = Gtk.Stack()
-        self.slides.set_transition_type(Gtk.StackTransitionType.SLIDE_LEFT_RIGHT)
+        self.slides.set_transition_type(
+            Gtk.StackTransitionType.SLIDE_LEFT_RIGHT)
         self.slides.set_transition_duration(250)
         self.builder.get_object("slidebox").add(self.slides)
         self.max_slide_page = len(self.images) - 1
@@ -1358,8 +1361,8 @@ class InstallerWindow:
             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
                 "branding/slides/" + i, 752, 423, False)
             im.set_from_pixbuf(pixbuf)
-            page_num=self.images.index(i)
-            self.slides.add_titled(im, str(page_num),str(page_num))
+            page_num = self.images.index(i)
+            self.slides.add_titled(im, str(page_num), str(page_num))
         self.cur_slide_pos = 0
         GLib.timeout_add(100, self.set_slide_page)
 
@@ -1369,23 +1372,24 @@ class InstallerWindow:
         if(self.cur_slide_pos > self.max_slide_page):
             self.cur_slide_pos = 0
         GLib.timeout_add(15000, self.set_slide_page)
-        
+
     def options_init(self):
-        def option_box(text1,text2,event):
+        def option_box(text1, text2, event):
             mbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
             check = Gtk.CheckButton()
             check.set_label("")
-            check.connect("toggled",event)
+            check.connect("toggled", event)
             mbox.add(check)
             label = Gtk.Label()
-            label.set_markup(" <b>{}</b>\n {}".format(text1,text2))
+            label.set_markup(" <b>{}</b>\n {}".format(text1, text2))
             mbox.add(label)
             mbox.set_margin_bottom(13)
             return mbox
-        
+
         def chk_updates(button):
             self.setup.install_updates = button.get_active()
             self.show_overview()
         obox = self.builder.get_object("options_box")
-        obox.add(option_box(_("Install system with updates"),_("If you connect internet, updates will install."),chk_updates))
+        obox.add(option_box(_("Install system with updates"), _(
+            "If you connect internet, updates will install."), chk_updates))
         obox.add(Gtk.Separator())

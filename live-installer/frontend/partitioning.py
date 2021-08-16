@@ -285,7 +285,7 @@ class PartitionSetup(Gtk.TreeStore):
                 # skip ranges <5MB
                 if part.raw_size > 5242880:
                     partitions.append(part)
-            #partitions = sorted(
+            # partitions = sorted(
             #    partitions, key=lambda part: part.partition.geometry.start)
 
             try:  # assign mount_as and format_as if disk was just auto-formatted
@@ -305,15 +305,16 @@ class PartitionSetup(Gtk.TreeStore):
                 installer.setup.partitions.append(partition)
                 if partition.type != _('Free space'):
                     self.append(disk_iter, (partition.name,
-                                        '<span>{}</span>'.format(
-                                            partition.type),
-                                        partition.description,
-                                        partition.format_as,
-                                        partition.mount_as,
-                                        partition.size,
-                                        partition.free_space,
-                                        partition,
-                                        disk_path))
+                                            '<span>{}</span>'.format(
+                                                partition.type),
+                                            partition.description,
+                                            partition.format_as,
+                                            partition.mount_as,
+                                            partition.size,
+                                            partition.free_space,
+                                            partition,
+                                            disk_path))
+
 
 @idle
 def show_error(message):
@@ -462,7 +463,8 @@ class Partition(object):
         # identify partition's description and used space
         try:
             os.system('mount --read-only {} {}'.format(self.path, TMP_MOUNTPOINT))
-            df = getoutput("df {0} | grep '^{0}' | awk '{{print $2,$4,$5,$6}}' | tail -1".format(self.path)).decode("utf-8").split(" ")
+            df = getoutput("df {0} | grep '^{0}' | awk '{{print $2,$4,$5,$6}}' | tail -1".format(
+                self.path)).decode("utf-8").split(" ")
             size = df[0]
             free = df[1]
             self.used_percent = df[2]
@@ -474,7 +476,7 @@ class Partition(object):
             self.size = to_human_readable(int(size) * 1024)
             # df returns values in 1024B-blocks by default
             self.free_space = to_human_readable(int(free) * 1024)
-            self.used_percent = self.used_percent.replace("%","") or 0
+            self.used_percent = self.used_percent.replace("%", "") or 0
         except:
             self.description = ""
             if "swap" in self.type:

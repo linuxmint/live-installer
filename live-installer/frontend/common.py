@@ -49,7 +49,7 @@ def get_country_list():
 
     if "en_US" not in langlist:
         langlist += "en_US\n"
-    langlist=langlist.split('\n')
+    langlist = langlist.split('\n')
     langlist.sort()
     for locale in langlist:
         if '_' in locale:
@@ -76,7 +76,7 @@ def get_country_list():
 
 
 def get_timezone_list():
-    l=subprocess.getoutput("cat ./resources/timezones").split('\n')
+    l = subprocess.getoutput("cat ./resources/timezones").split('\n')
     l.sort()
     return l
 
