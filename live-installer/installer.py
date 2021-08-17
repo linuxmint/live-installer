@@ -489,7 +489,7 @@ class InstallerEngine:
             fstab.close()
 
         if self.setup.lvm:
-            self.run("grep -v swap /target/etc/fstab > /target/etc/mtab")
+            self.run("cat /target/etc/fstab | grep -v swap > /target/etc/mtab")
 
         if self.setup.luks:
             self.run("echo 'lvmlmde   %s   none   luks,tries=3' >> /target/etc/crypttab" %
