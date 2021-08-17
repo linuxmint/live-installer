@@ -308,20 +308,22 @@ class InstallerEngine:
             self.run("vgcreate -y lvmlmde %s" % self.auto_root_partition)
             log(" --> LVM: Creating LV root")
             self.run("lvcreate -y -n root -L 1GB lvmlmde")
-            log(" --> LVM: Creating LV swap")
-            swap_size = int(round(int(subprocess.getoutput(
-                "awk '/^MemTotal/{ print $2 }' /proc/meminfo")) / 1024, 0))
-            self.run("lvcreate -y -n swap -L %dMB lvmlmde" % swap_size)
+            if config.get("use_swap",False):
+                log(" --> LVM: Creating LV swap")
+                swap_size = int(round(int(subprocess.getoutput(
+                    "awk '/^MemTotal/{ print $2 }' /proc/meminfo")) / 1024, 0))
+                self.run("lvcreate -y -n swap -L %dMB lvmlmde" % swap_size)
             log(" --> LVM: Extending LV root")
             self.run("lvextend -l 100\\%FREE /dev/lvmlmde/root")
             log(" --> LVM: Formatting LV root")
             self.run("mkfs.ext4 /dev/mapper/lvmlmde-root -FF")
-            log(" --> LVM: Formatting LV swap")
-            self.run("mkswap -f /dev/mapper/lvmlmde-swap")
-            log(" --> LVM: Enabling LV swap")
-            self.run("swapon /dev/mapper/lvmlmde-swap")
+            if config.get("use_swap",False):
+                log(" --> LVM: Formatting LV swap")
+                self.run("mkswap -f /dev/mapper/lvmlmde-swap")
+                log(" --> LVM: Enabling LV swap")
+                self.run("swapon /dev/mapper/lvmlmde-swap")
+                self.auto_swap_partition = "/dev/mapper/lvmlmde-swap"
             self.auto_root_partition = "/dev/mapper/lvmlmde-root"
-            self.auto_swap_partition = "/dev/mapper/lvmlmde-swap"
 
             # lvm enable for initramfs-systems
             if "enable_lvm" in config.initramfs:
