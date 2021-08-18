@@ -1,7 +1,7 @@
 name: mkinitcpio
 check_this_dir: /lib/initcpio
 enable_lvm:
-  - echo "HOOKS+=(lvm2)" > /etc/mkinitcpio.conf
+  - echo "HOOKS+=(lvm2)" > /target/etc/mkinitcpio.conf
 commands:
   - mkinitcpio -g /boot/initramfs-linux.img
   - mkinitcpio -g /boot/initramfs-linux-fallback.img

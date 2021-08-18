@@ -87,9 +87,10 @@ class InstallerEngine:
             self.mount_partitions()
         if os.path.isdir("/lib/live-installer"):
             os.chdir("/lib/live-installer")
-
+                    
         # Custom commands
         self.do_hook_commands("pre_rsync_hook")
+
 
         # Transfer the files
         SOURCE = "/source/"
@@ -151,6 +152,13 @@ class InstallerEngine:
                         self.our_current = min(
                             self.our_current + 1, self.our_total)
                         self.update_progress(_("Copying /%s") % line)
+               
+                        
+        # Enable LVM for initramfs-systems
+        if self.setup.lvm and "enable_lvm" in config.initramfs:
+            for cmd in config.initramfs["enable_lvm"]:
+                self.run(cmd)
+
         # Custom commands
         self.do_hook_commands("post_rsync_hook")
 
@@ -324,11 +332,7 @@ class InstallerEngine:
                 self.run("swapon /dev/mapper/lvmlmde-swap")
                 self.auto_swap_partition = "/dev/mapper/lvmlmde-swap"
             self.auto_root_partition = "/dev/mapper/lvmlmde-root"
-
-            # lvm enable for initramfs-systems
-            if "enable_lvm" in config.initramfs:
-                for cmd in config.initramfs["enable_lvm"]:
-                    self.run(cmd)
+            
 
         self.do_mount(self.auto_root_partition, "/target", "ext4", None)
         if (self.auto_boot_partition is not None):
