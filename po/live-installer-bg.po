@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-04 12:51+0000\n"
+"POT-Creation-Date: 2021-08-19 09:02+0000\n"
 "PO-Revision-Date: 2020-03-11 17:37+0000\n"
 "Last-Translator: spacy01 <Unknown>\n"
 "Language-Team: Bulgarian <bg@li.org>\n"
@@ -19,13 +19,13 @@ msgstr ""
 "X-Generator: Launchpad (build 3a6db24bbe7280ec09bae73384238390fcc98ad3)\n"
 
 #: live-installer/resources/interface2.ui:66
-#: live-installer/resources/interface.ui:130
+#: live-installer/resources/interface.ui:129
 #, fuzzy
 msgid "Welcome to the 17g Installer."
 msgstr "Добре дошли в инсталатора на 17G."
 
 #: live-installer/resources/interface2.ui:83
-#: live-installer/resources/interface.ui:147
+#: live-installer/resources/interface.ui:146
 #: live-installer/frontend/gtk_interface.py:358
 #: live-installer/frontend/tui_interface.py:25
 #, fuzzy
@@ -40,183 +40,183 @@ msgstr ""
 #: live-installer/resources/interface2.ui:1803
 #: live-installer/resources/interface2.ui:1815
 #: live-installer/resources/interface2.ui:1827
-#: live-installer/resources/interface.ui:248
-#: live-installer/resources/interface.ui:1438
-#: live-installer/resources/interface.ui:1453
-#: live-installer/resources/interface.ui:1772
-#: live-installer/resources/interface.ui:1784
-#: live-installer/resources/interface.ui:1796
+#: live-installer/resources/interface.ui:247
+#: live-installer/resources/interface.ui:1437
+#: live-installer/resources/interface.ui:1452
+#: live-installer/resources/interface.ui:1769
+#: live-installer/resources/interface.ui:1781
+#: live-installer/resources/interface.ui:1793
 msgid "label"
 msgstr ""
 
 #: live-installer/resources/interface2.ui:234
-#: live-installer/resources/interface.ui:298
+#: live-installer/resources/interface.ui:297
 msgid "Continent"
 msgstr ""
 
 #: live-installer/resources/interface2.ui:248
-#: live-installer/resources/interface.ui:312
+#: live-installer/resources/interface.ui:311
 #: live-installer/frontend/gtk_interface.py:333
 #: live-installer/frontend/tui_interface.py:41
 msgid "Timezone"
 msgstr "Часова зона"
 
 #: live-installer/resources/interface2.ui:288
-#: live-installer/resources/interface.ui:352
+#: live-installer/resources/interface.ui:351
 #: live-installer/frontend/gtk_interface.py:366
 msgid "Keyboard Model:"
 msgstr "Модел на клавиатурата:"
 
 #: live-installer/resources/interface2.ui:390
-#: live-installer/resources/interface.ui:454
+#: live-installer/resources/interface.ui:453
 #, fuzzy
 msgid "Type here to test your keyboard"
 msgstr "Пишете тук, за да тествате клавиатурата"
 
 #: live-installer/resources/interface2.ui:426
-#: live-installer/resources/interface.ui:490
+#: live-installer/resources/interface.ui:489
 #: live-installer/frontend/gtk_interface.py:375
 msgid "Your name:"
 msgstr "Вашето име:"
 
 #: live-installer/resources/interface2.ui:469
-#: live-installer/resources/interface.ui:533
+#: live-installer/resources/interface.ui:532
 #: live-installer/frontend/gtk_interface.py:377
 msgid "Your computer's name:"
 msgstr "Името на вашия компютър:"
 
 #: live-installer/resources/interface2.ui:484
-#: live-installer/resources/interface.ui:548
+#: live-installer/resources/interface.ui:547
 #: live-installer/frontend/gtk_interface.py:381
 msgid "Pick a username:"
 msgstr "Изберете потребителско име:"
 
 #: live-installer/resources/interface2.ui:497
-#: live-installer/resources/interface.ui:561
+#: live-installer/resources/interface.ui:560
 #: live-installer/frontend/gtk_interface.py:379
 msgid "The name it uses when it talks to other computers."
 msgstr "Името, което ще се използва при комуникация с други компютри."
 
 #: live-installer/resources/interface2.ui:530
-#: live-installer/resources/interface.ui:594
+#: live-installer/resources/interface.ui:593
 #: live-installer/frontend/gtk_interface.py:383
 msgid "Choose a password:"
 msgstr "Изберете парола:"
 
 #: live-installer/resources/interface2.ui:575
-#: live-installer/resources/interface.ui:639
+#: live-installer/resources/interface.ui:638
 #: live-installer/frontend/gtk_interface.py:385
 msgid "Confirm your password:"
 msgstr "Потвърдете парола си:"
 
 #: live-installer/resources/interface2.ui:593
-#: live-installer/resources/interface.ui:657
+#: live-installer/resources/interface.ui:656
 #: live-installer/frontend/gtk_interface.py:388
 msgid "Log in automatically"
 msgstr "Автоматично влизане в системата"
 
 #: live-installer/resources/interface2.ui:608
-#: live-installer/resources/interface.ui:672
+#: live-installer/resources/interface.ui:671
 #: live-installer/frontend/gtk_interface.py:390
 msgid "Require my password to log in"
 msgstr "Изискване на парола при влизане"
 
 #: live-installer/resources/interface2.ui:623
-#: live-installer/resources/interface.ui:687
+#: live-installer/resources/interface.ui:686
 #: live-installer/frontend/gtk_interface.py:392
 msgid "Encrypt my home folder"
 msgstr "Криптиране на домашната папка"
 
 #: live-installer/resources/interface2.ui:693
-#: live-installer/resources/interface.ui:757
+#: live-installer/resources/interface.ui:756
 #: live-installer/frontend/gtk_interface.py:396
 msgid "Automated Installation"
 msgstr "Автоматизирана инсталация"
 
 #: live-installer/resources/interface2.ui:709
-#: live-installer/resources/interface.ui:773
+#: live-installer/resources/interface.ui:772
 #, fuzzy
 msgid "Erase a disk and install LMDE on it."
 msgstr "Изтрий диска и инсталирай 17G на него."
 
 #: live-installer/resources/interface2.ui:736
-#: live-installer/resources/interface.ui:800
+#: live-installer/resources/interface.ui:799
 #: live-installer/frontend/gtk_interface.py:399
 msgid "Disk:"
 msgstr "Диск:"
 
 #: live-installer/resources/interface2.ui:785
-#: live-installer/resources/interface.ui:849
+#: live-installer/resources/interface.ui:848
 #: live-installer/frontend/gtk_interface.py:407
 msgid "Use LVM (Logical Volume Management)"
 msgstr "Използване на LVM (Logical Volume Management)"
 
 #: live-installer/resources/interface2.ui:831
-#: live-installer/resources/interface.ui:895
+#: live-installer/resources/interface.ui:894
 #: live-installer/frontend/gtk_interface.py:401
 msgid "Encrypt the operating system"
 msgstr "Криптиране на операционната система"
 
 #: live-installer/resources/interface2.ui:862
-#: live-installer/resources/interface.ui:926
+#: live-installer/resources/interface.ui:925
 #: live-installer/frontend/gtk_interface.py:403
 msgid "Passphrase"
 msgstr "Парола"
 
 #: live-installer/resources/interface2.ui:878
-#: live-installer/resources/interface.ui:942
+#: live-installer/resources/interface.ui:941
 #: live-installer/frontend/gtk_interface.py:405
 msgid "Confirm passphrase"
 msgstr "Потвърдете паролата"
 
 #: live-installer/resources/interface2.ui:912
-#: live-installer/resources/interface.ui:976
+#: live-installer/resources/interface.ui:975
 #: live-installer/frontend/gtk_interface.py:420
 msgid "This provides extra security but it can take hours."
 msgstr "Това добавя допълнителна сигурност, но може да отнеме часове."
 
 #: live-installer/resources/interface2.ui:925
-#: live-installer/resources/interface.ui:989
+#: live-installer/resources/interface.ui:988
 #: live-installer/frontend/gtk_interface.py:418
 msgid "Fill the disk with random data"
 msgstr "Запълване на диска с произволни данни"
 
 #: live-installer/resources/interface2.ui:1006
-#: live-installer/resources/interface.ui:1070
+#: live-installer/resources/interface.ui:1069
 #: live-installer/frontend/gtk_interface.py:409
 msgid "Manual Partitioning"
 msgstr "Ръчно разделяне"
 
 #: live-installer/resources/interface2.ui:1022
-#: live-installer/resources/interface.ui:1086
+#: live-installer/resources/interface.ui:1085
 #, fuzzy
 msgid "Manually create, resize or choose partitions for LMDE."
 msgstr "Ръчно създайте, оразмерете и изберете дялове за 17G."
 
 #: live-installer/resources/interface2.ui:1080
-#: live-installer/resources/interface.ui:1144
+#: live-installer/resources/interface.ui:1143
 msgid "Remove windows & Install"
 msgstr ""
 
 #: live-installer/resources/interface2.ui:1096
-#: live-installer/resources/interface.ui:1160
+#: live-installer/resources/interface.ui:1159
 msgid "Remove existsing windows and install LMDE on it."
 msgstr ""
 
 #: live-installer/resources/interface2.ui:1190
-#: live-installer/resources/interface.ui:1254
+#: live-installer/resources/interface.ui:1253
 #: live-installer/frontend/gtk_interface.py:437
 msgid "Install the GRUB boot menu on:"
 msgstr "Инсталиране на стартиращото меню GRUB във:"
 
 #: live-installer/resources/interface2.ui:1248
-#: live-installer/resources/interface.ui:1312
+#: live-installer/resources/interface.ui:1311
 #: live-installer/frontend/gtk_interface.py:423
 msgid "Edit partitions"
 msgstr "Редактиране на дялове"
 
 #: live-installer/resources/interface2.ui:1476
-#: live-installer/resources/interface.ui:1525
+#: live-installer/resources/interface.ui:1522
 #: live-installer/resources/welcome.ui:206
 msgid "17g team"
 msgstr ""
@@ -227,13 +227,13 @@ msgid "Quit"
 msgstr "Изход"
 
 #: live-installer/resources/interface2.ui:1714
-#: live-installer/resources/interface.ui:57
+#: live-installer/resources/interface.ui:59
 #: live-installer/frontend/gtk_interface.py:329
 msgid "Welcome"
 msgstr "Добре дошли"
 
 #: live-installer/resources/interface2.ui:1839
-#: live-installer/resources/interface.ui:1808
+#: live-installer/resources/interface.ui:1805
 msgid "/dev/sda1"
 msgstr ""
 
@@ -266,96 +266,96 @@ msgstr ""
 msgid "Welcome to 17g"
 msgstr "Добре дошли"
 
-#: live-installer/installer.py:130 live-installer/installer.py:151
+#: live-installer/installer.py:132 live-installer/installer.py:153
 #, python-format
 msgid "Copying /%s"
 msgstr "Копиране /%s"
 
-#: live-installer/installer.py:131
+#: live-installer/installer.py:133
 #, python-format
 msgid "rsync exited with return code: %s"
 msgstr ""
 
-#: live-installer/installer.py:135
+#: live-installer/installer.py:137
 msgid "Extracting rootfs."
 msgstr ""
 
-#: live-installer/installer.py:160
+#: live-installer/installer.py:162
 msgid "Entering the system ..."
 msgstr "Влизане в системата..."
 
-#: live-installer/installer.py:189
+#: live-installer/installer.py:191
 msgid "Adding new user to the system"
 msgstr "Добавяне на нов потребител към системата"
 
-#: live-installer/installer.py:234
+#: live-installer/installer.py:236
 msgid "Writing filesystem mount information to /etc/fstab"
 msgstr "Записване на информацията за монтиране в /etc/fstab"
 
-#: live-installer/installer.py:240 live-installer/installer.py:385
+#: live-installer/installer.py:242 live-installer/installer.py:389
 #, python-format
 msgid "Mounting %(partition)s on %(mountpoint)s"
 msgstr "Монтиране на %(partition)s в %(mountpoint)s"
 
-#: live-installer/installer.py:277
+#: live-installer/installer.py:279
 #, python-format
 msgid "Filling %s with random data (please be patient, this can take hours...)"
 msgstr ""
 "Запълване на %s с произволни данни (моля бъдете търпеливи, това може да "
 "отнеме часове...)"
 
-#: live-installer/installer.py:283
+#: live-installer/installer.py:285
 #, python-format
 msgid "Creating partitions on %s"
 msgstr "Създаване на дялове на %s"
 
-#: live-installer/installer.py:349
+#: live-installer/installer.py:353
 #, python-format
 msgid "Formatting %(partition)s as %(format)s ..."
 msgstr "Форматиране на %(partition)s в %(format)s ..."
 
-#: live-installer/installer.py:503
+#: live-installer/installer.py:507
 msgid "Setting hostname"
 msgstr "Настройване на системното име"
 
-#: live-installer/installer.py:528
+#: live-installer/installer.py:532
 msgid "Setting locale"
 msgstr "Настройване на локал"
 
-#: live-installer/installer.py:550
+#: live-installer/installer.py:554
 #, fuzzy
 msgid "Setting timezone"
 msgstr "Настройване на системното име"
 
-#: live-installer/installer.py:583
+#: live-installer/installer.py:587
 msgid "Setting keyboard options"
 msgstr "Настройване на клавиатурата"
 
-#: live-installer/installer.py:660
+#: live-installer/installer.py:664
 msgid "Trying to install updates"
 msgstr ""
 
-#: live-installer/installer.py:664
+#: live-installer/installer.py:668
 msgid "Clearing package manager"
 msgstr ""
 
-#: live-installer/installer.py:683
+#: live-installer/installer.py:687
 msgid "Generating initramfs"
 msgstr ""
 
-#: live-installer/installer.py:688
+#: live-installer/installer.py:692
 msgid "Preparing bootloader installation"
 msgstr ""
 
-#: live-installer/installer.py:700
+#: live-installer/installer.py:704
 msgid "Installing bootloader"
 msgstr "Инсталиране на програмата за начално стартиране"
 
-#: live-installer/installer.py:712
+#: live-installer/installer.py:716
 msgid "Configuring bootloader"
 msgstr "Конфигуриране на програмата за начално зареждане"
 
-#: live-installer/installer.py:720
+#: live-installer/installer.py:724
 msgid ""
 "WARNING: The grub bootloader was not configured properly! You need to "
 "configure it manually."
@@ -363,16 +363,16 @@ msgstr ""
 "ВНИМАНИЕ: Grub не е конфигуриран правилно! Вие трябва да го конфигурирате "
 "ръчно."
 
-#: live-installer/installer.py:746
-#: live-installer/frontend/gtk_interface.py:1231
+#: live-installer/installer.py:750
+#: live-installer/frontend/gtk_interface.py:1234
 msgid "Installation finished"
 msgstr "Инсталирането завърши"
 
-#: live-installer/installer.py:769
+#: live-installer/installer.py:773
 msgid "Checking bootloader"
 msgstr "Проверка на програмата за начално зареждане"
 
-#: live-installer/installer.py:801
+#: live-installer/installer.py:805
 msgid "Failed to run command (Exited with {}):"
 msgstr ""
 
@@ -404,19 +404,19 @@ msgstr "Изчисляване на файлови индекси..."
 
 #: live-installer/frontend/gtk_interface.py:317
 #: live-installer/frontend/gtk_interface.py:320
-#: live-installer/frontend/gtk_interface.py:842
-#: live-installer/frontend/gtk_interface.py:878
-#: live-installer/frontend/gtk_interface.py:953
-#: live-installer/frontend/gtk_interface.py:966
-#: live-installer/frontend/gtk_interface.py:971
-#: live-installer/frontend/gtk_interface.py:985
-#: live-installer/frontend/gtk_interface.py:990
-#: live-installer/frontend/gtk_interface.py:996
-#: live-installer/frontend/gtk_interface.py:1001
-#: live-installer/frontend/gtk_interface.py:1006
-#: live-installer/frontend/gtk_interface.py:1059
-#: live-installer/frontend/gtk_interface.py:1127
-#: live-installer/frontend/partitioning.py:321
+#: live-installer/frontend/gtk_interface.py:844
+#: live-installer/frontend/gtk_interface.py:880
+#: live-installer/frontend/gtk_interface.py:955
+#: live-installer/frontend/gtk_interface.py:968
+#: live-installer/frontend/gtk_interface.py:973
+#: live-installer/frontend/gtk_interface.py:987
+#: live-installer/frontend/gtk_interface.py:992
+#: live-installer/frontend/gtk_interface.py:998
+#: live-installer/frontend/gtk_interface.py:1003
+#: live-installer/frontend/gtk_interface.py:1008
+#: live-installer/frontend/gtk_interface.py:1062
+#: live-installer/frontend/gtk_interface.py:1130
+#: live-installer/frontend/partitioning.py:322
 msgid "Installer"
 msgstr "Инсталатор"
 
@@ -490,7 +490,7 @@ msgid "Back"
 msgstr "Назад"
 
 #: live-installer/frontend/gtk_interface.py:352
-#: live-installer/frontend/gtk_interface.py:839
+#: live-installer/frontend/gtk_interface.py:841
 msgid "Next"
 msgstr "Следващ"
 
@@ -563,7 +563,7 @@ msgstr "Размер"
 
 #: live-installer/frontend/gtk_interface.py:432
 #: live-installer/frontend/partitioning.py:306
-#: live-installer/frontend/partitioning.py:451
+#: live-installer/frontend/partitioning.py:452
 msgid "Free space"
 msgstr "Свободно пространство"
 
@@ -575,67 +575,67 @@ msgstr "Изход?"
 msgid "Are you sure you want to quit the installer?"
 msgstr "Сигурни ли сте че искате да излезете от инсталатора?"
 
-#: live-installer/frontend/gtk_interface.py:843
+#: live-installer/frontend/gtk_interface.py:845
 msgid "Please choose a language"
 msgstr "Моля изберете език"
 
-#: live-installer/frontend/gtk_interface.py:879
+#: live-installer/frontend/gtk_interface.py:881
 #, fuzzy
 msgid "Please provide a kayboard layout for your computer."
 msgstr "Моля, дайте име на компютъра си."
 
-#: live-installer/frontend/gtk_interface.py:888
+#: live-installer/frontend/gtk_interface.py:890
 msgid "Please provide your full name."
 msgstr "Моля напишете цялото си име."
 
-#: live-installer/frontend/gtk_interface.py:893
+#: live-installer/frontend/gtk_interface.py:895
 msgid "Please provide a name for your computer."
 msgstr "Моля, дайте име на компютъра си."
 
-#: live-installer/frontend/gtk_interface.py:897
+#: live-installer/frontend/gtk_interface.py:899
 msgid "Please provide a username."
 msgstr "Моля напишете потребителско име."
 
-#: live-installer/frontend/gtk_interface.py:902
+#: live-installer/frontend/gtk_interface.py:904
 msgid "Please provide a password for your user account."
 msgstr "Моля напишете парола за вашия потребителски акаунт."
 
-#: live-installer/frontend/gtk_interface.py:906
+#: live-installer/frontend/gtk_interface.py:908
 #, fuzzy
 msgid "Your passwords is too short."
 msgstr "Паролата Ви не съвпада."
 
-#: live-installer/frontend/gtk_interface.py:910
+#: live-installer/frontend/gtk_interface.py:912
 #, fuzzy
 msgid "Your passwords is not strong."
 msgstr "Паролата Ви не съвпада."
 
-#: live-installer/frontend/gtk_interface.py:914
+#: live-installer/frontend/gtk_interface.py:916
 msgid "Your passwords do not match."
 msgstr "Паролата Ви не съвпада."
 
-#: live-installer/frontend/gtk_interface.py:920
+#: live-installer/frontend/gtk_interface.py:922
 #, fuzzy
 msgid "Your username cannot start with numbers."
 msgstr "Вашето потребителско име не трябва да има празни символи."
 
-#: live-installer/frontend/gtk_interface.py:926
+#: live-installer/frontend/gtk_interface.py:928
 msgid "Your username must be lower case."
 msgstr "Вашето потребителско име трябва да е с малка буква."
 
-#: live-installer/frontend/gtk_interface.py:933
+#: live-installer/frontend/gtk_interface.py:935
 msgid "Your username may not contain whitespace characters."
 msgstr "Вашето потребителско име не трябва да има празни символи."
 
-#: live-installer/frontend/gtk_interface.py:941
+#: live-installer/frontend/gtk_interface.py:943
 msgid "The computer's name must be lower case."
 msgstr "Името на компютъра трябва да е с малки букви."
 
-#: live-installer/frontend/gtk_interface.py:948
+#: live-installer/frontend/gtk_interface.py:950
 msgid "The computer's name may not contain whitespace characters."
 msgstr "Името на компютъра не може да съдържа празни места."
 
-#: live-installer/frontend/gtk_interface.py:967
+#: live-installer/frontend/gtk_interface.py:969
 msgid ""
 "Please indicate a filesystem to format the root (/) partition with before "
 "proceeding."
@@ -643,11 +643,11 @@ msgstr ""
 "Моля отбележете файлова система за форматирането и като коренова (/) преди "
 "да продължим."
 
-#: live-installer/frontend/gtk_interface.py:971
+#: live-installer/frontend/gtk_interface.py:973
 msgid "Please select a root (/) partition."
 msgstr "Моля изберете коренов (/) дял."
 
-#: live-installer/frontend/gtk_interface.py:972
+#: live-installer/frontend/gtk_interface.py:974
 #, fuzzy, python-format
 msgid ""
 "A root partition is needed to install %s on.\n"
@@ -668,24 +668,24 @@ msgstr ""
 " - подустройство с точка на монтиране /@\n"
 " - файлова система с btrfs форматиране\n"
 
-#: live-installer/frontend/gtk_interface.py:986
+#: live-installer/frontend/gtk_interface.py:988
 msgid "The EFI partition is not bootable. Please edit the partition flags."
 msgstr "EFI дела не е стартиращ. Моля редактирайте флаговете за този дял."
 
-#: live-installer/frontend/gtk_interface.py:991
+#: live-installer/frontend/gtk_interface.py:993
 msgid "The EFI partition is too small. It must be at least 35MB."
 msgstr "EFI дела е твърде малък. Трябва да е поне 35 МБ."
 
-#: live-installer/frontend/gtk_interface.py:997
-#: live-installer/frontend/gtk_interface.py:1002
+#: live-installer/frontend/gtk_interface.py:999
+#: live-installer/frontend/gtk_interface.py:1004
 msgid "The EFI partition must be formatted as vfat."
 msgstr "EFI дела трябва да е формат vfat."
 
-#: live-installer/frontend/gtk_interface.py:1006
+#: live-installer/frontend/gtk_interface.py:1008
 msgid "Please select an EFI partition."
 msgstr "Моля изберете EFI дял."
 
-#: live-installer/frontend/gtk_interface.py:1007
+#: live-installer/frontend/gtk_interface.py:1009
 msgid ""
 "An EFI system partition is needed with the following requirements:\n"
 "\n"
@@ -709,149 +709,149 @@ msgstr ""
 "дял на диска като системен дял EFI.\n"
 " "
 
-#: live-installer/frontend/gtk_interface.py:1048
+#: live-installer/frontend/gtk_interface.py:1014
+msgid "Install"
+msgstr "Инсталирай"
+
+#: live-installer/frontend/gtk_interface.py:1051
 msgid "Please select a disk."
 msgstr "Моля изберете диск."
 
-#: live-installer/frontend/gtk_interface.py:1054
+#: live-installer/frontend/gtk_interface.py:1057
 msgid "Please provide a passphrase for the encryption."
 msgstr "Моля напишете криптираща парола"
 
-#: live-installer/frontend/gtk_interface.py:1057
+#: live-installer/frontend/gtk_interface.py:1060
 msgid "Your passphrases do not match."
 msgstr "Паролите не съвпадат"
 
-#: live-installer/frontend/gtk_interface.py:1061
+#: live-installer/frontend/gtk_interface.py:1064
 msgid "Warning"
 msgstr "Внимание"
 
-#: live-installer/frontend/gtk_interface.py:1062
+#: live-installer/frontend/gtk_interface.py:1065
 #, python-format
 msgid "This will delete all the data on %s. Are you sure?"
 msgstr "Всички данни от %s ще бъдат изтрити. Сигурни ли сте?"
 
-#: live-installer/frontend/gtk_interface.py:1092
-msgid "Install"
-msgstr "Инсталирай"
-
-#: live-installer/frontend/gtk_interface.py:1128
+#: live-installer/frontend/gtk_interface.py:1131
 #, fuzzy
 msgid "Please provide a device to install grub."
 msgstr "Моля напишете потребителско име."
 
-#: live-installer/frontend/gtk_interface.py:1171
+#: live-installer/frontend/gtk_interface.py:1174
 msgid "Localization"
 msgstr "Локализация"
 
-#: live-installer/frontend/gtk_interface.py:1172
+#: live-installer/frontend/gtk_interface.py:1175
 msgid "Language: "
 msgstr "Език: "
 
-#: live-installer/frontend/gtk_interface.py:1173
+#: live-installer/frontend/gtk_interface.py:1176
 msgid "Timezone: "
 msgstr "Часови пояс: "
 
-#: live-installer/frontend/gtk_interface.py:1174
+#: live-installer/frontend/gtk_interface.py:1177
 msgid "Keyboard layout: "
 msgstr "Клавиатурна подредба: "
 
-#: live-installer/frontend/gtk_interface.py:1177
+#: live-installer/frontend/gtk_interface.py:1180
 msgid "User settings"
 msgstr "Потребителски настройки:"
 
-#: live-installer/frontend/gtk_interface.py:1178
+#: live-installer/frontend/gtk_interface.py:1181
 msgid "Real name: "
 msgstr "Истинско име: "
 
-#: live-installer/frontend/gtk_interface.py:1179
+#: live-installer/frontend/gtk_interface.py:1182
 msgid "Username: "
 msgstr "Потребителско име: "
 
-#: live-installer/frontend/gtk_interface.py:1181
+#: live-installer/frontend/gtk_interface.py:1184
 msgid "Password: "
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1183
+#: live-installer/frontend/gtk_interface.py:1186
 msgid "Automatic login: "
 msgstr "Автоматично влизане: "
 
-#: live-installer/frontend/gtk_interface.py:1183
 #: live-installer/frontend/gtk_interface.py:1186
-#: live-installer/frontend/gtk_interface.py:1208
-#: live-installer/frontend/gtk_interface.py:1212
+#: live-installer/frontend/gtk_interface.py:1189
+#: live-installer/frontend/gtk_interface.py:1211
+#: live-installer/frontend/gtk_interface.py:1215
 msgid "enabled"
 msgstr "включено"
 
-#: live-installer/frontend/gtk_interface.py:1184
 #: live-installer/frontend/gtk_interface.py:1187
-#: live-installer/frontend/gtk_interface.py:1209
+#: live-installer/frontend/gtk_interface.py:1190
 #: live-installer/frontend/gtk_interface.py:1212
+#: live-installer/frontend/gtk_interface.py:1215
 msgid "disabled"
 msgstr "изключено"
 
-#: live-installer/frontend/gtk_interface.py:1186
+#: live-installer/frontend/gtk_interface.py:1189
 msgid "Home encryption: "
 msgstr "Кодиране на домашната папка: "
 
-#: live-installer/frontend/gtk_interface.py:1188
+#: live-installer/frontend/gtk_interface.py:1191
 msgid "System settings"
 msgstr "Системни настройки:"
 
-#: live-installer/frontend/gtk_interface.py:1189
+#: live-installer/frontend/gtk_interface.py:1192
 msgid "Computer's name: "
 msgstr "Име на компютъра: "
 
-#: live-installer/frontend/gtk_interface.py:1192
-#: live-installer/frontend/gtk_interface.py:1194
+#: live-installer/frontend/gtk_interface.py:1195
+#: live-installer/frontend/gtk_interface.py:1197
 msgid "Bios type: "
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1196
+#: live-installer/frontend/gtk_interface.py:1199
 #, fuzzy
 msgid "Install updates after installation"
 msgstr "Автоматизирана инсталация"
 
-#: live-installer/frontend/gtk_interface.py:1197
+#: live-installer/frontend/gtk_interface.py:1200
 msgid "Filesystem operations"
 msgstr "Операции с файлови системи"
 
-#: live-installer/frontend/gtk_interface.py:1198
+#: live-installer/frontend/gtk_interface.py:1201
 #, python-format
 msgid "Install bootloader on %s"
 msgstr "Инсталиране на инсрумента за стартиране (bootloader) в: %s"
 
-#: live-installer/frontend/gtk_interface.py:1199
+#: live-installer/frontend/gtk_interface.py:1202
 msgid "Do not install bootloader"
 msgstr "Да не се инсталира програма за начално инсталиране"
 
-#: live-installer/frontend/gtk_interface.py:1201
+#: live-installer/frontend/gtk_interface.py:1204
 msgid "Use already-mounted /target."
 msgstr "Използвайте вече монтирана /цел."
 
-#: live-installer/frontend/gtk_interface.py:1205
+#: live-installer/frontend/gtk_interface.py:1208
 #, python-format
 msgid "Automated installation on %s"
 msgstr "Автоматизирана инсталация на %s"
 
-#: live-installer/frontend/gtk_interface.py:1208
+#: live-installer/frontend/gtk_interface.py:1211
 msgid "LVM: "
 msgstr "LVM: "
 
-#: live-installer/frontend/gtk_interface.py:1211
+#: live-installer/frontend/gtk_interface.py:1214
 msgid "Disk Encryption: "
 msgstr "Криптиране на диска: "
 
-#: live-installer/frontend/gtk_interface.py:1215
+#: live-installer/frontend/gtk_interface.py:1218
 #, python-format
 msgid "Format %(path)s as %(filesystem)s"
 msgstr "Форматиране на %(path)s в %(filesystem)s"
 
-#: live-installer/frontend/gtk_interface.py:1219
+#: live-installer/frontend/gtk_interface.py:1222
 #, python-format
 msgid "Mount %(path)s as %(mount)s"
 msgstr "Монтиране на %(path)s като %(mount)s"
 
-#: live-installer/frontend/gtk_interface.py:1232
+#: live-installer/frontend/gtk_interface.py:1235
 msgid ""
 "The installation is now complete. Do you want to restart your computer to "
 "use the new system?"
@@ -859,18 +859,18 @@ msgstr ""
 "Инсталацията вече е завършена. Искате ли да рестартирате компютъра и да "
 "ползвате новата система?"
 
-#: live-installer/frontend/gtk_interface.py:1263
-#: live-installer/frontend/gtk_interface.py:1267
-#: live-installer/frontend/gtk_interface.py:1276
-#: live-installer/frontend/gtk_interface.py:1285
+#: live-installer/frontend/gtk_interface.py:1266
+#: live-installer/frontend/gtk_interface.py:1270
+#: live-installer/frontend/gtk_interface.py:1279
+#: live-installer/frontend/gtk_interface.py:1288
 msgid "Installation error"
 msgstr "Грешка при инсталация"
 
-#: live-installer/frontend/gtk_interface.py:1388
+#: live-installer/frontend/gtk_interface.py:1393
 msgid "Install system with updates"
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1388
+#: live-installer/frontend/gtk_interface.py:1394
 msgid "If you connect internet, updates will install."
 msgstr ""
 
@@ -911,22 +911,22 @@ msgid "B"
 msgstr "Б"
 
 #: live-installer/frontend/partitioning.py:59
-#: live-installer/frontend/partitioning.py:397
+#: live-installer/frontend/partitioning.py:398
 msgid "kB"
 msgstr "кБ"
 
 #: live-installer/frontend/partitioning.py:59
-#: live-installer/frontend/partitioning.py:397
+#: live-installer/frontend/partitioning.py:398
 msgid "MB"
 msgstr "МБ"
 
 #: live-installer/frontend/partitioning.py:59
-#: live-installer/frontend/partitioning.py:398
+#: live-installer/frontend/partitioning.py:399
 msgid "GB"
 msgstr "ГБ"
 
 #: live-installer/frontend/partitioning.py:60
-#: live-installer/frontend/partitioning.py:398
+#: live-installer/frontend/partitioning.py:399
 msgid "TB"
 msgstr "ТБ"
 
@@ -960,7 +960,7 @@ msgstr ""
 "Няма намерена таблица с дялове на диск %s. Искате ли инсталатора да създаде "
 "дялове вместо вас? Бележка: Това ще ИЗТРИЕ ВСИЧКИ ДАННИ записани на диска."
 
-#: live-installer/frontend/partitioning.py:337
+#: live-installer/frontend/partitioning.py:338
 #, python-format
 msgid ""
 "The partition table couldn't be written for %s. Restart the computer and try "
@@ -969,7 +969,7 @@ msgstr ""
 "Таблицата с дяловете не можа да бъде записана за %s. Рестартирайте компютъра "
 "и опитайте отново."
 
-#: live-installer/frontend/partitioning.py:384
+#: live-installer/frontend/partitioning.py:385
 #, python-format
 msgid ""
 "The partition %s could not be created. The installation will stop. Restart "
@@ -978,48 +978,48 @@ msgstr ""
 "Дял %s не можа да се създаде. Инсталацията ще спре. Рестартирайте компютъра "
 "и опитайте отново."
 
-#: live-installer/frontend/partitioning.py:449
+#: live-installer/frontend/partitioning.py:450
 msgid "Logical partition"
 msgstr "Логически дял"
 
-#: live-installer/frontend/partitioning.py:450
+#: live-installer/frontend/partitioning.py:451
 msgid "Extended partition"
 msgstr "Разширен дял"
 
-#: live-installer/frontend/partitioning.py:454
+#: live-installer/frontend/partitioning.py:455
 msgid "Unknown"
 msgstr "Неизвестно"
 
-#: live-installer/frontend/partitioning.py:510
+#: live-installer/frontend/partitioning.py:512
 msgid "bootloader/recovery"
 msgstr ""
 
-#: live-installer/frontend/partitioning.py:522
+#: live-installer/frontend/partitioning.py:524
 #, fuzzy
 msgid "EFI System Partition"
 msgstr "Редакция на дял"
 
-#: live-installer/frontend/partitioning.py:545
+#: live-installer/frontend/partitioning.py:547
 msgid "Edit partition"
 msgstr "Редакция на дял"
 
-#: live-installer/frontend/partitioning.py:547
+#: live-installer/frontend/partitioning.py:549
 msgid "Device:"
 msgstr "Устройство:"
 
-#: live-installer/frontend/partitioning.py:549
+#: live-installer/frontend/partitioning.py:551
 msgid "Format as:"
 msgstr "Форматиране като:"
 
-#: live-installer/frontend/partitioning.py:551
+#: live-installer/frontend/partitioning.py:553
 msgid "Mount point:"
 msgstr "Точка на монтиране:"
 
-#: live-installer/frontend/partitioning.py:552
+#: live-installer/frontend/partitioning.py:554
 msgid "Cancel"
 msgstr "Отказ"
 
-#: live-installer/frontend/partitioning.py:553
+#: live-installer/frontend/partitioning.py:555
 #: live-installer/frontend/dialogs.py:35 live-installer/frontend/dialogs.py:48
 #: live-installer/frontend/dialogs.py:54
 msgid "OK"
