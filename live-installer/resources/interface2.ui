@@ -1127,6 +1127,7 @@
                   <object class="GtkBox" id="options_box">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="valign">end</property>
                     <property name="orientation">vertical</property>
                     <child>
                       <placeholder/>
@@ -1306,9 +1307,6 @@
               </packing>
             </child>
             <child>
-              <placeholder/>
-            </child>
-            <child>
               <object class="GtkBox" id="vbox_overview">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
@@ -1340,7 +1338,7 @@
               </object>
               <packing>
                 <property name="name">7</property>
-                <property name="position">8</property>
+                <property name="position">7</property>
               </packing>
             </child>
             <child>
@@ -1437,7 +1435,7 @@
               </object>
               <packing>
                 <property name="name">8</property>
-                <property name="position">9</property>
+                <property name="position">8</property>
               </packing>
             </child>
           </object>
