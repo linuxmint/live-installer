@@ -75,9 +75,8 @@ class InstallerWindow:
          self.PAGE_USER,
          self.PAGE_TYPE,
          self.PAGE_PARTITIONS,
-         self.PAGE_OPTIONS,
          self.PAGE_OVERVIEW,
-         self.PAGE_INSTALL) = list(range(10))
+         self.PAGE_INSTALL) = list(range(9))
 
         # set the button events (wizard_cb)
         self.builder.get_object("button_next").connect(
@@ -339,8 +338,6 @@ class InstallerWindow:
             _("Installation Type"), "drive-harddisk-system-symbolic", _("Where do you want to install system?"))
         self.wizard_pages[self.PAGE_PARTITIONS] = WizardPage(
             _("Partitioning"), "drive-harddisk-system-symbolic", _("Where do you want to install system?"))
-        self.wizard_pages[self.PAGE_OPTIONS] = WizardPage(
-            _("Options"), "object-select-symbolic", _("Select additional options"))
         self.wizard_pages[self.PAGE_OVERVIEW] = WizardPage(
             _("Summary"), "object-select-symbolic", _("Check that everything is correct"))
         self.wizard_pages[self.PAGE_INSTALL] = WizardPage(
@@ -1065,9 +1062,7 @@ class InstallerWindow:
                         "This will delete all the data on %s. Are you sure?") % self.setup.diskname):
                     partitioning.build_partitions(self)
                     partitioning.build_grub_partitions()
-                    self.activate_page(self.PAGE_OPTIONS)
-                    if config.get("skip_options", False):
-                        self.activate_page(self.PAGE_OVERVIEW)
+                    self.activate_page(self.PAGE_OVERVIEW)
         elif self.setup.replace_windows:
             if self.setup.replace_windows:
                 rootfs = partitioning.PartitionBase()
@@ -1089,8 +1084,6 @@ class InstallerWindow:
                     boot.format_as = 'vfat'
                     boot.mount_as = None
                     self.setup.partitions.append(boot)
-                self.activate_page(self.PAGE_OPTIONS)
-                if config.get("skip_options", False):
                     self.activate_page(self.PAGE_OVERVIEW)
         else:
             self.activate_page(self.PAGE_PARTITIONS)
@@ -1130,10 +1123,6 @@ class InstallerWindow:
                     WarningDialog(_("Installer"), _(
                         "Please provide a device to install grub."))
                     return
-                nex = self.PAGE_OPTIONS
-                if config.get("skip_options", False):
-                    nex = self.PAGE_OVERVIEW
-            if sel == self.PAGE_OPTIONS:
                 nex = self.PAGE_OVERVIEW
             if sel == self.PAGE_OVERVIEW:
                 nex = self.PAGE_INSTALL
@@ -1141,10 +1130,6 @@ class InstallerWindow:
                 return
         else:
             if sel == self.PAGE_OVERVIEW:
-                nex = self.PAGE_OPTIONS
-                if config.get("skip_options", False):
-                    nex = self.PAGE_TYPE
-            if sel == self.PAGE_OPTIONS:
                 nex = self.PAGE_TYPE
             if sel == self.PAGE_PARTITIONS:
                 nex = self.PAGE_TYPE
@@ -1390,6 +1375,8 @@ class InstallerWindow:
             self.setup.install_updates = button.get_active()
             self.show_overview()
         obox = self.builder.get_object("options_box")
+        if config.get("skip_options", False):
+            obox.hide()
         obox.add(option_box(_("Install system with updates"), _(
             "If you connect internet, updates will install."), chk_updates))
         obox.add(Gtk.Separator())
