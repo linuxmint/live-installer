@@ -87,9 +87,10 @@ class InstallerEngine:
             self.mount_partitions()
         if os.path.isdir("/lib/live-installer"):
             os.chdir("/lib/live-installer")
-
+                    
         # Custom commands
         self.do_hook_commands("pre_rsync_hook")
+
 
         # Transfer the files
         SOURCE = "/source/"
@@ -151,6 +152,13 @@ class InstallerEngine:
                         self.our_current = min(
                             self.our_current + 1, self.our_total)
                         self.update_progress(_("Copying /%s") % line)
+               
+                        
+        # Enable LVM for initramfs-systems
+        if self.setup.lvm and "enable_lvm" in config.initramfs:
+            for cmd in config.initramfs["enable_lvm"]:
+                self.run(cmd)
+
         # Custom commands
         self.do_hook_commands("post_rsync_hook")
 
@@ -324,11 +332,7 @@ class InstallerEngine:
                 self.run("swapon /dev/mapper/lvmlmde-swap")
                 self.auto_swap_partition = "/dev/mapper/lvmlmde-swap"
             self.auto_root_partition = "/dev/mapper/lvmlmde-root"
-
-            # lvm enable for initramfs-systems
-            if "enable_lvm" in config.initramfs:
-                for cmd in config.initramfs["enable_lvm"]:
-                    self.run(cmd)
+            
 
         self.do_mount(self.auto_root_partition, "/target", "ext4", None)
         if (self.auto_boot_partition is not None):
@@ -577,7 +581,7 @@ class InstallerEngine:
             newconsolefh.write('Option "XkbVariant" "{}"\n'.format(
                 self.setup.keyboard_variant))
             if "," in self.setup.keyboard_layout:
-                newconsolefh.write('Option "XkbOptions" "grp:win_space_toggle"\n')
+                newconsolefh.write('Option "XkbOptions" "grp:ctrl_alt_toggle"\n')
             newconsolefh.write('EndSection\n')
             newconsolefh.close()
 
@@ -642,7 +646,7 @@ class InstallerEngine:
                     newconsolefh.write("XKBVARIANT=\"%s\"\n" %
                                        self.setup.keyboard_variant)
                 elif(line.startswith("XKBOPTIONS=")):
-                    newconsolefh.write("XKBOPTIONS=grp:win_space_toggle")
+                    newconsolefh.write("XKBOPTIONS=grp:ctrl_alt_toggle")
                 else:
                     newconsolefh.write("%s\n" % line)
             consolefh.close()
@@ -658,6 +662,25 @@ class InstallerEngine:
             newconsolefh.write("keymap=\"{}{}\"\n".format(
                 self.setup.keyboard_layout, self.setup.keyboard_variant))
             newconsolefh.close()
+        
+        # Keyboard settings (gnome)
+        if os.path.exists("/target/usr/share/glib-2.0/schemas/org.gnome.desktop.input-sources.gschema.xml"):
+            with open("/target/usr/share/glib-2.0/schemas/99_17g-gnome-keyboard-config.gschema.override", "w") as schema:
+                layouts, variants = self.setup.keyboard_layout.split(","), self.setup.keyboard_variant.split(",")
+
+                schema.write("[org.gnome.desktop.input-sources]\n")
+                if "," in self.setup.keyboard_layout:
+                    schema.write("xkb-options = ['grp:ctrl_alt_toggle']\n")
+
+                output = "sources = ["
+                for i in range(2 if "," in self.setup.keyboard_layout else 1):
+                    output += "('xkb', '" + layouts[i]
+                    if variants[i]:
+                        output += "+" + variants[i]
+                    output += "')" + (", " if i == 0 and "," in self.setup.keyboard_layout else "")
+                schema.write(output + "]")
+            self.run("chroot||glib-compile-schemas /usr/share/glib-2.0/schemas/")
+
 
         # Update if enabled
         if self.setup.install_updates:
