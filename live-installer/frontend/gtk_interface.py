@@ -1015,6 +1015,7 @@ class InstallerWindow:
             self.builder.get_object("button_quit").set_sensitive(False)
             self.builder.get_object("dot_box").hide()
             self.window.resize(0, 0)
+            GLib.timeout_add(100, self.set_slide_page)
             self.do_install()
         if errorFound:
             return
@@ -1335,6 +1336,7 @@ class InstallerWindow:
 
     def slideshow(self):
         self.images = os.listdir("branding/slides")
+        self.images.sort()
         self.slides = Gtk.Stack()
         self.slides.set_transition_type(
             Gtk.StackTransitionType.SLIDE_LEFT_RIGHT)
@@ -1349,13 +1351,14 @@ class InstallerWindow:
             page_num = self.images.index(i)
             self.slides.add_titled(im, str(page_num), str(page_num))
         self.cur_slide_pos = 0
-        GLib.timeout_add(100, self.set_slide_page)
+        #GLib.timeout_add(100, self.set_slide_page)
 
     def set_slide_page(self):
         self.slides.set_visible_child_name(str(self.cur_slide_pos))
         self.cur_slide_pos = self.cur_slide_pos + 1
         if(self.cur_slide_pos > self.max_slide_page):
             self.cur_slide_pos = 0
+        print(self.cur_slide_pos)
         GLib.timeout_add(15000, self.set_slide_page)
 
     def options_init(self):
