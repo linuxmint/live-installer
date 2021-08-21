@@ -446,8 +446,9 @@ class InstallerEngine:
                 # Don't use UUIDs with LVM
                 fstab.write("%s /  ext4 defaults 0 1\n" %
                             self.auto_root_partition)
-                fstab.write("%s none   swap sw 0 0\n" %
-                            self.auto_swap_partition)
+                if self.auto_swap_partition:
+                    fstab.write("%s none   swap sw 0 0\n" %
+                                self.auto_swap_partition)
             else:
                 fstab.write("# %s\n" % self.auto_root_partition)
                 fstab.write("%s /  ext4 defaults 0 1\n" %
