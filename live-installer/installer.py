@@ -492,8 +492,6 @@ class InstallerEngine:
                             partition_uuid, partition.mount_as, fs, fstab_mount_options, "0", fstab_fsck_option))
             fstab.close()
 
-        if self.setup.lvm:
-            self.run("cat /target/etc/fstab | grep -v swap > /target/etc/mtab")
 
         if self.setup.luks:
             self.run("echo 'lvmlmde   %s   none   luks,tries=3' >> /target/etc/crypttab" %
