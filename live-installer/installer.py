@@ -153,14 +153,15 @@ class InstallerEngine:
                             self.our_current + 1, self.our_total)
                         self.update_progress(_("Copying /%s") % line)
                
-                        
+
+        # Custom commands
+        self.do_hook_commands("post_rsync_hook")
+        
         # Enable LVM for initramfs-systems
         if self.setup.lvm and "enable_lvm" in config.initramfs:
             for cmd in config.initramfs["enable_lvm"]:
                 self.run(cmd)
 
-        # Custom commands
-        self.do_hook_commands("post_rsync_hook")
 
         # Steps:
         self.our_total = 12
