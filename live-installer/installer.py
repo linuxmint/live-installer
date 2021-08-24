@@ -702,7 +702,7 @@ class InstallerEngine:
                 f.write("#! /bin/sh\n")
                 f.write("set -e\n\n")
                 f.write('GRUB_CMDLINE_LINUX="cryptdevice=%s:lvmlmde root=/dev/mapper/lvmlmde-root%s"\n' %
-                        self.auto_root_physical_partition, " resume=/dev/mapper/lvmlmde-swap" if self.auto_swap_partition else "")
+                        (self.auto_root_physical_partition, " resume=/dev/mapper/lvmlmde-swap" if self.auto_swap_partition else ""))
             self.run("chroot||echo \"power/disk = shutdown\" >> /etc/sysfs.d/local.conf")
 
         # recreate initramfs (needed in case of skip_mount also, to include
