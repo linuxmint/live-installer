@@ -301,16 +301,6 @@ class InstallerEngine:
         partitioning.full_disk_format(disk_device, create_boot=(
             self.auto_boot_partition is not None), create_swap=(self.auto_swap_partition is not None))
 
-        # Encrypt root partition
-        if self.setup.luks:
-            log(" --> Encrypting root partition %s" %
-                self.auto_root_partition)
-            self.run("printf \"%s\" | cryptsetup luksFormat -c aes-xts-plain64 -h sha256 -s 512 %s" %
-                (self.setup.passphrase1, self.auto_root_partition))
-            log(" --> Opening root partition %s" % self.auto_root_partition)
-            self.run("printf \"%s\" | cryptsetup luksOpen %s lvmlmde" %
-                (self.setup.passphrase1, self.auto_root_partition))
-            self.auto_root_partition = "/dev/mapper/lvmlmde"
 
         # Setup LVM
         if self.setup.lvm:
@@ -336,6 +326,17 @@ class InstallerEngine:
                 self.run("swapon /dev/mapper/lvmlmde-swap")
                 self.auto_swap_partition = "/dev/mapper/lvmlmde-swap"
             self.auto_root_partition = "/dev/mapper/lvmlmde-root"
+            
+        # Encrypt root partition if LUKS selected
+        if self.setup.luks:
+            log(" --> Encrypting root partition %s" %
+                self.auto_root_partition)
+            self.run("printf \"%s\" | cryptsetup luksFormat -c aes-xts-plain64 -h sha256 -s 512 /dev/mapper/lvmlmde-root" %
+                self.setup.passphrase1)
+            log(" --> Opening root partition %s" % self.auto_root_partition)
+            self.run("printf \"%s\" | cryptsetup luksOpen /dev/mapper/lvmlmde-root lvmlmde" %
+                self.setup.passphrase1)
+            self.auto_root_partition = "/dev/mapper/lvmlmde"
             
 
         self.do_mount(self.auto_root_partition, "/target", "ext4", None)
@@ -701,8 +702,8 @@ class InstallerEngine:
             with open("/target/etc/default/grub.d/61_live-installer.cfg", "w") as f:
                 f.write("#! /bin/sh\n")
                 f.write("set -e\n\n")
-                f.write('GRUB_CMDLINE_LINUX="cryptdevice=%s:lvmlmde root=/dev/mapper/lvmlmde-root%s"\n' %
-                        (self.auto_root_physical_partition, " resume=/dev/mapper/lvmlmde-swap" if self.auto_swap_partition else ""))
+                f.write('GRUB_CMDLINE_LINUX="cryptdevice=UUID=%s:lvmlmde-root root=/dev/mapper/lvmlmde-root%s"\n' %
+                        (self.get_blkid(self.auto_root_physical_partition), " resume=/dev/mapper/lvmlmde-swap" if self.auto_swap_partition else ""))
             self.run("chroot||echo \"power/disk = shutdown\" >> /etc/sysfs.d/local.conf")
 
         # recreate initramfs (needed in case of skip_mount also, to include
