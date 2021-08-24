@@ -157,9 +157,12 @@ class InstallerEngine:
         # Custom commands
         self.do_hook_commands("post_rsync_hook")
         
-        # Enable LVM for initramfs-systems
+        # Enable LVM and LUKS for initramfs-systems
         if self.setup.lvm and "enable_lvm" in config.initramfs:
             for cmd in config.initramfs["enable_lvm"]:
+                self.run(cmd)
+        if self.setup.luks and "enable_luks" in config.initramfs:
+            for cmd in config.initramfs["enable_luks"]:
                 self.run(cmd)
 
 
@@ -698,8 +701,8 @@ class InstallerEngine:
             with open("/target/etc/default/grub.d/61_live-installer.cfg", "w") as f:
                 f.write("#! /bin/sh\n")
                 f.write("set -e\n\n")
-                f.write('GRUB_CMDLINE_LINUX="cryptdevice=%s:lvmlmde root=/dev/mapper/lvmlmde-root resume=/dev/mapper/lvmlmde-swap"\n' %
-                        self.auto_root_physical_partition)
+                f.write('GRUB_CMDLINE_LINUX="cryptdevice=%s:lvmlmde root=/dev/mapper/lvmlmde-root%s"\n' %
+                        self.auto_root_physical_partition, " resume=/dev/mapper/lvmlmde-swap" if self.auto_swap_partition else "")
             self.run("chroot||echo \"power/disk = shutdown\" >> /etc/sysfs.d/local.conf")
 
         # recreate initramfs (needed in case of skip_mount also, to include
