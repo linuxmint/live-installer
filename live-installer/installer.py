@@ -317,8 +317,9 @@ class InstallerEngine:
                 self.run("lvcreate -y -n swap -L %dMB lvmlmde" % swap_size)
             log(" --> LVM: Extending LV root")
             self.run("lvextend -l 100\\%FREE /dev/lvmlmde/root")
-            log(" --> LVM: Formatting LV root")
-            self.run("mkfs.ext4 /dev/mapper/lvmlmde-root -FF")
+            if not self.setup.luks:
+                log(" --> LVM: Formatting LV root")
+                self.run("mkfs.ext4 /dev/mapper/lvmlmde-root -FF")
             if config.get("use_swap",False):
                 log(" --> LVM: Formatting LV swap")
                 self.run("mkswap -f /dev/mapper/lvmlmde-swap")
@@ -331,11 +332,13 @@ class InstallerEngine:
         if self.setup.luks:
             log(" --> Encrypting root partition %s" %
                 self.auto_root_partition)
-            self.run("printf \"%s\" | cryptsetup luksFormat -c aes-xts-plain64 -h sha256 -s 512 /dev/mapper/lvmlmde-root" %
+            self.run("printf \"%s\" | cryptsetup luksFormat -c aes-xts-plain64 -h sha256 -s 512 /dev/lvmlmde/root" %
                 self.setup.passphrase1)
             log(" --> Opening root partition %s" % self.auto_root_partition)
-            self.run("printf \"%s\" | cryptsetup luksOpen /dev/mapper/lvmlmde-root lvmlmde" %
+            self.run("printf \"%s\" | cryptsetup luksOpen /dev/lvmlmde/root lvmlmde" %
                 self.setup.passphrase1)
+            log(" --> LUKS: Formatting LV root")
+            self.run("mkfs.ext4 /dev/mapper/lvmlmde -FF")
             self.auto_root_partition = "/dev/mapper/lvmlmde"
             
 
@@ -702,7 +705,7 @@ class InstallerEngine:
             with open("/target/etc/default/grub.d/61_live-installer.cfg", "w") as f:
                 f.write("#! /bin/sh\n")
                 f.write("set -e\n\n")
-                f.write('GRUB_CMDLINE_LINUX="cryptdevice=UUID=%s:lvmlmde-root root=/dev/mapper/lvmlmde-root%s"\n' %
+                f.write('GRUB_CMDLINE_LINUX="cryptdevice=%s:lvmlmde root=/dev/mapper/lvmlmde%s"\n' %
                         (self.get_blkid(self.auto_root_physical_partition), " resume=/dev/mapper/lvmlmde-swap" if self.auto_swap_partition else ""))
             self.run("chroot||echo \"power/disk = shutdown\" >> /etc/sysfs.d/local.conf")
 
