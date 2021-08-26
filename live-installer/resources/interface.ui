@@ -921,7 +921,6 @@
                                         <property name="can-focus">True</property>
                                         <property name="hexpand">True</property>
                                         <property name="visibility">False</property>
-                                        <property name="invisible-char">•</property>
                                         <property name="placeholder-text" translatable="yes">Passphrase</property>
                                         <property name="input-purpose">password</property>
                                       </object>
