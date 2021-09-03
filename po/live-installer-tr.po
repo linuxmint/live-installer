@@ -193,7 +193,7 @@ msgstr ""
 #: live-installer/resources/interface2.ui:1080
 #: live-installer/resources/interface.ui:1143
 msgid "Remove windows & Install"
-msgstr "Winsowsu sil ve yerine yükle"
+msgstr "Windowsu sil ve yerine yükle"
 
 #: live-installer/resources/interface2.ui:1096
 #: live-installer/resources/interface.ui:1159
