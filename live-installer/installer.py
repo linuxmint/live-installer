@@ -153,14 +153,18 @@ class InstallerEngine:
                             self.our_current + 1, self.our_total)
                         self.update_progress(_("Copying /%s") % line)
                
-                        
-        # Enable LVM for initramfs-systems
-        if self.setup.lvm and "enable_lvm" in config.initramfs:
-            for cmd in config.initramfs["enable_lvm"]:
-                self.run(cmd)
 
         # Custom commands
         self.do_hook_commands("post_rsync_hook")
+        
+        # Enable LVM and LUKS for initramfs-systems
+        if self.setup.lvm and "enable_lvm" in config.initramfs:
+            for cmd in config.initramfs["enable_lvm"]:
+                self.run(cmd)
+        if self.setup.luks and "enable_luks" in config.initramfs:
+            for cmd in config.initramfs["enable_luks"]:
+                self.run(cmd)
+
 
         # Steps:
         self.our_total = 12
@@ -304,9 +308,10 @@ class InstallerEngine:
             self.run("printf \"%s\" | cryptsetup luksFormat -c aes-xts-plain64 -h sha256 -s 512 %s" %
                 (self.setup.passphrase1, self.auto_root_partition))
             log(" --> Opening root partition %s" % self.auto_root_partition)
-            self.run("printf \"%s\" | cryptsetup luksOpen %s lvmlmde" %
+            self.run("printf \"%s\" | cryptsetup open %s lvmlmde" %
                 (self.setup.passphrase1, self.auto_root_partition))
             self.auto_root_partition = "/dev/mapper/lvmlmde"
+
 
         # Setup LVM
         if self.setup.lvm:
@@ -324,14 +329,14 @@ class InstallerEngine:
             log(" --> LVM: Extending LV root")
             self.run("lvextend -l 100\\%FREE /dev/lvmlmde/root")
             log(" --> LVM: Formatting LV root")
-            self.run("mkfs.ext4 /dev/mapper/lvmlmde-root -FF")
+            self.run("mkfs.ext4 /dev/lvmlmde/root -FF")
             if config.get("use_swap",False):
                 log(" --> LVM: Formatting LV swap")
-                self.run("mkswap -f /dev/mapper/lvmlmde-swap")
+                self.run("mkswap -f /dev/lvmlmde/swap")
                 log(" --> LVM: Enabling LV swap")
-                self.run("swapon /dev/mapper/lvmlmde-swap")
-                self.auto_swap_partition = "/dev/mapper/lvmlmde-swap"
-            self.auto_root_partition = "/dev/mapper/lvmlmde-root"
+                self.run("swapon /dev/lvmlmde/swap")
+                self.auto_swap_partition = "/dev/lvmlmde/swap"
+            self.auto_root_partition = "/dev/lvmlmde/root"
             
 
         self.do_mount(self.auto_root_partition, "/target", "ext4", None)
@@ -445,8 +450,9 @@ class InstallerEngine:
                 # Don't use UUIDs with LVM
                 fstab.write("%s /  ext4 defaults 0 1\n" %
                             self.auto_root_partition)
-                fstab.write("%s none   swap sw 0 0\n" %
-                            self.auto_swap_partition)
+                if self.auto_swap_partition:
+                    fstab.write("%s none   swap sw 0 0\n" %
+                                self.auto_swap_partition)
             else:
                 fstab.write("# %s\n" % self.auto_root_partition)
                 fstab.write("%s /  ext4 defaults 0 1\n" %
@@ -492,8 +498,6 @@ class InstallerEngine:
                             partition_uuid, partition.mount_as, fs, fstab_mount_options, "0", fstab_fsck_option))
             fstab.close()
 
-        if self.setup.lvm:
-            self.run("cat /target/etc/fstab | grep -v swap > /target/etc/mtab")
 
         if self.setup.luks:
             self.run("echo 'lvmlmde   %s   none   luks,tries=3' >> /target/etc/crypttab" %
@@ -695,12 +699,10 @@ class InstallerEngine:
             "remove_package_with_unusing_deps", config.get("remove_packages", ["17g-installer"]))))
 
         if self.setup.luks:
-            with open("/target/etc/default/grub.d/61_live-installer.cfg", "w") as f:
-                f.write("#! /bin/sh\n")
-                f.write("set -e\n\n")
-                f.write('GRUB_CMDLINE_LINUX="cryptdevice=%s:lvmlmde root=/dev/mapper/lvmlmde-root resume=/dev/mapper/lvmlmde-swap"\n' %
-                        self.auto_root_physical_partition)
-            self.run("chroot||echo \"power/disk = shutdown\" >> /etc/sysfs.d/local.conf")
+            with open("/target/etc/default/grub", "a") as f:
+                f.write("\nGRUB_CMDLINE_LINUX_DEFAULT+=\" cryptdevice=%s:lvmlmde root=/dev/lvmlmde/root%s\"\n" %
+                        (self.get_blkid(self.auto_root_physical_partition), " resume=/dev/lvmlmde/swap" if self.auto_swap_partition else ""))
+                f.write("GRUB_ENABLE_CRYPTODISK=y\n")
 
         # recreate initramfs (needed in case of skip_mount also, to include
         # things like mdadm/dm-crypt/etc in case its needed to boot a custom
