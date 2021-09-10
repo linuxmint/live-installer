@@ -147,6 +147,7 @@ def assign_mount_point(partition, mount_point, filesystem):
             part.mount_as, part.format_as = '', ''
 
 
+
 def partitions_popup_menu(widget, event):
     if event.button != 3:
         return
@@ -177,18 +178,20 @@ def partitions_popup_menu(widget, event):
         partition, 'swap', ''))
     menu.append(menuItem)
     for i in config.distro["additional_mountpoints"]:
+        def menu_event(w,i=i):
+            assign_mount_point(partition, i, 'ext4')
         menuItem = Gtk.MenuItem(_("Assign to %s") % i)
-        menuItem.connect("activate", lambda w: assign_mount_point(
-            partition, i, 'ext4'))
+        menuItem.connect("activate", menu_event)
         menu.append(menuItem)
     if is_efi_supported():
         menuItem = Gtk.SeparatorMenuItem()
         menu.append(menuItem)
         for i in config.distro["additional_efi_mountpoints"]:
-            menuItem = Gtk.MenuItem(_("Assign to %s") % i)
-            menuItem.connect("activate", lambda w: assign_mount_point(
-                partition, i, 'vfat'))
-            menu.append(menuItem)
+            def menu_event(w,i=i):
+            assign_mount_point(partition, i, 'vfat')
+        menuItem = Gtk.MenuItem(_("Assign to %s") % i)
+        menuItem.connect("activate", menu_event)
+        menu.append(menuItem)
     menu.show_all()
     menu.popup(None, None, None, None, 0, event.time)
 
