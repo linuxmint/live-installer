@@ -391,6 +391,17 @@ class InstallerEngine:
                 partition.type = partition.format_as
 
     def mount_partitions(self):
+        # Sort partitions for mount order
+        partitions_sorted = []
+        mountpoint_sorted = []
+        for partition in self.setup.partitions:
+            mountpoint_sorted.append(partition.mount_as)
+        mountpoint_sorted.sort()
+        for dir in mountpoint_sorted:
+            for partition in self.setup.partitions:
+                if partition.mount_as == dir:
+                    partitions_sorted.append(partition)
+        self.setup.partitions = partitions_sorted
         # Mount the target partition
         for partition in self.setup.partitions:
             if(partition.mount_as is not None and partition.mount_as != ""):
@@ -683,7 +694,7 @@ class InstallerEngine:
                         output += "+" + variants[i]
                     output += "')" + (", " if i == 0 and "," in self.setup.keyboard_layout else "")
                 schema.write(output + "]")
-            self.run("chroot||glib-compile-schemas /usr/share/glib-2.0/schemas/")
+            self.run("chroot||glib-compile-schemas /usr/share/glib-2.0/schemas/",vital=False)
 
 
         # Update if enabled
