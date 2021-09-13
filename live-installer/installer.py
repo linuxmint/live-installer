@@ -455,7 +455,7 @@ class InstallerEngine:
             self.run(
                 "echo \"#### Static Filesystem Table File\" > /target/etc/fstab")
         fstab = open("/target/etc/fstab", "a")
-        fstab.write("proc\t/proc\tproc\tdefaults\t0\t0\n")
+        fstab.write("proc /proc proc defaults 0 0\n")
         if self.setup.automated:
             if self.setup.lvm:
                 # Don't use UUIDs with LVM
@@ -502,11 +502,12 @@ class InstallerEngine:
 
                     partition_uuid = self.get_blkid(partition.path)
                     if(fs == "swap"):
-                        fstab.write("%s\tswap\tswap\tsw\t0\t0\n" %
+                        fstab.write("%s swap swap sw 0 0\n" %
                                     partition_uuid)
                     else:
-                        fstab.write("%s\t%s\t%s\t%s\t%s\t%s\n" % (
+                        fstab.write("%s %s %s %s %s %s\n" % (
                             partition_uuid, partition.mount_as, fs, fstab_mount_options, "0", fstab_fsck_option))
+            fstab.write("tmpfs /tmp tmpfs nosuid,nodev,noatime 0 0\n")
             fstab.close()
 
 
@@ -528,8 +529,8 @@ class InstallerEngine:
         hostnamefh.write("%s\n" % self.setup.hostname)
         hostnamefh.close()
         hostsfh = open("/target/etc/hosts", "w")
-        hostsfh.write("127.0.0.1\tlocalhost\n")
-        hostsfh.write("127.0.1.1\t%s\n" % self.setup.hostname)
+        hostsfh.write("127.0.0.1 localhost\n")
+        hostsfh.write("127.0.1.1 %s\n" % self.setup.hostname)
         hostsfh.write(
             "# The following lines are desirable for IPv6 capable hosts\n")
         hostsfh.write("::1     localhost ip6-localhost ip6-loopback\n")
