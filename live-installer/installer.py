@@ -552,7 +552,7 @@ class InstallerEngine:
         self.run("echo \"%s.UTF-8 UTF-8\" >> /target/etc/locale.gen" %
             self.setup.language)
         self.run("chroot||locale-gen")
-        self.run("echo \"\" > /target/etc/default/locale")
+        self.run("echo \"LANG=%s.UTF-8\" > /target/etc/default/locale" % self.setup.language)
         self.run("chroot||localectl set-locale LANG=\"%s.UTF-8\"" %
             self.setup.language)
         self.run("chroot||localectl set-locale LANG=%s.UTF-8" % self.setup.language)
