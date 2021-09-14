@@ -72,9 +72,9 @@ class InstallerWindow:
          self.PAGE_LANGUAGE,
          self.PAGE_TIMEZONE,
          self.PAGE_KEYBOARD,
-         self.PAGE_USER,
          self.PAGE_TYPE,
          self.PAGE_PARTITIONS,
+         self.PAGE_USER,
          self.PAGE_OVERVIEW,
          self.PAGE_INSTALL) = list(range(9))
 
@@ -1063,7 +1063,7 @@ class InstallerWindow:
                         "This will delete all the data on %s. Are you sure?") % self.setup.diskname):
                     partitioning.build_partitions(self)
                     partitioning.build_grub_partitions()
-                    self.activate_page(self.PAGE_OVERVIEW)
+                    self.activate_page(self.PAGE_USER)
         elif self.setup.replace_windows:
             if self.setup.replace_windows:
                 rootfs = partitioning.PartitionBase()
@@ -1085,7 +1085,7 @@ class InstallerWindow:
                     boot.format_as = 'vfat'
                     boot.mount_as = None
                     self.setup.partitions.append(boot)
-                    self.activate_page(self.PAGE_OVERVIEW)
+                    self.activate_page(self.PAGE_USER)
         else:
             self.activate_page(self.PAGE_PARTITIONS)
             partitioning.build_partitions(self)
@@ -1112,9 +1112,9 @@ class InstallerWindow:
                 if config.get("skip_keyboard", False):
                     sel = self.PAGE_KEYBOARD
             if sel == self.PAGE_KEYBOARD:
-                nex = self.PAGE_USER
-            if sel == self.PAGE_USER:
                 nex = self.PAGE_TYPE
+            if sel == self.PAGE_USER:
+                nex = self.PAGE_OVERVIEW
             if sel == self.PAGE_TYPE:
                 self.activate_page_type()
                 return
@@ -1124,20 +1124,20 @@ class InstallerWindow:
                     WarningDialog(_("Installer"), _(
                         "Please provide a device to install grub."))
                     return
-                nex = self.PAGE_OVERVIEW
+                nex = self.PAGE_USER
             if sel == self.PAGE_OVERVIEW:
                 nex = self.PAGE_INSTALL
                 self.activate_page(nex, nex)
                 return
         else:
             if sel == self.PAGE_OVERVIEW:
-                nex = self.PAGE_TYPE
+                nex = self.PAGE_USER
             if sel == self.PAGE_PARTITIONS:
                 nex = self.PAGE_TYPE
             if sel == self.PAGE_TYPE:
-                nex = self.PAGE_USER
-            if sel == self.PAGE_USER:
                 nex = self.PAGE_KEYBOARD
+            if sel == self.PAGE_USER:
+                nex = self.PAGE_TYPE
                 if config.get("skip_keyboard", False):
                     sel = self.PAGE_KEYBOARD
             if sel == self.PAGE_KEYBOARD:
