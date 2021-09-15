@@ -66,6 +66,7 @@ class InstallerWindow:
         # load the window object
         self.window = self.builder.get_object("main_window")
         self.window.connect("delete-event", self.quit_cb)
+        self.window.connect("size-allocate", self.window_resize)
 
         # wizard pages
         (self.PAGE_WELCOME,
@@ -77,6 +78,9 @@ class InstallerWindow:
          self.PAGE_USER,
          self.PAGE_OVERVIEW,
          self.PAGE_INSTALL) = list(range(9))
+        # slide gtk images
+        self.gtkimages = []
+        self.gtkpixbufs = []
 
         # set the button events (wizard_cb)
         self.builder.get_object("button_next").connect(
@@ -237,12 +241,16 @@ class InstallerWindow:
         pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
             "branding/welcome.png", 752, 423, False)
         img.set_from_pixbuf(pixbuf)
+        self.gtkimages.append(img)
+        self.gtkpixbufs.append(pixbuf)
 
         # build partition list
         self.should_pulse = False
 
         # build options page
         self.options_init()
+        
+        self.i18n()
 
         # make sure we're on the right page (no pun.)
         self.activate_page(0)
@@ -736,12 +744,7 @@ class InstallerWindow:
         os.environ["LANG"] = "{}.UTF-8".format(language)
         os.environ["LANGUAGE"] = "{}.UTF-8".format(language)
         self.build_kb_lists()
-        try:
-            self.i18n()
-        except BaseException:
-            # Best effort. Fails the first time as self.column1 doesn't exist
-            # yet.
-            pass
+        self.i18n()
 
     def assign_login_options(self, checkbox, data=None):
         if self.builder.get_object("radiobutton_passwordlogin").get_active():
@@ -1348,6 +1351,8 @@ class InstallerWindow:
             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
                 "branding/slides/" + i, 752, 423, False)
             im.set_from_pixbuf(pixbuf)
+            self.gtkimages.append(im)
+            self.gtkpixbufs.append(pixbuf)
             page_num = self.images.index(i)
             self.slides.add_titled(im, str(page_num), str(page_num))
         self.cur_slide_pos = 0
@@ -1360,6 +1365,20 @@ class InstallerWindow:
             self.cur_slide_pos = 0
         print(self.cur_slide_pos)
         GLib.timeout_add(15000, self.set_slide_page)
+
+    def window_resize(self,window,allign):
+        w = self.window.get_size().width - 100
+        h = self.window.get_size().height - 200
+        
+        if w/16 > h/9:
+            w = (16*h)/9
+        
+        
+        pw = w
+        ph = (w / 16)*9
+        for i in self.gtkimages:
+            pixbuf = self.gtkpixbufs[self.gtkimages.index(i)].scale_simple(pw, ph, GdkPixbuf.InterpType.BILINEAR)
+            i.set_from_pixbuf(pixbuf)
 
     def options_init(self):
         def option_box(text1, text2, event):
