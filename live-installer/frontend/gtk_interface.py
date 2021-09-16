@@ -70,9 +70,6 @@ class InstallerWindow:
         # load the window object
         self.window = self.builder.get_object("main_window")
         self.window.connect("delete-event", self.quit_cb)
-        
-        # window resize mechanism
-        self.window_resize()
 
         # wizard pages
         (self.PAGE_WELCOME,
@@ -242,7 +239,7 @@ class InstallerWindow:
             _("Calculating file indexes ..."))
         img = self.builder.get_object("image_welcome")
         pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
-            "branding/welcome.png", 752, 423, False)
+            "branding/welcome.png", 832, 468, False)
         img.set_from_pixbuf(pixbuf)
         self.gtkimages.append(img)
         self.gtkpixbufs.append(pixbuf)
@@ -372,8 +369,6 @@ class InstallerWindow:
         # Keyboard page
         self.builder.get_object("label_kb_model").set_label(
             _("Keyboard Model:"))
-        self.column10.set_title(_("Layout"))
-        self.column11.set_title(_("Variant"))
         self.builder.get_object("entry_test_kb").set_placeholder_text(
             _("Type here to test your keyboard layout"))
 
@@ -1360,19 +1355,6 @@ class InstallerWindow:
             self.cur_slide_pos = 0
         print(self.cur_slide_pos)
         GLib.timeout_add(15000, self.set_slide_page)
-
-    def window_resize(self):
-        w = self.window.get_size().width
-        pw = w
-        ph = (w / 16)*9
-        for i in self.gtkimages:
-            pixbuf = self.gtkpixbufs[self.gtkimages.index(i)].scale_simple(pw, ph, GdkPixbuf.InterpType.BILINEAR)
-            i.set_from_pixbuf(pixbuf)
-        self.window.resize(0,0)
-            
-    def on_window_state_event(self, widget, event):
-        if bool(event.new_window_state & Gdk.WindowState.MAXIMIZED):
-            print(event.new_window_state)
 
     def options_init(self):
         def option_box(text1, text2, event):

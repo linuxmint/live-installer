@@ -39,8 +39,6 @@
               <object class="GtkBox" id="vbox_welcome">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="halign">center</property>
-                <property name="valign">center</property>
                 <property name="orientation">vertical</property>
                 <property name="spacing">15</property>
                 <child>
@@ -213,9 +211,6 @@
                         <property name="fill">True</property>
                         <property name="position">0</property>
                       </packing>
-                    </child>
-                    <child type="label_item">
-                      <placeholder/>
                     </child>
                   </object>
                   <packing>
