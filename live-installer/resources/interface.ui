@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.37.0 -->
+<!-- Generated with glade 3.38.2 -->
 <interface>
   <requires lib="gtk+" version="3.18"/>
   <object class="GtkSizeGroup">
@@ -21,6 +21,7 @@
     <property name="width-request">0</property>
     <property name="height-request">0</property>
     <property name="can-focus">False</property>
+    <property name="resizable">False</property>
     <property name="window-position">center</property>
     <property name="default-width">1</property>
     <property name="icon">../branding/icon.svg</property>
@@ -113,11 +114,13 @@
                   <object class="GtkImage" id="image_welcome">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="xalign">0.5</property>
+                    <property name="yalign">0.5</property>
                     <property name="pixel-size">80</property>
                     <property name="icon-name">distro</property>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
+                    <property name="expand">True</property>
                     <property name="fill">True</property>
                     <property name="position">0</property>
                   </packing>
@@ -163,19 +166,24 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <child>
-                  <object class="GtkScrolledWindow" id="scrolledwindow1">
+                  <object class="GtkScrolledWindow">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="shadow-type">in</property>
-                    <property name="min-content-width">300</property>
                     <child>
-                      <object class="GtkTreeView" id="treeview_language_list">
+                      <object class="GtkViewport">
                         <property name="visible">True</property>
-                        <property name="can-focus">True</property>
-                        <property name="search-column">0</property>
-                        <property name="enable-grid-lines">horizontal</property>
-                        <child internal-child="selection">
-                          <object class="GtkTreeSelection"/>
+                        <property name="can-focus">False</property>
+                        <child>
+                          <object class="GtkTreeView" id="treeview_language_list">
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="search-column">0</property>
+                            <property name="enable-grid-lines">both</property>
+                            <child internal-child="selection">
+                              <object class="GtkTreeSelection"/>
+                            </child>
+                          </object>
                         </child>
                       </object>
                     </child>
@@ -431,17 +439,6 @@
                     <property name="expand">True</property>
                     <property name="fill">True</property>
                     <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="label_non_latin">
-                    <property name="can-focus">False</property>
-                    <property name="wrap">True</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
                   </packing>
                 </child>
                 <child>
@@ -983,17 +980,23 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkScrolledWindow" id="scrolledwindow2">
+                      <object class="GtkScrolledWindow">
                         <property name="visible">True</property>
                         <property name="can-focus">True</property>
                         <property name="shadow-type">in</property>
                         <child>
-                          <object class="GtkTreeView" id="treeview_disks">
+                          <object class="GtkViewport">
                             <property name="visible">True</property>
-                            <property name="can-focus">True</property>
-                            <property name="enable-grid-lines">horizontal</property>
-                            <child internal-child="selection">
-                              <object class="GtkTreeSelection"/>
+                            <property name="can-focus">False</property>
+                            <child>
+                              <object class="GtkTreeView" id="treeview_disks">
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                                <property name="enable-grid-lines">both</property>
+                                <child internal-child="selection">
+                                  <object class="GtkTreeSelection"/>
+                                </child>
+                              </object>
                             </child>
                           </object>
                         </child>
@@ -1001,7 +1004,6 @@
                       <packing>
                         <property name="expand">True</property>
                         <property name="fill">True</property>
-                        <property name="padding">3</property>
                         <property name="position">1</property>
                       </packing>
                     </child>
@@ -1122,6 +1124,7 @@
                 <property name="orientation">vertical</property>
                 <property name="spacing">6</property>
                 <child>
+                  <!-- n-columns=3 n-rows=7 -->
                   <object class="GtkGrid">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
@@ -1349,6 +1352,27 @@
                         <property name="left-attach">1</property>
                         <property name="top-attach">6</property>
                       </packing>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
                     </child>
                     <child>
                       <placeholder/>
@@ -1748,6 +1772,7 @@
           </packing>
         </child>
         <child>
+          <!-- n-columns=3 n-rows=3 -->
           <object class="GtkGrid">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
@@ -1842,6 +1867,15 @@
                 <property name="left-attach">1</property>
                 <property name="top-attach">2</property>
               </packing>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
             </child>
           </object>
           <packing>

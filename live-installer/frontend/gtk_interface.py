@@ -63,10 +63,16 @@ class InstallerWindow:
         self.fail = False
         self.showing_last_dialog = False
 
+        # slide gtk images
+        self.gtkimages = []
+        self.gtkpixbufs = []
+
         # load the window object
         self.window = self.builder.get_object("main_window")
         self.window.connect("delete-event", self.quit_cb)
-        self.window.connect("size-allocate", self.window_resize)
+        
+        # window resize mechanism
+        self.window_resize()
 
         # wizard pages
         (self.PAGE_WELCOME,
@@ -78,9 +84,6 @@ class InstallerWindow:
          self.PAGE_USER,
          self.PAGE_OVERVIEW,
          self.PAGE_INSTALL) = list(range(9))
-        # slide gtk images
-        self.gtkimages = []
-        self.gtkpixbufs = []
 
         # set the button events (wizard_cb)
         self.builder.get_object("button_next").connect(
@@ -373,8 +376,6 @@ class InstallerWindow:
         self.column11.set_title(_("Variant"))
         self.builder.get_object("entry_test_kb").set_placeholder_text(
             _("Type here to test your keyboard layout"))
-        self.builder.get_object("label_non_latin").set_text(
-            _("* Your username, your computer's name and your password should only contain Latin characters. In addition to your selected layout, English (US) is set as the default. You can switch layouts by pressing both Ctrl keys together."))
 
         # User page
         self.builder.get_object("label_name").set_text(_("Your name:"))
@@ -710,7 +711,6 @@ class InstallerWindow:
         # Set the models
         self.builder.get_object("combobox_kb_model").set_model(models)
         self.builder.get_object("treeview_layouts").set_model(layouts)
-        self.builder.get_object("label_non_latin").hide()
         self.layout_variants = variants
         # Preselect currently active keyboard info
         try:
@@ -825,11 +825,6 @@ class InstallerWindow:
         if "us," in self.setup.keyboard_layout:
             # Add None variant for US layout
             self.setup.keyboard_variant = ',%s' % self.setup.keyboard_variant
-
-        if "us," in self.setup.keyboard_layout:
-            self.builder.get_object("label_non_latin").show()
-        else:
-            self.builder.get_object("label_non_latin").hide()
 
         command = "setxkbmap -layout '%s' -variant '%s' -option grp:win_space_toggle" % (
             self.setup.keyboard_layout, self.setup.keyboard_variant)
@@ -1366,19 +1361,18 @@ class InstallerWindow:
         print(self.cur_slide_pos)
         GLib.timeout_add(15000, self.set_slide_page)
 
-    def window_resize(self,window,allign):
-        w = self.window.get_size().width - 100
-        h = self.window.get_size().height - 200
-        
-        if w/16 > h/9:
-            w = (16*h)/9
-        
-        
+    def window_resize(self):
+        w = self.window.get_size().width
         pw = w
         ph = (w / 16)*9
         for i in self.gtkimages:
             pixbuf = self.gtkpixbufs[self.gtkimages.index(i)].scale_simple(pw, ph, GdkPixbuf.InterpType.BILINEAR)
             i.set_from_pixbuf(pixbuf)
+        self.window.resize(0,0)
+            
+    def on_window_state_event(self, widget, event):
+        if bool(event.new_window_state & Gdk.WindowState.MAXIMIZED):
+            print(event.new_window_state)
 
     def options_init(self):
         def option_box(text1, text2, event):
