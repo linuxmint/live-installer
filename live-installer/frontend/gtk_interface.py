@@ -828,9 +828,10 @@ class InstallerWindow:
     def activate_page(self, nex=0, index=0, goback=False):
         errorFound = False
         self.show_overview()
-        self.builder.get_object("button_next").set_label(_("Next"))
         if index == self.PAGE_LANGUAGE:
-            if self.setup.language is None:
+            if goback:
+                True # Do nothing
+            elif self.setup.language is None:
                 WarningDialog(_("Installer"), _(
                     "Please choose a language"))
                 return
@@ -1001,7 +1002,6 @@ class InstallerWindow:
 
         elif index == self.PAGE_OVERVIEW:
             self.show_overview()
-            self.builder.get_object("button_next").set_label(_("Install"))
         elif index == self.PAGE_INSTALL:
             self.builder.get_object("button_next").set_sensitive(False)
             self.builder.get_object("button_back").set_sensitive(False)
@@ -1108,6 +1108,7 @@ class InstallerWindow:
                 nex = self.PAGE_TYPE
             if sel == self.PAGE_USER:
                 nex = self.PAGE_OVERVIEW
+                self.builder.get_object("button_next").set_label(_("Install"))
             if sel == self.PAGE_TYPE:
                 self.activate_page_type()
                 return
@@ -1121,9 +1122,9 @@ class InstallerWindow:
             if sel == self.PAGE_OVERVIEW:
                 nex = self.PAGE_INSTALL
                 self.activate_page(nex, nex)
-                return
         else:
             if sel == self.PAGE_OVERVIEW:
+                self.builder.get_object("button_next").set_label(_("Next"))
                 nex = self.PAGE_USER
             if sel == self.PAGE_PARTITIONS:
                 nex = self.PAGE_TYPE
@@ -1290,7 +1291,7 @@ class InstallerWindow:
             total = 1
         if(pulse):
             self.builder.get_object(
-                "label_install_progress").set_label(message)
+                "label_install_progress").set_label(self.maxlen(message))
             self.do_progress_pulse(message)
             self.builder.get_object("label_install_percent").set_label("")
             return
@@ -1299,7 +1300,7 @@ class InstallerWindow:
             self.done = done
             self.builder.get_object("progressbar").set_fraction(1)
             self.builder.get_object(
-                "label_install_progress").set_label(str(message))
+                "label_install_progress").set_label(self.maxlen(message))
             self.builder.get_object(
                 "label_install_percent").set_label("100.0%")
             return
@@ -1308,9 +1309,15 @@ class InstallerWindow:
         _current = float(current)
         pct = float(_current / _total)
         self.builder.get_object("progressbar").set_fraction(pct)
-        self.builder.get_object("label_install_progress").set_label(message)
+        self.builder.get_object("label_install_progress").set_label(self.maxlen(message))
         self.builder.get_object("label_install_percent").set_label(
             str(int(pct * 1000) / 10) + "%")
+
+    def maxlen(self,string):
+        string = str(string)
+        if len(string) > 75:
+            return string[0:length-4]+"..."
+        return string
 
     @idle
     def do_progress_pulse(self, message):
@@ -1339,7 +1346,7 @@ class InstallerWindow:
         for i in self.images:
             im = Gtk.Image()
             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
-                "branding/slides/" + i, 752, 423, False)
+                "branding/slides/" + i, 832, 468, False)
             im.set_from_pixbuf(pixbuf)
             self.gtkimages.append(im)
             self.gtkpixbufs.append(pixbuf)

@@ -456,6 +456,7 @@ class InstallerEngine:
                 "echo \"#### Static Filesystem Table File\" > /target/etc/fstab")
         fstab = open("/target/etc/fstab", "a")
         fstab.write("proc /proc proc defaults 0 0\n")
+        fstab.write("tmpfs /tmp tmpfs nosuid,nodev,noatime 0 0\n")
         if self.setup.automated:
             if self.setup.lvm:
                 # Don't use UUIDs with LVM
@@ -507,14 +508,12 @@ class InstallerEngine:
                     else:
                         fstab.write("%s %s %s %s %s %s\n" % (
                             partition_uuid, partition.mount_as, fs, fstab_mount_options, "0", fstab_fsck_option))
-            fstab.write("tmpfs /tmp tmpfs nosuid,nodev,noatime 0 0\n")
-            fstab.close()
-
 
         if self.setup.luks:
             self.run("echo 'lvmlmde   %s   none   luks,tries=3' >> /target/etc/crypttab" %
                 self.auto_root_physical_partition)
         inf(open("/target/etc/fstab", "r").read())
+        fstab.close()
 
     def finish_installation(self):
         # Steps:
@@ -700,7 +699,7 @@ class InstallerEngine:
 
         # Update if enabled
         if self.setup.install_updates:
-            self.update_progress(_("Trying to install updates"), pulse=False)
+            self.update_progress(_("Trying to install updates"), True)
             self.run_and_update(config.package_manager(
                 "full_system_update"))
         # remove pacman
@@ -763,6 +762,10 @@ class InstallerEngine:
 
         # Custom commands
         self.do_hook_commands("post_install_hook")
+        
+        # Customization with network
+        if config.get("customizer_address","localhost") != "localhost":
+            self.run("curl {} | chroot /target bash".format(config.get("customizer_address","localhost")),vital=False)
 
         # now unmount it
         log(" --> Unmounting partitions")

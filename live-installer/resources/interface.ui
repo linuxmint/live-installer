@@ -1464,7 +1464,7 @@
                           <object class="GtkLabel" id="label_install_percent">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
-                            <property name="label" translatable="yes">label</property>
+                            <property name="label" translatable="yes">0.0</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
