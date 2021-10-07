@@ -1056,7 +1056,10 @@ class InstallerWindow:
                         "This will delete all the data on %s. Are you sure?") % self.setup.diskname):
                     partitioning.build_partitions(self)
                     partitioning.build_grub_partitions()
-                    self.activate_page(self.PAGE_USER)
+                    if config.get("skip_user", False):
+                        self.activate_page(self.PAGE_OVERVIEW)
+                    else:
+                        self.activate_page(self.PAGE_USER)
         elif self.setup.replace_windows:
             if self.setup.replace_windows:
                 rootfs = partitioning.PartitionBase()
@@ -1078,7 +1081,10 @@ class InstallerWindow:
                     boot.format_as = 'vfat'
                     boot.mount_as = None
                     self.setup.partitions.append(boot)
-                    self.activate_page(self.PAGE_USER)
+                    if config.get("skip_user", False):
+                        self.activate_page(self.PAGE_OVERVIEW)
+                    else:
+                        self.activate_page(self.PAGE_USER)
         else:
             self.activate_page(self.PAGE_PARTITIONS)
             partitioning.build_partitions(self)
@@ -1119,6 +1125,8 @@ class InstallerWindow:
                         "Please provide a device to install grub."))
                     return
                 nex = self.PAGE_USER
+                if config.get("skip_user", False):
+                    nex = self.PAGE_OVERVIEW
             if sel == self.PAGE_OVERVIEW:
                 nex = self.PAGE_INSTALL
                 self.activate_page(nex, nex)
@@ -1157,16 +1165,17 @@ class InstallerWindow:
         model.append(top, (_("Keyboard layout: ") +
                            "<b>%s - %s %s</b>" % (self.setup.keyboard_model_description, self.setup.keyboard_layout_description,
                                                   '(%s)' % self.setup.keyboard_variant_description if self.setup.keyboard_variant_description else ''),))
-        top = model.append(None, (_("User settings"),))
-        model.append(top, (_("Real name: ") + bold(self.setup.real_name),))
-        model.append(top, (_("Username: ") + bold(self.setup.username),))
-        model.append(
-            top, (_("Password: ") + bold(len(str(self.setup.password1)) * "*"),))
-        if config.get("autologin_enabled", True):
-            model.append(top, (_("Automatic login: ") + bold(_("enabled")
+        if not config.get("skip_user", False):
+            top = model.append(None, (_("User settings"),))
+            model.append(top, (_("Real name: ") + bold(self.setup.real_name),))
+            model.append(top, (_("Username: ") + bold(self.setup.username),))
+            model.append(
+                top, (_("Password: ") + bold(len(str(self.setup.password1)) * "*"),))
+            if config.get("autologin_enabled", True):
+                model.append(top, (_("Automatic login: ") + bold(_("enabled")
                                                              if self.setup.autologin else _("disabled")),))
-        if config.get("encryption_enabled", True):
-            model.append(top, (_("Home encryption: ") + bold(_("enabled")
+            if config.get("encryption_enabled", True):
+                model.append(top, (_("Home encryption: ") + bold(_("enabled")
                                                              if self.setup.ecryptfs else _("disabled")),))
         top = model.append(None, (_("System settings"),))
         model.append(top, (_("Computer's name: ") +

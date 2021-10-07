@@ -193,54 +193,55 @@ class InstallerEngine:
                 "cp /lib/modules/{0}/vmlinuz /target/boot/vmlinuz-{0}".format(kernelversion))
 
         # add new user
-        log(" --> Adding new user")
         self.our_current += 1
+        log(" --> Adding new user")
         try:
             for cmd in config.distro["run_before_user_creation"]:
                 self.run(cmd)
         except BaseException:
             err("This action not supported for your distribution.")
-        self.update_progress(_("Adding new user to the system"))
-        # TODO: support encryption
+        if not config.get("skip_user", False):
+            self.update_progress(_("Adding new user to the system"))
+            # TODO: support encryption
 
-        self.run('chroot||useradd -m -s {shell} -c \"{realname}\" {username}'.format(
-            shell=config.get("using_shell", "/bin/bash"), realname=self.setup.real_name,
-            username=self.setup.username))
+            self.run('chroot||useradd -m -s {shell} -c \"{realname}\" {username}'.format(
+                shell=config.get("using_shell", "/bin/bash"), realname=self.setup.real_name,
+                username=self.setup.username))
 
-        # Add user to additional groups
-        for group in config.get("additional_user_groups", [
-                                "audio", "video", "netdev"]):
-            self.run("chroot||usermod -aG {} {}".format(group, self.setup.username), False)
+            # Add user to additional groups
+            for group in config.get("additional_user_groups", [
+                                    "audio", "video", "netdev"]):
+                self.run("chroot||usermod -aG {} {}".format(group, self.setup.username), False)
 
-        if is_cmd("openssl") and config.get("use_usermod", True):
-            fp = open("/target/tmp/.passwd", "w")
-            fp.write(self.setup.password1+"\n")
-            fp.close()
-            self.run("chroot||usermod -p $(openssl passwd -in /target/tmp/.passwd) {0}".format(self.setup.username))
-            if config.get("set_root_password", True):
-                self.run("chroot||usermod -p $(openssl passwd -in /target/tmp/.passwd) root")
-        elif is_cmd("chpasswd") and config.get("use_chpasswd", True):
-            fp = open("/target/tmp/.passwd", "w")
-            fp.write(self.setup.username + ":" + self.setup.password1 + "\n")
-            if config.get("set_root_password", True):
-                fp.write("root:" + self.setup.password1 + "\n")
-            fp.close()
-            self.run("chroot||cat /tmp/.passwd | chpasswd")
-            self.run("chroot||rm -f /tmp/.passwd")
-        else:
-            fp = open("/target/tmp/.passwd", "w")
-            fp.write(self.setup.password1+"\n"+self.setup.password2+"\n")
-            fp.close()
-            self.run("chroot||cat /tmp/.passwd | passwd {0}".format(self.setup.username))
-            if config.get("set_root_password", True):
-                self.run("chroot||cat /tmp/.passwd | passwd")
+            if is_cmd("openssl") and config.get("use_usermod", True):
+                fp = open("/target/tmp/.passwd", "w")
+                fp.write(self.setup.password1+"\n")
+                fp.close()
+                self.run("chroot||usermod -p $(openssl passwd -in /target/tmp/.passwd) {0}".format(self.setup.username))
+                if config.get("set_root_password", True):
+                    self.run("chroot||usermod -p $(openssl passwd -in /target/tmp/.passwd) root")
+            elif is_cmd("chpasswd") and config.get("use_chpasswd", True):
+                fp = open("/target/tmp/.passwd", "w")
+                fp.write(self.setup.username + ":" + self.setup.password1 + "\n")
+                if config.get("set_root_password", True):
+                    fp.write("root:" + self.setup.password1 + "\n")
+                fp.close()
+                self.run("chroot||cat /tmp/.passwd | chpasswd")
+                self.run("chroot||rm -f /tmp/.passwd")
+            else:
+                fp = open("/target/tmp/.passwd", "w")
+                fp.write(self.setup.password1+"\n"+self.setup.password2+"\n")
+                fp.close()
+                self.run("chroot||cat /tmp/.passwd | passwd {0}".format(self.setup.username))
+                if config.get("set_root_password", True):
+                    self.run("chroot||cat /tmp/.passwd | passwd")
 
-        self.our_current += 1
-        # Set autologin for user if they so elected
-        if self.setup.autologin:
-            # Auto Login Groups
-            for i in config.display_manager["set_autologin"]:
-                self.run(i.replace("{user}", self.setup.username))
+            self.our_current += 1
+            # Set autologin for user if they so elected
+            if self.setup.autologin:
+                # Auto Login Groups
+                for i in config.display_manager["set_autologin"]:
+                    self.run(i.replace("{user}", self.setup.username))
 
         # /etc/fstab, mtab and crypttab
         self.our_current += 1
