@@ -254,6 +254,7 @@ class InstallerWindow:
 
         # make sure we're on the right page (no pun.)
         self.activate_page(0)
+        self.builder.get_object("button_back").set_sensitive(False)
         self.slideshow()
         self.window.set_position(Gtk.WindowPosition.CENTER)
         self.window.show_all()
@@ -314,6 +315,7 @@ class InstallerWindow:
 
         if config.get("hide_keyboard_model", False):
             self.builder.get_object("hbox10").hide()
+
 
     def fullscreen(self):
         self.window.fullscreen()
@@ -828,6 +830,7 @@ class InstallerWindow:
     def activate_page(self, nex=0, index=0, goback=False):
         errorFound = False
         self.show_overview()
+        
         if index == self.PAGE_LANGUAGE:
             if goback:
                 True # Do nothing
@@ -1100,6 +1103,7 @@ class InstallerWindow:
         if not goback:
             if sel == self.PAGE_WELCOME:
                 nex = self.PAGE_LANGUAGE
+                self.builder.get_object("button_back").set_sensitive(True)
                 if config.get("skip_language", False):
                     sel = self.PAGE_LANGUAGE
             if sel == self.PAGE_LANGUAGE:
@@ -1131,6 +1135,7 @@ class InstallerWindow:
                 nex = self.PAGE_INSTALL
                 self.activate_page(nex, nex)
         else:
+        
             if sel == self.PAGE_OVERVIEW:
                 self.builder.get_object("button_next").set_label(_("Next"))
                 nex = self.PAGE_USER
@@ -1152,6 +1157,7 @@ class InstallerWindow:
                     sel = self.PAGE_WELCOME
             if sel == self.PAGE_LANGUAGE:
                 nex = self.PAGE_WELCOME
+                self.builder.get_object("button_back").set_sensitive(False)
         self.activate_page(nex, sel, goback)
 
     def show_overview(self):
