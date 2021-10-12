@@ -25,4 +25,4 @@ Icon=/lib/live-installer/branding/icon.svg
 Terminal=false
 
 # Describes the categories in which this entry should be shown
-Categories=Settings;System;
+Categories=System;
