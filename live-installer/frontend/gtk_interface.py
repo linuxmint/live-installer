@@ -149,6 +149,10 @@ class InstallerWindow:
         self.builder.get_object("combo_disk").connect(
             "changed", self.assign_type_options)
 
+        # options
+        self.builder.get_object("check_updates").connect(
+            "toggled", self.assign_options)
+
         # partitions
         self.builder.get_object("button_edit").connect(
             "clicked", partitioning.manually_edit_partitions)
@@ -248,7 +252,8 @@ class InstallerWindow:
         self.should_pulse = False
 
         # build options page
-        self.options_init()
+        if config.get("skip_options", False):
+            obox.hide()
         
         self.i18n()
 
@@ -442,6 +447,10 @@ class InstallerWindow:
         # Refresh the current title and help question in the page header
         self.activate_page(self.PAGE_LANGUAGE)
 
+        # Options
+        self.builder.get_object("label_update").set_text(_("Install system with updates"))
+        self.builder.get_object("label_update2").set_text(_("If you connect internet, updates will install."))
+
     def assign_realname(self, entry):
         self.setup.real_name = entry.props.text
         # Try to set the username (doesn't matter if it fails)
@@ -510,6 +519,10 @@ class InstallerWindow:
             self.assign_entry("entry_confirm", False)
         else:
             self.assign_entry("entry_confirm", True)
+
+    def assign_options(self, widget, data=None):
+        self.setup.install_updates = self.builder.get_object(
+            "check_updates").get_active()
 
     def assign_type_options(self, widget, data=None):
         self.setup.automated = self.builder.get_object(
@@ -1377,26 +1390,3 @@ class InstallerWindow:
             self.cur_slide_pos = 0
         print(self.cur_slide_pos)
         GLib.timeout_add(15000, self.set_slide_page)
-
-    def options_init(self):
-        def option_box(text1, text2, event):
-            mbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-            check = Gtk.CheckButton()
-            check.set_label("")
-            check.connect("toggled", event)
-            mbox.add(check)
-            label = Gtk.Label()
-            label.set_markup(" <b>{}</b>\n {}".format(text1, text2))
-            mbox.add(label)
-            mbox.set_margin_bottom(13)
-            return mbox
-
-        def chk_updates(button):
-            self.setup.install_updates = button.get_active()
-            self.show_overview()
-        obox = self.builder.get_object("options_box")
-        if config.get("skip_options", False):
-            obox.hide()
-        obox.add(option_box(_("Install system with updates"), _(
-            "If you connect internet, updates will install."), chk_updates))
-        obox.add(Gtk.Separator())
