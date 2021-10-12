@@ -1343,8 +1343,8 @@ class InstallerWindow:
 
     def maxlen(self,string):
         string = str(string)
-        if len(string) > 75:
-            return string[0:71]+"..."
+        if len(string) > 100:
+            return string[0:97]+"..."
         return string
 
     @idle
