@@ -32,6 +32,7 @@
 # set_root_password: true
 # use_chpasswd: true
 # use_usermod: true
+# keep_userdata : true
 # additional_user_groups:
 #   - audio
 #   - video
