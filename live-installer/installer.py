@@ -239,7 +239,7 @@ class InstallerEngine:
             if config.get("keep_userdata", True):
                 live_home = subprocess.getoutput("grep x:1000 /etc/passwd").split(":")[5]
                 target_home = subprocess.getoutput("grep x:1000 /target/etc/passwd").split(":")[5]
-                run("cp -prf /{}/* /{}/".format(live_home, target_home))
+                run("cp -prf /{}/* /target/{}/".format(live_home, target_home))
                 run("find /target/{}/ -type f -iname live-installer.desktop | xargs rm -f".format(target_home))
 
             self.our_current += 1
