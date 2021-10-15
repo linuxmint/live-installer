@@ -1517,7 +1517,7 @@
                       <object class="GtkLabel" id="label_donotturnoff">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
-                        <property name="label" translatable="yes">Please do not turn off your computer during the installation process. </property>
+                        <property name="label" translatable="yes">Please do not turn off your computer during the installation process.</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>

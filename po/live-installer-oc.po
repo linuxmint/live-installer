@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-15 08:14+0000\n"
+"POT-Creation-Date: 2021-10-15 08:35+0000\n"
 "PO-Revision-Date: 2016-10-04 19:41+0000\n"
 "Last-Translator: Cédric VALMARY (Tot en òc) <cvalmary@yahoo.fr>\n"
 "Language-Team: Occitan (post 1500) <oc@li.org>\n"
@@ -232,7 +232,8 @@ msgstr ""
 
 #: live-installer/resources/interface.ui:1520
 #: live-installer/resources/interface2.ui:1449
-msgid "Please do not turn off your computer during the installation process. "
+#: live-installer/frontend/gtk_interface.py:454
+msgid "Please do not turn off your computer during the installation process."
 msgstr ""
 
 #: live-installer/resources/interface.ui:1570
@@ -691,10 +692,6 @@ msgstr "Formatar en"
 #: live-installer/frontend/gtk_interface.py:439
 msgid "Size"
 msgstr "Talha"
-
-#: live-installer/frontend/gtk_interface.py:454
-msgid "Please do not turn off your computer during the installation process."
-msgstr ""
 
 #: live-installer/frontend/gtk_interface.py:597
 msgid "Quit?"
