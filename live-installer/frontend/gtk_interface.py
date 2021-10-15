@@ -450,6 +450,8 @@ class InstallerWindow:
         # Options
         self.builder.get_object("label_update").set_text(_("Install system with updates"))
         self.builder.get_object("label_update2").set_text(_("If you connect internet, updates will install."))
+        
+        self.builder.get_object("label_donotturnoff").set_text(_("Please do not turn off your computer during the installation process."))
 
     def assign_realname(self, entry):
         self.setup.real_name = entry.props.text

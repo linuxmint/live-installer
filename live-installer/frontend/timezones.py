@@ -10,8 +10,8 @@ TIMEZONE_RESOURCES = './resources/timezone/'
 
 # pixel center of where equatorial line and 0th meridian cross on our bg
 # map; WARNING: cc.png relies on this exactly!
-MAP_CENTER = (351, 246)
-MAP_SIZE = (752, 384)
+MAP_CENTER = (388, 272)
+MAP_SIZE = (832, 425)
 
 
 def pixel_position(lat, lon):
