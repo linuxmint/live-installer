@@ -708,7 +708,7 @@ class InstallerEngine:
         if self.setup.install_updates:
             self.update_progress(_("Trying to install updates"), True)
             self.run_and_update(config.package_manager(
-                "full_system_update"))
+                "full_system_update"),True)
         # remove pacman
         self.update_progress(_("Clearing package manager"), True)
         log(" --> Clearing package manager")
@@ -839,12 +839,12 @@ class InstallerEngine:
         ''' Unmount a filesystem '''
         os.system("umount -lf %s" % mountpoint)
 
-    def run_and_update(self, cmd):
+    def run_and_update(self, cmd, pulse=False):
         p = subprocess.Popen(
             cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         while p.poll() is None:
             line = str(p.stdout.readline().decode("utf-8").replace("\n", ""))
-            self.update_progress(line)
+            self.update_progress(line,pulse)
             
     def run(self,cmd,vital=True):
         i = run(cmd,vital)
