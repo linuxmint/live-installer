@@ -1087,7 +1087,7 @@ class InstallerWindow:
             if self.setup.gptonefi:
                 efifs = partitioning.PartitionBase()
                 efifs.path = self.setup.winefi
-                efifs.format_as = 'fat32'
+                efifs.format_as = 'vfat'
                 efifs.mount_as = '/boot/efi'
                 self.setup.partitions.append(efifs)
             self.setup.grub_device = partitioning.find_mbr(
