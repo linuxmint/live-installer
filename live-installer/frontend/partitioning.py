@@ -78,6 +78,11 @@ def get_partitions():
         while os.path.exists("{}{}".format(disk[0], str(i))):
             partitions.append("{}{}".format(disk[0], str(i)))
             i += 1
+    for disk in get_disks():
+        i = 1
+        while os.path.exists("{}p{}".format(disk[0], str(i))):
+            partitions.append("{}p{}".format(disk[0], str(i)))
+            i += 1
     return partitions
 
 
