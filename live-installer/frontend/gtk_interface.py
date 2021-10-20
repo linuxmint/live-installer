@@ -1103,9 +1103,9 @@ class InstallerWindow:
             else:
                     self.activate_page(self.PAGE_USER)
         else:
-            self.activate_page(self.PAGE_PARTITIONS)
             partitioning.build_partitions(self)
             partitioning.build_grub_partitions()
+            self.activate_page(self.PAGE_PARTITIONS)
 
     def wizard_cb(self, widget, goback, data=None):
         ''' wizard buttons '''

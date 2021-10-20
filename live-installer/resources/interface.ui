@@ -1132,7 +1132,7 @@
                 </child>
               </object>
               <packing>
-                <property name="name">65</property>
+                <property name="name">5</property>
                 <property name="position">5</property>
               </packing>
             </child>
