@@ -1079,30 +1079,29 @@ class InstallerWindow:
                     else:
                         self.activate_page(self.PAGE_USER)
         elif self.setup.replace_windows:
-            if self.setup.replace_windows:
-                rootfs = partitioning.PartitionBase()
-                rootfs.path = self.setup.winroot
-                rootfs.format_as = 'ext4'
-                rootfs.mount_as = '/'
-                self.setup.partitions.append(rootfs)
-                if self.setup.gptonefi:
-                    efifs = partitioning.PartitionBase()
-                    efifs.path = self.setup.winefi
-                    efifs.format_as = 'fat32'
-                    efifs.mount_as = '/boot/efi'
-                    self.setup.partitions.append(efifs)
-                self.setup.grub_device = partitioning.find_mbr(
-                    self.setup.winroot)
-                if self.setup.winboot:
-                    boot = partitioning.PartitionBase()
-                    boot.path = self.setup.winboot
-                    boot.format_as = 'vfat'
-                    boot.mount_as = None
-                    self.setup.partitions.append(boot)
-                    if config.get("skip_user", False):
-                        self.activate_page(self.PAGE_OVERVIEW)
-                    else:
-                        self.activate_page(self.PAGE_USER)
+            rootfs = partitioning.PartitionBase()
+            rootfs.path = self.setup.winroot
+            rootfs.format_as = 'ext4'
+            rootfs.mount_as = '/'
+            self.setup.partitions.append(rootfs)
+            if self.setup.gptonefi:
+                efifs = partitioning.PartitionBase()
+                efifs.path = self.setup.winefi
+                efifs.format_as = 'fat32'
+                efifs.mount_as = '/boot/efi'
+                self.setup.partitions.append(efifs)
+            self.setup.grub_device = partitioning.find_mbr(
+                self.setup.winroot)
+            if self.setup.winboot:
+                boot = partitioning.PartitionBase()
+                boot.path = self.setup.winboot
+                boot.format_as = 'vfat'
+                boot.mount_as = None
+                self.setup.partitions.append(boot)
+            if config.get("skip_user", False):
+                self.activate_page(self.PAGE_OVERVIEW)
+            else:
+                    self.activate_page(self.PAGE_USER)
         else:
             self.activate_page(self.PAGE_PARTITIONS)
             partitioning.build_partitions(self)
@@ -1345,8 +1344,8 @@ class InstallerWindow:
 
     def maxlen(self,string):
         string = str(string)
-        if len(string) > 100:
-            return string[0:97]+"..."
+        if len(string) > 75:
+            return string[0:72]+"..."
         return string
 
     @idle
