@@ -1,7 +1,7 @@
 fetch_deb(){
     if ping debian.org -c 1 &>/dev/null ; then
-        apt-get update
-        apt-get install grub-pc-bin grub-efi grub-efi-ia32-bin -yq
+        chroot /target sh -c "apt-get update"
+        chroot /target sh -c "apt-get install grub-pc-bin grub-efi grub-efi-ia32-bin -yq"
     else
         mkdir -p /target/debs/ || true
         cp /run/live/medium/pool/non-free/i/intel-microcode/* /target/debs/
