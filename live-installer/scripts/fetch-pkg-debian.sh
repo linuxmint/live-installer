@@ -1,7 +1,7 @@
 fetch_deb(){
     if ping debian.org -c 1 &>/dev/null ; then
         apt-get update
-        apt-get install $@ -yq
+        apt-get install grub-pc-bin grub-efi grub-efi-ia32-bin -yq
     else
         mkdir -p /target/debs/ || true
         cp /run/live/medium/pool/non-free/i/intel-microcode/* /target/debs/
@@ -19,8 +19,6 @@ fetch_deb(){
 }
 
 fetch_deb "efibootmgr" "grub-common" "grub-efi-amd64" "grub-efi-amd64-bin" \
-    "grub-efi-amd64-signed" "grub2-common" "libefiboot1" "libefivar1" \
-    "mokutil" "os-prober" "shim-helpers-amd64-signed" "shim-signed" \
-    "shim-signed-common" "shim-unsigned" "grub-pc-bin" "gettext-base" \
-    "grub-efi-ia32-bin"
+    "grub2-common" "libefiboot1" "libefivar1" "os-prober" "grub-pc-bin" \
+    "gettext-base" "grub-efi-ia32-bin"
 
