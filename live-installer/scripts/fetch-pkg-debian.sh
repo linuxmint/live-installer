@@ -1,24 +1,34 @@
 fetch_deb(){
-    if ping debian.org -c 1 &>/dev/null ; then
-        chroot /target sh -c "apt-get update"
-        chroot /target sh -c "apt-get install grub-pc-bin grub-efi grub-efi-ia32-bin -yq"
-    else
-        mkdir -p /target/debs/ || true
-        cp /run/live/medium/pool/non-free/i/intel-microcode/* /target/debs/
-        cp /run/live/medium/pool/non-free/a/amd64-microcode/* /target/debs/
-        cp /run/live/medium/pool/contrib/i/iucode-tool/* /target/debs/
-        for pkg in $@ ; do
-            f="$(find /run/live/medium/pool/ -type f  -iname ${pkg}_*.deb)"
-            if [ "" !=  "$f" ] ; then
-                cp -pvf "$f" /target/debs/
-            fi
-        done
-        chroot /target sh -c "dpkg -i /debs/*"
-        rm -rf /target/debs
-    fi
+    mkdir -p /target/debs/ || true
+    for pkg in $@ ; do
+        f="$(find /run/live/medium/pool/ -type f  -iname ${pkg}_*.deb)"
+        if [ "" !=  "$f" ] ; then
+            cp -pvf "$f" /target/debs/
+        fi
+    done
 }
 
-fetch_deb "efibootmgr" "grub-common" "grub-efi-amd64" "grub-efi-amd64-bin" \
-    "grub2-common" "libefiboot1" "libefivar1" "os-prober" "grub-pc-bin" \
-    "gettext-base" "grub-efi-ia32-bin"
+# fetch microcode packages
+cp /run/live/medium/pool/contrib/i/iucode-tool/* /target/debs/
+cp /run/live/medium/pool/non-free/i/intel-microcode/* /target/debs/
+cp /run/live/medium/pool/non-free/a/amd64-microcode/* /target/debs/
 
+# fetch common grub packages
+fetch_deb "grub-common" "grub2-common" "os-prober" "gettext-base" \
+           "libefiboot1" "libefivar1"
+
+# fetch platform spesific packages
+if [ -d /sys/firmware/efi ] ; then
+    fetch_deb "efibootmgr" 
+    if [ "$(cat /sys/firmware/efi/fw_platform_size)" == "32" ] ; then
+        fetch_deb "grub-efi-ia32" "grub-efi-ia32-bin"
+    else
+        fetch_deb "grub-efi-amd64" "grub-efi-amd64-bin"
+    fi
+else
+    fetch_deb "grub-pc" "grub-pc-bin"
+fi
+
+# install packages then clean
+chroot /target sh -c "dpkg -i /debs/*"
+rm -rf /target/debs
