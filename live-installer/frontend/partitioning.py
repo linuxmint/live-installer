@@ -89,8 +89,10 @@ def get_partitions():
 def find_mbr(part):
     for disk in get_disks():
         i = 1
-        while os.path.exists("{}{}".format(disk[0], str(i))):
+        while os.path.exists("{}{}".format(disk[0], str(i))) or os.path.exists("{}p{}".format(disk[0], str(i))):
             if part == "{}{}".format(disk[0], str(i)):
+                return disk[0]
+            if part == "{}p{}".format(disk[0], str(i)):
                 return disk[0]
             i += 1
     return ""

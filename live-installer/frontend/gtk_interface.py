@@ -1213,6 +1213,7 @@ class InstallerWindow:
             model.append(top, (bold(_("Use already-mounted /target.")),))
             return
         if self.setup.automated:
+            self.setup.grub_device = self.setup.disk
             model.append(
                 top, (bold(_("Automated installation on %s") % self.setup.diskname),))
         else:
