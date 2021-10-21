@@ -561,8 +561,7 @@ class InstallerEngine:
         self.run("chroot||locale-gen")
         self.run("echo \"LANG=%s.UTF-8\" > /target/etc/default/locale" % self.setup.language)
         self.run("chroot||localectl set-locale LANG=\"%s.UTF-8\"" %
-            self.setup.language)
-        self.run("chroot||localectl set-locale LANG=%s.UTF-8" % self.setup.language)
+            self.setup.language,vital=False)
         open("/target/etc/locale.conf", "w").write("LANG=%s.UTF-8" %
                                                    self.setup.language)
         # set the locale for gentoo / sulin
