@@ -348,7 +348,12 @@ def full_disk_format(device, create_boot=False, create_swap=False):
             _("The partition table couldn't be written for %s. Restart the computer and try again.") % device.path)
         Gtk.main_quit()
         sys.exit(1)
-
+    if config.get("swap_size","0") == "0":
+        ram_size = int(getoutput("awk '/^MemTotal/{ print $2 }' /proc/meminfo")) / 1024
+        swap_size = min(8800, int(ram))
+    else:
+        swap_size = config.get("swap_size","0")
+        
     mkpart = (
         # (condition, mount_as, format_as, mkfs command, size_mb)
         # EFI
@@ -357,8 +362,7 @@ def full_disk_format(device, create_boot=False, create_swap=False):
         # boot
         (create_boot, '/boot', 'ext4', 'mkfs.ext4 -F {}', 1024),
         # swap - equal to RAM for hibernate to work well (but capped at ~8GB)
-        (create_swap, SWAP_MOUNT_POINT, 'swap', 'mkswap {}', min(8800, int(round(
-            1.1 / 1024 * int(getoutput("awk '/^MemTotal/{ print $2 }' /proc/meminfo")), -2)))),
+        (create_swap, SWAP_MOUNT_POINT, 'swap', 'mkswap {}', swap_size),
         # root
         (True, '/', 'ext4', 'mkfs.ext4 -F {}', 0),
     )
