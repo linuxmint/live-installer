@@ -364,7 +364,8 @@ def full_disk_format(device, create_boot=False, create_swap=False):
         # swap - equal to RAM for hibernate to work well (but capped at ~8GB)
         (create_swap, SWAP_MOUNT_POINT, 'swap', 'mkswap {}', swap_size),
         # root
-        (True, '/', 'ext4', 'mkfs.ext4 -F {}', 0),
+        rootfs_type = config.get("automated_rootfs_type","ext4")
+        (True, '/', rootfs_type, 'mkfs.'+rootfs_type+' -F {}', 0),
     )
     def run_parted(cmd): return os.system(
         'parted --script --align optimal {} {} ; sync'.format(device.path, cmd))
