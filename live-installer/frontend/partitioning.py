@@ -353,7 +353,7 @@ def full_disk_format(device, create_boot=False, create_swap=False):
         swap_size = min(8800, int(ram))
     else:
         swap_size = config.get("swap_size","0")
-        
+    rootfs_type = config.get("automated_rootfs_type","ext4")
     mkpart = (
         # (condition, mount_as, format_as, mkfs command, size_mb)
         # EFI
@@ -364,7 +364,6 @@ def full_disk_format(device, create_boot=False, create_swap=False):
         # swap - equal to RAM for hibernate to work well (but capped at ~8GB)
         (create_swap, SWAP_MOUNT_POINT, 'swap', 'mkswap {}', swap_size),
         # root
-        rootfs_type = config.get("automated_rootfs_type","ext4")
         (True, '/', rootfs_type, 'mkfs.'+rootfs_type+' -F {}', 0),
     )
     def run_parted(cmd): return os.system(
