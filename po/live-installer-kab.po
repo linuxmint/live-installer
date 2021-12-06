@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2020-03-09 21:17+0000\n"
-"PO-Revision-Date: 2020-02-29 12:22+0000\n"
+"PO-Revision-Date: 2020-03-24 15:56+0000\n"
 "Last-Translator: Yacine Bouklif <yacinebouklif@gmail.com>\n"
 "Language-Team: Kabyle <kab@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2020-03-13 11:20+0000\n"
-"X-Generator: Launchpad (build 3a6db24bbe7280ec09bae73384238390fcc98ad3)\n"
+"X-Launchpad-Export-Date: 2021-12-06 14:58+0000\n"
+"X-Generator: Launchpad (build f92b6e0bb2624f8a9125e3f45b7621c6e230c5ff)\n"
 "Language: kab\n"
 
 #: usr/lib/live-installer/installer.py:47
@@ -60,6 +60,8 @@ msgstr "Aserkeb n %(partition)s ɣef %(mountpoint)s"
 msgid ""
 "Filling %s with random data (please be patient, this can take hours...)"
 msgstr ""
+"Taččart n uḍebsi %s s yisefka igacuranen (ttxil-k (m) sbeṛ, ayagi yezmer ad "
+"yeṭṭef aṭas n yisragen...)"
 
 #: usr/lib/live-installer/installer.py:259
 #, python-format
@@ -351,11 +353,12 @@ msgstr "Snulfu-d, beddel tiddi neɣ fren iḥricen i LMDE s ufus."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:326
 msgid "Fill the disk with random data"
-msgstr ""
+msgstr "Aččar aḍebsi s yisefka igacuranen"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:327
 msgid "This provides extra security but it can take hours."
 msgstr ""
+"Ayagi ad d-yernu taɣellist n zzyada maca yezmer ad yeṭṭef aṭas n yisragen."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:330
 msgid "Edit partitions"
@@ -409,6 +412,7 @@ msgstr ""
 #: usr/lib/live-installer/frontend/gtk_interface.py:348
 msgid "Before continuing, mount your target filesystem(s) on /target."
 msgstr ""
+"Send ad tkemmeleḍ, serkeb inagrawen n yifuyla inicanen inek ɣef /target."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:349
 msgid ""
@@ -553,12 +557,12 @@ msgstr "Ttxil-k fren anagraw n ifuyla iwakken ad tmesleḍ aḥric aẓar (/)."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:937
 msgid "A root subvolume (/@) requires to format the partition with btrfs."
-msgstr ""
+msgstr "Ableɣ anaddaw aẓar (/@) yesra amsal n weḥric-agi s btrfs."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:945
 msgid ""
 "A home subvolume (/@home) requires the use of a btrfs formatted partition."
-msgstr ""
+msgstr "Ableɣ anaddaw (/@home) yesra aseqdec n weḥric ittwameslen s btrfs."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:949
 msgid "Please select a root (/) partition."
@@ -576,6 +580,15 @@ msgid ""
 " - subvolume Mount-point /@\n"
 " - btrfs as filesystem format\n"
 msgstr ""
+"Aḥric aẓar (root) yettwasra iwakken ad yettwasbedd deg-s Linux Mint.\n"
+"\n"
+" - Tanqiḍt n userkeb: /\n"
+" - Tiddi yettusmetren: 30GB\n"
+" - Amasal n unagraw n yifuyla yettusmetren: ext4\n"
+"\n"
+"Talɣut : Tawuri n tuṭṭfiwin « timeshift » n Btrfs tesra aseqdec n :\n"
+" - tenqiḍt n userkeb n ubleɣ anaddaw /@\n"
+" - Btrfs d amasal n unagraw n yifuyla\n"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:965
 msgid "The EFI partition is not bootable. Please edit the partition flags."
@@ -607,6 +620,16 @@ msgid ""
 "partition of the disk as the EFI system partition.\n"
 " "
 msgstr ""
+"Aḥric n unagraw EFI yettwasra akked yisrayen ara d-iḍefren:\n"
+"\n"
+" - Tanqiḍt n userkeb : /boot/efi\n"
+" - Annayen n weḥric : Bootable\n"
+" - Tiddi : at least 35MB (100MB neɣ ugar ttusmetren)\n"
+" - Amasal : vfat neɣ fat32\n"
+"\n"
+"Iwakken ad yettwaḍmen wemṣada akked Windows, ad nsemter aseqdec n weḥric "
+"amezwaru n uḍebsi i weḥric n unagraw EFI\n"
+" "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:994
 msgid "Install"
@@ -797,6 +820,8 @@ msgid ""
 "The partition table couldn't be written for %s. Restart the computer and try "
 "again."
 msgstr ""
+"D awezɣi tira n tdabut n beḍḍu i %s. Ttxil-k (m) ales asekker n uselkim "
+"sakin eɛreḍ tikkelt-nniḍen."
 
 #: usr/lib/live-installer/partitioning.py:380
 #, python-format
@@ -804,6 +829,8 @@ msgid ""
 "The partition %s could not be created. The installation will stop. Restart "
 "the computer and try again."
 msgstr ""
+"Aḥric %s ulamek ara d-yenulfu. Asbeddi ad yeḥbes. Ales asekker n uselkim "
+"sakin eɛreḍ tikkelt-nniḍen."
 
 #: usr/lib/live-installer/partitioning.py:437
 msgid "Logical partition"

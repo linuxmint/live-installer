@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2020-03-09 21:17+0000\n"
-"PO-Revision-Date: 2020-03-07 19:23+0000\n"
+"PO-Revision-Date: 2020-04-07 13:04+0000\n"
 "Last-Translator: Moo <hazap@hotmail.com>\n"
 "Language-Team: Lithuanian <lt@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2020-03-13 11:20+0000\n"
-"X-Generator: Launchpad (build 3a6db24bbe7280ec09bae73384238390fcc98ad3)\n"
+"X-Launchpad-Export-Date: 2021-12-06 14:58+0000\n"
+"X-Generator: Launchpad (build f92b6e0bb2624f8a9125e3f45b7621c6e230c5ff)\n"
 
 #: usr/lib/live-installer/installer.py:47
 msgid ""
@@ -59,6 +59,8 @@ msgstr "Prijungiamas %(partition)s skaidinys prie %(mountpoint)s vietos"
 msgid ""
 "Filling %s with random data (please be patient, this can take hours...)"
 msgstr ""
+"%s užpildomas atsitiktiniais duomenimis (būkite kantrūs, tai gali užimti "
+"kelias valandas...)"
 
 #: usr/lib/live-installer/installer.py:259
 #, python-format
@@ -348,14 +350,15 @@ msgstr "Rankinis skaidymas"
 #: usr/lib/live-installer/frontend/gtk_interface.py:325
 msgid "Manually create, resize or choose partitions for LMDE."
 msgstr ""
+"Rankiniu būdu kurti, pasirinkti ar keisti LMDE skirtų skaidinių dydžius."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:326
 msgid "Fill the disk with random data"
-msgstr ""
+msgstr "Užpildyti diską atsitiktiniais duomenimis"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:327
 msgid "This provides extra security but it can take hours."
-msgstr ""
+msgstr "Tai pateikia papildomą saugumą, tačiau gali užimti kelias valandas."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:330
 msgid "Edit partitions"
@@ -556,12 +559,12 @@ msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:937
 msgid "A root subvolume (/@) requires to format the partition with btrfs."
-msgstr ""
+msgstr "Šaknies patomis (/@) reikalauja formatuoti skaidinį naudojant btrfs."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:945
 msgid ""
 "A home subvolume (/@home) requires the use of a btrfs formatted partition."
-msgstr ""
+msgstr "Namų patomis (/@home) reikalauja naudoti btrfs formatuotą skaidinį."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:949
 msgid "Please select a root (/) partition."
@@ -683,7 +686,7 @@ msgstr "išjungta"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1061
 msgid "Home encryption: "
-msgstr ""
+msgstr "Namų šifravimas: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1062
 msgid "System settings"
@@ -746,6 +749,8 @@ msgid ""
 "The installation is now paused. Please read the instructions on the page "
 "carefully before clicking Next to finish the installation."
 msgstr ""
+"Šiuo metu diegimas yra pristabdytas. Norėdami užbaigti diegimą, prieš "
+"spusteldami \"Kitas\", įdėmiai perskaitykite puslapyje esančią instrukciją."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1131
 #: usr/lib/live-installer/frontend/gtk_interface.py:1134
@@ -819,6 +824,8 @@ msgid ""
 "The partition table couldn't be written for %s. Restart the computer and try "
 "again."
 msgstr ""
+"Nepavyko įrašyti %s skirtos skaidinių lentelės. Paleiskite kompiuterį iš "
+"naujo ir bandykite dar kartą."
 
 #: usr/lib/live-installer/partitioning.py:380
 #, python-format
@@ -826,6 +833,8 @@ msgid ""
 "The partition %s could not be created. The installation will stop. Restart "
 "the computer and try again."
 msgstr ""
+"Nepavyko sukurti %s skaidinio. Diegimas bus sustabdytas. Paleiskite "
+"kompiuterį iš naujo ir bandykite dar kartą."
 
 #: usr/lib/live-installer/partitioning.py:437
 msgid "Logical partition"

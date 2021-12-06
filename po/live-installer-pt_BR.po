@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2020-03-09 21:17+0000\n"
-"PO-Revision-Date: 2020-03-10 18:54+0000\n"
+"PO-Revision-Date: 2020-07-26 21:02+0000\n"
 "Last-Translator: Alberlan Lopes <alberlan@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2020-03-13 11:20+0000\n"
-"X-Generator: Launchpad (build 3a6db24bbe7280ec09bae73384238390fcc98ad3)\n"
+"X-Launchpad-Export-Date: 2021-12-06 14:58+0000\n"
+"X-Generator: Launchpad (build f92b6e0bb2624f8a9125e3f45b7621c6e230c5ff)\n"
 
 #: usr/lib/live-installer/installer.py:47
 msgid ""
@@ -321,7 +321,7 @@ msgstr "Instalação automatizada"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:318
 msgid "Erase a disk and install LMDE on it."
-msgstr "Apaguar um disco e instale o LMDE nele."
+msgstr "Apague o disco e instale o LMDE nele."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:319
 msgid "Disk:"
@@ -497,7 +497,7 @@ msgstr "Por favor, informe seu nome completo."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:856
 msgid "Please provide a name for your computer."
-msgstr "Por favor escolha um nome para sau computador."
+msgstr "Por favor, escolha um nome para o seu computador."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:860
 msgid "Please provide a username."

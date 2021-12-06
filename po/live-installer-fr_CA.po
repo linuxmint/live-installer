@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2020-03-09 21:17+0000\n"
-"PO-Revision-Date: 2020-02-29 15:38+0000\n"
+"PO-Revision-Date: 2020-03-16 15:34+0000\n"
 "Last-Translator: AO <Unknown>\n"
 "Language-Team: French (Canada) <fr_CA@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2020-03-13 11:20+0000\n"
-"X-Generator: Launchpad (build 3a6db24bbe7280ec09bae73384238390fcc98ad3)\n"
+"X-Launchpad-Export-Date: 2021-12-06 14:58+0000\n"
+"X-Generator: Launchpad (build f92b6e0bb2624f8a9125e3f45b7621c6e230c5ff)\n"
 
 #: usr/lib/live-installer/installer.py:47
 msgid ""
@@ -59,6 +59,8 @@ msgstr "Montage de %(partition)s sur %(mountpoint)s"
 msgid ""
 "Filling %s with random data (please be patient, this can take hours...)"
 msgstr ""
+"Remplissage de %s avec des données aléatoires (veuillez être patient, cela "
+"peut prendre des heures…)"
 
 #: usr/lib/live-installer/installer.py:259
 #, python-format
@@ -353,11 +355,11 @@ msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:326
 msgid "Fill the disk with random data"
-msgstr ""
+msgstr "Remplir le disque avec des données aléatoires"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:327
 msgid "This provides extra security but it can take hours."
-msgstr ""
+msgstr "Assure une sécurité accrue, mais peut prendre des heures."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:330
 msgid "Edit partitions"
@@ -829,6 +831,8 @@ msgid ""
 "The partition table couldn't be written for %s. Restart the computer and try "
 "again."
 msgstr ""
+"Impossible d’écrire la table de partition pour %s. Veuillez redémarrer "
+"l’ordinateur et ressayez."
 
 #: usr/lib/live-installer/partitioning.py:380
 #, python-format
@@ -836,6 +840,8 @@ msgid ""
 "The partition %s could not be created. The installation will stop. Restart "
 "the computer and try again."
 msgstr ""
+"Impossible de créer la partition %s. L’installation va s’arrêter. Veuillez "
+"redémarrer l’ordinateur et ressayez."
 
 #: usr/lib/live-installer/partitioning.py:437
 msgid "Logical partition"

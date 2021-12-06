@@ -9,30 +9,31 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://launchpad.net/~linuxmint-translation-team-"
 "japanese\n"
 "POT-Creation-Date: 2020-03-09 21:17+0000\n"
-"PO-Revision-Date: 2018-04-16 07:22+0000\n"
-"Last-Translator: Keith Shellingfield <Unknown>\n"
+"PO-Revision-Date: 2020-11-06 16:02+0000\n"
+"Last-Translator: kmyyfz8q <Unknown>\n"
 "Language-Team: Japanese <https://launchpad.net/~linuxmint-translation-team-"
 "japanese>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2020-03-13 11:20+0000\n"
-"X-Generator: Launchpad (build 3a6db24bbe7280ec09bae73384238390fcc98ad3)\n"
+"X-Launchpad-Export-Date: 2021-12-06 14:58+0000\n"
+"X-Generator: Launchpad (build f92b6e0bb2624f8a9125e3f45b7621c6e230c5ff)\n"
+"Language: ja\n"
 
 #: usr/lib/live-installer/installer.py:47
 msgid ""
 "ERROR: You must first manually mount your target filesystem(s) at /target to "
 "do a custom install!"
-msgstr "エラー:  最初にターゲットのファイルシステムを/targetにマウントして カスタムインストールを実行して下さい"
+msgstr "エラー: カスタムインストールを実行する前に、まず対象のファイルシステムを /target にマウントしてください"
 
 #: usr/lib/live-installer/installer.py:88
 #, python-format
 msgid "Copying /%s"
-msgstr ""
+msgstr "/%s をコピーしています"
 
 #: usr/lib/live-installer/installer.py:96
 msgid "Entering the system ..."
-msgstr "システムを起動しています"
+msgstr "システム内を巡回しています..."
 
 #: usr/lib/live-installer/installer.py:146
 msgid "Removing live configuration (packages)"
@@ -40,7 +41,7 @@ msgstr "ライブ設定 (パッケージ) を削除しています"
 
 #: usr/lib/live-installer/installer.py:158
 msgid "Adding new user to the system"
-msgstr ""
+msgstr "新規ユーザーをシステムに追加しています"
 
 #: usr/lib/live-installer/installer.py:189
 msgid "Writing filesystem mount information to /etc/fstab"
@@ -58,22 +59,22 @@ msgstr "%(partition)s を %(mountpoint)s にマウントしています"
 #, python-format
 msgid ""
 "Filling %s with random data (please be patient, this can take hours...)"
-msgstr ""
+msgstr "%s をランダムなデータで埋めています (これには数時間かかることがあります。お待ちください...)"
 
 #: usr/lib/live-installer/installer.py:259
 #, python-format
 msgid "Creating partitions on %s"
-msgstr ""
+msgstr "%s にパーティションを作成しています"
 
 #: usr/lib/live-installer/installer.py:306
 #, python-format
 msgid "Formatting %(partition)s as %(format)s ..."
-msgstr ""
+msgstr "%(partition)s を %(format)s でフォーマットしています..."
 
 #: usr/lib/live-installer/installer.py:343
 #: usr/lib/live-installer/installer.py:363
 msgid "ERROR: the use of @subvolumes is limited to btrfs"
-msgstr ""
+msgstr "エラー: @subvolumes の使用は btrfs だけに制限されています"
 
 #: usr/lib/live-installer/installer.py:489
 msgid "Setting hostname"
@@ -81,19 +82,19 @@ msgstr "ホスト名を設定しています"
 
 #: usr/lib/live-installer/installer.py:508
 msgid "Setting locale"
-msgstr "ロケールを設定しています"
+msgstr "地域と言語を設定しています"
 
 #: usr/lib/live-installer/installer.py:523
 msgid "Localizing packages"
-msgstr ""
+msgstr "パッケージの言語を構成しています"
 
 #: usr/lib/live-installer/installer.py:538
 msgid "Installing drivers"
-msgstr ""
+msgstr "ドライバーをインストールしています"
 
 #: usr/lib/live-installer/installer.py:569
 msgid "Setting keyboard options"
-msgstr "キーボードオプションを設定しています"
+msgstr "キーボードのオプションを設定しています"
 
 #: usr/lib/live-installer/installer.py:626
 msgid "Installing bootloader"
@@ -103,7 +104,7 @@ msgstr "ブートローダーをインストールしています"
 msgid ""
 "WARNING: The grub bootloader was not configured properly! You need to "
 "configure it manually."
-msgstr ""
+msgstr "警告: GRUB ブートローダーを正しく構成できなかったため、手動での設定が必要です。"
 
 #: usr/lib/live-installer/installer.py:653
 msgid "Cleaning APT"
@@ -112,11 +113,11 @@ msgstr "APT を消去しています"
 #: usr/lib/live-installer/installer.py:679
 #: usr/lib/live-installer/frontend/gtk_interface.py:1089
 msgid "Installation finished"
-msgstr ""
+msgstr "インストールが完了しました"
 
 #: usr/lib/live-installer/installer.py:688
 msgid "Configuring bootloader"
-msgstr "ブートローダーを設定しています"
+msgstr "ブートローダーを構成しています"
 
 #: usr/lib/live-installer/installer.py:697
 msgid "Checking bootloader"
@@ -141,11 +142,11 @@ msgstr "レイアウト"
 #: usr/lib/live-installer/frontend/gtk_interface.py:199
 #: usr/lib/live-installer/frontend/gtk_interface.py:300
 msgid "Variant"
-msgstr "スモールキャピタル"
+msgstr "系統"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:213
 msgid "Calculating file indexes ..."
-msgstr ""
+msgstr "ファイルインデックスを計算しています..."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:254
 #: usr/lib/live-installer/frontend/gtk_interface.py:257
@@ -163,15 +164,15 @@ msgstr ""
 #: usr/lib/live-installer/frontend/gtk_interface.py:981
 #: usr/lib/live-installer/partitioning.py:330
 msgid "Installer"
-msgstr ""
+msgstr "インストーラー"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:271
 msgid "Welcome"
-msgstr ""
+msgstr "ようこそ"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:272
 msgid "What language would you like to use?"
-msgstr ""
+msgstr "どの言語で利用しますか？"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:273
 msgid "Timezone"
@@ -179,7 +180,7 @@ msgstr "タイムゾーン"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:273
 msgid "Where are you?"
-msgstr ""
+msgstr "どこに住んでいますか？"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:274
 msgid "Keyboard layout"
@@ -187,28 +188,28 @@ msgstr "キーボードのレイアウト"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:274
 msgid "What is your keyboard layout?"
-msgstr ""
+msgstr "キーボードの配列はどれですか？"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:275
 msgid "User account"
-msgstr ""
+msgstr "ユーザーアカウント"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:275
 msgid "Who are you?"
-msgstr ""
+msgstr "あなたの情報を入力してください"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:276
 msgid "Installation Type"
-msgstr ""
+msgstr "インストールの方法"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:276
 #: usr/lib/live-installer/frontend/gtk_interface.py:277
 msgid "Where do you want to install LMDE?"
-msgstr ""
+msgstr "どこに LMDE をインストールしますか？"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:277
 msgid "Partitioning"
-msgstr ""
+msgstr "パーティションを作成しています"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:278
 msgid "Advanced options"
@@ -220,7 +221,7 @@ msgstr "概要"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:280
 msgid "Installing"
-msgstr ""
+msgstr "インストールしています"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:281
 #: usr/lib/live-installer/frontend/gtk_interface.py:332
@@ -230,37 +231,37 @@ msgstr "上級者モード"
 #: usr/lib/live-installer/frontend/gtk_interface.py:282
 #: usr/lib/live-installer/frontend/gtk_interface.py:1104
 msgid "Installation paused"
-msgstr ""
+msgstr "インストールを一時停止しました"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:285
 msgid "Quit"
-msgstr ""
+msgstr "終了"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:286
 msgid "Back"
-msgstr ""
+msgstr "戻る"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:287
 #: usr/lib/live-installer/frontend/gtk_interface.py:1099
 msgid "Next"
-msgstr ""
+msgstr "次へ"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:290
 msgid "Welcome to the LMDE Installer."
-msgstr ""
+msgstr "LMDE インストーラーへようこそ。"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:291
 msgid ""
 "This program will ask you some questions and set up LMDE on your computer."
-msgstr ""
+msgstr "このプログラムは、お使いのコンピューターに LMDE をセットアップする手助けをします。"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:298
 msgid "Keyboard Model:"
-msgstr ""
+msgstr "キーボードの型番:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:301
 msgid "Type here to test your keyboard layout"
-msgstr ""
+msgstr "ここでキーボードレイアウトの設定を試せます"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:302
 msgid ""
@@ -268,86 +269,88 @@ msgid ""
 "Latin characters. In addition to your selected layout, English (US) is set "
 "as the default. You can switch layouts by pressing both Ctrl keys together."
 msgstr ""
+"* ユーザー名、コンピューター名、パスワードにはラテン文字のみが使用できます。ここで選択したキーボードレイアウトに加え、英語 (US) "
+"が既定値として設定されます。2 つの Ctrl キーを同時に押すと、これらのレイアウトを切り替えられます。"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:305
 msgid "Your name:"
-msgstr ""
+msgstr "名前:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:306
 msgid "Your computer's name:"
-msgstr ""
+msgstr "コンピューター名:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:307
 msgid "The name it uses when it talks to other computers."
-msgstr ""
+msgstr "他のコンピューターと通信するときに使用する名前です。"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:308
 msgid "Pick a username:"
-msgstr ""
+msgstr "ユーザー名:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:309
 msgid "Choose a password:"
-msgstr ""
+msgstr "パスワード:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:310
 msgid "Confirm your password:"
-msgstr ""
+msgstr "パスワードの再入力:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:312
 msgid "Log in automatically"
-msgstr ""
+msgstr "自動的にログインする"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:313
 msgid "Require my password to log in"
-msgstr ""
+msgstr "ログイン時にパスワードを要求する"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:314
 msgid "Encrypt my home folder"
-msgstr ""
+msgstr "ホームフォルダーを暗号化する"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:317
 msgid "Automated Installation"
-msgstr ""
+msgstr "自動インストール"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:318
 msgid "Erase a disk and install LMDE on it."
-msgstr ""
+msgstr "ディスクの中身を削除して LMDE をインストールします。"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:319
 msgid "Disk:"
-msgstr ""
+msgstr "ディスク:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:320
 msgid "Encrypt the operating system"
-msgstr ""
+msgstr "OS を暗号化する"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:321
 msgid "Passphrase"
-msgstr ""
+msgstr "パスフレーズ"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:322
 msgid "Confirm passphrase"
-msgstr ""
+msgstr "パスフレーズの再入力"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:323
 msgid "Use LVM (Logical Volume Management)"
-msgstr ""
+msgstr "LVM (論理ボリュームマネージャー) を使用する"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:324
 msgid "Manual Partitioning"
-msgstr ""
+msgstr "パーティションの手動設定"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:325
 msgid "Manually create, resize or choose partitions for LMDE."
-msgstr ""
+msgstr "LMDE 用のパーティションを自分で作成、変更、選択します。"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:326
 msgid "Fill the disk with random data"
-msgstr ""
+msgstr "ディスクの中身をランダムなデータで埋める"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:327
 msgid "This provides extra security but it can take hours."
-msgstr ""
+msgstr "セキュリティが高くなりますが、数時間かかることがあります。"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:330
 msgid "Edit partitions"
@@ -375,7 +378,7 @@ msgstr "マウントポイント"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:338
 msgid "Format as"
-msgstr ""
+msgstr "フォーマット形式"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:339
 msgid "Size"
@@ -388,38 +391,38 @@ msgstr "空き容量"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:344
 msgid "Install the GRUB boot menu on:"
-msgstr ""
+msgstr "GRUB ブートメニューをインストールする場所:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:347
 msgid ""
 "You selected to manage your partitions manually, this feature is for "
 "ADVANCED USERS ONLY."
-msgstr ""
+msgstr "手動でパーティションを設定します。これは「上級者向け」です。"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:348
 msgid "Before continuing, mount your target filesystem(s) on /target."
-msgstr ""
+msgstr "続行する前に、対象のファイルシステムを /target にマウントしてください。"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:349
 msgid ""
 "Do NOT mount virtual devices such as /dev, /proc, /sys, etc on /target/."
-msgstr ""
+msgstr "/dev, /proc, /sys などの仮想デバイスを /target/ にマウントしないでください。"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:350
 msgid ""
 "During the install, you will be given time to chroot into /target and "
 "install any packages that will be needed to boot your new system."
 msgstr ""
-"インストールの最中、 /target に chroot して新しいシステムを起動するのに必要とするパッケージをインストールする機会があります。"
+"インストールの途中に /target へ chroot する機会があります。この時、新しいシステムの起動に必要なパッケージをインストールできます。"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:351
 msgid ""
 "During the install, you will be required to write your own /etc/fstab."
-msgstr "インストールの最中、/etc/fstab の編集を求められることがあります。"
+msgstr "インストールの途中に /etc/fstab の編集を求められます。"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:354
 msgid "Do the following and then click Next to finish installation:"
-msgstr ""
+msgstr "次へ進む前に、これらの操作を行ってください:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:355
 msgid ""
@@ -427,6 +430,8 @@ msgid ""
 "new system, matching those currently mounted at /target (without using the "
 "/target prefix in the mount paths themselves)."
 msgstr ""
+"ファイルシステム上に /target/etc/fstab を作成し、その場所を現在マウント中の /target に合わせてください "
+"(マウントパス自身の前には /target を付けないでください)。ここで作成した場所は、後に新しいシステムにマウントされます。"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:356
 msgid ""
@@ -434,8 +439,8 @@ msgid ""
 "dmraid, etc) by calling \"sudo chroot /target\" followed by the relevant apt-"
 "get/aptitude installations."
 msgstr ""
-"\"sudo chroot /target\" を実行して、初回起動に必要となるパッケージ (mdadm, cryptsetup, dmraid 等) "
-"を適切な apt-get/aptitude の操作によりインストールします。"
+"適切な apt-get/aptitude の設定後、\"sudo chroot /target\" を実行し、初回起動に必要なパッケージ (mdadm, "
+"cryptsetup, dmraid など) をインストールしてください。"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:357
 msgid ""
@@ -443,9 +448,8 @@ msgid ""
 "as dm-crypt), you may need to have drives currently mounted using the same "
 "block device name as they appear in /target/etc/fstab."
 msgstr ""
-"(dm-crypt を使用する等) いくつかの場合において update-initramfs "
-"を適切に動作させる為、現在マウントしているのと同じブロックデバイス名が /target/etc/fstab "
-"へ記入されている必要があることに注意してください。"
+"いくつかの状況下 (dm-crypt を使用するなど) で update-initramfs を適切に動作させるには、現在マウント中のドライブを "
+"/target/etc/fstab の記述に従い、同じブロックデバイス名で設定してください。"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:358
 msgid ""
@@ -453,8 +457,8 @@ msgid ""
 "system will have at first boot, and matches what is currently mounted at "
 "/target."
 msgstr ""
-"初起動に際して新しいシステムに適したものか、また /target にマウントされている現状と一致しているかどうか、厳重に "
-"/target/etc/fstab が正しい事を確認してください。"
+"/target/etc/fstab が正しく設定されているか、新しいシステムの初回起動に適したものか、現在マウントしている /target "
+"に誤りがないか、今一度確認してください。"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:488
 msgid "Quit?"
@@ -462,87 +466,87 @@ msgstr "終了しますか？"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:488
 msgid "Are you sure you want to quit the installer?"
-msgstr ""
+msgstr "インストーラーを終了しますか？"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:810
 msgid "Please choose a language"
-msgstr ""
+msgstr "言語を選択してください"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:852
 msgid "Please provide your full name."
-msgstr ""
+msgstr "あなたの名前を入力してください。"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:856
 msgid "Please provide a name for your computer."
-msgstr ""
+msgstr "このコンピューターの名前を決めてください。"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:860
 msgid "Please provide a username."
-msgstr ""
+msgstr "ユーザー名を入力してください。"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:864
 msgid "Please provide a password for your user account."
-msgstr ""
+msgstr "あなたのユーザーアカウントにパスワードを設定してください。"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:868
 msgid "Your passwords do not match."
-msgstr ""
+msgstr "パスワードが一致しません。"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:874
 msgid "Your username must be lower case."
-msgstr ""
+msgstr "ユーザー名には小文字のみを使用してください。"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:879
 msgid "Your username may not contain whitespace characters."
-msgstr ""
+msgstr "ユーザー名にはスペースを混ぜないでください。"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:885
 msgid "The computer's name must be lower case."
-msgstr ""
+msgstr "コンピューター名には小文字のみを使用してください。"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:890
 msgid "The computer's name may not contain whitespace characters."
-msgstr ""
+msgstr "コンピューター名にはスペースを混ぜないでください。"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:906
 msgid "Please select a disk."
-msgstr ""
+msgstr "ディスクを選択してください。"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:910
 msgid "Please provide a passphrase for the encryption."
-msgstr ""
+msgstr "暗号化用のパスフレーズを入力してください。"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:913
 msgid "Your passphrases do not match."
-msgstr ""
+msgstr "パスフレーズが一致しません。"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:917
 msgid "Warning"
-msgstr ""
+msgstr "警告"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:917
 #, python-format
 msgid "This will delete all the data on %s. Are you sure?"
-msgstr ""
+msgstr "%s にあるデータは全て削除されます。よろしいですか？"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:933
 msgid ""
 "Please indicate a filesystem to format the root (/) partition with before "
 "proceeding."
-msgstr "始める前に ルート (/) パーティションをフォーマットするファイルシステムを指定して下さい"
+msgstr "次へ進む前に、ルート (/) パーティションをどのファイルシステムでフォーマットするか指定してください。"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:937
 msgid "A root subvolume (/@) requires to format the partition with btrfs."
-msgstr ""
+msgstr "ルートのサブボリューム (/@) には btrfs でフォーマットしたパーティションのみが使えます。"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:945
 msgid ""
 "A home subvolume (/@home) requires the use of a btrfs formatted partition."
-msgstr ""
+msgstr "ホームのサブボリューム (/@home) には btrfs でフォーマットしたパーティションを使ってください。"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:949
 msgid "Please select a root (/) partition."
-msgstr "ルート (/) パーティションを選択して下さい"
+msgstr "ルート (/) パーティションを選択してください。"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:950
 msgid ""
@@ -556,23 +560,33 @@ msgid ""
 " - subvolume Mount-point /@\n"
 " - btrfs as filesystem format\n"
 msgstr ""
+"Linux Mint のインストール先となるルートパーティションが必要です。\n"
+"\n"
+" - マウント場所: /\n"
+" - 推奨容量: 30GB\n"
+" - 推奨のファイルシステム形式: ext4\n"
+"\n"
+"注: Timeshift で btrfs スナップショットを利用するには\n"
+" - サブボリュームのマウント場所 /@\n"
+" - ファイルシステム形式 btrfs でのフォーマット\n"
+"が必要です。\n"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:965
 msgid "The EFI partition is not bootable. Please edit the partition flags."
-msgstr ""
+msgstr "EFI パーティションからは起動できません。パーティションフラグを編集してください。"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:968
 msgid "The EFI partition is too small. It must be at least 35MB."
-msgstr ""
+msgstr "EFI パーティションの容量が少なすぎます。35MB 以上は確保してください。"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:973
 #: usr/lib/live-installer/frontend/gtk_interface.py:977
 msgid "The EFI partition must be formatted as vfat."
-msgstr ""
+msgstr "EFI パーティションは vfat 形式でフォーマットしてください。"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:981
 msgid "Please select an EFI partition."
-msgstr "EFI パーティションを選択して下さい"
+msgstr "EFI パーティションを選択してください。"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:981
 msgid ""
@@ -587,14 +601,23 @@ msgid ""
 "partition of the disk as the EFI system partition.\n"
 " "
 msgstr ""
+"EFI のシステムパーティションは、これらの要件を満たす必要があります:\n"
+"\n"
+" - マウント場所: /boot/efi\n"
+" - パーティションフラグ: Bootable\n"
+" - 容量: 最低 35MB (100MB 以上を推奨)\n"
+" - ファイルシステム形式: vfat もしくは fat32\n"
+"\n"
+"Windows との互換性を保つため、EFI に割り当てるシステムパーティションは、ディスク上の一番初めに配置することをおすすめします。\n"
+" "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:994
 msgid "Install"
-msgstr ""
+msgstr "インストール"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1051
 msgid "Localization"
-msgstr "ローカライズ"
+msgstr "地域と言語"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1052
 msgid "Language: "
@@ -614,7 +637,7 @@ msgstr "ユーザー設定"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1058
 msgid "Real name: "
-msgstr "氏名: "
+msgstr "名前: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1059
 msgid "Username: "
@@ -640,7 +663,7 @@ msgstr "無効"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1061
 msgid "Home encryption: "
-msgstr ""
+msgstr "ホームの暗号化: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1062
 msgid "System settings"
@@ -648,16 +671,16 @@ msgstr "システム設定"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1063
 msgid "Computer's name: "
-msgstr ""
+msgstr "コンピューター名: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1064
 msgid "Filesystem operations"
-msgstr "ファイルシステムオペレーション"
+msgstr "ファイルシステム操作"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1065
 #, python-format
 msgid "Install bootloader on %s"
-msgstr ""
+msgstr "ブートローダーを %s にインストールする"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1065
 msgid "Do not install bootloader"
@@ -665,42 +688,42 @@ msgstr "ブートローダーをインストールしない"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1067
 msgid "Use already-mounted /target."
-msgstr ""
+msgstr "既にマウント中の /target を使用する。"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1070
 #, python-format
 msgid "Automated installation on %s"
-msgstr ""
+msgstr "%s に自動インストール"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1071
 msgid "LVM: "
-msgstr ""
+msgstr "LVM: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1072
 msgid "Disk Encryption: "
-msgstr ""
+msgstr "ディスクの暗号化: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1076
 #, python-format
 msgid "Format %(path)s as %(filesystem)s"
-msgstr ""
+msgstr "%(path)s を %(filesystem)s でフォーマット"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1079
 #, python-format
 msgid "Mount %(path)s as %(mount)s"
-msgstr ""
+msgstr "%(path)s を %(mount)s にマウント"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1089
 msgid ""
 "The installation is now complete. Do you want to restart your computer to "
 "use the new system?"
-msgstr ""
+msgstr "インストールが完了しました。コンピューターを再起動し、新しいシステムを利用しますか？"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1104
 msgid ""
 "The installation is now paused. Please read the instructions on the page "
 "carefully before clicking Next to finish the installation."
-msgstr ""
+msgstr "インストールを一時停止しました。次へ進む前に、ページの説明をよく読んでください。"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1131
 #: usr/lib/live-installer/frontend/gtk_interface.py:1134
@@ -735,7 +758,7 @@ msgstr "TB"
 
 #: usr/lib/live-installer/partitioning.py:97
 msgid "Removable:"
-msgstr "削除:"
+msgstr "リムーバブル:"
 
 #: usr/lib/live-installer/partitioning.py:177
 msgid "Edit"
@@ -743,15 +766,15 @@ msgstr "編集"
 
 #: usr/lib/live-installer/partitioning.py:182
 msgid "Assign to /"
-msgstr "/ にアサイン"
+msgstr "/ に割り当て"
 
 #: usr/lib/live-installer/partitioning.py:185
 msgid "Assign to /home"
-msgstr "/homeにアサイン"
+msgstr "/home に割り当て"
 
 #: usr/lib/live-installer/partitioning.py:191
 msgid "Assign to /boot/efi"
-msgstr "/boot/efiにアサイン"
+msgstr "/boot/efi に割り当て"
 
 #: usr/lib/live-installer/partitioning.py:246
 msgid "Installation Tool"
@@ -764,22 +787,22 @@ msgid ""
 "installer to create a set of partitions for you? Note: This will ERASE ALL "
 "DATA present on this disk."
 msgstr ""
-"ハードドライブ : %s にパーティションが見つかりません インストーラーがパーティションのセットを作成することを望みますか？ 注意： "
-"このディスクに存在する全てのデータが削除されます"
+"ハードドライブ %s にパーティションテーブルが見つかりませんでした。必要なパーティションをまとめて自動作成しますか？注: "
+"ディスク上の全てのデータが削除されます。"
 
 #: usr/lib/live-installer/partitioning.py:339
 #, python-format
 msgid ""
 "The partition table couldn't be written for %s. Restart the computer and try "
 "again."
-msgstr ""
+msgstr "パーティションテーブルを %s に書き込めませんでした。再起動してやり直してください。"
 
 #: usr/lib/live-installer/partitioning.py:380
 #, python-format
 msgid ""
 "The partition %s could not be created. The installation will stop. Restart "
 "the computer and try again."
-msgstr ""
+msgstr "パーティション %s を作成できませんでした。インストールを中止します。再起動してやり直してください。"
 
 #: usr/lib/live-installer/partitioning.py:437
 msgid "Logical partition"
@@ -795,7 +818,7 @@ msgstr "不明"
 
 #: usr/lib/live-installer/partitioning.py:556
 msgid "Edit partition"
-msgstr "パーティションを編集"
+msgstr "パーティションの編集"
 
 #: usr/lib/live-installer/partitioning.py:557
 msgid "Device:"
@@ -803,26 +826,26 @@ msgstr "デバイス:"
 
 #: usr/lib/live-installer/partitioning.py:559
 msgid "Format as:"
-msgstr "フォーマット:"
+msgstr "形式:"
 
 #: usr/lib/live-installer/partitioning.py:560
 msgid "Mount point:"
-msgstr "マウントポイント:"
+msgstr "マウント場所:"
 
 #: usr/lib/live-installer/partitioning.py:561
 msgid "Cancel"
-msgstr ""
+msgstr "キャンセル"
 
 #: usr/lib/live-installer/partitioning.py:562
 #: usr/lib/live-installer/dialogs.py:31 usr/lib/live-installer/dialogs.py:42
 #: usr/lib/live-installer/dialogs.py:47
 msgid "OK"
-msgstr ""
+msgstr "OK"
 
 #: usr/lib/live-installer/dialogs.py:36
 msgid "No"
-msgstr ""
+msgstr "いいえ"
 
 #: usr/lib/live-installer/dialogs.py:37
 msgid "Yes"
-msgstr ""
+msgstr "はい"

@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2020-03-09 21:17+0000\n"
-"PO-Revision-Date: 2020-03-13 10:54+0000\n"
-"Last-Translator: Vlad Orlov <Unknown>\n"
+"PO-Revision-Date: 2020-07-18 16:31+0000\n"
+"Last-Translator: Ramil Minnigaliev <thunder-amur@yandex.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2020-03-13 11:20+0000\n"
-"X-Generator: Launchpad (build 3a6db24bbe7280ec09bae73384238390fcc98ad3)\n"
+"X-Launchpad-Export-Date: 2021-12-06 14:58+0000\n"
+"X-Generator: Launchpad (build f92b6e0bb2624f8a9125e3f45b7621c6e230c5ff)\n"
 
 #: usr/lib/live-installer/installer.py:47
 msgid ""
@@ -36,7 +36,7 @@ msgstr "Вход в систему ..."
 
 #: usr/lib/live-installer/installer.py:146
 msgid "Removing live configuration (packages)"
-msgstr "Удаление конфигурации (приложений)"
+msgstr "Удаление текущей конфигурации (пакетов)"
 
 #: usr/lib/live-installer/installer.py:158
 msgid "Adding new user to the system"
@@ -558,7 +558,8 @@ msgid ""
 "Please indicate a filesystem to format the root (/) partition with before "
 "proceeding."
 msgstr ""
-"Прежде чем продолжить, пожалуйста, укажите корневую (/) файловую систему."
+"Прежде чем продолжить, пожалуйста, отметьте для форматирования корневую (/) "
+"файловую систему."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:937
 msgid "A root subvolume (/@) requires to format the partition with btrfs."

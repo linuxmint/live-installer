@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2020-03-09 21:17+0000\n"
-"PO-Revision-Date: 2020-02-29 21:32+0000\n"
+"PO-Revision-Date: 2020-04-14 17:26+0000\n"
 "Last-Translator: Piet Coppens <Unknown>\n"
 "Language-Team: Esperanto <eo@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2020-03-13 11:20+0000\n"
-"X-Generator: Launchpad (build 3a6db24bbe7280ec09bae73384238390fcc98ad3)\n"
+"X-Launchpad-Export-Date: 2021-12-06 14:58+0000\n"
+"X-Generator: Launchpad (build f92b6e0bb2624f8a9125e3f45b7621c6e230c5ff)\n"
 
 #: usr/lib/live-installer/installer.py:47
 msgid ""
@@ -59,6 +59,8 @@ msgstr "Surmetanta %(partition)s en %(mountpoint)s"
 msgid ""
 "Filling %s with random data (please be patient, this can take hours...)"
 msgstr ""
+"Plenigado de %s je hazardaj datumoj (bonvolu pacienci, ĉar eble ĝi prenos "
+"horojn...)"
 
 #: usr/lib/live-installer/installer.py:259
 #, python-format
@@ -350,11 +352,11 @@ msgstr "Permane krei, regrandigi aŭ elekti subdiskojn por LMDE."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:326
 msgid "Fill the disk with random data"
-msgstr ""
+msgstr "Plenigi la diskon je hazardaj datumoj"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:327
 msgid "This provides extra security but it can take hours."
-msgstr ""
+msgstr "Ĉi tio provizas kroman sekurecon, sed eble prenos horojn."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:330
 msgid "Edit partitions"
@@ -820,6 +822,8 @@ msgid ""
 "The partition table couldn't be written for %s. Restart the computer and try "
 "again."
 msgstr ""
+"Ne eblas skribi la subdiskan tabelon por %s. Restartigu la komputilon kaj "
+"provu denove."
 
 #: usr/lib/live-installer/partitioning.py:380
 #, python-format
@@ -827,6 +831,8 @@ msgid ""
 "The partition %s could not be created. The installation will stop. Restart "
 "the computer and try again."
 msgstr ""
+"Ne eblas krei la subdiskon %s. La instalado ĉesos. Restartigu la komputilon "
+"kaj provu denove."
 
 #: usr/lib/live-installer/partitioning.py:437
 msgid "Logical partition"

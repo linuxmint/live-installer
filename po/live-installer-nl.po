@@ -8,27 +8,27 @@ msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2020-03-09 21:17+0000\n"
-"PO-Revision-Date: 2020-03-09 22:55+0000\n"
+"PO-Revision-Date: 2020-05-12 17:46+0000\n"
 "Last-Translator: Pjotr12345 <Unknown>\n"
 "Language-Team: Dutch <nl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2020-03-13 11:20+0000\n"
-"X-Generator: Launchpad (build 3a6db24bbe7280ec09bae73384238390fcc98ad3)\n"
+"X-Launchpad-Export-Date: 2021-12-06 14:58+0000\n"
+"X-Generator: Launchpad (build f92b6e0bb2624f8a9125e3f45b7621c6e230c5ff)\n"
 
 #: usr/lib/live-installer/installer.py:47
 msgid ""
 "ERROR: You must first manually mount your target filesystem(s) at /target to "
 "do a custom install!"
 msgstr ""
-"FOUT: u dient eerst uw doel-bestandssyste(e)m(en) handmatig aan te koppelen "
+"FOUT: u dient eerst uw doelbestandssyste(e)m(en) handmatig aan te koppelen "
 "op /target, om een aangepaste installatie uit te voeren."
 
 #: usr/lib/live-installer/installer.py:88
 #, python-format
 msgid "Copying /%s"
-msgstr "Kopiëren /%s"
+msgstr "Bezig met kopiëren /%s"
 
 #: usr/lib/live-installer/installer.py:96
 msgid "Entering the system ..."
@@ -36,17 +36,17 @@ msgstr "Systeem aan het binnengaan..."
 
 #: usr/lib/live-installer/installer.py:146
 msgid "Removing live configuration (packages)"
-msgstr "Live-configuratie (pakketten) aan het verwijderen"
+msgstr "Live-configuratie (pakketten) verwijderen..."
 
 #: usr/lib/live-installer/installer.py:158
 msgid "Adding new user to the system"
-msgstr "Nieuwe gebruiker toevoegen aan het systeem"
+msgstr "Nieuwe gebruiker toevoegen aan het systeem..."
 
 #: usr/lib/live-installer/installer.py:189
 msgid "Writing filesystem mount information to /etc/fstab"
 msgstr ""
 "Aankoppelinformatie betreffende het bestandssysteem wegschrijven in "
-"/etc/fstab"
+"/etc/fstab..."
 
 #: usr/lib/live-installer/installer.py:195
 #: usr/lib/live-installer/installer.py:332
@@ -67,7 +67,7 @@ msgstr ""
 #: usr/lib/live-installer/installer.py:259
 #, python-format
 msgid "Creating partitions on %s"
-msgstr "Partities aanmaken op %s"
+msgstr "Partities aanmaken op %s..."
 
 #: usr/lib/live-installer/installer.py:306
 #, python-format
@@ -81,27 +81,27 @@ msgstr "FOUT: het gebruik van @subvolumes is beperkt tot btrfs"
 
 #: usr/lib/live-installer/installer.py:489
 msgid "Setting hostname"
-msgstr "Computernaam instellen"
+msgstr "Computernaam instellen..."
 
 #: usr/lib/live-installer/installer.py:508
 msgid "Setting locale"
-msgstr "Taal en land instellen"
+msgstr "Taal en land instellen..."
 
 #: usr/lib/live-installer/installer.py:523
 msgid "Localizing packages"
-msgstr "Pakketten regionaliseren"
+msgstr "Pakketten regionaliseren..."
 
 #: usr/lib/live-installer/installer.py:538
 msgid "Installing drivers"
-msgstr "Stuurprogramma's installeren"
+msgstr "Stuurprogramma's installeren..."
 
 #: usr/lib/live-installer/installer.py:569
 msgid "Setting keyboard options"
-msgstr "Toetsenbordopties instellen"
+msgstr "Toetsenbordopties instellen..."
 
 #: usr/lib/live-installer/installer.py:626
 msgid "Installing bootloader"
-msgstr "Opstartlader installeren"
+msgstr "Opstartlader installeren..."
 
 #: usr/lib/live-installer/installer.py:639
 msgid ""
@@ -113,7 +113,7 @@ msgstr ""
 
 #: usr/lib/live-installer/installer.py:653
 msgid "Cleaning APT"
-msgstr "APT schoonmaken"
+msgstr "APT schoonmaken..."
 
 #: usr/lib/live-installer/installer.py:679
 #: usr/lib/live-installer/frontend/gtk_interface.py:1089
@@ -122,11 +122,11 @@ msgstr "Installatie voltooid"
 
 #: usr/lib/live-installer/installer.py:688
 msgid "Configuring bootloader"
-msgstr "Opstartlader instellen"
+msgstr "Opstartlader instellen..."
 
 #: usr/lib/live-installer/installer.py:697
 msgid "Checking bootloader"
-msgstr "Opstartlader controleren"
+msgstr "Opstartlader controleren..."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:103
 #: usr/lib/live-installer/frontend/gtk_interface.py:272
@@ -226,7 +226,7 @@ msgstr "Samenvatting"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:280
 msgid "Installing"
-msgstr "Installeren"
+msgstr "Installeren..."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:281
 #: usr/lib/live-installer/frontend/gtk_interface.py:332
@@ -345,7 +345,7 @@ msgstr "Bevestig de wachtwoordzin"
 #: usr/lib/live-installer/frontend/gtk_interface.py:323
 msgid "Use LVM (Logical Volume Management)"
 msgstr ""
-"Gebruik LVM (Logical Volume Management, alleen voor ervaren gebruikers)"
+"Gebruik LVM (Logical Volume Management, alleen voor ervaren gebruikers!)"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:324
 msgid "Manual Partitioning"
@@ -353,7 +353,7 @@ msgstr "Handmatige schijfindeling"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:325
 msgid "Manually create, resize or choose partitions for LMDE."
-msgstr "Handmatig partities maken, kiezen of grootte veranderen voor LMDE"
+msgstr "Handmatig partities maken, kiezen of grootte veranderen voor LMDE."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:326
 msgid "Fill the disk with random data"
@@ -490,7 +490,7 @@ msgstr "Afbreken?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:488
 msgid "Are you sure you want to quit the installer?"
-msgstr "Weet u zeker dat u de installatie wil afbreken?"
+msgstr "Weet u zeker dat u de installatie wilt afbreken?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:810
 msgid "Please choose a language"

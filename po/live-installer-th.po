@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2020-03-09 21:17+0000\n"
-"PO-Revision-Date: 2016-03-05 11:31+0000\n"
+"PO-Revision-Date: 2021-04-02 06:59+0000\n"
 "Last-Translator: Rockworld <sumoisrock@gmail.com>\n"
 "Language-Team: Thai <th@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2020-03-13 11:20+0000\n"
-"X-Generator: Launchpad (build 3a6db24bbe7280ec09bae73384238390fcc98ad3)\n"
+"X-Launchpad-Export-Date: 2021-12-06 14:58+0000\n"
+"X-Generator: Launchpad (build f92b6e0bb2624f8a9125e3f45b7621c6e230c5ff)\n"
 
 #: usr/lib/live-installer/installer.py:47
 msgid ""
@@ -236,11 +236,11 @@ msgstr "การติดตั้งหยุดชั่วคราว"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:285
 msgid "Quit"
-msgstr ""
+msgstr "ออก"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:286
 msgid "Back"
-msgstr ""
+msgstr "ย้อนกลับ"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:287
 #: usr/lib/live-installer/frontend/gtk_interface.py:1099
@@ -601,7 +601,7 @@ msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:994
 msgid "Install"
-msgstr ""
+msgstr "ติดตั้ง"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1051
 msgid "Localization"
@@ -825,18 +825,18 @@ msgstr "ตำแหน่งเมานท์:"
 
 #: usr/lib/live-installer/partitioning.py:561
 msgid "Cancel"
-msgstr ""
+msgstr "ยกเลิก"
 
 #: usr/lib/live-installer/partitioning.py:562
 #: usr/lib/live-installer/dialogs.py:31 usr/lib/live-installer/dialogs.py:42
 #: usr/lib/live-installer/dialogs.py:47
 msgid "OK"
-msgstr ""
+msgstr "ตกลง"
 
 #: usr/lib/live-installer/dialogs.py:36
 msgid "No"
-msgstr ""
+msgstr "ไม่"
 
 #: usr/lib/live-installer/dialogs.py:37
 msgid "Yes"
-msgstr ""
+msgstr "ใช่"

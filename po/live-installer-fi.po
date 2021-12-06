@@ -9,14 +9,14 @@ msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2020-03-09 21:17+0000\n"
-"PO-Revision-Date: 2020-03-04 21:19+0000\n"
-"Last-Translator: Kimmo Kujansuu <Unknown>\n"
+"PO-Revision-Date: 2021-03-28 12:00+0000\n"
+"Last-Translator: Tommi Nieminen <Unknown>\n"
 "Language-Team: Finnish <>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2020-03-13 11:20+0000\n"
-"X-Generator: Launchpad (build 3a6db24bbe7280ec09bae73384238390fcc98ad3)\n"
+"X-Launchpad-Export-Date: 2021-12-06 14:58+0000\n"
+"X-Generator: Launchpad (build f92b6e0bb2624f8a9125e3f45b7621c6e230c5ff)\n"
 "Language: fi\n"
 
 #: usr/lib/live-installer/installer.py:47
@@ -24,8 +24,8 @@ msgid ""
 "ERROR: You must first manually mount your target filesystem(s) at /target to "
 "do a custom install!"
 msgstr ""
-"VIRHE: Sinun täytyy ensin itse liittää kohdetiedostojärjestelmä(t) "
-"kohteeseen /target suorittaaksesi mukautetun asennuksen!"
+"VIRHE: Mukautettua asennusta varten kohdetietojärjestelmä(t) täytyy ensin "
+"liittää kohteeseen /target!"
 
 #: usr/lib/live-installer/installer.py:88
 #, python-format
@@ -62,6 +62,8 @@ msgstr "Liitetään %(partition)s liitospisteeseen %(mountpoint)s"
 msgid ""
 "Filling %s with random data (please be patient, this can take hours...)"
 msgstr ""
+"Kohteen %s täyttäminen satunnaisilla merkeillä (ole kärsivällinen, tämä voi "
+"kestää tunteja...)"
 
 #: usr/lib/live-installer/installer.py:259
 #, python-format
@@ -76,7 +78,7 @@ msgstr "Alustetaan %(partition)s %(format)s-tiedostojärjestelmäksi..."
 #: usr/lib/live-installer/installer.py:343
 #: usr/lib/live-installer/installer.py:363
 msgid "ERROR: the use of @subvolumes is limited to btrfs"
-msgstr "VIRHE: @ali-aseman käyttö on btfrs-rajoitettu"
+msgstr "VIRHE: @-alitaltioiden käyttö on rajattu btrfs:ään"
 
 #: usr/lib/live-installer/installer.py:489
 msgid "Setting hostname"
@@ -192,11 +194,11 @@ msgstr "Näppäinasettelu"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:274
 msgid "What is your keyboard layout?"
-msgstr "Mikä on näppäimistösi asettelu?"
+msgstr "Mikä on näppäimistöasettelusi?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:275
 msgid "User account"
-msgstr "Käyttäjätili"
+msgstr "Käyttäjätunnus"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:275
 msgid "Who are you?"
@@ -258,16 +260,16 @@ msgstr "Tervetuloa LMDE-asennusohjelmaan"
 msgid ""
 "This program will ask you some questions and set up LMDE on your computer."
 msgstr ""
-"Tämä ohjelma kysyy sinulta muutamia kysymyksiä ja asentaa LMDE:n "
-"tietokoneeseesi."
+"Ohjelma esittää sinulle muutamia kysymyksiä asettaessaan tietokoneeseesi "
+"LMDE:tä."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:298
 msgid "Keyboard Model:"
-msgstr "Näppäimistömalli:"
+msgstr "Näppäimistön malli:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:301
 msgid "Type here to test your keyboard layout"
-msgstr "Kirjoita tähän testataksesi näppäimistön asettelua"
+msgstr "Testaa näppäimistöasettelua kirjoittamalla tähän"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:302
 msgid ""
@@ -275,10 +277,10 @@ msgid ""
 "Latin characters. In addition to your selected layout, English (US) is set "
 "as the default. You can switch layouts by pressing both Ctrl keys together."
 msgstr ""
-"* Käyttäjänimesi, tietokoneesi nimen ja salasanan tulisi sisältää vain "
-"latinalaisia merkkejä. Valitun asettelun lisäksi oletukseksi asetetaan "
-"englanti (Yhdysvallat). Voit vaihtaa asettelua painamalla molempia Ctrl-"
-"näppäimiä yhtäaikaa."
+"*Käyttäjätunnuksessa, tietokoneen nimessä ja salasanassa tulisi olla vain "
+"latinalaisia kirjaimia. Valitun asettelun lisäksi oletukseksi asetetaan "
+"englanti (Yhdysvallat). Asettelua voi vaihtaa painamalla yhtä aikaa "
+"kumpaakin Ctrl-näppäintä."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:305
 msgid "Your name:"
@@ -290,12 +292,11 @@ msgstr "Tietokoneen nimi:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:307
 msgid "The name it uses when it talks to other computers."
-msgstr ""
-"Nimi jota käytetään tietokoneesi tunnistautumisessa toisille tietokoneille."
+msgstr "Nimi, jolla tietokone tunnistautuu toisille tietokoneille."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:308
 msgid "Pick a username:"
-msgstr "Valitse käyttäjänimi:"
+msgstr "Valitse käyttäjätunnus:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:309
 msgid "Choose a password:"
@@ -303,7 +304,7 @@ msgstr "Valitse salasana:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:310
 msgid "Confirm your password:"
-msgstr "Vahvista salasanasi:"
+msgstr "Vahvista salasana:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:312
 msgid "Log in automatically"
@@ -311,7 +312,7 @@ msgstr "Kirjaudu sisään automaattisesti"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:313
 msgid "Require my password to log in"
-msgstr "Vaadi salasana sisäänkirjautumiseen"
+msgstr "Vaadi kirjautumiseen salasana"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:314
 msgid "Encrypt my home folder"
@@ -335,31 +336,31 @@ msgstr "Salaa käyttöjärjestelmä"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:321
 msgid "Passphrase"
-msgstr "Tunnuslause"
+msgstr "Salasana"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:322
 msgid "Confirm passphrase"
-msgstr "Vahvista tunnuslause"
+msgstr "Vahvista salasana"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:323
 msgid "Use LVM (Logical Volume Management)"
-msgstr "Käytä LVM-asemanhallintaa (Logical Volume Management)"
+msgstr "Käytä LVM:ää (looginen taltionhallinta)"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:324
 msgid "Manual Partitioning"
-msgstr "Luo oma osiorakenne"
+msgstr "Osioi itse"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:325
 msgid "Manually create, resize or choose partitions for LMDE."
-msgstr "Luo, muuta kokoa tai valitse osioita LMDE:lle itsenäisesti."
+msgstr "Luo ja valitse LMDE:n osiot tai muuta niiden kokoa itse."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:326
 msgid "Fill the disk with random data"
-msgstr ""
+msgstr "Täytä levy satunnaisilla merkeillä"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:327
 msgid "This provides extra security but it can take hours."
-msgstr ""
+msgstr "Tämä tarjoaa lisäturvaa, mutta se voi kestää tunteja."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:330
 msgid "Edit partitions"
@@ -396,7 +397,7 @@ msgstr "Koko"
 #: usr/lib/live-installer/frontend/gtk_interface.py:340
 #: usr/lib/live-installer/partitioning.py:439
 msgid "Free space"
-msgstr "Vapaa tila"
+msgstr "Tilaa vapaana"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:344
 msgid "Install the GRUB boot menu on:"
@@ -407,38 +408,36 @@ msgid ""
 "You selected to manage your partitions manually, this feature is for "
 "ADVANCED USERS ONLY."
 msgstr ""
-"Valitsit osioidesi hallinnoinnin itse toteutettavaksi, tämä toiminto on "
-"tarkoitettu VAIN EDISTYNEILLE KÄYTTÄJILLE."
+"Valitse tehdä osioinnin itse: tämä ominaisuus on VAIN EDISTYNEILLE "
+"KÄYTTÄJILLE."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:348
 msgid "Before continuing, mount your target filesystem(s) on /target."
-msgstr "Ennen jatkamista, kiinnitä kohdetiedostojärjestelmäsi /kohteeseen."
+msgstr "Ennen kuin jatkat, liitä kohdetiedostojärjestelmä /target-kansioon."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:349
 msgid ""
 "Do NOT mount virtual devices such as /dev, /proc, /sys, etc on /target/."
 msgstr ""
-"Älä liitä virtuaalilaitteita kuten /dev, /proc, /sys, jne. kohteeseen "
-"/target/."
+"ÄLÄ liitä /target-kansioon virtuaalilaitteita (/dev, /proc, /sys jne.)."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:350
 msgid ""
 "During the install, you will be given time to chroot into /target and "
 "install any packages that will be needed to boot your new system."
 msgstr ""
-"Asennuksen aikana voit siirtyä chrootilla kohteeseen /target ja asentaa ne "
-"paketit joita tarvitaan uuden järjestelmäsi käynnistämiseen."
+"Asennuksen aikana voi siirtyä /target-kansioon chrootilla ja asentaa uuden "
+"järjestelmän käynnistämiseen tarvittavat paketit."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:351
 msgid ""
 "During the install, you will be required to write your own /etc/fstab."
 msgstr ""
-"Asennuksen aikana sinun täytyy kirjoittaa oma /etc/fstab -tiedostosi."
+"Asennuksen aikana sinun odotetaan kirjoittavan oman /etc/fstab-tiedostosi."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:354
 msgid "Do the following and then click Next to finish installation:"
-msgstr ""
-"Tee seuraava ja sen jälkeen napsauta Seuraava asennuksen viimeistelemiseksi:"
+msgstr "Tee tämä ja viimeistele sitten asennus napsauttamalla Seuraava:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:355
 msgid ""
@@ -446,9 +445,9 @@ msgid ""
 "new system, matching those currently mounted at /target (without using the "
 "/target prefix in the mount paths themselves)."
 msgstr ""
-"Luo /target/etc/fstab, jossa listataan uuden järjestelmän liitospisteet niin "
-"kuin ne on nyt liitetty /target:in alle (mutta kirjoita liitospisteet "
-"tiedostoon ilman etuliitettä /target)."
+"Luo /target/etc/fstab, jossa uuden järjestelmän liitospisteet luetellaan "
+"siten kuin ne nyt on liitetty /target-kansioon (mutta kirjoita liitospisteet "
+"ilman etuliitettä /target)."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:356
 msgid ""
@@ -466,9 +465,9 @@ msgid ""
 "as dm-crypt), you may need to have drives currently mounted using the same "
 "block device name as they appear in /target/etc/fstab."
 msgstr ""
-"Huom! Jotta update-initramfs toimisi oikein joissakin tapauksissa (kuten dm-"
-"crypt), sinun tarvitsee ehkä liittää levyt käyttäen samaa nimeä kuin "
-"/target/etc/fstab:ssa."
+"Huom! Jotta update-initramfs toimisi oikein myös erityistapauksissa (esim. "
+"dm-crypt), levyt on ehkä liitettävä samalla nimellä kuin ne ovat "
+"/target/etc/fstab-tiedostossa."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:358
 msgid ""
@@ -476,9 +475,9 @@ msgid ""
 "system will have at first boot, and matches what is currently mounted at "
 "/target."
 msgstr ""
-"Tarkista että /target/etc/fstab on kunnossa, vastaa sitä mitä uudessa "
-"järjestelmässäsi on liitettynä ensimmäisellä käynnistyskerralla ja vastaa "
-"sitä mitä tällä hetkellä on liitettynä /target:ssa."
+"Tarkista, että /target/etc/fstab on kunnossa: vastaa sitä mitä uudessa "
+"järjestelmässä tulisi ensikäynnistyksessä olla sekä mitä tällä hetkellä on "
+"/target-kansioon liitetty."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:488
 msgid "Quit?"
@@ -506,7 +505,7 @@ msgstr "Anna käyttäjätunnus."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:864
 msgid "Please provide a password for your user account."
-msgstr "Anna käyttäjätilin salasana."
+msgstr "Anna käyttäjätunnuksen salasana."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:868
 msgid "Your passwords do not match."
@@ -514,15 +513,15 @@ msgstr "Salasanat eivät täsmää."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:874
 msgid "Your username must be lower case."
-msgstr "Käyttäjänimi tulee kirjoittaa pienillä kirjaimilla."
+msgstr "Käyttäjätunnuksessa tulee olla vain pienaakkosia."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:879
 msgid "Your username may not contain whitespace characters."
-msgstr "Käyttäjänimessä ei voi olla välilyöntimerkkejä."
+msgstr "Käyttäjätunnuksessa ei saa olla välilyöntejä."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:885
 msgid "The computer's name must be lower case."
-msgstr "Tietokoneen nimen on oltava pienillä kirjaimilla."
+msgstr "Tietokoneen nimessä tulee olla vain pienaakkosia."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:890
 msgid "The computer's name may not contain whitespace characters."
@@ -534,11 +533,11 @@ msgstr "Valitse levy."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:910
 msgid "Please provide a passphrase for the encryption."
-msgstr "Luo tunnuslause salausta varten."
+msgstr "Anna salaussalasana."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:913
 msgid "Your passphrases do not match."
-msgstr "Tunnuslauseesi eivät täsmää."
+msgstr "Salasanat eivät täsmää."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:917
 msgid "Warning"
@@ -547,24 +546,23 @@ msgstr "Varoitus"
 #: usr/lib/live-installer/frontend/gtk_interface.py:917
 #, python-format
 msgid "This will delete all the data on %s. Are you sure?"
-msgstr "Tämä poistaa kaikki tiedot kohteessa %s. Oletko varma?"
+msgstr "Tämä poistaa kaikki tiedot laitteelta %s. Oletko varma?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:933
 msgid ""
 "Please indicate a filesystem to format the root (/) partition with before "
 "proceeding."
 msgstr ""
-"Valitse jokin tiedostojärjestelmä alustettavaksi juuriosioksi (/) ennen "
-"jatkamista."
+"Ennen jatkamista valitse juuriosiolle (/) asetettava tiedostojärjestelmä."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:937
 msgid "A root subvolume (/@) requires to format the partition with btrfs."
-msgstr "Juuren ali-asema (/@) vaatii osion alustuksen btrfs:llä."
+msgstr "Juuren alitaltio (/@) vaatii alustamaan btrfs:llä."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:945
 msgid ""
 "A home subvolume (/@home) requires the use of a btrfs formatted partition."
-msgstr "Koti ali-asema (/@home) vaatii btrfs-alustetun osion käytön."
+msgstr "Kotialitaltio (/@home) vaatii btrfs-alustetun osion."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:949
 msgid "Please select a root (/) partition."
@@ -582,15 +580,15 @@ msgid ""
 " - subvolume Mount-point /@\n"
 " - btrfs as filesystem format\n"
 msgstr ""
-"Tarvitaan juuriosio johon Linux Mint asennetaan.\n"
+"Tarvitaan juuriosio, johon Linux Mint asennetaan.\n"
 "\n"
-" - Kiinnityspiste: /\n"
-" - Suositeltu koko: 30Gt\n"
-" - Suositeltu tiedostojärjestelmän muoto: ext4\n"
+"– liitospiste: /\n"
+"– suositeltu koko: 30 Gt\n"
+"– suositeltu tiedostojärjestelmä: ext4\n"
 "\n"
-"Huomautus: Timeshift-ajassapalautus btrfs-järjestelmävedokset vaativat:\n"
-" - ali-aseman liitospisteen /@\n"
-" - btrfs tiedostojärjestelmämuodossa\n"
+"Huom! Timeshiftin btrfs-palautuspisteet vaativat:\n"
+"– alitaltion liitospisteen /@\n"
+"– btrfs-tiedostojärjestelmän\n"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:965
 msgid "The EFI partition is not bootable. Please edit the partition flags."
@@ -598,12 +596,12 @@ msgstr "EFI-osio ei ole käynnistettävä. Muokkaa osion lippuja."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:968
 msgid "The EFI partition is too small. It must be at least 35MB."
-msgstr "EFI-osio on liian pieni. Sen tulee olla vähintään 35Mt."
+msgstr "EFI-osio on liian pieni. Sen tulee olla vähintään 35 Mt."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:973
 #: usr/lib/live-installer/frontend/gtk_interface.py:977
 msgid "The EFI partition must be formatted as vfat."
-msgstr "EFI-osion täytyy olla alustettu vfat-muotoon."
+msgstr "EFI-osion tulee olla vfat-alustettu."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:981
 msgid "Please select an EFI partition."
@@ -622,15 +620,15 @@ msgid ""
 "partition of the disk as the EFI system partition.\n"
 " "
 msgstr ""
-"EFI-järjestelmäosio tarvitaan seuraavin vaatimuksin:\n"
+"EFI-järjestelmäosion tulee täyttää seuraavat vaatimukset:\n"
 "\n"
-" - Liitospiste: /boot/efi\n"
-" - Osion liput: käynnistettävä\n"
-" - Koko: vähintään 35Mt (100Mt tai enemmän suositeltavaa)\n"
-" - Muoto: vfat tai fat32\n"
+"– liitospiste: /boot/efi\n"
+"– osioliput: käynnistettävä\n"
+"– koko: vähintään 35 Mt (suositellaan 100 Mt tai enemmän)\n"
+"– tiedostojärjestelmä: vfat tai fat32\n"
 "\n"
-"Varmistaaksesi yhteensopivuuden Windows:in kanssa, suosittelemme että käytät "
-"levyn ensimmäistä osiota EFI-järjestelmäosiona.\n"
+"Windows-yhteensopivuussyistä suositellaan, että EFI-järjestelmäosiona "
+"käytetään levyn ensimmäistä osiota .\n"
 " "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:994
@@ -663,7 +661,7 @@ msgstr "Oikea nimi: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1059
 msgid "Username: "
-msgstr "Käyttäjänimi: "
+msgstr "Käyttäjätunnus: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1060
 msgid "Automatic login: "
@@ -681,7 +679,7 @@ msgstr "käytössä"
 #: usr/lib/live-installer/frontend/gtk_interface.py:1071
 #: usr/lib/live-installer/frontend/gtk_interface.py:1072
 msgid "disabled"
-msgstr "poistettu käytöstä"
+msgstr "ei käytössä"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1061
 msgid "Home encryption: "
@@ -710,7 +708,7 @@ msgstr "Älä asenna käynnistyslataajaa"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1067
 msgid "Use already-mounted /target."
-msgstr "Käytä valmiiksi liitettyä /target:ia."
+msgstr "Käytä jo liitettyä /target-kansiota."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1070
 #, python-format
@@ -723,7 +721,7 @@ msgstr "LVM: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1072
 msgid "Disk Encryption: "
-msgstr "Levysalaus: "
+msgstr "Levyn salaus: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1076
 #, python-format
@@ -740,16 +738,16 @@ msgid ""
 "The installation is now complete. Do you want to restart your computer to "
 "use the new system?"
 msgstr ""
-"Asennus on nyt valmis. Haluatko käynnistää tietokoneesi uudestaan ja käyttää "
-"uutta järjestelmää?"
+"Asennus on nyt valmis. Haluatko käynnistää tietokoneen uudestaan uuteen "
+"järjestelmään?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1104
 msgid ""
 "The installation is now paused. Please read the instructions on the page "
 "carefully before clicking Next to finish the installation."
 msgstr ""
-"Asennus on nyt tauotettu. Ole hyvä ja lue sivun ohjeet huolellisesti ennen "
-"kuin napsautat Seuraava asennuksen viimeistelemiseksi."
+"Asennus on keskeytetty. Lue huolellisesti ohjeet ennen kuin viimeistelet "
+"asennuksen napsauttamalla Seuraava."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1131
 #: usr/lib/live-installer/frontend/gtk_interface.py:1134
@@ -823,6 +821,8 @@ msgid ""
 "The partition table couldn't be written for %s. Restart the computer and try "
 "again."
 msgstr ""
+"Osiointia ei voitu kirjoittaa kohteelle %s. Käynnistä tietokone uudelleen ja "
+"yritä uudelleen."
 
 #: usr/lib/live-installer/partitioning.py:380
 #, python-format
@@ -830,6 +830,8 @@ msgid ""
 "The partition %s could not be created. The installation will stop. Restart "
 "the computer and try again."
 msgstr ""
+"Osiota %s ei voitu luoda. Asennus pysäytetty. Käynnistä tietokone uudelleen "
+"ja yritä uudelleen."
 
 #: usr/lib/live-installer/partitioning.py:437
 msgid "Logical partition"

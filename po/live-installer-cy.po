@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2020-03-09 21:17+0000\n"
-"PO-Revision-Date: 2020-02-05 11:33+0000\n"
+"PO-Revision-Date: 2021-10-29 07:46+0000\n"
 "Last-Translator: Rhoslyn Prys <Unknown>\n"
 "Language-Team: Welsh <cy@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2020-03-13 11:20+0000\n"
-"X-Generator: Launchpad (build 3a6db24bbe7280ec09bae73384238390fcc98ad3)\n"
+"X-Launchpad-Export-Date: 2021-12-06 14:58+0000\n"
+"X-Generator: Launchpad (build f92b6e0bb2624f8a9125e3f45b7621c6e230c5ff)\n"
 "Language: cy\n"
 
 #: usr/lib/live-installer/installer.py:47
@@ -60,16 +60,18 @@ msgstr "Arosod %(partition)s ar %(mountpoint)s"
 msgid ""
 "Filling %s with random data (please be patient, this can take hours...)"
 msgstr ""
+"Yn llenwi %s gyda data ar hap (byddwch yn amyneddgar, gall hyn gymryd rhai "
+"oriau...)"
 
 #: usr/lib/live-installer/installer.py:259
 #, python-format
 msgid "Creating partitions on %s"
-msgstr ""
+msgstr "Yn creu rhaniadau ar %s"
 
 #: usr/lib/live-installer/installer.py:306
 #, python-format
 msgid "Formatting %(partition)s as %(format)s ..."
-msgstr "Fformatio %(partition)s fel %(format)s ..."
+msgstr "Yn fformatio %(partition)s fel %(format)s ..."
 
 #: usr/lib/live-installer/installer.py:343
 #: usr/lib/live-installer/installer.py:363
@@ -98,19 +100,19 @@ msgstr "Gosod dewisiadau bysellfwrdd"
 
 #: usr/lib/live-installer/installer.py:626
 msgid "Installing bootloader"
-msgstr "Gosod llwythwr cychwyn"
+msgstr "Yn gosod y llwythwr cychwyn"
 
 #: usr/lib/live-installer/installer.py:639
 msgid ""
 "WARNING: The grub bootloader was not configured properly! You need to "
 "configure it manually."
 msgstr ""
-"RHYBUDD: Nid oedd y llwythwr cychwyn grub wedi ei ffurfweddu'n gywir. Rhaid "
-"ei ffurfweddu â llaw."
+"RHYBUDD: Nid oedd llwythwr cychwyn grub wedi ei ffurfweddu'n gywir! Rhaid ei "
+"ffurfweddu â llaw."
 
 #: usr/lib/live-installer/installer.py:653
 msgid "Cleaning APT"
-msgstr "Glanhau APT"
+msgstr "Yn glanhau APT"
 
 #: usr/lib/live-installer/installer.py:679
 #: usr/lib/live-installer/frontend/gtk_interface.py:1089
@@ -119,11 +121,11 @@ msgstr "Wedi gorffen gosod"
 
 #: usr/lib/live-installer/installer.py:688
 msgid "Configuring bootloader"
-msgstr "Ffurfweddu'r llwythwr cychwyn"
+msgstr "Yn ffurfweddu'r llwythwr cychwyn"
 
 #: usr/lib/live-installer/installer.py:697
 msgid "Checking bootloader"
-msgstr "Gwirio'r llwythwr cychwyn"
+msgstr "Yn gwirio'r llwythwr cychwyn"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:103
 #: usr/lib/live-installer/frontend/gtk_interface.py:272
@@ -166,7 +168,7 @@ msgstr "Cyfrifo maint y mynegeion ..."
 #: usr/lib/live-installer/frontend/gtk_interface.py:981
 #: usr/lib/live-installer/partitioning.py:330
 msgid "Installer"
-msgstr "Gosodwr"
+msgstr "Y Gosodwr"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:271
 msgid "Welcome"
@@ -202,16 +204,16 @@ msgstr "Pwy ydych chi?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:276
 msgid "Installation Type"
-msgstr ""
+msgstr "Math o Osodiad"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:276
 #: usr/lib/live-installer/frontend/gtk_interface.py:277
 msgid "Where do you want to install LMDE?"
-msgstr "Ble ydych chi am osod LMDE?"
+msgstr "Lle ydych chi am osod LMDE?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:277
 msgid "Partitioning"
-msgstr "Rhannu"
+msgstr "Rhaniadu"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:278
 msgid "Advanced options"
@@ -228,7 +230,7 @@ msgstr "Wrthi'n gosod"
 #: usr/lib/live-installer/frontend/gtk_interface.py:281
 #: usr/lib/live-installer/frontend/gtk_interface.py:332
 msgid "Expert mode"
-msgstr "Modd arbenigwr"
+msgstr "Y modd arbenigwr"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:282
 #: usr/lib/live-installer/frontend/gtk_interface.py:1104
@@ -250,7 +252,7 @@ msgstr "Nesaf"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:290
 msgid "Welcome to the LMDE Installer."
-msgstr "Croeso i'r Gosodwr LMDE."
+msgstr "Croeso i Osodwr LMDE."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:291
 msgid ""
@@ -273,6 +275,10 @@ msgid ""
 "Latin characters. In addition to your selected layout, English (US) is set "
 "as the default. You can switch layouts by pressing both Ctrl keys together."
 msgstr ""
+"* Dylai eich enw defnyddiwr, enw'ch cyfrifiadur a'ch cyfrinair gynnwys nodau "
+"Lladin yn unig. Yn ychwanegol at y cynllun rydych wedi'i ddewis bydd Saesneg "
+"(UD) yn cael ei osod fel y rhagosodiad. Gallwch newid cynlluniau trwy "
+"wasgu'r ddwy allweddell Ctrl gyda'i gilydd."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:305
 msgid "Your name:"
@@ -293,7 +299,7 @@ msgstr "Dewiswch enw defnyddiwr:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:309
 msgid "Choose a password:"
-msgstr "Dewiswch gyfrinair"
+msgstr "Dewiswch gyfrinair:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:310
 msgid "Confirm your password:"
@@ -313,47 +319,47 @@ msgstr "Amgryptio fy ffolder cartref"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:317
 msgid "Automated Installation"
-msgstr ""
+msgstr "Gosodiad Awtomataidd"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:318
 msgid "Erase a disk and install LMDE on it."
-msgstr ""
+msgstr "Dileu disg a gosod LMDE arni."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:319
 msgid "Disk:"
-msgstr ""
+msgstr "Disg:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:320
 msgid "Encrypt the operating system"
-msgstr ""
+msgstr "Amgryptio'r system weithredu"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:321
 msgid "Passphrase"
-msgstr ""
+msgstr "Cyfrinymadrodd"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:322
 msgid "Confirm passphrase"
-msgstr ""
+msgstr "Cadarnhau'r cyfrinymadrodd"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:323
 msgid "Use LVM (Logical Volume Management)"
-msgstr ""
+msgstr "Defnyddio LVM (Logical Volume Management)"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:324
 msgid "Manual Partitioning"
-msgstr ""
+msgstr "Rhannu â Llaw"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:325
 msgid "Manually create, resize or choose partitions for LMDE."
-msgstr ""
+msgstr "Creu, newid maint neu ddewis rhaniadau ar gyfer LMDE â llaw."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:326
 msgid "Fill the disk with random data"
-msgstr ""
+msgstr "Llenw'r ddisg gyda data ar hap"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:327
 msgid "This provides extra security but it can take hours."
-msgstr ""
+msgstr "Mae hyn yn darparu diogelwch ychwanegol ond gall gymryd rhai oriau."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:330
 msgid "Edit partitions"
@@ -394,7 +400,7 @@ msgstr "Lle rhydd"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:344
 msgid "Install the GRUB boot menu on:"
-msgstr "Gosodwch ddewislen cychwyn GRUB ar:"
+msgstr "Gosod dewislen cychwyn GRUB ar:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:347
 msgid ""
@@ -419,7 +425,7 @@ msgid ""
 "During the install, you will be given time to chroot into /target and "
 "install any packages that will be needed to boot your new system."
 msgstr ""
-"Wrth osod, byddwch yn derbyn amser i chroot i  /target a gosod unrhyw becyn "
+"Wrth osod, byddwch yn derbyn amser i chroot i /target a gosod unrhyw becyn "
 "fydd eu hangen i gychwyn eich system newydd."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:351
@@ -437,7 +443,7 @@ msgid ""
 "new system, matching those currently mounted at /target (without using the "
 "/target prefix in the mount paths themselves)."
 msgstr ""
-"Crëwch /target/etc/fstab  ar gyfer y system ffeiliau fel eu bod yn cael eu "
+"Crëwch /target/etc/fstab ar gyfer y system ffeiliau fel eu bod yn cael eu "
 "harosod yn eich system newydd, gan gyd-fynd a'r rhai sydd wedi eu harosod yn "
 "gyfredol yn /target (heb ddefnyddio’r rhagosodiad /target yn y llwybrau "
 "arosod eu hunain)."
@@ -459,8 +465,8 @@ msgid ""
 "block device name as they appear in /target/etc/fstab."
 msgstr ""
 "Sylwch er mwyn i update-initramfs weithio'n iawn, mewn rhai achosion (megis "
-"dm-crypt), efallai y bydd angen i yrrwyr sydd wedi eu harosod yn gyfredol ac "
-"yn defnyddio'r un enw dyfais bloc fel mae nhw'n ymddangos yn "
+"dm-crypt), efallai y bydd angen i yrwyr sydd wedi eu harosod yn gyfredol ac "
+"yn defnyddio'r un enw dyfais bloc fel maen nhw'n ymddangos yn "
 "/target/etc/fstab."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:358
@@ -491,7 +497,7 @@ msgstr "Rhowch eich enw'n llawn."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:856
 msgid "Please provide a name for your computer."
-msgstr ""
+msgstr "Rhowch enw i'ch cyfrifiadur."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:860
 msgid "Please provide a username."
@@ -515,32 +521,32 @@ msgstr "Peidiwch defnyddio nodau bylchau gwyn yn eich enw defnyddiwr."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:885
 msgid "The computer's name must be lower case."
-msgstr ""
+msgstr "Rhaid i enw'r cyfrifiadur fod mewn llythrennau bach."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:890
 msgid "The computer's name may not contain whitespace characters."
-msgstr ""
+msgstr "Nid yw enw'r cyfrifiadur yn cael cynnwys nodau bwlch gwyn."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:906
 msgid "Please select a disk."
-msgstr ""
+msgstr "Dewiswch ddisg."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:910
 msgid "Please provide a passphrase for the encryption."
-msgstr ""
+msgstr "Rhowch gyfrinymadrodd ar gyfer yr amgryptio."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:913
 msgid "Your passphrases do not match."
-msgstr ""
+msgstr "Nid yw eich cyfrinymadroddion yn cyfateb."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:917
 msgid "Warning"
-msgstr ""
+msgstr "Rhybudd"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:917
 #, python-format
 msgid "This will delete all the data on %s. Are you sure?"
-msgstr ""
+msgstr "Bydd hyn yn dileu'r holl ddata ar %s. Ydych chi'n siŵr?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:933
 msgid ""
@@ -621,7 +627,7 @@ msgstr ""
 " - Pwynt arosod: / boot / efi\n"
 " - Baneri rhaniad: Bootable\n"
 " - Maint: o leiaf 35MB (argymhellir 100MB neu fwy)\n"
-" - Fformat: vfat neu fraster32\n"
+" - Fformat: vfat neu fat32\n"
 "\n"
 "Er mwyn sicrhau cydnawsedd â Windows rydym yn argymell eich bod yn defnyddio "
 "rhaniad cyntaf y ddisg fel rhaniad system EFI.\n"
@@ -653,7 +659,7 @@ msgstr "Gosodiadau defnyddiwr"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1058
 msgid "Real name: "
-msgstr "Enw: "
+msgstr "Gwir enw: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1059
 msgid "Username: "
@@ -687,7 +693,7 @@ msgstr "Gosodiadau'r System"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1063
 msgid "Computer's name: "
-msgstr ""
+msgstr "Enw'r Cyfrifiadur "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1064
 msgid "Filesystem operations"
@@ -700,7 +706,7 @@ msgstr "Gosod y llwythwr cychwyn ar %s"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1065
 msgid "Do not install bootloader"
-msgstr "Peidiwch gosod llwythwr cychwyn"
+msgstr "Peidio â gosod llwythwr cychwyn"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1067
 msgid "Use already-mounted /target."
@@ -709,15 +715,15 @@ msgstr "Defnyddio'r /target sydd wedi ei arosod yn barod."
 #: usr/lib/live-installer/frontend/gtk_interface.py:1070
 #, python-format
 msgid "Automated installation on %s"
-msgstr ""
+msgstr "Gosodiad awtomataidd ar %s"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1071
 msgid "LVM: "
-msgstr ""
+msgstr "LVM: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1072
 msgid "Disk Encryption: "
-msgstr ""
+msgstr "Amgryptiad Disg: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1076
 #, python-format
@@ -750,7 +756,7 @@ msgstr ""
 #: usr/lib/live-installer/frontend/gtk_interface.py:1148
 #: usr/lib/live-installer/frontend/gtk_interface.py:1156
 msgid "Installation error"
-msgstr "Gawll gosod"
+msgstr "Gwall wrth osod"
 
 #: usr/lib/live-installer/partitioning.py:92
 msgid "B"
@@ -778,7 +784,7 @@ msgstr "TB"
 
 #: usr/lib/live-installer/partitioning.py:97
 msgid "Removable:"
-msgstr ":Tynadwy"
+msgstr "Tynadwy:"
 
 #: usr/lib/live-installer/partitioning.py:177
 msgid "Edit"
@@ -817,6 +823,8 @@ msgid ""
 "The partition table couldn't be written for %s. Restart the computer and try "
 "again."
 msgstr ""
+"Nid oedd modd ysgrifennu'r tabl rhaniad ar gyfer %s. Ailgychwynnwch y "
+"cyfrifiadur a cheisio eto."
 
 #: usr/lib/live-installer/partitioning.py:380
 #, python-format
@@ -824,6 +832,8 @@ msgid ""
 "The partition %s could not be created. The installation will stop. Restart "
 "the computer and try again."
 msgstr ""
+"Nid oedd modd creu'r rhaniad %s. Bydd y gosodiad yn dod i ben. "
+"Ailgychwynnwch y cyfrifiadur a cheisio."
 
 #: usr/lib/live-installer/partitioning.py:437
 msgid "Logical partition"

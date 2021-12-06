@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2020-03-09 21:17+0000\n"
-"PO-Revision-Date: 2018-09-28 07:34+0000\n"
+"PO-Revision-Date: 2020-05-26 07:59+0000\n"
 "Last-Translator: Panwar <Unknown>\n"
 "Language-Team: Hindi <hi@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2020-03-13 11:20+0000\n"
-"X-Generator: Launchpad (build 3a6db24bbe7280ec09bae73384238390fcc98ad3)\n"
+"X-Launchpad-Export-Date: 2021-12-06 14:58+0000\n"
+"X-Generator: Launchpad (build f92b6e0bb2624f8a9125e3f45b7621c6e230c5ff)\n"
 
 #: usr/lib/live-installer/installer.py:47
 msgid ""
@@ -28,7 +28,7 @@ msgstr ""
 #: usr/lib/live-installer/installer.py:88
 #, python-format
 msgid "Copying /%s"
-msgstr ""
+msgstr "कॉपी हो रहा है /%s"
 
 #: usr/lib/live-installer/installer.py:96
 msgid "Entering the system ..."
@@ -59,11 +59,13 @@ msgstr "%(partition)s को %(mountpoint)s पर माउंट किया 
 msgid ""
 "Filling %s with random data (please be patient, this can take hours...)"
 msgstr ""
+"%s को यादृच्छिक डाटा से परिपूर्ण किया जा रहा है (कृपया धैर्य रखें, इसमें "
+"घंटे लग सकते हैं...)"
 
 #: usr/lib/live-installer/installer.py:259
 #, python-format
 msgid "Creating partitions on %s"
-msgstr ""
+msgstr "%s पर विभाजन बनाएं जा रहे हैं"
 
 #: usr/lib/live-installer/installer.py:306
 #, python-format
@@ -73,7 +75,7 @@ msgstr "%(partition)s को फॉर्मेट किया जा रहा
 #: usr/lib/live-installer/installer.py:343
 #: usr/lib/live-installer/installer.py:363
 msgid "ERROR: the use of @subvolumes is limited to btrfs"
-msgstr ""
+msgstr "त्रुटि : @subvolumes केवल btrfs के साथ ही उपयोग की जा सकती है"
 
 #: usr/lib/live-installer/installer.py:489
 msgid "Setting hostname"
@@ -165,15 +167,15 @@ msgstr "फ़ाइल के अनुक्रमण की गणना की 
 #: usr/lib/live-installer/frontend/gtk_interface.py:981
 #: usr/lib/live-installer/partitioning.py:330
 msgid "Installer"
-msgstr ""
+msgstr "इंस्टॉलर"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:271
 msgid "Welcome"
-msgstr ""
+msgstr "सुस्वागतं"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:272
 msgid "What language would you like to use?"
-msgstr ""
+msgstr "आप कौन से भाषा उपयोग करना चाहेंगे?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:273
 msgid "Timezone"
@@ -181,7 +183,7 @@ msgstr "समय क्षेत्र"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:273
 msgid "Where are you?"
-msgstr ""
+msgstr "आप कहाँ हैं?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:274
 msgid "Keyboard layout"
@@ -189,24 +191,24 @@ msgstr "कुंजीपटल अभिन्यास"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:274
 msgid "What is your keyboard layout?"
-msgstr ""
+msgstr "आपका कुंजीपटल अभिन्यास क्या है?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:275
 msgid "User account"
-msgstr ""
+msgstr "उपयोक्ता अकाउंट"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:275
 msgid "Who are you?"
-msgstr ""
+msgstr "आप कौन हैं?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:276
 msgid "Installation Type"
-msgstr ""
+msgstr "इंस्टॉल का प्रकार"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:276
 #: usr/lib/live-installer/frontend/gtk_interface.py:277
 msgid "Where do you want to install LMDE?"
-msgstr ""
+msgstr "आप LMDE को कहाँ इंस्टॉल करना चाहते हैं?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:277
 msgid "Partitioning"
@@ -222,7 +224,7 @@ msgstr "सार"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:280
 msgid "Installing"
-msgstr ""
+msgstr "इंस्‍टॉल हो रहा है"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:281
 #: usr/lib/live-installer/frontend/gtk_interface.py:332
@@ -245,24 +247,25 @@ msgstr "वापस जाएँ"
 #: usr/lib/live-installer/frontend/gtk_interface.py:287
 #: usr/lib/live-installer/frontend/gtk_interface.py:1099
 msgid "Next"
-msgstr ""
+msgstr "अगला"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:290
 msgid "Welcome to the LMDE Installer."
-msgstr ""
+msgstr "LMDE इंस्टॉल में स्वागत है।"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:291
 msgid ""
 "This program will ask you some questions and set up LMDE on your computer."
 msgstr ""
+"यह प्रोग्राम एक प्रश्नावली द्वारा आपके कंप्यूटर पर LMDE को सेट करेगा।"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:298
 msgid "Keyboard Model:"
-msgstr ""
+msgstr "कुंजीपटल का मॉडल :"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:301
 msgid "Type here to test your keyboard layout"
-msgstr ""
+msgstr "कुंजीपटल अभिन्यास जांचने हेतु यहाँ टाइप करें"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:302
 msgid ""
@@ -270,30 +273,34 @@ msgid ""
 "Latin characters. In addition to your selected layout, English (US) is set "
 "as the default. You can switch layouts by pressing both Ctrl keys together."
 msgstr ""
+"* उपयोक्ता नाम, कंप्यूटर का नाम व कूटशब्द में सिर्फ रोमन लिपि के अक्षर होने "
+"चाहिए। आपके द्वारा चयनित अभिन्यास के अतिरिक्त अंग्रेजी(अमेरिकी) भी डिफ़ॉल्ट "
+"अभिन्यास के रूप में सेट है। अभिन्यास बदलें हेतु दोनों Ctrl कुंजियाँ एक साथ "
+"दर्ज करें।"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:305
 msgid "Your name:"
-msgstr ""
+msgstr "आपका नाम :"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:306
 msgid "Your computer's name:"
-msgstr ""
+msgstr "आपके कंप्यूटर का नाम :"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:307
 msgid "The name it uses when it talks to other computers."
-msgstr ""
+msgstr "यह नाम अन्य कंप्यूटर आदि से सम्पर्क करते समय उपयोग होगा।"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:308
 msgid "Pick a username:"
-msgstr ""
+msgstr "उपयोक्ता नाम चुनें :"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:309
 msgid "Choose a password:"
-msgstr ""
+msgstr "कूट शब्द चुनें:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:310
 msgid "Confirm your password:"
-msgstr ""
+msgstr "कूटशब्द की पुष्टि करें :"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:312
 msgid "Log in automatically"
@@ -301,55 +308,55 @@ msgstr "स्वतः लॉग इन करें"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:313
 msgid "Require my password to log in"
-msgstr ""
+msgstr "लॉगिन हेतु कूटशब्द आवश्यक"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:314
 msgid "Encrypt my home folder"
-msgstr ""
+msgstr "होम फोल्डर एन्क्रिप्ट करें"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:317
 msgid "Automated Installation"
-msgstr ""
+msgstr "स्वतः इंस्टॉल"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:318
 msgid "Erase a disk and install LMDE on it."
-msgstr ""
+msgstr "डिस्क का सभी पूर्व डाटा हटाकर LMDE इंस्टॉल करें।"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:319
 msgid "Disk:"
-msgstr ""
+msgstr "डिस्क :"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:320
 msgid "Encrypt the operating system"
-msgstr ""
+msgstr "ऑपरेटिंग सिस्टम एन्क्रिप्ट करें"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:321
 msgid "Passphrase"
-msgstr ""
+msgstr "कूटशब्द"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:322
 msgid "Confirm passphrase"
-msgstr ""
+msgstr "कूटशब्द की पुष्टि करें"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:323
 msgid "Use LVM (Logical Volume Management)"
-msgstr ""
+msgstr "LVM (तार्किक वॉल्यूम प्रबंधन) उपयोग करें"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:324
 msgid "Manual Partitioning"
-msgstr ""
+msgstr "मैन्युअल रूप से विभाजन"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:325
 msgid "Manually create, resize or choose partitions for LMDE."
-msgstr ""
+msgstr "LMDE हेतु मैन्युअल रूप से विभाजन बनाएं, आकार बदलें या चयन करें।"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:326
 msgid "Fill the disk with random data"
-msgstr ""
+msgstr "डिस्क को यादृच्छिक डाटा से परिपूर्ण करें"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:327
 msgid "This provides extra security but it can take hours."
-msgstr ""
+msgstr "यह अतिरिक्त सुरक्षा प्रदान करता है लेकिन इसमें घंटें लग सकते हैं।"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:330
 msgid "Edit partitions"
@@ -390,17 +397,20 @@ msgstr "ख़ाली स्पेस"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:344
 msgid "Install the GRUB boot menu on:"
-msgstr ""
+msgstr "बूट मेन्यू यहाँ इंस्टॉल करें :"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:347
 msgid ""
 "You selected to manage your partitions manually, this feature is for "
 "ADVANCED USERS ONLY."
 msgstr ""
+"अपने मैन्युअल रूप से विभाजन करना चुना है, ध्यान रहें कि यह विकल्प अनुभवी "
+"उपयोक्ताओं के लिए है।"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:348
 msgid "Before continuing, mount your target filesystem(s) on /target."
 msgstr ""
+"आगे बढ़ने से पहले, अपने लक्षित फ़ाइल सिस्टम को /target पर माउंट कर लें।"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:349
 msgid ""
@@ -423,7 +433,7 @@ msgstr "इंस्टॉल के दौरान, आपको खुद /et
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:354
 msgid "Do the following and then click Next to finish installation:"
-msgstr ""
+msgstr "निम्नलिखित कार्यों के उपरांत अगले पर क्लिक कर इंस्टॉल पूरा करें :"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:355
 msgid ""
@@ -482,7 +492,7 @@ msgstr "कृपया पूरा नाम दर्ज करें।"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:856
 msgid "Please provide a name for your computer."
-msgstr ""
+msgstr "अपने कंप्यूटर का नाम दर्ज करें।"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:860
 msgid "Please provide a username."
@@ -506,32 +516,32 @@ msgstr "उपयोक्ता नाम में whitespace अक्षर 
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:885
 msgid "The computer's name must be lower case."
-msgstr ""
+msgstr "कंप्यूटर का नाम lower case में होना चाहिए।"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:890
 msgid "The computer's name may not contain whitespace characters."
-msgstr ""
+msgstr "कंप्यूटर के नाम में रिक्त अक्षर नहीं हो सकते है।"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:906
 msgid "Please select a disk."
-msgstr ""
+msgstr "डिस्क का करें।"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:910
 msgid "Please provide a passphrase for the encryption."
-msgstr ""
+msgstr "एन्क्रिप्शन हेतु कूटशब्द प्रदान करें।"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:913
 msgid "Your passphrases do not match."
-msgstr ""
+msgstr "आपके कूटशब्द मेल नहीं खाते।"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:917
 msgid "Warning"
-msgstr ""
+msgstr "चेतावनी"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:917
 #, python-format
 msgid "This will delete all the data on %s. Are you sure?"
-msgstr ""
+msgstr "इससे %s पर मौजूद सारा डाटा हटा दिया जाएगा। क्या आप निश्चित है?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:933
 msgid ""
@@ -543,12 +553,13 @@ msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:937
 msgid "A root subvolume (/@) requires to format the partition with btrfs."
-msgstr ""
+msgstr "रुट उप-वॉल्यूम (/@) हेतु btrfs द्वारा किया गया विभाजन आवश्यक है।"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:945
 msgid ""
 "A home subvolume (/@home) requires the use of a btrfs formatted partition."
 msgstr ""
+"होम उप-वॉल्यूम (/@home) हेतु btrfs द्वारा फॉर्मेट किया गया विभाजन आवश्यक है।"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:949
 msgid "Please select a root (/) partition."
@@ -566,6 +577,15 @@ msgid ""
 " - subvolume Mount-point /@\n"
 " - btrfs as filesystem format\n"
 msgstr ""
+"लिनक्स मिंट इंस्टॉल हेतु रुट विभाजन आवश्यक है।\n"
+"\n"
+" - माउंट पॉइंट : /\n"
+" - सुझाया गया आकार : 30GB\n"
+" - सुझाया गया फ़ाइल सिस्टम प्रारूप : ext4\n"
+"\n"
+"ध्यान दें : टाइमशिफ्ट स्नैपशॉट के उपयोग हेतु आवश्यक हैं :\n"
+" - उप-वॉल्यूम माउंट पॉइंट /@\n"
+" - btrfs फ़ाइल सिस्टम प्रारूप\n"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:965
 msgid "The EFI partition is not bootable. Please edit the partition flags."
@@ -573,7 +593,7 @@ msgstr "EFI विभाजन बूट योग्य नहीं है। 
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:968
 msgid "The EFI partition is too small. It must be at least 35MB."
-msgstr ""
+msgstr "EFI विभाजन काफी छोटा है। यह काम-से-कम 35 MB का होना चाहिए।"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:973
 #: usr/lib/live-installer/frontend/gtk_interface.py:977
@@ -597,6 +617,16 @@ msgid ""
 "partition of the disk as the EFI system partition.\n"
 " "
 msgstr ""
+"EFI सिस्टम विभाजन हेतु आवश्यक हैं :\n"
+"\n"
+" - माउंट पॉइंट : /boot/efi\n"
+" - विभाजन फ्लैग : Bootable\n"
+" - आकार : कम से कम 35MB (100MB या अधिक)\n"
+" - प्रारूप : vfat या fat32\n"
+"\n"
+"अपने विंडोज सिस्टम के साथ संगतता हेतु हम डिस्क के प्रथम विभाजन को EFI सिस्टम "
+"विभाजन के रूप में उपयोग करने की सलाह देते हैं।\n"
+" "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:994
 msgid "Install"
@@ -650,7 +680,7 @@ msgstr "बंद है"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1061
 msgid "Home encryption: "
-msgstr ""
+msgstr "होम एन्क्रिप्शन : "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1062
 msgid "System settings"
@@ -658,7 +688,7 @@ msgstr "सिस्टम सेटिंग्स"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1063
 msgid "Computer's name: "
-msgstr ""
+msgstr "कंप्यूटर का नाम : "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1064
 msgid "Filesystem operations"
@@ -680,15 +710,15 @@ msgstr "पहले माउंट हो रखे /target का उपय�
 #: usr/lib/live-installer/frontend/gtk_interface.py:1070
 #, python-format
 msgid "Automated installation on %s"
-msgstr ""
+msgstr "%s पर स्वतः इंस्टॉल प्रक्रिया"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1071
 msgid "LVM: "
-msgstr ""
+msgstr "LVM: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1072
 msgid "Disk Encryption: "
-msgstr ""
+msgstr "डिस्क एन्क्रिप्शन : "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1076
 #, python-format
@@ -713,6 +743,8 @@ msgid ""
 "The installation is now paused. Please read the instructions on the page "
 "carefully before clicking Next to finish the installation."
 msgstr ""
+"इंस्टॉल प्रक्रिया अभी स्थगित है। कृपया दिशानिर्देश ध्यानपूर्वक पढ़ने के "
+"उपरांत ही अगले पर क्लिक कर इंस्टॉल पूरा करें।"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1131
 #: usr/lib/live-installer/frontend/gtk_interface.py:1134
@@ -785,6 +817,8 @@ msgid ""
 "The partition table couldn't be written for %s. Restart the computer and try "
 "again."
 msgstr ""
+"%s हेतु विभाजन तालिका नहीं बनाई जा सकी। कंप्यूटर पुनः आरंभ कर पुनः प्रयास "
+"करें।"
 
 #: usr/lib/live-installer/partitioning.py:380
 #, python-format
@@ -792,6 +826,8 @@ msgid ""
 "The partition %s could not be created. The installation will stop. Restart "
 "the computer and try again."
 msgstr ""
+"%s हेतु विभाजन तालिका नहीं बनाई जा सकी। इंस्टॉल प्रक्रिया अभी स्थगित है। "
+"कंप्यूटर पुनः आरंभ कर पुनः प्रयास करें।"
 
 #: usr/lib/live-installer/partitioning.py:437
 msgid "Logical partition"

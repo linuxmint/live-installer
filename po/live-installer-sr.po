@@ -3,20 +3,20 @@
 # This file is distributed under the same license as the linuxmint package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
 # Саша Петровић <salepetronije@gmail.com>, 2014, 2015.
-# Мирослав Николић <miroslavnikolic@rocketmail.com>, 2016.
+# Мирослав Николић <miroslavnikolic@rocketmail.com>, 2016, 2020.
 msgid ""
 msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2020-03-09 21:17+0000\n"
-"PO-Revision-Date: 2020-03-06 16:30+0000\n"
-"Last-Translator: Knez <Unknown>\n"
-"Language-Team: Serbian <gnom@prevod.org>\n"
+"PO-Revision-Date: 2020-11-28 22:15+0000\n"
+"Last-Translator: Мирослав Николић <miroslavnikolic@rocketmail.com>\n"
+"Language-Team: Serbian <(nothing)>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2020-03-13 11:20+0000\n"
-"X-Generator: Launchpad (build 3a6db24bbe7280ec09bae73384238390fcc98ad3)\n"
+"X-Launchpad-Export-Date: 2021-12-06 14:58+0000\n"
+"X-Generator: Launchpad (build f92b6e0bb2624f8a9125e3f45b7621c6e230c5ff)\n"
 "Language: sr\n"
 
 #: usr/lib/live-installer/installer.py:47
@@ -30,7 +30,7 @@ msgstr ""
 #: usr/lib/live-installer/installer.py:88
 #, python-format
 msgid "Copying /%s"
-msgstr "Копирам /%s"
+msgstr "Умножавам „/%s“"
 
 #: usr/lib/live-installer/installer.py:96
 msgid "Entering the system ..."
@@ -61,11 +61,13 @@ msgstr "Монтирам „%(partition)s“ на „%(mountpoint)s“"
 msgid ""
 "Filling %s with random data (please be patient, this can take hours...)"
 msgstr ""
+"Попуњавам „%s“ насумичним подацима (будите стрпљиви, ово може трајати сатима "
+"...)"
 
 #: usr/lib/live-installer/installer.py:259
 #, python-format
 msgid "Creating partitions on %s"
-msgstr "Креирајте партиције на %s"
+msgstr "Правим партиције на „%s“"
 
 #: usr/lib/live-installer/installer.py:306
 #, python-format
@@ -75,7 +77,7 @@ msgstr "Форматирам „%(partition)s“ као „%(format)s“ ..."
 #: usr/lib/live-installer/installer.py:343
 #: usr/lib/live-installer/installer.py:363
 msgid "ERROR: the use of @subvolumes is limited to btrfs"
-msgstr "ГРЕШКА: употреба @подуређај је ограничена на btrfs"
+msgstr "ГРЕШКА: употреба @подуређаја је ограничена на „btrfs“"
 
 #: usr/lib/live-installer/installer.py:489
 msgid "Setting hostname"
@@ -341,7 +343,7 @@ msgstr "Потврди лозинку"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:323
 msgid "Use LVM (Logical Volume Management)"
-msgstr "Користи LVM (Управитеља Логичким Уређајима)"
+msgstr "Користи LVM (Управљање логичким уређајима)"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:324
 msgid "Manual Partitioning"
@@ -353,11 +355,11 @@ msgstr "Ручно направите, промените величину ил�
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:326
 msgid "Fill the disk with random data"
-msgstr ""
+msgstr "Напуни диск наизменичним подацима"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:327
 msgid "This provides extra security but it can take hours."
-msgstr ""
+msgstr "Ово омогућује додатну сигурност, али може потрајати сатима."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:330
 msgid "Edit partitions"
@@ -398,7 +400,7 @@ msgstr "Слободно"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:344
 msgid "Install the GRUB boot menu on:"
-msgstr "Инсталирај GRUB изборник покретања система на:"
+msgstr "Инсталирај ГРУБ изборник покретања система на:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:347
 msgid ""
@@ -600,7 +602,7 @@ msgstr "ЕФИ партиција није подизна. Уредите зас
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:968
 msgid "The EFI partition is too small. It must be at least 35MB."
-msgstr "EFI партиција је премала. Мора бити најмање 35МБ"
+msgstr "ЕФИ партиција је премала. Мора бити најмање 35МБ"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:973
 #: usr/lib/live-installer/frontend/gtk_interface.py:977

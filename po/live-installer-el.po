@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2020-03-09 21:17+0000\n"
-"PO-Revision-Date: 2020-02-29 07:13+0000\n"
-"Last-Translator: Vasilis Thomopoulos <Unknown>\n"
+"PO-Revision-Date: 2020-06-26 15:53+0000\n"
+"Last-Translator: Kosmas Raptis <Unknown>\n"
 "Language-Team: Greek <el@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2020-03-13 11:20+0000\n"
-"X-Generator: Launchpad (build 3a6db24bbe7280ec09bae73384238390fcc98ad3)\n"
+"X-Launchpad-Export-Date: 2021-12-06 14:58+0000\n"
+"X-Generator: Launchpad (build f92b6e0bb2624f8a9125e3f45b7621c6e230c5ff)\n"
 
 #: usr/lib/live-installer/installer.py:47
 msgid ""
@@ -59,11 +59,13 @@ msgstr "Προσάρτηση του %(partition)s σε %(mountpoint)s"
 msgid ""
 "Filling %s with random data (please be patient, this can take hours...)"
 msgstr ""
+"Γέμισμα του %s με τυχαία δεδομένα (παρακαλώ, κάντε υπομονή, ίσως διαρκέσει "
+"ώρες...)"
 
 #: usr/lib/live-installer/installer.py:259
 #, python-format
 msgid "Creating partitions on %s"
-msgstr ""
+msgstr "Δημιουργία διαμερισμάτων στο %s"
 
 #: usr/lib/live-installer/installer.py:306
 #, python-format
@@ -73,7 +75,7 @@ msgstr "Μορφοποίηση %(partition)s σε %(format)s ..."
 #: usr/lib/live-installer/installer.py:343
 #: usr/lib/live-installer/installer.py:363
 msgid "ERROR: the use of @subvolumes is limited to btrfs"
-msgstr ""
+msgstr "ΣΦΑΛΜΑ: Η χρήση των @υποτόμων είναι περιορισμένη στο btrfs"
 
 #: usr/lib/live-installer/installer.py:489
 msgid "Setting hostname"
@@ -255,6 +257,8 @@ msgstr "Καλωσορίσατε στον εγκαταστάτη του LMDE."
 msgid ""
 "This program will ask you some questions and set up LMDE on your computer."
 msgstr ""
+"Αυτό το πρόγραμμα θα σας κάνει μερικές ερωτήσεις και θα εγκαταστήσει το LMDE "
+"στον υπολογιστή σας."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:298
 msgid "Keyboard Model:"
@@ -270,6 +274,10 @@ msgid ""
 "Latin characters. In addition to your selected layout, English (US) is set "
 "as the default. You can switch layouts by pressing both Ctrl keys together."
 msgstr ""
+"* Το όνομα χρήστη σας, το όνομα του υπολογιστής σας και ο κωδικός σας πρέπει "
+"να έχουν μόνο Λατινικούς χαρακτήρες. Εκτός από την επιλεγμένη διάταξή σας, η "
+"διάταξη Αγγλικά(ΗΠΑ) είναι ορισμένη ως η προκαθορισμένη. Μπορείτε να κάνετε "
+"εναλλαγή ανάμεσα στις διατάξεις πατώντας μαζί τα 2 κουμπιά Ctrl."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:305
 msgid "Your name:"
@@ -313,7 +321,7 @@ msgstr "Αυτοματοποιημένη Εγκατάσταση"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:318
 msgid "Erase a disk and install LMDE on it."
-msgstr ""
+msgstr "Διαγραφή δίσκου και εγκατάσταση LMDE σε αυτό."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:319
 msgid "Disk:"
@@ -342,14 +350,15 @@ msgstr "Διαμέριση με το χέρι"
 #: usr/lib/live-installer/frontend/gtk_interface.py:325
 msgid "Manually create, resize or choose partitions for LMDE."
 msgstr ""
+"Δημιουργήστε, αλλάξτε το μέγεθος ή διαλέξτε διαμερίσματα για το LMDE."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:326
 msgid "Fill the disk with random data"
-msgstr ""
+msgstr "Γεμίστε τον δίσκο με τυχαία δεδομένα"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:327
 msgid "This provides extra security but it can take hours."
-msgstr ""
+msgstr "Αυτό παρέχει παραπάνω ασφάλεια αλλά μπορεί να πάρει ώρες."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:330
 msgid "Edit partitions"
@@ -397,10 +406,14 @@ msgid ""
 "You selected to manage your partitions manually, this feature is for "
 "ADVANCED USERS ONLY."
 msgstr ""
+"Επιλέξατε να διαχειρίσετε τα διαμερίσματά σας χειροκίνητα, αυτή η λειτουργία "
+"είναι ΜΟΝΟ ΓΙΑ ΠΡΟΧΩΡΗΜΕΝΟΥΣ ΧΡΗΣΤΕΣ."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:348
 msgid "Before continuing, mount your target filesystem(s) on /target."
 msgstr ""
+"Πριν προχωρήσετε, συνδέστε το(α) σύστημα(τα) αρχείων που θέλετε να γίνει η "
+"εγκατάσταση στο /target."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:349
 msgid ""
@@ -428,6 +441,8 @@ msgstr ""
 #: usr/lib/live-installer/frontend/gtk_interface.py:354
 msgid "Do the following and then click Next to finish installation:"
 msgstr ""
+"Κάντε τα ακόλουθα και τότε πατήστε Επόμενο για να ολοκληρώσετε την "
+"εγκατάσταση:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:355
 msgid ""
@@ -490,7 +505,7 @@ msgstr "Παρακαλώ πληκτρολογήστε το πλήρες όνομ
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:856
 msgid "Please provide a name for your computer."
-msgstr ""
+msgstr "Παρακαλούμε δώστε ένα όνομα για τον υπολογιστή σας."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:860
 msgid "Please provide a username."
@@ -518,28 +533,28 @@ msgstr "Το όνομα του υπολογιστή πρέπει να είναι
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:890
 msgid "The computer's name may not contain whitespace characters."
-msgstr ""
+msgstr "Το όνομα του υπολογιστή δε πρέπει να περιέχει κενά."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:906
 msgid "Please select a disk."
-msgstr ""
+msgstr "Παρακαλούμε διαλέξτε ένα δίσκο."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:910
 msgid "Please provide a passphrase for the encryption."
-msgstr ""
+msgstr "Παρακαλούμε δώστε ένα κωδικό για την κρυπτογράφηση."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:913
 msgid "Your passphrases do not match."
-msgstr ""
+msgstr "Οι κωδικοί σας δεν ταιριάζουν"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:917
 msgid "Warning"
-msgstr ""
+msgstr "Προειδοποίηση"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:917
 #, python-format
 msgid "This will delete all the data on %s. Are you sure?"
-msgstr ""
+msgstr "Αυτό θα διαγράψει όλα τα δέδομενα στο %s. Είστε σίγουροι;"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:933
 msgid ""
@@ -552,11 +567,14 @@ msgstr ""
 #: usr/lib/live-installer/frontend/gtk_interface.py:937
 msgid "A root subvolume (/@) requires to format the partition with btrfs."
 msgstr ""
+"Ένας υπότομος ρίζας (/@) χρειάζεται να διαμορφώσετε το διαμέρισμα με btrfs."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:945
 msgid ""
 "A home subvolume (/@home) requires the use of a btrfs formatted partition."
 msgstr ""
+"Ένας υπότομος προσωπικού φακέλου (/@home) χρειάζεται τη χρήση ενός "
+"διαμερίσματος διαμορφωμένο με btrfs."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:949
 msgid "Please select a root (/) partition."
@@ -574,6 +592,16 @@ msgid ""
 " - subvolume Mount-point /@\n"
 " - btrfs as filesystem format\n"
 msgstr ""
+"Ένα διαμέρισμα ρίζας χρειάζεται για την εγκατάσταση του Linux Mint.\n"
+"\n"
+" - Σημείο προσάρτησης: /\n"
+" -Προτεινόμενο μέγεθος: 30GB\n"
+" -Προτεινόμενο σύστημα αρχείων: ext4\n"
+"\n"
+"Σημείωση: Η δυνατότητα σημείου αποθήκευσης btrfs στο timeshift χρειάζεται τη "
+"χρήση:\n"
+" -Σημείο προσάρτησης υποτόμου /@\n"
+" -Σύστημα αρχείων btrfs\n"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:965
 msgid "The EFI partition is not bootable. Please edit the partition flags."
@@ -583,6 +611,7 @@ msgstr ""
 #: usr/lib/live-installer/frontend/gtk_interface.py:968
 msgid "The EFI partition is too small. It must be at least 35MB."
 msgstr ""
+"Το διαμέρισμα EFI είναι πολύ μικρό. Πρέπει να είναι τουλάχιστον 35ΜΒ."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:973
 #: usr/lib/live-installer/frontend/gtk_interface.py:977
@@ -606,6 +635,16 @@ msgid ""
 "partition of the disk as the EFI system partition.\n"
 " "
 msgstr ""
+"Ένα διαμέρισμα συστήματος EFI είναι αναγκαίο με τις ακόλουθες απαιτήσεις:\n"
+"\n"
+" -Σημείο προσάρτησης: /boot/efi\n"
+" -Σημαίες διαμερίσματων: Εκκινήσιμο\n"
+" -Μέγεθος: Τουλάχιστον 35ΜΒ (Προτείνονται 100ΜΒ ή παραπάνω)\n"
+" -Διαμόρφωση: vfat ή fat32\n"
+"\n"
+"Για τη σίγουρη συμβατότητα με τα Windows, προτείνουμε να χρησιμοποιήσετε το "
+"πρώτο διαμέρισμα του δίσκου ως διαμέρισμα συστήματος EFI.\n"
+" "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:994
 msgid "Install"
@@ -659,7 +698,7 @@ msgstr "απενεργοποιημένο"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1061
 msgid "Home encryption: "
-msgstr ""
+msgstr "Κρυπτογράφηση προσωπικού φακέλου: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1062
 msgid "System settings"
@@ -667,7 +706,7 @@ msgstr "Ρυθμίσεις συστήματος"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1063
 msgid "Computer's name: "
-msgstr ""
+msgstr "Όνομα υπολογιστή: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1064
 msgid "Filesystem operations"
@@ -689,15 +728,15 @@ msgstr "Χρήση του ήδη υπάρχοντος κατατμημένου /
 #: usr/lib/live-installer/frontend/gtk_interface.py:1070
 #, python-format
 msgid "Automated installation on %s"
-msgstr ""
+msgstr "Αυτοματοποιημένη εγκατάσταση στο %s"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1071
 msgid "LVM: "
-msgstr ""
+msgstr "LVM: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1072
 msgid "Disk Encryption: "
-msgstr ""
+msgstr "Κρυπτογράφηση: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1076
 #, python-format
@@ -722,6 +761,8 @@ msgid ""
 "The installation is now paused. Please read the instructions on the page "
 "carefully before clicking Next to finish the installation."
 msgstr ""
+"Η εγκατάσταση βρίσκεται τώρα σε παύση. Παρακαλούμε διαβάστε τις οδηγίες στη "
+"σελίδα προσεκτικά πριν πατήσετε Επόμενο για να τελειώσετε την εγκατάσταση."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1131
 #: usr/lib/live-installer/frontend/gtk_interface.py:1134
@@ -795,6 +836,8 @@ msgid ""
 "The partition table couldn't be written for %s. Restart the computer and try "
 "again."
 msgstr ""
+"Ο πίνακας διαμερισμάτων δε μπορούσε να γραφτεί για το %s. Κάντε επανεκκίνηση "
+"τον υπολογιστή και δοκιμάστε πάλι."
 
 #: usr/lib/live-installer/partitioning.py:380
 #, python-format
@@ -802,6 +845,8 @@ msgid ""
 "The partition %s could not be created. The installation will stop. Restart "
 "the computer and try again."
 msgstr ""
+"Το διαμέρισμα %s δε μπορούσε να δημιουργηθεί. Η εγκατάσταση θα σταματήσει. "
+"Κάντε επανεκκίνηση τον υπολογιστή και δοκιμάστε πάλι."
 
 #: usr/lib/live-installer/partitioning.py:437
 msgid "Logical partition"
