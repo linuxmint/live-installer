@@ -556,14 +556,24 @@ class InstallerEngine:
         log(" --> Setting the locale")
         self.our_current += 1
         self.update_progress(_("Setting locale"))
-        self.run("echo \"%s.UTF-8 UTF-8\" >> /target/etc/locale.gen" %
-            self.setup.language)
+        # locale-gen
+        l = open("/target/etc/locale.gen", "a")
+        l.write("%s.UTF-8 UTF-8\n" % self.setup.language)
+        if self.setup.language != "en_US":
+            l.write("en_US.UTF-8 UTF-8\n")
+        l.close()
         self.run("chroot||locale-gen")
-        self.run("echo \"LANG=%s.UTF-8\" > /target/etc/default/locale" % self.setup.language)
+        # etc/default/locale
+        l = open("/target/etc/default/locale", "w")
+        l.write("LANG=%s.UTF-8\n" % self.setup.language)
+        l.close()
+        # localectl
         self.run("chroot||localectl set-locale LANG=\"%s.UTF-8\"" %
             self.setup.language,vital=False)
-        open("/target/etc/locale.conf", "w").write("LANG=%s.UTF-8" %
-                                                   self.setup.language)
+        # locale.conf
+        l = open("/target/etc/locale.conf", "w")
+        l.write("LANG=%s.UTF-8" % self.setup.language)
+        l.close()
         # set the locale for gentoo / sulin
         if os.path.exists("/target/etc/env.d"):
             l = open("/target/etc/env.d/20language", "w")
@@ -577,10 +587,11 @@ class InstallerEngine:
         log(" --> Setting the timezone")
         self.our_current += 1
         self.update_progress(_("Setting timezone"))
-        self.run("echo \"%s\" > /target/etc/timezone" % self.setup.timezone)
-        self.run("rm -f /target/etc/localtime")
-        self.run("ln -s /usr/share/zoneinfo/%s /target/etc/localtime" %
-            self.setup.timezone)
+        t = open("/target/etc/timezone","w")
+        t.write("%s\n" % self.setup.timezone)
+        t.close()
+        os.unlink("/target/etc/localtime")
+        os.symlink("../usr/share/zoneinfo/%s" % self.setup.timezone, "/target/etc/localtime")
 
         # Keyboard settings X11
         self.update_progress(("Settings X11 keyboard options"))
@@ -898,4 +909,4 @@ class Setup(object):
     keyboard_variant_description = None
     
     # Additional options
-    install_updates = False
+    install_updates = True

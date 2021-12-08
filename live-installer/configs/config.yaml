@@ -40,7 +40,6 @@
 
 ## Partitioning section
 # manual_partition_enabled: true 
-# automated_rootfs_type: ext4
 # use_swap: false
 # swap_size: 2048
 # replace_windows_enabled: true
