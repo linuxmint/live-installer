@@ -4,7 +4,8 @@ try:
     import xml.etree.cElementTree as ET
 except ImportError:
     import xml.etree.ElementTree as ET
-kbdxml = ET.parse('/usr/share/X11/xkb/rules/xorg.xml')
+kbdxml = ET.parse('/usr/share/X11/xkb/rules/base.xml')
+kbdxml_extra = ET.parse('/usr/share/X11/xkb/rules/base.extras.xml')
 
 
 def get_country_list():
@@ -83,25 +84,36 @@ def get_timezone_list():
 
 def get_keyboard_model_list():
     models = []
-    for node in kbdxml.iterfind('.//modelList/model/configItem'):
-        name, desc = node.find('name').text, node.find('description').text
-        models.append((desc, name))
+    names = []
+    for xml in [kbdxml_extra,  kbdxml]:
+        for node in xml.iterfind('.//modelList/model/configItem'):
+            name, desc = node.find('name').text, node.find('description').text
+            if name not in names:
+                models.append((desc, name))
+                names.append(name)
     return models
 
 
 def get_keyboard_layout_list():
     models = []
-    for node in kbdxml.iterfind('.//layoutList/layout'):
-        name, desc = node.find(
+    for xml in [kbdxml_extra,  kbdxml]:
+        names = []
+        for node in xml.iterfind('.//layoutList/layout'):
+            name, desc = node.find(
             'configItem/name').text, node.find('configItem/description').text
-        models.append((desc, name, node))
+            if name not in names:
+                models.append((desc, name, node))
+                names.append(name)
     return models
 
 
 def get_keyboard_variant_list(model):
     models = [("", model[0])]
+    names = []
     for variant in model[2].iterfind('variantList/variant/configItem'):
         var_name = variant.find('name').text
         var_desc = variant.find('description').text
-        models.append((var_name, var_desc))
+        if var_name not in names:
+            models.append((var_name, var_desc))
+            names.append(var_name)
     return models

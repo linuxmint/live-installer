@@ -699,6 +699,8 @@ class InstallerWindow:
                 set_keyboard_model = iterator
 
         # Keyboard layout
+        lnames = []
+        vnames = []
         for model in common.get_keyboard_layout_list():
             desc = l(model[0])
             nonedesc = model[0]
@@ -713,10 +715,14 @@ class InstallerWindow:
                     var_desc) == 0 else var_desc
                 if name in NON_LATIN_KB_LAYOUTS and "Latin" not in var_desc:
                     var_desc = "English (US) + %s" % var_desc
-                variants[name].append((var_desc, var_name))
+                if name+"-"+var_name not in vnames:
+                    variants[name].append((var_desc, var_name))
+                    vnames.append(name+"-"+var_name)
             if name in NON_LATIN_KB_LAYOUTS:
                 desc = desc + " *"
-            iterator = layouts.append((desc, name))
+            if name not in lnames:
+                iterator = layouts.append((desc, name))
+                lnames.append(name)
             if name == self.setup.keyboard_layout:
                 set_keyboard_layout = iterator
 
