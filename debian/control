@@ -1,10 +1,10 @@
-Source: 17g
+Source: 17g-installer
 Maintainer: Ali Riza KESKIN <ali.riza.keskin@pardus.org.tr>
 Build-Depends: debhelper (>= 8.0.0)
 Standards-Version: 1.0
 Section: utils
 
-Package: 17g
+Package: 17g-installer
 Priority: extra  
 Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends},
