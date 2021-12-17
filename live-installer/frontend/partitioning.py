@@ -350,7 +350,7 @@ def full_disk_format(device, create_boot=False, create_swap=False):
         sys.exit(1)
     if config.get("swap_size","0") == "0":
         ram_size = int(getoutput("awk '/^MemTotal/{ print $2 }' /proc/meminfo")) / 1024
-        swap_size = min(8800, int(ram))
+        swap_size = min(8800, int(ram_size))
     else:
         swap_size = config.get("swap_size","0")
         
