@@ -3,7 +3,5 @@
 clean binary:
 	dh "$@"
 build:
-	rm -f live-installer/branding/slides/*
-	cp live-installer/branding/welcome.png live-installer/branding/slides/
 	make
 	make install DESTDIR=debian/17g-installer
