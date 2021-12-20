@@ -909,4 +909,4 @@ class Setup(object):
     keyboard_variant_description = None
     
     # Additional options
-    install_updates = True
+    install_updates = False
