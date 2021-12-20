@@ -182,20 +182,13 @@
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <child>
-                      <object class="GtkViewport">
+                      <object class="GtkTreeView" id="treeview_language_list">
                         <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                        <property name="shadow-type">none</property>
-                        <child>
-                          <object class="GtkTreeView" id="treeview_language_list">
-                            <property name="visible">True</property>
-                            <property name="can-focus">True</property>
-                            <property name="search-column">0</property>
-                            <property name="enable-grid-lines">both</property>
-                            <child internal-child="selection">
-                              <object class="GtkTreeSelection"/>
-                            </child>
-                          </object>
+                        <property name="can-focus">True</property>
+                        <property name="search-column">0</property>
+                        <property name="enable-grid-lines">both</property>
+                        <child internal-child="selection">
+                          <object class="GtkTreeSelection"/>
                         </child>
                       </object>
                     </child>
