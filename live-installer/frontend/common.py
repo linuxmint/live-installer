@@ -85,7 +85,7 @@ def get_timezone_list():
 def get_keyboard_model_list():
     models = []
     names = []
-    for xml in [kbdxml_extra,  kbdxml]:
+    for xml in [kbdxml]:
         for node in xml.iterfind('.//modelList/model/configItem'):
             name, desc = node.find('name').text, node.find('description').text
             if name not in names:
@@ -96,7 +96,7 @@ def get_keyboard_model_list():
 
 def get_keyboard_layout_list():
     models = []
-    for xml in [kbdxml_extra,  kbdxml]:
+    for xml in [kbdxml]:
         names = []
         for node in xml.iterfind('.//layoutList/layout'):
             name, desc = node.find(
