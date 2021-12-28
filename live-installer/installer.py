@@ -701,8 +701,6 @@ class InstallerEngine:
                 layouts, variants = self.setup.keyboard_layout.split(","), self.setup.keyboard_variant.split(",")
 
                 schema.write("[org.gnome.desktop.input-sources]\n")
-                if "," in self.setup.keyboard_layout:
-                    schema.write("xkb-options = ['grp:ctrl_alt_toggle']\n")
 
                 output = "sources = ["
                 for i in range(2 if "," in self.setup.keyboard_layout else 1):
