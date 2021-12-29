@@ -53,7 +53,7 @@ class InstallerWindow:
         self.builder.add_from_file(glade_file)
         screen = Gdk.Screen.get_default()
         cssProvider = Gtk.CssProvider()
-        cssProvider.load_from_path('./resources/style.css')
+        cssProvider.load_from_path('./branding/style.css')
         styleContext = Gtk.StyleContext()
         styleContext.add_provider_for_screen(
             screen, cssProvider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
@@ -450,7 +450,6 @@ class InstallerWindow:
         # Options
         self.builder.get_object("label_update").set_text(_("Install system with updates"))
         self.builder.get_object("label_update2").set_text(_("If you connect internet, updates will install."))
-        
         self.builder.get_object("label_donotturnoff").set_text(_("Please do not turn off your computer during the installation process."))
 
     def assign_realname(self, entry):
@@ -499,6 +498,7 @@ class InstallerWindow:
 
     def assign_password(self, widget):
         errorFound = False
+        isWeak = False
         self.setup.password1 = self.builder.get_object(
             "entry_password").get_text()
         self.setup.password2 = self.builder.get_object(
@@ -508,19 +508,25 @@ class InstallerWindow:
             errorFound = True
         if len(self.setup.password1) < config.get("min_password_length", 1):
             errorFound = True
-        if self.setup.password1.isnumeric() and not config.get(
-                "allow_numeric_password", True):
-            errorFound = True
-        if errorFound:
-            self.assign_entry("entry_password", False)
-        else:
-            self.assign_entry("entry_password", True)
+            isWeak = True
+        if self.setup.password1.isnumeric():
+            if not config.get("allow_numeric_password", True):
+                errorFound = True
+            isWeak = True
+        if self.setup.password1.lower() == self.setup.password1:
+            isWeak = True
+        if self.setup.password1.upper() == self.setup.password1:
+            isWeak = True
+        if self.setup.password1 == self.setup.username:
+            isWeak = True
+
+        self.assign_entry("entry_password", not errorFound ,isWeak)
 
         # Check the password confirmation
         if(self.setup.password1 == "" or self.setup.password2 == "" or self.setup.password1 != self.setup.password2):
-            self.assign_entry("entry_confirm", False)
+            self.assign_entry("entry_confirm", False,isWeak)
         else:
-            self.assign_entry("entry_confirm", True)
+            self.assign_entry("entry_confirm", True,isWeak)
 
     def assign_options(self, widget, data=None):
         self.setup.install_updates = self.builder.get_object(
@@ -601,17 +607,23 @@ class InstallerWindow:
         else:
             return True
 
-    def assign_entry(self, name="", value=False):
-        if value:
+    def assign_entry(self, name="", value=False, isWeak=False):
+        self.builder.get_object(
+            name).get_style_context().remove_class("entry_error")
+        self.builder.get_object(
+            name).get_style_context().remove_class("entry_normal")
+        self.builder.get_object(
+            name).get_style_context().remove_class("entry_warning")
+        if not value:
             self.builder.get_object(
-                name).get_style_context().add_class("entry_enabled")
-            self.builder.get_object(
-                name).get_style_context().remove_class("entry_disabled")
+                name).get_style_context().add_class("entry_error")
         else:
-            self.builder.get_object(
-                name).get_style_context().add_class("entry_disabled")
-            self.builder.get_object(
-                name).get_style_context().remove_class("entry_enabled")
+            if isWeak:
+                self.builder.get_object(
+                    name).get_style_context().add_class("entry_warning")
+            else:
+                self.builder.get_object(
+                    name).get_style_context().add_class("entry_normal")
 
     def build_lang_list(self):
 

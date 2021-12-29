@@ -5,13 +5,18 @@
 }
 
 
-.entry_enabled {
+.entry_normal {
   border-color: Green;
   border-width: 1px;
 
 }
-.entry_disabled {
+.entry_error {
   border-color: Red;
+  border-width: 2px;
+}
+
+.entry_warning {
+  border-color: #cccc00;
   border-width: 2px;
 }
 
