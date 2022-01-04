@@ -290,7 +290,7 @@ class InstallerWindow:
         # Features
         if not config.get("auto_partition_enabled", True):
             self.builder.get_object("box_automated").hide()
-        if not config.get("expert_mode_enabled", False) and not "EXPERT_MODE" in os.environ:
+        if "EXPERT_MODE" not in os.environ:
             # Expert mode is only used for debuging. Please do not enable !
             self.builder.get_object("box_expert").hide()
         if not config.get("manual_partition_enabled", True):

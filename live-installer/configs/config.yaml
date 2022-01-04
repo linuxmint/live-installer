@@ -29,7 +29,6 @@
 ## User section
 # autologin_enabled: true
 # auto_partition_enabled: true
-# expert_mode_enabled: false
 # set_root_password: true
 # use_chpasswd: true
 # use_usermod: true
