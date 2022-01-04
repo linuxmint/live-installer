@@ -39,7 +39,7 @@ def build_timezones(_installer):
     installer = _installer
 
     cssProvider = Gtk.CssProvider()
-    cssProvider.load_from_path('./resources/style.css')
+    cssProvider.load_from_path('./branding/style.css')
     screen = Gdk.Screen.get_default()
     styleContext = Gtk.StyleContext()
     styleContext.add_provider_for_screen(

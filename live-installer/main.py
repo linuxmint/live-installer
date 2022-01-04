@@ -30,6 +30,10 @@ sys.excapthook = exceptdebug
 
 # main entry
 if __name__ == "__main__":
+    if "--test" in sys.argv:
+        os.environ["TEST"]="1"
+    if "--expert" in sys.argv:
+        os.environ["EXPERT_MODE"]="1"
     if not is_root() and "--test" not in sys.argv:
         ErrorDialog(config.get("distro_title", "17g"), _("You must be root!"))
         exit(1)

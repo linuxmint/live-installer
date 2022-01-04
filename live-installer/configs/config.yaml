@@ -29,6 +29,7 @@
 ## User section
 # autologin_enabled: true
 # auto_partition_enabled: true
+# expert_mode_enabled: false
 # set_root_password: true
 # use_chpasswd: true
 # use_usermod: true
@@ -62,7 +63,7 @@
 # skip_user: false
 # hide_keyboard_model: false
 # allow_uppercase_hostname: true
-# allow_numeric_password: false
+# allow_week_password: false
 # allow_auto_novariant: false
 # min_password_length: 1
 

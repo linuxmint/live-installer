@@ -42,6 +42,7 @@ class InstallerWindow:
         # installer
         self.setup = Setup()
         self.installer = InstallerEngine(self.setup)
+        self.testmode = "TEST" in os.environ
 
         self.resource_dir = './resources/'
         fullscreen = fullscreen or config.get("fullscreen", False)
@@ -61,7 +62,9 @@ class InstallerWindow:
         # should be set early
         self.done = False
         self.fail = False
+        self.week_password = True
         self.showing_last_dialog = False
+        self.ui_init = False
 
         # slide gtk images
         self.gtkimages = []
@@ -74,8 +77,8 @@ class InstallerWindow:
         # wizard pages
         (self.PAGE_WELCOME,
          self.PAGE_LANGUAGE,
-         self.PAGE_TIMEZONE,
          self.PAGE_KEYBOARD,
+         self.PAGE_TIMEZONE,
          self.PAGE_TYPE,
          self.PAGE_PARTITIONS,
          self.PAGE_USER,
@@ -123,14 +126,22 @@ class InstallerWindow:
         # type page
         model = Gtk.ListStore(str, str)
         model.set_sort_column_id(0, Gtk.SortType.ASCENDING)
+        disk_iterators = []
         for disk_path, disk_description in partitioning.get_disks():
-            model.append(
+            iterator = model.append(
                 ("%s (%s)" % (disk_description, disk_path), disk_path))
+            disk_iterators.append(iterator)
         self.builder.get_object("combo_disk").set_model(model)
         renderer_text = Gtk.CellRendererText()
         self.builder.get_object("combo_disk").pack_start(renderer_text, True)
         self.builder.get_object("combo_disk").add_attribute(
             renderer_text, "text", 0)
+        if len(partitioning.get_disks()) == 1:
+            self.builder.get_object("combo_disk").set_active_iter(disk_iterators[0])
+            model = self.builder.get_object("combo_disk").get_model()
+            row = model[0]
+            self.setup.disk = row[1]
+            self.setup.diskname = row[0]
 
         self.builder.get_object("entry_passphrase").connect(
             "changed", self.assign_passphrase)
@@ -187,6 +198,14 @@ class InstallerWindow:
             "changed", self.assign_password)
         self.builder.get_object("entry_confirm").connect(
             "changed", self.assign_password)
+        self.builder.get_object("entry_password").connect(
+            "icon-press", self.view_password_text)
+        self.builder.get_object("entry_confirm").connect(
+            "icon-press", self.view_password_text)
+        self.builder.get_object("entry_password").connect(
+            "icon-release", self.hide_password_text)
+        self.builder.get_object("entry_confirm").connect(
+            "icon-release", self.hide_password_text)
 
         self.builder.get_object("radiobutton_passwordlogin").connect(
             "toggled", self.assign_login_options)
@@ -271,6 +290,9 @@ class InstallerWindow:
         # Features
         if not config.get("auto_partition_enabled", True):
             self.builder.get_object("box_automated").hide()
+        if not config.get("expert_mode_enabled", False) and not "EXPERT_MODE" in os.environ:
+            # Expert mode is only used for debuging. Please do not enable !
+            self.builder.get_object("box_expert").hide()
         if not config.get("manual_partition_enabled", True):
             self.builder.get_object("box_manual").hide()
         else:
@@ -320,6 +342,8 @@ class InstallerWindow:
 
         if config.get("hide_keyboard_model", False):
             self.builder.get_object("hbox10").hide()
+
+        self.ui_init = True
 
 
     def fullscreen(self):
@@ -417,6 +441,10 @@ class InstallerWindow:
             _("Manual Partitioning"))
         self.builder.get_object("label_manual2").set_text(
             _("Manually create, resize or choose partitions for system."))
+        self.builder.get_object("label_expert").set_text(
+            _("Expert Mode"))
+        self.builder.get_object("label_expert2").set_text(
+            _("The setup tool will not do partitioning"))
         self.builder.get_object("label_replace_win").set_text(
             _("Remove Windows & Install"))
         self.builder.get_object("label_replace_win2").set_text(
@@ -452,8 +480,18 @@ class InstallerWindow:
         self.builder.get_object("label_update2").set_text(_("If you connect internet, updates will install."))
         self.builder.get_object("label_donotturnoff").set_text(_("Please do not turn off your computer during the installation process."))
 
+    def view_password_text(self,entry, icon_pos, event):
+        entry.set_visibility(True)
+        entry.set_icon_from_icon_name(0,"view-conceal-symbolic")
+        
+        
+    def hide_password_text(self,entry, icon_pos, event):
+        entry.set_visibility(False)
+        entry.set_icon_from_icon_name(0,"view-reveal-symbolic")
+
     def assign_realname(self, entry):
         self.setup.real_name = entry.props.text
+        errorFound = False
         # Try to set the username (doesn't matter if it fails)
         try:
             text = entry.props.text.strip().lower()
@@ -465,9 +503,8 @@ class InstallerWindow:
         except BaseException:
             pass
         if self.setup.real_name == "":
-            self.assign_entry("entry_name", False)
-        else:
-            self.assign_entry("entry_name", True)
+            errorFound = True
+        self.assign_entry("entry_name", errorFound)
 
     def assign_username(self, entry):
         self.setup.username = entry.props.text
@@ -476,10 +513,9 @@ class InstallerWindow:
         if len(self.setup.username) <= 0 or self.setup.username[0] in "-0123456789" \
            or not (u.isascii() and u.isalnum() and u.islower()):
             errorFound = True
-        if errorFound or self.setup.username == "":
-            self.assign_entry("entry_username", False)
-        else:
-            self.assign_entry("entry_username", True)
+        if self.setup.username == "":
+            errorFound = True
+        self.assign_entry("entry_username", errorFound)
 
     def assign_hostname(self, entry):
         self.setup.hostname = entry.props.text
@@ -491,42 +527,58 @@ class InstallerWindow:
             elif(char.isspace()):
                 errorFound = True
                 break
-        if errorFound or self.setup.hostname == "":
-            self.assign_entry("entry_hostname", False)
-        else:
-            self.assign_entry("entry_hostname", True)
+        if self.setup.hostname == "":
+            errorFound = True
+        self.assign_entry("entry_hostname", errorFound)
 
     def assign_password(self, widget):
         errorFound = False
-        isWeak = False
+        isWeek = False
         self.setup.password1 = self.builder.get_object(
             "entry_password").get_text()
         self.setup.password2 = self.builder.get_object(
             "entry_confirm").get_text()
 
+        # Strong password
         if self.setup.password1 == "":
             errorFound = True
         if len(self.setup.password1) < config.get("min_password_length", 1):
             errorFound = True
-            isWeak = True
         if self.setup.password1.isnumeric():
-            if not config.get("allow_numeric_password", True):
-                errorFound = True
-            isWeak = True
+            isWeek = True
         if self.setup.password1.lower() == self.setup.password1:
-            isWeak = True
+            isWeek = True
         if self.setup.password1.upper() == self.setup.password1:
-            isWeak = True
+            isWeek = True
         if self.setup.password1 == self.setup.username:
-            isWeak = True
+            isWeek = True
+        if len(self.setup.password1) < 8:
+            isWeek = True
+        if len(self.setup.password1) == 0:
+            isWeek = False
 
-        self.assign_entry("entry_password", not errorFound ,isWeak)
+        has_char = False
+        has_num = False
+        characters = "\"!'^+%&/()=?_<>#${[]}\\|-*"
+        numbers = "0123456789"
+        for c in numbers:
+            if c in self.setup.password1:
+                has_num = True
+                break
+        for c in characters:
+            if c in self.setup.password1:
+                has_char = True
+                break
+        if not has_char or not has_num:
+            isWeek = True
+
+        self.assign_entry("entry_password", errorFound ,isWeek)
+        self.week_password = isWeek
 
         # Check the password confirmation
         if(self.setup.password1 == "" or self.setup.password2 == "" or self.setup.password1 != self.setup.password2):
-            self.assign_entry("entry_confirm", False,isWeak)
-        else:
-            self.assign_entry("entry_confirm", True,isWeak)
+            errorFound = True
+        self.assign_entry("entry_confirm", errorFound,isWeek)
 
     def assign_options(self, widget, data=None):
         self.setup.install_updates = self.builder.get_object(
@@ -537,6 +589,8 @@ class InstallerWindow:
             "radio_automated").get_active()
         self.setup.replace_windows = self.builder.get_object(
             "radio_replace_win").get_active()
+        self.setup.expert_mode = self.builder.get_object(
+            "radio_expert_mode").get_active()
         self.builder.get_object("check_badblocks").set_sensitive(
             self.setup.automated)
         self.builder.get_object("check_encrypt").set_sensitive(
@@ -607,23 +661,18 @@ class InstallerWindow:
         else:
             return True
 
-    def assign_entry(self, name="", value=False, isWeak=False):
-        self.builder.get_object(
-            name).get_style_context().remove_class("entry_error")
-        self.builder.get_object(
-            name).get_style_context().remove_class("entry_normal")
-        self.builder.get_object(
-            name).get_style_context().remove_class("entry_warning")
-        if not value:
-            self.builder.get_object(
-                name).get_style_context().add_class("entry_error")
-        else:
-            if isWeak:
-                self.builder.get_object(
-                    name).get_style_context().add_class("entry_warning")
-            else:
-                self.builder.get_object(
-                    name).get_style_context().add_class("entry_normal")
+    def assign_entry(self, name="", isInvalid=True, isWeek=False):
+        entry = self.builder.get_object(name)
+        entry.set_icon_from_icon_name(1,"")
+        pixbuf_ok = GdkPixbuf.Pixbuf.new_from_file_at_scale(
+            "resources/icons/live-installer-status-ok.svg", 22, 22, False)
+        pixbuf_warning = GdkPixbuf.Pixbuf.new_from_file_at_scale(
+            "resources/icons/live-installer-status-warning.svg", 22, 22, False)
+        entry.set_icon_from_icon_name(1,"")
+        if (isWeek and not isInvalid):
+            entry.set_icon_from_pixbuf(1,pixbuf_warning)
+        if not isWeek and not isInvalid:
+            entry.set_icon_from_pixbuf(1,pixbuf_ok)
 
     def build_lang_list(self):
 
@@ -638,7 +687,9 @@ class InstallerWindow:
                 self.cur_country_code = lang.split(".")[0]
             elif lang == "":
                 self.cur_country_code = lc_all.split(".")[0]
-        self.assign_language(self.builder.get_object("treeview_language_list"))
+
+        self.setup.language = self.cur_country_code
+        self.set_language(self.setup.language)
 
         # Load countries into memory
         ccodes = common.get_country_list()
@@ -688,8 +739,9 @@ class InstallerWindow:
     def build_kb_lists(self):
         ''' Do some xml kung-fu and load the keyboard stuffs '''
         # Determine the layouts in use
-        (keyboard_geom,
-         self.setup.keyboard_layout) = subprocess.getoutput("setxkbmap -query | awk '/^(model|layout)/{print $2}'").split()
+        keyboard_geom = subprocess.getoutput("setxkbmap -query | awk '/^(model)/{print $2}'")
+        self.setup.keyboard_layout = subprocess.getoutput("setxkbmap -query | awk '/^(layout)/{print $2}'")
+        self.setup.keyboard_variant = subprocess.getoutput("setxkbmap -query | awk '/^(variant)/{print $2}'")
         if "," in self.setup.keyboard_layout:
             self.setup.keyboard_layout = self.setup.keyboard_layout.split(",")[
                 0]
@@ -758,6 +810,8 @@ class InstallerWindow:
 
     def assign_language(self, treeview, data=None):
         ''' Called whenever someone updates the language '''
+        if not self.ui_init:
+            return
         if treeview:
             model = treeview.get_model()
             selection = treeview.get_selection()
@@ -767,6 +821,8 @@ class InstallerWindow:
                 self.set_language(self.setup.language)
 
     def set_language(self, language):
+        if self.testmode:
+            return
         gettext.translation('live-installer', "/usr/share/locale",
                             languages=[language, language.split('_')[
                                 0]],
@@ -816,6 +872,8 @@ class InstallerWindow:
 
     def assign_keyboard_layout(self, treeview):
         ''' Called whenever someone updates the keyboard layout '''
+        if not self.ui_init:
+            return
         model, active = treeview.get_selection().get_selected_rows()
         if not active:
             return
@@ -837,6 +895,8 @@ class InstallerWindow:
         ''' Called whenever someone updates the keyboard layout or variant '''
         # GObject.source_remove(self.kbd_preview_generation)  # stop previous
         # preview generation, if any
+        if not self.ui_init:
+            return
         model, active = treeview.get_selection().get_selected_rows()
         if not active:
             return
@@ -856,12 +916,15 @@ class InstallerWindow:
             # Add None variant for US layout
             self.setup.keyboard_variant = ',%s' % self.setup.keyboard_variant
 
-        command = "setxkbmap -layout '%s' -variant '%s' -option grp:win_space_toggle" % (
+        command = "setxkbmap -layout '%s' -variant '%s'" % (
             self.setup.keyboard_layout, self.setup.keyboard_variant)
         os.system(command)
 
     def activate_page(self, nex=0, index=0, goback=False):
         errorFound = False
+        if self.testmode:
+            self.builder.get_object("notebook1").set_visible_child_name(str(nex))
+            return
         self.show_overview()
         
         if index == self.PAGE_LANGUAGE:
@@ -934,10 +997,21 @@ class InstallerWindow:
                 errorFound = True
                 errorMessage = _("Your passwords is too short.")
                 focus_widget = self.builder.get_object("entry_password")
-            elif self.setup.password1.isnumeric() and not config.get("allow_numeric_password", True):
-                errorFound = True
-                errorMessage = _("Your passwords is not strong.")
+            elif self.week_password:
+                errorMessage = "{}\n{}".format(
+                    _("Your passwords is not strong."),
+                    _("Strong password requirements:\n")+
+                    _("- Length must be minimum 8 characters\n")+
+                    _("- Must have exclusive characters\n")+
+                    _("- Must have big and small letters\n")+
+                    _("- Must have number"))
                 focus_widget = self.builder.get_object("entry_password")
+                if config.get("allow_week_password", False):
+                    errorMessage+="\n\n"+_("Are you sure?")
+                    if not QuestionDialog(_("Warning"),errorMessage):
+                        return
+                else:
+                    errorFound = True
             elif(self.setup.password1 != self.setup.password2):
                 errorFound = True
                 errorMessage = _("Your passwords do not match.")
@@ -982,6 +1056,10 @@ class InstallerWindow:
                 WarningDialog(_("Installer"), errorMessage)
                 if focus_widget is not None:
                     focus_widget.grab_focus()
+            if not errorFound and not goback:
+                self.builder.get_object("button_next").set_label(_("Install"))
+                self.builder.get_object("button_next").get_style_context().add_class("suggested-action")
+
         elif index == self.PAGE_PARTITIONS:
             if not goback:
                 model = self.builder.get_object("treeview_disks").get_model()
@@ -1037,6 +1115,9 @@ class InstallerWindow:
                         return
 
         elif index == self.PAGE_OVERVIEW:
+            if goback:
+                self.builder.get_object("button_next").set_label(_("Next"))
+                self.builder.get_object("button_next").get_style_context().remove_class("suggested-action")
             self.show_overview()
         elif index == self.PAGE_INSTALL:
             self.builder.get_object("button_next").set_sensitive(False)
@@ -1069,6 +1150,9 @@ class InstallerWindow:
         self.builder.get_object("notebook1").set_visible_child_name(str(nex))
 
     def activate_page_type(self):
+        if self.testmode or self.setup.expert_mode:
+            self.activate_page(self.PAGE_USER)
+            return
         self.show_overview()
         if self.setup.automated:
             errorFound = False
@@ -1137,26 +1221,26 @@ class InstallerWindow:
                 nex = self.PAGE_LANGUAGE
                 self.builder.get_object("button_back").set_sensitive(True)
                 if config.get("skip_language", False):
-                    sel = self.PAGE_LANGUAGE
+                    sel = nex
             if sel == self.PAGE_LANGUAGE:
-                nex = self.PAGE_TIMEZONE
-                if config.get("skip_timezone", False):
-                    sel = self.PAGE_TIMEZONE
-            if sel == self.PAGE_TIMEZONE:
                 nex = self.PAGE_KEYBOARD
                 if config.get("skip_keyboard", False):
-                    sel = self.PAGE_KEYBOARD
+                    sel = nex
             if sel == self.PAGE_KEYBOARD:
+                nex = self.PAGE_TIMEZONE
+                if config.get("skip_timezone", False):
+                    sel = nex
+            if sel == self.PAGE_TIMEZONE:
                 nex = self.PAGE_TYPE
             if sel == self.PAGE_USER:
                 nex = self.PAGE_OVERVIEW
-                self.builder.get_object("button_next").set_label(_("Install"))
             if sel == self.PAGE_TYPE:
                 self.activate_page_type()
                 return
             if sel == self.PAGE_PARTITIONS:
                 if self.grub_check.get_active() and \
-                   not self.setup.grub_device:
+                   not self.setup.grub_device and \
+                   not self.testmode:
                     WarningDialog(_("Installer"), _(
                         "Please provide a device to install grub."))
                     return
@@ -1169,24 +1253,23 @@ class InstallerWindow:
         else:
         
             if sel == self.PAGE_OVERVIEW:
-                self.builder.get_object("button_next").set_label(_("Next"))
                 nex = self.PAGE_USER
             if sel == self.PAGE_PARTITIONS:
                 nex = self.PAGE_TYPE
-            if sel == self.PAGE_TYPE:
-                nex = self.PAGE_KEYBOARD
             if sel == self.PAGE_USER:
                 nex = self.PAGE_TYPE
-                if config.get("skip_keyboard", False):
-                    sel = self.PAGE_KEYBOARD
-            if sel == self.PAGE_KEYBOARD:
+            if sel == self.PAGE_TYPE:
                 nex = self.PAGE_TIMEZONE
                 if config.get("skip_timezone", False):
-                    sel = self.PAGE_LANGUAGE
+                    sel = nex
             if sel == self.PAGE_TIMEZONE:
+                nex = self.PAGE_KEYBOARD
+                if config.get("skip_keyboard", False):
+                    sel = nex
+            if sel == self.PAGE_KEYBOARD:
                 nex = self.PAGE_LANGUAGE
                 if config.get("skip_language", False):
-                    sel = self.PAGE_WELCOME
+                    sel = nex
             if sel == self.PAGE_LANGUAGE:
                 nex = self.PAGE_WELCOME
                 self.builder.get_object("button_back").set_sensitive(False)

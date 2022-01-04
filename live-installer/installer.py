@@ -80,7 +80,9 @@ class InstallerEngine:
 
         self.mount_source()
 
-        if self.setup.automated:
+        if self.setup.expert_mode:
+            log("  --> Expert mode detected")
+        elif self.setup.automated:
             self.create_partitions()
         else:
             self.format_partitions()
@@ -464,7 +466,9 @@ class InstallerEngine:
         fstab = open("/target/etc/fstab", "a")
         fstab.write("proc /proc proc defaults 0 0\n")
         fstab.write("tmpfs /tmp tmpfs nosuid,nodev,noatime 0 0\n")
-        if self.setup.automated:
+        if self.setup.expert_mode:
+            log("  --> Expert mode detected")
+        elif self.setup.automated:
             if self.setup.lvm:
                 # Don't use UUIDs with LVM
                 fstab.write("%s /  ext4 defaults 0 1\n" %
@@ -613,7 +617,7 @@ class InstallerEngine:
             newconsolefh.write('Option "XkbVariant" "{}"\n'.format(
                 self.setup.keyboard_variant))
             if "," in self.setup.keyboard_layout:
-                newconsolefh.write('Option "XkbOptions" "grp:ctrl_alt_toggle"\n')
+                newconsolefh.write('Option "XkbOptions" ""\n')
             newconsolefh.write('EndSection\n')
             newconsolefh.close()
 
@@ -678,7 +682,7 @@ class InstallerEngine:
                     newconsolefh.write("XKBVARIANT=\"%s\"\n" %
                                        self.setup.keyboard_variant)
                 elif(line.startswith("XKBOPTIONS=")):
-                    newconsolefh.write("XKBOPTIONS=grp:ctrl_alt_toggle")
+                    newconsolefh.write("XKBOPTIONS=\"\"")
                 else:
                     newconsolefh.write("%s\n" % line)
             consolefh.close()
@@ -880,7 +884,8 @@ class Setup(object):
     grub_device = None
     disks = []
     automated = True
-    replace_windows = True
+    replace_windows = False
+    expert_mode = False
     disk = None
     diskname = None
     passphrase1 = None
