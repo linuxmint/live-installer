@@ -568,7 +568,7 @@ class PartitionDialog(object):
         self.builder.get_object("button_cancel").set_label(_("Cancel"))
         self.builder.get_object("button_ok").set_label(_("OK"))
         # Build supported filesystems list
-        filesystems = ['', 'swap', 'none']
+        filesystems = ['', 'swap']
         for path in ["/bin", "/sbin", "/usr/bin", "/usr/sbin"]:
             for fs in getoutput('echo %s/mkfs.*' % path).split():
                 fsname = str(fs).split("mkfs.")[1].replace("'", "")

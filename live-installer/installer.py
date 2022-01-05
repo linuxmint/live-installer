@@ -413,25 +413,31 @@ class InstallerEngine:
         self.setup.partitions = partitions_sorted
         # Mount the target partition
         for partition in self.setup.partitions:
-            if(partition.mount_as is not None and partition.mount_as != ""):
+            if(partition.mount_as not in ["", None, "swap"]):
                 if partition.mount_as == "/":
                     self.update_progress(_("Mounting %(partition)s on %(mountpoint)s") % {
                                          'partition': partition.path, 'mountpoint': "/target/"})
                     log(" ------ Mounting partition %s on %s" %
                         (partition.path, "/target/"))
-                    if partition.type == "fat32":
-                        fs = "vfat"
-                    else:
-                        fs = partition.type
-                    if fs != "none" and 0 != self.do_mount(
-                            partition.path, "/target", fs, None):
+                    if 0 != self.do_mount(partition.path, "/target", partition.type, None):
                         self.error_message(
-                            "Cannot mount rootfs (type: {}): {}".format(fs, partition.path))
+                            "Cannot mount rootfs (type: {}): {}".format(partition.type, partition.path))
                     break
+
+        # move old files if available
+        olds = os.listdir("/target/")
+        if len(olds) > 0:
+            target="/target/{}.old".format(config.get("distro_codename","linux"))
+            if os.path.exists(target):
+                 self.run("rm -rf {}".format(target),vital=False)
+            os.mkdir(target)
+            for old in olds:
+                self.run("mv /target/{0} {1}/{0}".format(old,target),vital=False)
+            
 
         # Mount the other partitions
         for partition in self.setup.partitions:
-            if(partition.mount_as is not None and partition.mount_as != "" and partition.mount_as != "/" and partition.mount_as != "swap"):
+            if(partition.mount_as not in [ None, "/", "swap", ""]):
                 log(" ------ Mounting %s on %s" %
                     (partition.path, "/target" + partition.mount_as))
                 self.run("mkdir -p /target" + partition.mount_as)

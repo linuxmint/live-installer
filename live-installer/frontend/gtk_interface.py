@@ -1070,9 +1070,9 @@ class InstallerWindow:
                     if(partition.mount_as == "/"):
                         found_root_partition = True
                         if partition.format_as is None or partition.format_as == "":
-                            ErrorDialog(_("Installer"), _(
-                                "Please indicate a filesystem to format the root (/) partition with before proceeding."))
-                            return
+                            if not QuestionDialog(_("Installer"), _(
+                                "Root filesystem type not specified. Installation will continue without disk formatting. Do you want to continue?")):
+                                return
 
                 if not found_root_partition:
                     ErrorDialog(_("Installer"), "<b>%s</b>" % _("Please select a root (/) partition."), _(
@@ -1092,8 +1092,7 @@ class InstallerWindow:
                                 ErrorDialog(_("Installer"), _(
                                     "The EFI partition is not bootable. Please edit the partition flags."))
                                 return
-                            if int(
-                                    float(partition.partition.getLength('MB'))) < 35:
+                            if int(float(partition.partition.getLength('MB'))) < 35:
                                 ErrorDialog(_("Installer"), _(
                                     "The EFI partition is too small. It must be at least 35MB."))
                                 return
