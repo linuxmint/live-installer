@@ -507,12 +507,10 @@ class InstallerEngine:
                         fstab_fsck_option = "1"
                     else:
                         fstab_fsck_option = "0"
-
-                    if("ext" in partition.type):
-                        fstab_mount_options = "defaults,rw"
-                    else:
-                        fstab_mount_options = "defaults"
-
+                    rw="rw"
+                    if partition.read_only:
+                        rw="ro"
+                    fstab_mount_options = "defaults,{}".format(rw)
                     if partition.type == "fat16" or partition.type == "fat32":
                         fs = "vfat"
                     else:

@@ -359,7 +359,6 @@ class InstallerWindow:
         except BaseException:
             err("\"distro_title\" varible not found on config. Using default.")
         self.window.set_title(window_title)
-        self.window.set_wmclass(window_title, window_title)
 
         # Header
         self.wizard_pages = list(range(13))
@@ -471,6 +470,9 @@ class InstallerWindow:
         # Advanced page
         self.builder.get_object("checkbutton_grub").set_label(
             _("Install the GRUB boot menu on:"))
+
+        # Read only
+        self.builder.get_object("checkbutton_readonly").set_label(_("Read only"))
 
         # Refresh the current title and help question in the page header
         self.activate_page(self.PAGE_LANGUAGE)

@@ -13,10 +13,11 @@ gettext.install("live-installer", "/usr/share/locale")
  IDX_PART_DESCRIPTION,
  IDX_PART_FORMAT_AS,
  IDX_PART_MOUNT_AS,
+ IDX_PART_READ_ONLY,
  IDX_PART_SIZE,
  IDX_PART_FREE_SPACE,
  IDX_PART_OBJECT,
- IDX_PART_DISK) = list(range(9))
+ IDX_PART_DISK) = list(range(10))
 
 
 TMP_MOUNTPOINT = '/tmp/live-installer/tmpmount'
@@ -129,13 +130,14 @@ def edit_partition_dialog(widget, path, viewcol):
         dlg = PartitionDialog(row[IDX_PART_PATH],
                               row[IDX_PART_MOUNT_AS],
                               row[IDX_PART_FORMAT_AS],
-                              row[IDX_PART_TYPE])
-        response_is_ok, mount_as, format_as = dlg.show()
+                              row[IDX_PART_TYPE],
+                              row[IDX_PART_READ_ONLY])
+        response_is_ok, mount_as, format_as, read_only = dlg.show()
         if response_is_ok:
-            assign_mount_point(partition, mount_as, format_as)
+            assign_mount_point(partition, mount_as, format_as, read_only)
 
 
-def assign_mount_point(partition, mount_point, filesystem):
+def assign_mount_point(partition, mount_point, filesystem, read_only = False):
     # Assign it in the treeview
     model = installer.builder.get_object("treeview_disks").get_model()
     for disk in model:
@@ -143,15 +145,17 @@ def assign_mount_point(partition, mount_point, filesystem):
             if partition == part[IDX_PART_OBJECT]:
                 part[IDX_PART_MOUNT_AS] = mount_point
                 part[IDX_PART_FORMAT_AS] = filesystem
+                part[IDX_PART_READ_ONLY] = read_only
             elif mount_point == part[IDX_PART_MOUNT_AS]:
                 part[IDX_PART_MOUNT_AS] = ""
                 part[IDX_PART_FORMAT_AS] = ""
+                part[IDX_PART_READ_ONLY] = False
     # Assign it in our setup
     for part in installer.setup.partitions:
         if part == partition:
-            partition.mount_as, partition.format_as = mount_point, filesystem
+            partition.mount_as, partition.format_as, partition.read_only = mount_point, filesystem, read_only
         elif part.mount_as == mount_point:
-            part.mount_as, part.format_as = '', ''
+            part.mount_as, part.format_as, partition.read_only = '', '', False
 
 
 
@@ -240,6 +244,7 @@ class PartitionSetup(Gtk.TreeStore):
                                              str,  # description (OS)
                                              str,  # format to
                                              str,  # mount point
+                                             bool, # read only
                                              str,  # size
                                              str,  # free space
                                              object,  # partition object
@@ -259,28 +264,10 @@ class PartitionSetup(Gtk.TreeStore):
                 disk = parted.Disk(disk_device)
             except Exception as detail:
                 log("Found an issue while looking for the disk: %s" % detail)
-                from frontend.gtk_interface import QuestionDialog
-                dialog = QuestionDialog(_("Installation Tool"),
-                                        _("No partition table was found on the hard drive: %s. Do you want the installer to create a set of partitions for you? Note: This will ERASE ALL DATA present on this disk.") % disk_description,
-                                        None, installer.window)
-                if not dialog:
-                    continue  # the user said No, skip this disk
-                try:
-                    installer.window.get_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
-                    if not already_done_full_disk_format:
-                        assign_mount_format = full_disk_format(disk_device)
-                        already_done_full_disk_format = True
-                    else:
-                        # Format but don't assign mount points
-                        full_disk_format(disk_device)
-                    installer.window.get_window().set_cursor(None)
-                    disk = parted.Disk(disk_device)
-                except Exception:
-                    installer.window.get_window().set_cursor(None)
-                    continue  # Something is wrong with this disk, skip it
+                continue
 
             disk_iter = self.append(
-                None, (disk_description, '', '', '', '', '', '', None, disk_path))
+                None, (disk_description, '', '', '', '', False, '', '', None, disk_path))
             free_space_partition = disk.getFreeSpacePartitions()
             primary_partitions = disk.getPrimaryPartitions()
             logical_partitions = disk.getLogicalPartitions()
@@ -299,10 +286,11 @@ class PartitionSetup(Gtk.TreeStore):
             #    partitions, key=lambda part: part.partition.geometry.start)
 
             try:  # assign mount_as and format_as if disk was just auto-formatted
-                for partition, (mount_as, format_as) in zip(
+                for partition, (mount_as, format_as, read_only) in zip(
                         partitions, assign_mount_format):
                     partition.mount_as = mount_as
                     partition.format_as = format_as
+                    partition.read_only = read_only
                 del assign_mount_format
             except NameError:
                 pass
@@ -320,6 +308,7 @@ class PartitionSetup(Gtk.TreeStore):
                                             partition.description,
                                             partition.format_as,
                                             partition.mount_as,
+                                            partition.read_only,
                                             partition.size,
                                             partition.free_space,
                                             partition,
@@ -421,15 +410,15 @@ class PartitionBase(object):
     def __init__(self):
         self.format_as = ''
         self.mount_as = ''
+        self.read_only = False
         self.type = ''
         self.path = ''
 
 
-class Partition(object):
-    format_as = ''
-    mount_as = ''
+class Partition(PartitionBase):
 
     def __init__(self, partition):
+        super().__init__()
         assert partition.type not in (
             parted.PARTITION_METADATA, parted.PARTITION_EXTENDED)
         self.path = str(partition.path).replace(
@@ -553,7 +542,7 @@ class Partition(object):
 
 
 class PartitionDialog(object):
-    def __init__(self, path, mount_as, format_as, typevar):
+    def __init__(self, path, mount_as, format_as, typevar, read_only=False):
         glade_file = RESOURCE_DIR + 'interface.ui'
         self.builder = Gtk.Builder()
         self.builder.add_from_file(glade_file)
@@ -580,6 +569,9 @@ class PartitionDialog(object):
         model = Gtk.ListStore(str)
         for i in filesystems:
             model.append([i])
+        
+        check_readonly = self.builder.get_object("checkbutton_readonly")
+        check_readonly.set_active(read_only)
         self.builder.get_object("combobox_use_as").set_model(model)
         self.builder.get_object("combobox_use_as").set_active(
             filesystems.index(format_as))
@@ -604,10 +596,12 @@ class PartitionDialog(object):
         mount_as = w.get_child().get_text().strip()
         w = self.builder.get_object("combobox_use_as")
         format_as = w.get_model()[w.get_active()][0]
+        w = self.builder.get_object("checkbutton_readonly")
+        read_only = w.get_active()
         self.window.destroy()
         if response in (Gtk.ResponseType.YES, Gtk.ResponseType.APPLY,
                         Gtk.ResponseType.OK, Gtk.ResponseType.ACCEPT):
             response_is_ok = True
         else:
             response_is_ok = False
-        return response_is_ok, mount_as, format_as
+        return response_is_ok, mount_as, format_as, read_only
