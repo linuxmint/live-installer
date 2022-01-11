@@ -26,8 +26,14 @@ RESOURCE_DIR = './resources/'
 EFI_MOUNT_POINT = '/boot/efi'
 SWAP_MOUNT_POINT = 'swap'
 
+disks = []
+partitions = []
+
 
 def get_disks():
+    global disks
+    if len(disks) > 0:
+        return disks
     disks = []
     exclude_devices = ['/dev/sr0', '/dev/sr1',
                        '/dev/cdrom', '/dev/dvd', '/dev/fd0', '/dev/nullb0']
@@ -73,6 +79,9 @@ def get_disks():
 
 
 def get_partitions():
+    global partitions
+    if len(partitions) > 0:
+        return partitions
     partitions = []
     for disk in get_disks():
         i = 1
@@ -97,6 +106,24 @@ def find_mbr(part):
                 return disk[0]
             i += 1
     return ""
+
+def find_partition_number(part):
+    for disk in get_disks():
+        i = 1
+        while os.path.exists("{}{}".format(disk[0], str(i))) or os.path.exists("{}p{}".format(disk[0], str(i))):
+            if part == "{}{}".format(disk[0], str(i)):
+                return i
+            if part == "{}p{}".format(disk[0], str(i)):
+                return i
+            i += 1
+    return 0
+
+def get_partition_flags(part):
+    for line in subprocess.getoutput("parted {} print".format(find_mbr(part))).split("\n"):
+        print(line)
+        if line.startswith(" {} ".format(find_partition_number(part))):
+            return line.replace(", ",",").split(" ")[-1].split(",")
+    return []
 
 
 def build_partitions(_installer):

@@ -33,6 +33,7 @@
 # use_chpasswd: true
 # use_usermod: true
 # keep_userdata : true
+# minimal_instalation_enabled: true
 # additional_user_groups:
 #   - audio
 #   - video

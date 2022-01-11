@@ -721,16 +721,25 @@ class InstallerEngine:
 
 
         # Update if enabled
+        if self.setup.minimal_installation:
+            self.update_progress(_("Removing extra packages"), True)
+            pkgs = open("branding/extra_packages.txt").read().split("\n")
+            self.run_and_update("chroot||yes | {}".format(config.package_manager(
+                "remove_package_with_unusing_deps", pkgs)))
+
+        # Update if enabled
         if self.setup.install_updates:
             self.update_progress(_("Trying to install updates"), True)
             self.run_and_update(config.package_manager(
                 "full_system_update"),True)
-        # remove pacman
+
+        # remove 17g
         self.update_progress(_("Clearing package manager"), True)
         log(" --> Clearing package manager")
         log(config.get("remove_packages", ["17g-installer"]))
         self.run("chroot||yes | {}".format(config.package_manager(
             "remove_package_with_unusing_deps", config.get("remove_packages", ["17g-installer"]))))
+        self.run("chroot|| rm -rf /lib/live-installer",vital=False)
 
         if self.setup.luks:
             with open("/target/etc/default/grub", "a") as f:
@@ -917,3 +926,4 @@ class Setup(object):
     
     # Additional options
     install_updates = False
+    minimal_installation = False

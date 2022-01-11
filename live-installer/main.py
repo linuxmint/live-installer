@@ -51,6 +51,7 @@ if __name__ == "__main__":
         sys.stdout.write(VERSION + "\n")
         exit(0)
     else:
+        os.system("gtk-update-icon-cache /usr/share/icons/hicolor/ || true")
         from frontend.gtk_interface import InstallerWindow
         win = InstallerWindow("--fullscreen" in sys.argv)
     Gtk.main()

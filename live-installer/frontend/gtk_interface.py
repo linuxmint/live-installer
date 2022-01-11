@@ -163,6 +163,9 @@ class InstallerWindow:
         # options
         self.builder.get_object("check_updates").connect(
             "toggled", self.assign_options)
+        # options
+        self.builder.get_object("check_minimal").connect(
+            "toggled", self.assign_options)
 
         # partitions
         self.builder.get_object("button_edit").connect(
@@ -304,6 +307,9 @@ class InstallerWindow:
                 self.builder.get_object("box_fill").hide()
         if not config.get("autologin_enabled", True):
             self.builder.get_object("autologin_box").hide()
+
+        if not config.get("minimal_instalation_enabled", True):
+            self.builder.get_object("check_minimal").hide()
 
         # styling
         self.assign_entry("entry_name")
@@ -480,6 +486,8 @@ class InstallerWindow:
         # Options
         self.builder.get_object("label_update").set_text(_("Install system with updates"))
         self.builder.get_object("label_update2").set_text(_("If you connect internet, updates will install."))
+        self.builder.get_object("label_minimal").set_text(_("Minimal installation"))
+        self.builder.get_object("label_minimal2").set_text(_("This will only install a minimal desktop environment with a browser and utilities."))
         self.builder.get_object("label_donotturnoff").set_text(_("Please do not turn off your computer during the installation process."))
 
     def view_password_text(self,entry, icon_pos, event):
@@ -585,6 +593,8 @@ class InstallerWindow:
     def assign_options(self, widget, data=None):
         self.setup.install_updates = self.builder.get_object(
             "check_updates").get_active()
+        self.setup.minimal_installation = self.builder.get_object(
+            "check_minimal").get_active()
 
     def assign_type_options(self, widget, data=None):
         self.setup.automated = self.builder.get_object(
@@ -666,15 +676,10 @@ class InstallerWindow:
     def assign_entry(self, name="", isInvalid=True, isWeek=False):
         entry = self.builder.get_object(name)
         entry.set_icon_from_icon_name(1,"")
-        pixbuf_ok = GdkPixbuf.Pixbuf.new_from_file_at_scale(
-            "resources/icons/live-installer-status-ok.svg", 22, 22, False)
-        pixbuf_warning = GdkPixbuf.Pixbuf.new_from_file_at_scale(
-            "resources/icons/live-installer-status-warning.svg", 22, 22, False)
-        entry.set_icon_from_icon_name(1,"")
         if (isWeek and not isInvalid):
-            entry.set_icon_from_pixbuf(1,pixbuf_warning)
+            entry.set_icon_from_icon_name(1,"password-status-warning-symbolic")
         if not isWeek and not isInvalid:
-            entry.set_icon_from_pixbuf(1,pixbuf_ok)
+            entry.set_icon_from_icon_name(1,"password-status-ok-symbolic")
 
     def build_lang_list(self):
 
