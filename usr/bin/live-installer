@@ -1,5 +1,3 @@
 #!/bin/sh
 
-optimize='OO'; case "$*" in *--debug*) unset optimize; esac
-# Launch live-installer with all passed arguments (future reserved)
-python2.7 -tt${optimize} /usr/lib/live-installer/main.py "$@"
+/usr/lib/live-installer/main.py "$@"

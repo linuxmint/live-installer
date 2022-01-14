@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 
 from installer import InstallerEngine, Setup, NON_LATIN_KB_LAYOUTS
 from dialogs import MessageDialog, QuestionDialog, ErrorDialog, WarningDialog

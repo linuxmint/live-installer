@@ -11,7 +11,7 @@ Vcs-Browser: https://github.com/linuxmint/live-installer
 
 Package: live-installer
 Architecture: all
-Depends: ${misc:Depends}, ${python:Depends}, gir1.2-webkit2-4.0
+Depends: ${misc:Depends}, gir1.2-webkit2-4.0
   , python3
   , python3-parted, parted, gparted
   , python3-gi-cairo
