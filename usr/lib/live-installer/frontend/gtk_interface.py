@@ -13,6 +13,7 @@ import threading
 import time
 import parted
 import cairo
+import requests
 
 import gi
 gi.require_version('Gtk', '3.0')
@@ -498,11 +499,7 @@ class InstallerWindow:
 
         # Try to find out where we're located...
         try:
-            from urllib import urlopen
-        except ImportError:  # py3
-            from urllib.request import urlopen
-        try:
-            lookup = str(urlopen('http://geoip.ubuntu.com/lookup').read())
+            lookup = requests.get('http://geoip.ubuntu.com/lookup', timeout=5).content.decode("UTF-8")
             self.cur_country_code = re.search('<CountryCode>(.*)</CountryCode>', lookup).group(1)
             self.cur_timezone = re.search('<TimeZone>(.*)</TimeZone>', lookup).group(1)
             if self.cur_country_code == 'None': self.cur_country_code = "US"
