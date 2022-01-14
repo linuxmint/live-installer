@@ -24,7 +24,7 @@ def idle(func):
     return wrapper
 
 def shell_exec(command):
-    return subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
+    return subprocess.Popen(command, shell=True, encoding='utf-8', errors='ignore', stdout=subprocess.PIPE)
 
 def getoutput(command):
     return shell_exec(command).stdout.read().strip()

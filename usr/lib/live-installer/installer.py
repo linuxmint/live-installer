@@ -77,7 +77,7 @@ class InstallerEngine:
         rsync = subprocess.Popen("rsync --verbose --archive --no-D --acls "
                                  "--hard-links --xattrs {rsync_filter} "
                                  "{src}* {dst}".format(src=SOURCE, dst=DEST, rsync_filter=rsync_filter),
-                                 shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                                 shell=True, encoding='utf-8', errors='ignore', stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         while rsync.poll() is None:
             line = rsync.stdout.readline()
             if not line:  # still copying the previous file, just wait
@@ -729,7 +729,7 @@ class InstallerEngine:
 
     # Execute schell command and return output in a list
     def exec_cmd(self, cmd):
-        p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        p = subprocess.Popen(cmd, shell=True, encoding='utf-8', errors='ignore', stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         lstOut = []
         for line in p.stdout.readlines():
             # Strip the line, also from null spaces (strip() only strips white spaces)
