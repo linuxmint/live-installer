@@ -27,10 +27,10 @@ assert MAP_SIZE == (752, 384), 'MAP_CENTER (et al.?) calculations depend on this
 def debug(func):
     '''Decorator to print function call details - parameters names and effective values'''
     def wrapper(*func_args, **func_kwargs):
-        # print 'func_code.co_varnames =', func.func_code.co_varnames
-        # print 'func_code.co_argcount =', func.func_code.co_argcount
-        # print 'func_args =', func_args
-        # print 'func_kwargs =', func_kwargs
+        # print('func_code.co_varnames =', func.func_code.co_varnames)
+        # print('func_code.co_argcount =', func.func_code.co_argcount)
+        # print('func_args =', func_args)
+        # print('func_kwargs =', func_kwargs)
         params = []
         for argNo in range(func.func_code.co_argcount):
             argName = func.func_code.co_varnames[argNo]

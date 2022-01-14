@@ -1105,11 +1105,11 @@ class InstallerWindow:
 
     @asynchronous
     def do_install(self):
-        print " ## INSTALLATION "
-        ''' Actually perform the installation .. '''
+        print(" ## INSTALLATION ")
+        print(' Actually perform the installation .. ')
 
         if __debug__:
-            print " ## DEBUG MODE - INSTALLATION PROCESS NOT LAUNCHED"
+            print(" ## DEBUG MODE - INSTALLATION PROCESS NOT LAUNCHED")
             time.sleep(200)
             Gtk.main_quit()
             sys.exit(0)
@@ -1126,7 +1126,7 @@ class InstallerWindow:
         try:
             self.installer.start_installation()
         except Exception as detail1:
-            print detail1
+            print(detail1)
             do_try_finish_install = False
             self.show_error_dialog(_("Installation error"), str(detail1))
 
@@ -1144,7 +1144,7 @@ class InstallerWindow:
             try:
                 self.installer.finish_installation()
             except Exception as detail1:
-                print detail1
+                print(detail1)
                 self.show_error_dialog(_("Installation error"), str(detail1))
 
             # show a message dialog thingum
@@ -1160,7 +1160,7 @@ class InstallerWindow:
             while(self.showing_last_dialog):
                 time.sleep(0.1)
 
-            print " ## INSTALLATION COMPLETE "
+            print(" ## INSTALLATION COMPLETE ")
 
         Gtk.main_quit()
         sys.exit(0)
