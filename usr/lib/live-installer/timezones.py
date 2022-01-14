@@ -1,6 +1,5 @@
 # coding: utf-8
 
-from __future__ import division
 import math
 import re
 from gi.repository import Gtk, Gdk, GObject, GdkPixbuf

@@ -1,8 +1,6 @@
 #!/usr/bin/python3
 # coding: utf-8
 #
-from __future__ import division
-
 import os
 import re
 import sys
