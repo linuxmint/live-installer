@@ -4,7 +4,7 @@ from __future__ import division
 import math
 import re
 from gi.repository import Gtk, Gdk, GObject, GdkPixbuf
-from commands import getoutput
+from subprocess import getoutput
 from collections import defaultdict, namedtuple
 from datetime import datetime, timedelta
 from PIL import Image, ImageEnhance, ImageChops, ImageOps

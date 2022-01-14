@@ -7,7 +7,7 @@ import partitioning
 import gettext
 import os
 import re
-import commands
+import subprocess
 import sys
 import threading
 import time
@@ -515,7 +515,7 @@ class InstallerWindow:
         iso_standard = "3166"
         if os.path.exists("/usr/share/xml/iso-codes/iso_3166-1.xml"):
             iso_standard = "3166-1"
-        for line in commands.getoutput("isoquery --iso %s | cut -f1,4-" % iso_standard).split('\n'):
+        for line in subprocess.getoutput("isoquery --iso %s | cut -f1,4-" % iso_standard).split('\n'):
             ccode, cname = line.split(None, 1)
             countries[ccode] = cname
 
@@ -524,12 +524,12 @@ class InstallerWindow:
         iso_standard = "639"
         if os.path.exists("/usr/share/xml/iso-codes/iso_639-2.xml"):
             iso_standard = "639-2"
-        for line in commands.getoutput("isoquery --iso %s | cut -f3,4-" % iso_standard).split('\n'):
+        for line in subprocess.getoutput("isoquery --iso %s | cut -f3,4-" % iso_standard).split('\n'):
             cols = line.split(None, 1)
             if len(cols) > 1:
                 name = cols[1].replace(";", ",")
                 languages[cols[0]] = name
-        for line in commands.getoutput("isoquery --iso %s | cut -f1,4-" % iso_standard).split('\n'):
+        for line in subprocess.getoutput("isoquery --iso %s | cut -f1,4-" % iso_standard).split('\n'):
             cols = line.split(None, 1)
             if len(cols) > 1:
                 if cols[0] not in languages.keys():
@@ -542,7 +542,7 @@ class InstallerWindow:
         flag_path = lambda ccode: self.resource_dir + '/flags/16/' + ccode.lower() + '.png'
         from utils import memoize
         flag = memoize(lambda ccode: GdkPixbuf.Pixbuf.new_from_file(flag_path(ccode)))
-        for locale in commands.getoutput("awk -F'[@ .]' '/UTF-8/{ print $1 }' /usr/share/i18n/SUPPORTED | uniq").split('\n'):
+        for locale in subprocess.getoutput("awk -F'[@ .]' '/UTF-8/{ print $1 }' /usr/share/i18n/SUPPORTED | uniq").split('\n'):
             if '_' in locale:
                 lang, ccode = locale.split('_')
                 language = lang
@@ -585,7 +585,7 @@ class InstallerWindow:
         ''' Do some xml kung-fu and load the keyboard stuffs '''
         # Determine the layouts in use
         (keyboard_geom,
-         self.setup.keyboard_layout) = commands.getoutput("setxkbmap -query | awk '/^(model|layout)/{print $2}'").split()
+         self.setup.keyboard_layout) = subprocess.getoutput("setxkbmap -query | awk '/^(model|layout)/{print $2}'").split()
         # Build the models
         from collections import defaultdict
         def _ListStore_factory():

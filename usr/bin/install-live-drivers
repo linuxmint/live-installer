@@ -1,11 +1,11 @@
 #!/usr/bin/python3
 
 import os
-import commands
+import subprocess
 
 #NVIDIA
 driver = "/usr/share/live-installer/nvidia-driver.tar.gz"
-if "install-nvidia" in commands.getoutput("cat /proc/cmdline") and os.path.exists(driver):
+if "install-nvidia" in subprocess.getoutput("cat /proc/cmdline") and os.path.exists(driver):
     print("Installing NVIDIA driver...")
     try:
         os.system("tar zxvf %s" % driver)

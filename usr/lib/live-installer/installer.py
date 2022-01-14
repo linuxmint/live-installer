@@ -4,7 +4,6 @@ import subprocess
 import time
 import shutil
 import gettext
-import commands
 import sys
 import parted
 import partitioning
@@ -72,7 +71,7 @@ class InstallerEngine:
         EXCLUDE_DIRS = "home/* dev/* proc/* sys/* tmp/* run/* mnt/* media/* lost+found source target".split()
         our_current = 0
         # (Valid) assumption: num-of-files-to-copy ~= num-of-used-inodes-on-/
-        our_total = int(commands.getoutput("df --inodes /{src} | awk 'END{{ print $3 }}'".format(src=SOURCE.strip('/'))))
+        our_total = int(subprocess.getoutput("df --inodes /{src} | awk 'END{{ print $3 }}'".format(src=SOURCE.strip('/'))))
         print(" --> Copying {} files".format(our_total))
         rsync_filter = ' '.join('--exclude=' + SOURCE + d for d in EXCLUDE_DIRS)
         rsync = subprocess.Popen("rsync --verbose --archive --no-D --acls "
@@ -103,7 +102,7 @@ class InstallerEngine:
         os.system("mv /target/etc/resolv.conf /target/etc/resolv.conf.bk")
         os.system("cp -f /etc/resolv.conf /target/etc/resolv.conf")
 
-        kernelversion= commands.getoutput("uname -r")
+        kernelversion= subprocess.getoutput("uname -r")
         os.system("cp /run/live/medium/live/vmlinuz /target/boot/vmlinuz-%s" % kernelversion)
         found_initrd = False
         for initrd in ["/run/live/medium/live/initrd.img", "/run/live/medium/live/initrd.lz"]:
@@ -278,7 +277,7 @@ class InstallerEngine:
             print(" --> LVM: Creating LV root")
             os.system("lvcreate -y -n root -L 1GB lvmlmde")
             print(" --> LVM: Creating LV swap")
-            swap_size = int(round(int(commands.getoutput("awk '/^MemTotal/{ print $2 }' /proc/meminfo")) / 1024, 0))
+            swap_size = int(round(int(subprocess.getoutput("awk '/^MemTotal/{ print $2 }' /proc/meminfo")) / 1024, 0))
             os.system("lvcreate -y -n swap -L %dMB lvmlmde" % swap_size)
             print(" --> LVM: Extending LV root")
             os.system("lvextend -l 100\%FREE /dev/lvmlmde/root")
@@ -395,7 +394,7 @@ class InstallerEngine:
 
     def get_blkid(self, path):
         uuid = path # If we can't find the UUID we use the path
-        blkid = commands.getoutput('blkid').split('\n')
+        blkid = subprocess.getoutput('blkid').split('\n')
         for blkid_line in blkid:
             blkid_elements = blkid_line.split(':')
             if blkid_elements[0] == path:
@@ -526,7 +525,7 @@ class InstallerEngine:
             language_code = self.setup.language
             if "_" in self.setup.language:
                 language_code = self.setup.language.split("_")[0]
-            l10ns = commands.getoutput("find /run/live/medium/pool | grep 'l10n-%s\\|hunspell-%s'" % (language_code, language_code))
+            l10ns = subprocess.getoutput("find /run/live/medium/pool | grep 'l10n-%s\\|hunspell-%s'" % (language_code, language_code))
             for l10n in l10ns.split("\n"):
                 os.system("cp %s /target/debs/" % l10n)
             self.do_run_in_chroot("dpkg -i /debs/*")
@@ -538,7 +537,7 @@ class InstallerEngine:
             self.update_progress(our_current, our_total, False, False, _("Installing drivers"))
 
             # Broadcom
-            drivers = commands.getoutput("mint-drivers")
+            drivers = subprocess.getoutput("mint-drivers")
             if "broadcom-sta-dkms" in drivers:
                 try:
                     os.system("mkdir -p /target/debs")
@@ -552,7 +551,7 @@ class InstallerEngine:
             # NVIDIA
             driver = "/usr/share/live-installer/nvidia-driver.tar.gz"
             if os.path.exists(driver):
-                if "install-nvidia" in commands.getoutput("cat /proc/cmdline"):
+                if "install-nvidia" in subprocess.getoutput("cat /proc/cmdline"):
                     print(" --> Installing NVIDIA driver")
                     try:
                         self.do_run_in_chroot("tar zxvf %s" % driver)
@@ -644,7 +643,7 @@ class InstallerEngine:
         our_current += 1
         self.do_run_in_chroot("/usr/sbin/update-initramfs -t -u -k all")
         self.do_run_in_chroot("/usr/share/debian-system-adjustments/systemd/adjust-grub-title")
-        kernelversion= commands.getoutput("uname -r")
+        kernelversion= subprocess.getoutput("uname -r")
         self.do_run_in_chroot("/usr/bin/sha1sum /boot/initrd.img-%s > /var/lib/initramfs-tools/%s" % (kernelversion,kernelversion))
 
         # Clean APT
@@ -688,7 +687,7 @@ class InstallerEngine:
         self.update_progress(our_current, our_total, True, False, _("Configuring bootloader"))
         print(" --> Running grub-mkconfig")
         self.do_run_in_chroot("grub-mkconfig -o /boot/grub/grub.cfg")
-        grub_output = commands.getoutput("chroot /target/ /bin/sh -c \"grub-mkconfig -o /boot/grub/grub.cfg\"")
+        grub_output = subprocess.getoutput("chroot /target/ /bin/sh -c \"grub-mkconfig -o /boot/grub/grub.cfg\"")
         grubfh = open("/var/log/live-installer-grub-output.log", "w")
         grubfh.writelines(grub_output)
         grubfh.close()
