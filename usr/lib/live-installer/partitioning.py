@@ -199,7 +199,7 @@ def manually_edit_partitions(widget):
     preferred = model[iter][-1] if iter else ''  # prefer disk currently selected and show it first in gparted
     disks = ' '.join(sorted((disk for disk,desc in model.disks), key=lambda disk: disk != preferred))
     os.system('umount ' + disks)  # umount disks (if possible) so gparted works out-of-the-box
-    os.popen('gparted {} &'.format(disks))
+    os.system('gparted {} &'.format(disks))
 
 def build_grub_partitions():
     grub_model = Gtk.ListStore(str)
@@ -227,7 +227,7 @@ class PartitionSetup(Gtk.TreeStore):
         installer.setup.partition_setup = self
         self.html_disks, self.html_chunks = {}, defaultdict(list)
 
-        os.popen('mkdir -p ' + TMP_MOUNTPOINT)
+        os.system('mkdir -p ' + TMP_MOUNTPOINT)
         installer.setup.gptonefi = is_efi_supported()
         self.disks = get_disks()
         print('Disks: ', self.disks)
