@@ -96,7 +96,7 @@ def get_disks():
                 if int(removable):
                     description = _('Removable:') + ' ' + description
                 disks.append((device, description))
-        except Exception, detail:
+        except Exception as detail:
             print "Could not parse blkid output: %s (%s)" % (line, detail)
     return disks
 
@@ -240,7 +240,7 @@ class PartitionSetup(Gtk.TreeStore):
             try:
                 disk = parted.Disk(disk_device)
                 print "      - Found the disk..."
-            except Exception, detail:
+            except Exception as detail:
                 print "      - Found an issue while looking for the disk: %s" % detail
                 from frontend.gtk_interface import QuestionDialog
                 dialog = QuestionDialog(_("Installation Tool"),
@@ -503,7 +503,7 @@ class Partition(object):
                                 description = 'EFI System Partition'
                                 self.mount_as = EFI_MOUNT_POINT
                                 break
-                except Exception, detail:
+                except Exception as detail:
                     # best effort
                     print "Could not read partition flags for %s: %s" % (self.path, detail)
             self.description = description

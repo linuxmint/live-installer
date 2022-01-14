@@ -1125,7 +1125,7 @@ class InstallerWindow:
 
         try:
             self.installer.start_installation()
-        except Exception, detail1:
+        except Exception as detail1:
             print detail1
             do_try_finish_install = False
             self.show_error_dialog(_("Installation error"), str(detail1))
@@ -1143,7 +1143,7 @@ class InstallerWindow:
 
             try:
                 self.installer.finish_installation()
-            except Exception, detail1:
+            except Exception as detail1:
                 print detail1
                 self.show_error_dialog(_("Installation error"), str(detail1))
 
