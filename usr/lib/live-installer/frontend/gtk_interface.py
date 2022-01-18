@@ -268,7 +268,7 @@ class InstallerWindow:
         self.window.set_title(window_title)
 
         # Header
-        self.wizard_pages = range(12)
+        self.wizard_pages = list(range(12))
         self.wizard_pages[self.PAGE_WELCOME] = WizardPage(_("Welcome"), "mark-location-symbolic", "")
         self.wizard_pages[self.PAGE_LANGUAGE] = WizardPage(_("Language"), "preferences-desktop-locale-symbolic", _("What language would you like to use?"))
         self.wizard_pages[self.PAGE_TIMEZONE] = WizardPage(_("Timezone"), "mark-location-symbolic", _("Where are you?"))
@@ -495,6 +495,16 @@ class InstallerWindow:
     def show_customwarning(self, widget):
         self.activate_page(self.PAGE_CUSTOMWARNING)
 
+    def flag(self, lang, ccode):
+        if lang in ['eo', 'ia']:
+            ccode = f"_{ccode}"
+        path = f"{self.resource_dir}/flags/16/{ccode.lower()}.png"
+        if os.path.exists(path):
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file(path)
+        else:
+            pixbuf = None
+        return pixbuf
+
     def build_lang_list(self):
 
         # Try to find out where we're located...
@@ -529,16 +539,13 @@ class InstallerWindow:
         for line in subprocess.getoutput("isoquery --iso %s | cut -f1,4-" % iso_standard).split('\n'):
             cols = line.split(None, 1)
             if len(cols) > 1:
-                if cols[0] not in languages.keys():
+                if cols[0] not in languages:
                     name = cols[1].replace(";", ",")
                     languages[cols[0]] = name
 
         # Construct language selection model
         model = Gtk.ListStore(str, str, GdkPixbuf.Pixbuf, str)
         set_iter = None
-        flag_path = lambda ccode: self.resource_dir + '/flags/16/' + ccode.lower() + '.png'
-        from utils import memoize
-        flag = memoize(lambda ccode: GdkPixbuf.Pixbuf.new_from_file(flag_path(ccode)))
         for locale in subprocess.getoutput("awk -F'[@ .]' '/UTF-8/{ print $1 }' /usr/share/i18n/SUPPORTED | uniq").split('\n'):
             if '_' in locale:
                 lang, ccode = locale.split('_')
@@ -559,7 +566,7 @@ class InstallerWindow:
                 except:
                     pass
                 country = ''
-            pixbuf = flag(ccode) if not lang in 'eo ia' else flag('_' + lang)
+            pixbuf = self.flag(lang, ccode)
             iter = model.append((language, country, pixbuf, locale))
             if (ccode == self.cur_country_code and
                 (not set_iter or
@@ -638,7 +645,7 @@ class InstallerWindow:
         ''' Called whenever someone updates the language '''
         model = treeview.get_model()
         selection = treeview.get_selection()
-        if selection.count_selected_rows > 0:
+        if selection.count_selected_rows() > 0:
             (model, iter) = selection.get_selected()
             if iter is not None:
                 self.setup.language = model.get_value(iter, 3)
@@ -753,7 +760,7 @@ class InstallerWindow:
         else:
             hidpi = "normal"
 
-        os.system("python /usr/lib/live-installer/frontend/generate_keyboard_layout.py %s %s %s %s" % (layout, variant, filename, hidpi))
+        os.system("/usr/lib/live-installer/frontend/generate_keyboard_layout.py %s %s %s %s" % (layout, variant, filename, hidpi))
         self._on_layout_generated()
 
     @idle

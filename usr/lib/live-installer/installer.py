@@ -18,9 +18,6 @@ class InstallerEngine:
     def __init__(self, setup):
         self.setup = setup
 
-        # Flush print when it's called
-        sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
-
         # find the squashfs..
         self.media = '/run/live/medium/live/filesystem.squashfs'
         if(not os.path.exists(self.media) and not __debug__):

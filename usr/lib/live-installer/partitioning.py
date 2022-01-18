@@ -204,8 +204,8 @@ def build_grub_partitions():
     try: preferred = [p.partition.disk.device.path for p in installer.setup.partitions if p.mount_as == '/'][0]
     except IndexError: preferred = ''
     devices = sorted(list(d[0] for d in installer.setup.partition_setup.disks) +
-                     list(filter(None, (p.name for p in installer.setup.partitions))),
-                     key=lambda path: path != preferred and path)
+                     list([_f for _f in (p.name for p in installer.setup.partitions) if _f]),
+                     key=lambda path: path != None and path != preferred)
     for p in devices: grub_model.append([p])
     installer.builder.get_object("combobox_grub").set_model(grub_model)
     installer.builder.get_object("combobox_grub").set_active(0)
@@ -274,7 +274,7 @@ class PartitionSetup(Gtk.TreeStore):
             lvm_partitions = disk.getLVMPartitions()
             print("           -> %d LVM partitions" % len(lvm_partitions))
 
-            partition_set = set(free_space_partition + primary_partitions + logical_partitions + raid_partitions + lvm_partitions)
+            partition_set = tuple(free_space_partition + primary_partitions + logical_partitions + raid_partitions + lvm_partitions)
             print("           -> set of %d partitions" % len(partition_set))
 
             partitions = []
