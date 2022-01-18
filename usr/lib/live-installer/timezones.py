@@ -11,10 +11,9 @@ from PIL import Image, ImageEnhance, ImageChops, ImageOps
 TIMEZONE_RESOURCES = '/usr/share/live-installer/timezone/'
 CC_IM = Image.open(TIMEZONE_RESOURCES + 'cc.png').convert('RGB')
 BACK_IM = Image.open(TIMEZONE_RESOURCES + 'bg.png').convert('RGB')
-BACK_ENHANCED_IM = reduce(lambda im, mod: mod[0](im).enhance(mod[1]),
-                          ((ImageEnhance.Color, 2),
-                           (ImageEnhance.Contrast, 1.3),
-                           (ImageEnhance.Brightness, 0.7)), BACK_IM)
+BACK_ENHANCED_IM = ImageEnhance.Color(BACK_IM).enhance(2)
+BACK_ENHANCED_IM = ImageEnhance.Contrast(BACK_ENHANCED_IM).enhance(1.3)
+BACK_ENHANCED_IM = ImageEnhance.Brightness(BACK_ENHANCED_IM).enhance(0.7)
 NIGHT_IM = Image.open(TIMEZONE_RESOURCES + 'night.png').convert('RGBA')
 LIGHTS_IM = Image.open(TIMEZONE_RESOURCES + 'lights.png').convert('RGBA')
 DOT_IM = Image.open(TIMEZONE_RESOURCES + 'dot.png').convert('RGBA')
