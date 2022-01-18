@@ -781,7 +781,7 @@ class Setup(object):
 
     def print_setup(self):
         if __debug__:
-            print("-------------------------------------------------------------------------"
+            print("-------------------------------------------------------------------------")
             print("language: %s" % self.language)
             print("timezone: %s" % self.timezone)
             print("keyboard: %s - %s (%s) - %s - %s (%s)" % (self.keyboard_model, self.keyboard_layout, self.keyboard_variant, self.keyboard_model_description, self.keyboard_layout_description, self.keyboard_variant_description))

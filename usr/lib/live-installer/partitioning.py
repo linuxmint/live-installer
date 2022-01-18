@@ -119,7 +119,7 @@ def build_partitions(_installer):
 def update_html_preview(selection):
     model, row = selection.get_selected()
     try: disk = model[row][IDX_PART_DISK]
-    except TypeError, IndexError: return  # no disk is selected or no disk available
+    except (TypeError, IndexError): return  # no disk is selected or no disk available
     if disk != installer._selected_disk:
         installer._selected_disk = disk
         installer.partitions_browser.load_html(model.get_html(disk), 'file:///')
