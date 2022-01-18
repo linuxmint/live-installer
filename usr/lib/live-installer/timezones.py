@@ -2,40 +2,32 @@
 
 import math
 import re
-from gi.repository import Gtk, Gdk, GObject, GdkPixbuf
-from subprocess import getoutput
+import subprocess
+from gi.repository import Gtk, Gdk
 from collections import defaultdict, namedtuple
 from datetime import datetime, timedelta
-from PIL import Image, ImageEnhance, ImageChops, ImageOps
+from PIL import Image
 
-TIMEZONE_RESOURCES = '/usr/share/live-installer/timezone/'
-CC_IM = Image.open(TIMEZONE_RESOURCES + 'cc.png').convert('RGB')
-BACK_IM = Image.open(TIMEZONE_RESOURCES + 'bg.png').convert('RGB')
-BACK_ENHANCED_IM = ImageEnhance.Color(BACK_IM).enhance(2)
-BACK_ENHANCED_IM = ImageEnhance.Contrast(BACK_ENHANCED_IM).enhance(1.3)
-BACK_ENHANCED_IM = ImageEnhance.Brightness(BACK_ENHANCED_IM).enhance(0.7)
-NIGHT_IM = Image.open(TIMEZONE_RESOURCES + 'night.png').convert('RGBA')
-LIGHTS_IM = Image.open(TIMEZONE_RESOURCES + 'lights.png').convert('RGBA')
-DOT_IM = Image.open(TIMEZONE_RESOURCES + 'dot.png').convert('RGBA')
+# Check map size, MAP_CENTER depends on this size to be exact
+MAP_SIZE = Image.open('/usr/share/live-installer/timezones.png').convert('RGB').size
+assert MAP_SIZE == (752, 384)
+MAP_CENTER = (351, 246)  # pixel coords where the equatorial line and the 0th meridian intersect
 
-MAP_CENTER = (351, 246)  # pixel center of where equatorial line and 0th meridian cross on our bg map; WARNING: cc.png relies on this exactly!
-MAP_SIZE = BACK_IM.size  # size of the map image
-assert MAP_SIZE == (752, 384), 'MAP_CENTER (et al.?) calculations depend on this size'
+ADJUST_HOURS_MINUTES = re.compile('([+-])([0-9][0-9])([0-9][0-9])')
+TZ_SPLIT_COORDS = re.compile('([+-][0-9]+)([+-][0-9]+)')
 
 def to_float(position, wholedigits):
     assert position and len(position) > 4 and wholedigits < 9
     return float(position[:wholedigits + 1] + '.' + position[wholedigits + 1:])
 
 def pixel_position(lat, lon):
-    """Transform latlong pair into map pixel coordinates"""
+    # Transform lat/long pair into map pixel coordinates
     dx = MAP_SIZE[0] / 2 / 180
     dy = MAP_SIZE[1] / 2 / 90
-    # formulae from http://en.wikipedia.org/wiki/Miller_cylindrical_projection
+    # formula from http://en.wikipedia.org/wiki/Miller_cylindrical_projection
     x = MAP_CENTER[0] + dx * lon
     y = MAP_CENTER[1] - dy * math.degrees(5/4 * math.log(math.tan(math.pi/4 + 2/5 * math.radians(lat))))
     return int(x), int(y)
-
-TZ_SPLIT_COORDS = re.compile('([+-][0-9]+)([+-][0-9]+)')
 
 timezones = []
 region_menus = {}
@@ -61,13 +53,13 @@ def build_timezones(_installer):
     update_local_time_label()
 
     # Populate timezones model
-    installer.builder.get_object("image_timezones").set_from_file(TIMEZONE_RESOURCES + 'bg.png')
+    installer.builder.get_object("image_timezones").set_from_file('/usr/share/live-installer/timezones.png')
 
     def autovivified():
         return defaultdict(autovivified)
     hierarchy = autovivified()
 
-    for line in getoutput("awk '/^[^#]/{ print $1,$2,$3 }' /usr/share/zoneinfo/zone.tab | sort -k3").split('\n'):
+    for line in subprocess.getoutput("awk '/^[^#]/{ print $1,$2,$3 }' /usr/share/zoneinfo/zone.tab | sort -k3").split('\n'):
         ccode, coords, name = line.split()
         lat, lon = TZ_SPLIT_COORDS.search(coords).groups()
         x, y = pixel_position(to_float(lat, 2), to_float(lon, 3))
@@ -114,9 +106,7 @@ def build_timezones(_installer):
 
     installer.builder.get_object('cont_button').connect('event', button_callback)
     installer.builder.get_object('cont_button').menu = cont_menu
-
     installer.builder.get_object('tz_button').connect('event', button_callback)
-
     installer.builder.get_object("event_timezones").connect('button-release-event', map_clicked)
 
 adjust_time = timedelta(0)
@@ -136,7 +126,6 @@ def update_local_time_label():
 
 def cont_menu_selected(widget, cont):
     installer.builder.get_object("cont_button").set_label(cont)
-
     installer.builder.get_object("tz_button").set_label(_('Select timezone'))
     installer.builder.get_object("tz_button").menu = region_menus[cont]
 
@@ -151,56 +140,9 @@ def map_clicked(widget, event, data=None):
     closest_timezone = min(timezones, key=lambda tz: math.sqrt((x - tz.x)**2 + (y - tz.y)**2))
     select_timezone(closest_timezone)
 
-# Timezone offsets color coded in cc.png
-# If someone can make this more robust (maintainable), I buy you lunch!
-TIMEZONE_COLORS = {
-    "2b0000": "-11.0",
-    "550000": "-10.0",
-    "66ff05": "-9.5",
-    "800000": "-9.0",
-    "aa0000": "-8.0",
-    "d40000": "-7.0",
-    "ff0001": "-6.0",
-    "66ff00": "-5.5",
-    "ff2a2a": "-5.0",
-    "c0ff00": "-4.5",
-    "ff5555": "-4.0",
-    "00ff00": "-3.5",
-    "ff8080": "-3.0",
-    "ffaaaa": "-2.0",
-    "ffd5d5": "-1.0",
-    "2b1100": "0.0",
-    "552200": "1.0",
-    "803300": "2.0",
-    "aa4400": "3.0",
-    "00ff66": "3.5",
-    "d45500": "4.0",
-    "00ccff": "4.5",
-    "ff6600": "5.0",
-    "0066ff": "5.5",
-    "00ffcc": "5.75",
-    "ff7f2a": "6.0",
-    "cc00ff": "6.5",
-    "ff9955": "7.0",
-    "ffb380": "8.0",
-    "ffccaa": "9.0",
-    "aa0044": "9.5",
-    "ffe6d5": "10.0",
-    "d10255": "10.5",
-    "d4aa00": "11.0",
-    "fc0266": "11.5",
-    "ffcc00": "12.0",
-    "fd2c80": "12.75",
-    "fc5598": "13.0",
-}
-
-ADJUST_HOURS_MINUTES = re.compile('([+-])([0-9][0-9])([0-9][0-9])')
-
-IS_WINTER = datetime.now().timetuple().tm_yday not in range(80, 264)  # today is between Mar 20 and Sep 20
-
 def select_timezone(tz):
     # Adjust time preview to current timezone (using `date` removes need for pytz package)
-    offset = getoutput('TZ={} date +%z'.format(tz.name))
+    offset = subprocess.getoutput('TZ={} date +%z'.format(tz.name))
     tzadj = ADJUST_HOURS_MINUTES.search(offset).groups()
     global adjust_time
     adjust_time = timedelta(hours=int(tzadj[0] + tzadj[1]),
@@ -228,20 +170,3 @@ def select_timezone(tz):
     if (x + width) > MAP_SIZE[0]: x = MAP_SIZE[0] - width
     if (y + height) > MAP_SIZE[1]: y = MAP_SIZE[1] - height
     installer.builder.get_object("fixed_timezones").move(time_label_box, x, y)
-
-def _get_x_offset():
-    now = datetime.utcnow().timetuple()
-    return - int((now.tm_hour*60 + now.tm_min - 12*60) / (24*60) * MAP_SIZE[0])  # night is centered at UTC noon (12)
-
-def _get_image(overlay, x, y):
-    """Superpose the picture of the timezone on the map"""
-    im = BACK_IM.copy()
-    if overlay:
-        overlay_im = Image.open(TIMEZONE_RESOURCES + overlay)
-        im.paste(BACK_ENHANCED_IM, overlay_im)
-    # night_im = ImageChops.offset(NIGHT_IM, _get_x_offset(), 0)
-    # if IS_WINTER: night_im = ImageOps.flip(night_im)
-    # im.paste(Image.alpha_composite(night_im, LIGHTS_IM), night_im)
-    im.paste(DOT_IM, (int(x - DOT_IM.size[1]/2), int(y - DOT_IM.size[0]/2)), DOT_IM)
-    return GdkPixbuf.Pixbuf.new_from_data(im.tobytes(), GdkPixbuf.Colorspace.RGB,
-                                        False, 8, im.size[0], im.size[1], im.size[0] * 3)
