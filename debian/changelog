@@ -1,3 +1,17 @@
+live-installer (2022.01.18) elsie; urgency=medium
+
+  [ Christophe Godart ]
+  * Don't install EFI packages if "Install GRUB" is not checked
+
+  [ Clement Lefebvre ]
+  * Keyboard layouts: Use super+space to switch layouts
+  * l10n: Update translations
+  * l10n: Update translations
+  * Migrate to Python3 (#119)
+  * Timezones: Clean up code and resources
+
+ -- Clement Lefebvre <root@linuxmint.com>  Tue, 18 Jan 2022 13:29:05 +0000
+
 live-installer (2020.03.13) debbie; urgency=medium
 
   [ Clement Lefebvre ]
