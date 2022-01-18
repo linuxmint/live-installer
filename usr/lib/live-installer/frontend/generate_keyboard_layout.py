@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/python3
 
 import subprocess
 import sys
@@ -17,9 +17,9 @@ if is_hidpi:
 #U+ , or +U+ ... to string
 def fromUnicodeString(raw):
     if raw[0:2] == "U+":
-        return unichr(int(raw[2:], 16))
+        return chr(int(raw[2:], 16))
     elif raw[0:2] == "+U":
-        return unichr(int(raw[3:], 16))
+        return chr(int(raw[3:], 16))
 
     return ""
 
@@ -91,7 +91,7 @@ class Keyboard(QWidget):
     def resizeEvent(self, re):
         self.space = 6
         self.usable_width = self.width()-6
-        self.key_w = (self.usable_width - 14 * self.space)/15
+        self.key_w = round((self.usable_width - 14 * self.space) / 15)
 
         self.setMaximumHeight(self.key_w*4 + self.space*5)
 
@@ -135,11 +135,11 @@ class Keyboard(QWidget):
 
                 p.setPen(QColor(0xff, 0xff, 0xff))
                 p.setFont(self.lowerFont)
-                p.drawText(rect, Qt.AlignLeft | Qt.AlignBottom, self.regular_text(k))
+                p.drawText(rect, int(Qt.AlignLeft | Qt.AlignBottom), self.regular_text(k))
 
                 p.setPen(QColor(0x9e, 0xde, 0x00))
                 p.setFont(self.upperFont)
-                p.drawText(rect, Qt.AlignLeft | Qt.AlignTop, self.shift_text(k))
+                p.drawText(rect, int(Qt.AlignLeft | Qt.AlignTop), self.shift_text(k))
 
                 rw = rw - space - kw
                 x = x + space + kw
@@ -242,7 +242,7 @@ class Keyboard(QWidget):
         cmd="ckbcomp -model pc106 -layout %s %s -compact" % (self.layout, variantParam)
         #print cmd
 
-        pipe = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=None)
+        pipe = subprocess.Popen(cmd, shell=True, encoding='utf-8', errors='ignore', stdout=subprocess.PIPE, stderr=None)
         cfile = pipe.communicate()[0]
 
         #clear the current codes

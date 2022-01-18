@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 
 from installer import InstallerEngine, Setup, NON_LATIN_KB_LAYOUTS
 from dialogs import MessageDialog, QuestionDialog, ErrorDialog, WarningDialog
@@ -7,12 +7,13 @@ import partitioning
 import gettext
 import os
 import re
-import commands
+import subprocess
 import sys
 import threading
 import time
 import parted
 import cairo
+import requests
 
 import gi
 gi.require_version('Gtk', '3.0')
@@ -267,7 +268,7 @@ class InstallerWindow:
         self.window.set_title(window_title)
 
         # Header
-        self.wizard_pages = range(12)
+        self.wizard_pages = list(range(12))
         self.wizard_pages[self.PAGE_WELCOME] = WizardPage(_("Welcome"), "mark-location-symbolic", "")
         self.wizard_pages[self.PAGE_LANGUAGE] = WizardPage(_("Language"), "preferences-desktop-locale-symbolic", _("What language would you like to use?"))
         self.wizard_pages[self.PAGE_TIMEZONE] = WizardPage(_("Timezone"), "mark-location-symbolic", _("Where are you?"))
@@ -494,15 +495,21 @@ class InstallerWindow:
     def show_customwarning(self, widget):
         self.activate_page(self.PAGE_CUSTOMWARNING)
 
+    def flag(self, lang, ccode):
+        if lang in ['eo', 'ia']:
+            ccode = f"_{ccode}"
+        path = f"{self.resource_dir}/flags/16/{ccode.lower()}.png"
+        if os.path.exists(path):
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file(path)
+        else:
+            pixbuf = None
+        return pixbuf
+
     def build_lang_list(self):
 
         # Try to find out where we're located...
         try:
-            from urllib import urlopen
-        except ImportError:  # py3
-            from urllib.request import urlopen
-        try:
-            lookup = str(urlopen('http://geoip.ubuntu.com/lookup').read())
+            lookup = requests.get('http://geoip.ubuntu.com/lookup', timeout=5).content.decode("UTF-8")
             self.cur_country_code = re.search('<CountryCode>(.*)</CountryCode>', lookup).group(1)
             self.cur_timezone = re.search('<TimeZone>(.*)</TimeZone>', lookup).group(1)
             if self.cur_country_code == 'None': self.cur_country_code = "US"
@@ -515,7 +522,7 @@ class InstallerWindow:
         iso_standard = "3166"
         if os.path.exists("/usr/share/xml/iso-codes/iso_3166-1.xml"):
             iso_standard = "3166-1"
-        for line in commands.getoutput("isoquery --iso %s | cut -f1,4-" % iso_standard).split('\n'):
+        for line in subprocess.getoutput("isoquery --iso %s | cut -f1,4-" % iso_standard).split('\n'):
             ccode, cname = line.split(None, 1)
             countries[ccode] = cname
 
@@ -524,25 +531,22 @@ class InstallerWindow:
         iso_standard = "639"
         if os.path.exists("/usr/share/xml/iso-codes/iso_639-2.xml"):
             iso_standard = "639-2"
-        for line in commands.getoutput("isoquery --iso %s | cut -f3,4-" % iso_standard).split('\n'):
+        for line in subprocess.getoutput("isoquery --iso %s | cut -f3,4-" % iso_standard).split('\n'):
             cols = line.split(None, 1)
             if len(cols) > 1:
                 name = cols[1].replace(";", ",")
                 languages[cols[0]] = name
-        for line in commands.getoutput("isoquery --iso %s | cut -f1,4-" % iso_standard).split('\n'):
+        for line in subprocess.getoutput("isoquery --iso %s | cut -f1,4-" % iso_standard).split('\n'):
             cols = line.split(None, 1)
             if len(cols) > 1:
-                if cols[0] not in languages.keys():
+                if cols[0] not in languages:
                     name = cols[1].replace(";", ",")
                     languages[cols[0]] = name
 
         # Construct language selection model
         model = Gtk.ListStore(str, str, GdkPixbuf.Pixbuf, str)
         set_iter = None
-        flag_path = lambda ccode: self.resource_dir + '/flags/16/' + ccode.lower() + '.png'
-        from utils import memoize
-        flag = memoize(lambda ccode: GdkPixbuf.Pixbuf.new_from_file(flag_path(ccode)))
-        for locale in commands.getoutput("awk -F'[@ .]' '/UTF-8/{ print $1 }' /usr/share/i18n/SUPPORTED | uniq").split('\n'):
+        for locale in subprocess.getoutput("awk -F'[@ .]' '/UTF-8/{ print $1 }' /usr/share/i18n/SUPPORTED | uniq").split('\n'):
             if '_' in locale:
                 lang, ccode = locale.split('_')
                 language = lang
@@ -562,7 +566,7 @@ class InstallerWindow:
                 except:
                     pass
                 country = ''
-            pixbuf = flag(ccode) if not lang in 'eo ia' else flag('_' + lang)
+            pixbuf = self.flag(lang, ccode)
             iter = model.append((language, country, pixbuf, locale))
             if (ccode == self.cur_country_code and
                 (not set_iter or
@@ -585,7 +589,7 @@ class InstallerWindow:
         ''' Do some xml kung-fu and load the keyboard stuffs '''
         # Determine the layouts in use
         (keyboard_geom,
-         self.setup.keyboard_layout) = commands.getoutput("setxkbmap -query | awk '/^(model|layout)/{print $2}'").split()
+         self.setup.keyboard_layout) = subprocess.getoutput("setxkbmap -query | awk '/^(model|layout)/{print $2}'").split()
         # Build the models
         from collections import defaultdict
         def _ListStore_factory():
@@ -641,7 +645,7 @@ class InstallerWindow:
         ''' Called whenever someone updates the language '''
         model = treeview.get_model()
         selection = treeview.get_selection()
-        if selection.count_selected_rows > 0:
+        if selection.count_selected_rows() > 0:
             (model, iter) = selection.get_selected()
             if iter is not None:
                 self.setup.language = model.get_value(iter, 3)
@@ -756,7 +760,7 @@ class InstallerWindow:
         else:
             hidpi = "normal"
 
-        os.system("python /usr/lib/live-installer/frontend/generate_keyboard_layout.py %s %s %s %s" % (layout, variant, filename, hidpi))
+        os.system("/usr/lib/live-installer/frontend/generate_keyboard_layout.py %s %s %s %s" % (layout, variant, filename, hidpi))
         self._on_layout_generated()
 
     @idle
@@ -1105,11 +1109,11 @@ class InstallerWindow:
 
     @asynchronous
     def do_install(self):
-        print " ## INSTALLATION "
-        ''' Actually perform the installation .. '''
+        print(" ## INSTALLATION ")
+        print(' Actually perform the installation .. ')
 
         if __debug__:
-            print " ## DEBUG MODE - INSTALLATION PROCESS NOT LAUNCHED"
+            print(" ## DEBUG MODE - INSTALLATION PROCESS NOT LAUNCHED")
             time.sleep(200)
             Gtk.main_quit()
             sys.exit(0)
@@ -1125,8 +1129,8 @@ class InstallerWindow:
 
         try:
             self.installer.start_installation()
-        except Exception, detail1:
-            print detail1
+        except Exception as detail1:
+            print(detail1)
             do_try_finish_install = False
             self.show_error_dialog(_("Installation error"), str(detail1))
 
@@ -1143,8 +1147,8 @@ class InstallerWindow:
 
             try:
                 self.installer.finish_installation()
-            except Exception, detail1:
-                print detail1
+            except Exception as detail1:
+                print(detail1)
                 self.show_error_dialog(_("Installation error"), str(detail1))
 
             # show a message dialog thingum
@@ -1160,7 +1164,7 @@ class InstallerWindow:
             while(self.showing_last_dialog):
                 time.sleep(0.1)
 
-            print " ## INSTALLATION COMPLETE "
+            print(" ## INSTALLATION COMPLETE ")
 
         Gtk.main_quit()
         sys.exit(0)

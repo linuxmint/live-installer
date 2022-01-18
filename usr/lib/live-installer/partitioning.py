@@ -1,8 +1,6 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # coding: utf-8
 #
-from __future__ import division
-
 import os
 import re
 import sys
@@ -12,7 +10,6 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk, GObject
 import parted
-import commands
 import gettext
 import time
 
@@ -25,7 +22,7 @@ def idle(func):
     return wrapper
 
 def shell_exec(command):
-    return subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
+    return subprocess.Popen(command, shell=True, encoding='utf-8', errors='ignore', stdout=subprocess.PIPE)
 
 def getoutput(command):
     return shell_exec(command).stdout.read().strip()
@@ -68,20 +65,20 @@ with open(RESOURCE_DIR + 'disk-partitions.html') as f:
 def get_disks():
     disks = []
     exclude_devices = ['/dev/sr0', '/dev/sr1', '/dev/cdrom', '/dev/dvd', '/dev/fd0']
-    live_device = commands.getoutput("findmnt -n -o source /run/live/medium").split('\n')[0]
+    live_device = subprocess.getoutput("findmnt -n -o source /run/live/medium").split('\n')[0]
     live_device = re.sub('[0-9]+$', '', live_device) # remove partition numbers if any
     if live_device is not None and live_device.startswith('/dev/'):
         exclude_devices.append(live_device)
-        print "Excluding %s (detected as the live device)" % live_device
+        print("Excluding %s (detected as the live device)" % live_device)
     lsblk = shell_exec('LC_ALL=en_US.UTF-8 lsblk -rindo TYPE,NAME,RM,SIZE,MODEL | sort -k3,2')
     for line in lsblk.stdout:
         try:
             elements = line.strip().split(" ", 4)
             if len(elements) < 4:
-                print "Can't parse blkid output: %s" % elements
+                print("Can't parse blkid output: %s" % elements)
                 continue
             elif len(elements) < 5:
-                print "Can't find model in blkid output: %s" % elements
+                print("Can't find model in blkid output: %s" % elements)
                 type, device, removable, size, model = elements[0], elements[1], elements[2], elements[3], elements[1]
             else:
                 type, device, removable, size, model = elements
@@ -96,8 +93,8 @@ def get_disks():
                 if int(removable):
                     description = _('Removable:') + ' ' + description
                 disks.append((device, description))
-        except Exception, detail:
-            print "Could not parse blkid output: %s (%s)" % (line, detail)
+        except Exception as detail:
+            print("Could not parse blkid output: %s (%s)" % (line, detail))
     return disks
 
 def build_partitions(_installer):
@@ -105,14 +102,14 @@ def build_partitions(_installer):
     installer = _installer
     installer.window.get_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))  # "busy" cursor
     installer.window.set_sensitive(False)
-    print "Starting PartitionSetup()"
+    print("Starting PartitionSetup()")
     partition_setup = PartitionSetup()
-    print "Finished PartitionSetup()"
+    print("Finished PartitionSetup()")
     if partition_setup.disks:
         installer._selected_disk = partition_setup.disks[0][0]
-        print "Loading HTML string"
+        print("Loading HTML string")
         installer.partitions_browser.load_html(partition_setup.get_html(installer._selected_disk), 'file:///')
-    print "Showing the partition screen"
+    print("Showing the partition screen")
     installer.builder.get_object("scrolled_partitions").show_all()
     installer.builder.get_object("treeview_disks").set_model(partition_setup)
     installer.builder.get_object("treeview_disks").expand_all()
@@ -122,7 +119,7 @@ def build_partitions(_installer):
 def update_html_preview(selection):
     model, row = selection.get_selected()
     try: disk = model[row][IDX_PART_DISK]
-    except TypeError, IndexError: return  # no disk is selected or no disk available
+    except (TypeError, IndexError): return  # no disk is selected or no disk available
     if disk != installer._selected_disk:
         installer._selected_disk = disk
         installer.partitions_browser.load_html(model.get_html(disk), 'file:///')
@@ -200,15 +197,15 @@ def manually_edit_partitions(widget):
     preferred = model[iter][-1] if iter else ''  # prefer disk currently selected and show it first in gparted
     disks = ' '.join(sorted((disk for disk,desc in model.disks), key=lambda disk: disk != preferred))
     os.system('umount ' + disks)  # umount disks (if possible) so gparted works out-of-the-box
-    os.popen('gparted {} &'.format(disks))
+    os.system('gparted {} &'.format(disks))
 
 def build_grub_partitions():
     grub_model = Gtk.ListStore(str)
     try: preferred = [p.partition.disk.device.path for p in installer.setup.partitions if p.mount_as == '/'][0]
     except IndexError: preferred = ''
     devices = sorted(list(d[0] for d in installer.setup.partition_setup.disks) +
-                     list(filter(None, (p.name for p in installer.setup.partitions))),
-                     key=lambda path: path != preferred and path)
+                     list([_f for _f in (p.name for p in installer.setup.partitions) if _f]),
+                     key=lambda path: path != None and path != preferred)
     for p in devices: grub_model.append([p])
     installer.builder.get_object("combobox_grub").set_model(grub_model)
     installer.builder.get_object("combobox_grub").set_active(0)
@@ -228,20 +225,20 @@ class PartitionSetup(Gtk.TreeStore):
         installer.setup.partition_setup = self
         self.html_disks, self.html_chunks = {}, defaultdict(list)
 
-        os.popen('mkdir -p ' + TMP_MOUNTPOINT)
+        os.system('mkdir -p ' + TMP_MOUNTPOINT)
         installer.setup.gptonefi = is_efi_supported()
         self.disks = get_disks()
-        print 'Disks: ', self.disks
+        print('Disks: ', self.disks)
         already_done_full_disk_format = False
         for disk_path, disk_description in self.disks:
-            print "    Analyzing path='%s' description='%s'" % (disk_path, disk_description)
+            print("    Analyzing path='%s' description='%s'" % (disk_path, disk_description))
             disk_device = parted.getDevice(disk_path)
-            print "      - Found the device..."
+            print("      - Found the device...")
             try:
                 disk = parted.Disk(disk_device)
-                print "      - Found the disk..."
-            except Exception, detail:
-                print "      - Found an issue while looking for the disk: %s" % detail
+                print("      - Found the disk...")
+            except Exception as detail:
+                print("      - Found an issue while looking for the disk: %s" % detail)
                 from frontend.gtk_interface import QuestionDialog
                 dialog = QuestionDialog(_("Installation Tool"),
                                         _("No partition table was found on the hard drive: %s. Do you want the installer to create a set of partitions for you? Note: This will ERASE ALL DATA present on this disk.") % disk_description,
@@ -249,36 +246,36 @@ class PartitionSetup(Gtk.TreeStore):
                 if not dialog: continue  # the user said No, skip this disk
                 try:
                     installer.window.get_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
-                    print "Performing a full disk format"
+                    print("Performing a full disk format")
                     if not already_done_full_disk_format:
                         assign_mount_format = full_disk_format(disk_device)
                         already_done_full_disk_format = True
                     else:
                         full_disk_format(disk_device) # Format but don't assign mount points
                     installer.window.get_window().set_cursor(None)
-                    print "Done full disk format"
+                    print("Done full disk format")
                     disk = parted.Disk(disk_device)
-                    print "Got disk!"
+                    print("Got disk!")
                 except Exception as second_exception:
                     installer.window.get_window().set_cursor(None)
-                    print "      - Found another issue while looking for the disk: %s" % detail
+                    print("      - Found another issue while looking for the disk: %s" % detail)
                     continue # Something is wrong with this disk, skip it
 
             disk_iter = self.append(None, (disk_description, '', '', '', '', '', '', None, disk_path))
-            print "      - Looking at partitions..."
+            print("      - Looking at partitions...")
             free_space_partition = disk.getFreeSpacePartitions()
-            print "           -> %d free space partitions" % len(free_space_partition)
+            print("           -> %d free space partitions" % len(free_space_partition))
             primary_partitions = disk.getPrimaryPartitions()
-            print "           -> %d primary partitions" % len(primary_partitions)
+            print("           -> %d primary partitions" % len(primary_partitions))
             logical_partitions = disk.getLogicalPartitions()
-            print "           -> %d logical partitions" % len(logical_partitions)
+            print("           -> %d logical partitions" % len(logical_partitions))
             raid_partitions = disk.getRaidPartitions()
-            print "           -> %d raid partitions" % len(raid_partitions)
+            print("           -> %d raid partitions" % len(raid_partitions))
             lvm_partitions = disk.getLVMPartitions()
-            print "           -> %d LVM partitions" % len(lvm_partitions)
+            print("           -> %d LVM partitions" % len(lvm_partitions))
 
-            partition_set = set(free_space_partition + primary_partitions + logical_partitions + raid_partitions + lvm_partitions)
-            print "           -> set of %d partitions" % len(partition_set)
+            partition_set = tuple(free_space_partition + primary_partitions + logical_partitions + raid_partitions + lvm_partitions)
+            print("           -> set of %d partitions" % len(partition_set))
 
             partitions = []
             for partition in partition_set:
@@ -291,18 +288,18 @@ class PartitionSetup(Gtk.TreeStore):
                     print("skipping ", partition.path, part.raw_size)
             partitions = sorted(partitions, key=lambda part: part.partition.geometry.start)
 
-            print "      - Found partitions..."
+            print("      - Found partitions...")
             try: # assign mount_as and format_as if disk was just auto-formatted
                 for partition, (mount_as, format_as) in zip(partitions, assign_mount_format):
                     partition.mount_as = mount_as
                     partition.format_as = format_as
                 del assign_mount_format
             except NameError: pass
-            print "      - Iterating partitions..."
+            print("      - Iterating partitions...")
             # Needed to fix the 1% minimum Partition.size_percent
             sum_size_percent = sum(p.size_percent for p in partitions) + .5  # .5 for good measure
             for partition in partitions:
-                print "        . Appending partition %s..." % partition.name
+                print("        . Appending partition %s..." % partition.name)
                 partition.size_percent = round(partition.size_percent / sum_size_percent * 100, 1)
                 installer.setup.partitions.append(partition)
                 self.append(disk_iter, (partition.name,
@@ -315,7 +312,7 @@ class PartitionSetup(Gtk.TreeStore):
                                         partition,
                                         disk_path))
 
-            print "      - Loading HTML view..."
+            print("      - Loading HTML view...")
             self.html_disks[disk_path] = DISK_TEMPLATE.format(PARTITIONS_HTML=''.join(PARTITION_TEMPLATE.format(p) for p in partitions))
 
     def get_html(self, disk):
@@ -364,7 +361,7 @@ def full_disk_format(device, create_boot=False, create_swap=True):
             size_mb = partition[4]
             end = '{}MB'.format(start_mb + size_mb) if size_mb else '100%'
             mkpart_cmd = 'mkpart primary {}MB {}'.format(start_mb, end)
-            print mkpart_cmd
+            print(mkpart_cmd)
             run_parted(mkpart_cmd)
             partition_path = "%s%s%d" % (device.path, partition_prefix, partition_number)
             num_tries = 0
@@ -373,7 +370,7 @@ def full_disk_format(device, create_boot=False, create_swap=True):
                     break
                 if num_tries < 5:
                     num_tries += 1
-                    print ("Could not find %s, waiting 1s..." % partition_path)
+                    print("Could not find %s, waiting 1s..." % partition_path)
                     os.system("sync")
                     time.sleep(1)
                 else:
@@ -381,7 +378,7 @@ def full_disk_format(device, create_boot=False, create_swap=True):
                     Gtk.main_quit()
                     sys.exit(1)
             mkfs = mkfs.format(partition_path)
-            print mkfs
+            print(mkfs)
             os.system(mkfs)
             start_mb += size_mb + 1
     if installer.setup.gptonefi:
@@ -403,22 +400,22 @@ class Partition(object):
         assert partition.type not in (parted.PARTITION_METADATA, parted.PARTITION_EXTENDED)
         self.path = str(partition.path)
 
-        print "              -> Building partition object for %s" % self.path
+        print("              -> Building partition object for %s" % self.path)
 
         self.partition = partition
         self.length = partition.getLength()
-        print "                  . length %d" % self.length
+        print("                  . length %d" % self.length)
 
         self.size_percent = max(1, round(80*self.length/partition.disk.device.getLength(), 1))
-        print "                  . size_percent %d" % self.size_percent
+        print("                  . size_percent %d" % self.size_percent)
 
         self.size = to_human_readable(partition.getLength('B'))
         self.raw_size = partition.getLength('B')
-        print "                  . size %s" % self.size
+        print("                  . size %s" % self.size)
 
         # if not normal partition with /dev/sdXN path, set its name to '' and discard it from model
         self.name = self.path if partition.number != -1 else ''
-        print "                  . name %s" % self.name
+        print("                  . name %s" % self.name)
 
         try:
             self.type = partition.fileSystem.type
@@ -426,7 +423,7 @@ class Partition(object):
                 if fs in self.type:
                     self.type = fs
             self.style = self.type
-            print "                  . type %s" % self.type
+            print("                  . type %s" % self.type)
         except AttributeError:  # non-formatted partitions
             self.type = {
                 parted.PARTITION_LVM: 'LVM',
@@ -444,28 +441,28 @@ class Partition(object):
                 parted.PARTITION_SWAP: 'swap',
                 parted.PARTITION_FREESPACE: 'freespace',
             }.get(partition.type, '')
-            print "                  . type %s" % self.type
+            print("                  . type %s" % self.type)
 
         if "swap" in self.type:
             self.mount_as = SWAP_MOUNT_POINT
 
         # identify partition's description and used space
         try:
-            print "                  . About to mount it..."
+            print("                  . About to mount it...")
             os.system('mount --read-only {} {}'.format(self.path, TMP_MOUNTPOINT))
             size, free, self.used_percent, mount_point = getoutput("df {0} | grep '^{0}' | awk '{{print $2,$4,$5,$6}}' | tail -1".format(self.path)).split(None, 3)
             self.raw_size = int(size)*1024
-            print "                  . size %s, free %s, self.used_percent %s, mount_point %s" % (size, free, self.used_percent, mount_point)
+            print("                  . size %s, free %s, self.used_percent %s, mount_point %s" % (size, free, self.used_percent, mount_point))
         except ValueError:
-            print "                  . value error!"
+            print("                  . value error!")
             if "swap" in self.type:
                 self.os_fs_info, self.description, self.free_space, self.used_percent = ': '+self.type, 'swap', '', 0
             else:
-                print 'WARNING: Partition {} or type {} failed to mount!'.format(self.path, partition.type)
+                print('WARNING: Partition {} or type {} failed to mount!'.format(self.path, partition.type))
                 self.os_fs_info, self.description, self.free_space, self.used_percent = ': '+self.type, '', '', 0
-            print "                  . self.os_fs_info %s, self.description %s, self.free_space %s, self.used_percent %s" % (self.os_fs_info, self.description, self.free_space, self.used_percent)
+            print("                  . self.os_fs_info %s, self.description %s, self.free_space %s, self.used_percent %s" % (self.os_fs_info, self.description, self.free_space, self.used_percent))
         else:
-            print "                  . About to find more about it..."
+            print("                  . About to find more about it...")
             self.size = to_human_readable(int(size)*1024)  # for mountable partitions, more accurate than the getLength size above
             self.free_space = to_human_readable(int(free)*1024)  # df returns values in 1024B-blocks by default
             self.used_percent = self.used_percent.strip('%') or 0
@@ -503,16 +500,16 @@ class Partition(object):
                                 description = 'EFI System Partition'
                                 self.mount_as = EFI_MOUNT_POINT
                                 break
-                except Exception, detail:
+                except Exception as detail:
                     # best effort
-                    print "Could not read partition flags for %s: %s" % (self.path, detail)
+                    print("Could not read partition flags for %s: %s" % (self.path, detail))
             self.description = description
             self.os_fs_info = ': {0.description} ({0.type}; {0.size}; {0.free_space})'.format(self) if description else ': ' + self.type
-            print "                  . self.description %s self.os_fs_info %s" % (self.description, self.os_fs_info)
+            print("                  . self.description %s self.os_fs_info %s" % (self.description, self.os_fs_info))
         finally:
-            print "                  . umounting it"
+            print("                  . umounting it")
             os.system('umount ' + TMP_MOUNTPOINT + ' 2>/dev/null')
-            print "                  . done"
+            print("                  . done")
 
         self.html_name = self.name.split('/')[-1]
         self.html_description = self.description
@@ -544,7 +541,7 @@ class Partition(object):
         }.get(self.type, '#a9a9a9')
 
     def print_partition(self):
-        print "Device: %s, format as: %s, mount as: %s" % (self.path, self.format_as, self.mount_as)
+        print("Device: %s, format as: %s, mount as: %s" % (self.path, self.format_as, self.mount_as))
 
 
 class PartitionDialog(object):

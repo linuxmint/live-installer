@@ -1,10 +1,9 @@
 # coding: utf-8
 
-from __future__ import division
 import math
 import re
 from gi.repository import Gtk, Gdk, GObject, GdkPixbuf
-from commands import getoutput
+from subprocess import getoutput
 from collections import defaultdict, namedtuple
 from datetime import datetime, timedelta
 from PIL import Image, ImageEnhance, ImageChops, ImageOps
@@ -12,10 +11,9 @@ from PIL import Image, ImageEnhance, ImageChops, ImageOps
 TIMEZONE_RESOURCES = '/usr/share/live-installer/timezone/'
 CC_IM = Image.open(TIMEZONE_RESOURCES + 'cc.png').convert('RGB')
 BACK_IM = Image.open(TIMEZONE_RESOURCES + 'bg.png').convert('RGB')
-BACK_ENHANCED_IM = reduce(lambda im, mod: mod[0](im).enhance(mod[1]),
-                          ((ImageEnhance.Color, 2),
-                           (ImageEnhance.Contrast, 1.3),
-                           (ImageEnhance.Brightness, 0.7)), BACK_IM)
+BACK_ENHANCED_IM = ImageEnhance.Color(BACK_IM).enhance(2)
+BACK_ENHANCED_IM = ImageEnhance.Contrast(BACK_ENHANCED_IM).enhance(1.3)
+BACK_ENHANCED_IM = ImageEnhance.Brightness(BACK_ENHANCED_IM).enhance(0.7)
 NIGHT_IM = Image.open(TIMEZONE_RESOURCES + 'night.png').convert('RGBA')
 LIGHTS_IM = Image.open(TIMEZONE_RESOURCES + 'lights.png').convert('RGBA')
 DOT_IM = Image.open(TIMEZONE_RESOURCES + 'dot.png').convert('RGBA')
@@ -23,25 +21,6 @@ DOT_IM = Image.open(TIMEZONE_RESOURCES + 'dot.png').convert('RGBA')
 MAP_CENTER = (351, 246)  # pixel center of where equatorial line and 0th meridian cross on our bg map; WARNING: cc.png relies on this exactly!
 MAP_SIZE = BACK_IM.size  # size of the map image
 assert MAP_SIZE == (752, 384), 'MAP_CENTER (et al.?) calculations depend on this size'
-
-def debug(func):
-    '''Decorator to print function call details - parameters names and effective values'''
-    def wrapper(*func_args, **func_kwargs):
-        # print 'func_code.co_varnames =', func.func_code.co_varnames
-        # print 'func_code.co_argcount =', func.func_code.co_argcount
-        # print 'func_args =', func_args
-        # print 'func_kwargs =', func_kwargs
-        params = []
-        for argNo in range(func.func_code.co_argcount):
-            argName = func.func_code.co_varnames[argNo]
-            argValue = func_args[argNo] if argNo < len(func_args) else func.func_defaults[argNo - func.func_code.co_argcount]
-            params.append((argName, argValue))
-        for argName, argValue in func_kwargs.items():
-            params.append((argName, argValue))
-        params = [ argName + ' = ' + repr(argValue) for argName, argValue in params]
-        #print(func.__name__ + '(' +  ', '.join(params) + ')')
-        return func(*func_args, **func_kwargs)
-    return wrapper
 
 def to_float(position, wholedigits):
     assert position and len(position) > 4 and wholedigits < 9
@@ -63,7 +42,6 @@ region_menus = {}
 
 Timezone = namedtuple('Timezone', 'name ccode x y'.split())
 
-@debug
 def build_timezones(_installer):
     global installer, time_label, time_label_box, timezone
     installer = _installer
