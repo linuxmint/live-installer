@@ -1,3 +1,9 @@
+live-installer (2022.01.19) elsie; urgency=medium
+
+  * Launchers: Bring back -O option
+
+ -- Clement Lefebvre <root@linuxmint.com>  Wed, 19 Jan 2022 17:21:06 +0000
+
 live-installer (2022.01.18) elsie; urgency=medium
 
   [ Christophe Godart ]
