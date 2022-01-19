@@ -1,3 +1,5 @@
 #!/bin/sh
 
-/usr/lib/live-installer/main.py --expert-mode "$@"
+optimize='OO'; case "$*" in *--debug*) unset optimize; esac
+
+python3 -tt${optimize} /usr/lib/live-installer/main.py --expert-mode "$@"
