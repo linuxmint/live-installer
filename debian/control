@@ -27,5 +27,6 @@ Depends: ${misc:Depends}, gir1.2-webkit2-4.0
   , isoquery, iso-codes, locales
   , adduser
   , rsync
+  , circle-flags-svg
 Description: Live Installer
  A live installer

@@ -495,14 +495,13 @@ class InstallerWindow:
     def show_customwarning(self, widget):
         self.activate_page(self.PAGE_CUSTOMWARNING)
 
-    def flag(self, lang, ccode):
-        if lang in ['eo', 'ia']:
-            ccode = f"_{ccode}"
-        path = f"{self.resource_dir}/flags/16/{ccode.lower()}.png"
-        if os.path.exists(path):
-            pixbuf = GdkPixbuf.Pixbuf.new_from_file(path)
-        else:
-            pixbuf = None
+    def flag(self, lang, language, ccode):
+        print (language.lower())
+        for filename in [language.lower(), ccode.lower(), "united_nations"]:
+            path = f"/usr/share/circle-flags-svg/{filename}.svg"
+            if os.path.exists(path):
+                break
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(path, 18, 18)
         return pixbuf
 
     def build_lang_list(self):
@@ -566,9 +565,9 @@ class InstallerWindow:
                 except:
                     pass
                 country = ''
-            pixbuf = self.flag(lang, ccode)
             language = language.split(",")[0].split("(")[0]
             country = country.split(",")[0].split("(")[0]
+            pixbuf = self.flag(lang, language, ccode)
             iter = model.append((language, country, pixbuf, locale))
             if (ccode == self.cur_country_code and
                 (not set_iter or
