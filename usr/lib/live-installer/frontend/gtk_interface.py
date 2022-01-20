@@ -56,6 +56,8 @@ class InstallerWindow:
 
         self.expert_mode = expert_mode
 
+        Gtk.Settings.get_default().set_property("gtk-application-prefer-dark-theme", True)
+
         # disable the screensaver
         if not __debug__:
             os.system("killall cinnamon-screen")
@@ -80,8 +82,7 @@ class InstallerWindow:
         self.window.connect("delete-event", self.quit_cb)
 
         # wizard pages
-        (self.PAGE_WELCOME,
-         self.PAGE_LANGUAGE,
+        (self.PAGE_LANGUAGE,
          self.PAGE_TIMEZONE,
          self.PAGE_KEYBOARD,
          self.PAGE_USER,
@@ -91,7 +92,7 @@ class InstallerWindow:
          self.PAGE_OVERVIEW,
          self.PAGE_CUSTOMWARNING,
          self.PAGE_CUSTOMPAUSED,
-         self.PAGE_INSTALL) = range(12)
+         self.PAGE_INSTALL) = range(11)
 
         # set the button events (wizard_cb)
         self.builder.get_object("button_next").connect("clicked", self.wizard_cb, False)
@@ -227,9 +228,6 @@ class InstallerWindow:
         # build partition list
         self.should_pulse = False
 
-        # make sure we're on the right page (no pun.)
-        self.activate_page(0)
-
         # initiate the slide show
         # We have no significant browsing interface, so there isn't much point
         # in WebKit creating a memory-hungry cache.
@@ -243,7 +241,17 @@ class InstallerWindow:
         self.partitions_browser.set_size_request(-1, 80)
         self.builder.get_object("scrolled_partitions").add(self.partitions_browser)
 
+        self.builder.get_object("button_lets_go").connect("clicked", self.on_lets_go_clicked)
+
         self.window.show_all()
+
+    def on_lets_go_clicked(self, button):
+        self.activate_page(self.PAGE_LANGUAGE)
+        self.builder.get_object("stack").set_visible_child_name("page_notebook")
+        GObject.timeout_add(400, self.remove_dark_mode)
+
+    def remove_dark_mode(self):
+        Gtk.Settings.get_default().set_property("gtk-application-prefer-dark-theme", False)
 
     def on_context_menu(self, unused_web_view, unused_context_menu,
                     unused_event, unused_hit_test_result):
@@ -251,25 +259,25 @@ class InstallerWindow:
         return True
 
     def i18n(self):
-
-        window_title = _("Installer")
+        subtitle = _("Installer")
         with open("/etc/lsb-release") as f:
             config = dict([line.strip().split("=") for line in f])
-            window_title = "%s - %s" % (config['DISTRIB_DESCRIPTION'].replace('"', ''), _("Installer"))
+            title = config['DISTRIB_DESCRIPTION'].replace('"', '')
 
         if __debug__:
-            window_title += ' (debug)'
+            subtitle += ' - debug mode'
         self.builder.get_object("button_expert").set_no_show_all(True)
         if self.expert_mode:
-            window_title += ' (expert mode)'
+            subtitle += ' - expert mode'
             self.builder.get_object("button_expert").show()
         else:
             self.builder.get_object("button_expert").hide()
-        self.window.set_title(window_title)
+
+        self.builder.get_object("headerbar").set_title("LMDE 5 'Elsie'")
+        self.builder.get_object("headerbar").set_subtitle(subtitle)
 
         # Header
-        self.wizard_pages = list(range(12))
-        self.wizard_pages[self.PAGE_WELCOME] = WizardPage(_("Welcome"), "mark-location-symbolic", "")
+        self.wizard_pages = list(range(11))
         self.wizard_pages[self.PAGE_LANGUAGE] = WizardPage(_("Language"), "preferences-desktop-locale-symbolic", _("What language would you like to use?"))
         self.wizard_pages[self.PAGE_TIMEZONE] = WizardPage(_("Timezone"), "mark-location-symbolic", _("Where are you?"))
         self.wizard_pages[self.PAGE_KEYBOARD] = WizardPage(_("Keyboard layout"), "preferences-desktop-keyboard-symbolic", _("What is your keyboard layout?"))
@@ -288,7 +296,7 @@ class InstallerWindow:
         self.builder.get_object("button_next").set_label(_("Next"))
 
         # Welcome page
-        self.builder.get_object("label_welcome1").set_text(_("Welcome to the LMDE Installer."))
+        self.builder.get_object("label_welcome1").set_text(_("Welcome to %s!") % "LMDE 5")
         self.builder.get_object("label_welcome2").set_text(_("This program will ask you some questions and set up LMDE on your computer."))
 
         # Language page
@@ -783,8 +791,9 @@ class InstallerWindow:
         return False
 
     def activate_page(self, index):
+
         # progress images
-        for i in range(9):
+        for i in range(8):
             img = self.builder.get_object("progress_%d" % i)
             if i <= index:
                 img.set_from_file("/usr/share/icons/live-installer-progress-dot-on.png")
@@ -796,6 +805,10 @@ class InstallerWindow:
         self.builder.get_object("help_question").set_text(self.wizard_pages[index].question)
         self.builder.get_object("notebook1").set_current_page(index)
         # TODO: move other page-depended actions from the wizard_cb into here below
+        if index == self.PAGE_LANGUAGE:
+            self.builder.get_object("button_back").hide()
+        else:
+            self.builder.get_object("button_back").show()
         if index == self.PAGE_PARTITIONS:
             self.setup.skip_mount = False
         if index == self.PAGE_CUSTOMWARNING:
@@ -808,9 +821,7 @@ class InstallerWindow:
 
         # check each page for errors
         if(not goback):
-            if (sel == self.PAGE_WELCOME):
-                self.activate_page(self.PAGE_LANGUAGE)
-            elif(sel == self.PAGE_LANGUAGE):
+            if(sel == self.PAGE_LANGUAGE):
                 if self.setup.language is None:
                     WarningDialog(_("Installer"), _("Please choose a language"))
                 else:
@@ -1046,8 +1057,6 @@ class InstallerWindow:
                 self.activate_page(self.PAGE_TIMEZONE)
             elif(sel == self.PAGE_TIMEZONE):
                 self.activate_page(self.PAGE_LANGUAGE)
-            elif(sel == self.PAGE_LANGUAGE):
-                self.activate_page(self.PAGE_WELCOME)
 
     def show_overview(self):
         bold = lambda str: '<b>' + str + '</b>'
