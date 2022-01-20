@@ -16,7 +16,7 @@ def load_config(config_path):
         file = open(config_path, "r")
         content = file.read()
         inf("#Reading yaml file:" + config_path)
-        log(content)
+        log("Loading: "+config_path)
     else:
         err("{} doesn't exists. Please create config file!".format(config_path))
         return {}
