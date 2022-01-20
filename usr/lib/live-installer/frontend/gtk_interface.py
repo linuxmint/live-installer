@@ -109,7 +109,7 @@ class InstallerWindow:
         self.builder.get_object("treeview_language_list").append_column(self.language_column)
 
         ren = Gtk.CellRendererText()
-        self.country_column = Gtk.TreeViewColumn(_("Country"), ren, text=1)
+        self.country_column = Gtk.TreeViewColumn(_("Location"), ren, text=1)
         self.country_column.set_sort_column_id(1)
         self.country_column.set_expand(True)
         self.country_column.set_resizable(True)
@@ -293,7 +293,7 @@ class InstallerWindow:
 
         # Language page
         self.language_column.set_title(_("Language"))
-        self.country_column.set_title(_("Country"))
+        self.country_column.set_title(_("Location"))
 
         # Keyboard page
         self.builder.get_object("label_kb_model").set_label(_("Keyboard Model:"))
@@ -567,6 +567,8 @@ class InstallerWindow:
                     pass
                 country = ''
             pixbuf = self.flag(lang, ccode)
+            language = language.split(",")[0].split("(")[0]
+            country = country.split(",")[0].split("(")[0]
             iter = model.append((language, country, pixbuf, locale))
             if (ccode == self.cur_country_code and
                 (not set_iter or
