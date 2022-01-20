@@ -250,7 +250,7 @@
                           <object class="GtkImage">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="pixel_size">80</property>
+                            <property name="pixel_size">160</property>
                             <property name="icon_name">linuxmint-logo-filled-ring</property>
                           </object>
                           <packing>
@@ -263,10 +263,11 @@
                           <object class="GtkLabel" id="label_welcome1">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">Welcome to the LMDE Installer.</property>
+                            <property name="label" translatable="yes">Welcome to LMDE 5!</property>
                             <property name="justify">center</property>
                             <attributes>
                               <attribute name="weight" value="bold"/>
+                              <attribute name="scale" value="2"/>
                             </attributes>
                           </object>
                           <packing>
@@ -282,6 +283,7 @@
                             <property name="label" translatable="yes">This program will ask you some questions and set up LMDE on your computer.</property>
                             <property name="use_markup">True</property>
                             <property name="justify">center</property>
+                            <property name="wrap">True</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
