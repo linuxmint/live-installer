@@ -22,8 +22,6 @@ from gi.repository import Gtk, Gdk, GdkPixbuf, GObject, WebKit2, Pango, GLib
 
 gettext.install("live-installer", "/usr/share/locale")
 
-LOADING_ANIMATION = '/usr/share/live-installer/loading.gif'
-
 # Used as a decorator to run things in the background
 def asynchronous(func):
     def wrapper(*args, **kwargs):
