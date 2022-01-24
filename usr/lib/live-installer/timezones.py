@@ -9,9 +9,9 @@ from datetime import datetime, timedelta
 from PIL import Image
 
 # Check map size, MAP_CENTER depends on this size to be exact
-MAP_SIZE = Image.open('/usr/share/live-installer/timezones.png').convert('RGB').size
-assert MAP_SIZE == (752, 384)
-MAP_CENTER = (351, 246)  # pixel coords where the equatorial line and the 0th meridian intersect
+MAP_FILE = '/usr/share/live-installer/miller.png'
+MAP_SIZE = (752, 384)
+MAP_CENTER = (354, 243) # pixel coords where the equatorial line and the 0th meridian intersect
 
 ADJUST_HOURS_MINUTES = re.compile('([+-])([0-9][0-9])([0-9][0-9])')
 TZ_SPLIT_COORDS = re.compile('([+-][0-9]+)([+-][0-9]+)')
@@ -53,7 +53,7 @@ def build_timezones(_installer):
     update_local_time_label()
 
     # Populate timezones model
-    installer.builder.get_object("image_timezones").set_from_file('/usr/share/live-installer/timezones.png')
+    installer.builder.get_object("image_timezones").set_from_file(MAP_FILE)
 
     def autovivified():
         return defaultdict(autovivified)
