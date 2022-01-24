@@ -1,3 +1,17 @@
+live-installer (2022.01.24) elsie; urgency=medium
+
+  * Language list: Clean up country/language names
+  * Switch to circle-flags-svg
+  * Update Mint logo
+  * Update the welcome screen
+  * Update the UI
+  * Remove unused loading.gif
+  * Remove unused icons
+  * UI: Update timezone map
+  * UI: Tune map and keyboard layout
+
+ -- Clement Lefebvre <root@linuxmint.com>  Mon, 24 Jan 2022 15:56:47 +0000
+
 live-installer (2022.01.19) elsie; urgency=medium
 
   * Launchers: Bring back -O option
