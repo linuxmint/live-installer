@@ -423,6 +423,9 @@
                             <child type="label_item">
                               <placeholder/>
                             </child>
+                            <style>
+                              <class name="live-installer-map"/>
+                            </style>
                           </object>
                           <packing>
                             <property name="expand">False</property>

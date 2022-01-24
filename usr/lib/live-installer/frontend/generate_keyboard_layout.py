@@ -104,10 +104,10 @@ class Keyboard(QWidget):
 
         pen = QPen()
         pen.setWidth(1)
-        pen.setColor(QColor(0x58, 0x58, 0x58)) # color of the borders of the keys
+        pen.setColor(QColor(0x58, 0x58, 0x58)) # color of the borders of the keycaps
         p.setPen(pen)
 
-        p.setBrush(QColor(0x58, 0x58, 0x58)) # color of the keys
+        p.setBrush(QColor(0x58, 0x58, 0x58)) # color of the keycaps
 
         p.setBackgroundMode(Qt.TransparentMode)
 
@@ -133,11 +133,11 @@ class Keyboard(QWidget):
 
                 rect.adjust(5,1, 0, 0)
 
-                p.setPen(QColor(0xff, 0xff, 0xff))
+                p.setPen(QColor(0xff, 0xff, 0xff)) # Color of the keycaps top legends (Q, W, E...)
                 p.setFont(self.lowerFont)
                 p.drawText(rect, int(Qt.AlignLeft | Qt.AlignBottom), self.regular_text(k))
 
-                p.setPen(QColor(0x9e, 0xde, 0x00))
+                p.setPen(QColor(0x9e, 0xde, 0xff)) # Color of the keycaps bottom legends (q, w, e...)
                 p.setFont(self.upperFont)
                 p.drawText(rect, int(Qt.AlignLeft | Qt.AlignTop), self.shift_text(k))
 
@@ -192,10 +192,6 @@ class Keyboard(QWidget):
             w1 = remaining_widths[1]
             x2 = remaining_x[2]
             y2 = 6 + kw*2 + space*2
-
-            # this is some serious crap... but it has to be so
-            # maybe one day keyboards won't look like this...
-            # one can only hope
             pp = QPainterPath()
             pp.moveTo(x1, y1+rx)
             pp.arcTo(x1, y1, rx, rx, 180, -90)
