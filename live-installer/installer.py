@@ -598,8 +598,9 @@ class InstallerEngine:
         t = open("/target/etc/timezone","w")
         t.write("%s\n" % self.setup.timezone)
         t.close()
-        os.unlink("/target/etc/localtime")
-        os.symlink("../usr/share/zoneinfo/%s" % self.setup.timezone, "/target/etc/localtime")
+        if os.path.exists("/target/etc/localtime"):
+            os.unlink("/target/etc/localtime")
+            os.symlink("../usr/share/zoneinfo/%s" % self.setup.timezone, "/target/etc/localtime")
 
         # Keyboard settings X11
         self.update_progress(("Settings X11 keyboard options"))
