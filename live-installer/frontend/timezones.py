@@ -6,7 +6,6 @@ from collections import defaultdict, namedtuple
 from datetime import datetime, timedelta
 from functools import reduce
 
-TIMEZONE_RESOURCES = './resources/timezone/'
 
 # pixel center of where equatorial line and 0th meridian cross on our bg
 # map; WARNING: cc.png relies on this exactly!
@@ -54,8 +53,7 @@ def build_timezones(_installer):
     update_local_time_label()
 
     # Populate timezones model
-    installer.builder.get_object("image_timezones").set_from_file(
-        TIMEZONE_RESOURCES + 'bg.png')
+    installer.builder.get_object("image_timezones").set_from_file('./resources/timezone.png')
 
     def autovivified():
         return defaultdict(autovivified)
