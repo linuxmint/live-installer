@@ -166,7 +166,7 @@ class InstallerWindow:
 
         # events for detecting password mismatch..
         self.builder.get_object("entry_password").connect("changed", self.assign_password)
-        self.builder.get_object("entry_confirm").connect("changed", self.assign_password)
+        self.builder.get_object("entry_confirm").connect("changed", self.assign_confirm)
 
         self.builder.get_object("radiobutton_passwordlogin").connect("toggled", self.assign_login_options)
         self.builder.get_object("checkbutton_encrypt_home").connect("toggled", self.assign_login_options)
@@ -367,6 +367,41 @@ class InstallerWindow:
         # Refresh the current title and help question in the page header
         self.activate_page(self.PAGE_LANGUAGE)
 
+    def validate_entry(self, entry, check_empty=True, check_spaces=True, check_lower=True, check_ascii=True, check_match=None):
+        error = None
+        value = entry.props.text
+        if check_match != None and value != check_match:
+            error = _("The values do not match.")
+        elif check_empty and len(value) == 0:
+            error = _("This field cannot be empty.")
+        elif check_ascii and not value.isascii():
+            error = _("This field contains invalid characters.")
+        else:
+            for char in value:
+                if check_spaces and char.isspace():
+                    error = _("This field may not contain space characters.")
+                    break
+                if check_lower and char.isupper():
+                    error = _("This field must be lower case.")
+                    break
+        if error == None:
+            entry.set_icon_from_icon_name(Gtk.EntryIconPosition.SECONDARY, None)
+            entry.set_icon_tooltip_text(Gtk.EntryIconPosition.SECONDARY, "")
+        else:
+            entry.set_icon_from_icon_name(Gtk.EntryIconPosition.SECONDARY, "dialog-error")
+            entry.set_icon_tooltip_text(Gtk.EntryIconPosition.SECONDARY, error)
+
+        return error
+
+    def validate_user_page(self):
+        for name in ["entry_name", "entry_hostname", "entry_username", "entry_password", "entry_confirm"]:
+            entry = self.builder.get_object(name)
+            if entry.get_text() == "" or entry.get_icon_name(Gtk.EntryIconPosition.SECONDARY) == "dialog-error":
+                entry.grab_focus()
+                self.builder.get_object("button_next").set_sensitive(False)
+                return
+        self.builder.get_object("button_next").set_sensitive(True)
+
     def assign_realname(self, entry, prop):
         self.setup.real_name = entry.props.text
         # Try to set the username (doesn't matter if it fails)
@@ -379,61 +414,34 @@ class InstallerWindow:
             self.builder.get_object("entry_username").set_text(text)
         except:
             pass
-        if self.setup.real_name == "":
-            self.builder.get_object("check_name").hide()
-        else:
-            self.builder.get_object("check_name").show()
+
+        self.validate_entry(self.builder.get_object("entry_username"))
+        self.validate_user_page()
         self.setup.print_setup()
 
     def assign_username(self, entry, prop):
         self.setup.username = entry.props.text
-        errorFound = False
-        for char in self.setup.username:
-            if(char.isupper()):
-                errorFound = True
-                break
-            elif(char.isspace()):
-                errorFound = True
-                break
-        if errorFound or self.setup.username == "":
-            self.builder.get_object("check_username").hide()
-        else:
-            self.builder.get_object("check_username").show()
+        self.validate_entry(entry)
+        self.validate_user_page()
         self.setup.print_setup()
 
     def assign_hostname(self, entry, prop):
         self.setup.hostname = entry.props.text
-        errorFound = False
-        for char in self.setup.hostname:
-            if(char.isupper()):
-                errorFound = True
-                break
-            elif(char.isspace()):
-                errorFound = True
-                break
-        if errorFound or self.setup.hostname == "":
-            self.builder.get_object("check_hostname").hide()
-        else:
-            self.builder.get_object("check_hostname").show()
+        self.validate_entry(entry)
+        self.validate_user_page()
         self.setup.print_setup()
 
     def assign_password(self, widget):
-        self.setup.password1 = self.builder.get_object("entry_password").get_text()
-        self.setup.password2 = self.builder.get_object("entry_confirm").get_text()
-
-        if self.setup.password1 == "":
-            self.builder.get_object("check_password").hide()
-        else:
-            self.builder.get_object("check_password").show()
-
-        # Check the password confirmation
-        if(self.setup.password1 == "" or self.setup.password2 == "" or self.setup.password1 != self.setup.password2):
-            self.builder.get_object("check_confirm").hide()
-        else:
-            self.builder.get_object("check_confirm").show()
-
+        self.setup.password1 = widget.get_text()
+        self.validate_entry(widget, check_lower=False, check_ascii=False)
+        self.validate_user_page()
         self.setup.print_setup()
 
+    def assign_confirm(self, widget):
+        self.setup.password2 = widget.get_text()
+        self.validate_entry(widget, check_lower=False, check_ascii=False, check_match=self.setup.password1)
+        self.validate_user_page()
+        self.setup.print_setup()
 
     def assign_type_options(self, widget, data=None):
         self.setup.automated = self.builder.get_object("radio_automated").get_active()
@@ -855,62 +863,9 @@ class InstallerWindow:
                 self.activate_page(self.PAGE_KEYBOARD)
             elif(sel == self.PAGE_KEYBOARD):
                 self.activate_page(self.PAGE_USER)
-                self.builder.get_object("entry_name").grab_focus()
+                self.validate_user_page()
             elif(sel == self.PAGE_USER):
-                errorFound = False
-                errorMessage = ""
-                focus_widget = None
-
-                if(self.setup.real_name is None or self.setup.real_name == ""):
-                    errorFound = True
-                    errorMessage = _("Please provide your full name.")
-                    focus_widget = self.builder.get_object("entry_name")
-                elif(self.setup.hostname is None or self.setup.hostname == ""):
-                    errorFound = True
-                    errorMessage = _("Please provide a name for your computer.")
-                    focus_widget = self.builder.get_object("entry_hostname")
-                elif(self.setup.username is None or self.setup.username == ""):
-                    errorFound = True
-                    errorMessage = _("Please provide a username.")
-                    focus_widget = self.builder.get_object("entry_username")
-                elif(self.setup.password1 is None or self.setup.password1 == ""):
-                    errorFound = True
-                    errorMessage = _("Please provide a password for your user account.")
-                    focus_widget = self.builder.get_object("entry_password")
-                elif(self.setup.password1 != self.setup.password2):
-                    errorFound = True
-                    errorMessage = _("Your passwords do not match.")
-                    focus_widget = self.builder.get_object("entry_confirm")
-                else:
-                    for char in self.setup.username:
-                        if(char.isupper()):
-                            errorFound = True
-                            errorMessage = _("Your username must be lower case.")
-                            focus_widget = self.builder.get_object("entry_username")
-                            break
-                        elif(char.isspace()):
-                            errorFound = True
-                            errorMessage = _("Your username may not contain whitespace characters.")
-                            focus_widget = self.builder.get_object("entry_username")
-                            break
-                    for char in self.setup.hostname:
-                        if(char.isupper()):
-                            errorFound = True
-                            errorMessage = _("The computer's name must be lower case.")
-                            focus_widget = self.builder.get_object("entry_hostname")
-                            break
-                        elif(char.isspace()):
-                            errorFound = True
-                            errorMessage = _("The computer's name may not contain whitespace characters.")
-                            focus_widget = self.builder.get_object("entry_hostname")
-                            break
-
-                if (errorFound):
-                    WarningDialog(_("Installer"), errorMessage)
-                    if focus_widget is not None:
-                        focus_widget.grab_focus()
-                else:
-                    self.activate_page(self.PAGE_TYPE)
+                self.activate_page(self.PAGE_TYPE)
             elif(sel == self.PAGE_TYPE):
                 if self.setup.automated:
                     errorFound = False
@@ -1034,6 +989,7 @@ class InstallerWindow:
                 self.paused = False
         else:
             self.builder.get_object("button_back").set_sensitive(True)
+            self.builder.get_object("button_next").set_sensitive(True)
             if(sel == self.PAGE_OVERVIEW):
                 self.activate_page(self.PAGE_ADVANCED)
             elif(sel == self.PAGE_ADVANCED):
