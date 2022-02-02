@@ -1,3 +1,17 @@
+live-installer (2022.02.02) elsie; urgency=medium
+
+  * Fix key combo in keyboard layout switch label
+  * l10n: Update POT
+  * UI: Make window fit in 1024x768
+  * UI: Fix Partitioning webview bg color
+  * Partitioning: Fix naming scheme for eMMC devices
+  * User page: Rework form validation
+  * Partitioning: Use UUID with LVM
+  * Fix indentation
+  * Partitioning dialog: Fix icon
+
+ -- Clement Lefebvre <root@linuxmint.com>  Wed, 02 Feb 2022 16:34:49 +0000
+
 live-installer (2022.01.24) elsie; urgency=medium
 
   * Language list: Clean up country/language names
