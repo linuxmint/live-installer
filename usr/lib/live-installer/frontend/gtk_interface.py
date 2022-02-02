@@ -306,7 +306,7 @@ class InstallerWindow:
         self.column10.set_title(_("Layout"))
         self.column11.set_title(_("Variant"))
         self.builder.get_object("entry_test_kb").set_placeholder_text(_("Type here to test your keyboard layout"))
-        self.builder.get_object("label_non_latin").set_text(_("* Your username, your computer's name and your password should only contain Latin characters. In addition to your selected layout, English (US) is set as the default. You can switch layouts by pressing both Ctrl keys together."))
+        self.builder.get_object("label_non_latin").set_text(_("* Your username, your computer's name and your password should only contain Latin characters. In addition to your selected layout, English (US) is set as the default. You can switch layouts by pressing Super+Space."))
 
         # User page
         self.builder.get_object("label_name").set_text(_("Your name:"))
