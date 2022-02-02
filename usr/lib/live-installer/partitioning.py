@@ -326,6 +326,15 @@ def show_error(message):
     from frontend.gtk_interface import ErrorDialog
     ErrorDialog(_("Installer"), message)
 
+# Returns "" for traditional devices (/dev/sda1, /dev/sdb2..etc..)
+# or "p" for devices using a "p" in their partition naming schemes (NVMe, eMMC..etc)
+# for instance /dev/mmcblk0p1 or /dev/nvme0p1
+def get_device_naming_scheme_prefix(device_name):
+    if device_name[-1].isdigit():
+        return "p"
+    else:
+        return ""
+
 def full_disk_format(device, create_boot=False, create_swap=True):
     # Create a default partition set up
     disk_label = ('gpt' if device.getLength('B') > 2**32*.9 * device.sectorSize  # size of disk > ~2TB
@@ -351,9 +360,7 @@ def full_disk_format(device, create_boot=False, create_swap=True):
     run_parted = lambda cmd: os.system('parted --script --align optimal {} {} ; sync'.format(device.path, cmd))
     start_mb = 2
     partition_number = 0
-    partition_prefix = ""
-    if device.path.startswith("/dev/nvme"):
-        partition_prefix = "p"
+    partition_prefix = get_device_naming_scheme_prefix(device.path)
     for partition in mkpart:
         if partition[0]:
             partition_number = partition_number + 1

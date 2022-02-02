@@ -194,9 +194,7 @@ class InstallerEngine:
 
     def create_partitions(self):
         # Create partitions on the selected disk (automated installation)
-        partition_prefix = ""
-        if self.setup.disk.startswith("/dev/nvme"):
-            partition_prefix = "p"
+        partition_prefix = partitioning.get_device_naming_scheme_prefix(self.setup.disk)
         if self.setup.luks:
             if self.setup.gptonefi:
                 # EFI+LUKS/LVM
