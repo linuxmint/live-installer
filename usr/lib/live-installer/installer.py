@@ -241,7 +241,7 @@ class InstallerEngine:
                 self.auto_swap_partition = self.setup.disk + partition_prefix + "1"
                 self.auto_root_partition = self.setup.disk + partition_prefix + "2"
 
-        self.auto_root_physical_partition = self.auto_root_partition
+        self.auto_root_physical_partition = self.get_blkid(self.auto_root_partition)
 
         # Wipe HDD
         if self.setup.badblocks:
@@ -411,11 +411,6 @@ class InstallerEngine:
         fstab.write("proc\t/proc\tproc\tdefaults\t0\t0\n")
         if(not self.setup.skip_mount):
             if self.setup.automated:
-                if self.setup.lvm:
-                    # Don't use UUIDs with LVM
-                    fstab.write("%s /  ext4 defaults 0 1\n" % self.auto_root_partition)
-                    fstab.write("%s none   swap sw 0 0\n" % self.auto_swap_partition)
-                else:
                     fstab.write("# %s\n" % self.auto_root_partition)
                     fstab.write("%s /  ext4 defaults 0 1\n" % self.get_blkid(self.auto_root_partition))
                     fstab.write("# %s\n" % self.auto_swap_partition)
