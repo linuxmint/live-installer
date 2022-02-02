@@ -411,10 +411,10 @@ class InstallerEngine:
         fstab.write("proc\t/proc\tproc\tdefaults\t0\t0\n")
         if(not self.setup.skip_mount):
             if self.setup.automated:
-                    fstab.write("# %s\n" % self.auto_root_partition)
-                    fstab.write("%s /  ext4 defaults 0 1\n" % self.get_blkid(self.auto_root_partition))
-                    fstab.write("# %s\n" % self.auto_swap_partition)
-                    fstab.write("%s none   swap sw 0 0\n" % self.get_blkid(self.auto_swap_partition))
+                fstab.write("# %s\n" % self.auto_root_partition)
+                fstab.write("%s /  ext4 defaults 0 1\n" % self.get_blkid(self.auto_root_partition))
+                fstab.write("# %s\n" % self.auto_swap_partition)
+                fstab.write("%s none   swap sw 0 0\n" % self.get_blkid(self.auto_swap_partition))
                 if (self.auto_boot_partition is not None):
                     fstab.write("# %s\n" % self.auto_boot_partition)
                     fstab.write("%s /boot  ext4 defaults 0 1\n" % self.get_blkid(self.auto_boot_partition))
