@@ -2061,7 +2061,7 @@
   <object class="GtkDialog" id="dialog">
     <property name="can_focus">False</property>
     <property name="border_width">5</property>
-    <property name="icon">logo.png</property>
+    <property name="icon_name">live-installer</property>
     <property name="type_hint">dialog</property>
     <property name="transient_for">main_window</property>
     <child type="titlebar">
