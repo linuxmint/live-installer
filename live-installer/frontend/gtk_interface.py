@@ -76,6 +76,7 @@ class InstallerWindow:
 
         # wizard pages
         (self.PAGE_WELCOME,
+         self.PAGE_EULA,
          self.PAGE_LANGUAGE,
          self.PAGE_KEYBOARD,
          self.PAGE_TIMEZONE,
@@ -83,7 +84,7 @@ class InstallerWindow:
          self.PAGE_PARTITIONS,
          self.PAGE_USER,
          self.PAGE_OVERVIEW,
-         self.PAGE_INSTALL) = list(range(9))
+         self.PAGE_INSTALL) = list(range(10))
 
         # set the button events (wizard_cb)
         self.builder.get_object("button_next").connect(
@@ -92,6 +93,11 @@ class InstallerWindow:
             "clicked", self.wizard_cb, True)
         self.builder.get_object("button_quit").connect(
             "clicked", self.quit_cb)
+
+        
+        self.builder.get_object("check_eula").connect(
+            "clicked", self.assign_eula)
+        self.builder.get_object("text_eula").get_buffer().set_text(open("./branding/eula.txt","r").read())
 
         col = Gtk.TreeViewColumn("", Gtk.CellRendererPixbuf(), pixbuf=2)
         self.builder.get_object("treeview_language_list").append_column(col)
@@ -370,6 +376,8 @@ class InstallerWindow:
         self.wizard_pages = list(range(13))
         self.wizard_pages[self.PAGE_WELCOME] = WizardPage(
             _("Welcome"), "mark-location-symbolic", "")
+        self.wizard_pages[self.PAGE_EULA] = WizardPage(
+            _("License Agreement"), "object-select-symbolic", "")
         self.wizard_pages[self.PAGE_LANGUAGE] = WizardPage(
             _("Language"), "preferences-desktop-locale-symbolic", _("What language would you like to use?"))
         self.wizard_pages[self.PAGE_TIMEZONE] = WizardPage(
@@ -817,6 +825,10 @@ class InstallerWindow:
         except NameError:
             pass  # set_keyboard_layout not set
 
+    def assign_eula(self,widget=None):
+        widget = self.builder.get_object("check_eula")
+        self.builder.get_object("button_next").set_sensitive(widget.get_active())
+
     def assign_language(self, treeview, data=None):
         ''' Called whenever someone updates the language '''
         if not self.ui_init:
@@ -1226,8 +1238,14 @@ class InstallerWindow:
         # check each page for errors
         if not goback:
             if sel == self.PAGE_WELCOME:
-                nex = self.PAGE_LANGUAGE
+                self.assign_eula()
                 self.builder.get_object("button_back").set_sensitive(True)
+                nex = self.PAGE_EULA
+                if config.get("skip_eula", False):
+                    self.builder.get_object("button_next").set_sensitive(True)
+                    sel = nex
+            if sel == self.PAGE_EULA:
+                nex = self.PAGE_LANGUAGE
                 if config.get("skip_language", False):
                     sel = nex
             if sel == self.PAGE_LANGUAGE:
@@ -1279,8 +1297,13 @@ class InstallerWindow:
                 if config.get("skip_language", False):
                     sel = nex
             if sel == self.PAGE_LANGUAGE:
+                nex = self.PAGE_EULA
+                if config.get("skip_eula", False):
+                    sel = nex
+            if sel == self.PAGE_EULA:
                 nex = self.PAGE_WELCOME
                 self.builder.get_object("button_back").set_sensitive(False)
+                self.builder.get_object("button_next").set_sensitive(True)
         self.activate_page(nex, sel, goback)
 
     def show_overview(self):

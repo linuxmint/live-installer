@@ -111,6 +111,10 @@
           <object class="GtkStack" id="notebook1">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
+            <property name="margin-start">5</property>
+            <property name="margin-end">5</property>
+            <property name="margin-top">5</property>
+            <property name="margin-bottom">5</property>
             <property name="transition-duration">250</property>
             <property name="transition-type">slide-left-right</property>
             <child>
@@ -173,6 +177,62 @@
               </packing>
             </child>
             <child>
+              <object class="GtkBox" id="vbox_eula">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="margin-start">8</property>
+                <property name="margin-end">8</property>
+                <property name="margin-top">8</property>
+                <property name="margin-bottom">8</property>
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkScrolledWindow">
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="shadow-type">in</property>
+                    <child>
+                      <object class="GtkViewport">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <child>
+                          <object class="GtkTextView" id="text_eula">
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="editable">False</property>
+                            <property name="accepts-tab">False</property>
+                            <property name="input-purpose">terminal</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkCheckButton" id="check_eula">
+                    <property name="label" translatable="yes">I accept the terms of the License Agreement</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">False</property>
+                    <property name="draw-indicator">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="name">1</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
               <object class="GtkBox" id="vbox_language">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
@@ -201,8 +261,8 @@
                 </child>
               </object>
               <packing>
-                <property name="name">1</property>
-                <property name="position">1</property>
+                <property name="name">2</property>
+                <property name="position">2</property>
               </packing>
             </child>
             <child>
@@ -332,8 +392,8 @@
                 </child>
               </object>
               <packing>
-                <property name="name">2</property>
-                <property name="position">2</property>
+                <property name="name">3</property>
+                <property name="position">3</property>
               </packing>
             </child>
             <child>
@@ -447,8 +507,8 @@
                 </child>
               </object>
               <packing>
-                <property name="name">3</property>
-                <property name="position">3</property>
+                <property name="name">4</property>
+                <property name="position">4</property>
               </packing>
             </child>
             <child>
@@ -1120,8 +1180,8 @@
                 </child>
               </object>
               <packing>
-                <property name="name">4</property>
-                <property name="position">4</property>
+                <property name="name">5</property>
+                <property name="position">5</property>
               </packing>
             </child>
             <child>
@@ -1282,8 +1342,8 @@
                 </child>
               </object>
               <packing>
-                <property name="name">5</property>
-                <property name="position">5</property>
+                <property name="name">6</property>
+                <property name="position">6</property>
               </packing>
             </child>
             <child>
@@ -1541,16 +1601,14 @@
                 </child>
               </object>
               <packing>
-                <property name="name">6</property>
-                <property name="position">6</property>
+                <property name="name">7</property>
+                <property name="position">7</property>
               </packing>
             </child>
             <child>
               <object class="GtkBox" id="vbox_overview">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="margin-left">5</property>
-                <property name="margin-right">5</property>
                 <property name="margin-start">5</property>
                 <property name="margin-end">5</property>
                 <property name="margin-top">5</property>
@@ -1582,8 +1640,8 @@
                 </child>
               </object>
               <packing>
-                <property name="name">7</property>
-                <property name="position">7</property>
+                <property name="name">8</property>
+                <property name="position">8</property>
               </packing>
             </child>
             <child>
@@ -1689,8 +1747,8 @@
                 </child>
               </object>
               <packing>
-                <property name="name">8</property>
-                <property name="position">8</property>
+                <property name="name">9</property>
+                <property name="position">9</property>
               </packing>
             </child>
           </object>
