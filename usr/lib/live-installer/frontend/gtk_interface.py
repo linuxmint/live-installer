@@ -393,11 +393,12 @@ class InstallerWindow:
 
         return error
 
-    def validate_user_page(self):
+    def validate_user_page(self, focus_widget=False):
         for name in ["entry_name", "entry_hostname", "entry_username", "entry_password", "entry_confirm"]:
             entry = self.builder.get_object(name)
             if entry.get_text() == "" or entry.get_icon_name(Gtk.EntryIconPosition.SECONDARY) == "dialog-error":
-                entry.grab_focus()
+                if focus_widget:
+                    entry.grab_focus()
                 self.builder.get_object("button_next").set_sensitive(False)
                 return
         self.builder.get_object("button_next").set_sensitive(True)
@@ -863,7 +864,7 @@ class InstallerWindow:
                 self.activate_page(self.PAGE_KEYBOARD)
             elif(sel == self.PAGE_KEYBOARD):
                 self.activate_page(self.PAGE_USER)
-                self.validate_user_page()
+                self.validate_user_page(focus_widget=True)
             elif(sel == self.PAGE_USER):
                 self.activate_page(self.PAGE_TYPE)
             elif(sel == self.PAGE_TYPE):
