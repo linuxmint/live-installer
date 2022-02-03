@@ -56,10 +56,6 @@ class InstallerWindow:
 
         Gtk.Settings.get_default().set_property("gtk-application-prefer-dark-theme", True)
 
-        # disable the screensaver
-        if not __debug__:
-            os.system("killall cinnamon-screen")
-
         # build the setup object (where we put all our choices) and the installer
         self.setup = Setup()
         self.installer = InstallerEngine(self.setup)
