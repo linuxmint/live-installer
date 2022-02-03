@@ -525,6 +525,8 @@ class InstallerWindow:
             errorFound = True
         if self.setup.username == "":
             errorFound = True
+        if len(self.setup.username) > 32:
+            erroFound = True
         self.assign_entry("entry_username", errorFound)
 
     def assign_hostname(self, entry):
