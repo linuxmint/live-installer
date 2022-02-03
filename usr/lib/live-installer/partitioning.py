@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 # coding: utf-8
 #
+import json
 import os
 import re
 import sys
@@ -336,6 +337,20 @@ def get_device_naming_scheme_prefix(device_name):
         return ""
 
 def full_disk_format(device, create_boot=False, create_swap=True):
+    # If some LVM volumes use the selected device, remove them.
+    try:
+        output = subprocess.getoutput("pvs --reportformat json")
+        data = json.loads(output)
+        for volume in data["report"]:
+            for pv in volume["pv"]:
+                pv_name = pv["pv_name"]
+                vg_name = pv["vg_name"]
+                if pv_name.startswith(device.path) and vg_name != "":
+                    print(f"LVM volume detected: {vg_name} on {pv_name}. Deleting it.")
+                    os.system(f"vgremove -y {vg_name}")
+    except Exception as e:
+        print("Failed to detect LVM volumes!")
+        print(e)
     # Create a default partition set up
     disk_label = ('gpt' if device.getLength('B') > 2**32*.9 * device.sectorSize  # size of disk > ~2TB
                            or installer.setup.gptonefi
