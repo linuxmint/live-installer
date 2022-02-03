@@ -1,3 +1,9 @@
+live-installer (2022.02.03) elsie; urgency=medium
+
+  * User page: Don't switch focus while validating
+
+ -- Clement Lefebvre <root@linuxmint.com>  Thu, 03 Feb 2022 12:55:30 +0000
+
 live-installer (2022.02.02) elsie; urgency=medium
 
   * Fix key combo in keyboard layout switch label
