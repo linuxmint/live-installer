@@ -580,15 +580,13 @@ class PartitionDialog(object):
         self.builder.get_object("button_cancel").set_label(_("Cancel"))
         self.builder.get_object("button_ok").set_label(_("OK"))
         # Build supported filesystems list
-        filesystems = ['', 'swap']
-        for path in ["/bin", "/sbin"]:
-            for fs in getoutput('echo %s/mkfs.*' % path).split():
-                filesystems.append(fs.split("mkfs.")[1])
-        filesystems = sorted(filesystems)
-        filesystems = sorted(filesystems, key=lambda x: 0 if x in ('', 'ext4') else 1 if x == 'swap' else 2)
         model = Gtk.ListStore(str)
-        for i in filesystems:
-            model.append([i])
+        model.append([""])
+        filesystems = ["", "ext4", "ext3", "ext2", "btrfs", "jfs", "xfs", "fat", "vfat", "swap"]
+        for fs in filesystems:
+            if os.path.exists(f"/usr/bin/mkfs.{fs}") or os.path.exists(f"/usr/sbin/mkfs.{fs}"):
+                model.append([fs])
+        model.append(["swap"])
         self.builder.get_object("combobox_use_as").set_model(model)
         self.builder.get_object("combobox_use_as").set_active(filesystems.index(format_as))
         # Build list of pre-provided mountpoints
