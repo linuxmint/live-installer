@@ -592,7 +592,7 @@ class PartitionDialog(object):
         # Build list of pre-provided mountpoints
         combobox = self.builder.get_object("comboboxentry_mount_point")
         model = Gtk.ListStore(str, str)
-        for i in ["/", "/@", "/home", "/@home", "/boot", "/boot/efi", "/srv", "/tmp", "swap"]:
+        for i in ["/", "/home", "/boot", "/boot/efi", "/srv", "/tmp", "swap"]:
             model.append(["", i])
         combobox.set_model(model)
         combobox.set_entry_text_column(1)

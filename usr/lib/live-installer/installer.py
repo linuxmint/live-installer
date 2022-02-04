@@ -322,70 +322,47 @@ class InstallerEngine:
         # Mount the target partition
         for partition in self.setup.partitions:
             if(partition.mount_as is not None and partition.mount_as != ""):
-                  if partition.mount_as == "/":
-                        self.update_progress(3, 4, False, False, _("Mounting %(partition)s on %(mountpoint)s") % {'partition':partition.path, 'mountpoint':"/target/"})
-                        print(" ------ Mounting partition %s on %s" % (partition.path, "/target/"))
-                        if partition.type == "fat32":
-                            fs = "vfat"
-                        else:
-                            fs = partition.type
-                        self.do_mount(partition.path, "/target", fs, None)
-                        break
-
-                  if partition.mount_as == "/@" :
-                        if partition.type != "btrfs":
-                            self.error_message(message=_("ERROR: the use of @subvolumes is limited to btrfs"))
-                            return
-                        print("btrfs using /@ subvolume...")
-                        self.update_progress(3, 4, False, False, _("Mounting %(partition)s on %(mountpoint)s") % {'partition':partition.path, 'mountpoint':"/target/"})
-                        # partition.mount_as = "/"
-                        print(" ------ Mounting partition %s on %s" % (partition.path, "/target/"))
-                        fs = partition.type
-                        self.do_mount(partition.path, "/target", fs, None)
+                if partition.mount_as == "/":
+                    self.update_progress(3, 4, False, False, _("Mounting %(partition)s on %(mountpoint)s") % {'partition':partition.path, 'mountpoint':"/target/"})
+                    print(" ------ Mounting partition %s on %s" % (partition.path, "/target/"))
+                    fs = partition.type
+                    if fs == "fat32":
+                        fs = "vfat"
+                    self.do_mount(partition.path, "/target", fs, None)
+                    if fs == "btrfs":
+                        # Create subvolumes for Btrfs
                         os.system("btrfs subvolume create /target/@")
                         os.system("btrfs subvolume list -p /target")
-                        print(" ------ Umount btrfs to remount subvolume /@")
+                        print(" ------ Umount btrfs to remount subvolume @")
                         os.system("umount --force /target")
                         self.do_mount(partition.path, "/target", fs, "subvol=@")
-                        break
-
-        # handle btrfs /@home subvolume-option after mounting / or /@
-        for partition in self.setup.partitions:
-            if(partition.mount_as is not None and partition.mount_as != ""):
-                  if partition.mount_as == "/@home":
-                        if partition.type != "btrfs":
-                            self.error_message(message=_("ERROR: the use of @subvolumes is limited to btrfs"))
-                            return
-                        print("btrfs using /@home subvolume...")
-                        self.update_progress(3, 4, False, False, _("Mounting %(partition)s on %(mountpoint)s") % {'partition':partition.path, 'mountpoint':"/target/"})
-                        print(" ------ Mounting partition %s on %s" % (partition.path, "/target/home"))
-                        fs = partition.type
-                        os.system("mkdir -p /target/home")
-                        self.do_mount(partition.path, "/target/home", fs, None)
-                        # if reusing a btrfs with /@home already being there wont
-                        # currently just keep it; data outside of /@home will still
-                        # be there (just not reachable from the mounted /@home subvolume)
-                        os.system("btrfs subvolume create /target/home/@home")
-                        #os.system("btrfs subvolume list -p /target/home")
-                        print(" ------- Umount btrfs to remount subvolume /@home")
-                        os.system("umount --force /target/home")
-                        self.do_mount(partition.path, "/target/home", fs, "subvol=@home")
-                        break
+                        if not self.setup_has_dedicated_home():
+                            # If there is no dedicated home partition, add a @home subvolume to /
+                            os.system("mkdir -p /target/home")
+                            self.do_mount(partition.path, "/target/home", fs, None)
+                            os.system("btrfs subvolume create /target/home/@home")
+                            os.system("btrfs subvolume list -p /target/home")
+                            print(" ------- Umount btrfs to remount subvolume @home")
+                            os.system("umount --force /target/home")
+                            self.do_mount(partition.path, "/target/home", fs, "subvol=@home")
+                    break
 
         # Mount the other partitions
         for partition in self.setup.partitions:
-            if(partition.mount_as == "/@home" or partition.mount_as == "/@"):
-                # already mounted as subvolume
-                continue
-
             if(partition.mount_as is not None and partition.mount_as != "" and partition.mount_as != "/" and partition.mount_as != "swap"):
                 print(" ------ Mounting %s on %s" % (partition.path, "/target" + partition.mount_as))
                 os.system("mkdir -p /target" + partition.mount_as)
-                if partition.type == "fat16" or partition.type == "fat32":
+                fs = partition.type
+                if fs == "fat16" or fs == "fat32":
                     fs = "vfat"
-                else:
-                    fs = partition.type
                 self.do_mount(partition.path, "/target" + partition.mount_as, fs, None)
+                if partition.mount_as == "/home" and fs == "btrfs":
+                    # Dedicated home partition with Btrfs, needs a @home subvolume
+                    os.system("btrfs subvolume create /target/home/@home")
+                    os.system("btrfs subvolume list -p /target/home")
+                    print(" ------- Umount btrfs to remount subvolume @home")
+                    os.system("umount --force /target/home")
+                    self.do_mount(partition.path, "/target/home", fs, "subvol=@home")
 
     def get_blkid(self, path):
         uuid = path # If we can't find the UUID we use the path
@@ -400,6 +377,15 @@ class InstallerEngine:
                         break
                 break
         return uuid
+
+    def setup_has_dedicated_home(self):
+        # Find out if there is a dedicated home partition
+        has_dedicated_home = False
+        for partition in self.setup.partitions:
+            if partition.mount_as == "/home":
+                has_dedicated_home = True
+            break
+        return has_dedicated_home
 
     def write_fstab(self):
         # write the /etc/fstab
@@ -422,43 +408,36 @@ class InstallerEngine:
                     fstab.write("# %s\n" % self.auto_efi_partition)
                     fstab.write("%s /boot/efi  vfat defaults 0 1\n" % self.get_blkid(self.auto_efi_partition))
             else:
+                root_partition_is_btrfs = False
                 for partition in self.setup.partitions:
                     if (partition.mount_as is not None and partition.mount_as != "" and partition.mount_as != "None"):
+                        fs = partition.type
+                        if fs == "fat16" or fs == "fat32":
+                            fs = "vfat"
                         fstab.write("# %s\n" % (partition.path))
-                        if(partition.mount_as == "/"):
+                        if(partition.mount_as == "/" and fs != "btrfs"):
                             fstab_fsck_option = "1"
-                        # section could be removed - just to state/document that fscheck is turned off
-                        # intentionally with /@ (same would be true if btrfs used without a subvol)
-                        # /bin/fsck.btrfs comment states to use fs-check==0 on mount
-                        elif(partition.mount_as == "/@"):
-                            fstab_fsck_option = "0"
                         else:
                             fstab_fsck_option = "0"
 
-                        if("ext" in partition.type):
+                        if("ext" in fs):
                             fstab_mount_options = "rw,errors=remount-ro"
-                        elif partition.type == "btrfs"  and partition.mount_as == "/@":
-                            fstab_mount_options = "rw,subvol=/@"
-                            # sort of dirty hack - we are done with subvol handling
-                            # mount_as is next used to setup the mount point
-                            partition.mount_as="/"
-                        elif partition.type == "btrfs"  and partition.mount_as == "/@home":
-                            fstab_mount_options = "rw,subvol=/@home"
-                            # sort of dirty hack - see above
-                            partition.mount_as="/home"
+                        elif fs == "btrfs" and partition.mount_as == "/":
+                            fstab_mount_options = "defaults,subvol=@"
+                        elif fs == "btrfs" and partition.mount_as == "/home":
+                            fstab_mount_options = "defaults,subvol=@home"
                         else:
                             fstab_mount_options = "defaults"
 
-                        if partition.type == "fat16" or partition.type == "fat32":
-                            fs = "vfat"
-                        else:
-                            fs = partition.type
-
                         partition_uuid = self.get_blkid(partition.path)
-                        if(fs == "swap"):
+                        if fs == "swap":
                             fstab.write("%s\tswap\tswap\tsw\t0\t0\n" % partition_uuid)
                         else:
                             fstab.write("%s\t%s\t%s\t%s\t%s\t%s\n" % (partition_uuid, partition.mount_as, fs, fstab_mount_options, "0", fstab_fsck_option))
+
+                        if fs == "btrfs" and partition.mount_as == "/" and not self.setup_has_dedicated_home():
+                            # Special case, if / is btrfs and there is no dedicated /home, add the @home subvolume to /
+                            fstab.write("%s\t%s\t%s\t%s\t%s\t%s\n" % (partition_uuid, "/home", "btrfs", "defaults,subvol=@home", "0", "0"))
         fstab.close()
 
         if self.setup.lvm:
