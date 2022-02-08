@@ -365,8 +365,8 @@
                       <object class="GtkBox" id="vbox_timezones">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="margin_bottom">12</property>
                         <property name="orientation">vertical</property>
-                        <property name="spacing">6</property>
                         <child>
                           <object class="GtkFrame">
                             <property name="visible">True</property>
@@ -438,9 +438,6 @@
                             <child type="label_item">
                               <placeholder/>
                             </child>
-                            <style>
-                              <class name="live-installer-map"/>
-                            </style>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -490,6 +487,9 @@
                             <property name="position">2</property>
                           </packing>
                         </child>
+                        <style>
+                          <class name="live-installer-map"/>
+                        </style>
                       </object>
                       <packing>
                         <property name="position">2</property>
