@@ -1,3 +1,12 @@
+live-installer (2022.02.08) elsie; urgency=medium
+
+  * dialogs: Remove obsolete btrfs subvolume warnings
+  * Debug mode: Generate dummy fstab, mtab and crypttab files
+  * Installer: Fix dedicated home detection
+  * Timezones: Make the map look better
+
+ -- Clement Lefebvre <root@linuxmint.com>  Tue, 08 Feb 2022 13:47:41 +0000
+
 live-installer (2022.02.04.1) elsie; urgency=medium
 
   * Partitioning: Clean up filesystem choices
