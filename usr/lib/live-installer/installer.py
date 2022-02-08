@@ -184,6 +184,8 @@ class InstallerEngine:
         our_current += 1
         self.update_progress(our_current, our_total, False, False, _("Writing filesystem mount information to /etc/fstab"))
         self.write_fstab()
+        self.write_mtab()
+        self.write_crypttab()
 
     def mount_source(self):
         # Mount the installation media
@@ -387,13 +389,12 @@ class InstallerEngine:
             break
         return has_dedicated_home
 
-    def write_fstab(self):
+    def write_fstab(self, path="/target/etc/fstab"):
         # write the /etc/fstab
         print(" --> Writing fstab")
         # make sure fstab has default /proc and /sys entries
-        if(not os.path.exists("/target/etc/fstab")):
-            os.system("echo \"#### Static Filesystem Table File\" > /target/etc/fstab")
-        fstab = open("/target/etc/fstab", "a")
+        fstab = open(path, "w")
+        fstab.write("#### Static Filesystem Table File\n")
         fstab.write("proc\t/proc\tproc\tdefaults\t0\t0\n")
         if(not self.setup.skip_mount):
             if self.setup.automated:
@@ -408,7 +409,6 @@ class InstallerEngine:
                     fstab.write("# %s\n" % self.auto_efi_partition)
                     fstab.write("%s /boot/efi  vfat defaults 0 1\n" % self.get_blkid(self.auto_efi_partition))
             else:
-                root_partition_is_btrfs = False
                 for partition in self.setup.partitions:
                     if (partition.mount_as is not None and partition.mount_as != "" and partition.mount_as != "None"):
                         fs = partition.type
@@ -440,11 +440,13 @@ class InstallerEngine:
                             fstab.write("%s\t%s\t%s\t%s\t%s\t%s\n" % (partition_uuid, "/home", "btrfs", "defaults,subvol=@home", "0", "0"))
         fstab.close()
 
+    def write_mtab(self, fstab="/target/etc/fstab", mtab="/target/etc/mtab"):
         if self.setup.lvm:
-            os.system("grep -v swap /target/etc/fstab > /target/etc/mtab")
+            os.system(f"grep -v swap {fstab} > {mtab}")
 
+    def write_crypttab(self, path="/target/etc/crypttab"):
         if self.setup.luks:
-            os.system("echo 'lvmlmde   %s   none   luks,tries=3' >> /target/etc/crypttab" % self.get_blkid(self.auto_root_physical_partition))
+            os.system(f"echo 'lvmlmde   {self.get_blkid(self.auto_root_physical_partition)}   none   luks,tries=3' >> {path}")
 
     def finish_installation(self):
         # Steps:

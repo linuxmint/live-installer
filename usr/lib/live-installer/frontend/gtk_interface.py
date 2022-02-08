@@ -1060,6 +1060,12 @@ class InstallerWindow:
 
         if __debug__:
             print(" ## DEBUG MODE - INSTALLATION PROCESS NOT LAUNCHED")
+            for partition in self.setup.partitions:
+                if(partition.format_as is not None and partition.format_as != ""):
+                    partition.type = partition.format_as
+            self.installer.write_fstab("dummy_fstab")
+            self.installer.write_mtab("dummy_fstab", "dummy_mtab")
+            self.installer.write_crypttab("dummy_crypttab")
             time.sleep(200)
             Gtk.main_quit()
             sys.exit(0)
