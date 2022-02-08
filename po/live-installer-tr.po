@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-07 14:53+0000\n"
+"POT-Creation-Date: 2022-02-08 18:34+0300\n"
 "PO-Revision-Date: 2021-07-14 15:53+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -33,8 +33,8 @@ msgstr "%s kurucuya Hoş Geldiniz."
 
 #: live-installer/resources/interface.ui:164
 #: live-installer/resources/interface2.ui:75
-#: live-installer/frontend/gtk_interface.py:407
 #: live-installer/frontend/tui_interface.py:25
+#: live-installer/frontend/gtk_interface.py:407
 msgid ""
 "This program will ask you some questions and set up system on your computer."
 msgstr ""
@@ -76,8 +76,8 @@ msgstr "Bölge"
 
 #: live-installer/resources/interface.ui:489
 #: live-installer/resources/interface2.ui:402
-#: live-installer/frontend/gtk_interface.py:384
 #: live-installer/frontend/tui_interface.py:41
+#: live-installer/frontend/gtk_interface.py:384
 msgid "Timezone"
 msgstr "Zaman dilimi"
 
@@ -228,7 +228,7 @@ msgstr "Bir kullanıcı adı seçin:"
 #: live-installer/resources/interface2.ui:1358
 #: live-installer/frontend/gtk_interface.py:424
 msgid "The name it uses when it talks to other computers."
-msgstr "Bu isim başka bir bilgisayar tarafından kullanılmaktadır."
+msgstr "Diğer bilgisayarlarla konuşurken kullandığı ad."
 
 #: live-installer/resources/interface.ui:1476
 #: live-installer/resources/interface2.ui:1391
@@ -263,7 +263,7 @@ msgstr "Ev dizinimi şifrele"
 #: live-installer/resources/interface.ui:1683
 #: live-installer/resources/interface2.ui:1600
 msgid "0.0"
-msgstr 0.0""
+msgstr "0.0"
 
 #: live-installer/resources/interface.ui:1715
 #: live-installer/resources/interface2.ui:1632
@@ -285,7 +285,7 @@ msgstr "/dev/sda1"
 #: live-installer/resources/interface.ui:2098
 #: live-installer/resources/interface2.ui:2125
 msgid "read only"
-msgstr salt okur""
+msgstr "salt okur"
 
 #: live-installer/resources/welcome.ui:61
 msgid "Try 17g"
@@ -315,6 +315,10 @@ msgstr ""
 #: live-installer/resources/welcome.ui:228
 msgid "Welcome to 17g"
 msgstr "Hoş geldiniz"
+
+#: live-installer/main.py:38
+msgid "You must be root!"
+msgstr "Root olmalısınız!"
 
 #: live-installer/installer.py:135 live-installer/installer.py:156
 #, python-format
@@ -429,81 +433,68 @@ msgstr "Önyükleyici denetleniyor"
 msgid "Failed to run command (Exited with {}):"
 msgstr "Komut ile çalıştırılamadı. ({} ile çıktı.)"
 
-#: live-installer/main.py:38
-msgid "You must be root!"
-msgstr "Root olmalısınız!"
-
-#: live-installer/frontend/welcome.py:32
+#: live-installer/frontend/tui_interface.py:23
+#: live-installer/frontend/gtk_interface.py:405
 #, python-format
-msgid "Try %s"
-msgstr "%s dene"
+msgid "Welcome to the %s Installer."
+msgstr "%s kurucuya Hoş Geldiniz."
 
-#: live-installer/frontend/welcome.py:36
-#, python-format
-msgid "You are currently running %s from live media."
-msgstr "Şu anda %s canlı ortamdan çalışıyor."
+#: live-installer/frontend/tui_interface.py:28
+#: live-installer/frontend/gtk_interface.py:382
+msgid "What language would you like to use?"
+msgstr "Hangi dili kullanmak istiyorsunuz?"
 
-#: live-installer/frontend/welcome.py:38
-#, python-format
-msgid ""
-"You can install %s now, or chose \"Install to Hard Drive\" in the Appication "
-"Menu later."
-msgstr ""
-"Şimdi %s yükleyebilirsiniz, veya Daha sonra uygulama menüsünden \"diske yükle"
-"\" seçebilirsiniz."
+#: live-installer/frontend/tui_interface.py:33
+#: live-installer/frontend/gtk_interface.py:115
+#: live-installer/frontend/gtk_interface.py:382
+#: live-installer/frontend/gtk_interface.py:410
+msgid "Language"
+msgstr "Dil"
 
-#: live-installer/frontend/welcome.py:39
-#, fuzzy, python-format
-msgid "Welcome to %s"
-msgstr "Hoş geldiniz"
+#: live-installer/frontend/tui_interface.py:37
+#: live-installer/frontend/gtk_interface.py:384
+msgid "Where are you?"
+msgstr "Neredesiniz?"
 
-#: live-installer/frontend/partitioning.py:66
-msgid "B"
-msgstr "B"
+#: live-installer/frontend/tui_interface.py:45
+msgid "What keyboard would you like to use?"
+msgstr "Hangi dili kullanmak istiyorsunuz?"
 
-#: live-installer/frontend/partitioning.py:66
-#: live-installer/frontend/partitioning.py:428
-msgid "kB"
-msgstr "kB"
+#: live-installer/frontend/tui_interface.py:52
+msgid "Keyboard Model"
+msgstr "Klavye modeli"
 
-#: live-installer/frontend/partitioning.py:66
-#: live-installer/frontend/partitioning.py:428
-msgid "MB"
-msgstr "MB"
+#: live-installer/frontend/dialogs.py:35 live-installer/frontend/dialogs.py:48
+#: live-installer/frontend/dialogs.py:54
+#: live-installer/frontend/partitioning.py:585
+msgid "OK"
+msgstr "Tamam"
 
-#: live-installer/frontend/partitioning.py:66
-#: live-installer/frontend/partitioning.py:429
-msgid "GB"
-msgstr "GB"
+#: live-installer/frontend/dialogs.py:41
+msgid "No"
+msgstr "Hayır"
 
-#: live-installer/frontend/partitioning.py:67
-#: live-installer/frontend/partitioning.py:429
-msgid "TB"
-msgstr "TB"
+#: live-installer/frontend/dialogs.py:42
+msgid "Yes"
+msgstr "Evet"
 
-#: live-installer/frontend/partitioning.py:74
-msgid "Removable:"
-msgstr "Taşınabilir:"
+#: live-installer/frontend/gtk_interface.py:106
+#: live-installer/frontend/gtk_interface.py:411
+msgid "Country"
+msgstr "Ülke"
 
-#: live-installer/frontend/partitioning.py:205
-msgid "Edit"
-msgstr "Düzenle"
+#: live-installer/frontend/gtk_interface.py:245
+msgid "Layout"
+msgstr "Düzen"
 
-#: live-installer/frontend/partitioning.py:210
-#: live-installer/frontend/partitioning.py:214
-#: live-installer/frontend/partitioning.py:221
-#: live-installer/frontend/partitioning.py:230
-#, python-format
-msgid "Assign to %s"
-msgstr "%s olarak ata"
+#: live-installer/frontend/gtk_interface.py:253
+msgid "Variant"
+msgstr "Değişken"
 
-#: live-installer/frontend/partitioning.py:331
-#: live-installer/frontend/partitioning.py:482
-#: live-installer/frontend/gtk_interface.py:481
-msgid "Free space"
-msgstr "Boş alan"
+#: live-installer/frontend/gtk_interface.py:271
+msgid "Calculating file indexes ..."
+msgstr "Dosya indexleri hesaplanıyor ..."
 
-#: live-installer/frontend/partitioning.py:348
 #: live-installer/frontend/gtk_interface.py:367
 #: live-installer/frontend/gtk_interface.py:370
 #: live-installer/frontend/gtk_interface.py:955
@@ -518,110 +509,13 @@ msgstr "Boş alan"
 #: live-installer/frontend/gtk_interface.py:1133
 #: live-installer/frontend/gtk_interface.py:1193
 #: live-installer/frontend/gtk_interface.py:1270
+#: live-installer/frontend/partitioning.py:348
 msgid "Installer"
 msgstr "Kurucu"
 
-#: live-installer/frontend/partitioning.py:364
-#, python-format
-msgid ""
-"The partition table couldn't be written for %s. Restart the computer and try "
-"again."
-msgstr ""
-"Bölüm tablosu %s için yazılamadı. Bilgisayarı yeniden başlatın ve tekrar "
-"deneyin."
-
-#: live-installer/frontend/partitioning.py:415
-#, python-format
-msgid ""
-"The partition %s could not be created. The installation will stop. Restart "
-"the computer and try again."
-msgstr ""
-"%s bölümü oluşturulamadı. Kurulum duracaktır. Bilgisayarı yeniden başlatın "
-"ve tekrar deneyin."
-
-#: live-installer/frontend/partitioning.py:480
-msgid "Logical partition"
-msgstr "Mantıksal bölüm"
-
-#: live-installer/frontend/partitioning.py:481
-msgid "Extended partition"
-msgstr "Genişletilmiş bölüm"
-
-#: live-installer/frontend/partitioning.py:485
-msgid "Unknown"
-msgstr "Bilinmeyen"
-
-#: live-installer/frontend/partitioning.py:542
-msgid "bootloader/recovery"
-msgstr "önyükleyici/kurtarma"
-
-#: live-installer/frontend/partitioning.py:554
-msgid "EFI System Partition"
-msgstr "EFI Sistem Bölümü"
-
-#: live-installer/frontend/partitioning.py:577
-msgid "Edit partition"
-msgstr "Bölümleri düzenle"
-
-#: live-installer/frontend/partitioning.py:579
-msgid "Device:"
-msgstr "Donanım:"
-
-#: live-installer/frontend/partitioning.py:581
-msgid "Format as:"
-msgstr "Biçemleme türü:"
-
-#: live-installer/frontend/partitioning.py:583
-msgid "Mount point:"
-msgstr "Bağlama noktası:"
-
-#: live-installer/frontend/partitioning.py:584
-msgid "Cancel"
-msgstr "İptal"
-
-#: live-installer/frontend/partitioning.py:585
-#: live-installer/frontend/dialogs.py:35 live-installer/frontend/dialogs.py:48
-#: live-installer/frontend/dialogs.py:54
-msgid "OK"
-msgstr "Tamam"
-
-#: live-installer/frontend/gtk_interface.py:106
-#: live-installer/frontend/gtk_interface.py:411
-msgid "Country"
-msgstr "Ülke"
-
-#: live-installer/frontend/gtk_interface.py:115
-#: live-installer/frontend/gtk_interface.py:382
-#: live-installer/frontend/gtk_interface.py:410
-#: live-installer/frontend/tui_interface.py:33
-msgid "Language"
-msgstr "Dil"
-
-#: live-installer/frontend/gtk_interface.py:245
-msgid "Layout"
-msgstr "Düzen"
-
-#: live-installer/frontend/gtk_interface.py:253
-msgid "Variant"
-msgstr "Değişken"
-
-#: live-installer/frontend/gtk_interface.py:271
-msgid "Calculating file indexes ..."
-msgstr "Dosya indexleri hesaplanıyor ..."
-
 #: live-installer/frontend/gtk_interface.py:380
 msgid "License Agreement"
-msgstr ""
-
-#: live-installer/frontend/gtk_interface.py:382
-#: live-installer/frontend/tui_interface.py:28
-msgid "What language would you like to use?"
-msgstr "Hangi dili kullanmak istiyorsunuz?"
-
-#: live-installer/frontend/gtk_interface.py:384
-#: live-installer/frontend/tui_interface.py:37
-msgid "Where are you?"
-msgstr "Neredesiniz?"
+msgstr "Lisans Sözleşmesi"
 
 #: live-installer/frontend/gtk_interface.py:386
 msgid "Keyboard layout"
@@ -681,12 +575,6 @@ msgstr "Geri"
 msgid "Next"
 msgstr "İleri"
 
-#: live-installer/frontend/gtk_interface.py:405
-#: live-installer/frontend/tui_interface.py:23
-#, python-format
-msgid "Welcome to the %s Installer."
-msgstr "%s kurucuya Hoş Geldiniz."
-
 #: live-installer/frontend/gtk_interface.py:417
 msgid "Type here to test your keyboard layout"
 msgstr "Klavyenizi test etmek için buraya yazın"
@@ -740,6 +628,12 @@ msgstr "Biçimlendirme türü"
 #: live-installer/frontend/gtk_interface.py:480
 msgid "Size"
 msgstr "Boyut"
+
+#: live-installer/frontend/gtk_interface.py:481
+#: live-installer/frontend/partitioning.py:331
+#: live-installer/frontend/partitioning.py:482
+msgid "Free space"
+msgstr "Boş alan"
 
 #: live-installer/frontend/gtk_interface.py:489
 msgid "Read only"
@@ -1063,22 +957,128 @@ msgstr ""
 msgid "Installation error"
 msgstr "Kurulum hatası"
 
-#: live-installer/frontend/tui_interface.py:45
-msgid "What keyboard would you like to use?"
-msgstr "Hangi dili kullanmak istiyorsunuz?"
-
-#: live-installer/frontend/tui_interface.py:52
-msgid "Keyboard Model"
-msgstr "Klavye modeli"
-
-#: live-installer/frontend/dialogs.py:41
-msgid "No"
-msgstr "Hayır"
-
-#: live-installer/frontend/dialogs.py:42
-msgid "Yes"
-msgstr "Evet"
-
 #: live-installer/frontend/timezones.py:140
 msgid "Select timezone"
 msgstr "Zaman dilimi seçin"
+
+#: live-installer/frontend/partitioning.py:66
+msgid "B"
+msgstr "B"
+
+#: live-installer/frontend/partitioning.py:66
+#: live-installer/frontend/partitioning.py:428
+msgid "kB"
+msgstr "kB"
+
+#: live-installer/frontend/partitioning.py:66
+#: live-installer/frontend/partitioning.py:428
+msgid "MB"
+msgstr "MB"
+
+#: live-installer/frontend/partitioning.py:66
+#: live-installer/frontend/partitioning.py:429
+msgid "GB"
+msgstr "GB"
+
+#: live-installer/frontend/partitioning.py:67
+#: live-installer/frontend/partitioning.py:429
+msgid "TB"
+msgstr "TB"
+
+#: live-installer/frontend/partitioning.py:74
+msgid "Removable:"
+msgstr "Taşınabilir:"
+
+#: live-installer/frontend/partitioning.py:205
+msgid "Edit"
+msgstr "Düzenle"
+
+#: live-installer/frontend/partitioning.py:210
+#: live-installer/frontend/partitioning.py:214
+#: live-installer/frontend/partitioning.py:221
+#: live-installer/frontend/partitioning.py:230
+#, python-format
+msgid "Assign to %s"
+msgstr "%s olarak ata"
+
+#: live-installer/frontend/partitioning.py:364
+#, python-format
+msgid ""
+"The partition table couldn't be written for %s. Restart the computer and try "
+"again."
+msgstr ""
+"Bölüm tablosu %s için yazılamadı. Bilgisayarı yeniden başlatın ve tekrar "
+"deneyin."
+
+#: live-installer/frontend/partitioning.py:415
+#, python-format
+msgid ""
+"The partition %s could not be created. The installation will stop. Restart "
+"the computer and try again."
+msgstr ""
+"%s bölümü oluşturulamadı. Kurulum duracaktır. Bilgisayarı yeniden başlatın "
+"ve tekrar deneyin."
+
+#: live-installer/frontend/partitioning.py:480
+msgid "Logical partition"
+msgstr "Mantıksal bölüm"
+
+#: live-installer/frontend/partitioning.py:481
+msgid "Extended partition"
+msgstr "Genişletilmiş bölüm"
+
+#: live-installer/frontend/partitioning.py:485
+msgid "Unknown"
+msgstr "Bilinmeyen"
+
+#: live-installer/frontend/partitioning.py:542
+msgid "bootloader/recovery"
+msgstr "önyükleyici/kurtarma"
+
+#: live-installer/frontend/partitioning.py:554
+msgid "EFI System Partition"
+msgstr "EFI Sistem Bölümü"
+
+#: live-installer/frontend/partitioning.py:577
+msgid "Edit partition"
+msgstr "Bölümleri düzenle"
+
+#: live-installer/frontend/partitioning.py:579
+msgid "Device:"
+msgstr "Donanım:"
+
+#: live-installer/frontend/partitioning.py:581
+msgid "Format as:"
+msgstr "Biçemleme türü:"
+
+#: live-installer/frontend/partitioning.py:583
+msgid "Mount point:"
+msgstr "Bağlama noktası:"
+
+#: live-installer/frontend/partitioning.py:584
+msgid "Cancel"
+msgstr "İptal"
+
+#: live-installer/frontend/welcome.py:32
+#, python-format
+msgid "Try %s"
+msgstr "%s dene"
+
+#: live-installer/frontend/welcome.py:36
+#, python-format
+msgid "You are currently running %s from live media."
+msgstr "Şu anda %s canlı ortamdan çalışıyor."
+
+#: live-installer/frontend/welcome.py:38
+#, python-format
+msgid ""
+"You can install %s now, or chose \"Install to Hard Drive\" in the Appication "
+"Menu later."
+msgstr ""
+"Şimdi %s yükleyebilirsiniz, veya Daha sonra uygulama menüsünden \"diske yükle"
+"\" seçebilirsiniz."
+
+#: live-installer/frontend/welcome.py:39
+#, fuzzy, python-format
+msgid "Welcome to %s"
+msgstr "Hoş geldiniz"

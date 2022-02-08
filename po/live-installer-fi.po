@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-07 14:53+0000\n"
+"POT-Creation-Date: 2022-02-08 18:34+0300\n"
 "PO-Revision-Date: 2020-03-04 21:19+0000\n"
 "Last-Translator: Kimmo Kujansuu <Unknown>\n"
 "Language-Team: Finnish <>\n"
@@ -35,8 +35,8 @@ msgstr "Tervetuloa 17G-asennusohjelmaan"
 
 #: live-installer/resources/interface.ui:164
 #: live-installer/resources/interface2.ui:75
-#: live-installer/frontend/gtk_interface.py:407
 #: live-installer/frontend/tui_interface.py:25
+#: live-installer/frontend/gtk_interface.py:407
 #, fuzzy
 msgid ""
 "This program will ask you some questions and set up system on your computer."
@@ -81,8 +81,8 @@ msgstr ""
 
 #: live-installer/resources/interface.ui:489
 #: live-installer/resources/interface2.ui:402
-#: live-installer/frontend/gtk_interface.py:384
 #: live-installer/frontend/tui_interface.py:41
+#: live-installer/frontend/gtk_interface.py:384
 msgid "Timezone"
 msgstr "Aikavyöhyke"
 
@@ -324,6 +324,10 @@ msgstr ""
 msgid "Welcome to 17g"
 msgstr "Tervetuloa"
 
+#: live-installer/main.py:38
+msgid "You must be root!"
+msgstr ""
+
 #: live-installer/installer.py:135 live-installer/installer.py:156
 #, python-format
 msgid "Copying /%s"
@@ -437,79 +441,70 @@ msgstr "Tarkistetaan käynnistyslataajaa"
 msgid "Failed to run command (Exited with {}):"
 msgstr ""
 
-#: live-installer/main.py:38
-msgid "You must be root!"
-msgstr ""
-
-#: live-installer/frontend/welcome.py:32
-#, python-format
-msgid "Try %s"
-msgstr ""
-
-#: live-installer/frontend/welcome.py:36
-#, python-format
-msgid "You are currently running %s from live media."
-msgstr ""
-
-#: live-installer/frontend/welcome.py:38
-#, python-format
-msgid ""
-"You can install %s now, or chose \"Install to Hard Drive\" in the Appication "
-"Menu later."
-msgstr ""
-
-#: live-installer/frontend/welcome.py:39
+#: live-installer/frontend/tui_interface.py:23
+#: live-installer/frontend/gtk_interface.py:405
 #, fuzzy, python-format
-msgid "Welcome to %s"
-msgstr "Tervetuloa"
+msgid "Welcome to the %s Installer."
+msgstr "Tervetuloa 17G-asennusohjelmaan"
 
-#: live-installer/frontend/partitioning.py:66
-msgid "B"
-msgstr "t"
+#: live-installer/frontend/tui_interface.py:28
+#: live-installer/frontend/gtk_interface.py:382
+msgid "What language would you like to use?"
+msgstr "Mitä kieltä haluat käyttää?"
 
-#: live-installer/frontend/partitioning.py:66
-#: live-installer/frontend/partitioning.py:428
-msgid "kB"
-msgstr "kt"
+#: live-installer/frontend/tui_interface.py:33
+#: live-installer/frontend/gtk_interface.py:115
+#: live-installer/frontend/gtk_interface.py:382
+#: live-installer/frontend/gtk_interface.py:410
+msgid "Language"
+msgstr "Kieli"
 
-#: live-installer/frontend/partitioning.py:66
-#: live-installer/frontend/partitioning.py:428
-msgid "MB"
-msgstr "Mt"
+#: live-installer/frontend/tui_interface.py:37
+#: live-installer/frontend/gtk_interface.py:384
+msgid "Where are you?"
+msgstr "Mikä on sijaintisi?"
 
-#: live-installer/frontend/partitioning.py:66
-#: live-installer/frontend/partitioning.py:429
-msgid "GB"
-msgstr "Gt"
+#: live-installer/frontend/tui_interface.py:45
+#, fuzzy
+msgid "What keyboard would you like to use?"
+msgstr "Mitä kieltä haluat käyttää?"
 
-#: live-installer/frontend/partitioning.py:67
-#: live-installer/frontend/partitioning.py:429
-msgid "TB"
-msgstr "Tt"
+#: live-installer/frontend/tui_interface.py:52
+#, fuzzy
+msgid "Keyboard Model"
+msgstr "Näppäimistömalli:"
 
-#: live-installer/frontend/partitioning.py:74
-msgid "Removable:"
-msgstr "Irrotettava:"
+#: live-installer/frontend/dialogs.py:35 live-installer/frontend/dialogs.py:48
+#: live-installer/frontend/dialogs.py:54
+#: live-installer/frontend/partitioning.py:585
+msgid "OK"
+msgstr "OK"
 
-#: live-installer/frontend/partitioning.py:205
-msgid "Edit"
-msgstr "Muokkaa"
+#: live-installer/frontend/dialogs.py:41
+msgid "No"
+msgstr "Ei"
 
-#: live-installer/frontend/partitioning.py:210
-#: live-installer/frontend/partitioning.py:214
-#: live-installer/frontend/partitioning.py:221
-#: live-installer/frontend/partitioning.py:230
-#, fuzzy, python-format
-msgid "Assign to %s"
-msgstr "Liitä /"
+#: live-installer/frontend/dialogs.py:42
+msgid "Yes"
+msgstr "Kyllä"
 
-#: live-installer/frontend/partitioning.py:331
-#: live-installer/frontend/partitioning.py:482
-#: live-installer/frontend/gtk_interface.py:481
-msgid "Free space"
-msgstr "Vapaa tila"
+#: live-installer/frontend/gtk_interface.py:106
+#: live-installer/frontend/gtk_interface.py:411
+msgid "Country"
+msgstr "Maa"
 
-#: live-installer/frontend/partitioning.py:348
+#: live-installer/frontend/gtk_interface.py:245
+msgid "Layout"
+msgstr "Asettelu"
+
+#: live-installer/frontend/gtk_interface.py:253
+msgid "Variant"
+msgstr "Muunnos"
+
+#: live-installer/frontend/gtk_interface.py:271
+msgid "Calculating file indexes ..."
+msgstr "Lasketaan tiedostoindeksejä..."
+
 #: live-installer/frontend/gtk_interface.py:367
 #: live-installer/frontend/gtk_interface.py:370
 #: live-installer/frontend/gtk_interface.py:955
@@ -524,107 +519,13 @@ msgstr "Vapaa tila"
 #: live-installer/frontend/gtk_interface.py:1133
 #: live-installer/frontend/gtk_interface.py:1193
 #: live-installer/frontend/gtk_interface.py:1270
+#: live-installer/frontend/partitioning.py:348
 msgid "Installer"
 msgstr "Asennusohjelma"
-
-#: live-installer/frontend/partitioning.py:364
-#, python-format
-msgid ""
-"The partition table couldn't be written for %s. Restart the computer and try "
-"again."
-msgstr ""
-
-#: live-installer/frontend/partitioning.py:415
-#, python-format
-msgid ""
-"The partition %s could not be created. The installation will stop. Restart "
-"the computer and try again."
-msgstr ""
-
-#: live-installer/frontend/partitioning.py:480
-msgid "Logical partition"
-msgstr "Looginen osio"
-
-#: live-installer/frontend/partitioning.py:481
-msgid "Extended partition"
-msgstr "Laajennettu osio"
-
-#: live-installer/frontend/partitioning.py:485
-msgid "Unknown"
-msgstr "Tuntematon"
-
-#: live-installer/frontend/partitioning.py:542
-msgid "bootloader/recovery"
-msgstr ""
-
-#: live-installer/frontend/partitioning.py:554
-#, fuzzy
-msgid "EFI System Partition"
-msgstr "Muokkaa osiota"
-
-#: live-installer/frontend/partitioning.py:577
-msgid "Edit partition"
-msgstr "Muokkaa osiota"
-
-#: live-installer/frontend/partitioning.py:579
-msgid "Device:"
-msgstr "Laite:"
-
-#: live-installer/frontend/partitioning.py:581
-msgid "Format as:"
-msgstr "Alusta muotoon:"
-
-#: live-installer/frontend/partitioning.py:583
-msgid "Mount point:"
-msgstr "Liitospiste:"
-
-#: live-installer/frontend/partitioning.py:584
-msgid "Cancel"
-msgstr "Peru"
-
-#: live-installer/frontend/partitioning.py:585
-#: live-installer/frontend/dialogs.py:35 live-installer/frontend/dialogs.py:48
-#: live-installer/frontend/dialogs.py:54
-msgid "OK"
-msgstr "OK"
-
-#: live-installer/frontend/gtk_interface.py:106
-#: live-installer/frontend/gtk_interface.py:411
-msgid "Country"
-msgstr "Maa"
-
-#: live-installer/frontend/gtk_interface.py:115
-#: live-installer/frontend/gtk_interface.py:382
-#: live-installer/frontend/gtk_interface.py:410
-#: live-installer/frontend/tui_interface.py:33
-msgid "Language"
-msgstr "Kieli"
-
-#: live-installer/frontend/gtk_interface.py:245
-msgid "Layout"
-msgstr "Asettelu"
-
-#: live-installer/frontend/gtk_interface.py:253
-msgid "Variant"
-msgstr "Muunnos"
-
-#: live-installer/frontend/gtk_interface.py:271
-msgid "Calculating file indexes ..."
-msgstr "Lasketaan tiedostoindeksejä..."
 
 #: live-installer/frontend/gtk_interface.py:380
 msgid "License Agreement"
 msgstr ""
-
-#: live-installer/frontend/gtk_interface.py:382
-#: live-installer/frontend/tui_interface.py:28
-msgid "What language would you like to use?"
-msgstr "Mitä kieltä haluat käyttää?"
-
-#: live-installer/frontend/gtk_interface.py:384
-#: live-installer/frontend/tui_interface.py:37
-msgid "Where are you?"
-msgstr "Mikä on sijaintisi?"
 
 #: live-installer/frontend/gtk_interface.py:386
 msgid "Keyboard layout"
@@ -685,12 +586,6 @@ msgstr "Takaisin"
 msgid "Next"
 msgstr "Seuraava"
 
-#: live-installer/frontend/gtk_interface.py:405
-#: live-installer/frontend/tui_interface.py:23
-#, fuzzy, python-format
-msgid "Welcome to the %s Installer."
-msgstr "Tervetuloa 17G-asennusohjelmaan"
-
 #: live-installer/frontend/gtk_interface.py:417
 msgid "Type here to test your keyboard layout"
 msgstr "Kirjoita tähän testataksesi näppäimistön asettelua"
@@ -744,6 +639,12 @@ msgstr "Alusta muotoon"
 #: live-installer/frontend/gtk_interface.py:480
 msgid "Size"
 msgstr "Koko"
+
+#: live-installer/frontend/gtk_interface.py:481
+#: live-installer/frontend/partitioning.py:331
+#: live-installer/frontend/partitioning.py:482
+msgid "Free space"
+msgstr "Vapaa tila"
 
 #: live-installer/frontend/gtk_interface.py:489
 msgid "Read only"
@@ -1070,28 +971,127 @@ msgstr ""
 msgid "Installation error"
 msgstr "Asennusvirhe"
 
-#: live-installer/frontend/tui_interface.py:45
-#, fuzzy
-msgid "What keyboard would you like to use?"
-msgstr "Mitä kieltä haluat käyttää?"
-
-#: live-installer/frontend/tui_interface.py:52
-#, fuzzy
-msgid "Keyboard Model"
-msgstr "Näppäimistömalli:"
-
-#: live-installer/frontend/dialogs.py:41
-msgid "No"
-msgstr "Ei"
-
-#: live-installer/frontend/dialogs.py:42
-msgid "Yes"
-msgstr "Kyllä"
-
 #: live-installer/frontend/timezones.py:140
 #, fuzzy
 msgid "Select timezone"
 msgstr "Aikavyöhyke"
+
+#: live-installer/frontend/partitioning.py:66
+msgid "B"
+msgstr "t"
+
+#: live-installer/frontend/partitioning.py:66
+#: live-installer/frontend/partitioning.py:428
+msgid "kB"
+msgstr "kt"
+
+#: live-installer/frontend/partitioning.py:66
+#: live-installer/frontend/partitioning.py:428
+msgid "MB"
+msgstr "Mt"
+
+#: live-installer/frontend/partitioning.py:66
+#: live-installer/frontend/partitioning.py:429
+msgid "GB"
+msgstr "Gt"
+
+#: live-installer/frontend/partitioning.py:67
+#: live-installer/frontend/partitioning.py:429
+msgid "TB"
+msgstr "Tt"
+
+#: live-installer/frontend/partitioning.py:74
+msgid "Removable:"
+msgstr "Irrotettava:"
+
+#: live-installer/frontend/partitioning.py:205
+msgid "Edit"
+msgstr "Muokkaa"
+
+#: live-installer/frontend/partitioning.py:210
+#: live-installer/frontend/partitioning.py:214
+#: live-installer/frontend/partitioning.py:221
+#: live-installer/frontend/partitioning.py:230
+#, fuzzy, python-format
+msgid "Assign to %s"
+msgstr "Liitä /"
+
+#: live-installer/frontend/partitioning.py:364
+#, python-format
+msgid ""
+"The partition table couldn't be written for %s. Restart the computer and try "
+"again."
+msgstr ""
+
+#: live-installer/frontend/partitioning.py:415
+#, python-format
+msgid ""
+"The partition %s could not be created. The installation will stop. Restart "
+"the computer and try again."
+msgstr ""
+
+#: live-installer/frontend/partitioning.py:480
+msgid "Logical partition"
+msgstr "Looginen osio"
+
+#: live-installer/frontend/partitioning.py:481
+msgid "Extended partition"
+msgstr "Laajennettu osio"
+
+#: live-installer/frontend/partitioning.py:485
+msgid "Unknown"
+msgstr "Tuntematon"
+
+#: live-installer/frontend/partitioning.py:542
+msgid "bootloader/recovery"
+msgstr ""
+
+#: live-installer/frontend/partitioning.py:554
+#, fuzzy
+msgid "EFI System Partition"
+msgstr "Muokkaa osiota"
+
+#: live-installer/frontend/partitioning.py:577
+msgid "Edit partition"
+msgstr "Muokkaa osiota"
+
+#: live-installer/frontend/partitioning.py:579
+msgid "Device:"
+msgstr "Laite:"
+
+#: live-installer/frontend/partitioning.py:581
+msgid "Format as:"
+msgstr "Alusta muotoon:"
+
+#: live-installer/frontend/partitioning.py:583
+msgid "Mount point:"
+msgstr "Liitospiste:"
+
+#: live-installer/frontend/partitioning.py:584
+msgid "Cancel"
+msgstr "Peru"
+
+#: live-installer/frontend/welcome.py:32
+#, python-format
+msgid "Try %s"
+msgstr ""
+
+#: live-installer/frontend/welcome.py:36
+#, python-format
+msgid "You are currently running %s from live media."
+msgstr ""
+
+#: live-installer/frontend/welcome.py:38
+#, python-format
+msgid ""
+"You can install %s now, or chose \"Install to Hard Drive\" in the Appication "
+"Menu later."
+msgstr ""
+
+#: live-installer/frontend/welcome.py:39
+#, fuzzy, python-format
+msgid "Welcome to %s"
+msgstr "Tervetuloa"
 
 #~ msgid "Installation Tool"
 #~ msgstr "Asennustyökalu"

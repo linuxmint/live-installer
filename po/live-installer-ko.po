@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-07 14:53+0000\n"
+"POT-Creation-Date: 2022-02-08 18:34+0300\n"
 "PO-Revision-Date: 2020-02-15 20:21+0000\n"
 "Last-Translator: Litty <Unknown>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -34,8 +34,8 @@ msgstr "17G 설치관리자에 오신 걸 환영합니다."
 
 #: live-installer/resources/interface.ui:164
 #: live-installer/resources/interface2.ui:75
-#: live-installer/frontend/gtk_interface.py:407
 #: live-installer/frontend/tui_interface.py:25
+#: live-installer/frontend/gtk_interface.py:407
 #, fuzzy
 msgid ""
 "This program will ask you some questions and set up system on your computer."
@@ -78,8 +78,8 @@ msgstr ""
 
 #: live-installer/resources/interface.ui:489
 #: live-installer/resources/interface2.ui:402
-#: live-installer/frontend/gtk_interface.py:384
 #: live-installer/frontend/tui_interface.py:41
+#: live-installer/frontend/gtk_interface.py:384
 msgid "Timezone"
 msgstr "시간대"
 
@@ -318,6 +318,10 @@ msgstr ""
 msgid "Welcome to 17g"
 msgstr "환영합니다"
 
+#: live-installer/main.py:38
+msgid "You must be root!"
+msgstr ""
+
 #: live-installer/installer.py:135 live-installer/installer.py:156
 #, python-format
 msgid "Copying /%s"
@@ -431,79 +435,70 @@ msgstr "부트로더를 확인하는 중입니다"
 msgid "Failed to run command (Exited with {}):"
 msgstr ""
 
-#: live-installer/main.py:38
-msgid "You must be root!"
-msgstr ""
-
-#: live-installer/frontend/welcome.py:32
-#, python-format
-msgid "Try %s"
-msgstr ""
-
-#: live-installer/frontend/welcome.py:36
-#, python-format
-msgid "You are currently running %s from live media."
-msgstr ""
-
-#: live-installer/frontend/welcome.py:38
-#, python-format
-msgid ""
-"You can install %s now, or chose \"Install to Hard Drive\" in the Appication "
-"Menu later."
-msgstr ""
-
-#: live-installer/frontend/welcome.py:39
+#: live-installer/frontend/tui_interface.py:23
+#: live-installer/frontend/gtk_interface.py:405
 #, fuzzy, python-format
-msgid "Welcome to %s"
-msgstr "환영합니다"
+msgid "Welcome to the %s Installer."
+msgstr "17G 설치관리자에 오신 걸 환영합니다."
 
-#: live-installer/frontend/partitioning.py:66
-msgid "B"
-msgstr "B"
+#: live-installer/frontend/tui_interface.py:28
+#: live-installer/frontend/gtk_interface.py:382
+msgid "What language would you like to use?"
+msgstr ""
 
-#: live-installer/frontend/partitioning.py:66
-#: live-installer/frontend/partitioning.py:428
-msgid "kB"
-msgstr "kB"
+#: live-installer/frontend/tui_interface.py:33
+#: live-installer/frontend/gtk_interface.py:115
+#: live-installer/frontend/gtk_interface.py:382
+#: live-installer/frontend/gtk_interface.py:410
+msgid "Language"
+msgstr "언어"
 
-#: live-installer/frontend/partitioning.py:66
-#: live-installer/frontend/partitioning.py:428
-msgid "MB"
-msgstr "MB"
+#: live-installer/frontend/tui_interface.py:37
+#: live-installer/frontend/gtk_interface.py:384
+msgid "Where are you?"
+msgstr ""
 
-#: live-installer/frontend/partitioning.py:66
-#: live-installer/frontend/partitioning.py:429
-msgid "GB"
-msgstr "GB"
+#: live-installer/frontend/tui_interface.py:45
+#, fuzzy
+msgid "What keyboard would you like to use?"
+msgstr "자판 배열이 어떻게 되나요?"
 
-#: live-installer/frontend/partitioning.py:67
-#: live-installer/frontend/partitioning.py:429
-msgid "TB"
-msgstr "TB"
+#: live-installer/frontend/tui_interface.py:52
+#, fuzzy
+msgid "Keyboard Model"
+msgstr "키보드 모델:"
 
-#: live-installer/frontend/partitioning.py:74
-msgid "Removable:"
-msgstr "이동식 매체:"
+#: live-installer/frontend/dialogs.py:35 live-installer/frontend/dialogs.py:48
+#: live-installer/frontend/dialogs.py:54
+#: live-installer/frontend/partitioning.py:585
+msgid "OK"
+msgstr "OK"
 
-#: live-installer/frontend/partitioning.py:205
-msgid "Edit"
-msgstr "편집하기"
+#: live-installer/frontend/dialogs.py:41
+msgid "No"
+msgstr "아니요"
 
-#: live-installer/frontend/partitioning.py:210
-#: live-installer/frontend/partitioning.py:214
-#: live-installer/frontend/partitioning.py:221
-#: live-installer/frontend/partitioning.py:230
-#, fuzzy, python-format
-msgid "Assign to %s"
-msgstr "/로 할당합니다"
+#: live-installer/frontend/dialogs.py:42
+msgid "Yes"
+msgstr "예"
 
-#: live-installer/frontend/partitioning.py:331
-#: live-installer/frontend/partitioning.py:482
-#: live-installer/frontend/gtk_interface.py:481
-msgid "Free space"
-msgstr "남은 공간"
+#: live-installer/frontend/gtk_interface.py:106
+#: live-installer/frontend/gtk_interface.py:411
+msgid "Country"
+msgstr "국가"
 
-#: live-installer/frontend/partitioning.py:348
+#: live-installer/frontend/gtk_interface.py:245
+msgid "Layout"
+msgstr "배치"
+
+#: live-installer/frontend/gtk_interface.py:253
+msgid "Variant"
+msgstr "변형"
+
+#: live-installer/frontend/gtk_interface.py:271
+msgid "Calculating file indexes ..."
+msgstr "파일 색인을 계산하는 중입니다 ..."
+
 #: live-installer/frontend/gtk_interface.py:367
 #: live-installer/frontend/gtk_interface.py:370
 #: live-installer/frontend/gtk_interface.py:955
@@ -518,106 +513,12 @@ msgstr "남은 공간"
 #: live-installer/frontend/gtk_interface.py:1133
 #: live-installer/frontend/gtk_interface.py:1193
 #: live-installer/frontend/gtk_interface.py:1270
+#: live-installer/frontend/partitioning.py:348
 msgid "Installer"
 msgstr ""
 
-#: live-installer/frontend/partitioning.py:364
-#, python-format
-msgid ""
-"The partition table couldn't be written for %s. Restart the computer and try "
-"again."
-msgstr ""
-
-#: live-installer/frontend/partitioning.py:415
-#, python-format
-msgid ""
-"The partition %s could not be created. The installation will stop. Restart "
-"the computer and try again."
-msgstr ""
-
-#: live-installer/frontend/partitioning.py:480
-msgid "Logical partition"
-msgstr "논리 파티션"
-
-#: live-installer/frontend/partitioning.py:481
-msgid "Extended partition"
-msgstr "확장 파티션"
-
-#: live-installer/frontend/partitioning.py:485
-msgid "Unknown"
-msgstr "알 수 없음"
-
-#: live-installer/frontend/partitioning.py:542
-msgid "bootloader/recovery"
-msgstr ""
-
-#: live-installer/frontend/partitioning.py:554
-#, fuzzy
-msgid "EFI System Partition"
-msgstr "파티션 편집하기"
-
-#: live-installer/frontend/partitioning.py:577
-msgid "Edit partition"
-msgstr "파티션 편집하기"
-
-#: live-installer/frontend/partitioning.py:579
-msgid "Device:"
-msgstr "장치:"
-
-#: live-installer/frontend/partitioning.py:581
-msgid "Format as:"
-msgstr "포맷하기:"
-
-#: live-installer/frontend/partitioning.py:583
-msgid "Mount point:"
-msgstr "장착 지점:"
-
-#: live-installer/frontend/partitioning.py:584
-msgid "Cancel"
-msgstr "취소"
-
-#: live-installer/frontend/partitioning.py:585
-#: live-installer/frontend/dialogs.py:35 live-installer/frontend/dialogs.py:48
-#: live-installer/frontend/dialogs.py:54
-msgid "OK"
-msgstr "OK"
-
-#: live-installer/frontend/gtk_interface.py:106
-#: live-installer/frontend/gtk_interface.py:411
-msgid "Country"
-msgstr "국가"
-
-#: live-installer/frontend/gtk_interface.py:115
-#: live-installer/frontend/gtk_interface.py:382
-#: live-installer/frontend/gtk_interface.py:410
-#: live-installer/frontend/tui_interface.py:33
-msgid "Language"
-msgstr "언어"
-
-#: live-installer/frontend/gtk_interface.py:245
-msgid "Layout"
-msgstr "배치"
-
-#: live-installer/frontend/gtk_interface.py:253
-msgid "Variant"
-msgstr "변형"
-
-#: live-installer/frontend/gtk_interface.py:271
-msgid "Calculating file indexes ..."
-msgstr "파일 색인을 계산하는 중입니다 ..."
-
 #: live-installer/frontend/gtk_interface.py:380
 msgid "License Agreement"
-msgstr ""
-
-#: live-installer/frontend/gtk_interface.py:382
-#: live-installer/frontend/tui_interface.py:28
-msgid "What language would you like to use?"
-msgstr ""
-
-#: live-installer/frontend/gtk_interface.py:384
-#: live-installer/frontend/tui_interface.py:37
-msgid "Where are you?"
 msgstr ""
 
 #: live-installer/frontend/gtk_interface.py:386
@@ -679,12 +580,6 @@ msgstr "뒤로"
 msgid "Next"
 msgstr "다음"
 
-#: live-installer/frontend/gtk_interface.py:405
-#: live-installer/frontend/tui_interface.py:23
-#, fuzzy, python-format
-msgid "Welcome to the %s Installer."
-msgstr "17G 설치관리자에 오신 걸 환영합니다."
-
 #: live-installer/frontend/gtk_interface.py:417
 msgid "Type here to test your keyboard layout"
 msgstr ""
@@ -736,6 +631,12 @@ msgstr "포맷하기"
 #: live-installer/frontend/gtk_interface.py:480
 msgid "Size"
 msgstr "크기"
+
+#: live-installer/frontend/gtk_interface.py:481
+#: live-installer/frontend/partitioning.py:331
+#: live-installer/frontend/partitioning.py:482
+msgid "Free space"
+msgstr "남은 공간"
 
 #: live-installer/frontend/gtk_interface.py:489
 msgid "Read only"
@@ -1044,28 +945,127 @@ msgstr ""
 msgid "Installation error"
 msgstr "설치 오류가 발생했습니다"
 
-#: live-installer/frontend/tui_interface.py:45
-#, fuzzy
-msgid "What keyboard would you like to use?"
-msgstr "자판 배열이 어떻게 되나요?"
-
-#: live-installer/frontend/tui_interface.py:52
-#, fuzzy
-msgid "Keyboard Model"
-msgstr "키보드 모델:"
-
-#: live-installer/frontend/dialogs.py:41
-msgid "No"
-msgstr "아니요"
-
-#: live-installer/frontend/dialogs.py:42
-msgid "Yes"
-msgstr "예"
-
 #: live-installer/frontend/timezones.py:140
 #, fuzzy
 msgid "Select timezone"
 msgstr "시간대"
+
+#: live-installer/frontend/partitioning.py:66
+msgid "B"
+msgstr "B"
+
+#: live-installer/frontend/partitioning.py:66
+#: live-installer/frontend/partitioning.py:428
+msgid "kB"
+msgstr "kB"
+
+#: live-installer/frontend/partitioning.py:66
+#: live-installer/frontend/partitioning.py:428
+msgid "MB"
+msgstr "MB"
+
+#: live-installer/frontend/partitioning.py:66
+#: live-installer/frontend/partitioning.py:429
+msgid "GB"
+msgstr "GB"
+
+#: live-installer/frontend/partitioning.py:67
+#: live-installer/frontend/partitioning.py:429
+msgid "TB"
+msgstr "TB"
+
+#: live-installer/frontend/partitioning.py:74
+msgid "Removable:"
+msgstr "이동식 매체:"
+
+#: live-installer/frontend/partitioning.py:205
+msgid "Edit"
+msgstr "편집하기"
+
+#: live-installer/frontend/partitioning.py:210
+#: live-installer/frontend/partitioning.py:214
+#: live-installer/frontend/partitioning.py:221
+#: live-installer/frontend/partitioning.py:230
+#, fuzzy, python-format
+msgid "Assign to %s"
+msgstr "/로 할당합니다"
+
+#: live-installer/frontend/partitioning.py:364
+#, python-format
+msgid ""
+"The partition table couldn't be written for %s. Restart the computer and try "
+"again."
+msgstr ""
+
+#: live-installer/frontend/partitioning.py:415
+#, python-format
+msgid ""
+"The partition %s could not be created. The installation will stop. Restart "
+"the computer and try again."
+msgstr ""
+
+#: live-installer/frontend/partitioning.py:480
+msgid "Logical partition"
+msgstr "논리 파티션"
+
+#: live-installer/frontend/partitioning.py:481
+msgid "Extended partition"
+msgstr "확장 파티션"
+
+#: live-installer/frontend/partitioning.py:485
+msgid "Unknown"
+msgstr "알 수 없음"
+
+#: live-installer/frontend/partitioning.py:542
+msgid "bootloader/recovery"
+msgstr ""
+
+#: live-installer/frontend/partitioning.py:554
+#, fuzzy
+msgid "EFI System Partition"
+msgstr "파티션 편집하기"
+
+#: live-installer/frontend/partitioning.py:577
+msgid "Edit partition"
+msgstr "파티션 편집하기"
+
+#: live-installer/frontend/partitioning.py:579
+msgid "Device:"
+msgstr "장치:"
+
+#: live-installer/frontend/partitioning.py:581
+msgid "Format as:"
+msgstr "포맷하기:"
+
+#: live-installer/frontend/partitioning.py:583
+msgid "Mount point:"
+msgstr "장착 지점:"
+
+#: live-installer/frontend/partitioning.py:584
+msgid "Cancel"
+msgstr "취소"
+
+#: live-installer/frontend/welcome.py:32
+#, python-format
+msgid "Try %s"
+msgstr ""
+
+#: live-installer/frontend/welcome.py:36
+#, python-format
+msgid "You are currently running %s from live media."
+msgstr ""
+
+#: live-installer/frontend/welcome.py:38
+#, python-format
+msgid ""
+"You can install %s now, or chose \"Install to Hard Drive\" in the Appication "
+"Menu later."
+msgstr ""
+
+#: live-installer/frontend/welcome.py:39
+#, fuzzy, python-format
+msgid "Welcome to %s"
+msgstr "환영합니다"
 
 #~ msgid "Installation Tool"
 #~ msgstr "설치 도구"

@@ -405,6 +405,9 @@ class InstallerWindow:
             _("Welcome to the %s Installer.") % config.get("distro_title", "17g"))
         self.builder.get_object("label_welcome2").set_text(
             _("This program will ask you some questions and set up system on your computer."))
+        self.builder.get_object("check_eula").set_label(
+            _("I accept the terms of the License Agreement"))
+
 
         # Language page
         self.language_column.set_title(_("Language"))

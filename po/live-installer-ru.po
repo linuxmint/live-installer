@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-07 14:53+0000\n"
+"POT-Creation-Date: 2022-02-08 18:34+0300\n"
 "PO-Revision-Date: 2020-03-13 10:54+0000\n"
 "Last-Translator: Vlad Orlov <Unknown>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -34,8 +34,8 @@ msgstr "Добро пожаловать в программу установки
 
 #: live-installer/resources/interface.ui:164
 #: live-installer/resources/interface2.ui:75
-#: live-installer/frontend/gtk_interface.py:407
 #: live-installer/frontend/tui_interface.py:25
+#: live-installer/frontend/gtk_interface.py:407
 #, fuzzy
 msgid ""
 "This program will ask you some questions and set up system on your computer."
@@ -79,8 +79,8 @@ msgstr ""
 
 #: live-installer/resources/interface.ui:489
 #: live-installer/resources/interface2.ui:402
-#: live-installer/frontend/gtk_interface.py:384
 #: live-installer/frontend/tui_interface.py:41
+#: live-installer/frontend/gtk_interface.py:384
 msgid "Timezone"
 msgstr "Часовой пояс"
 
@@ -323,6 +323,10 @@ msgstr ""
 msgid "Welcome to 17g"
 msgstr "Добро пожаловать"
 
+#: live-installer/main.py:38
+msgid "You must be root!"
+msgstr ""
+
 #: live-installer/installer.py:135 live-installer/installer.py:156
 #, python-format
 msgid "Copying /%s"
@@ -438,79 +442,70 @@ msgstr "Проверка загрузчика"
 msgid "Failed to run command (Exited with {}):"
 msgstr ""
 
-#: live-installer/main.py:38
-msgid "You must be root!"
-msgstr ""
-
-#: live-installer/frontend/welcome.py:32
-#, python-format
-msgid "Try %s"
-msgstr ""
-
-#: live-installer/frontend/welcome.py:36
-#, python-format
-msgid "You are currently running %s from live media."
-msgstr ""
-
-#: live-installer/frontend/welcome.py:38
-#, python-format
-msgid ""
-"You can install %s now, or chose \"Install to Hard Drive\" in the Appication "
-"Menu later."
-msgstr ""
-
-#: live-installer/frontend/welcome.py:39
+#: live-installer/frontend/tui_interface.py:23
+#: live-installer/frontend/gtk_interface.py:405
 #, fuzzy, python-format
-msgid "Welcome to %s"
-msgstr "Добро пожаловать"
+msgid "Welcome to the %s Installer."
+msgstr "Добро пожаловать в программу установки 17G."
 
-#: live-installer/frontend/partitioning.py:66
-msgid "B"
-msgstr "Б"
+#: live-installer/frontend/tui_interface.py:28
+#: live-installer/frontend/gtk_interface.py:382
+msgid "What language would you like to use?"
+msgstr "Какой язык вы предпочитаете использовать?"
 
-#: live-installer/frontend/partitioning.py:66
-#: live-installer/frontend/partitioning.py:428
-msgid "kB"
-msgstr "кБ"
+#: live-installer/frontend/tui_interface.py:33
+#: live-installer/frontend/gtk_interface.py:115
+#: live-installer/frontend/gtk_interface.py:382
+#: live-installer/frontend/gtk_interface.py:410
+msgid "Language"
+msgstr "Язык"
 
-#: live-installer/frontend/partitioning.py:66
-#: live-installer/frontend/partitioning.py:428
-msgid "MB"
-msgstr "МБ"
+#: live-installer/frontend/tui_interface.py:37
+#: live-installer/frontend/gtk_interface.py:384
+msgid "Where are you?"
+msgstr "Где вы находитесь?"
 
-#: live-installer/frontend/partitioning.py:66
-#: live-installer/frontend/partitioning.py:429
-msgid "GB"
-msgstr "ГБ"
+#: live-installer/frontend/tui_interface.py:45
+#, fuzzy
+msgid "What keyboard would you like to use?"
+msgstr "Какой язык вы предпочитаете использовать?"
 
-#: live-installer/frontend/partitioning.py:67
-#: live-installer/frontend/partitioning.py:429
-msgid "TB"
-msgstr "ТБ"
+#: live-installer/frontend/tui_interface.py:52
+#, fuzzy
+msgid "Keyboard Model"
+msgstr "Модель клавиатуры:"
 
-#: live-installer/frontend/partitioning.py:74
-msgid "Removable:"
-msgstr "Съёмные:"
+#: live-installer/frontend/dialogs.py:35 live-installer/frontend/dialogs.py:48
+#: live-installer/frontend/dialogs.py:54
+#: live-installer/frontend/partitioning.py:585
+msgid "OK"
+msgstr "ОК"
 
-#: live-installer/frontend/partitioning.py:205
-msgid "Edit"
-msgstr "Изменить"
+#: live-installer/frontend/dialogs.py:41
+msgid "No"
+msgstr "Нет"
 
-#: live-installer/frontend/partitioning.py:210
-#: live-installer/frontend/partitioning.py:214
-#: live-installer/frontend/partitioning.py:221
-#: live-installer/frontend/partitioning.py:230
-#, fuzzy, python-format
-msgid "Assign to %s"
-msgstr "Назначить /"
+#: live-installer/frontend/dialogs.py:42
+msgid "Yes"
+msgstr "Да"
 
-#: live-installer/frontend/partitioning.py:331
-#: live-installer/frontend/partitioning.py:482
-#: live-installer/frontend/gtk_interface.py:481
-msgid "Free space"
-msgstr "Свободное место"
+#: live-installer/frontend/gtk_interface.py:106
+#: live-installer/frontend/gtk_interface.py:411
+msgid "Country"
+msgstr "Регион"
 
-#: live-installer/frontend/partitioning.py:348
+#: live-installer/frontend/gtk_interface.py:245
+msgid "Layout"
+msgstr "Раскладка"
+
+#: live-installer/frontend/gtk_interface.py:253
+msgid "Variant"
+msgstr "Разновидность"
+
+#: live-installer/frontend/gtk_interface.py:271
+msgid "Calculating file indexes ..."
+msgstr "Вычисление файловых индексов ..."
+
 #: live-installer/frontend/gtk_interface.py:367
 #: live-installer/frontend/gtk_interface.py:370
 #: live-installer/frontend/gtk_interface.py:955
@@ -525,111 +520,13 @@ msgstr "Свободное место"
 #: live-installer/frontend/gtk_interface.py:1133
 #: live-installer/frontend/gtk_interface.py:1193
 #: live-installer/frontend/gtk_interface.py:1270
+#: live-installer/frontend/partitioning.py:348
 msgid "Installer"
 msgstr "Программа установки"
-
-#: live-installer/frontend/partitioning.py:364
-#, python-format
-msgid ""
-"The partition table couldn't be written for %s. Restart the computer and try "
-"again."
-msgstr ""
-"Не удалось записать таблицу разделов для %s. Перезагрузите компьютер и "
-"попробуйте ещё раз."
-
-#: live-installer/frontend/partitioning.py:415
-#, python-format
-msgid ""
-"The partition %s could not be created. The installation will stop. Restart "
-"the computer and try again."
-msgstr ""
-"Не удалось создать раздел %s. Установка будет прекращена. Перезагрузите "
-"компьютер и попробуйте ещё раз."
-
-#: live-installer/frontend/partitioning.py:480
-msgid "Logical partition"
-msgstr "Логический раздел"
-
-#: live-installer/frontend/partitioning.py:481
-msgid "Extended partition"
-msgstr "Расширенный раздел"
-
-#: live-installer/frontend/partitioning.py:485
-msgid "Unknown"
-msgstr "Неизвестный"
-
-#: live-installer/frontend/partitioning.py:542
-msgid "bootloader/recovery"
-msgstr ""
-
-#: live-installer/frontend/partitioning.py:554
-#, fuzzy
-msgid "EFI System Partition"
-msgstr "Изменить раздел"
-
-#: live-installer/frontend/partitioning.py:577
-msgid "Edit partition"
-msgstr "Изменить раздел"
-
-#: live-installer/frontend/partitioning.py:579
-msgid "Device:"
-msgstr "Устройство:"
-
-#: live-installer/frontend/partitioning.py:581
-msgid "Format as:"
-msgstr "Форматировать в:"
-
-#: live-installer/frontend/partitioning.py:583
-msgid "Mount point:"
-msgstr "Точка монтирования:"
-
-#: live-installer/frontend/partitioning.py:584
-msgid "Cancel"
-msgstr "Отмена"
-
-#: live-installer/frontend/partitioning.py:585
-#: live-installer/frontend/dialogs.py:35 live-installer/frontend/dialogs.py:48
-#: live-installer/frontend/dialogs.py:54
-msgid "OK"
-msgstr "ОК"
-
-#: live-installer/frontend/gtk_interface.py:106
-#: live-installer/frontend/gtk_interface.py:411
-msgid "Country"
-msgstr "Регион"
-
-#: live-installer/frontend/gtk_interface.py:115
-#: live-installer/frontend/gtk_interface.py:382
-#: live-installer/frontend/gtk_interface.py:410
-#: live-installer/frontend/tui_interface.py:33
-msgid "Language"
-msgstr "Язык"
-
-#: live-installer/frontend/gtk_interface.py:245
-msgid "Layout"
-msgstr "Раскладка"
-
-#: live-installer/frontend/gtk_interface.py:253
-msgid "Variant"
-msgstr "Разновидность"
-
-#: live-installer/frontend/gtk_interface.py:271
-msgid "Calculating file indexes ..."
-msgstr "Вычисление файловых индексов ..."
 
 #: live-installer/frontend/gtk_interface.py:380
 msgid "License Agreement"
 msgstr ""
-
-#: live-installer/frontend/gtk_interface.py:382
-#: live-installer/frontend/tui_interface.py:28
-msgid "What language would you like to use?"
-msgstr "Какой язык вы предпочитаете использовать?"
-
-#: live-installer/frontend/gtk_interface.py:384
-#: live-installer/frontend/tui_interface.py:37
-msgid "Where are you?"
-msgstr "Где вы находитесь?"
 
 #: live-installer/frontend/gtk_interface.py:386
 msgid "Keyboard layout"
@@ -690,12 +587,6 @@ msgstr "Назад"
 msgid "Next"
 msgstr "Далее"
 
-#: live-installer/frontend/gtk_interface.py:405
-#: live-installer/frontend/tui_interface.py:23
-#, fuzzy, python-format
-msgid "Welcome to the %s Installer."
-msgstr "Добро пожаловать в программу установки 17G."
-
 #: live-installer/frontend/gtk_interface.py:417
 msgid "Type here to test your keyboard layout"
 msgstr "Поле для проверки вашей раскладки клавиатуры"
@@ -749,6 +640,12 @@ msgstr "Форматировать в"
 #: live-installer/frontend/gtk_interface.py:480
 msgid "Size"
 msgstr "Размер"
+
+#: live-installer/frontend/gtk_interface.py:481
+#: live-installer/frontend/partitioning.py:331
+#: live-installer/frontend/partitioning.py:482
+msgid "Free space"
+msgstr "Свободное место"
 
 #: live-installer/frontend/gtk_interface.py:489
 msgid "Read only"
@@ -1077,28 +974,131 @@ msgstr ""
 msgid "Installation error"
 msgstr "Ошибка установки"
 
-#: live-installer/frontend/tui_interface.py:45
-#, fuzzy
-msgid "What keyboard would you like to use?"
-msgstr "Какой язык вы предпочитаете использовать?"
-
-#: live-installer/frontend/tui_interface.py:52
-#, fuzzy
-msgid "Keyboard Model"
-msgstr "Модель клавиатуры:"
-
-#: live-installer/frontend/dialogs.py:41
-msgid "No"
-msgstr "Нет"
-
-#: live-installer/frontend/dialogs.py:42
-msgid "Yes"
-msgstr "Да"
-
 #: live-installer/frontend/timezones.py:140
 #, fuzzy
 msgid "Select timezone"
 msgstr "Часовой пояс"
+
+#: live-installer/frontend/partitioning.py:66
+msgid "B"
+msgstr "Б"
+
+#: live-installer/frontend/partitioning.py:66
+#: live-installer/frontend/partitioning.py:428
+msgid "kB"
+msgstr "кБ"
+
+#: live-installer/frontend/partitioning.py:66
+#: live-installer/frontend/partitioning.py:428
+msgid "MB"
+msgstr "МБ"
+
+#: live-installer/frontend/partitioning.py:66
+#: live-installer/frontend/partitioning.py:429
+msgid "GB"
+msgstr "ГБ"
+
+#: live-installer/frontend/partitioning.py:67
+#: live-installer/frontend/partitioning.py:429
+msgid "TB"
+msgstr "ТБ"
+
+#: live-installer/frontend/partitioning.py:74
+msgid "Removable:"
+msgstr "Съёмные:"
+
+#: live-installer/frontend/partitioning.py:205
+msgid "Edit"
+msgstr "Изменить"
+
+#: live-installer/frontend/partitioning.py:210
+#: live-installer/frontend/partitioning.py:214
+#: live-installer/frontend/partitioning.py:221
+#: live-installer/frontend/partitioning.py:230
+#, fuzzy, python-format
+msgid "Assign to %s"
+msgstr "Назначить /"
+
+#: live-installer/frontend/partitioning.py:364
+#, python-format
+msgid ""
+"The partition table couldn't be written for %s. Restart the computer and try "
+"again."
+msgstr ""
+"Не удалось записать таблицу разделов для %s. Перезагрузите компьютер и "
+"попробуйте ещё раз."
+
+#: live-installer/frontend/partitioning.py:415
+#, python-format
+msgid ""
+"The partition %s could not be created. The installation will stop. Restart "
+"the computer and try again."
+msgstr ""
+"Не удалось создать раздел %s. Установка будет прекращена. Перезагрузите "
+"компьютер и попробуйте ещё раз."
+
+#: live-installer/frontend/partitioning.py:480
+msgid "Logical partition"
+msgstr "Логический раздел"
+
+#: live-installer/frontend/partitioning.py:481
+msgid "Extended partition"
+msgstr "Расширенный раздел"
+
+#: live-installer/frontend/partitioning.py:485
+msgid "Unknown"
+msgstr "Неизвестный"
+
+#: live-installer/frontend/partitioning.py:542
+msgid "bootloader/recovery"
+msgstr ""
+
+#: live-installer/frontend/partitioning.py:554
+#, fuzzy
+msgid "EFI System Partition"
+msgstr "Изменить раздел"
+
+#: live-installer/frontend/partitioning.py:577
+msgid "Edit partition"
+msgstr "Изменить раздел"
+
+#: live-installer/frontend/partitioning.py:579
+msgid "Device:"
+msgstr "Устройство:"
+
+#: live-installer/frontend/partitioning.py:581
+msgid "Format as:"
+msgstr "Форматировать в:"
+
+#: live-installer/frontend/partitioning.py:583
+msgid "Mount point:"
+msgstr "Точка монтирования:"
+
+#: live-installer/frontend/partitioning.py:584
+msgid "Cancel"
+msgstr "Отмена"
+
+#: live-installer/frontend/welcome.py:32
+#, python-format
+msgid "Try %s"
+msgstr ""
+
+#: live-installer/frontend/welcome.py:36
+#, python-format
+msgid "You are currently running %s from live media."
+msgstr ""
+
+#: live-installer/frontend/welcome.py:38
+#, python-format
+msgid ""
+"You can install %s now, or chose \"Install to Hard Drive\" in the Appication "
+"Menu later."
+msgstr ""
+
+#: live-installer/frontend/welcome.py:39
+#, fuzzy, python-format
+msgid "Welcome to %s"
+msgstr "Добро пожаловать"
 
 #~ msgid "Installation Tool"
 #~ msgstr "Средство для установки"

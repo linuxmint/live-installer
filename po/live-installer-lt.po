@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-07 14:53+0000\n"
+"POT-Creation-Date: 2022-02-08 18:34+0300\n"
 "PO-Revision-Date: 2020-03-07 19:23+0000\n"
 "Last-Translator: Moo <hazap@hotmail.com>\n"
 "Language-Team: Lithuanian <lt@li.org>\n"
@@ -34,8 +34,8 @@ msgstr "Sveiki atvykę į 17G diegimo programą."
 
 #: live-installer/resources/interface.ui:164
 #: live-installer/resources/interface2.ui:75
-#: live-installer/frontend/gtk_interface.py:407
 #: live-installer/frontend/tui_interface.py:25
+#: live-installer/frontend/gtk_interface.py:407
 #, fuzzy
 msgid ""
 "This program will ask you some questions and set up system on your computer."
@@ -80,8 +80,8 @@ msgstr ""
 
 #: live-installer/resources/interface.ui:489
 #: live-installer/resources/interface2.ui:402
-#: live-installer/frontend/gtk_interface.py:384
 #: live-installer/frontend/tui_interface.py:41
+#: live-installer/frontend/gtk_interface.py:384
 msgid "Timezone"
 msgstr "Laiko juosta"
 
@@ -321,6 +321,10 @@ msgstr ""
 msgid "Welcome to 17g"
 msgstr "Sveiki"
 
+#: live-installer/main.py:38
+msgid "You must be root!"
+msgstr ""
+
 #: live-installer/installer.py:135 live-installer/installer.py:156
 #, python-format
 msgid "Copying /%s"
@@ -434,79 +438,70 @@ msgstr "Tikrinama paleidyklė"
 msgid "Failed to run command (Exited with {}):"
 msgstr ""
 
-#: live-installer/main.py:38
-msgid "You must be root!"
-msgstr ""
-
-#: live-installer/frontend/welcome.py:32
-#, python-format
-msgid "Try %s"
-msgstr ""
-
-#: live-installer/frontend/welcome.py:36
-#, python-format
-msgid "You are currently running %s from live media."
-msgstr ""
-
-#: live-installer/frontend/welcome.py:38
-#, python-format
-msgid ""
-"You can install %s now, or chose \"Install to Hard Drive\" in the Appication "
-"Menu later."
-msgstr ""
-
-#: live-installer/frontend/welcome.py:39
+#: live-installer/frontend/tui_interface.py:23
+#: live-installer/frontend/gtk_interface.py:405
 #, fuzzy, python-format
-msgid "Welcome to %s"
-msgstr "Sveiki"
+msgid "Welcome to the %s Installer."
+msgstr "Sveiki atvykę į 17G diegimo programą."
 
-#: live-installer/frontend/partitioning.py:66
-msgid "B"
-msgstr "B"
+#: live-installer/frontend/tui_interface.py:28
+#: live-installer/frontend/gtk_interface.py:382
+msgid "What language would you like to use?"
+msgstr "Kurią kalbą norėtumėte naudoti?"
 
-#: live-installer/frontend/partitioning.py:66
-#: live-installer/frontend/partitioning.py:428
-msgid "kB"
-msgstr "kB"
+#: live-installer/frontend/tui_interface.py:33
+#: live-installer/frontend/gtk_interface.py:115
+#: live-installer/frontend/gtk_interface.py:382
+#: live-installer/frontend/gtk_interface.py:410
+msgid "Language"
+msgstr "Kalba"
 
-#: live-installer/frontend/partitioning.py:66
-#: live-installer/frontend/partitioning.py:428
-msgid "MB"
-msgstr "MB"
+#: live-installer/frontend/tui_interface.py:37
+#: live-installer/frontend/gtk_interface.py:384
+msgid "Where are you?"
+msgstr "Kur esate?"
 
-#: live-installer/frontend/partitioning.py:66
-#: live-installer/frontend/partitioning.py:429
-msgid "GB"
-msgstr "GB"
+#: live-installer/frontend/tui_interface.py:45
+#, fuzzy
+msgid "What keyboard would you like to use?"
+msgstr "Kurią kalbą norėtumėte naudoti?"
 
-#: live-installer/frontend/partitioning.py:67
-#: live-installer/frontend/partitioning.py:429
-msgid "TB"
-msgstr "TB"
+#: live-installer/frontend/tui_interface.py:52
+#, fuzzy
+msgid "Keyboard Model"
+msgstr "Klaviatūros modelis:"
 
-#: live-installer/frontend/partitioning.py:74
-msgid "Removable:"
-msgstr "Keičiamasis:"
+#: live-installer/frontend/dialogs.py:35 live-installer/frontend/dialogs.py:48
+#: live-installer/frontend/dialogs.py:54
+#: live-installer/frontend/partitioning.py:585
+msgid "OK"
+msgstr "Gerai"
 
-#: live-installer/frontend/partitioning.py:205
-msgid "Edit"
-msgstr "Taisyti"
+#: live-installer/frontend/dialogs.py:41
+msgid "No"
+msgstr "Ne"
 
-#: live-installer/frontend/partitioning.py:210
-#: live-installer/frontend/partitioning.py:214
-#: live-installer/frontend/partitioning.py:221
-#: live-installer/frontend/partitioning.py:230
-#, fuzzy, python-format
-msgid "Assign to %s"
-msgstr "Priskirti prie /"
+#: live-installer/frontend/dialogs.py:42
+msgid "Yes"
+msgstr "Taip"
 
-#: live-installer/frontend/partitioning.py:331
-#: live-installer/frontend/partitioning.py:482
-#: live-installer/frontend/gtk_interface.py:481
-msgid "Free space"
-msgstr "Laisva vieta"
+#: live-installer/frontend/gtk_interface.py:106
+#: live-installer/frontend/gtk_interface.py:411
+msgid "Country"
+msgstr "Šalis"
 
-#: live-installer/frontend/partitioning.py:348
+#: live-installer/frontend/gtk_interface.py:245
+msgid "Layout"
+msgstr "Išdėstymas"
+
+#: live-installer/frontend/gtk_interface.py:253
+msgid "Variant"
+msgstr "Variantas"
+
+#: live-installer/frontend/gtk_interface.py:271
+msgid "Calculating file indexes ..."
+msgstr "Skaičiuojami failų indeksai ..."
+
 #: live-installer/frontend/gtk_interface.py:367
 #: live-installer/frontend/gtk_interface.py:370
 #: live-installer/frontend/gtk_interface.py:955
@@ -521,107 +516,13 @@ msgstr "Laisva vieta"
 #: live-installer/frontend/gtk_interface.py:1133
 #: live-installer/frontend/gtk_interface.py:1193
 #: live-installer/frontend/gtk_interface.py:1270
+#: live-installer/frontend/partitioning.py:348
 msgid "Installer"
 msgstr "Diegimo programa"
-
-#: live-installer/frontend/partitioning.py:364
-#, python-format
-msgid ""
-"The partition table couldn't be written for %s. Restart the computer and try "
-"again."
-msgstr ""
-
-#: live-installer/frontend/partitioning.py:415
-#, python-format
-msgid ""
-"The partition %s could not be created. The installation will stop. Restart "
-"the computer and try again."
-msgstr ""
-
-#: live-installer/frontend/partitioning.py:480
-msgid "Logical partition"
-msgstr "Loginis skaidinys"
-
-#: live-installer/frontend/partitioning.py:481
-msgid "Extended partition"
-msgstr "Išplėstasis skaidinys"
-
-#: live-installer/frontend/partitioning.py:485
-msgid "Unknown"
-msgstr "Nežinoma"
-
-#: live-installer/frontend/partitioning.py:542
-msgid "bootloader/recovery"
-msgstr ""
-
-#: live-installer/frontend/partitioning.py:554
-#, fuzzy
-msgid "EFI System Partition"
-msgstr "Taisyti skaidinį"
-
-#: live-installer/frontend/partitioning.py:577
-msgid "Edit partition"
-msgstr "Taisyti skaidinį"
-
-#: live-installer/frontend/partitioning.py:579
-msgid "Device:"
-msgstr "Įrenginys:"
-
-#: live-installer/frontend/partitioning.py:581
-msgid "Format as:"
-msgstr "Formatuoti kaip:"
-
-#: live-installer/frontend/partitioning.py:583
-msgid "Mount point:"
-msgstr "Prijungimo vieta:"
-
-#: live-installer/frontend/partitioning.py:584
-msgid "Cancel"
-msgstr "Atsisakyti"
-
-#: live-installer/frontend/partitioning.py:585
-#: live-installer/frontend/dialogs.py:35 live-installer/frontend/dialogs.py:48
-#: live-installer/frontend/dialogs.py:54
-msgid "OK"
-msgstr "Gerai"
-
-#: live-installer/frontend/gtk_interface.py:106
-#: live-installer/frontend/gtk_interface.py:411
-msgid "Country"
-msgstr "Šalis"
-
-#: live-installer/frontend/gtk_interface.py:115
-#: live-installer/frontend/gtk_interface.py:382
-#: live-installer/frontend/gtk_interface.py:410
-#: live-installer/frontend/tui_interface.py:33
-msgid "Language"
-msgstr "Kalba"
-
-#: live-installer/frontend/gtk_interface.py:245
-msgid "Layout"
-msgstr "Išdėstymas"
-
-#: live-installer/frontend/gtk_interface.py:253
-msgid "Variant"
-msgstr "Variantas"
-
-#: live-installer/frontend/gtk_interface.py:271
-msgid "Calculating file indexes ..."
-msgstr "Skaičiuojami failų indeksai ..."
 
 #: live-installer/frontend/gtk_interface.py:380
 msgid "License Agreement"
 msgstr ""
-
-#: live-installer/frontend/gtk_interface.py:382
-#: live-installer/frontend/tui_interface.py:28
-msgid "What language would you like to use?"
-msgstr "Kurią kalbą norėtumėte naudoti?"
-
-#: live-installer/frontend/gtk_interface.py:384
-#: live-installer/frontend/tui_interface.py:37
-msgid "Where are you?"
-msgstr "Kur esate?"
 
 #: live-installer/frontend/gtk_interface.py:386
 msgid "Keyboard layout"
@@ -682,12 +583,6 @@ msgstr "Atgal"
 msgid "Next"
 msgstr "Kitas"
 
-#: live-installer/frontend/gtk_interface.py:405
-#: live-installer/frontend/tui_interface.py:23
-#, fuzzy, python-format
-msgid "Welcome to the %s Installer."
-msgstr "Sveiki atvykę į 17G diegimo programą."
-
 #: live-installer/frontend/gtk_interface.py:417
 msgid "Type here to test your keyboard layout"
 msgstr "Rašykite čia norėdami išbandyti klaviatūros išdėstymą"
@@ -740,6 +635,12 @@ msgstr "Formatuoti kaip"
 #: live-installer/frontend/gtk_interface.py:480
 msgid "Size"
 msgstr "Dydis"
+
+#: live-installer/frontend/gtk_interface.py:481
+#: live-installer/frontend/partitioning.py:331
+#: live-installer/frontend/partitioning.py:482
+msgid "Free space"
+msgstr "Laisva vieta"
 
 #: live-installer/frontend/gtk_interface.py:489
 msgid "Read only"
@@ -1067,28 +968,127 @@ msgstr ""
 msgid "Installation error"
 msgstr "Įdiegimo klaida"
 
-#: live-installer/frontend/tui_interface.py:45
-#, fuzzy
-msgid "What keyboard would you like to use?"
-msgstr "Kurią kalbą norėtumėte naudoti?"
-
-#: live-installer/frontend/tui_interface.py:52
-#, fuzzy
-msgid "Keyboard Model"
-msgstr "Klaviatūros modelis:"
-
-#: live-installer/frontend/dialogs.py:41
-msgid "No"
-msgstr "Ne"
-
-#: live-installer/frontend/dialogs.py:42
-msgid "Yes"
-msgstr "Taip"
-
 #: live-installer/frontend/timezones.py:140
 #, fuzzy
 msgid "Select timezone"
 msgstr "Laiko juosta"
+
+#: live-installer/frontend/partitioning.py:66
+msgid "B"
+msgstr "B"
+
+#: live-installer/frontend/partitioning.py:66
+#: live-installer/frontend/partitioning.py:428
+msgid "kB"
+msgstr "kB"
+
+#: live-installer/frontend/partitioning.py:66
+#: live-installer/frontend/partitioning.py:428
+msgid "MB"
+msgstr "MB"
+
+#: live-installer/frontend/partitioning.py:66
+#: live-installer/frontend/partitioning.py:429
+msgid "GB"
+msgstr "GB"
+
+#: live-installer/frontend/partitioning.py:67
+#: live-installer/frontend/partitioning.py:429
+msgid "TB"
+msgstr "TB"
+
+#: live-installer/frontend/partitioning.py:74
+msgid "Removable:"
+msgstr "Keičiamasis:"
+
+#: live-installer/frontend/partitioning.py:205
+msgid "Edit"
+msgstr "Taisyti"
+
+#: live-installer/frontend/partitioning.py:210
+#: live-installer/frontend/partitioning.py:214
+#: live-installer/frontend/partitioning.py:221
+#: live-installer/frontend/partitioning.py:230
+#, fuzzy, python-format
+msgid "Assign to %s"
+msgstr "Priskirti prie /"
+
+#: live-installer/frontend/partitioning.py:364
+#, python-format
+msgid ""
+"The partition table couldn't be written for %s. Restart the computer and try "
+"again."
+msgstr ""
+
+#: live-installer/frontend/partitioning.py:415
+#, python-format
+msgid ""
+"The partition %s could not be created. The installation will stop. Restart "
+"the computer and try again."
+msgstr ""
+
+#: live-installer/frontend/partitioning.py:480
+msgid "Logical partition"
+msgstr "Loginis skaidinys"
+
+#: live-installer/frontend/partitioning.py:481
+msgid "Extended partition"
+msgstr "Išplėstasis skaidinys"
+
+#: live-installer/frontend/partitioning.py:485
+msgid "Unknown"
+msgstr "Nežinoma"
+
+#: live-installer/frontend/partitioning.py:542
+msgid "bootloader/recovery"
+msgstr ""
+
+#: live-installer/frontend/partitioning.py:554
+#, fuzzy
+msgid "EFI System Partition"
+msgstr "Taisyti skaidinį"
+
+#: live-installer/frontend/partitioning.py:577
+msgid "Edit partition"
+msgstr "Taisyti skaidinį"
+
+#: live-installer/frontend/partitioning.py:579
+msgid "Device:"
+msgstr "Įrenginys:"
+
+#: live-installer/frontend/partitioning.py:581
+msgid "Format as:"
+msgstr "Formatuoti kaip:"
+
+#: live-installer/frontend/partitioning.py:583
+msgid "Mount point:"
+msgstr "Prijungimo vieta:"
+
+#: live-installer/frontend/partitioning.py:584
+msgid "Cancel"
+msgstr "Atsisakyti"
+
+#: live-installer/frontend/welcome.py:32
+#, python-format
+msgid "Try %s"
+msgstr ""
+
+#: live-installer/frontend/welcome.py:36
+#, python-format
+msgid "You are currently running %s from live media."
+msgstr ""
+
+#: live-installer/frontend/welcome.py:38
+#, python-format
+msgid ""
+"You can install %s now, or chose \"Install to Hard Drive\" in the Appication "
+"Menu later."
+msgstr ""
+
+#: live-installer/frontend/welcome.py:39
+#, fuzzy, python-format
+msgid "Welcome to %s"
+msgstr "Sveiki"
 
 #~ msgid "Installation Tool"
 #~ msgstr "Diegimo įrankis"
