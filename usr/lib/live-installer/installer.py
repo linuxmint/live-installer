@@ -386,7 +386,7 @@ class InstallerEngine:
         for partition in self.setup.partitions:
             if partition.mount_as == "/home":
                 has_dedicated_home = True
-            break
+                break
         return has_dedicated_home
 
     def write_fstab(self, path="/target/etc/fstab"):
