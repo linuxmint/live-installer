@@ -285,7 +285,7 @@ class InstallerEngine:
         elif self.setup.lvm:
             self.auto_swap_partition = None
         else:
-            if config.get("use_swap",False):
+            if config.get("use_swap",False) and self.setup.create_swap:
                 self.auto_swap_partition = get_next()
         self.auto_root_partition = get_next()
         
@@ -330,7 +330,7 @@ class InstallerEngine:
             self.run("vgcreate -y lvmlmde %s" % self.auto_root_partition)
             log(" --> LVM: Creating LV root")
             self.run("lvcreate -y -n root -L 1GB lvmlmde")
-            if config.get("use_swap",False):
+            if config.get("use_swap",False) and self.setup.create_swap:
                 log(" --> LVM: Creating LV swap")
                 swap_size = int(round(int(subprocess.getoutput(
                     "awk '/^MemTotal/{ print $2 }' /proc/meminfo")) / 1024, 0))
@@ -339,7 +339,7 @@ class InstallerEngine:
             self.run("lvextend -l 100\\%FREE /dev/lvmlmde/root")
             log(" --> LVM: Formatting LV root")
             self.run("mkfs.ext4 /dev/lvmlmde/root -FF")
-            if config.get("use_swap",False):
+            if config.get("use_swap",False) and self.setup.create_swap:
                 log(" --> LVM: Formatting LV swap")
                 self.run("mkswap -f /dev/lvmlmde/swap")
                 log(" --> LVM: Enabling LV swap")
@@ -907,6 +907,7 @@ class Setup(object):
     lvm = False
     luks = False
     badblocks = False
+    create_swap = False
     winroot = None
     winboot = None
     winefi = None

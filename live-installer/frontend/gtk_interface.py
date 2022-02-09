@@ -173,6 +173,10 @@ class InstallerWindow:
         self.builder.get_object("check_minimal").connect(
             "toggled", self.assign_options)
 
+        # options
+        self.builder.get_object("check_swap").connect(
+            "toggled", self.assign_options)
+
         # partitions
         self.builder.get_object("button_edit").connect(
             "clicked", partitioning.manually_edit_partitions)
@@ -283,6 +287,9 @@ class InstallerWindow:
         if config.get("skip_options", False):
             obox.hide()
         
+        if not config.get("use_swap",False):
+            self.builder.get_object("check_swap").hide()
+
         self.i18n()
 
         # make sure we're on the right page (no pun.)
@@ -608,6 +615,8 @@ class InstallerWindow:
             "check_updates").get_active()
         self.setup.minimal_installation = self.builder.get_object(
             "check_minimal").get_active()
+        self.setup.create_swap = self.builder.get_object(
+            "check_swap").get_active()
 
     def assign_type_options(self, widget, data=None):
         self.setup.automated = self.builder.get_object(

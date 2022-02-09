@@ -5,18 +5,6 @@
   <object class="GtkSizeGroup">
     <property name="mode">vertical</property>
   </object>
-  <object class="GtkListStore" id="model2">
-    <columns>
-      <!-- column-name gchararray -->
-      <column type="gchararray"/>
-    </columns>
-  </object>
-  <object class="GtkListStore" id="model3">
-    <columns>
-      <!-- column-name gchararray -->
-      <column type="gchararray"/>
-    </columns>
-  </object>
   <object class="GtkWindow" id="main_window">
     <property name="width-request">0</property>
     <property name="height-request">0</property>
@@ -99,6 +87,8 @@
               <object class="GtkBox" id="vbox_eula">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="margin-left">8</property>
+                <property name="margin-right">8</property>
                 <property name="margin-start">8</property>
                 <property name="margin-end">8</property>
                 <property name="margin-top">8</property>
@@ -537,6 +527,29 @@
                       </packing>
                     </child>
                     <child>
+                      <object class="GtkCheckButton" id="check_swap">
+                        <property name="visible">True</property>
+                        <property name="can-focus">True</property>
+                        <property name="receives-default">False</property>
+                        <property name="draw-indicator">True</property>
+                        <child>
+                          <object class="GtkLabel" id="label_swap">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="halign">start</property>
+                            <property name="margin-left">5</property>
+                            <property name="margin-start">5</property>
+                            <property name="label" translatable="yes">Ceate swap partition</property>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                    <child>
                       <object class="GtkBox" id="box_lvm">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
@@ -736,7 +749,7 @@
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
-                        <property name="position">2</property>
+                        <property name="position">3</property>
                       </packing>
                     </child>
                   </object>
@@ -1974,6 +1987,12 @@
       </object>
     </child>
   </object>
+  <object class="GtkListStore" id="model2">
+    <columns>
+      <!-- column-name gchararray -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
   <object class="GtkDialog" id="dialog">
     <property name="can-focus">False</property>
     <property name="border-width">5</property>
@@ -2163,5 +2182,11 @@
       <action-widget response="-6">button_cancel</action-widget>
       <action-widget response="-5">button_ok</action-widget>
     </action-widgets>
+  </object>
+  <object class="GtkListStore" id="model3">
+    <columns>
+      <!-- column-name gchararray -->
+      <column type="gchararray"/>
+    </columns>
   </object>
 </interface>
