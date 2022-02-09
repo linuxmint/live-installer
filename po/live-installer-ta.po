@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-09 15:41+0000\n"
+"POT-Creation-Date: 2022-02-09 15:49+0000\n"
 "PO-Revision-Date: 2016-10-28 12:59+0000\n"
 "Last-Translator: Kamala Kannan <Unknown>\n"
 "Language-Team: Tamil <ta@li.org>\n"
@@ -20,19 +20,19 @@ msgstr ""
 
 #: live-installer/resources/interface.ui:66
 #: live-installer/resources/interface.ui:85
-#: live-installer/resources/interface2.ui:1924
-#: live-installer/resources/interface2.ui:1964
+#: live-installer/resources/interface2.ui:1936
+#: live-installer/resources/interface2.ui:1976
 #: live-installer/frontend/gtk_interface.py:385
 msgid "Welcome"
 msgstr ""
 
 #: live-installer/resources/interface.ui:143
-#: live-installer/resources/interface2.ui:54
+#: live-installer/resources/interface2.ui:66
 msgid "Welcome to the 17g Installer."
 msgstr ""
 
 #: live-installer/resources/interface.ui:160
-#: live-installer/resources/interface2.ui:71
+#: live-installer/resources/interface2.ui:83
 #: live-installer/frontend/gtk_interface.py:414
 #: live-installer/frontend/tui_interface.py:25
 msgid ""
@@ -40,19 +40,19 @@ msgid ""
 msgstr ""
 
 #: live-installer/resources/interface.ui:213
-#: live-installer/resources/interface2.ui:126
+#: live-installer/resources/interface2.ui:138
 #: live-installer/frontend/gtk_interface.py:416
 msgid "I accept the terms of the License Agreement"
 msgstr ""
 
 #: live-installer/resources/interface.ui:286
-#: live-installer/resources/interface2.ui:199
+#: live-installer/resources/interface2.ui:211
 #: live-installer/frontend/gtk_interface.py:425
 msgid "Keyboard Model:"
 msgstr ""
 
 #: live-installer/resources/interface.ui:383
-#: live-installer/resources/interface2.ui:296
+#: live-installer/resources/interface2.ui:308
 msgid "Type here to test your keyboard"
 msgstr ""
 
@@ -61,232 +61,233 @@ msgstr ""
 #: live-installer/resources/interface.ui:2035
 #: live-installer/resources/interface.ui:2047
 #: live-installer/resources/interface.ui:2059
-#: live-installer/resources/interface2.ui:351
-#: live-installer/resources/interface2.ui:1606
-#: live-installer/resources/interface2.ui:2058
-#: live-installer/resources/interface2.ui:2070
-#: live-installer/resources/interface2.ui:2082
+#: live-installer/resources/interface2.ui:363
+#: live-installer/resources/interface2.ui:1618
+#: live-installer/resources/interface2.ui:2064
+#: live-installer/resources/interface2.ui:2076
+#: live-installer/resources/interface2.ui:2088
 msgid "label"
 msgstr ""
 
 #: live-installer/resources/interface.ui:473
-#: live-installer/resources/interface2.ui:386
+#: live-installer/resources/interface2.ui:398
 msgid "Continent"
 msgstr ""
 
 #: live-installer/resources/interface.ui:487
-#: live-installer/resources/interface2.ui:400
+#: live-installer/resources/interface2.ui:412
 #: live-installer/frontend/gtk_interface.py:391
 #: live-installer/frontend/tui_interface.py:41
 msgid "Timezone"
 msgstr "நேர மண்டலம்"
 
 #: live-installer/resources/interface.ui:545
-#: live-installer/resources/interface2.ui:458
+#: live-installer/resources/interface2.ui:470
 #: live-installer/frontend/gtk_interface.py:451
 msgid "Automated Installation"
 msgstr ""
 
 #: live-installer/resources/interface.ui:561
-#: live-installer/resources/interface2.ui:474
+#: live-installer/resources/interface2.ui:486
 msgid "Erase a disk and install LMDE on it."
 msgstr ""
 
 #: live-installer/resources/interface.ui:589
-#: live-installer/resources/interface2.ui:502
+#: live-installer/resources/interface2.ui:514
 #: live-installer/frontend/gtk_interface.py:454
 msgid "Disk:"
 msgstr ""
 
 #: live-installer/resources/interface.ui:629
-#: live-installer/resources/interface2.ui:542
-msgid "Ceate swap partition"
+#: live-installer/resources/interface2.ui:554
+#: live-installer/frontend/gtk_interface.py:481
+msgid "Create swap partition"
 msgstr ""
 
 #: live-installer/resources/interface.ui:662
-#: live-installer/resources/interface2.ui:575
+#: live-installer/resources/interface2.ui:587
 #: live-installer/frontend/gtk_interface.py:462
 msgid "Use LVM (Logical Volume Management)"
 msgstr ""
 
 #: live-installer/resources/interface.ui:709
-#: live-installer/resources/interface2.ui:622
+#: live-installer/resources/interface2.ui:634
 #: live-installer/frontend/gtk_interface.py:456
 msgid "Encrypt the operating system"
 msgstr ""
 
 #: live-installer/resources/interface.ui:739
-#: live-installer/resources/interface2.ui:652
+#: live-installer/resources/interface2.ui:664
 #: live-installer/frontend/gtk_interface.py:458
 msgid "Passphrase"
 msgstr ""
 
 #: live-installer/resources/interface.ui:755
-#: live-installer/resources/interface2.ui:668
+#: live-installer/resources/interface2.ui:680
 #: live-installer/frontend/gtk_interface.py:460
 msgid "Confirm passphrase"
 msgstr ""
 
 #: live-installer/resources/interface.ui:789
-#: live-installer/resources/interface2.ui:702
+#: live-installer/resources/interface2.ui:714
 #: live-installer/frontend/gtk_interface.py:479
 msgid "This provides extra security but it can take hours."
 msgstr ""
 
 #: live-installer/resources/interface.ui:803
-#: live-installer/resources/interface2.ui:716
+#: live-installer/resources/interface2.ui:728
 #: live-installer/frontend/gtk_interface.py:477
 msgid "Fill the disk with random data"
 msgstr ""
 
 #: live-installer/resources/interface.ui:888
-#: live-installer/resources/interface2.ui:801
+#: live-installer/resources/interface2.ui:813
 #: live-installer/frontend/gtk_interface.py:464
 msgid "Manual Partitioning"
 msgstr ""
 
 #: live-installer/resources/interface.ui:904
-#: live-installer/resources/interface2.ui:817
+#: live-installer/resources/interface2.ui:829
 msgid "Manually create, resize or choose partitions for LMDE."
 msgstr ""
 
 #: live-installer/resources/interface.ui:969
-#: live-installer/resources/interface2.ui:882
+#: live-installer/resources/interface2.ui:894
 msgid "Remove windows & Install"
 msgstr ""
 
 #: live-installer/resources/interface.ui:985
-#: live-installer/resources/interface2.ui:898
+#: live-installer/resources/interface2.ui:910
 msgid "Remove existsing windows and install LMDE on it."
 msgstr ""
 
 #: live-installer/resources/interface.ui:1037
-#: live-installer/resources/interface2.ui:950
+#: live-installer/resources/interface2.ui:962
 #: live-installer/frontend/gtk_interface.py:468
 msgid "Expert Mode"
 msgstr ""
 
 #: live-installer/resources/interface.ui:1053
-#: live-installer/resources/interface2.ui:966
+#: live-installer/resources/interface2.ui:978
 msgid "The setup tool will not do partitioning."
 msgstr ""
 
 #: live-installer/resources/interface.ui:1115
-#: live-installer/resources/interface2.ui:1028
-#: live-installer/frontend/gtk_interface.py:507
+#: live-installer/resources/interface2.ui:1040
+#: live-installer/frontend/gtk_interface.py:509
 msgid "Minimal installation"
 msgstr ""
 
 #: live-installer/resources/interface.ui:1131
-#: live-installer/resources/interface2.ui:1044
-#: live-installer/frontend/gtk_interface.py:508
+#: live-installer/resources/interface2.ui:1056
+#: live-installer/frontend/gtk_interface.py:510
 msgid ""
 "This will only install a minimal desktop environment with a browser and "
 "utilities."
 msgstr ""
 
 #: live-installer/resources/interface.ui:1164
-#: live-installer/resources/interface2.ui:1077
-#: live-installer/frontend/gtk_interface.py:505
+#: live-installer/resources/interface2.ui:1089
+#: live-installer/frontend/gtk_interface.py:507
 msgid "Install system with updates"
 msgstr ""
 
 #: live-installer/resources/interface.ui:1180
-#: live-installer/resources/interface2.ui:1093
-#: live-installer/frontend/gtk_interface.py:506
+#: live-installer/resources/interface2.ui:1105
+#: live-installer/frontend/gtk_interface.py:508
 msgid "If you connect internet, updates will install."
 msgstr ""
 
 #: live-installer/resources/interface.ui:1281
-#: live-installer/resources/interface2.ui:1194
-#: live-installer/frontend/gtk_interface.py:496
+#: live-installer/resources/interface2.ui:1206
+#: live-installer/frontend/gtk_interface.py:498
 msgid "Install the GRUB boot menu on:"
 msgstr ""
 
 #: live-installer/resources/interface.ui:1339
-#: live-installer/resources/interface2.ui:1252
-#: live-installer/frontend/gtk_interface.py:482
+#: live-installer/resources/interface2.ui:1264
+#: live-installer/frontend/gtk_interface.py:484
 msgid "Edit partitions"
 msgstr ""
 
 #: live-installer/resources/interface.ui:1395
-#: live-installer/resources/interface2.ui:1308
+#: live-installer/resources/interface2.ui:1320
 #: live-installer/frontend/gtk_interface.py:430
 msgid "Your name:"
 msgstr ""
 
 #: live-installer/resources/interface.ui:1438
-#: live-installer/resources/interface2.ui:1351
+#: live-installer/resources/interface2.ui:1363
 #: live-installer/frontend/gtk_interface.py:432
 msgid "Your computer's name:"
 msgstr ""
 
 #: live-installer/resources/interface.ui:1453
-#: live-installer/resources/interface2.ui:1366
+#: live-installer/resources/interface2.ui:1378
 #: live-installer/frontend/gtk_interface.py:436
 msgid "Pick a username:"
 msgstr ""
 
 #: live-installer/resources/interface.ui:1466
-#: live-installer/resources/interface2.ui:1379
+#: live-installer/resources/interface2.ui:1391
 #: live-installer/frontend/gtk_interface.py:434
 msgid "The name it uses when it talks to other computers."
 msgstr ""
 
 #: live-installer/resources/interface.ui:1499
-#: live-installer/resources/interface2.ui:1412
+#: live-installer/resources/interface2.ui:1424
 #: live-installer/frontend/gtk_interface.py:438
 msgid "Choose a password:"
 msgstr ""
 
 #: live-installer/resources/interface.ui:1546
-#: live-installer/resources/interface2.ui:1459
+#: live-installer/resources/interface2.ui:1471
 #: live-installer/frontend/gtk_interface.py:440
 msgid "Confirm your password:"
 msgstr ""
 
 #: live-installer/resources/interface.ui:1564
-#: live-installer/resources/interface2.ui:1477
+#: live-installer/resources/interface2.ui:1489
 #: live-installer/frontend/gtk_interface.py:443
 msgid "Log in automatically"
 msgstr ""
 
 #: live-installer/resources/interface.ui:1579
-#: live-installer/resources/interface2.ui:1492
+#: live-installer/resources/interface2.ui:1504
 #: live-installer/frontend/gtk_interface.py:445
 msgid "Require my password to log in"
 msgstr ""
 
 #: live-installer/resources/interface.ui:1594
-#: live-installer/resources/interface2.ui:1507
+#: live-installer/resources/interface2.ui:1519
 #: live-installer/frontend/gtk_interface.py:447
 msgid "Encrypt my home folder"
 msgstr ""
 
 #: live-installer/resources/interface.ui:1708
-#: live-installer/resources/interface2.ui:1621
+#: live-installer/resources/interface2.ui:1633
 msgid "0.0"
 msgstr ""
 
 #: live-installer/resources/interface.ui:1740
-#: live-installer/resources/interface2.ui:1653
-#: live-installer/frontend/gtk_interface.py:509
+#: live-installer/resources/interface2.ui:1665
+#: live-installer/frontend/gtk_interface.py:511
 msgid "Please do not turn off your computer during the installation process."
 msgstr ""
 
 #: live-installer/resources/interface.ui:1790
-#: live-installer/resources/interface2.ui:1721
+#: live-installer/resources/interface2.ui:1733
 #: live-installer/resources/welcome.ui:206
 msgid "17g team"
 msgstr ""
 
 #: live-installer/resources/interface.ui:2071
-#: live-installer/resources/interface2.ui:2094
+#: live-installer/resources/interface2.ui:2100
 msgid "/dev/sda1"
 msgstr ""
 
 #: live-installer/resources/interface.ui:2123
-#: live-installer/resources/interface2.ui:2146
+#: live-installer/resources/interface2.ui:2152
 msgid "read only"
 msgstr ""
 
@@ -417,7 +418,7 @@ msgid ""
 msgstr ""
 
 #: live-installer/installer.py:823
-#: live-installer/frontend/gtk_interface.py:1388
+#: live-installer/frontend/gtk_interface.py:1390
 msgid "Installation finished"
 msgstr "நிறுவல் நிறைவுற்றது"
 
@@ -497,25 +498,25 @@ msgstr ""
 
 #: live-installer/frontend/partitioning.py:331
 #: live-installer/frontend/partitioning.py:482
-#: live-installer/frontend/gtk_interface.py:491
+#: live-installer/frontend/gtk_interface.py:493
 msgid "Free space"
 msgstr ""
 
 #: live-installer/frontend/partitioning.py:348
 #: live-installer/frontend/gtk_interface.py:374
 #: live-installer/frontend/gtk_interface.py:377
-#: live-installer/frontend/gtk_interface.py:967
-#: live-installer/frontend/gtk_interface.py:1003
-#: live-installer/frontend/gtk_interface.py:1089
-#: live-installer/frontend/gtk_interface.py:1106
-#: live-installer/frontend/gtk_interface.py:1111
-#: live-installer/frontend/gtk_interface.py:1125
-#: live-installer/frontend/gtk_interface.py:1129
-#: live-installer/frontend/gtk_interface.py:1135
-#: live-installer/frontend/gtk_interface.py:1140
-#: live-installer/frontend/gtk_interface.py:1145
-#: live-installer/frontend/gtk_interface.py:1205
-#: live-installer/frontend/gtk_interface.py:1282
+#: live-installer/frontend/gtk_interface.py:969
+#: live-installer/frontend/gtk_interface.py:1005
+#: live-installer/frontend/gtk_interface.py:1091
+#: live-installer/frontend/gtk_interface.py:1108
+#: live-installer/frontend/gtk_interface.py:1113
+#: live-installer/frontend/gtk_interface.py:1127
+#: live-installer/frontend/gtk_interface.py:1131
+#: live-installer/frontend/gtk_interface.py:1137
+#: live-installer/frontend/gtk_interface.py:1142
+#: live-installer/frontend/gtk_interface.py:1147
+#: live-installer/frontend/gtk_interface.py:1207
+#: live-installer/frontend/gtk_interface.py:1284
 msgid "Installer"
 msgstr ""
 
@@ -671,7 +672,7 @@ msgid "Back"
 msgstr ""
 
 #: live-installer/frontend/gtk_interface.py:408
-#: live-installer/frontend/gtk_interface.py:1151
+#: live-installer/frontend/gtk_interface.py:1153
 msgid "Next"
 msgstr ""
 
@@ -705,146 +706,146 @@ msgstr ""
 msgid "Remove existsing windows and install system on it."
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:483
+#: live-installer/frontend/gtk_interface.py:485
 msgid "Refresh"
 msgstr "புதுப்பி"
 
-#: live-installer/frontend/gtk_interface.py:485
+#: live-installer/frontend/gtk_interface.py:487
 msgid "Device"
 msgstr "சாதனம்"
 
-#: live-installer/frontend/gtk_interface.py:486
+#: live-installer/frontend/gtk_interface.py:488
 msgid "Type"
 msgstr "வகை"
 
-#: live-installer/frontend/gtk_interface.py:487
+#: live-installer/frontend/gtk_interface.py:489
 msgid "Operating system"
 msgstr "இயக்க அமைப்பு"
 
-#: live-installer/frontend/gtk_interface.py:488
+#: live-installer/frontend/gtk_interface.py:490
 msgid "Mount point"
 msgstr "ஏற்றப்புள்ளி"
 
-#: live-installer/frontend/gtk_interface.py:489
+#: live-installer/frontend/gtk_interface.py:491
 msgid "Format as"
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:490
+#: live-installer/frontend/gtk_interface.py:492
 msgid "Size"
 msgstr "அளவு"
 
-#: live-installer/frontend/gtk_interface.py:499
+#: live-installer/frontend/gtk_interface.py:501
 msgid "Read only"
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:691
+#: live-installer/frontend/gtk_interface.py:693
 msgid "Quit?"
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:692
+#: live-installer/frontend/gtk_interface.py:694
 msgid "Are you sure you want to quit the installer?"
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:968
+#: live-installer/frontend/gtk_interface.py:970
 msgid "Please choose a language"
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1004
+#: live-installer/frontend/gtk_interface.py:1006
 msgid "Please provide a kayboard layout for your computer."
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1013
+#: live-installer/frontend/gtk_interface.py:1015
 msgid "Please provide your full name."
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1018
+#: live-installer/frontend/gtk_interface.py:1020
 msgid "Please provide a name for your computer."
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1022
+#: live-installer/frontend/gtk_interface.py:1024
 msgid "Please provide a username."
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1027
+#: live-installer/frontend/gtk_interface.py:1029
 msgid "Please provide a password for your user account."
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1031
+#: live-installer/frontend/gtk_interface.py:1033
 msgid "Your passwords is too short."
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1035
+#: live-installer/frontend/gtk_interface.py:1037
 msgid "Your passwords is not strong."
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1036
+#: live-installer/frontend/gtk_interface.py:1038
 msgid "Strong password requirements:\n"
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1037
+#: live-installer/frontend/gtk_interface.py:1039
 msgid "- Length must be minimum 8 characters\n"
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1038
+#: live-installer/frontend/gtk_interface.py:1040
 msgid "- Must have exclusive characters\n"
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1039
+#: live-installer/frontend/gtk_interface.py:1041
 msgid "- Must have big and small letters\n"
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1040
+#: live-installer/frontend/gtk_interface.py:1042
 msgid "- Must have number"
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1043
+#: live-installer/frontend/gtk_interface.py:1045
 msgid "Are you sure?"
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1044
-#: live-installer/frontend/gtk_interface.py:1207
+#: live-installer/frontend/gtk_interface.py:1046
+#: live-installer/frontend/gtk_interface.py:1209
 msgid "Warning"
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1050
+#: live-installer/frontend/gtk_interface.py:1052
 msgid "Your passwords do not match."
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1056
+#: live-installer/frontend/gtk_interface.py:1058
 msgid "Your username cannot start with numbers."
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1062
+#: live-installer/frontend/gtk_interface.py:1064
 msgid "Your username must be lower case."
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1069
+#: live-installer/frontend/gtk_interface.py:1071
 msgid "Your username may not contain whitespace characters."
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1077
+#: live-installer/frontend/gtk_interface.py:1079
 msgid "The computer's name must be lower case."
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1084
+#: live-installer/frontend/gtk_interface.py:1086
 msgid "The computer's name may not contain whitespace characters."
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1093
+#: live-installer/frontend/gtk_interface.py:1095
 msgid "Install"
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1107
+#: live-installer/frontend/gtk_interface.py:1109
 msgid ""
 "Root filesystem type not specified. Installation will continue without disk "
 "formatting. Do you want to continue?"
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1111
+#: live-installer/frontend/gtk_interface.py:1113
 msgid "Please select a root (/) partition."
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1112
+#: live-installer/frontend/gtk_interface.py:1114
 #, python-format
 msgid ""
 "A root partition is needed to install %s on.\n"
@@ -855,24 +856,24 @@ msgid ""
 "\n"
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1126
+#: live-installer/frontend/gtk_interface.py:1128
 msgid "The EFI partition is not bootable. Please edit the partition flags."
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1130
+#: live-installer/frontend/gtk_interface.py:1132
 msgid "The EFI partition is too small. It must be at least 35MB."
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1136
-#: live-installer/frontend/gtk_interface.py:1141
+#: live-installer/frontend/gtk_interface.py:1138
+#: live-installer/frontend/gtk_interface.py:1143
 msgid "The EFI partition must be formatted as vfat."
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1145
+#: live-installer/frontend/gtk_interface.py:1147
 msgid "Please select an EFI partition."
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1146
+#: live-installer/frontend/gtk_interface.py:1148
 msgid ""
 "An EFI system partition is needed with the following requirements:\n"
 "\n"
@@ -886,148 +887,148 @@ msgid ""
 " "
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1194
+#: live-installer/frontend/gtk_interface.py:1196
 msgid "Please select a disk."
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1200
+#: live-installer/frontend/gtk_interface.py:1202
 msgid "Please provide a passphrase for the encryption."
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1203
+#: live-installer/frontend/gtk_interface.py:1205
 msgid "Your passphrases do not match."
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1208
+#: live-installer/frontend/gtk_interface.py:1210
 #, python-format
 msgid "This will delete all the data on %s. Are you sure?"
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1283
+#: live-installer/frontend/gtk_interface.py:1285
 msgid "Please provide a device to install grub."
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1326
+#: live-installer/frontend/gtk_interface.py:1328
 msgid "Localization"
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1327
+#: live-installer/frontend/gtk_interface.py:1329
 msgid "Language: "
 msgstr "மொழி: "
 
-#: live-installer/frontend/gtk_interface.py:1328
+#: live-installer/frontend/gtk_interface.py:1330
 msgid "Timezone: "
 msgstr "நேர மண்டலம்: "
 
-#: live-installer/frontend/gtk_interface.py:1329
+#: live-installer/frontend/gtk_interface.py:1331
 msgid "Keyboard layout: "
 msgstr "விசைப்பலகை அமைப்பு: "
 
-#: live-installer/frontend/gtk_interface.py:1333
+#: live-installer/frontend/gtk_interface.py:1335
 msgid "User settings"
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1334
+#: live-installer/frontend/gtk_interface.py:1336
 msgid "Real name: "
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1335
+#: live-installer/frontend/gtk_interface.py:1337
 msgid "Username: "
 msgstr "பயனர் பெயர்: "
 
-#: live-installer/frontend/gtk_interface.py:1337
+#: live-installer/frontend/gtk_interface.py:1339
 msgid "Password: "
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1339
+#: live-installer/frontend/gtk_interface.py:1341
 msgid "Automatic login: "
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1339
-#: live-installer/frontend/gtk_interface.py:1342
-#: live-installer/frontend/gtk_interface.py:1365
-#: live-installer/frontend/gtk_interface.py:1369
+#: live-installer/frontend/gtk_interface.py:1341
+#: live-installer/frontend/gtk_interface.py:1344
+#: live-installer/frontend/gtk_interface.py:1367
+#: live-installer/frontend/gtk_interface.py:1371
 msgid "enabled"
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1340
-#: live-installer/frontend/gtk_interface.py:1343
-#: live-installer/frontend/gtk_interface.py:1366
-#: live-installer/frontend/gtk_interface.py:1369
+#: live-installer/frontend/gtk_interface.py:1342
+#: live-installer/frontend/gtk_interface.py:1345
+#: live-installer/frontend/gtk_interface.py:1368
+#: live-installer/frontend/gtk_interface.py:1371
 msgid "disabled"
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1342
+#: live-installer/frontend/gtk_interface.py:1344
 msgid "Home encryption: "
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1344
+#: live-installer/frontend/gtk_interface.py:1346
 msgid "System settings"
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1345
+#: live-installer/frontend/gtk_interface.py:1347
 msgid "Computer's name: "
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1348
 #: live-installer/frontend/gtk_interface.py:1350
+#: live-installer/frontend/gtk_interface.py:1352
 msgid "Bios type: "
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1352
+#: live-installer/frontend/gtk_interface.py:1354
 msgid "Install updates after installation"
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1353
+#: live-installer/frontend/gtk_interface.py:1355
 msgid "Filesystem operations"
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1354
+#: live-installer/frontend/gtk_interface.py:1356
 #, python-format
 msgid "Install bootloader on %s"
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1355
+#: live-installer/frontend/gtk_interface.py:1357
 msgid "Do not install bootloader"
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1357
+#: live-installer/frontend/gtk_interface.py:1359
 msgid "Use already-mounted /target."
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1362
+#: live-installer/frontend/gtk_interface.py:1364
 #, python-format
 msgid "Automated installation on %s"
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1365
+#: live-installer/frontend/gtk_interface.py:1367
 msgid "LVM: "
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1368
+#: live-installer/frontend/gtk_interface.py:1370
 msgid "Disk Encryption: "
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1372
+#: live-installer/frontend/gtk_interface.py:1374
 #, python-format
 msgid "Format %(path)s as %(filesystem)s"
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1376
+#: live-installer/frontend/gtk_interface.py:1378
 #, python-format
 msgid "Mount %(path)s as %(mount)s"
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1389
+#: live-installer/frontend/gtk_interface.py:1391
 msgid ""
 "The installation is now complete. Do you want to restart your computer to "
 "use the new system?"
 msgstr ""
 
-#: live-installer/frontend/gtk_interface.py:1420
-#: live-installer/frontend/gtk_interface.py:1424
-#: live-installer/frontend/gtk_interface.py:1433
-#: live-installer/frontend/gtk_interface.py:1442
+#: live-installer/frontend/gtk_interface.py:1422
+#: live-installer/frontend/gtk_interface.py:1426
+#: live-installer/frontend/gtk_interface.py:1435
+#: live-installer/frontend/gtk_interface.py:1444
 msgid "Installation error"
 msgstr "நிறுவல் பிழை"
 

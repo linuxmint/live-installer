@@ -626,7 +626,7 @@
                             <property name="halign">start</property>
                             <property name="margin-left">5</property>
                             <property name="margin-start">5</property>
-                            <property name="label" translatable="yes">Ceate swap partition</property>
+                            <property name="label" translatable="yes">Create swap partition</property>
                           </object>
                         </child>
                       </object>

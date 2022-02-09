@@ -320,6 +320,7 @@ class InstallerWindow:
                 self.builder.get_object("box_fill").hide()
         if not config.get("autologin_enabled", True):
             self.builder.get_object("autologin_box").hide()
+            self.builder.get_object("check_swap").hide()
 
         if not config.get("minimal_instalation_enabled", True):
             self.builder.get_object("check_minimal").hide()
@@ -477,6 +478,8 @@ class InstallerWindow:
             _("Fill the disk with random data"))
         self.builder.get_object("check_badblocks").set_tooltip_text(
             _("This provides extra security but it can take hours."))
+        self.builder.get_object("label_swap").set_text(
+            _("Create swap partition"))
 
         # Partitions page
         self.builder.get_object("button_edit").set_label(_("Edit partitions"))
@@ -625,6 +628,8 @@ class InstallerWindow:
             "radio_replace_win").get_active()
         self.setup.expert_mode = self.builder.get_object(
             "radio_expert_mode").get_active()
+        self.builder.get_object("check_swap").set_sensitive(
+            self.setup.automated)
         self.builder.get_object("check_badblocks").set_sensitive(
             self.setup.automated)
         self.builder.get_object("check_encrypt").set_sensitive(
