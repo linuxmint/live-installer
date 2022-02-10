@@ -306,6 +306,7 @@ class InstallerWindow:
         # Features
         if not config.get("auto_partition_enabled", True):
             self.builder.get_object("box_automated").hide()
+            self.builder.get_object("check_swap").hide()
         if "EXPERT_MODE" not in os.environ:
             # Expert mode is only used for debuging. Please do not enable !
             self.builder.get_object("box_expert").hide()
@@ -320,7 +321,6 @@ class InstallerWindow:
                 self.builder.get_object("box_fill").hide()
         if not config.get("autologin_enabled", True):
             self.builder.get_object("autologin_box").hide()
-            self.builder.get_object("check_swap").hide()
 
         if not config.get("minimal_instalation_enabled", True):
             self.builder.get_object("check_minimal").hide()
