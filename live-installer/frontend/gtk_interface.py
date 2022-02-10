@@ -364,6 +364,11 @@ class InstallerWindow:
         if config.get("hide_keyboard_model", False):
             self.builder.get_object("hbox10").hide()
 
+        if self.setup.gptonefi:
+            self.builder.get_object("label_bios_type").set_text("UEFI")
+        else:
+            self.builder.get_object("label_bios_type").set_text("Legacy")
+
         self.ui_init = True
 
 
