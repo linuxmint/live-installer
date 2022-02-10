@@ -179,7 +179,7 @@ class InstallerWindow:
 
         # partitions
         self.builder.get_object("button_edit").connect(
-            "clicked", partitioning.manually_edit_partitions)
+            "clicked", self.manually_edit_partitions)
         self.builder.get_object("button_refresh").connect(
             "clicked", lambda _: partitioning.build_partitions(self))
         self.builder.get_object("treeview_disks").connect(
@@ -333,6 +333,7 @@ class InstallerWindow:
         self.assign_entry("entry_confirm")
 
         self.assign_hostname(self.builder.get_object("entry_hostname"))
+        self.assign_password(None)
 
         self.builder.get_object("box_replace_win").hide()
         if config.get("replace_windows_enabled", True):
@@ -365,6 +366,19 @@ class InstallerWindow:
 
         self.ui_init = True
 
+
+    def manually_edit_partitions(self,widget):
+        """ Edit only known disks, selected one first """
+        model, itervar = self.builder.get_object(
+            "treeview_disks").get_selection().get_selected()
+        # prefer disk currently selected and show it first
+        preferred = model[itervar][-1] if itervar else ''
+        disks = ' '.join(sorted((disk for disk, desc in model.disks),
+                            key=lambda disk: disk != preferred))
+        os.system('umount -f ' + disks)
+        os.system('{} {} &'.format(config.get(
+            "partition_editor", "gparted"), disks))
+        partitioning.build_partitions(self)
 
     def fullscreen(self):
         self.window.fullscreen()
@@ -565,8 +579,11 @@ class InstallerWindow:
         self.assign_entry("entry_hostname", errorFound)
 
     def assign_password(self, widget):
+    
         errorFound = False
         isWeek = False
+        stronglevel = 0
+        weeklevel = 0
         self.setup.password1 = self.builder.get_object(
             "entry_password").get_text()
         self.setup.password2 = self.builder.get_object(
@@ -579,16 +596,22 @@ class InstallerWindow:
             errorFound = True
         if self.setup.password1.isnumeric():
             isWeek = True
+            weeklevel += 20
         if self.setup.password1.lower() == self.setup.password1:
             isWeek = True
+            weeklevel += 10
         if self.setup.password1.upper() == self.setup.password1:
             isWeek = True
+            weeklevel += 10
         if self.setup.password1 == self.setup.username:
             isWeek = True
+            stronglevel = 20
         if len(self.setup.password1) < 8:
             isWeek = True
+            stronglevel = 20
         if len(self.setup.password1) == 0:
             isWeek = False
+            stronglevel = 1
 
         has_char = False
         has_num = False
@@ -604,6 +627,10 @@ class InstallerWindow:
                 break
         if not has_char or not has_num:
             isWeek = True
+            weeklevel += 20
+
+        if stronglevel != 0:
+            weeklevel = 100-stronglevel
 
         self.assign_entry("entry_password", errorFound ,isWeek)
         self.week_password = isWeek
@@ -611,6 +638,7 @@ class InstallerWindow:
         # Check the password confirmation
         if(self.setup.password1 == "" or self.setup.password2 == "" or self.setup.password1 != self.setup.password2):
             errorFound = True
+        self.builder.get_object("password_strong_level").set_fraction((100-weeklevel)/100)
         self.assign_entry("entry_confirm", errorFound,isWeek)
 
     def assign_options(self, widget, data=None):

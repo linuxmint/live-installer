@@ -234,18 +234,6 @@ def partitions_popup_menu(widget, event):
     menu.popup(None, None, None, None, 0, event.time)
 
 
-def manually_edit_partitions(widget):
-    """ Edit only known disks, selected one first """
-    model, itervar = installer.builder.get_object(
-        "treeview_disks").get_selection().get_selected()
-    # prefer disk currently selected and show it first
-    preferred = model[itervar][-1] if itervar else ''
-    disks = ' '.join(sorted((disk for disk, desc in model.disks),
-                            key=lambda disk: disk != preferred))
-    os.system('umount -f ' + disks)
-    os.system('{} {} &'.format(config.get(
-        "partition_editor", "gparted"), disks))
-
 
 def build_grub_partitions():
     grub_model = Gtk.ListStore(str)
