@@ -7,6 +7,7 @@ import gettext
 import sys
 import parted
 import partitioning
+import shlex
 
 gettext.install("live-installer", "/usr/share/locale")
 
@@ -260,9 +261,9 @@ class InstallerEngine:
         # Encrypt root partition
         if self.setup.luks:
             print(" --> Encrypting root partition %s" % self.auto_root_partition)
-            os.system("printf \"%s\" | cryptsetup luksFormat -c aes-xts-plain64 -h sha256 -s 512 %s" % (self.setup.passphrase1, self.auto_root_partition))
+            os.system("echo -n %s | cryptsetup luksFormat -c aes-xts-plain64 -h sha256 -s 512 %s" % (shlex.quote(self.setup.passphrase1), self.auto_root_partition))
             print(" --> Opening root partition %s" % self.auto_root_partition)
-            os.system("printf \"%s\" | cryptsetup luksOpen %s lvmlmde" % (self.setup.passphrase1, self.auto_root_partition))
+            os.system("echo -n %s | cryptsetup luksOpen %s lvmlmde" % (shlex.quote(self.setup.passphrase1), self.auto_root_partition))
             self.auto_root_partition = "/dev/mapper/lvmlmde"
 
         # Setup LVM
