@@ -22,6 +22,21 @@ from gi.repository import Gtk, Gdk, GdkPixbuf, GObject, WebKit2, Pango, GLib
 
 gettext.install("live-installer", "/usr/share/locale")
 
+USERNAME_REGEX = r"[a-z_]{1}[a-z0-9_-]*[$]?"
+USERNAME_LENGTH = (1, 32)
+
+# "[[:ascii:]]+" gives nested set warning. https://www.regular-expressions.info/posixbrackets.html
+PASSWORD_REGEX = r"[\x00-\x7F]+"
+PASSWORD_LENGTHS = (6, 2147483647)
+
+HOSTNAME_REGEX = r"^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$"
+HOSTNAME_MIN_LENGTH = 1
+HOSTNAME_SEG_LENGTH = 63
+HOSTNAME_TOTAL_LENGTH = 253
+
+WHITESPACE_REGEX = r"[\s]+"
+HAS_LOWER_REGEX = r"[A-Z]+"
+
 # Used as a decorator to run things in the background
 def asynchronous(func):
     def wrapper(*args, **kwargs):
@@ -158,11 +173,11 @@ class InstallerWindow:
 
         self.builder.get_object("entry_name").connect("notify::text", self.assign_realname)
         self.builder.get_object("entry_username").connect("notify::text", self.assign_username)
-        self.builder.get_object("entry_hostname").connect("notify::text", self.assign_hostname)
+        self.hostname_handler_id = self.builder.get_object("entry_hostname").connect("notify::text", self.assign_hostname)
 
         # events for detecting password mismatch..
         self.builder.get_object("entry_password").connect("changed", self.assign_password)
-        self.builder.get_object("entry_confirm").connect("changed", self.assign_confirm)
+        self.builder.get_object("entry_confirm").connect("changed", self.assign_password)
 
         self.builder.get_object("radiobutton_passwordlogin").connect("toggled", self.assign_login_options)
         self.builder.get_object("checkbutton_encrypt_home").connect("toggled", self.assign_login_options)
@@ -363,29 +378,42 @@ class InstallerWindow:
         # Refresh the current title and help question in the page header
         self.activate_page(self.PAGE_LANGUAGE)
 
-    def validate_entry(self, entry, check_empty=True, check_spaces=True, check_lower=True, check_ascii=True, check_match=None):
+    def validate_entry(self, entry, validate_regex, len_range, check_lower=False, check_match=None, also_true=True):
         error = None
         value = entry.props.text
-        if check_match != None and value != check_match:
-            error = _("The values do not match.")
-        elif check_empty and len(value) == 0:
-            error = _("This field cannot be empty.")
-        elif check_ascii and not value.isascii():
-            error = _("This field contains invalid characters.")
-        else:
-            for char in value:
-                if check_spaces and char.isspace():
-                    error = _("This field may not contain space characters.")
+
+        while True:
+            if check_match != None and value != check_match:
+                error = _("The values do not match.")
+                break
+            if len(value) == 0:
+                error = _("This field cannot be empty.")
+                break
+            if re.search(WHITESPACE_REGEX, value):
+                error = _("This field may not contain space characters.")
+                break
+            if check_lower and re.search(HAS_LOWER_REGEX, value):
+                error = _("This field must be lower case.")
+                break
+            if len_range:
+                if len(value) < len_range[0]:
+                    error = _("The entry is too short.")
+                elif len(value) > len_range[1]:
+                    error = _("The entry is too long.")
                     break
-                if check_lower and char.isupper():
-                    error = _("This field must be lower case.")
-                    break
-        if error == None:
-            entry.set_icon_from_icon_name(Gtk.EntryIconPosition.SECONDARY, None)
-            entry.set_icon_tooltip_text(Gtk.EntryIconPosition.SECONDARY, "")
-        else:
+
+            r = re.fullmatch(validate_regex, value)
+            if validate_regex != None and (not re.fullmatch(validate_regex, value)):
+                error = _("This field contains invalid characters.")
+                break
+            break
+
+        if error and also_true:
             entry.set_icon_from_icon_name(Gtk.EntryIconPosition.SECONDARY, "dialog-error")
             entry.set_icon_tooltip_text(Gtk.EntryIconPosition.SECONDARY, error)
+        else:
+            entry.set_icon_from_icon_name(Gtk.EntryIconPosition.SECONDARY, None)
+            entry.set_icon_tooltip_text(Gtk.EntryIconPosition.SECONDARY, "")
 
         return error
 
@@ -395,9 +423,22 @@ class InstallerWindow:
             if entry.get_text() == "" or entry.get_icon_name(Gtk.EntryIconPosition.SECONDARY) == "dialog-error":
                 if focus_widget:
                     entry.grab_focus()
-                self.builder.get_object("button_next").set_sensitive(False)
+                if entry.is_visible():
+                    self.builder.get_object("button_next").set_sensitive(False)
                 return
         self.builder.get_object("button_next").set_sensitive(True)
+# 
+    def hostname_too_long(self, hostname):
+        segments = hostname.split(".")
+
+        for segment in segments:
+            if len(segment) > HOSTNAME_SEG_LENGTH:
+                return True
+
+        if len(hostname) > HOSTNAME_TOTAL_LENGTH:
+            return True
+
+        return False
 
     def assign_realname(self, entry, prop):
         self.setup.real_name = entry.props.text
@@ -412,35 +453,41 @@ class InstallerWindow:
         except:
             pass
 
-        self.validate_entry(self.builder.get_object("entry_username"))
+        self.validate_entry(self.builder.get_object("entry_username"), USERNAME_REGEX, USERNAME_LENGTH, check_lower=True)
         self.validate_user_page()
         self.setup.print_setup()
 
     def assign_username(self, entry, prop):
         self.setup.username = entry.props.text
-        self.validate_entry(entry)
+
+        self.validate_entry(entry, USERNAME_REGEX, USERNAME_LENGTH, check_lower=True)
         self.validate_user_page()
         self.setup.print_setup()
 
     def assign_hostname(self, entry, prop):
         self.setup.hostname = entry.props.text
-        self.validate_entry(entry)
+
+        # Hostname is too complicated for validate_entry, as it can have multiple domains separated by a '.',
+        # and there are length rules for each segment and the total length. Do the check here, then pass along
+        # such length requirements as to trigger too short/long warnings.
+        if self.hostname_too_long(self.setup.hostname):
+            self.validate_entry(entry, HOSTNAME_REGEX, (0, 0), check_lower=True)
+        else:
+            self.validate_entry(entry, HOSTNAME_REGEX, (HOSTNAME_MIN_LENGTH, 9999), check_lower=True)
+
         self.validate_user_page()
         self.setup.print_setup()
 
     def assign_password(self, widget):
-        self.setup.password1 = widget.get_text()
-        self.validate_entry(widget, check_lower=False, check_ascii=False)
+        self.setup.password1 = self.builder.get_object("entry_password").get_text()
+        self.setup.password2 = self.builder.get_object("entry_confirm").get_text()
+
+        self.validate_entry(self.builder.get_object("entry_password"), PASSWORD_REGEX, PASSWORD_LENGTHS)
+        self.validate_entry(self.builder.get_object("entry_confirm"), PASSWORD_REGEX, PASSWORD_LENGTHS, check_match=self.setup.password1)
         self.validate_user_page()
         self.setup.print_setup()
 
-    def assign_confirm(self, widget):
-        self.setup.password2 = widget.get_text()
-        self.validate_entry(widget, check_lower=False, check_ascii=False, check_match=self.setup.password1)
-        self.validate_user_page()
-        self.setup.print_setup()
-
-    def assign_type_options(self, widget, data=None):
+    def assign_type_options(self, widget=None, data=None):
         self.setup.automated = self.builder.get_object("radio_automated").get_active()
         self.builder.get_object("check_badblocks").set_sensitive(self.setup.automated)
         self.builder.get_object("check_encrypt").set_sensitive(self.setup.automated)
@@ -489,12 +536,29 @@ class InstallerWindow:
 
         self.setup.badblocks = self.builder.get_object("check_badblocks").get_active()
 
+        block_next = False
+        block_next = block_next or self.setup.disk == None
+        if self.builder.get_object("check_encrypt").get_active():
+            block_next = block_next or self.setup.passphrase1 in (None, "") or self.setup.passphrase1 != self.setup.passphrase2
+
+        self.builder.get_object("button_next").set_sensitive(not block_next)
         self.setup.print_setup()
 
     def assign_passphrase(self, widget):
         self.setup.passphrase1 = self.builder.get_object("entry_passphrase").get_text()
         self.setup.passphrase2 = self.builder.get_object("entry_passphrase2").get_text()
+
+        self.validate_entry(self.builder.get_object("entry_passphrase"), PASSWORD_REGEX, PASSWORD_LENGTHS, also_true=self.setup.luks)
+        self.validate_entry(self.builder.get_object("entry_passphrase2"), PASSWORD_REGEX, PASSWORD_LENGTHS, check_match=self.setup.passphrase1, also_true=self.setup.luks)
+
+        self.update_disk_selection_next()
         self.setup.print_setup()
+
+    def update_disk_selection_next(self):
+        error = self.setup.disk == None
+        error = error or self.setup.luks and (self.setup.passphrase1 in (None, "") or self.setup.passphrase1 != self.setup.passphrase2)
+
+        self.builder.get_object("button_next").set_sensitive(not error)
 
     def quit_cb(self, widget, data=None):
         if QuestionDialog(_("Quit?"), _("Are you sure you want to quit the installer?")):
@@ -863,27 +927,13 @@ class InstallerWindow:
                 self.validate_user_page(focus_widget=True)
             elif(sel == self.PAGE_USER):
                 self.activate_page(self.PAGE_TYPE)
+                self.assign_type_options()
             elif(sel == self.PAGE_TYPE):
                 if self.setup.automated:
-                    errorFound = False
-                    errorMessage = ""
-                    if self.setup.disk is None:
-                        errorFound = True
-                        errorMessage = _("Please select a disk.")
-                    if self.setup.luks:
-                        if (self.setup.passphrase1 is None or self.setup.passphrase1 == ""):
-                            errorFound = True
-                            errorMessage = _("Please provide a passphrase for the encryption.")
-                        elif (self.setup.passphrase1 != self.setup.passphrase1):
-                            errorFound = True
-                            errorMessage = _("Your passphrases do not match.")
-                    if (errorFound):
-                        WarningDialog(_("Installer"), errorMessage)
-                    else:
-                        if QuestionDialog(_("Warning"), _("This will delete all the data on %s. Are you sure?") % self.setup.diskname):
-                            partitioning.build_partitions(self)
-                            partitioning.build_grub_partitions()
-                            self.activate_page(self.PAGE_ADVANCED)
+                    if QuestionDialog(_("Warning"), _("This will delete all the data on %s. Are you sure?") % self.setup.diskname):
+                        partitioning.build_partitions(self)
+                        partitioning.build_grub_partitions()
+                        self.activate_page(self.PAGE_ADVANCED)
                 else:
                     self.activate_page(self.PAGE_PARTITIONS)
                     partitioning.build_partitions(self)
