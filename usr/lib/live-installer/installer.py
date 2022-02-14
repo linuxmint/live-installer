@@ -653,7 +653,12 @@ class InstallerEngine:
             for partition in self.setup.partitions:
                 if(partition.mount_as is not None and partition.mount_as != "" and partition.mount_as != "/" and partition.mount_as != "swap"):
                     self.do_unmount("/target" + partition.mount_as)
-            self.do_unmount("/target")
+
+            # btrfs subvolumes are mounts, but will block unmounting /target. This will
+            # unmount the submounts also.
+            cmd = "umount -AR /target"
+            print("Unmounting the target root: '%s'" % cmd)
+            self.exec_cmd(cmd)
         self.do_unmount("/source")
 
         self.update_progress(0, 0, False, True, _("Installation finished"))
