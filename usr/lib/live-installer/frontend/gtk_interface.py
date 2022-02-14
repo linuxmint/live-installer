@@ -537,9 +537,11 @@ class InstallerWindow:
         self.setup.badblocks = self.builder.get_object("check_badblocks").get_active()
 
         block_next = False
-        block_next = block_next or self.setup.disk == None
-        if self.builder.get_object("check_encrypt").get_active():
-            block_next = block_next or self.setup.passphrase1 in (None, "") or self.setup.passphrase1 != self.setup.passphrase2
+
+        if self.setup.automated:
+            block_next = block_next or self.setup.disk == None
+            if self.builder.get_object("check_encrypt").get_active():
+                block_next = block_next or self.setup.passphrase1 in (None, "") or self.setup.passphrase1 != self.setup.passphrase2
 
         self.builder.get_object("button_next").set_sensitive(not block_next)
         self.setup.print_setup()
