@@ -178,7 +178,7 @@ def partitions_popup_menu(widget, event):
     menuItem = Gtk.SeparatorMenuItem()
     menu.append(menuItem)
     menuItem = Gtk.MenuItem(_("Assign to /"))
-    menuItem.connect("activate", lambda w: assign_mount_point(partition, '/', 'ext4'))
+    menuItem.connect("activate", lambda w: assign_mount_point(partition, '/', partition.type))
     menu.append(menuItem)
     menuItem = Gtk.MenuItem(_("Assign to /home"))
     menuItem.connect("activate", lambda w: assign_mount_point(partition, '/home', ''))
