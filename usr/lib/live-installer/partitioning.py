@@ -135,8 +135,7 @@ def edit_partition_dialog(widget, path, viewcol):
         partition.partition.number != -1):
         dlg = PartitionDialog(row[IDX_PART_PATH],
                               row[IDX_PART_MOUNT_AS],
-                              row[IDX_PART_FORMAT_AS],
-                              row[IDX_PART_TYPE])
+                              row[IDX_PART_FORMAT_AS])
         response_is_ok, mount_as, format_as = dlg.show()
         if response_is_ok:
             assign_mount_point(partition, mount_as, format_as)
@@ -304,7 +303,7 @@ class PartitionSetup(Gtk.TreeStore):
                 partition.size_percent = round(partition.size_percent / sum_size_percent * 100, 1)
                 installer.setup.partitions.append(partition)
                 self.append(disk_iter, (partition.name,
-                                        '<span foreground="{}">{}</span>'.format(partition.color, partition.type),
+                                        partition.type,
                                         partition.description,
                                         partition.format_as,
                                         partition.mount_as,
@@ -567,7 +566,7 @@ class Partition(object):
 
 
 class PartitionDialog(object):
-    def __init__(self, path, mount_as, format_as, type):
+    def __init__(self, path, mount_as, format_as):
         glade_file = RESOURCE_DIR + 'interface.ui'
         self.builder = Gtk.Builder()
         self.builder.add_from_file(glade_file)
