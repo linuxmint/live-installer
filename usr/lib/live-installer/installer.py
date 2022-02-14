@@ -47,6 +47,7 @@ class InstallerEngine:
         if(not os.path.exists("/source")):
             os.mkdir("/source")
 
+        os.system("umount --force /target/sys/firmware/efi/efivars")
         os.system("umount --force /target/dev/shm")
         os.system("umount --force /target/dev/pts")
         os.system("umount --force /target/dev/")
@@ -99,6 +100,10 @@ class InstallerEngine:
         os.system("mount --bind /run/ /target/run/")
         os.system("mv /target/etc/resolv.conf /target/etc/resolv.conf.bk")
         os.system("cp -f /etc/resolv.conf /target/etc/resolv.conf")
+
+        if os.path.exists("/sys/firmware/efi/efivars"):
+            os.system("mkdir -p /target/sys/firmware/efi/efivars")
+            os.system("mount --bind /sys/firmware/efi/efivars /target/sys/firmware/efi/efivars/")
 
         kernelversion= subprocess.getoutput("uname -r")
         os.system("cp /run/live/medium/live/vmlinuz /target/boot/vmlinuz-%s" % kernelversion)
@@ -628,6 +633,10 @@ class InstallerEngine:
 
         # now unmount it
         print(" --> Unmounting partitions")
+
+        if os.path.exists("/target/sys/firmware/efi/efivars"):
+            os.system("umount --force /target/sys/firmware/efi/efivars")
+
         os.system("umount --force /target/dev/shm")
         os.system("umount --force /target/dev/pts")
         if self.setup.gptonefi:
