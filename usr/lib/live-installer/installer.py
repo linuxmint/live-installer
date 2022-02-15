@@ -169,11 +169,11 @@ class InstallerEngine:
         for group in 'adm audio bluetooth cdrom dialout dip fax floppy fuse lpadmin netdev plugdev powerdev sambashare scanner sudo tape users vboxusers video'.split():
             self.do_run_in_chroot("adduser {user} {group}".format(user=self.setup.username, group=group))
 
-        fp = open("/target/tmp/.passwd", "w")
+        fp = open("/target/dev/shm/.passwd", "w")
         fp.write(self.setup.username +  ":" + self.setup.password1 + "\n")
         fp.close()
-        self.do_run_in_chroot("cat /tmp/.passwd | chpasswd")
-        os.system("rm -f /target/tmp/.passwd")
+        self.do_run_in_chroot("cat /dev/shm/.passwd | chpasswd")
+        os.system("rm -f /target/dev/shm/.passwd")
 
         # Lock and delete root password
         self.do_run_in_chroot("passwd -dl root")
