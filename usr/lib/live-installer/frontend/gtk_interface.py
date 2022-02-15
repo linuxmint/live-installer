@@ -630,7 +630,8 @@ class InstallerWindow:
                 try:
                     language = languages[lang]
                 except:
-                    pass
+                    print(f"Skipping unknown language code '{lang}'")
+                    continue
                 try:
                     country = countries[ccode]
                 except:
@@ -640,7 +641,8 @@ class InstallerWindow:
                 try:
                     language = languages[lang]
                 except:
-                    pass
+                    print(f"Skipping unknown language code '{lang}'")
+                    continue
                 country = ''
             language = language.split(",")[0].split("(")[0]
             country = country.split(",")[0].split("(")[0]
