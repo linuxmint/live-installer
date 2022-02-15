@@ -167,27 +167,28 @@ def partitions_popup_menu(widget, event):
     if not partition: return
     partition_type = model.get_value(iter, IDX_PART_TYPE)
     if (partition.partition.type == parted.PARTITION_EXTENDED or
-        partition.partition.number == -1 or
-        "swap" in partition_type):
+        partition.partition.number == -1):
         return
     menu = Gtk.Menu()
     menuItem = Gtk.MenuItem(_("Edit"))
     menuItem.connect("activate", edit_partition_dialog, None, None)
     menu.append(menuItem)
-    menuItem = Gtk.SeparatorMenuItem()
-    menu.append(menuItem)
-    menuItem = Gtk.MenuItem(_("Assign to /"))
-    menuItem.connect("activate", lambda w: assign_mount_point(partition, '/', partition.type))
-    menu.append(menuItem)
-    menuItem = Gtk.MenuItem(_("Assign to /home"))
-    menuItem.connect("activate", lambda w: assign_mount_point(partition, '/home', ''))
-    menu.append(menuItem)
-    if installer.setup.gptonefi:
+
+    if "swap" not in partition_type:
         menuItem = Gtk.SeparatorMenuItem()
         menu.append(menuItem)
-        menuItem = Gtk.MenuItem(_("Assign to /boot/efi"))
-        menuItem.connect("activate", lambda w: assign_mount_point(partition, EFI_MOUNT_POINT, ''))
+        menuItem = Gtk.MenuItem(_("Assign to /"))
+        menuItem.connect("activate", lambda w: assign_mount_point(partition, '/', partition.type))
         menu.append(menuItem)
+        menuItem = Gtk.MenuItem(_("Assign to /home"))
+        menuItem.connect("activate", lambda w: assign_mount_point(partition, '/home', ''))
+        menu.append(menuItem)
+        if installer.setup.gptonefi:
+            menuItem = Gtk.SeparatorMenuItem()
+            menu.append(menuItem)
+            menuItem = Gtk.MenuItem(_("Assign to /boot/efi"))
+            menuItem.connect("activate", lambda w: assign_mount_point(partition, EFI_MOUNT_POINT, ''))
+            menu.append(menuItem)
     menu.show_all()
     menu.popup(None, None, None, None, 0, event.time)
 
