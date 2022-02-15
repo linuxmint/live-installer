@@ -124,6 +124,7 @@ class InstallerEngine:
             os.system("cp /run/live/medium/pool/main/g/grub-efi-amd64-signed/* /target/debs/")
             os.system("cp /run/live/medium/pool/main/s/shim*/* /target/debs/")
             self.do_run_in_chroot("dpkg -i /debs/*")
+            self.do_run_in_chroot("DEBIAN_FRONTEND=noninteractive apt-get remove --purge --yes grub-pc")
             os.system("rm -rf /target/debs")
 
         print(" --> Installing microcode packages")
