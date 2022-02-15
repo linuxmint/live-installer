@@ -27,7 +27,7 @@ USERNAME_LENGTH = (1, 32)
 
 # "[[:ascii:]]+" gives nested set warning. https://www.regular-expressions.info/posixbrackets.html
 PASSWORD_REGEX = r"[\x00-\x7F]+"
-PASSWORD_LENGTHS = (6, 2147483647)
+PASSWORD_LENGTHS = (1, 2147483647)
 
 HOSTNAME_REGEX = r"^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$"
 HOSTNAME_MIN_LENGTH = 1
