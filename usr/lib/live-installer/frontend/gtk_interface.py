@@ -646,6 +646,8 @@ class InstallerWindow:
                 country = ''
             language = language.split(",")[0].split("(")[0]
             country = country.split(",")[0].split("(")[0]
+            if country == '':
+                continue
             pixbuf = self.flag(lang, language, ccode)
             iter = model.append((language, country, pixbuf, locale))
             if (ccode == self.cur_country_code and
