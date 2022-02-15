@@ -421,12 +421,10 @@ class InstallerEngine:
                         if fs == "fat16" or fs == "fat32":
                             fs = "vfat"
                         fstab.write("# %s\n" % (partition.path))
-                        if(partition.mount_as == "/" and fs != "btrfs"):
+                        fstab_fsck_option = "0"
+                        if fs != "btrfs" and partition.mount_as in ["/", "/boot", "/boot/efi"]:
                             fstab_fsck_option = "1"
-                        else:
-                            fstab_fsck_option = "0"
-
-                        if("ext" in fs):
+                        if "ext" in fs:
                             fstab_mount_options = "rw,errors=remount-ro"
                         elif fs == "btrfs" and partition.mount_as == "/":
                             fstab_mount_options = "defaults,subvol=@"
