@@ -1,3 +1,9 @@
+live-installer (2022.02.16.1) elsie; urgency=medium
+
+  * Grub: Purge grub-pc before installing grub-efi-amd64
+
+ -- Clement Lefebvre <root@linuxmint.com>  Wed, 16 Feb 2022 21:41:06 +0000
+
 live-installer (2022.02.16) elsie; urgency=medium
 
   * Revert "Bring back eject script"
