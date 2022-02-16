@@ -186,6 +186,11 @@ class InstallerWindow:
             "row_activated", partitioning.edit_partition_dialog)
         self.builder.get_object("treeview_disks").connect(
             "button-release-event", partitioning.partitions_popup_menu)
+        self.builder.get_object("treeview_disks").connect(
+            "cursor-changed", self.partition_change_event)
+        self.builder.get_object("button_add_partition").connect("clicked",self.part_add_button_event)
+        self.builder.get_object("button_remove_partition").connect("clicked",self.part_remove_button_event)
+
         text = Gtk.CellRendererText()
         for i in (partitioning.IDX_PART_PATH,
                   partitioning.IDX_PART_TYPE,
@@ -874,6 +879,33 @@ class InstallerWindow:
             treeview.scroll_to_cell(path)
         except NameError:
             pass  # set_keyboard_layout not set
+
+    def partition_change_event(self,widget):
+        model, itervar = widget.get_selection().get_selected()
+        self.builder.get_object("button_add_partition").set_sensitive(False)
+        self.builder.get_object("button_remove_partition").set_sensitive(False)
+        if itervar:
+            self.selected_partition = model.get_value(itervar, partitioning.IDX_PART_OBJECT) # partition opject
+            fstype = model.get_value(itervar, partitioning.IDX_PART_TYPE).replace("<span>","").replace("</span>","").strip()
+            if fstype == _('Free space'):
+                self.builder.get_object("button_add_partition").set_sensitive(True)
+            elif len(fstype) > 0:
+                self.builder.get_object("button_remove_partition").set_sensitive(True)
+
+    def part_add_button_event(self,widget):
+        start = self.selected_partition.partition.geometry.start
+        end = self.selected_partition.partition.geometry.end
+        mbr = self.selected_partition.mbr
+        os.system("parted -s {} mkpart primary ext4 {}s {}s".format(mbr,start,end))
+        partitioning.build_partitions(self)
+
+    def part_remove_button_event(self,widget):
+        path = self.selected_partition.path
+        mbr = self.selected_partition.mbr
+        partnum = partitioning.find_partition_number(path)
+        os.system("parted -s {} rm {}".format(mbr,partnum))
+        partitioning.build_partitions(self)
+
 
     def assign_eula(self,widget=None):
         widget = self.builder.get_object("check_eula")
