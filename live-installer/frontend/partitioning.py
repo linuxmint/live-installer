@@ -226,7 +226,7 @@ def partitions_popup_menu(widget, event):
         menu.append(menuItem)
         for i in config.distro["additional_efi_mountpoints"]:
             def menu_event(w,i=i):
-                assign_mount_point(partition, i, 'vfat')
+                assign_mount_point(partition, i, '')
         menuItem = Gtk.MenuItem(_("Assign to %s") % i)
         menuItem.connect("activate", menu_event)
         menu.append(menuItem)
