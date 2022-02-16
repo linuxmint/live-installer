@@ -1109,7 +1109,7 @@ class InstallerWindow:
                     _("- Must have big and small letters\n")+
                     _("- Must have number"))
                 focus_widget = self.builder.get_object("entry_password")
-                if config.get("allow_week_password", False):
+                if config.get("allow_week_password", True):
                     errorMessage+="\n\n"+_("Are you sure?")
                     if not QuestionDialog(_("Warning"),errorMessage):
                         return

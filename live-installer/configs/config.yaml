@@ -64,7 +64,7 @@
 # skip_user: false
 # hide_keyboard_model: false
 # allow_uppercase_hostname: true
-# allow_week_password: false
+# allow_week_password: true
 # allow_auto_novariant: false
 # min_password_length: 1
 
