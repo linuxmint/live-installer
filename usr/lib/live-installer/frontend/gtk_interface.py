@@ -255,12 +255,12 @@ class InstallerWindow:
         self.window.show_all()
 
     def on_lets_go_clicked(self, button):
+        Gtk.Settings.get_default().set_property("gtk-application-prefer-dark-theme", False)
+        GObject.timeout_add(100, self.lets_go)
+
+    def lets_go(self):
         self.activate_page(self.PAGE_LANGUAGE)
         self.builder.get_object("stack").set_visible_child_name("page_notebook")
-        GObject.timeout_add(400, self.remove_dark_mode)
-
-    def remove_dark_mode(self):
-        Gtk.Settings.get_default().set_property("gtk-application-prefer-dark-theme", False)
 
     def on_context_menu(self, unused_web_view, unused_context_menu,
                     unused_event, unused_hit_test_result):
