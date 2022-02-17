@@ -3,17 +3,17 @@
    width="16"
    height="16"
    version="1.1"
-   id="svg4"
-   sodipodi:docname="password-status-ok-symbolic.svg"
+   id="svg831"
+   sodipodi:docname="partition-edit-symbolic.svg"
    inkscape:version="1.1 (c68e22c387, 2021-05-23)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
   <defs
-     id="defs8" />
+     id="defs835" />
   <sodipodi:namedview
-     id="namedview6"
+     id="namedview833"
      pagecolor="#ffffff"
      bordercolor="#666666"
      borderopacity="1.0"
@@ -29,10 +29,21 @@
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
-     inkscape:current-layer="svg4" />
-  <path
-     style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-     d="M 0.39549155,7.053947 C -0.96642991,8.2392928 2.6892881,13.664025 4.2740854,13.771869 6.6524138,13.933712 16.925288,3.9860994 15.604508,2.4414458 14.089924,0.67013929 6.4620765,10.938882 4.6704182,10.72957 2.803834,10.511504 1.8130561,5.8201723 0.39549155,7.053947 Z"
-     id="path934"
-     sodipodi:nodetypes="sssss" />
+     inkscape:current-layer="svg831" />
+  <g
+     fill="#2e3436"
+     fill-rule="evenodd"
+     id="g829"
+     style="fill:#000000">
+    <path
+       d="M2.01 11.014l6.518-6.572 3 3-6.518 6.572h-3z"
+       id="path825"
+       style="fill:#000000" />
+    <path
+       d="M11.637 1.676c-.2 0-.4.077-.554.23l-1.77 1.768 3.053 3.053 1.77-1.77a.783.783 0 000-1.109l-1.944-1.941a.782.782 0 00-.555-.23z"
+       style="isolation:auto;mix-blend-mode:normal;solid-color:#000;solid-opacity:1;marker:none;fill:#000000"
+       color="#000"
+       overflow="visible"
+       id="path827" />
+  </g>
 </svg>

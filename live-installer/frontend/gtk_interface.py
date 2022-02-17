@@ -190,6 +190,7 @@ class InstallerWindow:
             "cursor-changed", self.partition_change_event)
         self.builder.get_object("button_add_partition").connect("clicked",self.part_add_button_event)
         self.builder.get_object("button_remove_partition").connect("clicked",self.part_remove_button_event)
+        self.builder.get_object("button_format_partition").connect("clicked",self.part_format_button_event)
 
         text = Gtk.CellRendererText()
         for i in (partitioning.IDX_PART_PATH,
@@ -386,9 +387,14 @@ class InstallerWindow:
         disks = ' '.join(sorted((disk for disk, desc in model.disks),
                             key=lambda disk: disk != preferred))
         os.system('umount -f ' + disks)
-        os.system('{} {} &'.format(config.get(
-            "partition_editor", "gparted"), disks))
-        partitioning.build_partitions(self)
+        def update_partition_menu(pid, status):
+            partitioning.build_partitions(self)
+        editor = '{} {}'.format(config.get("partition_editor", "gparted"), disks)
+        pid, stdin, stdout, stderr = GLib.spawn_async(["/bin/sh", "-c", editor],
+            flags=GLib.SPAWN_DO_NOT_REAP_CHILD,
+            standard_output=True,
+            standard_error=True)
+        GLib.child_watch_add(GLib.PRIORITY_DEFAULT, pid, update_partition_menu)
 
     def fullscreen(self):
         self.window.fullscreen()
@@ -506,8 +512,12 @@ class InstallerWindow:
             _("Create swap partition"))
 
         # Partitions page
-        self.builder.get_object("button_edit").set_label(_("Edit partitions"))
-        self.builder.get_object("button_refresh").set_label(_("Refresh"))
+        self.builder.get_object("label_edit").set_text(_("Edit partitions"))
+        self.builder.get_object("label_refresh").set_text(_("Refresh"))
+        self.builder.get_object("label_edit").set_text(_("Edit partitions"))
+        self.builder.get_object("label_delete").set_text(_("Delete"))
+        self.builder.get_object("label_format").set_text(_("Format"))
+        self.builder.get_object("label_new").set_text(_("Create"))
         for col, title in zip(self.builder.get_object("treeview_disks").get_columns(),
                               (_("Device"),
                                _("Type"),
@@ -896,16 +906,27 @@ class InstallerWindow:
         start = self.selected_partition.partition.geometry.start
         end = self.selected_partition.partition.geometry.end
         mbr = self.selected_partition.mbr
-        os.system("parted -s {} mkpart primary ext4 {}s {}s".format(mbr,start,end))
-        partitioning.build_partitions(self)
+        if QuestionDialog(_("Are you sure?"), 
+            _("New partition will created at {}").format(mbr)):
+            os.system("parted -s {} mkpart primary ext4 {}s {}s".format(mbr,start,end))
+            partitioning.build_partitions(self)
 
     def part_remove_button_event(self,widget):
         path = self.selected_partition.path
         mbr = self.selected_partition.mbr
         partnum = partitioning.find_partition_number(path)
-        os.system("parted -s {} rm {}".format(mbr,partnum))
-        partitioning.build_partitions(self)
+        if QuestionDialog(_("Are you sure?"), 
+            _("Partition {} will removed from {}.").format(path,mbr)):
+            os.system("parted -s {} rm {}".format(mbr,partnum))
+            partitioning.build_partitions(self)
 
+    def part_format_button_event(self,widget):
+        path = self.selected_partition.path
+        mbr = self.selected_partition.mbr
+        if QuestionDialog(_("Are you sure?"), 
+            _("Partition {} will formated from {}.").format(path,mbr)):
+            os.system("yes | mkfs.ext4 {}".format(path))
+            partitioning.build_partitions(self)
 
     def assign_eula(self,widget=None):
         widget = self.builder.get_object("check_eula")

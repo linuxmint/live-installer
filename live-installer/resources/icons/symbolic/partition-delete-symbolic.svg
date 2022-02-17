@@ -4,7 +4,7 @@
    height="16"
    version="1.1"
    id="svg4"
-   sodipodi:docname="password-status-warning-symbolic.svg"
+   sodipodi:docname="partition-delete-symbolic.svg"
    inkscape:version="1.1 (c68e22c387, 2021-05-23)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -21,23 +21,22 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      showgrid="false"
-     inkscape:zoom="45.254834"
-     inkscape:cx="8.0764853"
-     inkscape:cy="11.888233"
+     inkscape:zoom="41.3125"
+     inkscape:cx="3.3282905"
+     inkscape:cy="7.9878971"
      inkscape:window-width="1920"
      inkscape:window-height="1136"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
-     inkscape:current-layer="svg4"
-     showguides="true"
-     inkscape:guide-bbox="true" />
+     inkscape:current-layer="svg4" />
   <path
-     d="M 7.906,0.094 C 7.381,0.065 6.868,0.377 6.469,1.063 L 0.219,12.655 C -0.315,13.62 0.267,15 1.313,15 h 13.156 c 0.982,0 1.903,-1.16 1.219,-2.344 L 9.375,1.125 C 8.976,0.479 8.432,0.122 7.906,0.094 Z M 9.001,5.062 V 9 c 0.007,0.528 -1,1 -1,1 0,0 -1.007,-0.472 -1,-1 V 5.062 c 0,-1.585438 2,-1.585438 2,0 z M 8,11 c 1.3333328,0 1.3333328,2 0,2 -1.3333328,0 -1.3333328,-2 0,-2 z"
-     style="fill:#000000;fill-opacity:1;marker:none"
+     d="M8 1.031A6.963 6.963 0 001.031 8 6.963 6.963 0 008 14.969 6.963 6.963 0 0014.969 8 6.963 6.963 0 008 1.031zM5 5h1.031c.255.011.51.129.688.313L8 6.593l1.312-1.28c.266-.231.447-.306.688-.313h1v1c0 .286-.034.55-.25.75L9.469 8.031l1.25 1.25c.188.188.281.454.281.719v1h-1c-.265 0-.53-.093-.719-.281L8 9.438l-1.281 1.28A1.015 1.015 0 016 11H5v-1c0-.265.093-.53.281-.719l1.281-1.25-1.28-1.281A.909.909 0 015 6z"
+     style="line-height:normal;-inkscape-font-specification:'Andale Mono';text-indent:0;text-align:start;text-decoration-line:none;text-transform:none;marker:none;fill:#000000"
      color="#bebebe"
+     font-weight="400"
+     font-family="Andale Mono"
      overflow="visible"
      fill="#474747"
-     id="path2"
-     sodipodi:nodetypes="cccsscccscccsssss" />
+     id="path2" />
 </svg>
