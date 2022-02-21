@@ -84,8 +84,11 @@ def get_partitions():
         return partitions
     partitions = []
     for disk in get_disks():
-        dev = parted.Disk(parted.getDevice(disk[0]))
-        for i in get_all_partition_objects(dev):
+        try:
+            dev = parted.Disk(parted.getDevice(disk[0]))
+            for i in get_all_partition_objects(dev):
+                partitions.append(i.path)
+        except:
             partitions.append(disk[0])
     return partitions
 
@@ -266,8 +269,6 @@ class PartitionSetup(Gtk.TreeStore):
         log('Disks: ', self.disks)
         already_done_full_disk_format = False
         for disk_path, disk_description in self.disks:
-            log("    Analyzing path='%s' description='%s'" %
-                (disk_path, disk_description))
             try:
                 disk_device = parted.getDevice(disk_path)
                 disk = parted.Disk(disk_device)
@@ -340,7 +341,7 @@ def full_disk_format(device, create_boot=False, create_swap=False):
                   or is_efi_supported()
                   else 'msdos')
     # Force lazy umount
-    os.system("umount -lf {}*".format(device.path))
+    os.system("umount -lf {}* &>/dev/null".format(device.path))
     # Wipe first 512 byte
     open(device.path, "w").write("\x00" * 512)
     return_code = os.system("parted -s %s mklabel %s" %
@@ -376,7 +377,6 @@ def full_disk_format(device, create_boot=False, create_swap=False):
     if device.path.startswith("/dev/nvme"):
         partition_prefix = "p"
     for partition in mkpart:
-        log(partition)
         if partition[0]:
             partition_number = partition_number + 1
             mkfs = partition[3]
@@ -481,7 +481,7 @@ class Partition(PartitionBase):
 
         # identify partition's description and used space
         try:
-            os.system('mount --read-only {} {}'.format(self.path, TMP_MOUNTPOINT))
+            os.system('mount --read-only {} {} &>/dev/null'.format(self.path, TMP_MOUNTPOINT))
             df = getoutput("df {0} | grep '^{0}' | awk '{{print $2,$4,$5,$6}}' | tail -1".format(
                 self.path)).decode("utf-8").split(" ")
             size = df[0]
@@ -489,8 +489,6 @@ class Partition(PartitionBase):
             self.used_percent = df[2]
             self.mount_point = df[3]
             self.raw_size = int(size) * 1024
-            log("size %s, free %s, self.used_percent %s, mount_point %s" % (
-                size, free, self.used_percent, self.mount_point))
 
             self.size = to_human_readable(int(size) * 1024)
             # df returns values in 1024B-blocks by default
@@ -498,12 +496,6 @@ class Partition(PartitionBase):
             self.used_percent = self.used_percent.replace("%", "") or 0
         except:
             self.description = ""
-            if "swap" in self.type:
-                self.os_fs_info, self.description, self.free_space, self.used_percent = ': ' + \
-                    self.type, 'swap', '', 0
-            else:
-                self.os_fs_info, self.description, self.free_space, self.used_percent = ': ' + \
-                    self.type, '', '', 0
         # for mountable partitions, more accurate than the getLength size
         # above
         self.description = ""
@@ -535,22 +527,23 @@ class Partition(PartitionBase):
             self.description = 'Mac OS X'
         elif path_exists(self.mount_point, 'etc/'):
             self.description = 'Linux/Unix'
+        elif partition.name != '':
+            self.description = str(partition.name)
         else:
             try:
-                if partition.active:
-                    for flag in partition.getFlagsAsString().split(", "):
-                        if flag in ["boot", "esp"] and self.type == "fat32":
-                            self.description = _('EFI System Partition')
-                            break
+                for flag in partition.getFlagsAsString().split(", "):
+                    if flag in ["boot", "esp"] and self.type == "fat32":
+                        self.description = _('EFI System Partition')
+                        break
             except Exception as detail:
                 # best effort
                 err("Could not read partition flags for %s: %s" %
                     (self.path, detail))
-        self.os_fs_info = ': {0.description} ({0.type}; {0.size}; {0.free_space})'.format(
-            self) if self.description else ': ' + self.type
-        log("                  . self.description %s self.os_fs_info %s" % (
-            self.description, self.os_fs_info))
-        os.system('umount ' + TMP_MOUNTPOINT + ' 2>/dev/null')
+        os.system('umount ' + TMP_MOUNTPOINT + ' &>/dev/null')
+        log(("- Disk: {}\n"+"  - {}\n"*5).format(self.name,self.description, self.size, self.type, self.free_space,self.mbr))
+
+    def set_boot(self):
+        os.system("parted --script --align optimal {} set {} boot on".format(self.mbr,self.partition.number))
 
 
     def print_partition(self):

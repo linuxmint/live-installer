@@ -14,8 +14,8 @@ if config.get("gtk_theme", "default") != "default":
     os.environ['GTK_THEME'] = config.get("gtk_theme")
 
 # Force show mouse cursor & fix background
-os.system("xsetroot -cursor_name left_ptr")
-os.system("xsetroot -solid black")
+os.system("xsetroot -cursor_name left_ptr &>/dev/null")
+os.system("xsetroot -solid black &>/dev/null")
 
 VERSION = "4.1"
 

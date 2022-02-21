@@ -348,7 +348,7 @@ class InstallerWindow:
             for disk_path in partitioning.get_partitions():
                 log("Searching: {}".format(disk_path))
                 if 0 == os.system(
-                        "mount -o ro {} /tmp/winroot 2>/dev/null".format(disk_path)):
+                        "mount -o ro {} /tmp/winroot &>/dev/null".format(disk_path)):
                     if os.path.exists(
                             "/tmp/winroot/Windows/System32/ntoskrnl.exe"):
                         self.setup.winroot = disk_path
@@ -359,7 +359,7 @@ class InstallerWindow:
                     elif os.path.exists("/tmp/winroot/bootmgr"):
                         self.setup.winboot = disk_path
                         log("Found windows boot: {}".format(disk_path))
-                os.system("umount -lf /tmp/winroot")
+                os.system("umount -lf /tmp/winroot &>/dev/null")
             if self.setup.winroot and (
                     not self.setup.gptonefi or self.setup.winefi):
                 self.builder.get_object("box_replace_win").show_all()
@@ -397,7 +397,8 @@ class InstallerWindow:
         GLib.child_watch_add(GLib.PRIORITY_DEFAULT, pid, update_partition_menu)
 
     def fullscreen(self):
-        self.window.fullscreen()
+        self.window.set_resizable(True)
+        GLib.timeout_add(300, self.window.fullscreen)
         self.builder.get_object("button_quit").show()
 
     def i18n(self):
@@ -1213,9 +1214,11 @@ class InstallerWindow:
                             found_efi_partition = True
                             if not partition.partition.getFlag(
                                     parted.PARTITION_BOOT):
-                                ErrorDialog(_("Installer"), _(
-                                    "The EFI partition is not bootable. Please edit the partition flags."))
-                                return
+                                if QuestionDialog(_("Installer"), _(
+                                    "The EFI partition is not bootable. Do you want to set boot flag?")):
+                                    partition.set_boot()
+                                else:
+                                    return
                             if int(float(partition.partition.getLength('MB'))) < 35:
                                 ErrorDialog(_("Installer"), _(
                                     "The EFI partition is too small. It must be at least 35MB."))
