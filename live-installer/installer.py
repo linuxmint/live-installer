@@ -873,10 +873,12 @@ class InstallerEngine:
             self.update_progress(line,pulse)
             
     def run(self,cmd,vital=True):
-        i = run(cmd,vital)
+        if "{distro_codename}" in cmd:
+            cmd = cmd.replace("{distro_codename}", config.get("distro_codename", "linux"))
+        i = int(run(cmd,vital)/256)
         if 0 != i and vital:
             self.error_message(message=(_("Failed to run command (Exited with {}):")+"\n {}").format(
-            str(int(i / 512)), cmd))
+            str(i), cmd))
         return i
 # Represents the choices made by the user
 

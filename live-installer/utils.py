@@ -7,7 +7,6 @@ import config
 from gi.repository import GObject
 from logger import log, err, inf
 
-
 def memoize(func):
     """ Caches expensive function calls.
 
@@ -89,24 +88,25 @@ def run(cmd, vital=True):
     if "||" in cmd:
         mode = cmd.split("||")[0].strip()
         cmd = cmd.split("||")[1].strip()
-        if "{distro_codename}" in cmd:
-            cmd = cmd.replace("{distro_codename}",
-                              config.get("distro_codename", "linux"))
         if mode == "chroot":
             i = do_run_in_chroot(cmd)
         else:
             i = os.system(cmd)
     else:
-        i = os.system(cmd)
+        i = int(os.system(cmd)/256)
     if vital and i != 0:
         err("Failed to run command (Exited with {}): {}".format(
-            str(int(i / 512)), cmd))
+            str(i), cmd))
     return i
 
 
+efivar_loaded = False
 def is_efi_supported():
+    global efivar_loaded
     # Are we running under with efi ?
-    run("modprobe efivars &>/dev/null")
+    if not efivar_loaded:
+        run("modprobe efivars")
+        efivar_loaded = True
     return os.path.exists("/proc/efi") or os.path.exists("/sys/firmware/efi")
 
 

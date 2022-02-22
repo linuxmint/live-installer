@@ -348,7 +348,7 @@ class InstallerWindow:
             for disk_path in partitioning.get_partitions():
                 log("Searching: {}".format(disk_path))
                 if 0 == os.system(
-                        "mount -o ro {} /tmp/winroot &>/dev/null".format(disk_path)):
+                        "mount -o ro {} /tmp/winroot".format(disk_path)):
                     if os.path.exists(
                             "/tmp/winroot/Windows/System32/ntoskrnl.exe"):
                         self.setup.winroot = disk_path
@@ -359,7 +359,8 @@ class InstallerWindow:
                     elif os.path.exists("/tmp/winroot/bootmgr"):
                         self.setup.winboot = disk_path
                         log("Found windows boot: {}".format(disk_path))
-                os.system("umount -lf /tmp/winroot &>/dev/null")
+                while 0 == os.system("umount -lf /tmp/winroot"):
+                    True # dummy action
             if self.setup.winroot and (
                     not self.setup.gptonefi or self.setup.winefi):
                 self.builder.get_object("box_replace_win").show_all()
@@ -895,6 +896,7 @@ class InstallerWindow:
         model, itervar = widget.get_selection().get_selected()
         self.builder.get_object("button_add_partition").set_sensitive(False)
         self.builder.get_object("button_remove_partition").set_sensitive(False)
+        self.builder.get_object("button_format_partition").set_sensitive(False)
         if itervar:
             self.selected_partition = model.get_value(itervar, partitioning.IDX_PART_OBJECT) # partition opject
             fstype = model.get_value(itervar, partitioning.IDX_PART_TYPE).replace("<span>","").replace("</span>","").strip()
@@ -902,6 +904,7 @@ class InstallerWindow:
                 self.builder.get_object("button_add_partition").set_sensitive(True)
             elif len(fstype) > 0:
                 self.builder.get_object("button_remove_partition").set_sensitive(True)
+                self.builder.get_object("button_format_partition").set_sensitive(True)
 
     def part_add_button_event(self,widget):
         start = self.selected_partition.partition.geometry.start
@@ -1347,6 +1350,7 @@ class InstallerWindow:
                 self.assign_eula()
                 self.builder.get_object("button_back").set_sensitive(True)
                 nex = self.PAGE_EULA
+                self.builder.get_object("check_eula").grab_focus()
                 if config.get("skip_eula", False):
                     self.builder.get_object("button_next").set_sensitive(True)
                     sel = nex
