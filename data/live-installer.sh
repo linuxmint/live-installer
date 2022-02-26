@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-pkexec python3 /lib/live-installer/main.py $@
+pkexec /lib/live-installer/main.py $@
