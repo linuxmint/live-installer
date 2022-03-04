@@ -462,6 +462,12 @@ class Partition(PartitionBase):
         self.name = self.path if partition.number != -1 else ''
         self.mount_point = None
         self.description = ""
+        # Older versions of python3-parted has bug :D
+        # This is compability for older versions.
+        try:
+            partname = partition.name
+        except:
+            partname = ''
         self.mbr = find_mbr(self.path)
         if self.mbr == "": # free space
             self.mbr = partition.disk.device.path
@@ -543,8 +549,8 @@ class Partition(PartitionBase):
             self.description = 'Mac OS X'
         elif path_exists(self.mount_point, 'etc/'):
             self.description = 'Linux/Unix'
-        elif partition.name != '':
-            self.description = str(partition.name)
+        elif partname != '':
+            self.description = str(partname)
         else:
             try:
                 for flag in partition.getFlagsAsString().split(", "):

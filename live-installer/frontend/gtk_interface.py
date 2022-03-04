@@ -9,6 +9,7 @@ import parted
 from utils import *
 from frontend import *
 from frontend.dialogs import QuestionDialog, ErrorDialog, WarningDialog
+from frontend.keyboardview import kbdpreview
 from installer import InstallerEngine, Setup, NON_LATIN_KB_LAYOUTS
 
 gettext.bindtextdomain('xkeyboard-config', '/usr/share/locale')
@@ -128,6 +129,12 @@ class InstallerWindow:
 
         # build timezones
         timezones.build_timezones(self)
+
+        # build keyboard preview
+        self.keyboardview = kbdpreview("us")
+        if os.system("which ckbcomp") == 0:
+            if config.get("keyboard_preview", True):
+                self.builder.get_object("vbox_keyboard_variant").add(self.keyboardview)
 
         # type page
         model = Gtk.ListStore(str, str)
@@ -1018,6 +1025,8 @@ class InstallerWindow:
             if str(i[1]) == "":
                 self.builder.get_object("treeview_variants").set_cursor(k)
             k += 1
+        if config.get("keyboard_preview", True):
+            self.keyboardview.update(self.setup.keyboard_layout, self.setup.keyboard_variant)
 
     def assign_keyboard_variant(self, treeview):
         ''' Called whenever someone updates the keyboard layout or variant '''
@@ -1047,6 +1056,8 @@ class InstallerWindow:
         command = "setxkbmap -layout '%s' -variant '%s'" % (
             self.setup.keyboard_layout, self.setup.keyboard_variant)
         os.system(command)
+        if config.get("keyboard_preview", True):
+            self.keyboardview.update(self.setup.keyboard_layout, self.setup.keyboard_variant)
 
     def activate_page(self, nex=0, index=0, goback=False):
         errorFound = False
