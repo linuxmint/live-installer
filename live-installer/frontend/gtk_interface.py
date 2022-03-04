@@ -1040,6 +1040,10 @@ class InstallerWindow:
         (self.setup.keyboard_variant_description,
          self.setup.keyboard_variant) = model[active[0]]
 
+        command = "setxkbmap -layout '%s' -variant '%s'" % (
+            self.setup.keyboard_layout, self.setup.keyboard_variant)
+        os.system(command)
+        
         if config.get("keyboard_preview", True):
             self.keyboardview.update(self.setup.keyboard_layout, self.setup.keyboard_variant)
 
@@ -1055,10 +1059,6 @@ class InstallerWindow:
         if ",us" in self.setup.keyboard_layout:
             # Add None variant for US layout
             self.setup.keyboard_variant = '%s,us' % self.setup.keyboard_variant
-
-        command = "setxkbmap -layout '%s' -variant '%s'" % (
-            self.setup.keyboard_layout, self.setup.keyboard_variant)
-        os.system(command)
 
     def activate_page(self, nex=0, index=0, goback=False):
         errorFound = False
@@ -1106,6 +1106,8 @@ class InstallerWindow:
                     itervar = model.iter_next(itervar)
         elif index == self.PAGE_KEYBOARD:
             self.builder.get_object("entry_name").grab_focus()
+            if ",us" in self.setup.keyboard_layout:
+                os.system("setxkbmap -layout us -variant ''")
             if not goback and self.setup.keyboard_variant is None:
                 WarningDialog(_("Installer"), _(
                     "Please provide a kayboard layout for your computer."))
