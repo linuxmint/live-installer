@@ -1130,6 +1130,10 @@ class InstallerWindow:
                 errorFound = True
                 errorMessage = _("Please provide a username.")
                 focus_widget = self.builder.get_object("entry_username")
+            elif(self.setup.username[0] in "-0123456789" or not (self.setup.username.isascii() and self.setup.username.isalnum() and self.setup.username.islower())):
+                errorFound = True
+                errorMessage = _("Your username is invalid.")
+                focus_widget = self.builder.get_object("entry_username")
             elif(self.setup.password1 is None or self.setup.password1 == ""):
                 errorFound = True
                 errorMessage = _(
