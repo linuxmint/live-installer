@@ -5,18 +5,6 @@
   <object class="GtkSizeGroup">
     <property name="mode">vertical</property>
   </object>
-  <object class="GtkListStore" id="model2">
-    <columns>
-      <!-- column-name gchararray -->
-      <column type="gchararray"/>
-    </columns>
-  </object>
-  <object class="GtkListStore" id="model3">
-    <columns>
-      <!-- column-name gchararray -->
-      <column type="gchararray"/>
-    </columns>
-  </object>
   <object class="GtkWindow" id="main_window">
     <property name="width-request">0</property>
     <property name="height-request">0</property>
@@ -266,20 +254,32 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkScrolledWindow" id="scrolledwindow7">
+                      <object class="GtkBox" id="vbox_keyboard_variant">
                         <property name="visible">True</property>
-                        <property name="can-focus">True</property>
-                        <property name="min-content-height">200</property>
-                        <property name="overlay-scrolling">False</property>
+                        <property name="can-focus">False</property>
+                        <property name="orientation">vertical</property>
                         <child>
-                          <object class="GtkTreeView" id="treeview_variants">
+                          <object class="GtkScrolledWindow" id="scrolledwindow7">
                             <property name="visible">True</property>
                             <property name="can-focus">True</property>
-                            <property name="enable-grid-lines">horizontal</property>
-                            <child internal-child="selection">
-                              <object class="GtkTreeSelection"/>
+                            <property name="min-content-height">200</property>
+                            <property name="overlay-scrolling">False</property>
+                            <child>
+                              <object class="GtkTreeView" id="treeview_variants">
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                                <property name="enable-grid-lines">horizontal</property>
+                                <child internal-child="selection">
+                                  <object class="GtkTreeSelection"/>
+                                </child>
+                              </object>
                             </child>
                           </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
                         </child>
                       </object>
                       <packing>
@@ -2231,6 +2231,12 @@
       </object>
     </child>
   </object>
+  <object class="GtkListStore" id="model2">
+    <columns>
+      <!-- column-name gchararray -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
   <object class="GtkDialog" id="dialog">
     <property name="can-focus">False</property>
     <property name="border-width">5</property>
@@ -2420,5 +2426,11 @@
       <action-widget response="-6">button_cancel</action-widget>
       <action-widget response="-5">button_ok</action-widget>
     </action-widgets>
+  </object>
+  <object class="GtkListStore" id="model3">
+    <columns>
+      <!-- column-name gchararray -->
+      <column type="gchararray"/>
+    </columns>
   </object>
 </interface>
