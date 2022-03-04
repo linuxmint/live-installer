@@ -431,6 +431,14 @@ def to_human_readable(size):
             return "{:.1f} {}".format(size, unit)
         size /= 1000
 
+def get_partition_label(partition_path):
+    for dev in os.listdir("/dev/disk/by-label/"):
+        link = os.readlink("/dev/disk/by-label/{}".format(dev))
+        path = os.path.realpath("/dev/disk/by-label/{}".format(link))
+        if path == partition_path:
+            return dev
+    return None
+
 
 class PartitionBase(object):
     # Partition object but only struct
@@ -549,8 +557,8 @@ class Partition(PartitionBase):
             self.description = 'Mac OS X'
         elif path_exists(self.mount_point, 'etc/'):
             self.description = 'Linux/Unix'
-        elif partname != '':
-            self.description = str(partname)
+        elif get_partition_label(self.path):
+            self.description = get_partition_label(self.path)
         else:
             try:
                 for flag in partition.getFlagsAsString().split(", "):
