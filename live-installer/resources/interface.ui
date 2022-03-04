@@ -320,6 +320,7 @@
                     <property name="margin-start">5</property>
                     <property name="margin-end">5</property>
                     <property name="spacing">3</property>
+                    <property name="homogeneous">True</property>
                     <child>
                       <object class="GtkScrolledWindow" id="scrolledwindow5">
                         <property name="visible">True</property>
@@ -358,6 +359,9 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">True</property>
                                 <property name="enable-grid-lines">horizontal</property>
+                                <child internal-child="selection">
+                                  <object class="GtkTreeSelection"/>
+                                </child>
                               </object>
                             </child>
                           </object>
