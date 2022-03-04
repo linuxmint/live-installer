@@ -1017,6 +1017,8 @@ class InstallerWindow:
         # Set the correct variant list model ...
         model = self.layout_variants[self.setup.keyboard_layout]
         self.builder.get_object("treeview_variants").set_model(model)
+        if config.get("keyboard_preview", True):
+            self.keyboardview.update(self.setup.keyboard_layout, self.setup.keyboard_variant)
         # ... and select novariant (if enabled in config)
         if not config.get("allow_auto_novariant", True):
             return
@@ -1025,8 +1027,6 @@ class InstallerWindow:
             if str(i[1]) == "":
                 self.builder.get_object("treeview_variants").set_cursor(k)
             k += 1
-        if config.get("keyboard_preview", True):
-            self.keyboardview.update(self.setup.keyboard_layout, self.setup.keyboard_variant)
 
     def assign_keyboard_variant(self, treeview):
         ''' Called whenever someone updates the keyboard layout or variant '''
@@ -1040,24 +1040,25 @@ class InstallerWindow:
         (self.setup.keyboard_variant_description,
          self.setup.keyboard_variant) = model[active[0]]
 
+        if config.get("keyboard_preview", True):
+            self.keyboardview.update(self.setup.keyboard_layout, self.setup.keyboard_variant)
+
         if self.setup.keyboard_layout in NON_LATIN_KB_LAYOUTS:
             # Add US layout for non-latin layouts
-            self.setup.keyboard_layout = 'us,%s' % self.setup.keyboard_layout
+            self.setup.keyboard_layout = '%s,us' % self.setup.keyboard_layout
 
         if "Latin" in self.setup.keyboard_variant_description:
             # Remove US layout for Latin variants
             self.setup.keyboard_layout = self.setup.keyboard_layout.replace(
-                "us,", "")
+                ",us", "")
 
-        if "us," in self.setup.keyboard_layout:
+        if ",us" in self.setup.keyboard_layout:
             # Add None variant for US layout
-            self.setup.keyboard_variant = ',%s' % self.setup.keyboard_variant
+            self.setup.keyboard_variant = '%s,us' % self.setup.keyboard_variant
 
         command = "setxkbmap -layout '%s' -variant '%s'" % (
             self.setup.keyboard_layout, self.setup.keyboard_variant)
         os.system(command)
-        if config.get("keyboard_preview", True):
-            self.keyboardview.update(self.setup.keyboard_layout, self.setup.keyboard_variant)
 
     def activate_page(self, nex=0, index=0, goback=False):
         errorFound = False
