@@ -45,6 +45,7 @@ class InstallerWindow:
         self.installer = InstallerEngine(self.setup)
         self.testmode = "TEST" in os.environ
 
+
         self.resource_dir = './resources/'
         fullscreen = fullscreen or config.get("fullscreen", False)
         if fullscreen or config.get("set_alternative_ui", False):
@@ -384,6 +385,8 @@ class InstallerWindow:
             self.builder.get_object("label_bios_type").set_text("Legacy")
 
         self.ui_init = True
+        if self.testmode:
+            self.builder.get_object("label_install_progress").set_text("text "*100)
 
 
     def manually_edit_partitions(self,widget):
@@ -1572,7 +1575,7 @@ class InstallerWindow:
         self.critical_error_message += message + "\n"
 
     @idle
-    def update_progress(self, current, total, pulse, done, message, nolog):
+    def update_progress(self, current=0, total=0, pulse=True, done=False, message="", nolog=""):
         if not nolog:
             log(message)
         if not current:
@@ -1581,7 +1584,7 @@ class InstallerWindow:
             total = 1
         if(pulse):
             self.builder.get_object(
-                "label_install_progress").set_label(self.maxlen(message))
+                "label_install_progress").set_label(message)
             self.do_progress_pulse(message)
             self.builder.get_object("label_install_percent").set_label("")
             return
@@ -1590,7 +1593,7 @@ class InstallerWindow:
             self.done = done
             self.builder.get_object("progressbar").set_fraction(1)
             self.builder.get_object(
-                "label_install_progress").set_label(self.maxlen(message))
+                "label_install_progress").set_label(message)
             self.builder.get_object(
                 "label_install_percent").set_label("100.0%")
             return
@@ -1599,15 +1602,9 @@ class InstallerWindow:
         _current = float(current)
         pct = float(_current / _total)
         self.builder.get_object("progressbar").set_fraction(pct)
-        self.builder.get_object("label_install_progress").set_label(self.maxlen(message))
+        self.builder.get_object("label_install_progress").set_label(message)
         self.builder.get_object("label_install_percent").set_label(
             str(int(pct * 1000) / 10) + "%")
-
-    def maxlen(self,string):
-        string = str(string)
-        if len(string) > 75:
-            return string[0:72]+"..."
-        return string
 
     @idle
     def do_progress_pulse(self, message):
