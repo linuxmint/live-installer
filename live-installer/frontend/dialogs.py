@@ -10,10 +10,10 @@ class Dialog(Gtk.MessageDialog):
         self.set_icon_from_file("./branding/icon.svg")
         self.set_title(title)
         if text:
-            self.set_markup(text)
+            self.set_property("text",text)
             self.desc = text[:30] + ' ...' if len(text) > 30 else text
         if text2:
-            self.format_secondary_markup(text2)
+            self.set_property("secondary_text",text2)
         if parent:
             self.set_transient_for(parent)
             self.set_modal(True)
