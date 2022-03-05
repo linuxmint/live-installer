@@ -83,8 +83,8 @@ class button(Gtk.Box):
 
         self.set_margin_top(3)
         self.set_margin_bottom(3)
-        self.set_margin_start(10)
-        self.set_margin_end(10)
+        self.set_margin_start(8)
+        self.set_margin_end(8)
 
         self.add(self.but)
         self.add(self.but2)
