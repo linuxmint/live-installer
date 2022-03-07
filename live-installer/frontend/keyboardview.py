@@ -1,6 +1,6 @@
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk
+from gi.repository import Gtk, Gdk
 
 import subprocess
 
@@ -42,32 +42,45 @@ class kbdpreview(Gtk.Box):
         self.set_halign(Gtk.Align.CENTER)
         self.set_valign(Gtk.Align.CENTER)
 
+        cssProvider = Gtk.CssProvider()
+        cssProvider.load_from_path('./branding/style.css')
+        screen = Gdk.Screen.get_default()
+        styleContext = Gtk.StyleContext()
+        styleContext.add_provider_for_screen(
+        screen, cssProvider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
+
         self.add(rowA)
+        rowA.set_name("key_row_A")
         rowA.add(self.getButton(41))
         for i in range(2,14):
             rowA.add(self.getButton(i))
 
         self.add(rowB)
+        rowB.set_name("key_row_A")
         for i in range(16,28):
             rowB.add(self.getButton(i))
 
 
         self.add(rowC)
+        rowC.set_name("key_row_A")
         for i in range(30,41):
             rowC.add(self.getButton(i))
         rowC.add(self.getButton(43))
 
 
         self.add(rowD)
+        rowD.set_name("key_row_A")
         for i in range(44,54):
             rowD.add(self.getButton(i))
 
         self.update(keyboard,variant)
+        self.set_name("key_layout")
 
     def getRow(self):
         box = Gtk.Box()
         box.set_halign(Gtk.Align.CENTER)
         box.set_valign(Gtk.Align.CENTER)
+        box.set_spacing(3)
         return box
 
     def getButton(self,num):
@@ -81,10 +94,13 @@ class button(Gtk.Box):
         self.but = Gtk.Label()
         self.but2 = Gtk.Label()
 
+        self.but.set_name("key_label_primary")
+        self.but2.set_name("key_label_secondary")
+        self.set_name("key_box")
+
         self.set_margin_top(3)
         self.set_margin_bottom(3)
-        self.set_margin_start(10)
-        self.set_margin_end(10)
+        self.set_size_request(30,30)
 
         self.add(self.but)
         self.add(self.but2)
@@ -104,8 +120,8 @@ class button(Gtk.Box):
             label = ""
             label2 = ""
 
-        self.but.set_markup("<span font_desc='Monospace 15'>{}</span>".format(self.encode(label)))
-        self.but2.set_markup("<span font_desc='Monospace 7'>{}</span>".format(self.encode(label2)))
+        self.but.set_text(label)
+        self.but2.set_text(label2)
 
 # Test & debug
 if __name__ == "__main__":
