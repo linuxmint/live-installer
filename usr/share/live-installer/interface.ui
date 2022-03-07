@@ -9,7 +9,7 @@
     </columns>
     <data>
       <row>
-        <col id="0" translatable="yes">ext4 filesystem</col>
+        <col id="0" translatable="yes"> </col>
       </row>
     </data>
   </object>
@@ -20,7 +20,7 @@
     </columns>
     <data>
       <row>
-        <col id="0" translatable="yes">/dev/sda</col>
+        <col id="0" translatable="yes"> </col>
       </row>
     </data>
   </object>
@@ -74,7 +74,7 @@
                   <object class="GtkLabel" id="label_welcome1">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Welcome to LMDE 5!</property>
+                    <property name="label" translatable="yes">Welcome to %s!</property>
                     <property name="justify">center</property>
                     <attributes>
                       <attribute name="weight" value="bold"/>
@@ -416,7 +416,6 @@
                                                   <object class="GtkLabel" id="label_time">
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">False</property>
-                                                    <property name="label" translatable="yes">label</property>
                                                     <property name="use_markup">True</property>
                                                   </object>
                                                   <packing>
@@ -454,7 +453,6 @@
                             <property name="layout_style">expand</property>
                             <child>
                               <object class="GtkButton" id="cont_button">
-                                <property name="label" translatable="yes">button</property>
                                 <property name="width_request">200</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
@@ -468,7 +466,6 @@
                             </child>
                             <child>
                               <object class="GtkButton" id="tz_button">
-                                <property name="label" translatable="yes">button</property>
                                 <property name="width_request">200</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
@@ -660,7 +657,7 @@
                             <property name="can_focus">True</property>
                             <property name="invisible_char">●</property>
                             <property name="secondary_icon_activatable">False</property>
-                            <property name="placeholder_text" translatable="yes">Type here to test your keyboard</property>
+                            <property name="placeholder_text" translatable="yes">Type here to test your keyboard layout</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -1550,7 +1547,7 @@
                               <object class="GtkLabel" id="label_custom_install_directions_2">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="label" translatable="yes">Before continuing, mount your target filesystem(s) at /target.</property>
+                                <property name="label" translatable="yes">Before continuing, mount your target filesystem(s) on /target.</property>
                                 <property name="wrap">True</property>
                                 <property name="xalign">0</property>
                               </object>
@@ -1697,7 +1694,7 @@
                           <object class="GtkLabel" id="label_custom_install_paused_1">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">Do the following and then click Next to finish Installation:</property>
+                            <property name="label" translatable="yes">Do the following and then click Next to finish installation:</property>
                             <property name="wrap">True</property>
                             <property name="xalign">0</property>
                           </object>
@@ -1885,7 +1882,6 @@
                                   <object class="GtkLabel" id="label_install_progress">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">label</property>
                                     <property name="ellipsize">middle</property>
                                     <property name="xalign">0</property>
                                   </object>
@@ -2122,7 +2118,6 @@
               <object class="GtkLabel" id="label_partition">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">label</property>
                 <property name="xalign">0</property>
               </object>
               <packing>
@@ -2134,7 +2129,6 @@
               <object class="GtkLabel" id="label_mount_point">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">label</property>
                 <property name="xalign">0</property>
               </object>
               <packing>
@@ -2146,7 +2140,6 @@
               <object class="GtkLabel" id="label_use_as">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">label</property>
                 <property name="xalign">0.15000000596046448</property>
               </object>
               <packing>
@@ -2158,7 +2151,6 @@
               <object class="GtkLabel" id="label_partition_value">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">/dev/sda6</property>
                 <property name="use_markup">True</property>
                 <property name="xalign">0</property>
               </object>
