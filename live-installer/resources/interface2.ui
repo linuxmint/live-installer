@@ -5,6 +5,18 @@
   <object class="GtkSizeGroup">
     <property name="mode">vertical</property>
   </object>
+  <object class="GtkListStore" id="model2">
+    <columns>
+      <!-- column-name gchararray -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
+  <object class="GtkListStore" id="model3">
+    <columns>
+      <!-- column-name gchararray -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
   <object class="GtkWindow" id="main_window">
     <property name="width-request">0</property>
     <property name="height-request">0</property>
@@ -87,12 +99,6 @@
               <object class="GtkBox" id="vbox_eula">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="margin-left">8</property>
-                <property name="margin-right">8</property>
-                <property name="margin-start">8</property>
-                <property name="margin-end">8</property>
-                <property name="margin-top">8</property>
-                <property name="margin-bottom">8</property>
                 <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkScrolledWindow">
@@ -108,6 +114,12 @@
                             <property name="visible">True</property>
                             <property name="can-focus">True</property>
                             <property name="editable">False</property>
+                            <property name="justification">fill</property>
+                            <property name="left-margin">5</property>
+                            <property name="right-margin">5</property>
+                            <property name="top-margin">5</property>
+                            <property name="bottom-margin">5</property>
+                            <property name="cursor-visible">False</property>
                             <property name="accepts-tab">False</property>
                             <property name="input-purpose">terminal</property>
                           </object>
@@ -147,7 +159,6 @@
               <object class="GtkBox" id="vbox_language">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="border-width">5</property>
                 <child>
                   <object class="GtkScrolledWindow">
                     <property name="visible">True</property>
@@ -180,7 +191,6 @@
               <object class="GtkBox" id="vbox_keyboard">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="border-width">5</property>
                 <property name="orientation">vertical</property>
                 <property name="spacing">6</property>
                 <child>
@@ -226,11 +236,6 @@
                   <object class="GtkBox" id="hbox7">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="margin-left">5</property>
-                    <property name="margin-right">5</property>
-                    <property name="margin-start">5</property>
-                    <property name="margin-end">5</property>
-                    <property name="spacing">3</property>
                     <property name="homogeneous">True</property>
                     <child>
                       <object class="GtkScrolledWindow" id="scrolledwindow5">
@@ -1790,12 +1795,6 @@
               <object class="GtkBox" id="vbox_overview">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="margin-left">5</property>
-                <property name="margin-right">5</property>
-                <property name="margin-start">5</property>
-                <property name="margin-end">5</property>
-                <property name="margin-top">5</property>
-                <property name="margin-bottom">5</property>
                 <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkScrolledWindow" id="scrolledwindow3">
@@ -2247,12 +2246,6 @@
       </object>
     </child>
   </object>
-  <object class="GtkListStore" id="model2">
-    <columns>
-      <!-- column-name gchararray -->
-      <column type="gchararray"/>
-    </columns>
-  </object>
   <object class="GtkDialog" id="dialog">
     <property name="can-focus">False</property>
     <property name="border-width">5</property>
@@ -2442,11 +2435,5 @@
       <action-widget response="-6">button_cancel</action-widget>
       <action-widget response="-5">button_ok</action-widget>
     </action-widgets>
-  </object>
-  <object class="GtkListStore" id="model3">
-    <columns>
-      <!-- column-name gchararray -->
-      <column type="gchararray"/>
-    </columns>
   </object>
 </interface>

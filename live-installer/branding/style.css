@@ -22,14 +22,7 @@
 
 #key_label_primary {
   font-size: 16px;
-  color: #98d354;
 }
 #key_label_secondary {
   font-size: 8px;
-  color: #cccccc;
-}
-
-#key_box {
-  background: #585858;
-  border-radius: 3px;
 }

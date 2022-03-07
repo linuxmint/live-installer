@@ -100,7 +100,7 @@ class button(Gtk.Box):
 
         self.set_margin_top(3)
         self.set_margin_bottom(3)
-        self.set_size_request(30,30)
+        self.set_size_request(25,25)
 
         self.add(self.but)
         self.add(self.but2)
