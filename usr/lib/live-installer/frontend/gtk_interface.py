@@ -246,6 +246,7 @@ class InstallerWindow:
         self.partitions_browser = WebKit2.WebView()
         s = self.partitions_browser.get_settings()
         s.set_allow_file_access_from_file_urls(True)
+        self.partitions_browser.connect('context-menu', self.on_context_menu)
         self.partitions_browser.show()
         self.partitions_browser.set_size_request(-1, 80)
         self.builder.get_object("scrolled_partitions").add(self.partitions_browser)
