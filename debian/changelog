@@ -1,3 +1,19 @@
+live-installer (2022.03.11) elsie; urgency=medium
+
+  [ Michael Webster ]
+  * Disable context menu in the partition webview.
+
+  [ Butterfly ]
+  * Fix missing translation (Copying) (#129)
+  * Update makepot for interface.ui (#130)
+
+  [ Clement Lefebvre ]
+  * Disable context menu in the partition webview (via webkit)
+  * l10n: Update POT + fixes
+  * l10n: Update translations
+
+ -- Clement Lefebvre <root@linuxmint.com>  Fri, 11 Mar 2022 13:58:39 +0000
+
 live-installer (2022.02.16.1) elsie; urgency=medium
 
   * Grub: Purge grub-pc before installing grub-efi-amd64
