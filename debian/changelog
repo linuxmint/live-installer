@@ -1,3 +1,10 @@
+live-installer (2022.03.11.1) elsie; urgency=medium
+
+  [ Michael Webster ]
+  * Install: Sort the partition list from toplevel down, so descendants are mounted properly.
+
+ -- Clement Lefebvre <root@linuxmint.com>  Fri, 11 Mar 2022 19:59:10 +0000
+
 live-installer (2022.03.11) elsie; urgency=medium
 
   [ Michael Webster ]
