@@ -2,12 +2,21 @@ import os
 import sys
 
 logfile = None
-file = "/var/log/17g-installer"
+_file = "/var/log/17g-installer"
+
+def set_logfile(path):
+    global logfile
+    if logfile:
+        logfile.flush()
+        logfile.close()
+    if os.path.isfile(path):
+        os.unlink(path)
+    logfile = open(path,"a")
+
 if os.getuid() != 0:
-    file = "/tmp/17g-installer.log"
-if os.path.isfile(file):
-    os.unlink(file)
-logfile = open(file, "a")
+    _file = "/tmp/17g-installer.log"
+
+set_logfile(_file)
 
 
 def log(output, err=False):

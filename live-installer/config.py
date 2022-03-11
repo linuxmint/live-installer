@@ -3,7 +3,7 @@ import sys
 import subprocess
 import yaml
 from glob import glob
-from logger import log, err, inf
+from logger import log, err, inf, set_logfile
 
 sys.path.insert(1, '/lib/live-installer')
 if (os.path.isdir("/lib/live-installer")):
@@ -54,6 +54,7 @@ def get(key, default=""):
         return default
     return default
 
+set_logfile(get("log_file","/var/log/17g-installer.log"))
 
 # Distribution
 if(get("distribution", "auto") == "auto"):
