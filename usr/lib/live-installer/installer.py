@@ -8,6 +8,7 @@ import sys
 import parted
 import partitioning
 import shlex
+from functools import cmp_to_key
 
 gettext.install("live-installer", "/usr/share/locale")
 
@@ -56,6 +57,25 @@ class InstallerEngine:
         os.system("umount --force /target/run/")
 
         self.mount_source()
+
+        def rootiest_first(parta, partb):
+            if parta.mount_as == None or parta.mount_as == "" or \
+               partb.mount_as == None or partb.mount_as == "":
+                return 0
+
+            if len(parta.mount_as) > len(partb.mount_as):
+                return 1
+            elif len(partb.mount_as) > len(parta.mount_as):
+                return -1
+            else:
+                return 0
+
+        self.setup.partitions.sort(key=cmp_to_key(rootiest_first))
+
+        print("********** Partition mount order ***")
+        for part in self.setup.partitions:
+            print(part.mount_as)
+        print("************************************")
 
         if (not self.setup.skip_mount):
             if self.setup.automated:
