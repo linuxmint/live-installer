@@ -746,7 +746,7 @@ msgstr "መመደቢያ ወደ /"
 
 #: usr/lib/live-installer/partitioning.py:184
 msgid "Assign to /home"
-msgstr "መመደቢያ ወደ /ቤት"
+msgstr "መመደቢያ ወደ /home"
 
 #: usr/lib/live-installer/partitioning.py:190
 msgid "Assign to /boot/efi"

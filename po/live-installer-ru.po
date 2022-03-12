@@ -792,7 +792,7 @@ msgstr "Назначить /"
 
 #: usr/lib/live-installer/partitioning.py:184
 msgid "Assign to /home"
-msgstr "Назначить /Домашним разделом"
+msgstr "Назначить /home разделом"
 
 #: usr/lib/live-installer/partitioning.py:190
 msgid "Assign to /boot/efi"

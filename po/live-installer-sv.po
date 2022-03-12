@@ -783,7 +783,7 @@ msgstr "Tilldela till /"
 
 #: usr/lib/live-installer/partitioning.py:184
 msgid "Assign to /home"
-msgstr "Tilldela till /hem"
+msgstr "Tilldela till /home"
 
 #: usr/lib/live-installer/partitioning.py:190
 msgid "Assign to /boot/efi"
