@@ -1,3 +1,9 @@
+live-installer (2022.03.12) elsie; urgency=medium
+
+  * l10n: Fix a few errors
+
+ -- Clement Lefebvre <root@linuxmint.com>  Sat, 12 Mar 2022 11:06:02 +0000
+
 live-installer (2022.03.11.1) elsie; urgency=medium
 
   [ Michael Webster ]
