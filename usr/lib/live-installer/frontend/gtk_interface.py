@@ -89,6 +89,7 @@ class InstallerWindow:
         # load the window object
         self.window = self.builder.get_object("main_window")
         self.window.connect("delete-event", self.quit_cb)
+        self.scale = self.window.get_scale_factor()
 
         # wizard pages
         (self.PAGE_LANGUAGE,
@@ -108,7 +109,10 @@ class InstallerWindow:
         self.builder.get_object("button_back").connect("clicked", self.wizard_cb, True)
         self.builder.get_object("button_quit").connect("clicked", self.quit_cb)
 
-        col = Gtk.TreeViewColumn("", Gtk.CellRendererPixbuf(), pixbuf=2)
+        ren = Gtk.CellRendererPixbuf()
+        col = Gtk.TreeViewColumn("Flags", ren)
+        col.add_attribute(ren, "pixbuf", 2)
+        col.set_cell_data_func(ren, self.data_func_surface)
         self.builder.get_object("treeview_language_list").append_column(col)
         ren = Gtk.CellRendererText()
         self.language_column = Gtk.TreeViewColumn(_("Language"), ren, text=0)
@@ -574,13 +578,18 @@ class InstallerWindow:
     def show_customwarning(self, widget):
         self.activate_page(self.PAGE_CUSTOMWARNING)
 
+    def data_func_surface(self, column, cell, model, iter_, *args):
+        pixbuf = model.get_value(iter_, 2)
+        surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, self.scale)
+        cell.set_property("surface", surface)
+
     def flag(self, lang, language, ccode):
         print (language.lower())
         for filename in [language.lower(), ccode.lower(), "united_nations"]:
             path = f"/usr/share/circle-flags-svg/{filename}.svg"
             if os.path.exists(path):
                 break
-        pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(path, 18, 18)
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(path, -1, 18 * self.scale)
         return pixbuf
 
     def build_lang_list(self):
