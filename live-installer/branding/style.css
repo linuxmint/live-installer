@@ -22,7 +22,9 @@
 
 #key_label_primary {
   font-size: 16px;
+  font-family: monospace;
 }
 #key_label_secondary {
   font-size: 8px;
+  font-family: monospace;
 }

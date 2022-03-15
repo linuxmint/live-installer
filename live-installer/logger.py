@@ -5,6 +5,8 @@ logfile = None
 _file = "/var/log/17g-installer"
 
 def set_logfile(path):
+    if os.getuid() != 0:
+        return
     global logfile
     if logfile:
         logfile.flush()
@@ -15,6 +17,7 @@ def set_logfile(path):
 
 if os.getuid() != 0:
     _file = "/tmp/17g-installer.log"
+    logfile = open(_file,"a")
 
 set_logfile(_file)
 

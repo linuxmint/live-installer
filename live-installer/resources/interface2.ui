@@ -241,6 +241,7 @@
                       <object class="GtkScrolledWindow" id="scrolledwindow5">
                         <property name="visible">True</property>
                         <property name="can-focus">True</property>
+                        <property name="hscrollbar-policy">never</property>
                         <property name="min-content-height">200</property>
                         <child>
                           <object class="GtkTreeView" id="treeview_layouts">
@@ -268,6 +269,7 @@
                           <object class="GtkScrolledWindow" id="scrolledwindow7">
                             <property name="visible">True</property>
                             <property name="can-focus">True</property>
+                            <property name="hscrollbar-policy">never</property>
                             <property name="min-content-height">200</property>
                             <property name="overlay-scrolling">False</property>
                             <child>
