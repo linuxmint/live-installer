@@ -1089,7 +1089,6 @@ class InstallerWindow:
         if self.testmode:
             self.builder.get_object("notebook1").set_visible_child_name(str(nex))
             return
-        self.show_overview()
         
         if index == self.PAGE_LANGUAGE:
             if goback:
@@ -1227,6 +1226,7 @@ class InstallerWindow:
                 if focus_widget is not None:
                     focus_widget.grab_focus()
             if not errorFound and not goback:
+                self.show_overview()
                 self.builder.get_object("button_next").set_label(_("Install"))
                 self.builder.get_object("button_next").get_style_context().add_class("suggested-action")
 
@@ -1324,7 +1324,6 @@ class InstallerWindow:
         if self.testmode or self.setup.expert_mode:
             self.activate_page(self.PAGE_USER)
             return
-        self.show_overview()
         if self.setup.automated:
             errorFound = False
             errorMessage = ""
