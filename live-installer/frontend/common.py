@@ -6,7 +6,7 @@ except ImportError:
     import xml.etree.ElementTree as ET
 kbdxml = ET.parse('/usr/share/X11/xkb/rules/base.xml')
 kbdxml_extra = ET.parse('/usr/share/X11/xkb/rules/base.extras.xml')
-
+ignored_language = ["ku_TR", "el_CY","C"]
 
 def get_country_list():
     countries = {}
@@ -44,7 +44,8 @@ def get_country_list():
             if "." in l:
                 l = l.split(".")[0]
             if l not in langlist and "@" not in l:
-                langlist += l + "\n"
+                if l not in ignored_language:
+                    langlist += l + "\n"
     else:
         langlist = open("./resources/locales", "r").read()
 

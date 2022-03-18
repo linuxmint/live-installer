@@ -791,7 +791,7 @@ class InstallerWindow:
 
     def build_lang_list(self):
 
-        self.cur_timezone = config.get('default_timezone', "America/New_York")
+        self.cur_timezone = config.get('default_timezone', "Europe/London")
 
         self.cur_country_code = config.get('default_locale', "auto")
         if self.cur_country_code == "auto":
