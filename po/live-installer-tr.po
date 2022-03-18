@@ -797,7 +797,7 @@ msgstr "Boyut"
 
 #: live-installer/frontend/gtk_interface.py:640
 msgid "Your password is numeric"
-msgstr "Parolanız zayıf."
+msgstr "Parolanız sadece sayıdan oluşuyor"
 
 #: live-installer/frontend/gtk_interface.py:644
 msgid "Your password must have big letters"
