@@ -1595,7 +1595,7 @@
                 <property name="orientation">vertical</property>
                 <property name="spacing">6</property>
                 <child>
-                  <!-- n-columns=2 n-rows=8 -->
+                  <!-- n-columns=2 n-rows=9 -->
                   <object class="GtkGrid">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
@@ -1739,6 +1739,16 @@
                       </packing>
                     </child>
                     <child>
+                      <object class="GtkProgressBar" id="password_strong_level">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                      </object>
+                      <packing>
+                        <property name="left-attach">1</property>
+                        <property name="top-attach">5</property>
+                      </packing>
+                    </child>
+                    <child>
                       <object class="GtkBox" id="autologin_box">
                         <property name="name">autologin_box</property>
                         <property name="visible">True</property>
@@ -1792,6 +1802,21 @@
                       </object>
                       <packing>
                         <property name="left-attach">1</property>
+                        <property name="top-attach">8</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="label_confirm">
+                        <property name="name">label_confirm</property>
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="halign">end</property>
+                        <property name="label" translatable="yes">Confirm your password:</property>
+                        <property name="use-markup">True</property>
+                        <property name="justify">right</property>
+                      </object>
+                      <packing>
+                        <property name="left-attach">0</property>
                         <property name="top-attach">7</property>
                       </packing>
                     </child>
@@ -1808,33 +1833,28 @@
                       </object>
                       <packing>
                         <property name="left-attach">1</property>
-                        <property name="top-attach">6</property>
+                        <property name="top-attach">7</property>
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkLabel" id="label_confirm">
-                        <property name="name">label_confirm</property>
+                      <object class="GtkLabel" id="label_password_warning">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
-                        <property name="halign">end</property>
-                        <property name="label" translatable="yes">Confirm your password:</property>
-                        <property name="use-markup">True</property>
-                        <property name="justify">right</property>
-                      </object>
-                      <packing>
-                        <property name="left-attach">0</property>
-                        <property name="top-attach">6</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkProgressBar" id="password_strong_level">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
+                        <property name="label" translatable="yes">Length must be minimum 8 characters</property>
+                        <property name="wrap">True</property>
+                        <property name="xalign">0</property>
+                        <attributes>
+                          <attribute name="font-desc" value="Sans 8"/>
+                          <attribute name="style" value="normal"/>
+                        </attributes>
                       </object>
                       <packing>
                         <property name="left-attach">1</property>
-                        <property name="top-attach">5</property>
+                        <property name="top-attach">6</property>
                       </packing>
+                    </child>
+                    <child>
+                      <placeholder/>
                     </child>
                     <child>
                       <placeholder/>
