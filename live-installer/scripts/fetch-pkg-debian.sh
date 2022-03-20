@@ -1,3 +1,5 @@
+#!/bin/bash
+# install grub packages for debian
 fetch_deb(){
     mkdir -p /target/debs/ || true
     for pkg in $@ ; do
