@@ -8,6 +8,17 @@ kbdxml = ET.parse('/usr/share/X11/xkb/rules/base.xml')
 kbdxml_extra = ET.parse('/usr/share/X11/xkb/rules/base.extras.xml')
 ignored_language = ["ku_TR", "el_CY","C"]
 
+def get_user_list():
+    passwd = open("/etc/passwd","r").read().strip().split("\n")
+    users = []
+    for line in passwd:
+        user = line.split(":")[0]
+        uid = line.split(":")[2]
+        if uid != "1000":
+            users.append(user)
+    return users
+    
+
 def get_country_list():
     countries = {}
     iso_standard = "3166"

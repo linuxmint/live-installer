@@ -71,6 +71,9 @@ class InstallerWindow:
         # slide gtk images
         self.gtkimages = []
         self.gtkpixbufs = []
+        
+        # user list
+        self.userlist = common.get_user_list()
 
         # load the window object
         self.window = self.builder.get_object("main_window")
@@ -593,7 +596,9 @@ class InstallerWindow:
         if self.setup.username == "":
             errorFound = True
         if len(self.setup.username) > 32:
-            erroFound = True
+            errorFound = True
+        if self.setup.username in self.userlist:
+            errorFound = True
         self.assign_entry("entry_username", errorFound)
 
     def assign_hostname(self, entry):
