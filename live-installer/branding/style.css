@@ -20,11 +20,27 @@
   border-width: 2px;
 }
 
-#key_label_primary {
-  font-size: 16px;
+#key_button {
+  border-radius: 3px;
+}
+
+#key_label
+#key_label_shift
+#key_label_altgr {
   font-family: monospace;
 }
-#key_label_secondary {
+
+#key_label_shift {
+  font-size: 16px;
+}
+
+#key_label {
+  font-size: 12px;
+
+}
+
+#key_label_altgr,
+#key_label_altsft
+{
   font-size: 8px;
-  font-family: monospace;
 }

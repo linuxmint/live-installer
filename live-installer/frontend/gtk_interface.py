@@ -6,6 +6,7 @@ import frontend.common
 import threading
 import time
 import parted
+import validate
 from utils import *
 from frontend import *
 from frontend.dialogs import QuestionDialog, ErrorDialog, WarningDialog
@@ -73,7 +74,7 @@ class InstallerWindow:
         self.gtkpixbufs = []
         
         # user list
-        self.userlist = common.get_user_list()
+        validate.userlist = common.get_user_list()
 
         # load the window object
         self.window = self.builder.get_object("main_window")
@@ -128,17 +129,17 @@ class InstallerWindow:
         self.builder.get_object("treeview_language_list").connect(
             "cursor-changed", self.assign_language)
 
+        # build keyboard preview
+        self.keyboardview = kbdpreview()
+        if os.system("which ckbcomp") == 0:
+            if config.get("keyboard_preview", True):
+                self.builder.get_object("vbox_keyboard_variant").add(self.keyboardview)
+
         # build the language list
         self.build_lang_list()
 
         # build timezones
         timezones.build_timezones(self)
-
-        # build keyboard preview
-        self.keyboardview = kbdpreview("us")
-        if os.system("which ckbcomp") == 0:
-            if config.get("keyboard_preview", True):
-                self.builder.get_object("vbox_keyboard_variant").add(self.keyboardview)
 
         # type page
         model = Gtk.ListStore(str, str)
@@ -589,115 +590,38 @@ class InstallerWindow:
     def assign_username(self, entry):
         self.setup.username = entry.props.text
         errorFound = False
-        u = self.setup.username.replace("-", "")
-        if len(self.setup.username) <= 0 or self.setup.username[0] in "-0123456789" \
-           or not (u.isascii() and u.isalnum() and u.islower()):
-            errorFound = True
-        if self.setup.username == "":
-            errorFound = True
-        if len(self.setup.username) > 32:
-            errorFound = True
-        if self.setup.username in self.userlist:
+        if validate.username(self.setup.username):
             errorFound = True
         self.assign_entry("entry_username", errorFound)
 
     def assign_hostname(self, entry):
         self.setup.hostname = entry.props.text
         errorFound = False
-        for char in self.setup.hostname:
-            if(char.isupper()):
-                errorFound = True
-                break
-            elif(char.isspace()):
-                errorFound = True
-                break
-        if self.setup.hostname == "":
+        if validate.hostname(self.setup.hostname):
             errorFound = True
         self.assign_entry("entry_hostname", errorFound)
 
     def assign_password(self, widget):
-    
-        errorFound = False
-        isWeek = False
-        stronglevel = 0
-        weeklevel = 0
         wlabel = self.builder.get_object("label_password_warning")
-        self.week_warning = None
-        def set_warning(message):
-            if self.week_warning:
-                return
-            wlabel.set_text(message)
-            self.week_warning = message
-        self.setup.password1 = self.builder.get_object(
-            "entry_password").get_text()
-        self.setup.password2 = self.builder.get_object(
-            "entry_confirm").get_text()
+        self.setup.password1 = self.builder.get_object("entry_password").get_text()
+        self.setup.password2 = self.builder.get_object("entry_confirm").get_text()
 
-        # Strong password
-        if self.setup.password1 == "":
-            errorFound = True
-        if len(self.setup.password1) < config.get("min_password_length", 1):
-            errorFound = True
-            wlabel.set_text("")
-        if self.setup.password1.isnumeric():
-            isWeek = True
-            weeklevel += 20
-            set_warning(_("Your password is numeric"))
-        if self.setup.password1.lower() == self.setup.password1:
-            isWeek = True
-            weeklevel += 10
-            set_warning(_("Your password must have big letters"))
-        if self.setup.password1.upper() == self.setup.password1:
-            isWeek = True
-            weeklevel += 10
-            set_warning(_("Your password must have small letters"))
-        if self.setup.password1 == self.setup.username:
-            isWeek = True
-            stronglevel = 20
-            set_warning(_("Your password must not be the same as the user name"))
-        if len(self.setup.password1) < 8:
-            isWeek = True
-            stronglevel = 20
-            set_warning(_("Your password length must be minimum 8 characters"))
-        if len(self.setup.password1) == 0:
-            isWeek = False
-            stronglevel = 1
-            wlabel.set_text("")
-
-        has_char = False
-        has_num = False
-        characters = "\"!'^+%&/()=?_<>#${[]}\\|-*"
-        numbers = "0123456789"
-        for c in numbers:
-            if c in self.setup.password1:
-                has_num = True
-                break
-        for c in characters:
-            if c in self.setup.password1:
-                has_char = True
-                break
-        if not has_char:
-            isWeek = True
-            weeklevel += 10
-            set_warning(_("Your password must have exclusive characters"))        
-        if not has_num:
-            isWeek = True
-            weeklevel += 10
-            set_warning(_("Your password must have numbers"))
-
-        if stronglevel != 0:
-            weeklevel = 100-stronglevel
-        if not isWeek:
-            wlabel.set_text("")
-
-        self.assign_entry("entry_password", errorFound ,isWeek)
-        self.week_password = isWeek
-
-        # Check the password confirmation
-        if(self.setup.password1 == "" or self.setup.password2 == "" or self.setup.password1 != self.setup.password2):
-            errorFound = True
+        password_error, weekMessage, weeklevel = validate.password(self.setup.password1,self.setup.username)
+        wlabel.set_text(weekMessage.split("\n")[0])
         self.builder.get_object("password_strong_level").set_fraction((100-weeklevel)/100)
-        self.assign_entry("entry_confirm", errorFound,isWeek)
+
+        self.week_password = (weekMessage != "")
+        errorFound = (password_error != None)
+        
+        if errorFound:
+            wlabel.set_text("")
+            self.week_password = False
+        
+        self.week_warning = weekMessage
+        self.assign_entry("entry_password", errorFound ,self.week_password)
+
+        errorFound = (self.setup.password1 != self.setup.password2 or self.setup.password2 == "")
+        self.assign_entry("entry_confirm", errorFound,self.week_password)
 
     def assign_options(self, widget, data=None):
         self.setup.install_updates = self.builder.get_object(
@@ -862,6 +786,7 @@ class InstallerWindow:
         keyboard_geom = subprocess.getoutput("setxkbmap -query | awk '/^(model)/{print $2}'")
         self.setup.keyboard_layout = subprocess.getoutput("setxkbmap -query | awk '/^(layout)/{print $2}'")
         self.setup.keyboard_variant = subprocess.getoutput("setxkbmap -query | awk '/^(variant)/{print $2}'")
+        self.keyboardview.update(self.setup.keyboard_layout, self.setup.keyboard_variant)
         if "," in self.setup.keyboard_layout:
             self.setup.keyboard_layout = self.setup.keyboard_layout.split(",")[
                 0]
@@ -1140,97 +1065,26 @@ class InstallerWindow:
                 WarningDialog(_("Installer"), _(
                     "Please provide a kayboard layout for your computer."))
                 return
-        elif index == self.PAGE_USER:
+        elif index == self.PAGE_USER and not goback:
             errorMessage = ""
             focus_widget = None
-            if goback:
-                errorFound = False
-            elif(self.setup.real_name is None or self.setup.real_name == ""):
-                errorFound = True
-                errorMessage = _("Please provide your full name.")
-                focus_widget = self.builder.get_object("entry_name")
-            elif(self.setup.hostname is None or self.setup.hostname == ""):
-                errorFound = True
-                errorMessage = _(
-                    "Please provide a name for your computer.")
-                focus_widget = self.builder.get_object("entry_hostname")
-            elif(self.setup.username is None or self.setup.username == ""):
-                errorFound = True
-                errorMessage = _("Please provide a username.")
-                focus_widget = self.builder.get_object("entry_username")
-            elif(self.setup.username[0] in "-0123456789" or not (self.setup.username.isascii() and self.setup.username.isalnum() and self.setup.username.islower())):
-                errorFound = True
-                errorMessage = _("Your username is invalid.")
-                focus_widget = self.builder.get_object("entry_username")
-            elif(self.setup.password1 is None or self.setup.password1 == ""):
-                errorFound = True
-                errorMessage = _(
-                    "Please provide a password for your user account.")
-                focus_widget = self.builder.get_object("entry_password")
-            elif len(self.setup.password1) < config.get("min_password_length", 1):
-                errorFound = True
-                errorMessage = _("Your passwords is too short.")
-                focus_widget = self.builder.get_object("entry_password")
-            elif self.week_password:
-                errorMessage = "{}\n{}".format(
-                    _("Your passwords is not strong."),
-                    _("Strong password requirements:\n")+
-                    _("- Length must be minimum 8 characters\n")+
-                    _("- Must have exclusive characters\n")+
-                    _("- Must have big and small letters\n")+
-                    _("- Must have number"))
-                focus_widget = self.builder.get_object("entry_password")
-                if config.get("allow_week_password", True):
-                    errorMessage+="\n\n"+_("Are you sure?")
-                    if not QuestionDialog(_("Warning"),errorMessage):
-                        return
-                else:
-                    errorFound = True
-            elif(self.setup.password1 != self.setup.password2):
-                errorFound = True
-                errorMessage = _("Your passwords do not match.")
-                focus_widget = self.builder.get_object("entry_confirm")
-            else:
-                if self.setup.username[0] in "0123456789":
-                    errorFound = True
-                    errorMessage = _(
-                        "Your username cannot start with numbers.")
-
-                for char in self.setup.username:
-                    if(char.isupper()):
-                        errorFound = True
-                        errorMessage = _(
-                            "Your username must be lower case.")
-                        focus_widget = self.builder.get_object(
-                            "entry_username")
-                        break
-                    elif(char.isspace()):
-                        errorFound = True
-                        errorMessage = _(
-                            "Your username may not contain whitespace characters.")
-                        focus_widget = self.builder.get_object(
-                            "entry_username")
-                        break
-                for char in self.setup.hostname:
-                    if(char.isupper()) and not config.get("allow_uppercase_hostname", True):
-                        errorFound = True
-                        errorMessage = _(
-                            "The computer's name must be lower case.")
-                        focus_widget = self.builder.get_object(
-                            "entry_hostname")
-                        break
-                    elif(char.isspace()):
-                        errorFound = True
-                        errorMessage = _(
-                            "The computer's name may not contain whitespace characters.")
-                        focus_widget = self.builder.get_object(
-                            "entry_hostname")
-                        break
-            if (errorFound):
+            password_error, weekMessage, weeklevel = validate.password(self.setup.password1,self.setup.username)
+            username_error = validate.username(self.setup.username)
+            hostname_error = validate.hostname(self.setup.hostname)
+            if self.setup.password1 != self.setup.password2:
+                password_error = _("Your passwords do not match.")
+            for error in [password_error, username_error, hostname_error]:
+                if error:
+                    errorMessage += error+"\n"
+            if self.setup.real_name == "" or self.setup.real_name == None:
+                errorMessage += _("Please provide your full name.") + "\n"
+            if errorMessage != "":
                 WarningDialog(_("Installer"), errorMessage)
-                if focus_widget is not None:
-                    focus_widget.grab_focus()
-            if not errorFound and not goback:
+                return
+            elif weekMessage != "":
+                if not QuestionDialog(_("Your passwords is not strong."), weekMessage + "\n"+_("Are you sure?")):
+                    return
+            if not goback:
                 self.show_overview()
                 self.builder.get_object("button_next").set_label(_("Install"))
                 self.builder.get_object("button_next").get_style_context().add_class("suggested-action")
