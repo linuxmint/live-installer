@@ -563,7 +563,8 @@ msgstr "Kurucu"
 msgid ""
 "Disk: {} partition table broken or not exists. Do you want to create new "
 "partition table?"
-msgstr ""
+msgstr "Disk: {} bölümlendirme tablosu bozuk veya mevcut değil. Yeni bölüm "
+"tablosu oluşturmak istiyor musunuz?"
 
 #: live-installer/frontend/partitioning.py:305
 #: live-installer/frontend/partitioning.py:499
