@@ -810,7 +810,7 @@ msgstr "Emin misiniz?"
 
 #: live-installer/frontend/gtk_interface.py:875
 msgid "New partition will created at {}"
-msgstr ""
+msgstr "{}'de yeni bölüm oluşturulacak"
 
 #: live-installer/frontend/gtk_interface.py:884
 msgid "Partition {} will removed from {}."
