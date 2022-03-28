@@ -26,11 +26,18 @@ class kbdpreview(Gtk.Box):
         for line in output.split("\n"):
             if "=" not in line or line[0] == "#":
                 continue
-            ucode = line.split("=")[1].strip().split(" ")[0]
-            shift = line.split("=")[1].strip().split(" ")[1]
-            altgr = line.split("=")[1].strip().split(" ")[2]
-            altsft = line.split("=")[1].strip().split(" ")[3]
-            num   = line.split("=")[0].strip().split(" ")[1]
+            try:
+                num    = line.split("=")[0].strip().split(" ")[1]
+                ucode  = line.split("=")[1].strip().split(" ")[0]
+                shift  = line.split("=")[1].strip().split(" ")[1]
+                altgr  = line.split("=")[1].strip().split(" ")[2]
+                altsft = line.split("=")[1].strip().split(" ")[3]
+            except:
+                num    = ""
+                ucode  = ""
+                shift  = ""
+                altgr  = ""
+                altsft = ""
             keys[num] = self.u2str(ucode)
             shifts[num] = self.u2str(shift)
             altgrs[num] = " "
