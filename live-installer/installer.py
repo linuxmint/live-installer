@@ -318,7 +318,7 @@ class InstallerEngine:
             log(" --> Encrypting root partition %s" %
                 self.auto_root_partition)
             with open("/tmp/.lukspass","w") as f:
-                f.write("YES\n{0}\n{0}\n".format(self.setup.passphrase1))
+                f.write("{0}\n{0}\n".format(self.setup.passphrase1))
                 f.flush()
             self.run("cat /tmp/.lukspass | cryptsetup --force-password luksFormat {}".format(self.auto_root_partition))
             log(" --> Opening root partition %s" % self.auto_root_partition)
