@@ -317,11 +317,12 @@ class InstallerEngine:
         if self.setup.luks:
             log(" --> Encrypting root partition %s" %
                 self.auto_root_partition)
-            self.run("echo -e \"YES\n{0}\n{0}\" | cryptsetup --verbose --cipher 'aes-cbc-essiv:sha256' --key-size 256 \
-                         --verify-passphrase luksFormat {1}".format(self.setup.passphrase1, self.auto_root_partition))
+            with open("/tmp/.lukspass","w") as f:
+                f.write("YES\n{0}\n{0}\n".format(self.setup.passphrase1)
+                f.flush()
+            self.run("cat /tmp/.lukspass | cryptsetup --force-password luksFormat {}".format(self.auto_root_partition))
             log(" --> Opening root partition %s" % self.auto_root_partition)
-            self.run("echo -e \"{0}\n{0}\n\" | cryptsetup luksOpen {1} {2}".format(
-                       self.setup.passphrase1, self.auto_root_partition,config.get("distro_codename","linux")))
+            self.run("cat /tmp/.lukspass | cryptsetup luksOpen {} {}".format(self.auto_root_partition,config.get("distro_codename","linux")))
             self.auto_root_partition = "/dev/mapper/{}".format(config.get("distro_codename","linux"))
 
         # Setup LVM
