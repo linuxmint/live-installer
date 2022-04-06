@@ -319,9 +319,9 @@ class InstallerEngine:
             self.run("echo -e \"YES\n{0}\n{0}\" | cryptsetup --verbose --cipher 'aes-cbc-essiv:sha256' --key-size 256 \
                          --verify-passphrase luksFormat {1}".format(self.setup.passphrase1, self.auto_root_partition))
             log(" --> Opening root partition %s" % self.auto_root_partition)
-            self.run("echo -e \"{0}\n{0}\n\" | cryptsetup luksOpen {1} lvm-{2}".format(
+            self.run("echo -e \"{0}\n{0}\n\" | cryptsetup luksOpen {1} {2}".format(
                        self.setup.passphrase1, self.auto_root_partition,config.get("distro_codename","linux")))
-            self.auto_root_partition = "/dev/mapper/lvm-{}".format(config.get("distro_codename","linux"))
+            self.auto_root_partition = "/dev/mapper/{}".format(config.get("distro_codename","linux"))
 
         # Setup LVM
         if self.setup.lvm:
@@ -338,16 +338,16 @@ class InstallerEngine:
                     "awk '/^MemTotal/{ print $2 }' /proc/meminfo")) / 1024, 0))
                 self.run("lvcreate -y -n swap -L {}MB {}".format(swap_size,lvm))
             log(" --> LVM: Extending LV root")
-            self.run("lvextend -l 100\\%FREE /dev/lvm-{}/root".format(lvm))
+            self.run("lvextend -l 100\\%FREE /dev/{}/root".format(lvm))
             log(" --> LVM: Formatting LV root")
-            self.run("mkfs.ext4 /dev/lvm-{}/root -FF".format(lvm))
+            self.run("mkfs.ext4 /dev/{}/root -FF".format(lvm))
             if config.get("use_swap",False) and self.setup.create_swap:
                 log(" --> LVM: Formatting LV swap")
-                self.run("mkswap -f /dev/lvm-{}/swap".format(lvm))
+                self.run("mkswap -f /dev/{}/swap".format(lvm))
                 log(" --> LVM: Enabling LV swap".format(lvm))
-                self.run("swapon /dev/lvm-{}/swap".format(lvm))
-                self.auto_swap_partition = "/dev/lvm-{}/swap".format(lvm)
-            self.auto_root_partition = "/dev/lvm-{}/root".format(lvm)
+                self.run("swapon /dev/{}/swap".format(lvm))
+                self.auto_swap_partition = "/dev/{}/swap".format(lvm)
+            self.auto_root_partition = "/dev/{}/root".format(lvm)
             
 
         self.do_mount(self.auto_root_partition, "/target", "ext4", None)
@@ -527,7 +527,7 @@ class InstallerEngine:
                             partition_uuid, partition.mount_as, fs, fstab_mount_options, "0", fstab_fsck_option))
 
         if self.setup.luks:
-            self.run("echo 'lvm-{}   {}   none   luks,tries=3' >> /target/etc/crypttab".format(
+            self.run("echo '{}   {}   none   luks,tries=3' >> /target/etc/crypttab".format(
                 config.get("distro_codename","linux"),self.auto_root_physical_partition)
         inf(open("/target/etc/fstab", "r").read()))
         fstab.close()
