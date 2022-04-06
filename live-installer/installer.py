@@ -746,11 +746,11 @@ class InstallerEngine:
             "remove_package_with_unusing_deps", config.get("remove_packages", ["17g-installer"]))))
         self.run("chroot|| rm -rf /lib/live-installer",vital=False)
 
-        if self.setup.luks:
-            with open("/target/etc/default/grub", "a") as f:
-                f.write("\nGRUB_CMDLINE_LINUX_DEFAULT+=\" cryptdevice=%s:lvmlmde root=/dev/lvmlmde/root%s\"\n" %
-                        (self.get_blkid(self.auto_root_physical_partition), " resume=/dev/lvmlmde/swap" if self.auto_swap_partition else ""))
-                f.write("GRUB_ENABLE_CRYPTODISK=y\n")
+        #if self.setup.luks:
+        #    with open("/target/etc/default/grub", "a") as f:
+        #        f.write("\nGRUB_CMDLINE_LINUX_DEFAULT+=\" cryptdevice=%s:lvmlmde root=/dev/lvmlmde/root%s\"\n" %
+        #                (self.get_blkid(self.auto_root_physical_partition), " resume=/dev/lvmlmde/swap" if self.auto_swap_partition else ""))
+        #        f.write("GRUB_ENABLE_CRYPTODISK=y\n")
 
         # recreate initramfs (needed in case of skip_mount also, to include
         # things like mdadm/dm-crypt/etc in case its needed to boot a custom
