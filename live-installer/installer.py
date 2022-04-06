@@ -316,38 +316,38 @@ class InstallerEngine:
         if self.setup.luks:
             log(" --> Encrypting root partition %s" %
                 self.auto_root_partition)
-            self.run("printf \"%s\" | cryptsetup luksFormat -c aes-xts-plain64 -h sha256 -s 512 %s" %
-                (self.setup.passphrase1, self.auto_root_partition))
+            self.run("echo -e \"YES\n{0}\n{0}\" | cryptsetup --verbose --cipher 'aes-cbc-essiv:sha256' --key-size 256 \
+                         --verify-passphrase luksFormat {1}".format(self.setup.passphrase1, self.auto_root_partition))
             log(" --> Opening root partition %s" % self.auto_root_partition)
-            self.run("printf \"%s\" | cryptsetup open %s lvmlmde" %
-                (self.setup.passphrase1, self.auto_root_partition))
-            self.auto_root_partition = "/dev/mapper/lvmlmde"
-
+            self.run("echo -e \"{0}\n{0}\n\" | cryptsetup luksOpen {1} lvm-{2}".format(
+                       self.setup.passphrase1, self.auto_root_partition,config.get("distro_codename","linux")))
+            self.auto_root_partition = "/dev/mapper/lvm-{}".format(config.get("distro_codename","linux"))
 
         # Setup LVM
         if self.setup.lvm:
+            lvm = config.get("distro_codename","linux")
             log(" --> LVM: Creating PV")
-            self.run("pvcreate -y %s" % self.auto_root_partition)
+            self.run("pvcreate -y {}".format(self.auto_root_partition))
             log(" --> LVM: Creating VG")
-            self.run("vgcreate -y lvmlmde %s" % self.auto_root_partition)
+            self.run("vgcreate -y {} {}".format(lvm,self.auto_root_partition))
             log(" --> LVM: Creating LV root")
-            self.run("lvcreate -y -n root -L 1GB lvmlmde")
+            self.run("lvcreate -y -n root -L 1GB {}".format(lvm))
             if config.get("use_swap",False) and self.setup.create_swap:
                 log(" --> LVM: Creating LV swap")
                 swap_size = int(round(int(subprocess.getoutput(
                     "awk '/^MemTotal/{ print $2 }' /proc/meminfo")) / 1024, 0))
-                self.run("lvcreate -y -n swap -L %dMB lvmlmde" % swap_size)
+                self.run("lvcreate -y -n swap -L {}MB {}".format(swap_size,lvm))
             log(" --> LVM: Extending LV root")
-            self.run("lvextend -l 100\\%FREE /dev/lvmlmde/root")
+            self.run("lvextend -l 100\\%FREE /dev/lvm-{}/root".format(lvm))
             log(" --> LVM: Formatting LV root")
-            self.run("mkfs.ext4 /dev/lvmlmde/root -FF")
+            self.run("mkfs.ext4 /dev/lvm-{}/root -FF".format(lvm))
             if config.get("use_swap",False) and self.setup.create_swap:
                 log(" --> LVM: Formatting LV swap")
-                self.run("mkswap -f /dev/lvmlmde/swap")
-                log(" --> LVM: Enabling LV swap")
-                self.run("swapon /dev/lvmlmde/swap")
-                self.auto_swap_partition = "/dev/lvmlmde/swap"
-            self.auto_root_partition = "/dev/lvmlmde/root"
+                self.run("mkswap -f /dev/lvm-{}/swap".format(lvm))
+                log(" --> LVM: Enabling LV swap".format(lvm))
+                self.run("swapon /dev/lvm-{}/swap".format(lvm))
+                self.auto_swap_partition = "/dev/lvm-{}/swap".format(lvm)
+            self.auto_root_partition = "/dev/lvm-{}/root".format(lvm)
             
 
         self.do_mount(self.auto_root_partition, "/target", "ext4", None)
@@ -527,8 +527,8 @@ class InstallerEngine:
                             partition_uuid, partition.mount_as, fs, fstab_mount_options, "0", fstab_fsck_option))
 
         if self.setup.luks:
-            self.run("echo 'lvmlmde   %s   none   luks,tries=3' >> /target/etc/crypttab" %
-                self.auto_root_physical_partition)
+            self.run("echo 'lvm-{}   {}   none   luks,tries=3' >> /target/etc/crypttab".format(
+                config.get("distro_codename","linux"),self.auto_root_physical_partition)
         inf(open("/target/etc/fstab", "r").read())
         fstab.close()
 
