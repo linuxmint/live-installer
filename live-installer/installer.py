@@ -79,6 +79,7 @@ class InstallerEngine:
         self.do_unmount("/target/sys/")
         self.do_unmount("/target/proc/")
         self.do_unmount("/target/run/")
+        self.run("vgchange -an",vital=False)
 
         self.mount_source()
 
