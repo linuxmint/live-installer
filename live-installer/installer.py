@@ -529,7 +529,7 @@ class InstallerEngine:
         if self.setup.luks:
             self.run("echo 'lvm-{}   {}   none   luks,tries=3' >> /target/etc/crypttab".format(
                 config.get("distro_codename","linux"),self.auto_root_physical_partition)
-        inf(open("/target/etc/fstab", "r").read())
+        inf(open("/target/etc/fstab", "r").read()))
         fstab.close()
 
     def finish_installation(self):
