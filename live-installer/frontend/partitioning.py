@@ -432,6 +432,8 @@ def to_human_readable(size):
         size /= 1000
 
 def get_partition_label(partition_path):
+    if not os.path.exists("/dev/disk/by-label/"):
+        return None
     for dev in os.listdir("/dev/disk/by-label/"):
         link = os.readlink("/dev/disk/by-label/{}".format(dev))
         path = os.path.realpath("/dev/disk/by-label/{}".format(link))

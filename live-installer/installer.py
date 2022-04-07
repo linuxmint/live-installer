@@ -162,15 +162,6 @@ class InstallerEngine:
         # Custom commands
         self.do_hook_commands("post_rsync_hook")
         
-        # Enable LVM and LUKS for initramfs-systems
-        if self.setup.lvm and "enable_lvm" in config.initramfs:
-            for cmd in config.initramfs["enable_lvm"]:
-                self.run(cmd)
-        if self.setup.luks and "enable_luks" in config.initramfs:
-            for cmd in config.initramfs["enable_luks"]:
-                self.run(cmd)
-
-
         # Steps:
         self.our_total = 12
         self.our_current = 0
@@ -769,6 +760,14 @@ class InstallerEngine:
                 self.run(command)
         except BaseException:
             err("Grub prepare process not available for your distribution!")
+
+        # Enable LVM and LUKS for initramfs-systems
+        if self.setup.lvm and "enable_lvm" in config.initramfs:
+            for cmd in config.initramfs["enable_lvm"]:
+                self.run(cmd)
+        if self.setup.luks and "enable_luks" in config.initramfs:
+            for cmd in config.initramfs["enable_luks"]:
+                self.run(cmd)
 
         # install GRUB bootloader (EFI & Legacy)
         log(" --> Configuring Grub")
