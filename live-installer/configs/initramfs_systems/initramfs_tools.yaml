@@ -3,6 +3,6 @@ check_this_dir: /etc/initramfs-tools
 enable_lvm:
   - echo "This operations not required."
 enable_luks:
-  - echo "This operations not required."
+  - sed -i "s/^GRUB_THEME=.*/GRUB_THEME=\"\"/g"
 commands:
   - update-initramfs -c -t -k all
