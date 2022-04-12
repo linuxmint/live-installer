@@ -725,6 +725,7 @@ class InstallerWindow:
         if not isWeek and not isInvalid:
             entry.set_icon_from_icon_name(1,"password-status-ok-symbolic")
 
+    @asynchronous
     def build_lang_list(self):
 
         self.cur_timezone = config.get('default_timezone', "Europe/London")
@@ -787,6 +788,7 @@ class InstallerWindow:
         if config.get("allow_auto_novariant", True):
             self.setup.keyboard_variant = ""
 
+    @asynchronous
     def build_kb_lists(self):
         ''' Do some xml kung-fu and load the keyboard stuffs '''
         # Determine the layouts in use
@@ -1322,6 +1324,7 @@ class InstallerWindow:
                 self.builder.get_object("button_next").set_sensitive(True)
         self.activate_page(nex, sel, goback)
 
+    @asynchronous
     def show_overview(self):
         def bold(strvar):
             return '<b>' + str(strvar) + '</b>'
