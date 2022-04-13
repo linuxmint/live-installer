@@ -384,7 +384,7 @@ class InstallerWindow:
         # Refresh the current title and help question in the page header
         self.activate_page(self.PAGE_LANGUAGE)
 
-    def validate_entry(self, entry, validate_regex, len_range, check_lower=False, check_match=None, also_true=True):
+    def validate_entry(self, entry, validate_regex, len_range, check_lower=False, check_space=False, check_hyphens=False, check_match=None, also_true=True):
         error = None
         value = entry.props.text
 
@@ -395,11 +395,14 @@ class InstallerWindow:
             if len(value) == 0:
                 error = _("This field cannot be empty.")
                 break
-            if re.search(WHITESPACE_REGEX, value):
+            if check_space and re.search(WHITESPACE_REGEX, value):
                 error = _("This field may not contain space characters.")
                 break
             if check_lower and re.search(HAS_LOWER_REGEX, value):
                 error = _("This field must be lower case.")
+                break
+            if check_hyphens and value[0] in ("-", ".") or value[-1] in ("-", "."):
+                error = _("This field cannot start or end with a hyphen or period.")
                 break
             if len_range:
                 if len(value) < len_range[0]:
@@ -459,14 +462,14 @@ class InstallerWindow:
         except:
             pass
 
-        self.validate_entry(self.builder.get_object("entry_username"), USERNAME_REGEX, USERNAME_LENGTH, check_lower=True)
+        self.validate_entry(self.builder.get_object("entry_username"), USERNAME_REGEX, USERNAME_LENGTH, check_lower=True, check_space=True)
         self.validate_user_page()
         self.setup.print_setup()
 
     def assign_username(self, entry, prop):
         self.setup.username = entry.props.text
 
-        self.validate_entry(entry, USERNAME_REGEX, USERNAME_LENGTH, check_lower=True)
+        self.validate_entry(entry, USERNAME_REGEX, USERNAME_LENGTH, check_lower=True, check_space=True)
         self.validate_user_page()
         self.setup.print_setup()
 
@@ -477,9 +480,9 @@ class InstallerWindow:
         # and there are length rules for each segment and the total length. Do the check here, then pass along
         # such length requirements as to trigger too short/long warnings.
         if self.hostname_too_long(self.setup.hostname):
-            self.validate_entry(entry, HOSTNAME_REGEX, (0, 0), check_lower=True)
+            self.validate_entry(entry, HOSTNAME_REGEX, (0, 0), check_space=True, check_hyphens=True)
         else:
-            self.validate_entry(entry, HOSTNAME_REGEX, (HOSTNAME_MIN_LENGTH, 9999), check_lower=True)
+            self.validate_entry(entry, HOSTNAME_REGEX, (HOSTNAME_MIN_LENGTH, 9999), check_space=True, check_hyphens=True)
 
         self.validate_user_page()
         self.setup.print_setup()
