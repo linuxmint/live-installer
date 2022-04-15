@@ -389,6 +389,18 @@ class InstallerWindow:
         else:
             self.builder.get_object("label_bios_type").set_text("Legacy")
 
+        # remove unused page dots
+        if config.get("skip_eula",False):
+            self.builder.get_object("progress_%d" % self.PAGE_EULA).hide()
+        if config.get("skip_language",False):
+            self.builder.get_object("progress_%d" % self.PAGE_LANGUAGE).hide()
+        if config.get("skip_timezone",False):
+            self.builder.get_object("progress_%d" % self.PAGE_TIMEZONE).hide()
+        if config.get("skip_keyboard",False):
+            self.builder.get_object("progress_%d" % self.PAGE_KEYBOARD).hide()
+        if config.get("skip_user",False):
+            self.builder.get_object("progress_%d" % self.PAGE_USER).hide()        
+
         self.ui_init = True
         if self.testmode:
             self.builder.get_object("label_install_progress").set_text("text "*100)
