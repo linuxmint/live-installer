@@ -213,9 +213,9 @@ class InstallerEngine:
                 fp = open("/target/tmp/.passwd", "w")
                 fp.write(self.setup.password1+"\n")
                 fp.close()
-                self.run("chroot||usermod -p $(openssl passwd -in /target/tmp/.passwd) {0}".format(self.setup.username))
+                self.run("chroot||usermod -p $(openssl passwd -6 -in /target/tmp/.passwd) {0}".format(self.setup.username))
                 if config.get("set_root_password", True):
-                    self.run("chroot||usermod -p $(openssl passwd -in /target/tmp/.passwd) root")
+                    self.run("chroot||usermod -p $(openssl passwd -6 -in /target/tmp/.passwd) root")
             elif is_cmd("chpasswd") and config.get("use_chpasswd", True):
                 fp = open("/target/tmp/.passwd", "w")
                 fp.write(self.setup.username + ":" + self.setup.password1 + "\n")
@@ -282,7 +282,7 @@ class InstallerEngine:
             if config.get("use_swap",False) and self.setup.create_swap:
                 self.auto_swap_partition = get_next()
         self.auto_root_partition = get_next()
-        
+
         log("EFI:" + str(self.auto_efi_partition))
         log("BOOT:" + str(self.auto_boot_partition))
         log("Root:" + str(self.auto_root_partition))
@@ -341,7 +341,7 @@ class InstallerEngine:
                 self.run("swapon /dev/{}/swap".format(lvm))
                 self.auto_swap_partition = "/dev/{}/swap".format(lvm)
             self.auto_root_partition = "/dev/{}/root".format(lvm)
-            
+
 
         self.do_mount(self.auto_root_partition, "/target", "ext4", None)
         if (self.auto_boot_partition is not None):
@@ -428,7 +428,7 @@ class InstallerEngine:
             os.mkdir(target)
             for old in olds:
                 self.run("mv /target/{0} {1}/{0}".format(old,target),vital=False)
-            
+
 
         # Mount the other partitions
         for partition in self.setup.partitions:
@@ -698,7 +698,7 @@ class InstallerEngine:
             newconsolefh.write("keymap=\"{}{}\"\n".format(
                 self.setup.keyboard_layout, self.setup.keyboard_variant))
             newconsolefh.close()
-        
+
         # Keyboard settings (gnome)
         if os.path.exists("/target/usr/share/glib-2.0/schemas/org.gnome.desktop.input-sources.gschema.xml"):
             with open("/target/usr/share/glib-2.0/schemas/99_17g-gnome-keyboard-config.gschema.override", "w") as schema:
@@ -798,7 +798,7 @@ class InstallerEngine:
 
         # Custom commands
         self.do_hook_commands("post_install_hook")
-        
+
         # Customization with network
         if config.get("customizer_address","localhost") != "localhost":
             self.run("curl {} | chroot /target bash".format(config.get("customizer_address","localhost")),vital=False)
@@ -879,7 +879,7 @@ class InstallerEngine:
         while p.poll() is None:
             line = str(p.stdout.readline().decode("utf-8").replace("\n", ""))
             self.update_progress(line,pulse)
-            
+
     def run(self,cmd,vital=True):
         if "{distro_codename}" in cmd:
             cmd = cmd.replace("{distro_codename}", config.get("distro_codename", "linux"))
@@ -935,7 +935,7 @@ class Setup(object):
     keyboard_model_description = None
     keyboard_layout_description = None
     keyboard_variant_description = None
-    
+
     # Additional options
     install_updates = False
     minimal_installation = False
