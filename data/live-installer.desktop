@@ -16,7 +16,7 @@ Comment=GUI Installation Tool for GNU/Linux
 Path=/lib/live-installer/
 
 # The executable of the application, possibly with arguments.
-Exec=/usr/bin/live-installer
+Exec=bash /usr/bin/live-installer
 
 # The name of the icon that will be used to display this entry
 Icon=/lib/live-installer/branding/icon.svg
