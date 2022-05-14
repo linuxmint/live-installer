@@ -1,0 +1,8 @@
+name: example
+check_this_dir: /etc/mkinitfs
+enable_lvm:
+  - echo "lvm not supported yet"
+enable_luks:
+  - echo "lux not supported yet"
+commands:
+  - mkinitfs
