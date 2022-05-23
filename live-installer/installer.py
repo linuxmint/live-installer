@@ -211,7 +211,7 @@ class InstallerEngine:
 
             if is_cmd("openssl") and config.get("use_usermod", True):
                 fp = open("/target/tmp/.passwd", "w")
-                fp.write(self.setup.password1+"\n")
+                fp.write(self.setup.password1)
                 fp.close()
                 self.run("chroot||usermod -p $(openssl passwd -6 -in /target/tmp/.passwd) {0}".format(self.setup.username))
                 if config.get("set_root_password", True):
