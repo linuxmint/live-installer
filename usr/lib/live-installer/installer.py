@@ -471,7 +471,7 @@ class InstallerEngine:
 
     def write_crypttab(self, path="/target/etc/crypttab"):
         if self.setup.luks:
-            os.system(f"echo 'lvmlmde   {self.get_blkid(self.auto_root_physical_partition)}   none   luks,tries=3' >> {path}")
+            os.system(f"echo 'lvmlmde   {self.get_blkid(self.auto_root_physical_partition)}   none   luks,discard,tries=3' >> {path}")
 
     def finish_installation(self):
         # Steps:
