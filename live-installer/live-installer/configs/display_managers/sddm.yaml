@@ -1,0 +1,7 @@
+name: sdddm
+check_this_dir: /etc/sddm.conf.d
+set_autologin: 
+  - chroot||groupadd -rf autologin && gpasswd -a {user} autologin
+  - chroot||groupadd -rf nopasswdlogin && gpasswd -a {user} nopasswdlogin
+  - chroot||sed -i -r 's/^#?(autologin-user)\s*=.*/\1={user}/' /etc/sddm.conf
+

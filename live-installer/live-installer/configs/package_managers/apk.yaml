@@ -1,0 +1,8 @@
+name: apt
+check_this_dir: /etc/apk
+create_rootfs: apk --arch $(uname -m) -X "http://dl-cdn.alpinelinux.org/alpine/latest-stable/main/" -U --allow-untrusted --root /target --initdb add alpine-base
+install_package: apk add {packages}
+remove_package: apk del {packages}
+remove_package_with_unusing_deps: apk del {packages}
+remove_package_with_needed_packages: apk del {packages}
+full_system_update: chroot /target apk update && chroot /target apk upgrade

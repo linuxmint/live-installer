@@ -1,0 +1,8 @@
+name: initrd
+check_this_dir: /lib/initrd
+enable_lvm:
+  - echo "lvm not supported yet"
+enable_luks:
+  - echo "luks not supported yet"
+commands:
+  - update-initrd

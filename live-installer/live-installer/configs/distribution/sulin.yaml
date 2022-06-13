@@ -1,0 +1,20 @@
+name: sulin
+check_this_dir: /etc/sulin_version
+grub_prepare:
+  - mkdir -p /target/boot/efi
+grub_installation_efi: chroot||grub-install --force --target=x86_64-efi {disk}
+grub_installation_legacy: chroot||grub-install --force --target=i386-pc {disk}
+run_before_user_creation: 
+   - echo "Creating users"
+additional_mountpoints:
+    - /data
+    - /data/app
+    - /data/user
+    - /data/srv
+    - /data/log
+    - /kernel
+    - /usr
+    - /var
+
+additional_efi_mountpoints:
+    - /kernel/boot/efi

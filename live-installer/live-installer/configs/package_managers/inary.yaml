@@ -1,0 +1,8 @@
+name: inary
+check_this_dir: /var/lib/inary
+create_rootfs: sulinstrapt /target
+install_package: inary it {packages} -y
+remove_package: inary rm {packages} -y
+remove_package_with_unusing_deps: inary rm {packages} -y && inary dc
+remove_package_with_needed_packages: inary rm {packages} -y
+full_system_update: chroot /target inary ur -y && chroot /target inary up -y

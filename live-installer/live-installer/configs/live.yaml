@@ -1,0 +1,6 @@
+### 17g live service config
+
+# enable_live: true
+# live_user: user
+# live_password: live
+# custom_scripts: true

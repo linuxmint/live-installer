@@ -1,0 +1,16 @@
+name: arch
+check_this_dir: /var/lib/pacman
+grub_prepare:
+  - mkdir -p /target/boot/efi
+grub_installation_efi: chroot||env LC_ALL=C grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id={distro_codename}
+grub_installation_legacy: chroot||env LC_ALL=C grub-install --force {disk}
+run_before_user_creation: 
+    - bash scripts/remove-users.sh
+additional_mountpoints:
+    - /home
+    - /boot
+    - /tmp
+    - /var
+    - /srv
+additional_efi_mountpoints:
+    - /boot/efi

@@ -1,0 +1,5 @@
+##Example netinstall package list
+linux
+grub
+mkinitcpio
+

@@ -1,0 +1,8 @@
+name: example
+check_this_dir: /example/path
+enable_lvm:
+  - example lvm enable command
+enable_luks:
+  - example luks enable command
+commands:
+  - example initramfs command

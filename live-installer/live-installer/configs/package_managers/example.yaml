@@ -1,0 +1,8 @@
+name: example
+check_this_dir: /var/lib/example
+create_rootfs: examplestrap branch /target
+install_package: example install {packages} --yes
+remove_package: example remove {packages} --yes
+remove_package_with_unusing_deps: example remove-full {packages} --yes
+remove_package_with_needed_packages: example remove-all {packages} --yes
+full_system_update: chroot /target  example update --yes

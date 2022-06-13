@@ -1,0 +1,8 @@
+name: apt
+check_this_dir: /var/lib/dpkg
+create_rootfs: debootstrap --no-merged-usr stable /target
+install_package: apt install {packages} --yes
+remove_package: apt remove {packages} --yes
+remove_package_with_unusing_deps: apt purge {packages} --yes && apt autoremove --yes
+remove_package_with_needed_packages: apt purge {packages} --yes
+full_system_update: chroot /target apt update -yq && chroot /target apt -yq -o Dpkg::Options::="--force-confnew" full-upgrade

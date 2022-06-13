@@ -1,0 +1,2 @@
+##Example extra packages list
+packagekit

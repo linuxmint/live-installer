@@ -1,0 +1,80 @@
+### 17g installer config
+
+## Distro section
+# distro_codename: linux
+# distro_title: 17G
+# distribution: auto
+# display_manager: auto
+# copyright: 17g Developer Team
+
+## Base options section
+# loop_directory: /dev/loop0
+# log_file: /var/log/17g-installer.log
+# gtk_theme: default
+# welcome_screen: true
+# exclude_dirs:
+#   - /home
+# customizer_address: localhost
+
+## Base system section
+# initramfs_system: auto 
+# using_shell: /bin/bash
+# use_reboot: false
+# netinstall: false
+# use_rsync: true
+# use_unsquashfs: true
+# remove_packages:
+#   - 17g-installer
+
+## User section
+# autologin_enabled: true
+# auto_partition_enabled: true
+# set_root_password: true
+# use_chpasswd: true
+# use_usermod: true
+# keep_userdata : true
+# minimal_instalation_enabled: true
+# keyboard_preview: true
+# additional_user_groups:
+#   - audio
+#   - video
+#   - netdev
+
+## Partitioning section
+# manual_partition_enabled: true 
+# use_swap: false
+# swap_size: 2048
+# replace_windows_enabled: true
+# lvm_enabled: true
+# encryption_enabled: true
+# fill_disk_enabled: true
+# set_alternative_ui: false
+# fullscreen: false
+# partition_editor: gparted
+
+## Timezone and locale section
+# default_locale: auto
+# default_timezone: America/New_York
+
+## Setup page section
+# skip_eula: false
+# skip_language: false
+# skip_timezone: false
+# skip_keyboard: false
+# skip_options: false
+# skip_user: false
+# hide_keyboard_model: false
+# allow_uppercase_hostname: true
+# allow_week_password: true
+# allow_auto_novariant: false
+# min_password_length: 1
+
+## Pre/Post operations section
+# post_install_hook:
+#   - echo "BRUH"
+# pre_install_hook:
+#   - echo "BRUH"
+# pre_rsync_hook:
+#   - echo "BRUH"
+# post_rsync_hook:
+#   - echo "BRUH"

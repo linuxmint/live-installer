@@ -1,0 +1,8 @@
+name: pacman
+check_this_dir: /var/lib/pacman
+create_rootfs: pacstrap /target base
+install_package: pacman -S {packages} --noconfirm
+remove_package: pacman -R {packages} --noconfirm
+remove_package_with_unusing_deps: pacman -Rsn {packages} --noconfirm
+remove_package_with_needed_packages: pacman -Rsnc {packages} --noconfirm
+full_system_update: chroot /target  pacman -Syyu --noconfirm

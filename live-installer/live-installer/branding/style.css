@@ -1,0 +1,46 @@
+#TimezoneLabel {
+  color: #FFFFFF;
+  background-color: #000000;
+  border-radius: 4px;
+}
+
+
+.entry_normal {
+  border-color: Green;
+  border-width: 1px;
+
+}
+.entry_error {
+  border-color: Red;
+  border-width: 2px;
+}
+
+.entry_warning {
+  border-color: #cccc00;
+  border-width: 2px;
+}
+
+#key_button {
+  border-radius: 3px;
+}
+
+#key_label
+#key_label_shift
+#key_label_altgr {
+  font-family: monospace;
+}
+
+#key_label_shift {
+  font-size: 16px;
+}
+
+#key_label {
+  font-size: 12px;
+
+}
+
+#key_label_altgr,
+#key_label_altsft
+{
+  font-size: 8px;
+}

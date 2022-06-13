@@ -1,0 +1,5 @@
+name: gdm
+check_this_dir: /etc/gdm/
+set_autologin:
+  - sed -i "s/\[daemon\]/[daemon]\nAutomaticLoginEnable=True/g" /etc/gdm/custom.conf
+  - sed -i "s/\[daemon\]/[daemon]\nAutomaticLogin={user}/g" /etc/gdm/custom.conf
