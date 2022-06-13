@@ -1,8 +1,0 @@
-name: initramfs_tools
-check_this_dir: /etc/initramfs-tools
-enable_lvm:
-  - echo "This operations not required."
-enable_luks:
-  - sed -i "s/^GRUB_THEME=.*/GRUB_THEME=\"\"/g" /target/etc/default/grub
-commands:
-  - update-initramfs -c -t -k all
