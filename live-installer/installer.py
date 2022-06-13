@@ -210,12 +210,10 @@ class InstallerEngine:
                 self.run("chroot||usermod -aG {} {}".format(group, self.setup.username), False)
 
             if is_cmd("openssl") and config.get("use_usermod", True):
-                fp = open("/target/tmp/.passwd", "w")
-                fp.write(self.setup.password1)
-                fp.close()
-                self.run("chroot||usermod -p $(openssl passwd -6 -in /target/tmp/.passwd) {0}".format(self.setup.username))
+                pass_hash = subprocess.getoutput("openssl passwd -6 '{}'".format(self.setup.password1))
+                self.run("chroot||usermod -p ${0} {1}".format(pass_hash, self.setup.username))
                 if config.get("set_root_password", True):
-                    self.run("chroot||usermod -p $(openssl passwd -6 -in /target/tmp/.passwd) root")
+                    self.run("chroot||usermod -p ${0} root".format(pass_hash))
             elif is_cmd("chpasswd") and config.get("use_chpasswd", True):
                 fp = open("/target/tmp/.passwd", "w")
                 fp.write(self.setup.username + ":" + self.setup.password1 + "\n")
