@@ -211,9 +211,10 @@ class InstallerEngine:
 
             if is_cmd("openssl") and config.get("use_usermod", True):
                 pass_hash = subprocess.run(["openssl", "passwd", "-6", self.setup.password1], capture_output=True)
-                self.run("chroot||usermod -p '{0}' {1}".format(pass_hash, self.setup.username))
+                pass_hash = pass_hash.stdout.decode("utf-8").strip()
+                os.system("chroot /target usermod -p '{0}' {1}".format(pass_hash, self.setup.username))
                 if config.get("set_root_password", True):
-                    self.run("chroot||usermod -p '{0}' root".format(pass_hash))
+                    os.system("chroot /target usermod -p '{0}' root".format(pass_hash))
             elif is_cmd("chpasswd") and config.get("use_chpasswd", True):
                 fp = open("/target/tmp/.passwd", "w")
                 fp.write(self.setup.username + ":" + self.setup.password1 + "\n")
