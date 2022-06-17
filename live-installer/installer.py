@@ -420,7 +420,7 @@ class InstallerEngine:
 
         # move old files if available
         olds = os.listdir("/target/")
-        if len(olds) > 0:
+        if len(olds) > 1:
             target="/target/{}.old".format(config.get("distro_codename","linux"))
             if os.path.exists(target):
                  self.run("rm -rf {}".format(target),vital=False)

@@ -31,12 +31,21 @@ def hostname(hostname):
     errorMessage = None
     if hostname == "" or hostname == None:
         return _("Please provide a name for your computer.")
+    elif not hostname.isascii():
+        return _("The computer's name is invalid.")
+    elif len(hostname) > 63:
+        return _("The computer's name is too long.")
+    elif hostname[0] == '-' or hostname[-1] == '-' :
+        return _("The computer's name should not starts or ends with -")
     for char in hostname:
         if(char.isupper()) and not config.get("allow_uppercase_hostname", True):
             errorMessage = _("The computer's name must be lower case.")
             break
         elif(char.isspace()):
             errorMessage = _("The computer's name may not contain whitespace characters.")
+            break
+        elif char.lower() not in "abcdefghijklmnopqrstuvwxyz1234567890-":
+            errorMessage = _("The computer's name must consist of only a-z or A-Z or 0-9 or - characters")
             break
     return errorMessage
 

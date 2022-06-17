@@ -894,8 +894,14 @@ class InstallerWindow:
         mbr = self.selected_partition.mbr
         if QuestionDialog(_("Are you sure?"), 
             _("New partition will created at {}").format(mbr)):
-            os.system("parted -s {} mkpart primary ext4 {}s {}s".format(mbr,start,end))
-            partitioning.build_partitions(self)
+            command = "parted -s {} mkpart primary ext4 {}s {}s".format(mbr,start,end)
+            def update_partition_menu(pid, status):
+                partitioning.build_partitions(self)
+            pid, stdin, stdout, stderr = GLib.spawn_async(["/bin/bash", "-c", command],
+            flags=GLib.SPAWN_DO_NOT_REAP_CHILD,
+            standard_output=True,
+            standard_error=True)
+            GLib.child_watch_add(GLib.PRIORITY_DEFAULT, pid, update_partition_menu)
 
     def part_remove_button_event(self,widget):
         path = self.selected_partition.path
@@ -903,16 +909,28 @@ class InstallerWindow:
         partnum = partitioning.find_partition_number(path)
         if QuestionDialog(_("Are you sure?"), 
             _("Partition {} will removed from {}.").format(path,mbr)):
-            os.system("parted -s {} rm {}".format(mbr,partnum))
-            partitioning.build_partitions(self)
+            def update_partition_menu(pid, status):
+                partitioning.build_partitions(self)
+            command = "parted -s {} rm {}".format(mbr,partnum)
+            pid, stdin, stdout, stderr = GLib.spawn_async(["/bin/bash", "-c", command],
+            flags=GLib.SPAWN_DO_NOT_REAP_CHILD,
+            standard_output=True,
+            standard_error=True)
+            GLib.child_watch_add(GLib.PRIORITY_DEFAULT, pid, update_partition_menu)
 
     def part_format_button_event(self,widget):
         path = self.selected_partition.path
         mbr = self.selected_partition.mbr
-        if QuestionDialog(_("Are you sure?"), 
+        if QuestionDialog(_("Are you sure?"),
             _("Partition {} will formated from {}.").format(path,mbr)):
-            os.system("yes | mkfs.ext4 {}".format(path))
-            partitioning.build_partitions(self)
+            def update_partition_menu(pid, status):
+                partitioning.build_partitions(self)
+            command = "yes | mkfs.ext4 {}".format(path)
+            pid, stdin, stdout, stderr = GLib.spawn_async(["/bin/bash", "-c", command],
+            flags=GLib.SPAWN_DO_NOT_REAP_CHILD,
+            standard_output=True,
+            standard_error=True)
+            GLib.child_watch_add(GLib.PRIORITY_DEFAULT, pid, update_partition_menu)
 
     def assign_eula(self,widget=None):
         widget = self.builder.get_object("check_eula")
@@ -1131,7 +1149,7 @@ class InstallerWindow:
                         " - Recommended filesystem format: ext4\n\n") % config.get("distro_title", "17g"))
                     return
 
-                if self.setup.gptonefi:
+                if self.setup.gptonefi and self.grub_check.get_active():
                     # Check for an EFI partition
                     found_efi_partition = False
                     for partition in self.setup.partitions:
