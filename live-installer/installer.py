@@ -465,7 +465,6 @@ class InstallerEngine:
                 "echo \"#### Static Filesystem Table File\" > /target/etc/fstab")
         fstab = open("/target/etc/fstab", "a")
         fstab.write("proc /proc proc defaults 0 0\n")
-        fstab.write("tmpfs /tmp tmpfs nosuid,nodev,noatime 0 0\n")
         if self.setup.expert_mode:
             log("  --> Expert mode detected")
         elif self.setup.automated:
