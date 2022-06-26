@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2022-03-07 12:03+0000\n"
-"PO-Revision-Date: 2022-03-07 12:46+0000\n"
-"Last-Translator: Umidjon Almasov <Unknown>\n"
+"PO-Revision-Date: 2022-05-04 12:11+0000\n"
+"Last-Translator: Umidjon Almasov <umidjon@almasov.uz>\n"
 "Language-Team: Uzbek <uz@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2022-03-10 11:27+0000\n"
-"X-Generator: Launchpad (build 61f4697954ab70d633d14d8ceecff69a20b08a6b)\n"
+"X-Launchpad-Export-Date: 2022-06-26 11:19+0000\n"
+"X-Generator: Launchpad (build 51a2e4fa2e9b8e45f00904ad7f53546f45ac48a5)\n"
 "Language: uz\n"
 
 #: usr/lib/live-installer/installer.py:44
@@ -23,8 +23,8 @@ msgid ""
 "ERROR: You must first manually mount your target filesystem(s) at /target to "
 "do a custom install!"
 msgstr ""
-"XATO: tanlangan dasturlarni o'rnatish uchun dastlab ular o'rnatilishi zarur "
-"bo'lgan fayl tizimini /target ga qo'lda ulashingiz zarur!"
+"XATO: tanlangan dasturlarni o‘rnatish uchun dastlab ular o‘rnatilishi zarur "
+"bo‘lgan fayl tizimini /target ga qo‘lda ulashingiz zarur!"
 
 #: usr/lib/live-installer/installer.py:86
 #, python-format
@@ -38,11 +38,11 @@ msgstr "Tizimga kirish..."
 #: usr/lib/live-installer/installer.py:149
 msgid "Removing live configuration (packages)"
 msgstr ""
-"Tizimga o'rnatish paytida zarur bo'lgan vaqtinchalik paketlarni olib tashlash"
+"Tizimga o‘rnatish paytida zarur bo‘lgan vaqtinchalik paketlarni olib tashlash"
 
 #: usr/lib/live-installer/installer.py:161
 msgid "Adding new user to the system"
-msgstr "Tizimga yangi foydalanuvchi qo'shish"
+msgstr "Tizimga yangi foydalanuvchi qo‘shish"
 
 #: usr/lib/live-installer/installer.py:192
 msgid "Writing filesystem mount information to /etc/fstab"
@@ -74,35 +74,35 @@ msgstr "%(partition)s larni %(format)s kabi formatlash..."
 
 #: usr/lib/live-installer/installer.py:464
 msgid "Setting hostname"
-msgstr "Kompyuter nomini o'rnatish"
+msgstr "Kompyuter nomini o‘rnatish"
 
 #: usr/lib/live-installer/installer.py:483
 msgid "Setting locale"
-msgstr "Mahallik tilni o'rnatish"
+msgstr "Mahallik tilni o‘rnatish"
 
 #: usr/lib/live-installer/installer.py:498
 msgid "Localizing packages"
-msgstr "Paketlarni mahalliy tilga o'tkazish"
+msgstr "Paketlarni mahalliy tilga o‘tkazish"
 
 #: usr/lib/live-installer/installer.py:513
 msgid "Installing drivers"
-msgstr "Drayverlarni o'rnatish"
+msgstr "Drayverlarni o‘rnatish"
 
 #: usr/lib/live-installer/installer.py:544
 msgid "Setting keyboard options"
-msgstr "Klaviatura parametrlarini o'rnatish"
+msgstr "Klaviatura parametrlarini o‘rnatish"
 
 #: usr/lib/live-installer/installer.py:601
 msgid "Installing bootloader"
-msgstr "Operasion tizimni yuklovchi dasturni (bootloader) o'rnatish"
+msgstr "Operasion tizimni yuklovchi dasturni (bootloader) o‘rnatish"
 
 #: usr/lib/live-installer/installer.py:614
 msgid ""
 "WARNING: The grub bootloader was not configured properly! You need to "
 "configure it manually."
 msgstr ""
-"OGOHLANTIRISH: grub yuklagich (bootloader) to'lig'icha sozlanmadi! Uni "
-"qo'lda sozlashingiz kerak."
+"OGOHLANTIRISH: grub yuklagich (bootloader) to‘lig‘icha sozlanmadi! Uni "
+"qo‘lda sozlashingiz kerak."
 
 #: usr/lib/live-installer/installer.py:628
 msgid "Cleaning APT"
@@ -111,7 +111,7 @@ msgstr "APT ni tozalash"
 #: usr/lib/live-installer/installer.py:663
 #: usr/lib/live-installer/frontend/gtk_interface.py:1097
 msgid "Installation finished"
-msgstr "Operasion tizimni o'rnatish yakunlandi"
+msgstr "Operasion tizimni o‘rnatish yakunlandi"
 
 #: usr/lib/live-installer/installer.py:672
 msgid "Configuring bootloader"
@@ -135,7 +135,7 @@ msgstr "Joylashuv"
 #: usr/lib/live-installer/frontend/gtk_interface.py:204
 #: usr/lib/live-installer/frontend/gtk_interface.py:319
 msgid "Layout"
-msgstr "Joylashuv"
+msgstr "Tartib"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:210
 #: usr/lib/live-installer/frontend/gtk_interface.py:320
@@ -157,7 +157,7 @@ msgstr "Fayl indekslarini hisoblash ..."
 #: usr/lib/live-installer/frontend/gtk_interface.py:990
 #: usr/lib/live-installer/partitioning.py:329
 msgid "Installer"
-msgstr "O'rnatuvchi"
+msgstr "O‘rnatuvchi"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:291
 msgid "What language would you like to use?"
@@ -173,7 +173,7 @@ msgstr "Qayerdasiz?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:293
 msgid "Keyboard layout"
-msgstr "Klaviatura tili"
+msgstr "Klaviatura tartibi"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:293
 msgid "What is your keyboard layout?"
@@ -189,20 +189,20 @@ msgstr "Siz kimsiz?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:295
 msgid "Installation Type"
-msgstr "O'rnatish turi"
+msgstr "O‘rnatish turi"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:295
 #: usr/lib/live-installer/frontend/gtk_interface.py:296
 msgid "Where do you want to install LMDE?"
-msgstr "LMDEni qayerga o'rnatmoqchisiz?"
+msgstr "LMDEni qayerga o‘rnatmoqchisiz?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:296
 msgid "Partitioning"
-msgstr "Diskni bo'lish"
+msgstr "Diskni bo‘lish"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:297
 msgid "Advanced options"
-msgstr "Qo'shimcha opsiyalar"
+msgstr "Qo‘shimcha opsiyalar"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:298
 msgid "Summary"
@@ -221,11 +221,11 @@ msgstr "Ekspert rejimi"
 #: usr/lib/live-installer/frontend/gtk_interface.py:301
 #: usr/lib/live-installer/frontend/gtk_interface.py:1112
 msgid "Installation paused"
-msgstr "O'rnatish vaqtinchalik to'xtatildi"
+msgstr "O‘rnatish vaqtinchalik to‘xtatildi"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:304
 msgid "Quit"
-msgstr "Tizimdan chiqish"
+msgstr "Chiqish"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:305
 msgid "Back"
@@ -248,7 +248,7 @@ msgid ""
 "This program will ask you some questions and set up LMDE on your computer."
 msgstr ""
 "Ushbu dastur sizga ba'zi savollar beradi va kompyuteringizda LMDE ni "
-"o'rnatadi."
+"o‘rnatadi."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:311
 #: usr/share/live-installer/interface.ui.h:5
@@ -272,8 +272,8 @@ msgid ""
 "as the default. You can switch layouts by pressing Super+Space."
 msgstr ""
 "* Sizning foydalanuvchi nomingiz, kompyuteringiz nomi va parolingiz faqat "
-"lotin harflaridan iborat bo'lishi kerak. Siz tanlagan tartibga qo'shimcha "
-"ravishda ingliz tili (AQSh) standart sifatida o'rnatiladi. Siz Super+Space "
+"lotin harflaridan iborat bo‘lishi kerak. Siz tanlagan tartibga qo‘shimcha "
+"ravishda ingliz tili (AQSh) standart sifatida o‘rnatiladi. Siz Super+Space "
 "tugmalarini bosib tartiblarni almashtirishingiz mumkin."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:325
@@ -324,12 +324,12 @@ msgstr "Uy jildimni shifrlash"
 #: usr/lib/live-installer/frontend/gtk_interface.py:337
 #: usr/share/live-installer/interface.ui.h:17
 msgid "Automated Installation"
-msgstr "Avtomatlashtirilgan o'rnatish"
+msgstr "Avtomatlashtirilgan o‘rnatish"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:338
 #: usr/share/live-installer/interface.ui.h:18
 msgid "Erase a disk and install LMDE on it."
-msgstr "Diskni o'chirish va unga LMDEni o'rnatish."
+msgstr "Diskni o‘chirish va unga LMDEni o‘rnatish."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:339
 #: usr/share/live-installer/interface.ui.h:19
@@ -359,24 +359,24 @@ msgstr "LVM (Logical Volume Management) dan foydalanish"
 #: usr/lib/live-installer/frontend/gtk_interface.py:344
 #: usr/share/live-installer/interface.ui.h:26
 msgid "Manual Partitioning"
-msgstr "Qo'lda bo'linish"
+msgstr "Qo‘lda bo‘linish"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:345
 #: usr/share/live-installer/interface.ui.h:27
 msgid "Manually create, resize or choose partitions for LMDE."
 msgstr ""
-"LMDE uchun bo'limlarni qo'lda yaratish, hajmini o'zgartirish yoki tanlash."
+"LMDE uchun bo‘limlarni qo‘lda yaratish, hajmini o‘zgartirish yoki tanlash."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:346
 #: usr/share/live-installer/interface.ui.h:25
 msgid "Fill the disk with random data"
-msgstr "Diskni tasodifiy ma'lumotlar bilan to'ldirish"
+msgstr "Diskni tasodifiy ma'lumotlar bilan to‘ldirish"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:347
 #: usr/share/live-installer/interface.ui.h:24
 msgid "This provides extra security but it can take hours."
 msgstr ""
-"Bu qo'shimcha xavfsizlikni ta'minlaydi, lekin bir necha soat davom etishi "
+"Bu qo‘shimcha xavfsizlikni ta'minlaydi, lekin bir necha soat davom etishi "
 "mumkin."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:350
@@ -410,17 +410,17 @@ msgstr "Formatlash turi"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:359
 msgid "Size"
-msgstr "O'lcham"
+msgstr "O‘lcham"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:360
 #: usr/lib/live-installer/partitioning.py:459
 msgid "Free space"
-msgstr "Bo'sh joy"
+msgstr "Bo‘sh joy"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:364
 #: usr/share/live-installer/interface.ui.h:30
 msgid "Install the GRUB boot menu on:"
-msgstr "GRUB yuklash menyusini o'rnating:"
+msgstr "GRUB yuklash menyusini o‘rnating:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:367
 #: usr/share/live-installer/interface.ui.h:31
@@ -450,22 +450,22 @@ msgid ""
 "During the install, you will be given time to chroot into /target and "
 "install any packages that will be needed to boot your new system."
 msgstr ""
-"O'rnatish paytida sizga /target uchun vaqtinchalik chroot huquqi beriladi va "
-"yangi tizimni ishga tushirishda zarur bo'lgan ihtiyoriy paketlarni tizimga "
-"o'rnata olasiz."
+"O‘rnatish paytida sizga /target uchun vaqtinchalik chroot huquqi beriladi va "
+"yangi tizimni ishga tushirishda zarur bo‘lgan ihtiyoriy paketlarni tizimga "
+"o‘rnata olasiz."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:371
 #: usr/share/live-installer/interface.ui.h:35
 msgid ""
 "During the install, you will be required to write your own /etc/fstab."
 msgstr ""
-"O'rnatish paytida sizdan o'zingiz uchun /etc/fstab yozuv yaratish talab "
+"O‘rnatish paytida sizdan o‘zingiz uchun /etc/fstab yozuv yaratish talab "
 "qilinadi."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:374
 #: usr/share/live-installer/interface.ui.h:36
 msgid "Do the following and then click Next to finish installation:"
-msgstr "Quyidagilarni bajaring va o'rnatishni tugatish uchun Keyingi bosing:"
+msgstr "Quyidagilarni bajaring va o‘rnatishni tugatish uchun Keyingi bosing:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:375
 #: usr/share/live-installer/interface.ui.h:37
@@ -476,7 +476,7 @@ msgid ""
 msgstr ""
 "Joriy /target  ga ulangan fayl tizimlariga mos keluvchi, YAngi tizimda "
 "ulanadigan fayl tizimlari uchun /target/etc/fstab ni yarating (ulanish "
-"yo'llarining o'zida /target prefiksini yozmang)."
+"yo‘llarining o‘zida /target prefiksini yozmang)."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:376
 #: usr/share/live-installer/interface.ui.h:38
@@ -485,9 +485,9 @@ msgid ""
 "dmraid, etc) by calling \"sudo chroot /target\" followed by the relevant apt-"
 "get/aptitude installations."
 msgstr ""
-"Birinchi marta tizimni ishga tushirishda zarur bo'lgan ixtiyoriy paketlar  "
-"(mdadm, cryptsetup, dmraid, va h.k.) ni o'rnatish uchun apt-get/aptitude "
-"usulga o'xshash \"sudo chroot /target\" ni chaqiring."
+"Birinchi marta tizimni ishga tushirishda zarur bo‘lgan ixtiyoriy paketlar  "
+"(mdadm, cryptsetup, dmraid, va h.k.) ni o‘rnatish uchun apt-get/aptitude "
+"usulga o‘xshash \"sudo chroot /target\" ni chaqiring."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:377
 #: usr/share/live-installer/interface.ui.h:39
@@ -496,9 +496,9 @@ msgid ""
 "as dm-crypt), you may need to have drives currently mounted using the same "
 "block device name as they appear in /target/etc/fstab."
 msgstr ""
-"Ba'zi hollarda (masalan, dm-crypt) to'g'ri ishlash uchun bajariladigan "
+"Ba'zi hollarda (masalan, dm-crypt) to‘g‘ri ishlash uchun bajariladigan "
 "update-initramfs da sizga aynan hozirgidek /target/etc/fstab tartibda "
-"ulangan qurilmalar zarur bo'lishi mumkin."
+"ulangan qurilmalar zarur bo‘lishi mumkin."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:378
 #: usr/share/live-installer/interface.ui.h:40
@@ -507,7 +507,7 @@ msgid ""
 "system will have at first boot, and matches what is currently mounted at "
 "/target."
 msgstr ""
-"/target/etc/fstab to'g'riligiga, yangi tizim birinchi bo'lib "
+"/target/etc/fstab to‘g‘riligiga, yangi tizim birinchi bo‘lib "
 "yuklanayotganligiga moslikni, va ayni paytda  /target ga ulanganligiga "
 "ishonch hosil qilish uchun ikki marta tekshiring."
 
@@ -545,7 +545,7 @@ msgstr "CHiqib ketmoqchimisiz?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:568
 msgid "Are you sure you want to quit the installer?"
-msgstr "O'rnatuvchi dasturni to'xtatmoqchimisiz?"
+msgstr "O‘rnatuvchi dasturni to‘xtatmoqchimisiz?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:901
 msgid "Please choose a language"
@@ -581,7 +581,7 @@ msgid ""
 " - Recommended size: 30GB\n"
 " - Recommended filesystem format: ext4\n"
 msgstr ""
-"Linux Mintni o'rnatish uchun ildiz bo'limi kerak.\n"
+"Linux Mintni o‘rnatish uchun ildiz bo‘limi kerak.\n"
 "\n"
 " - Ulash nuqtasi: /\n"
 " - Tavsiya etilgan hajm: 30 GB\n"
@@ -593,7 +593,7 @@ msgstr "EFI qism yuklanuvchi emas. Qism baryroqchalarini tahrirlang."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:977
 msgid "The EFI partition is too small. It must be at least 35MB."
-msgstr "EFI bo'limi juda kichik. Bu kamida 35 MB bo'lishi kerak."
+msgstr "EFI bo‘limi juda kichik. Bu kamida 35 MB bo‘lishi kerak."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:982
 #: usr/lib/live-installer/frontend/gtk_interface.py:986
@@ -617,15 +617,15 @@ msgid ""
 "partition of the disk as the EFI system partition.\n"
 " "
 msgstr ""
-"EFI tizimi bo'limi quyidagi talablarga ega bo'lishi kerak:\n"
+"EFI tizimi bo‘limi quyidagi talablarga ega bo‘lishi kerak:\n"
 "\n"
 " - Ulash nuqtasi: /boot/efi\n"
-" - Bo'lim bayroqlari: Bootable\n"
-" - Hajmi: kamida 35 MB (100 MB yoki undan ko'p tavsiya etiladi)\n"
+" - Bo‘lim bayroqlari: Bootable\n"
+" - Hajmi: kamida 35 MB (100 MB yoki undan ko‘p tavsiya etiladi)\n"
 " - Format: vfat yoki fat32\n"
 "\n"
 "Windows bilan mosligini ta'minlash uchun diskning birinchi qismini EFI tizim "
-"bo'limi sifatida ishlatishingizni tavsiya qilamiz.\n"
+"bo‘limi sifatida ishlatishingizni tavsiya qilamiz.\n"
 " "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1003
@@ -676,7 +676,7 @@ msgstr "yoqilgan"
 #: usr/lib/live-installer/frontend/gtk_interface.py:1079
 #: usr/lib/live-installer/frontend/gtk_interface.py:1080
 msgid "disabled"
-msgstr "o'chirilgan"
+msgstr "o‘chirilgan"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1069
 msgid "Home encryption: "
@@ -692,16 +692,16 @@ msgstr "Kompyuter nomi: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1072
 msgid "Filesystem operations"
-msgstr "Fayl tizimida mumkin bo'lgan amallar"
+msgstr "Fayl tizimida mumkin bo‘lgan amallar"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1073
 #, python-format
 msgid "Install bootloader on %s"
-msgstr "YUklovchi dastur (bootloader) ni  %s ga o'rnatish"
+msgstr "YUklovchi dastur (bootloader) ni  %s ga o‘rnatish"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1073
 msgid "Do not install bootloader"
-msgstr "YUklovchi dastur (bootloader) tizimga o'rnatilmasin"
+msgstr "YUklovchi dastur (bootloader) tizimga o‘rnatilmasin"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1075
 msgid "Use already-mounted /target."
@@ -735,23 +735,23 @@ msgid ""
 "The installation is now complete. Do you want to restart your computer to "
 "use the new system?"
 msgstr ""
-"O'rnatish jarayoni yakunlandi. YAngi tizimni ishlatish uchun kompyuterni "
-"o'chirib-yoqasizmi?"
+"O‘rnatish jarayoni yakunlandi. YAngi tizimni ishlatish uchun kompyuterni "
+"o‘chirib-yoqasizmi?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1112
 msgid ""
 "The installation is now paused. Please read the instructions on the page "
 "carefully before clicking Next to finish the installation."
 msgstr ""
-"O'rnatish endi to'xtatildi. O'rnatishni tugatish uchun \"Keyingi\" tugmasini "
-"bosishdan oldin sahifadagi ko'rsatmalarni diqqat bilan o'qing."
+"O‘rnatish endi to‘xtatildi. o‘rnatishni tugatish uchun \"Keyingi\" tugmasini "
+"bosishdan oldin sahifadagi ko‘rsatmalarni diqqat bilan o‘qing."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1145
 #: usr/lib/live-installer/frontend/gtk_interface.py:1148
 #: usr/lib/live-installer/frontend/gtk_interface.py:1162
 #: usr/lib/live-installer/frontend/gtk_interface.py:1170
 msgid "Installation error"
-msgstr "O'rnatish paytida xato sodir bo'ldi"
+msgstr "O‘rnatish xatosi"
 
 #: usr/lib/live-installer/partitioning.py:90
 msgid "B"
@@ -799,7 +799,7 @@ msgstr "/boot/efi ga tayinlash"
 
 #: usr/lib/live-installer/partitioning.py:245
 msgid "Installation Tool"
-msgstr "O'rnatish Uskunasi"
+msgstr "O‘rnatish vositasi"
 
 #: usr/lib/live-installer/partitioning.py:246
 #, python-format
@@ -808,9 +808,9 @@ msgid ""
 "installer to create a set of partitions for you? Note: This will ERASE ALL "
 "DATA present on this disk."
 msgstr ""
-"%s qattiq diskda qismlar jadvali topilmadi. O'rnatuvchi dastur disk "
+"%s qattiq diskda qismlar jadvali topilmadi. o‘rnatuvchi dastur disk "
 "qismlarini siz uchun hosil qilishini hoxlaysizmi? Izoh: Bu amal diskdagi "
-"mavjud BARCHA MA'LUMOTNI O'CHIRIB TASHLAYDI."
+"mavjud BARCHA MA'LUMOTNI o‘CHIRIB TASHLAYDI."
 
 #: usr/lib/live-installer/partitioning.py:361
 #, python-format
@@ -819,7 +819,7 @@ msgid ""
 "again."
 msgstr ""
 "%s uchun boʻlim jadvalini yozib boʻlmadi. Kompyuterni qayta ishga tushiring "
-"va qaytadan urinib ko'ring."
+"va qaytadan urinib ko‘ring."
 
 #: usr/lib/live-installer/partitioning.py:400
 #, python-format
@@ -827,8 +827,8 @@ msgid ""
 "The partition %s could not be created. The installation will stop. Restart "
 "the computer and try again."
 msgstr ""
-"%s boʻlimini yaratib boʻlmadi. O'rnatish to'xtatiladi. Kompyuterni qayta "
-"ishga tushiring va qaytadan urinib ko'ring."
+"%s boʻlimini yaratib boʻlmadi. o‘rnatish to‘xtatiladi. Kompyuterni qayta "
+"ishga tushiring va qaytadan urinib ko‘ring."
 
 #: usr/lib/live-installer/partitioning.py:457
 msgid "Logical partition"
@@ -848,7 +848,7 @@ msgstr "Disk qismini tahrirlash"
 
 #: usr/lib/live-installer/partitioning.py:577
 msgid "Device:"
-msgstr "Qo'rilma:"
+msgstr "Qo‘rilma:"
 
 #: usr/lib/live-installer/partitioning.py:579
 msgid "Format as:"

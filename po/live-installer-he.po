@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2022-03-07 12:03+0000\n"
-"PO-Revision-Date: 2022-03-07 13:22+0000\n"
-"Last-Translator: Avi Markovitz <avi.markovitz@gmail.com>\n"
+"PO-Revision-Date: 2022-03-13 10:15+0000\n"
+"Last-Translator: Omer I.S. <Unknown>\n"
 "Language-Team: Hebrew <he@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2022-03-10 11:27+0000\n"
-"X-Generator: Launchpad (build 61f4697954ab70d633d14d8ceecff69a20b08a6b)\n"
+"X-Launchpad-Export-Date: 2022-06-26 11:19+0000\n"
+"X-Generator: Launchpad (build 51a2e4fa2e9b8e45f00904ad7f53546f45ac48a5)\n"
 
 #: usr/lib/live-installer/installer.py:44
 msgid ""
@@ -23,7 +23,7 @@ msgid ""
 "do a custom install!"
 msgstr ""
 "שגיאה: לבצוע התקנה מותאמת אישית, נדרש תחילה לעגן ל־‎ ,/targetאת מערכות "
-"הקבצים המיועדת, באופן ידני,!"
+"הקבצים המיועדת, באופן ידני!"
 
 #: usr/lib/live-installer/installer.py:86
 #, python-format
@@ -36,7 +36,7 @@ msgstr "כניסה למערכת ..."
 
 #: usr/lib/live-installer/installer.py:149
 msgid "Removing live configuration (packages)"
-msgstr "הסרת תצור חי (חבילות)"
+msgstr "בהליכי הסרת התצורה (חבילות) ממצב ההמחשה"
 
 #: usr/lib/live-installer/installer.py:161
 msgid "Adding new user to the system"
@@ -78,7 +78,7 @@ msgstr "הגדרת מיקום"
 
 #: usr/lib/live-installer/installer.py:498
 msgid "Localizing packages"
-msgstr "הַמְקָמָת חבילות"
+msgstr "חבילות המקמה"
 
 #: usr/lib/live-installer/installer.py:513
 msgid "Installing drivers"
@@ -105,15 +105,15 @@ msgstr "ניקוי APT"
 #: usr/lib/live-installer/installer.py:663
 #: usr/lib/live-installer/frontend/gtk_interface.py:1097
 msgid "Installation finished"
-msgstr "התקנה הסתיימה"
+msgstr "ההתקנה הסתיימה"
 
 #: usr/lib/live-installer/installer.py:672
 msgid "Configuring bootloader"
-msgstr "הגדרת מנהל איתחול"
+msgstr "הגדרת מנהל האתחול"
 
 #: usr/lib/live-installer/installer.py:681
 msgid "Checking bootloader"
-msgstr "בדיקת מנהל איתחול"
+msgstr "בדיקת המנהל אתחול"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:114
 #: usr/lib/live-installer/frontend/gtk_interface.py:291
@@ -134,11 +134,11 @@ msgstr "פריסה"
 #: usr/lib/live-installer/frontend/gtk_interface.py:210
 #: usr/lib/live-installer/frontend/gtk_interface.py:320
 msgid "Variant"
-msgstr "משתנה"
+msgstr "הגוון"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:224
 msgid "Calculating file indexes ..."
-msgstr "חישוב מפתח קבצים …"
+msgstr "מתבצע חישוב מַפתח הקבצים…"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:272
 #: usr/lib/live-installer/frontend/gtk_interface.py:901
@@ -151,7 +151,7 @@ msgstr "חישוב מפתח קבצים …"
 #: usr/lib/live-installer/frontend/gtk_interface.py:990
 #: usr/lib/live-installer/partitioning.py:329
 msgid "Installer"
-msgstr "תכנית התקנה"
+msgstr "אשף ההתקנה"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:291
 msgid "What language would you like to use?"
@@ -163,7 +163,7 @@ msgstr "אזור זמן"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:292
 msgid "Where are you?"
-msgstr "מהו מיקומכם?"
+msgstr "מה מיקומך?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:293
 msgid "Keyboard layout"
@@ -171,15 +171,15 @@ msgstr "פריסת מקלדת"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:293
 msgid "What is your keyboard layout?"
-msgstr "מהי פריסת המקלדת שלכם?"
+msgstr "מה פריסת המקלדת שלך?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:294
 msgid "User account"
-msgstr "חשבון משתמש/ת"
+msgstr "חשבון משתמש"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:294
 msgid "Who are you?"
-msgstr "מי אתם?"
+msgstr "עם מי הכבוד?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:295
 msgid "Installation Type"
@@ -192,7 +192,7 @@ msgstr "היכן להתקין את LMDE?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:296
 msgid "Partitioning"
-msgstr "החצצה"
+msgstr "חלוקה למחיצות"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:297
 msgid "Advanced options"
@@ -200,7 +200,7 @@ msgstr "אפשרויות מתקדמות"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:298
 msgid "Summary"
-msgstr "תקציר"
+msgstr "סיכום"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:299
 msgid "Installing"
@@ -228,24 +228,24 @@ msgstr "אחורה"
 #: usr/lib/live-installer/frontend/gtk_interface.py:306
 #: usr/lib/live-installer/frontend/gtk_interface.py:1107
 msgid "Next"
-msgstr "הבא"
+msgstr "קדימה"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:309
 #: usr/share/live-installer/interface.ui.h:3
 #, python-format
 msgid "Welcome to %s!"
-msgstr "ברוכים הבאים ל־%s!"
+msgstr "ברוך בואך אל %s!"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:310
 #: usr/share/live-installer/interface.ui.h:4
 msgid ""
 "This program will ask you some questions and set up LMDE on your computer."
-msgstr "התכנה תשאל מספר שאלות ותתקין את LMDE במחשב."
+msgstr "התוכנה תשאל אותך מספר שאלות ותתקין את LMDE על מחשבך."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:311
 #: usr/share/live-installer/interface.ui.h:5
 msgid "Let's go!"
-msgstr "קדימה, נצא לדרך!"
+msgstr "קדימה!"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:318
 #: usr/share/live-installer/interface.ui.h:6
@@ -270,7 +270,7 @@ msgstr ""
 #: usr/lib/live-installer/frontend/gtk_interface.py:325
 #: usr/share/live-installer/interface.ui.h:8
 msgid "Your name:"
-msgstr "שמכם:"
+msgstr "השם שלך:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:326
 #: usr/share/live-installer/interface.ui.h:9
@@ -285,27 +285,27 @@ msgstr "השם שישמש לתקשורת עם מחשבים אחרים."
 #: usr/lib/live-installer/frontend/gtk_interface.py:328
 #: usr/share/live-installer/interface.ui.h:10
 msgid "Pick a username:"
-msgstr "בחירת שם משתמש:"
+msgstr "נא לבחור שם משתמש:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:329
 #: usr/share/live-installer/interface.ui.h:12
 msgid "Choose a password:"
-msgstr "בחירת ססמה:"
+msgstr "נא לבחור סיסמה:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:330
 #: usr/share/live-installer/interface.ui.h:13
 msgid "Confirm your password:"
-msgstr "אימות ססמה:"
+msgstr "אימות הסיסמה שלך:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:332
 #: usr/share/live-installer/interface.ui.h:14
 msgid "Log in automatically"
-msgstr "התחברות אוטומטית"
+msgstr "כניסה אוטומטית"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:333
 #: usr/share/live-installer/interface.ui.h:15
 msgid "Require my password to log in"
-msgstr "דרישת 'הססמה שלי' כדי להתחבר"
+msgstr "דרישת הסיסמה לכניסה"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:334
 #: usr/share/live-installer/interface.ui.h:16
@@ -320,7 +320,7 @@ msgstr "התקנה אוטומטית"
 #: usr/lib/live-installer/frontend/gtk_interface.py:338
 #: usr/share/live-installer/interface.ui.h:18
 msgid "Erase a disk and install LMDE on it."
-msgstr "מחקת הכונן והתקנת LMDE."
+msgstr "מחיקת הכונן והתקנת LMDE."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:339
 #: usr/share/live-installer/interface.ui.h:19
@@ -335,12 +335,12 @@ msgstr "הצפנת מערכת ההפעלה"
 #: usr/lib/live-installer/frontend/gtk_interface.py:341
 #: usr/share/live-installer/interface.ui.h:22
 msgid "Passphrase"
-msgstr "ביטוי־ססמה"
+msgstr "ביטוי סיסמה"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:342
 #: usr/share/live-installer/interface.ui.h:23
 msgid "Confirm passphrase"
-msgstr "אישור ביטוי־ססמה"
+msgstr "אישור ביטוי הסיסמה"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:343
 #: usr/share/live-installer/interface.ui.h:20
@@ -350,7 +350,7 @@ msgstr "שימוש ב־LVM (נהול כרך לוגי)"
 #: usr/lib/live-installer/frontend/gtk_interface.py:344
 #: usr/share/live-installer/interface.ui.h:26
 msgid "Manual Partitioning"
-msgstr "החצצה ידנית"
+msgstr "חלוקה ידנית למחיצות"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:345
 #: usr/share/live-installer/interface.ui.h:27
@@ -360,7 +360,7 @@ msgstr "יצירת, שינוי גודל ובחירת מחיצות ל־LMDE בא�
 #: usr/lib/live-installer/frontend/gtk_interface.py:346
 #: usr/share/live-installer/interface.ui.h:25
 msgid "Fill the disk with random data"
-msgstr "מלוי הכונן במידע אקראי"
+msgstr "מילוי הכונן בנתונים אקראיים"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:347
 #: usr/share/live-installer/interface.ui.h:24
@@ -374,7 +374,7 @@ msgstr "עריכת מחיצות"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:351
 msgid "Refresh"
-msgstr "רענון"
+msgstr "ריענון"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:354
 msgid "Device"
@@ -394,7 +394,7 @@ msgstr "נקודת עגינה"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:358
 msgid "Format as"
-msgstr "תבנות כ־"
+msgstr "פירמוט בתור"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:359
 msgid "Size"
@@ -403,12 +403,12 @@ msgstr "גודל"
 #: usr/lib/live-installer/frontend/gtk_interface.py:360
 #: usr/lib/live-installer/partitioning.py:459
 msgid "Free space"
-msgstr "מקום פנוי"
+msgstr "שטח פנוי"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:364
 #: usr/share/live-installer/interface.ui.h:30
 msgid "Install the GRUB boot menu on:"
-msgstr "התקנת תפריט איתחול גרוב ב:"
+msgstr "התקנת תפריט האתחול GRUB ב־:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:367
 #: usr/share/live-installer/interface.ui.h:31
@@ -416,7 +416,7 @@ msgid ""
 "You selected to manage your partitions manually, this feature is for "
 "ADVANCED USERS ONLY."
 msgstr ""
-"בחרתם לנהל את המחיצות באופן ידני, תכונה זו מיועדת למשתמשים מתקדמים בלבד."
+"בחרת לנהל את המחיצות באופן ידני, תכונה זו מיועדת למשתמשים מתקדמים בלבד."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:368
 #: usr/share/live-installer/interface.ui.h:32

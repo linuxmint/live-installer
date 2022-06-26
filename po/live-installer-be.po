@@ -8,22 +8,22 @@ msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2022-03-07 12:03+0000\n"
-"PO-Revision-Date: 2022-03-09 03:09+0000\n"
+"PO-Revision-Date: 2022-06-26 09:00+0000\n"
 "Last-Translator: Anton Hryb <Unknown>\n"
 "Language-Team: Belarusian <be@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2022-03-10 11:27+0000\n"
-"X-Generator: Launchpad (build 61f4697954ab70d633d14d8ceecff69a20b08a6b)\n"
+"X-Launchpad-Export-Date: 2022-06-26 11:19+0000\n"
+"X-Generator: Launchpad (build 51a2e4fa2e9b8e45f00904ad7f53546f45ac48a5)\n"
 
 #: usr/lib/live-installer/installer.py:44
 msgid ""
 "ERROR: You must first manually mount your target filesystem(s) at /target to "
 "do a custom install!"
 msgstr ""
-"ПАМЫЛКА: Спачатку прымантуйце ўручную мэтавую файлавую сістэму ў /мэта, каб "
-"зрабіць нестандартную ўсталёўку!"
+"ПАМЫЛКА: Спачатку прымантуйце ўручную мэтавую файлавую сістэму ў /target, "
+"каб зрабіць нестандартную ўсталёўку!"
 
 #: usr/lib/live-installer/installer.py:86
 #, python-format
@@ -32,7 +32,7 @@ msgstr "Капіяванне /%s"
 
 #: usr/lib/live-installer/installer.py:94
 msgid "Entering the system ..."
-msgstr "Уваход у сістэму..."
+msgstr "Уваход у сістэму ..."
 
 #: usr/lib/live-installer/installer.py:149
 msgid "Removing live configuration (packages)"
@@ -61,7 +61,7 @@ msgstr "Запаўненне %s выпадковымі данымі (гэта м
 #: usr/lib/live-installer/installer.py:262
 #, python-format
 msgid "Creating partitions on %s"
-msgstr "Стварэнне падзелаў на %s"
+msgstr "Стварэнне раздзелаў на %s"
 
 #: usr/lib/live-installer/installer.py:309
 #, python-format
@@ -70,7 +70,7 @@ msgstr "Фармаціраванне %(partition)s як %(format)s ..."
 
 #: usr/lib/live-installer/installer.py:464
 msgid "Setting hostname"
-msgstr "Налады назвы хаста"
+msgstr "Налады назвы хоста"
 
 #: usr/lib/live-installer/installer.py:483
 msgid "Setting locale"
@@ -194,7 +194,7 @@ msgstr "Куды жадаеце ўсталяваць LMDE?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:296
 msgid "Partitioning"
-msgstr "Падзел"
+msgstr "Раздзел"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:297
 msgid "Advanced options"
@@ -202,7 +202,7 @@ msgstr "Дадатковыя параметры"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:298
 msgid "Summary"
-msgstr "Зводка"
+msgstr "Падсумаванне"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:299
 msgid "Installing"
@@ -354,12 +354,12 @@ msgstr "Выкарыстоўваць лагічнае кіраванне аб'ё
 #: usr/lib/live-installer/frontend/gtk_interface.py:344
 #: usr/share/live-installer/interface.ui.h:26
 msgid "Manual Partitioning"
-msgstr "Разбіць на падзелы ўручную"
+msgstr "Разбіць на раздзелы ўручную"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:345
 #: usr/share/live-installer/interface.ui.h:27
 msgid "Manually create, resize or choose partitions for LMDE."
-msgstr "Уручную стварыць, змяніць аб'ём ці выбраць падзелы для LMDE."
+msgstr "Уручную стварыць, змяніць аб'ём або выбраць раздзелы для LMDE."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:346
 #: usr/share/live-installer/interface.ui.h:25
@@ -374,7 +374,7 @@ msgstr "Гэта забяспечыць дадатковую бяспеку, а�
 #: usr/lib/live-installer/frontend/gtk_interface.py:350
 #: usr/share/live-installer/interface.ui.h:29
 msgid "Edit partitions"
-msgstr "Змяніць падзелы"
+msgstr "Змяніць раздзелы"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:351
 msgid "Refresh"
@@ -420,13 +420,13 @@ msgid ""
 "You selected to manage your partitions manually, this feature is for "
 "ADVANCED USERS ONLY."
 msgstr ""
-"Вы выбралі кіраванне падзеламі ўручную, гэта функцыя ТОЛЬКІ ДЛЯ ВОПЫТНЫХ "
+"Вы выбралі кіраванне раздзеламі ўручную, гэта функцыя ТОЛЬКІ ДЛЯ ВОПЫТНЫХ "
 "КАРЫСТАЛЬНІКАЎ."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:368
 #: usr/share/live-installer/interface.ui.h:32
 msgid "Before continuing, mount your target filesystem(s) on /target."
-msgstr "Перад працягам падключыце вашу файлавую сістэму да /мэта."
+msgstr "Перад працягам падключыце вашу файлавую сістэму да /target."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:369
 #: usr/share/live-installer/interface.ui.h:33
@@ -434,7 +434,7 @@ msgid ""
 "Do NOT mount virtual devices such as /dev, /proc, /sys, etc on /target/."
 msgstr ""
 "НЕ падключайце віртуальныя прылады, такія як /dev, /proc, /sys і г.д. да "
-"/мэта/."
+"/target/."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:370
 #: usr/share/live-installer/interface.ui.h:34
@@ -442,7 +442,7 @@ msgid ""
 "During the install, you will be given time to chroot into /target and "
 "install any packages that will be needed to boot your new system."
 msgstr ""
-"Падчас усталявання ў вас будзе час для змены каранёвай папкі ў /мэце і "
+"Падчас усталявання ў вас будзе час для змены каранёвай папкі ў /target і "
 "ўсталявання пакетаў, якія спатрэбяцца для запуску новай сістэмы."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:371
@@ -463,9 +463,10 @@ msgid ""
 "new system, matching those currently mounted at /target (without using the "
 "/target prefix in the mount paths themselves)."
 msgstr ""
-"Стварыце /мэта/etc/fstab для кожнай з адпаведных файлавых сістэм, што будуць "
-"прымантаваны ў вашай новай сістэме, паводле тых, што цяпер прымантаваны ў "
-"/мэта (без выкарыстання прэфікса /мэта ў непасрэдных шляхах мантавання)."
+"Стварыце /target/etc/fstab для кожнай з адпаведных файлавых сістэм, што "
+"будуць прымантаваны ў вашай новай сістэме, паводле тых, што цяпер "
+"прымантаваны ў /target (без выкарыстання прэфікса /target ў непасрэдных "
+"шляхах мантавання)."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:376
 #: usr/share/live-installer/interface.ui.h:38
@@ -475,7 +476,7 @@ msgid ""
 "get/aptitude installations."
 msgstr ""
 "Усталюйце ўсе пакеты, якія могуць спатрэбіцца для першага запуску (mdadm, "
-"cryptsetup, dmraid і да т.п.) праз каманду \"sudo chroot /мэта\" згодна з "
+"cryptsetup, dmraid і інш.) праз каманду \"sudo chroot /target\" згодна з "
 "адпаведным усталяваннем праз apt-get/aptitude."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:377
@@ -485,9 +486,9 @@ msgid ""
 "as dm-crypt), you may need to have drives currently mounted using the same "
 "block device name as they appear in /target/etc/fstab."
 msgstr ""
-"Звярніце ўвагу, для таго каб update-initramfs спрацаваў карэктна ў пэўных "
+"Звярніце ўвагу: для таго каб update-initramfs спрацаваў карэктна ў пэўных "
 "выпадках (напр. dm-crypt), вам магчыма спатрэбяццаа прымантаваныя дыскі з "
-"той жа назвай блочнай прылады, як яны запісаны ў /мэта/etc/fstab."
+"той жа назвай блочнай прылады, як яны запісаны ў /target/etc/fstab."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:378
 #: usr/share/live-installer/interface.ui.h:40
@@ -496,9 +497,9 @@ msgid ""
 "system will have at first boot, and matches what is currently mounted at "
 "/target."
 msgstr ""
-"Двойчы праверце карэктнасць вашага /мэта/etc/fstab; што ў ім запісана ўсё, "
+"Двойчы праверце карэктнасць вашага /target/etc/fstab; што ў ім запісана ўсё, "
 "што мусіць мець сістэма падчас першага запуску, і ўсё, што цяпер "
-"прымантавана ў /мэта."
+"прымантавана ў /target."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:389
 msgid "The values do not match."
@@ -510,7 +511,7 @@ msgstr "Гэта поле не можа быць пустым."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:395
 msgid "This field may not contain space characters."
-msgstr "Гэта поле можа не ўтрымліваць прабелы."
+msgstr "Гэта поле не можа ўтрымліваць прабелы."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:398
 msgid "This field must be lower case."
@@ -555,11 +556,11 @@ msgid ""
 "proceeding."
 msgstr ""
 "Перад тым як працягнуць, укажыце файлавую сістэму для фарматавання "
-"каранёвага падзелу (/)."
+"каранёвага раздзела (/)."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:961
 msgid "Please select a root (/) partition."
-msgstr "Выберыце каранёвы падзел (/)."
+msgstr "Выберыце каранёвы раздзел (/)."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:962
 msgid ""
@@ -577,20 +578,20 @@ msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:974
 msgid "The EFI partition is not bootable. Please edit the partition flags."
-msgstr "Падзел EFI незапускальны. Змяніце сцяжкі падзела."
+msgstr "Раздзел EFI незапускальны. Змяніце сцяжкі раздзела."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:977
 msgid "The EFI partition is too small. It must be at least 35MB."
-msgstr "Падзел EFI замалы. Ён павінен быць хаця б 35 МБ."
+msgstr "Раздзел EFI замалы. Ён павінен быць хаця б 35 МБ."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:982
 #: usr/lib/live-installer/frontend/gtk_interface.py:986
 msgid "The EFI partition must be formatted as vfat."
-msgstr "Падзел EFI трэба фарматаваць як vfat."
+msgstr "Раздзел EFI трэба фарматаваць як vfat."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:990
 msgid "Please select an EFI partition."
-msgstr "Выберыце падзел EFI."
+msgstr "Выберыце раздзел EFI."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:990
 msgid ""
@@ -605,20 +606,20 @@ msgid ""
 "partition of the disk as the EFI system partition.\n"
 " "
 msgstr ""
-"Сістэмны падзел EFI павінен адпавядаць наступным патрабаванням:\n"
+"Сістэмны раздзел EFI павінен адпавядаць наступным патрабаванням:\n"
 "\n"
 " - Кропка мантавання: /boot/efi\n"
-" - Сцяжок падзела: Bootable\n"
+" - Сцяжок раздзела: Bootable\n"
 " - Памер: хаця б 35 МБ (рэкамендуецца 100 МБ ці больш)\n"
 " - Фармат: vfat ці fat32\n"
 "\n"
 "Для забеспячэння сумяшчальнасці з Windows рэкамендуем выкарыстоўваць першы "
-"падзел дыска ў якасці падзела сістэмы EFI.\n"
+"раздзел дыска ў якасці раздзела сістэмы EFI.\n"
 " "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1003
 msgid "Install"
-msgstr "Усталяваць"
+msgstr "Усталяванне"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1059
 msgid "Localization"
@@ -693,7 +694,7 @@ msgstr "Не ўсталёўваць загрузчык"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1075
 msgid "Use already-mounted /target."
-msgstr "Выкарыстоўваць ужо падключаную /мэту."
+msgstr "Выкарыстоўваць ужо падключаную /target."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1078
 #, python-format
@@ -723,7 +724,7 @@ msgid ""
 "The installation is now complete. Do you want to restart your computer to "
 "use the new system?"
 msgstr ""
-"Усталяванне завершана. Жадаеце перазапусціць камп'ютар і пачаць карыстацца "
+"Усталяванне завершана. Жадаеце перазагрузіць камп'ютар і пачаць карыстацца "
 "новай сістэмай?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1112
@@ -796,8 +797,8 @@ msgid ""
 "installer to create a set of partitions for you? Note: This will ERASE ALL "
 "DATA present on this disk."
 msgstr ""
-"На дыску не знойдзена табліца падзелаў: %s. Ці жадаеце, каб усталёўшчык "
-"стварыў камплект падзелаў? Гэта ВЫДАЛІЦЬ УСЕ ДАНЫЯ на гэтым дыску."
+"На дыску не знойдзена табліца раздзелаў: %s. Жадаеце, каб усталёўшчык "
+"стварыў для вас камплект раздзелаў? Гэта ВЫДАЛІЦЬ УСЕ ДАНЫЯ на гэтым дыску."
 
 #: usr/lib/live-installer/partitioning.py:361
 #, python-format
@@ -805,7 +806,7 @@ msgid ""
 "The partition table couldn't be written for %s. Restart the computer and try "
 "again."
 msgstr ""
-"Немагчыма прачытаць табліцу падзелаў для %s. Перазапусціце камп'ютар і "
+"Немагчыма прачытаць табліцу раздзелаў для %s. Перазапусціце камп'ютар і "
 "паспрабуйце зноў."
 
 #: usr/lib/live-installer/partitioning.py:400
@@ -814,16 +815,16 @@ msgid ""
 "The partition %s could not be created. The installation will stop. Restart "
 "the computer and try again."
 msgstr ""
-"Немагчыма стварыць падзел %s. Усталяванне спыніцца. Перазапусціце камп'ютар "
+"Немагчыма стварыць раздзел %s. Усталяванне спыніцца. Перазапусціце камп'ютар "
 "і паспрабуйце зноў."
 
 #: usr/lib/live-installer/partitioning.py:457
 msgid "Logical partition"
-msgstr "Лагічны падзел"
+msgstr "Лагічны раздзел"
 
 #: usr/lib/live-installer/partitioning.py:458
 msgid "Extended partition"
-msgstr "Пашыраны падзел"
+msgstr "Пашыраны раздзел"
 
 #: usr/lib/live-installer/partitioning.py:462
 msgid "Unknown"
@@ -831,7 +832,7 @@ msgstr "Невядома"
 
 #: usr/lib/live-installer/partitioning.py:576
 msgid "Edit partition"
-msgstr "Змяніць падзел"
+msgstr "Змяніць раздзел"
 
 #: usr/lib/live-installer/partitioning.py:577
 msgid "Device:"
@@ -853,7 +854,7 @@ msgstr "Скасаваць"
 #: usr/lib/live-installer/dialogs.py:31 usr/lib/live-installer/dialogs.py:42
 #: usr/lib/live-installer/dialogs.py:47
 msgid "OK"
-msgstr "Добра"
+msgstr "ОК"
 
 #: usr/lib/live-installer/dialogs.py:36
 msgid "No"

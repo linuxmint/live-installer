@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2022-03-07 12:03+0000\n"
-"PO-Revision-Date: 2022-03-07 12:48+0000\n"
+"PO-Revision-Date: 2022-06-19 13:31+0000\n"
 "Last-Translator: Marek Adamski <Unknown>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2022-03-10 11:27+0000\n"
-"X-Generator: Launchpad (build 61f4697954ab70d633d14d8ceecff69a20b08a6b)\n"
+"X-Launchpad-Export-Date: 2022-06-26 11:19+0000\n"
+"X-Generator: Launchpad (build 51a2e4fa2e9b8e45f00904ad7f53546f45ac48a5)\n"
 
 #: usr/lib/live-installer/installer.py:44
 msgid ""
@@ -250,7 +250,7 @@ msgstr ""
 #: usr/lib/live-installer/frontend/gtk_interface.py:311
 #: usr/share/live-installer/interface.ui.h:5
 msgid "Let's go!"
-msgstr "Zacznijmy!"
+msgstr "Ruszajmy!"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:318
 #: usr/share/live-installer/interface.ui.h:6
@@ -355,7 +355,7 @@ msgstr "Użyj LVM (Logiczne Zarządzanie Wolumenów)"
 #: usr/lib/live-installer/frontend/gtk_interface.py:344
 #: usr/share/live-installer/interface.ui.h:26
 msgid "Manual Partitioning"
-msgstr "Ręczne Partycjonowanie"
+msgstr "Ręczne partycjonowanie"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:345
 #: usr/share/live-installer/interface.ui.h:27

@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2022-03-07 12:03+0000\n"
-"PO-Revision-Date: 2020-03-15 15:53+0000\n"
+"PO-Revision-Date: 2022-04-15 09:55+0000\n"
 "Last-Translator: Asier Iturralde Sarasola <Unknown>\n"
 "Language-Team: Basque <eu@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2022-03-10 11:27+0000\n"
-"X-Generator: Launchpad (build 61f4697954ab70d633d14d8ceecff69a20b08a6b)\n"
+"X-Launchpad-Export-Date: 2022-06-26 11:19+0000\n"
+"X-Generator: Launchpad (build 51a2e4fa2e9b8e45f00904ad7f53546f45ac48a5)\n"
 
 #: usr/lib/live-installer/installer.py:44
 msgid ""
@@ -128,7 +128,7 @@ msgstr "Hizkuntza"
 #: usr/lib/live-installer/frontend/gtk_interface.py:122
 #: usr/lib/live-installer/frontend/gtk_interface.py:315
 msgid "Location"
-msgstr ""
+msgstr "Kokalekua"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:204
 #: usr/lib/live-installer/frontend/gtk_interface.py:319
@@ -238,7 +238,7 @@ msgstr "Hurrengoa"
 #: usr/share/live-installer/interface.ui.h:3
 #, python-format
 msgid "Welcome to %s!"
-msgstr ""
+msgstr "Ongietorri %s(e)ra!"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:310
 #: usr/share/live-installer/interface.ui.h:4
@@ -251,7 +251,7 @@ msgstr ""
 #: usr/lib/live-installer/frontend/gtk_interface.py:311
 #: usr/share/live-installer/interface.ui.h:5
 msgid "Let's go!"
-msgstr ""
+msgstr "Goazen!"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:318
 #: usr/share/live-installer/interface.ui.h:6
@@ -269,6 +269,10 @@ msgid ""
 "Latin characters. In addition to your selected layout, English (US) is set "
 "as the default. You can switch layouts by pressing Super+Space."
 msgstr ""
+"* Zure erabiltzaile-izenak, zure ordenagailuaren izenak eta zure pasahitzak "
+"karaktere latinoak soilik izan behar dituzte. Aukeratutako diseinuaz gain, "
+"ingelesa (AEB) ezarri da lehenetsi gisa. Diseinua alda dezakezu "
+"Super+Zuriune sakatuta."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:325
 #: usr/share/live-installer/interface.ui.h:8
@@ -503,31 +507,31 @@ msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:389
 msgid "The values do not match."
-msgstr ""
+msgstr "Balioak ez dira berdinak."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:392
 msgid "This field cannot be empty."
-msgstr ""
+msgstr "Eremu hau ezin da hutsik utzi."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:395
 msgid "This field may not contain space characters."
-msgstr ""
+msgstr "Eremu honetan ezin da zuriunerik egon."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:398
 msgid "This field must be lower case."
-msgstr ""
+msgstr "Eremu honetan soilik minuskulak onartzen dira."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:402
 msgid "The entry is too short."
-msgstr ""
+msgstr "Sarrera laburregia da."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:404
 msgid "The entry is too long."
-msgstr ""
+msgstr "Sarrera luzeegia da."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:409
 msgid "This field contains invalid characters."
-msgstr ""
+msgstr "Eremuak baliozkoak ez diren karaktereak ditu."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:568
 msgid "Quit?"
@@ -570,6 +574,11 @@ msgid ""
 " - Recommended size: 30GB\n"
 " - Recommended filesystem format: ext4\n"
 msgstr ""
+"Linux Mint instalatzeko root partizioa behar da.\n"
+"\n"
+" - Muntatze-puntua: /\n"
+" - Gomendatutako tamaina: 30 GB\n"
+" - Gomendatutako fitxategi-sistemaren formatua: ext4\n"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:974
 msgid "The EFI partition is not bootable. Please edit the partition flags."
@@ -863,4 +872,4 @@ msgstr "Bai"
 
 #: usr/share/live-installer/interface.ui.h:1
 msgid " "
-msgstr ""
+msgstr " "
