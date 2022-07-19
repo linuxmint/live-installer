@@ -218,6 +218,8 @@ class InstallerWindow:
 
         self.builder.get_object("entry_name").connect(
             "changed", self.assign_realname)
+        self.builder.get_object("swap_size").connect(
+            "changed", self.assign_swap_size)
         self.builder.get_object("entry_username").connect(
             "changed", self.assign_username)
         self.builder.get_object("entry_hostname").connect(
@@ -573,6 +575,10 @@ class InstallerWindow:
         self.builder.get_object("label_minimal").set_text(_("Minimal installation"))
         self.builder.get_object("label_minimal2").set_text(_("This will only install a minimal desktop environment with a browser and utilities."))
         self.builder.get_object("label_donotturnoff").set_text(_("Please do not turn off your computer during the installation process."))
+        self.builder.get_object("swap_size").set_range(1,64)
+        self.setup.swap_size = int(round(int(subprocess.getoutput(
+                    "awk '/^MemTotal/{ print $2 }' /proc/meminfo")) / 1024, 0))
+        self.builder.get_object("swap_size").set_value(1)
 
     def view_password_text(self,entry, icon_pos, event):
         entry.set_visibility(True)
@@ -582,6 +588,9 @@ class InstallerWindow:
     def hide_password_text(self,entry, icon_pos, event):
         entry.set_visibility(False)
         entry.set_icon_from_icon_name(0,"view-reveal-symbolic")
+
+    def assign_swap_size(self, entry):
+        self.setup.swap_size = int(entry.props.text)*1024
 
     def assign_realname(self, entry):
         self.setup.real_name = entry.props.text
@@ -643,6 +652,9 @@ class InstallerWindow:
             "check_minimal").get_active()
         self.setup.create_swap = self.builder.get_object(
             "check_swap").get_active()
+        self.builder.get_object("swap_size").set_sensitive(self.setup.create_swap)
+        self.builder.get_object("swap_size").set_value(1)
+            
 
     def assign_type_options(self, widget, data=None):
         self.setup.automated = self.builder.get_object(
