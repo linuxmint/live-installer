@@ -49,10 +49,7 @@ class InstallerWindow:
 
         self.resource_dir = './resources/'
         fullscreen = fullscreen or config.get("fullscreen", False)
-        if fullscreen or config.get("set_alternative_ui", False):
-            glade_file = os.path.join(self.resource_dir, 'interface2.ui')
-        else:
-            glade_file = os.path.join(self.resource_dir, 'interface.ui')
+        glade_file = os.path.join(self.resource_dir, 'interface.ui')
         self.builder = Gtk.Builder()
         self.builder.add_from_file(glade_file)
         screen = Gdk.Screen.get_default()

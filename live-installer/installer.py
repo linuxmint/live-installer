@@ -567,22 +567,28 @@ class InstallerEngine:
         if self.setup.language != "en_US":
             add_locale("en_US.UTF-8 UTF-8")
         self.run("chroot||locale-gen")
-        # etc/default/locale
-        l = open("/target/etc/default/locale", "w")
-        l.write("LANG=%s.UTF-8\n" % self.setup.language)
-        l.close()
         # localectl
         self.run("chroot||localectl set-locale LANG=\"%s.UTF-8\"" %
             self.setup.language,vital=False)
-        # locale.conf
-        l = open("/target/etc/locale.conf", "w")
-        l.write("LANG=%s.UTF-8" % self.setup.language)
-        l.close()
+        self.run("chroot||localectl set-locale LC_CTYPE=\"en_US.UTF-8\"",vital=False)
+        # etc/default/locale (debian base only)
+        if os.path.exists("/target/var/lib/dpkg/status"):
+            l = open("/target/etc/default/locale", "w")
+            l.write("LANG=%s.UTF-8\n" % self.setup.language)
+            l.write("LC_CTYPE=en_US.UTF-8\n")
+            l.close()
+        # systemd locale.conf (except debian)
+        elif os.path.exists("/target/lib/systemd/systemd") :
+            l = open("/target/etc/locale.conf", "w")
+            l.write("LANG=%s.UTF-8\n" % self.setup.language)
+            l.write("LC_CTYPE=en_US.UTF-8\n")
+            l.close()
         # set the locale for gentoo / sulin
-        if os.path.exists("/target/etc/env.d"):
+        elif os.path.exists("/target/etc/env.d"):
             l = open("/target/etc/env.d/20language", "w")
-            l.write("LANG={}.UTF-8".format(self.setup.language))
-            l.write("LC_ALL={}.UTF-8".format(self.setup.language))
+            l.write("LANG={}.UTF-8\n".format(self.setup.language))
+            l.write("LC_ALL={}.UTF-8\n".format(self.setup.language))
+            l.write("LC_CTYPE=en_US.UTF-8\n")
             l.flush()
             l.close()
             self.run("chroot||env-update")
