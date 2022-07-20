@@ -58,6 +58,9 @@ def get_disks():
                     0], elements[1], elements[2], elements[3], elements[1]
             else:
                 typevar, device, removable, size, model = elements
+            print("DISK: "+size)
+            if size == "0B":
+                continue;
             device = "/dev/" + device
             if str(typevar) == "b'disk" and device not in exclude_devices:
                 # convert size to manufacturer's size for show, e.g. in GB, not
@@ -121,6 +124,16 @@ def get_partition_flags(part):
             return line.replace(", ",",").split(" ")[-1].split(",")
     return []
 
+
+def get_disk_size(disk):
+    name = os.path.basename(disk)
+    lsblk = subprocess.getoutput(
+        'LC_ALL=en_US.UTF-8 lsblk -rbindo TYPE,NAME,RM,SIZE,MODEL | sort -k3,2')
+    for line in lsblk.split("\n"):
+        if line.split(" ")[1] == name:
+            return int(line.split(" ")[3])
+    return 0;
+        
 
 def build_partitions(_installer):
     global installer

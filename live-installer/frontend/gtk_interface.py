@@ -572,7 +572,7 @@ class InstallerWindow:
         self.builder.get_object("label_minimal").set_text(_("Minimal installation"))
         self.builder.get_object("label_minimal2").set_text(_("This will only install a minimal desktop environment with a browser and utilities."))
         self.builder.get_object("label_donotturnoff").set_text(_("Please do not turn off your computer during the installation process."))
-        self.builder.get_object("swap_size").set_range(1,64)
+        self.builder.get_object("swap_size").set_range(1,1)
         self.setup.swap_size = int(round(int(subprocess.getoutput(
                     "awk '/^MemTotal/{ print $2 }' /proc/meminfo")) / 1024, 0))
         self.builder.get_object("swap_size").set_value(1)
@@ -587,7 +587,10 @@ class InstallerWindow:
         entry.set_icon_from_icon_name(0,"view-reveal-symbolic")
 
     def assign_swap_size(self, entry):
-        self.setup.swap_size = int(entry.props.text)*1024
+        try:
+            self.setup.swap_size = int(entry.props.text)*1024
+        except:
+            self.setup.swap_size = 1
 
     def assign_realname(self, entry):
         self.setup.real_name = entry.props.text
@@ -717,6 +720,11 @@ class InstallerWindow:
 
         self.setup.badblocks = self.builder.get_object(
             "check_badblocks").get_active()
+
+        size = partitioning.get_disk_size(self.setup.disk)
+        size =  size / 1024**3 # convert GB 
+        self.builder.get_object("swap_size").set_range(1,size/2)
+                
 
     def assign_passphrase(self, widget=None):
         self.setup.passphrase1 = self.builder.get_object(
