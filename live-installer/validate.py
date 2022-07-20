@@ -44,7 +44,7 @@ def hostname(hostname):
         elif(char.isspace()):
             errorMessage = _("The computer's name may not contain whitespace characters.")
             break
-        elif char.lower() not in "abcdefghijklmnopqrstuvwxyz1234567890-":
+        elif char.lower() not in "abcdefghijklmnopqrstuvwxyz.1234567890-":
             errorMessage = _("The computer's name must consist of only a-z or A-Z or 0-9 or - characters")
             break
     return errorMessage

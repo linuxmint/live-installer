@@ -58,7 +58,6 @@ def get_disks():
                     0], elements[1], elements[2], elements[3], elements[1]
             else:
                 typevar, device, removable, size, model = elements
-            print("DISK: "+size)
             if size == "0B":
                 continue;
             device = "/dev/" + device
@@ -119,7 +118,6 @@ def find_partition_number(part):
 
 def get_partition_flags(part):
     for line in subprocess.getoutput("parted {} print".format(find_mbr(part))).split("\n"):
-        print(line)
         if line.startswith(" {} ".format(find_partition_number(part))):
             return line.replace(", ",",").split(" ")[-1].split(",")
     return []

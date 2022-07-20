@@ -559,7 +559,7 @@ class InstallerEngine:
         self.update_progress(_("Setting locale"))
         # locale-gen
         def add_locale(lang):
-            if lang not in open("/target/etc/locale.gen", "r").read().split("\n"):
+            if not os.path.isfile("/target/etc/locale.gen") or lang not in open("/target/etc/locale.gen", "r").read().split("\n"):
                 f = open("/target/etc/locale.gen", "a")
                 f.write(lang+"\n")
                 f.close()

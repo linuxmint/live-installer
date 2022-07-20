@@ -157,6 +157,11 @@ class InstallerWindow:
             row = model[0]
             self.setup.disk = row[1]
             self.setup.diskname = row[0]
+            # Fix calculate max spaw_size value
+            self.assign_type_options(None,None)
+        else:
+            self.builder.get_object("swap_size").set_range(1,1)
+
 
         self.builder.get_object("entry_passphrase").connect(
             "changed", self.assign_passphrase)
@@ -221,7 +226,11 @@ class InstallerWindow:
             "changed", self.assign_username)
         self.builder.get_object("entry_hostname").connect(
             "changed", self.assign_hostname)
-        product_name = open("/sys/devices/virtual/dmi/id/product_name","r").read().strip().replace(" ","-").lower()
+        _product_name = open("/sys/devices/virtual/dmi/id/product_name","r").read().strip().replace(" ","-").lower()
+        product_name = ""
+        for c in _product_name:
+            if c.lower() in "abcdefghijklmnopqrstuvwxyz.1234567890-":
+                product_name += c
         self.builder.get_object("entry_hostname").set_text(config.get("distro_codename","linux")+"-"+product_name)
 
         # events for detecting password mismatch..
@@ -572,9 +581,6 @@ class InstallerWindow:
         self.builder.get_object("label_minimal").set_text(_("Minimal installation"))
         self.builder.get_object("label_minimal2").set_text(_("This will only install a minimal desktop environment with a browser and utilities."))
         self.builder.get_object("label_donotturnoff").set_text(_("Please do not turn off your computer during the installation process."))
-        self.builder.get_object("swap_size").set_range(1,1)
-        self.setup.swap_size = int(round(int(subprocess.getoutput(
-                    "awk '/^MemTotal/{ print $2 }' /proc/meminfo")) / 1024, 0))
         self.builder.get_object("swap_size").set_value(1)
 
     def view_password_text(self,entry, icon_pos, event):
@@ -1583,5 +1589,4 @@ class InstallerWindow:
         self.cur_slide_pos = self.cur_slide_pos + 1
         if(self.cur_slide_pos > self.max_slide_page):
             self.cur_slide_pos = 0
-        print(self.cur_slide_pos)
         GLib.timeout_add(15000, self.set_slide_page)
