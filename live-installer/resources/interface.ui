@@ -336,7 +336,8 @@
               <object class="GtkBox" id="vbox_timezones">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="valign">start</property>
+                <property name="halign">center</property>
+                <property name="valign">center</property>
                 <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkFrame">
@@ -2013,6 +2014,8 @@
                   <object class="GtkBox" id="slidebox">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="halign">center</property>
+                    <property name="valign">center</property>
                     <property name="hexpand">False</property>
                     <property name="vexpand">False</property>
                     <property name="orientation">vertical</property>
