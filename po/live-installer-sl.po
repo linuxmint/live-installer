@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2022-03-07 12:03+0000\n"
-"PO-Revision-Date: 2022-03-18 21:58+0000\n"
+"PO-Revision-Date: 2022-07-14 06:07+0000\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2022-06-26 11:19+0000\n"
-"X-Generator: Launchpad (build 51a2e4fa2e9b8e45f00904ad7f53546f45ac48a5)\n"
+"X-Launchpad-Export-Date: 2022-07-24 09:34+0000\n"
+"X-Generator: Launchpad (build 025a39fd866a641b6ae33074cda0d02a2c712d38)\n"
 
 #: usr/lib/live-installer/installer.py:44
 msgid ""
@@ -585,7 +585,7 @@ msgstr "Razdelek EFI ni zagonski. Uredite zastavice razdelka."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:977
 msgid "The EFI partition is too small. It must be at least 35MB."
-msgstr "Particija EFI je premajhna. Obsegati mora vsaj 35 MB."
+msgstr "Razdelek EFI je premajhen. Obsegati mora vsaj 35 MB."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:982
 #: usr/lib/live-installer/frontend/gtk_interface.py:986

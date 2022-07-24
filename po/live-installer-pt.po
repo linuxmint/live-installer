@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2022-03-07 12:03+0000\n"
-"PO-Revision-Date: 2022-03-09 15:42+0000\n"
+"PO-Revision-Date: 2022-07-03 12:03+0000\n"
 "Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
 "Language-Team: Portuguese <pt@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2022-06-26 11:19+0000\n"
-"X-Generator: Launchpad (build 51a2e4fa2e9b8e45f00904ad7f53546f45ac48a5)\n"
+"X-Launchpad-Export-Date: 2022-07-24 09:34+0000\n"
+"X-Generator: Launchpad (build 025a39fd866a641b6ae33074cda0d02a2c712d38)\n"
 
 #: usr/lib/live-installer/installer.py:44
 msgid ""
@@ -429,7 +429,7 @@ msgstr ""
 #: usr/lib/live-installer/frontend/gtk_interface.py:368
 #: usr/share/live-installer/interface.ui.h:32
 msgid "Before continuing, mount your target filesystem(s) on /target."
-msgstr "Antes de continuar, monte o sistema de ficheiros em /target,"
+msgstr "Antes de continuar, monte o sistema de ficheiros em /target."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:369
 #: usr/share/live-installer/interface.ui.h:33
@@ -457,7 +457,7 @@ msgstr "Durante a instalação terá de escrever em /etc/fstab."
 #: usr/lib/live-installer/frontend/gtk_interface.py:374
 #: usr/share/live-installer/interface.ui.h:36
 msgid "Do the following and then click Next to finish installation:"
-msgstr "Execute o seguinte e clique Seguinte para terminar a instalação."
+msgstr "Execute o seguinte e clique Seguinte para terminar a instalação:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:375
 #: usr/share/live-installer/interface.ui.h:37
@@ -509,7 +509,7 @@ msgstr "Os valores não coincidem."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:392
 msgid "This field cannot be empty."
-msgstr "Este campo não pode estar vazio"
+msgstr "Este campo não pode estar vazio."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:395
 msgid "This field may not contain space characters."
@@ -541,7 +541,7 @@ msgstr "Tem a certeza de que deseja sair do instalador?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:901
 msgid "Please choose a language"
-msgstr "Por favor escolha o idioma."
+msgstr "Escolha um idioma"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:941
 msgid "Warning"
@@ -697,7 +697,7 @@ msgstr "Não instalar carregador de arranque"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1075
 msgid "Use already-mounted /target."
-msgstr "Utilizar /target montado"
+msgstr "Utilizar /target montado."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1078
 #, python-format
