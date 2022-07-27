@@ -5,7 +5,7 @@
 
 17g is full featured calamares alternative. (https://github.com/calamares/calamares)
 
-Better than calamares for gtk desktops because 17g never use qt dependencies.
+Better than calamares for gtk desktops because 17g never uses qt dependencies.
 
 Features:
 
