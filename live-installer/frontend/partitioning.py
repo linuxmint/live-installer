@@ -103,7 +103,10 @@ def get_all_partition_objects(dev):
 
 def find_mbr(part):
     for disk in get_disks():
-        dev = parted.Disk(parted.getDevice(disk[0]))
+        try:
+            dev = parted.Disk(parted.getDevice(disk[0]))
+        except:
+            continue
         for i in get_all_partition_objects(dev):
             if part == i.path:
                 return disk[0]
