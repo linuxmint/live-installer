@@ -45,6 +45,10 @@ class InstallerEngine:
                 self.error_message(message=_("ERROR: You must first manually mount your target filesystem(s) at /target to do a custom install!"))
                 return
             os.mkdir("/target")
+            if self.setup.btrfs:
+                os.mkdirs("/target/home", exist_ok=True)
+                os.mkdirs("/target/var/log", exist_ok=True)
+                os.mkdirs("/target/var/cache", exist_ok=True)
         if(not os.path.exists("/source")):
             os.mkdir("/source")
 
@@ -306,7 +310,10 @@ class InstallerEngine:
             print(" --> LVM: Extending LV root")
             os.system("lvextend -l 100\%FREE /dev/lvmlmde/root")
             print(" --> LVM: Formatting LV root")
-            os.system("mkfs.ext4 /dev/mapper/lvmlmde-root -FF")
+            if self.setup.btrfs:
+                os.system("mkfs.btrfs /dev/mapper/lvmlmde-root")
+            else:
+                os.system("mkfs.ext4 /dev/mapper/lvmlmde-root -FF")
             print(" --> LVM: Formatting LV swap")
             os.system("mkswap -f /dev/mapper/lvmlmde-swap")
             print(" --> LVM: Enabling LV swap")
@@ -314,7 +321,19 @@ class InstallerEngine:
             self.auto_root_partition = "/dev/mapper/lvmlmde-root"
             self.auto_swap_partition = "/dev/mapper/lvmlmde-swap"
 
-        self.do_mount(self.auto_root_partition, "/target", "ext4", None)
+        if self.setup.btrfs:
+            self.do_mount(self.auto_root_partition, "/target", "btrfs", None)
+            os.system("btrfs subvolume create /target/@")
+            os.system("btrfs subvolume create /target/@home")
+            os.system("btrfs subvolume create /target/@var-log")
+            os.system("btrfs subvolume create /target/@var-cache")
+            os.system("umount --force /target")
+            self.do_mount(self.auto_root_partition, "/target", "btrfs", "subvol=@,defaults,noatime,compress=zstd,discard=async")
+            self.do_mount(self.auto_root_partition, "/target/home", "btrfs", "subvol=@home,defaults,noatime,compress=zstd,discard=async")
+            self.do_mount(self.auto_root_partition, "/target/var/log", "btrfs", "subvol=@var-log,defaults,noatime,compress=zstd,discard=async")
+            self.do_mount(self.auto_root_partition, "/target/var/cache", "btrfs", "subvol=@var-cache,defaults,noatime,compress=zstd,discard=async")
+        else:
+            self.do_mount(self.auto_root_partition, "/target", "ext4", None)
         if (self.auto_boot_partition is not None):
             os.system("mkdir -p /target/boot")
             self.do_mount(self.auto_boot_partition, "/target/boot", "ext4", None)
@@ -426,7 +445,13 @@ class InstallerEngine:
         if(not self.setup.skip_mount):
             if self.setup.automated:
                 fstab.write("# %s\n" % self.auto_root_partition)
-                fstab.write("%s /  ext4 defaults 0 1\n" % self.get_blkid(self.auto_root_partition))
+                if self.setup.btrfs:
+                    fstab.write(f"{self.get_blkid(self.auto_root_partition)}  /  btrfs  subvol=@,defaults,noatime,compress=zstd,discard=async  0  1\n")
+                    fstab.write(f"{self.get_blkid(self.auto_root_partition)}  /home  btrfs  subvol=@home,defaults,noatime,compress=zstd,discard=async  0  2\n")
+                    fstab.write(f"{self.get_blkid(self.auto_root_partition)}  /var/log  btrfs  subvol=@var-log,defaults,noatime,compress=zstd,discard=async  0  2\n")
+                    fstab.write(f"{self.get_blkid(self.auto_root_partition)}  /var/cache  btrfs  subvol=@var-cache,defaults,noatime,compress=zstd,discard=async  0  2\n")
+                else:
+                    fstab.write(f"{self.get_blkid(self.auto_root_partition)}  /  ext4  defaults  0  1\n")
                 fstab.write("# %s\n" % self.auto_swap_partition)
                 fstab.write("%s none   swap sw 0 0\n" % self.get_blkid(self.auto_swap_partition))
                 if (self.auto_boot_partition is not None):
