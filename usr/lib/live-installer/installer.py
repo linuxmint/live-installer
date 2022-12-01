@@ -45,10 +45,6 @@ class InstallerEngine:
                 self.error_message(message=_("ERROR: You must first manually mount your target filesystem(s) at /target to do a custom install!"))
                 return
             os.mkdir("/target")
-            if self.setup.btrfs:
-                os.makedirs("/target/home", exist_ok=True)
-                os.makedirs("/target/var/log", exist_ok=True)
-                os.makedirs("/target/var/cache", exist_ok=True)
         if(not os.path.exists("/source")):
             os.mkdir("/source")
 
@@ -329,8 +325,11 @@ class InstallerEngine:
             os.system("btrfs subvolume create /target/@var-cache")
             os.system("umount --force /target")
             self.do_mount(self.auto_root_partition, "/target", "btrfs", "subvol=@,defaults,noatime,compress=zstd,discard=async")
+            os.makedirs("/target/home", exist_ok=True)
             self.do_mount(self.auto_root_partition, "/target/home", "btrfs", "subvol=@home,defaults,noatime,compress=zstd,discard=async")
+            os.makedirs("/target/var/log", exist_ok=True)
             self.do_mount(self.auto_root_partition, "/target/var/log", "btrfs", "subvol=@var-log,defaults,noatime,compress=zstd,discard=async")
+            os.makedirs("/target/var/cache", exist_ok=True)
             self.do_mount(self.auto_root_partition, "/target/var/cache", "btrfs", "subvol=@var-cache,defaults,noatime,compress=zstd,discard=async")
         else:
             self.do_mount(self.auto_root_partition, "/target", "ext4", None)
