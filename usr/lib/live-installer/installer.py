@@ -46,9 +46,9 @@ class InstallerEngine:
                 return
             os.mkdir("/target")
             if self.setup.btrfs:
-                os.mkdirs("/target/home", exist_ok=True)
-                os.mkdirs("/target/var/log", exist_ok=True)
-                os.mkdirs("/target/var/cache", exist_ok=True)
+                os.makedirs("/target/home", exist_ok=True)
+                os.makedirs("/target/var/log", exist_ok=True)
+                os.makedirs("/target/var/cache", exist_ok=True)
         if(not os.path.exists("/source")):
             os.mkdir("/source")
 
