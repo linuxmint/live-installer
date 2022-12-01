@@ -155,6 +155,7 @@ class InstallerWindow:
         self.builder.get_object("check_badblocks").connect("toggled", self.assign_type_options)
         self.builder.get_object("check_encrypt").connect("toggled", self.assign_type_options)
         self.builder.get_object("check_lvm").connect("toggled", self.assign_type_options)
+        self.builder.get_object("check_btrfs").connect("toggled", self.assign_type_options)
         self.builder.get_object("combo_disk").connect("changed", self.assign_type_options)
 
         # partitions
@@ -344,6 +345,8 @@ class InstallerWindow:
         self.builder.get_object("label_encrypt").set_text(_("Encrypt the operating system"))
         self.builder.get_object("entry_passphrase").set_placeholder_text(_("Passphrase"))
         self.builder.get_object("entry_passphrase2").set_placeholder_text(_("Confirm passphrase"))
+        self.builder.get_object("label_btrfs").set_text(_("Format root partition using btrfs"))
+        self.builder.get_object("label_btrfs").set_tooltip_text(_("Format root partition using btrfs, a modern copy-on-write filesystem."))
         self.builder.get_object("label_lvm").set_text(_("Use LVM (Logical Volume Management)"))
         self.builder.get_object("label_manual").set_text(_("Manual Partitioning"))
         self.builder.get_object("label_manual2").set_text(_("Manually create, resize or choose partitions for LMDE."))
@@ -501,6 +504,7 @@ class InstallerWindow:
         self.builder.get_object("check_badblocks").set_sensitive(self.setup.automated)
         self.builder.get_object("check_encrypt").set_sensitive(self.setup.automated)
         self.builder.get_object("check_lvm").set_sensitive(self.setup.automated)
+        self.builder.get_object("check_btrfs").set_sensitive(self.setup.automated)
         self.builder.get_object("combo_disk").set_sensitive(self.setup.automated)
         self.builder.get_object("entry_passphrase").set_sensitive(self.setup.automated)
         self.builder.get_object("entry_passphrase2").set_sensitive(self.setup.automated)
@@ -508,6 +512,7 @@ class InstallerWindow:
             self.builder.get_object("check_badblocks").set_active(False)
             self.builder.get_object("check_encrypt").set_active(False)
             self.builder.get_object("check_lvm").set_active(False)
+            self.builder.get_object("check_btrfs").set_active(False)
             self.builder.get_object("combo_disk").set_active(-1)
             self.builder.get_object("entry_passphrase").set_text("")
             self.builder.get_object("entry_passphrase2").set_text("")
