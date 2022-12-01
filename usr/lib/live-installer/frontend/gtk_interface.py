@@ -527,6 +527,8 @@ class InstallerWindow:
             self.builder.get_object("check_badblocks").set_sensitive(False)
             self.builder.get_object("check_encrypt").set_sensitive(False)
 
+        self.setup.btrfs = self.builder.get_object("check_btrfs").get_active()
+
         self.setup.passphrase1 = self.builder.get_object("entry_passphrase").get_text()
         self.setup.passphrase2 = self.builder.get_object("entry_passphrase2").get_text()
         self.setup.luks = self.builder.get_object("check_encrypt").get_active()
@@ -1094,6 +1096,7 @@ class InstallerWindow:
         if self.setup.automated:
             model.append(top, (bold(_("Automated installation on %s") % self.setup.diskname),))
             model.append(top, (_("LVM: ") + bold(_("enabled") if self.setup.lvm else _("disabled")),))
+            model.append(top, (_("Btrfs: ") + bold(_("enabled") if self.setup.btrfs else _("disabled")),))
             model.append(top, (_("Disk Encryption: ") + bold(_("enabled") if self.setup.luks else _("disabled")),))
         else:
             for p in self.setup.partitions:
