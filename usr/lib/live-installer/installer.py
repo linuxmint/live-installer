@@ -440,7 +440,7 @@ class InstallerEngine:
         # make sure fstab has default /proc and /sys entries
         fstab = open(path, "w")
         fstab.write("#### Static Filesystem Table File\n")
-        fstab.write("proc\t/proc\tproc\tdefaults\t0\t0\n")
+        fstab.write("tmpfs  /tmp  tmpfs  defaults,noatime  0  0\n")
         if(not self.setup.skip_mount):
             if self.setup.automated:
                 fstab.write("# %s\n" % self.auto_root_partition)
