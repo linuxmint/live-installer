@@ -1,22 +1,23 @@
 # Portuguese translation for linuxmint
 # Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
 # This file is distributed under the same license as the linuxmint package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+# Hugo Carvalho <hugokarvalho@hotmail.com>, 2022.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-06-17 11:55+0000\n"
-"PO-Revision-Date: 2020-03-06 16:58+0000\n"
+"PO-Revision-Date: 2022-11-21 14:06+0000\n"
 "Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
 "Language-Team: Portuguese <pt@li.org>\n"
 "Language: pt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Launchpad-Export-Date: 2020-03-13 11:20+0000\n"
-"X-Generator: Launchpad (build 3a6db24bbe7280ec09bae73384238390fcc98ad3)\n"
+"X-Generator: Poedit 3.2\n"
 
 #: live-installer/resources/interface.ui:54
 #: live-installer/resources/interface.ui:73
@@ -24,30 +25,28 @@ msgstr ""
 #: live-installer/resources/interface2.ui:2245
 #: live-installer/frontend/gtk_interface.py:445
 msgid "Welcome"
-msgstr "Boas vindas"
+msgstr "Bem-vindo"
 
 #: live-installer/resources/interface.ui:131
 #: live-installer/resources/interface2.ui:66
-#, fuzzy
 msgid "Welcome to the 17g Installer."
-msgstr "Boas vindas do instalador do 17G."
+msgstr "Bem-vindo ao Instalador 17g."
 
 #: live-installer/resources/interface.ui:148
 #: live-installer/resources/interface2.ui:83
 #: live-installer/frontend/gtk_interface.py:474
 #: live-installer/frontend/tui_interface.py:25
-#, fuzzy
 msgid ""
 "This program will ask you some questions and set up system on your computer."
 msgstr ""
-"Este programa irá efetuar algumas perguntas e configurar 17G no seu "
+"Este programa irá fazer-lhe algumas perguntas e configurar o sistema no seu "
 "computador."
 
 #: live-installer/resources/interface.ui:203
 #: live-installer/resources/interface2.ui:138
 #: live-installer/frontend/gtk_interface.py:476
 msgid "I accept the terms of the License Agreement"
-msgstr ""
+msgstr "Aceito os termos do Acordo de Licença"
 
 #: live-installer/resources/interface.ui:274
 #: live-installer/resources/interface2.ui:209
@@ -57,9 +56,8 @@ msgstr "Modelo do teclado:"
 
 #: live-installer/resources/interface.ui:381
 #: live-installer/resources/interface2.ui:316
-#, fuzzy
 msgid "Type here to test your keyboard"
-msgstr "Digite algo aqui para testar o teclado"
+msgstr "Escreva algo aqui para testar o teclado"
 
 #: live-installer/resources/interface.ui:436
 #: live-installer/resources/interface.ui:1948
@@ -72,12 +70,12 @@ msgstr "Digite algo aqui para testar o teclado"
 #: live-installer/resources/interface2.ui:2345
 #: live-installer/resources/interface2.ui:2357
 msgid "label"
-msgstr ""
+msgstr "etiqueta"
 
 #: live-installer/resources/interface.ui:471
 #: live-installer/resources/interface2.ui:406
 msgid "Continent"
-msgstr ""
+msgstr "Continente"
 
 #: live-installer/resources/interface.ui:485
 #: live-installer/resources/interface2.ui:420
@@ -94,9 +92,8 @@ msgstr "Instalação automatizada"
 
 #: live-installer/resources/interface.ui:559
 #: live-installer/resources/interface2.ui:494
-#, fuzzy
 msgid "Erase a disk and install LMDE on it."
-msgstr "Apagar disco e instalar 17G."
+msgstr "Apagar disco e instalar o LMDE."
 
 #: live-installer/resources/interface.ui:587
 #: live-installer/resources/interface2.ui:522
@@ -107,9 +104,8 @@ msgstr "Disco:"
 #: live-installer/resources/interface.ui:627
 #: live-installer/resources/interface2.ui:562
 #: live-installer/frontend/gtk_interface.py:541
-#, fuzzy
 msgid "Create swap partition"
-msgstr "Editar partição"
+msgstr "Criar partição swap"
 
 #: live-installer/resources/interface.ui:660
 #: live-installer/resources/interface2.ui:595
@@ -121,7 +117,7 @@ msgstr "Utilizar LVM (Logical Volume Management)"
 #: live-installer/resources/interface2.ui:642
 #: live-installer/frontend/gtk_interface.py:516
 msgid "Encrypt the operating system"
-msgstr "Cifrar sistema operativo"
+msgstr "Encriptar o sistema operativo"
 
 #: live-installer/resources/interface.ui:737
 #: live-installer/resources/interface2.ui:672
@@ -139,13 +135,13 @@ msgstr "Confirmação de palavra-passse"
 #: live-installer/resources/interface2.ui:722
 #: live-installer/frontend/gtk_interface.py:539
 msgid "This provides extra security but it can take hours."
-msgstr ""
+msgstr "Isto proporciona segurança extra, mas pode levar horas."
 
 #: live-installer/resources/interface.ui:801
 #: live-installer/resources/interface2.ui:736
 #: live-installer/frontend/gtk_interface.py:537
 msgid "Fill the disk with random data"
-msgstr ""
+msgstr "Preenche o disco com dados aleatórios"
 
 #: live-installer/resources/interface.ui:886
 #: live-installer/resources/interface2.ui:821
@@ -155,38 +151,35 @@ msgstr "Particionamento manual"
 
 #: live-installer/resources/interface.ui:902
 #: live-installer/resources/interface2.ui:837
-#, fuzzy
 msgid "Manually create, resize or choose partitions for LMDE."
-msgstr "Criar, redimensionar e escolher as partições para 17G."
+msgstr "Criar, redimensionar e escolher as partições para LMDE."
 
 #: live-installer/resources/interface.ui:967
 #: live-installer/resources/interface2.ui:902
 msgid "Remove windows & Install"
-msgstr ""
+msgstr "Remover o Windows e Instalar"
 
 #: live-installer/resources/interface.ui:983
 #: live-installer/resources/interface2.ui:918
 msgid "Remove existsing windows and install LMDE on it."
-msgstr ""
+msgstr "Remover o Windows existente e instalar o LMDE."
 
 #: live-installer/resources/interface.ui:1035
 #: live-installer/resources/interface2.ui:970
 #: live-installer/frontend/gtk_interface.py:528
-#, fuzzy
 msgid "Expert Mode"
 msgstr "Modo avançado"
 
 #: live-installer/resources/interface.ui:1051
 #: live-installer/resources/interface2.ui:986
 msgid "The setup tool will not do partitioning."
-msgstr ""
+msgstr "A ferramenta de configuração não irá fazer a particionamento."
 
 #: live-installer/resources/interface.ui:1113
 #: live-installer/resources/interface2.ui:1048
 #: live-installer/frontend/gtk_interface.py:573
-#, fuzzy
 msgid "Minimal installation"
-msgstr "Instalação automatizada"
+msgstr "Instalação mínima"
 
 #: live-installer/resources/interface.ui:1129
 #: live-installer/resources/interface2.ui:1064
@@ -195,18 +188,20 @@ msgid ""
 "This will only install a minimal desktop environment with a browser and "
 "utilities."
 msgstr ""
+"Isto apenas instalará um ambiente gráfico minimalista com um navegador e "
+"utilitários."
 
 #: live-installer/resources/interface.ui:1162
 #: live-installer/resources/interface2.ui:1097
 #: live-installer/frontend/gtk_interface.py:571
 msgid "Install system with updates"
-msgstr ""
+msgstr "Instalar o sistema com atualizações"
 
 #: live-installer/resources/interface.ui:1178
 #: live-installer/resources/interface2.ui:1113
 #: live-installer/frontend/gtk_interface.py:572
 msgid "If you connect internet, updates will install."
-msgstr ""
+msgstr "Se ligar a Internet, as atualizações serão instaladas."
 
 #: live-installer/resources/interface.ui:1280
 #: live-installer/resources/interface2.ui:1215
@@ -218,20 +213,19 @@ msgstr "Recarregar"
 #: live-installer/resources/interface2.ui:1262
 #: live-installer/frontend/gtk_interface.py:547
 msgid "Delete"
-msgstr ""
+msgstr "Eliminar"
 
 #: live-installer/resources/interface.ui:1374
 #: live-installer/resources/interface2.ui:1309
 #: live-installer/frontend/gtk_interface.py:548
-#, fuzzy
 msgid "Format"
-msgstr "Formatar como"
+msgstr "Formatar"
 
 #: live-installer/resources/interface.ui:1421
 #: live-installer/resources/interface2.ui:1356
 #: live-installer/frontend/gtk_interface.py:549
 msgid "Create"
-msgstr ""
+msgstr "Criar"
 
 #: live-installer/resources/interface.ui:1457
 #: live-installer/resources/interface2.ui:1392
@@ -241,14 +235,13 @@ msgstr "Instalar menu de arranque GRUB em:"
 
 #: live-installer/resources/interface.ui:1530
 #: live-installer/resources/interface2.ui:1465
-#, fuzzy
 msgid "Edit Partitions"
 msgstr "Editar partições"
 
 #: live-installer/resources/interface.ui:1554
 #: live-installer/resources/interface2.ui:1489
 msgid "Legacy"
-msgstr ""
+msgstr "Legacy"
 
 #: live-installer/resources/interface.ui:1612
 #: live-installer/resources/interface2.ui:1547
@@ -308,63 +301,63 @@ msgstr "Confirme a sua palavra-passe:"
 #: live-installer/resources/interface.ui:1843
 #: live-installer/resources/interface2.ui:1778
 msgid "Length must be minimum 8 characters"
-msgstr ""
+msgstr "O comprimento deve ter no mínimo 8 caracteres"
 
 #: live-installer/resources/interface.ui:1967
 #: live-installer/resources/interface2.ui:1902
 msgid "0.0"
-msgstr ""
+msgstr "0.0"
 
 #: live-installer/resources/interface.ui:1999
 #: live-installer/resources/interface2.ui:1934
 #: live-installer/frontend/gtk_interface.py:575
 msgid "Please do not turn off your computer during the installation process."
-msgstr ""
+msgstr "Não desligue o computador durante o processo de instalação."
 
 #: live-installer/resources/interface.ui:2049
 #: live-installer/resources/interface2.ui:2002
 #: live-installer/resources/welcome.ui:206
 msgid "17g team"
-msgstr ""
+msgstr "Equipa 17g"
 
 #: live-installer/resources/interface.ui:2336
 #: live-installer/resources/interface2.ui:2369
 msgid "/dev/sda1"
-msgstr ""
+msgstr "/dev/sda1"
 
 #: live-installer/resources/interface.ui:2388
 #: live-installer/resources/interface2.ui:2421
 msgid "read only"
-msgstr ""
+msgstr "apenas leitura"
 
 #: live-installer/resources/welcome.ui:61
 msgid "Try 17g"
-msgstr ""
+msgstr "Experimentar 17g"
 
 #: live-installer/resources/welcome.ui:85
 msgid " "
-msgstr ""
+msgstr " "
 
 #: live-installer/resources/welcome.ui:121
 #: live-installer/frontend/welcome.py:34
-#, fuzzy
 msgid "Install to Hard Drive"
-msgstr "A instalar controladores"
+msgstr "Instalar no disco rígido"
 
 #: live-installer/resources/welcome.ui:166
 msgid "You are currently running 17g from live media."
-msgstr ""
+msgstr "Está atualmente a executar o 17g a partir do meio de suporte 'live'."
 
 #: live-installer/resources/welcome.ui:178
 msgid ""
 "You can install 17g now, or chose \"Install to Hard Drive\" in the "
 "Appication Menu later."
 msgstr ""
+"Pode instalar o 17g agora, ou escolher \"Instalar no disco rígido\" no Menu "
+"de Aplicações mais tarde."
 
 #: live-installer/resources/welcome.ui:228
-#, fuzzy
 msgid "Welcome to 17g"
-msgstr "Boas vindas"
+msgstr "Bem-vindo ao 17g"
 
 #: live-installer/installer.py:138 live-installer/installer.py:159
 #, python-format
@@ -374,11 +367,11 @@ msgstr "A copiar /%s"
 #: live-installer/installer.py:139
 #, python-format
 msgid "rsync exited with return code: %s"
-msgstr ""
+msgstr "rsync saiu com o código de retorno: %s"
 
 #: live-installer/installer.py:143
 msgid "Extracting rootfs."
-msgstr ""
+msgstr "A extrair rootfs."
 
 #: live-installer/installer.py:170
 msgid "Entering the system ..."
@@ -391,7 +384,7 @@ msgstr "A adicionar um novo utilizador ao sistema"
 #: live-installer/installer.py:250
 msgid "Writing filesystem mount information to /etc/fstab"
 msgstr ""
-"A escrever a informação de montagem do sistema de ficheiros em /ec/fstab"
+"A gravar a informação de montagem do sistema de ficheiros em /etc/fstab"
 
 #: live-installer/installer.py:256 live-installer/installer.py:412
 #, python-format
@@ -402,6 +395,7 @@ msgstr "A montar %(partition)s em %(mountpoint)s"
 #, python-format
 msgid "Filling %s with random data (please be patient, this can take hours...)"
 msgstr ""
+"A preencher %s com dados aleatórios (seja paciente, isto pode levar horas...)"
 
 #: live-installer/installer.py:299
 #, python-format
@@ -422,34 +416,32 @@ msgid "Setting locale"
 msgstr "A definir idioma"
 
 #: live-installer/installer.py:591
-#, fuzzy
 msgid "Setting timezone"
-msgstr "A definir nome da máquina"
+msgstr "A definir fuso horário"
 
 #: live-installer/installer.py:626
 msgid "Setting keyboard options"
 msgstr "A definir opções de teclado"
 
 #: live-installer/installer.py:720
-#, fuzzy
 msgid "Removing extra packages"
-msgstr "A remover configuração live (pacotes)"
+msgstr "A remover pacotes extra"
 
 #: live-installer/installer.py:727
 msgid "Trying to install updates"
-msgstr ""
+msgstr "A tentar instalar atualizações"
 
 #: live-installer/installer.py:732
 msgid "Clearing package manager"
-msgstr ""
+msgstr "A limpar o gestor de pacotes"
 
 #: live-installer/installer.py:750
 msgid "Generating initramfs"
-msgstr ""
+msgstr "A gerar initramfs"
 
 #: live-installer/installer.py:755
 msgid "Preparing bootloader installation"
-msgstr ""
+msgstr "A preparar a instalação do carregador de arranque"
 
 #: live-installer/installer.py:775
 msgid "Installing bootloader"
@@ -478,21 +470,21 @@ msgstr "A verificar carregador de arranque"
 
 #: live-installer/installer.py:887
 msgid "Failed to run command (Exited with {}):"
-msgstr ""
+msgstr "Falha ao executar o comando (Saiu com {}):"
 
 #: live-installer/main.py:38
 msgid "You must be root!"
-msgstr ""
+msgstr "Tem de ser o root!"
 
 #: live-installer/frontend/welcome.py:32
 #, python-format
 msgid "Try %s"
-msgstr ""
+msgstr "Experimentar o %s"
 
 #: live-installer/frontend/welcome.py:36
 #, python-format
 msgid "You are currently running %s from live media."
-msgstr ""
+msgstr "Está atualmente a executar o %s a partir do meio de suporte 'live'."
 
 #: live-installer/frontend/welcome.py:38
 #, python-format
@@ -500,11 +492,13 @@ msgid ""
 "You can install %s now, or chose \"Install to Hard Drive\" in the Appication "
 "Menu later."
 msgstr ""
+"Pode instalar o %s agora, ou escolher \"Instalar no disco rígido\" no Menu "
+"de Aplicações mais tarde."
 
 #: live-installer/frontend/welcome.py:39
-#, fuzzy, python-format
+#, python-format
 msgid "Welcome to %s"
-msgstr "Boas vindas"
+msgstr "Bem-vindo ao %s"
 
 #: live-installer/frontend/partitioning.py:66
 msgid "B"
@@ -532,12 +526,12 @@ msgstr "TB"
 
 #: live-installer/frontend/partitioning.py:74
 msgid "Removable:"
-msgstr "Amovível:"
+msgstr "Removível:"
 
 #: live-installer/frontend/partitioning.py:161
 #: live-installer/frontend/gtk_interface.py:565
 msgid "Read only"
-msgstr ""
+msgstr "Apenas leitura"
 
 #: live-installer/frontend/partitioning.py:202
 msgid "Edit"
@@ -547,9 +541,9 @@ msgstr "Editar"
 #: live-installer/frontend/partitioning.py:211
 #: live-installer/frontend/partitioning.py:218
 #: live-installer/frontend/partitioning.py:227
-#, fuzzy, python-format
+#, python-format
 msgid "Assign to %s"
-msgstr "Atribuir a /"
+msgstr "Atribuir a %s"
 
 #: live-installer/frontend/partitioning.py:282
 #: live-installer/frontend/partitioning.py:349
@@ -575,6 +569,8 @@ msgid ""
 "Disk: {} partition table broken or not exists. Do you want to create new "
 "partition table?"
 msgstr ""
+"Disco: tabela de partições {} corrompida ou não existe. Quer criar uma nova "
+"tabela de partições?"
 
 #: live-installer/frontend/partitioning.py:305
 #: live-installer/frontend/partitioning.py:501
@@ -615,12 +611,11 @@ msgstr "Desconhecido"
 
 #: live-installer/frontend/partitioning.py:555
 msgid "bootloader/recovery"
-msgstr ""
+msgstr "bootloader/recovery"
 
 #: live-installer/frontend/partitioning.py:568
-#, fuzzy
 msgid "EFI System Partition"
-msgstr "Editar partição"
+msgstr "Partição do sistema EFI"
 
 #: live-installer/frontend/partitioning.py:593
 msgid "Edit partition"
@@ -674,7 +669,7 @@ msgstr "A calcular índice de ficheiros..."
 
 #: live-installer/frontend/gtk_interface.py:447
 msgid "License Agreement"
-msgstr ""
+msgstr "Acordo de Licença"
 
 #: live-installer/frontend/gtk_interface.py:449
 #: live-installer/frontend/tui_interface.py:28
@@ -708,9 +703,8 @@ msgstr "Tipo de instalação"
 
 #: live-installer/frontend/gtk_interface.py:457
 #: live-installer/frontend/gtk_interface.py:459
-#, fuzzy
 msgid "Where do you want to install system?"
-msgstr "Onde pretende instalar 17G?"
+msgstr "Onde pretende instalar o sistema?"
 
 #: live-installer/frontend/gtk_interface.py:459
 msgid "Partitioning"
@@ -722,7 +716,7 @@ msgstr "Resumo"
 
 #: live-installer/frontend/gtk_interface.py:461
 msgid "Check that everything is correct"
-msgstr ""
+msgstr "Verifique se tudo está correto"
 
 #: live-installer/frontend/gtk_interface.py:463
 msgid "Installing"
@@ -730,7 +724,7 @@ msgstr "A instalar"
 
 #: live-installer/frontend/gtk_interface.py:463
 msgid "Please wait..."
-msgstr ""
+msgstr "Aguarde..."
 
 #: live-installer/frontend/gtk_interface.py:466
 msgid "Quit"
@@ -738,7 +732,7 @@ msgstr "Sair"
 
 #: live-installer/frontend/gtk_interface.py:467
 msgid "Back"
-msgstr "Recuar"
+msgstr "Voltar"
 
 #: live-installer/frontend/gtk_interface.py:468
 #: live-installer/frontend/gtk_interface.py:1188
@@ -747,35 +741,34 @@ msgstr "Seguinte"
 
 #: live-installer/frontend/gtk_interface.py:472
 #: live-installer/frontend/tui_interface.py:23
-#, fuzzy, python-format
+#, python-format
 msgid "Welcome to the %s Installer."
-msgstr "Boas vindas do instalador do 17G."
+msgstr "Bem-vindo ao Instalador %s."
 
 #: live-installer/frontend/gtk_interface.py:487
 msgid "Type here to test your keyboard layout"
-msgstr "Digite algo aqui para testar o teclado"
+msgstr "Escreva algo aqui para testar a disposição do teclado"
 
 #: live-installer/frontend/gtk_interface.py:513
-#, fuzzy
 msgid "Erase a disk and install system on it."
-msgstr "Apagar disco e instalar 17G."
+msgstr "Apagar um disco e instalar um sistema no mesmo."
 
 #: live-installer/frontend/gtk_interface.py:526
-#, fuzzy
 msgid "Manually create, resize or choose partitions for system."
-msgstr "Criar, redimensionar e escolher as partições para 17G."
+msgstr ""
+"Criar, redimensionar ou escolher manualmente as partições para o sistema."
 
 #: live-installer/frontend/gtk_interface.py:530
 msgid "The setup tool will not do partitioning"
-msgstr ""
+msgstr "A ferramenta de configuração não irá fazer o particionamento"
 
 #: live-installer/frontend/gtk_interface.py:532
 msgid "Remove Windows & Install"
-msgstr ""
+msgstr "Remover o Windows e Instalar"
 
 #: live-installer/frontend/gtk_interface.py:534
 msgid "Remove existsing windows and install system on it."
-msgstr ""
+msgstr "Remover o Windows existente e instalar o sistema."
 
 #: live-installer/frontend/gtk_interface.py:544
 #: live-installer/frontend/gtk_interface.py:546
@@ -808,12 +801,12 @@ msgstr "Tamanho"
 
 #: live-installer/frontend/gtk_interface.py:718
 msgid "Please provide a passphrase for the encryption."
-msgstr "Introduza a palavra-passe para a cifra."
+msgstr "Introduza a palavra-passe para a encriptação."
 
 #: live-installer/frontend/gtk_interface.py:720
 #: live-installer/frontend/gtk_interface.py:1114
 msgid "Your passwords do not match."
-msgstr "As suas palavras-passe não são coincidentes."
+msgstr "As suas palavras-passe não coincidem."
 
 #: live-installer/frontend/gtk_interface.py:725
 msgid "Quit?"
@@ -821,7 +814,7 @@ msgstr "Sair?"
 
 #: live-installer/frontend/gtk_interface.py:726
 msgid "Are you sure you want to quit the installer?"
-msgstr "Tem a certeza de que deseja sair do instalador?"
+msgstr "Sair do instalador?"
 
 #: live-installer/frontend/gtk_interface.py:895
 #: live-installer/frontend/gtk_interface.py:910
@@ -829,38 +822,36 @@ msgstr "Tem a certeza de que deseja sair do instalador?"
 #: live-installer/frontend/gtk_interface.py:1124
 #: live-installer/frontend/gtk_interface.py:1237
 msgid "Are you sure?"
-msgstr ""
+msgstr "Tem a certeza?"
 
 #: live-installer/frontend/gtk_interface.py:896
 msgid "New partition will created at {}"
-msgstr ""
+msgstr "Nova partição será criada em {}"
 
 #: live-installer/frontend/gtk_interface.py:911
 msgid "Partition {} will removed from {}."
-msgstr ""
+msgstr "A partição {} será removida de {}."
 
 #: live-installer/frontend/gtk_interface.py:925
 msgid "Partition {} will formated from {}."
-msgstr ""
+msgstr "A partição {} será formada de {}."
 
 #: live-installer/frontend/gtk_interface.py:1067
 msgid "Please choose a language"
-msgstr "Por favor escolha o idioma."
+msgstr "Escolha o idioma"
 
 #: live-installer/frontend/gtk_interface.py:1105
-#, fuzzy
 msgid "Please provide a kayboard layout for your computer."
-msgstr "Introduza um nome para o computador."
+msgstr "Forneça uma disposição de teclado para o seu computador."
 
 #: live-installer/frontend/gtk_interface.py:1119
 msgid "Please provide your full name."
-msgstr "Por favor introduza o nome completo."
+msgstr "Introduza o nome completo."
 
 #: live-installer/frontend/gtk_interface.py:1124
 #: live-installer/frontend/gtk_interface.py:1237
-#, fuzzy
 msgid "Your passwords is not strong."
-msgstr "As suas palavras-passe não são coincidentes."
+msgstr "As suas palavras-passe não são fortes."
 
 #: live-installer/frontend/gtk_interface.py:1128
 msgid "Install"
@@ -871,13 +862,15 @@ msgid ""
 "Root filesystem type not specified. Installation will continue without disk "
 "formatting. Do you want to continue?"
 msgstr ""
+"Tipo de sistema de ficheiros root não especificado. A instalação continuará "
+"sem a formatação do disco. Quer continuar?"
 
 #: live-installer/frontend/gtk_interface.py:1146
 msgid "Please select a root (/) partition."
-msgstr "Por favor selecione a partição root (/)."
+msgstr "Selecione uma partição root (/)."
 
 #: live-installer/frontend/gtk_interface.py:1147
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "A root partition is needed to install %s on.\n"
 "\n"
@@ -886,20 +879,17 @@ msgid ""
 " - Recommended filesystem format: ext4\n"
 "\n"
 msgstr ""
-"Necessita de uma partição 'root' para instalar o Linux Mint.\n"
+"Necessita de uma partição 'root' para instalar o %s.\n"
+"\n"
 " - Ponto de montagem: /\n"
 " - Tamanho recomendado: 30GB\n"
 " - Sistema de ficheiros recomendado: ext4\n"
 "\n"
-"Nota: as capturas timeshift para os sistemas btrfs necessitam do seguinte:\n"
-" - subvolume com ponto de montagem /@\n"
-" - btrfs como formato do sistema de ficheiros\n"
 
 #: live-installer/frontend/gtk_interface.py:1161
-#, fuzzy
 msgid "The EFI partition is not bootable. Do you want to set boot flag?"
 msgstr ""
-"A partição EFI não é de arranque. Por favor edite as 'flags' da partição."
+"A partição EFI não é de arranque. Quer definir uma 'flag' de arranque(boot)?"
 
 #: live-installer/frontend/gtk_interface.py:1167
 msgid "The EFI partition is too small. It must be at least 35MB."
@@ -912,7 +902,7 @@ msgstr "A partição EFI tem que ser formatada como vfat."
 
 #: live-installer/frontend/gtk_interface.py:1182
 msgid "Please select an EFI partition."
-msgstr "Por favor selecione a partição EFI."
+msgstr "Selecione a partição EFI."
 
 #: live-installer/frontend/gtk_interface.py:1183
 msgid ""
@@ -949,12 +939,11 @@ msgstr "Aviso"
 #: live-installer/frontend/gtk_interface.py:1243
 #, python-format
 msgid "This will delete all the data on %s. Are you sure?"
-msgstr "Está prestes a apagar todos os dados em %s. Tem a certeza?"
+msgstr "Está prestes a eliminar todos os dados em %s. Tem a certeza?"
 
 #: live-installer/frontend/gtk_interface.py:1319
-#, fuzzy
 msgid "Please provide a device to install grub."
-msgstr "Por favor introduza o nome de utilizador."
+msgstr "Forneça um dispositivo para instalar o grub."
 
 #: live-installer/frontend/gtk_interface.py:1363
 msgid "Localization"
@@ -978,7 +967,7 @@ msgstr "Definições de utilizador"
 
 #: live-installer/frontend/gtk_interface.py:1371
 msgid "Real name: "
-msgstr "Nome real: "
+msgstr "Nome verdadeiro: "
 
 #: live-installer/frontend/gtk_interface.py:1372
 msgid "Username: "
@@ -986,7 +975,7 @@ msgstr "Nome de utilizador: "
 
 #: live-installer/frontend/gtk_interface.py:1374
 msgid "Password: "
-msgstr ""
+msgstr "Palavra-passe: "
 
 #: live-installer/frontend/gtk_interface.py:1376
 msgid "Automatic login: "
@@ -1015,12 +1004,11 @@ msgstr "Nome do computador: "
 #: live-installer/frontend/gtk_interface.py:1385
 #: live-installer/frontend/gtk_interface.py:1387
 msgid "Bios type: "
-msgstr ""
+msgstr "Tipo de BIOS: "
 
 #: live-installer/frontend/gtk_interface.py:1389
-#, fuzzy
 msgid "Install updates after installation"
-msgstr "Instalação automatizada"
+msgstr "Instalar atualizações após a instalação"
 
 #: live-installer/frontend/gtk_interface.py:1390
 msgid "Filesystem operations"
@@ -1037,7 +1025,7 @@ msgstr "Não instalar carregador de arranque"
 
 #: live-installer/frontend/gtk_interface.py:1394
 msgid "Use already-mounted /target."
-msgstr "Utilizar /target montado"
+msgstr "Utilizar /target montado."
 
 #: live-installer/frontend/gtk_interface.py:1399
 #, python-format
@@ -1060,14 +1048,14 @@ msgstr "LVM: "
 
 #: live-installer/frontend/gtk_interface.py:1413
 msgid "Disk Encryption: "
-msgstr "Cifra de disco: "
+msgstr "Encriptação de disco: "
 
 #: live-installer/frontend/gtk_interface.py:1426
 msgid ""
 "The installation is now complete. Do you want to restart your computer to "
 "use the new system?"
 msgstr ""
-"A instalação está agora terminada. Deseja reiniciar o computador agora e "
+"A instalação está agora concluída. Deseja reiniciar o computador agora e "
 "utilizar o seu novo sistema?"
 
 #: live-installer/frontend/gtk_interface.py:1457
@@ -1079,17 +1067,15 @@ msgstr "Erro de instalação"
 
 #: live-installer/frontend/gtk_interface.py:1493
 msgid "Error"
-msgstr ""
+msgstr "Erro"
 
 #: live-installer/frontend/tui_interface.py:45
-#, fuzzy
 msgid "What keyboard would you like to use?"
-msgstr "Qual é o idioma que deseja utilizar?"
+msgstr "Qual teclado gostaria de utilizar?"
 
 #: live-installer/frontend/tui_interface.py:52
-#, fuzzy
 msgid "Keyboard Model"
-msgstr "Modelo do teclado:"
+msgstr "Modelo do teclado"
 
 #: live-installer/frontend/dialogs.py:41
 msgid "No"
@@ -1100,33 +1086,28 @@ msgid "Yes"
 msgstr "Sim"
 
 #: live-installer/frontend/timezones.py:140
-#, fuzzy
 msgid "Select timezone"
-msgstr "Fuso horário"
+msgstr "Selecionar fuso horário"
 
 #: live-installer/validate.py:12
 msgid "Please provide a username."
-msgstr "Por favor introduza o nome de utilizador."
+msgstr "Introduza o nome de utilizador."
 
 #: live-installer/validate.py:14
-#, fuzzy
 msgid "Your username is invalid."
-msgstr "Tem que escrever o nome de utilizador em minúsculas."
+msgstr "O seu nome de utilizador é inválido."
 
 #: live-installer/validate.py:16
-#, fuzzy
 msgid "Your username is too long"
-msgstr "Tem que escrever o nome de utilizador em minúsculas."
+msgstr "O seu nome de utilizador é demasiado comprido"
 
 #: live-installer/validate.py:18
-#, fuzzy
 msgid "Your username is unavailable"
-msgstr "Tem que escrever o nome de utilizador em minúsculas."
+msgstr "O seu nome de utilizador não está disponível"
 
 #: live-installer/validate.py:20
-#, fuzzy
 msgid "Your username cannot start with numbers."
-msgstr "O seu nome de utilizador não pode ter espaços."
+msgstr "O seu nome de utilizador não pode começar com números."
 
 #: live-installer/validate.py:23
 msgid "Your username must be lower case."
@@ -1141,19 +1122,16 @@ msgid "Please provide a name for your computer."
 msgstr "Introduza um nome para o computador."
 
 #: live-installer/validate.py:35
-#, fuzzy
 msgid "The computer's name is invalid."
-msgstr "Tem que escrever o nome de utilizador em minúsculas."
+msgstr "O nome do computador é inválido."
 
 #: live-installer/validate.py:37
-#, fuzzy
 msgid "The computer's name is too long."
-msgstr "O nome do computador apenas pode ter letras minúsculas."
+msgstr "O nome do computador é demasiado comprido."
 
 #: live-installer/validate.py:39
-#, fuzzy
 msgid "The computer's name should not starts or ends with -"
-msgstr "O nome do computador apenas pode ter letras minúsculas."
+msgstr "O nome do computador não deve começar ou terminar com -"
 
 #: live-installer/validate.py:42
 msgid "The computer's name must be lower case."
@@ -1164,53 +1142,47 @@ msgid "The computer's name may not contain whitespace characters."
 msgstr "O nome do computador não pode ter espaços vazios."
 
 #: live-installer/validate.py:48
-#, fuzzy
 msgid ""
 "The computer's name must consist of only a-z or A-Z or 0-9 or - characters"
-msgstr "O nome do computador não pode ter espaços vazios."
+msgstr ""
+"O nome do computador deve consistir apenas em caracteres a-z ou A-Z ou 0-9 "
+"ou -"
 
 #: live-installer/validate.py:59
-#, fuzzy
 msgid "Your passwords is too short."
-msgstr "As suas palavras-passe não são coincidentes."
+msgstr "As suas palavras-passe são demasiado curtas."
 
 #: live-installer/validate.py:63
-#, fuzzy
 msgid "Your password is numeric"
-msgstr "As suas palavras-passe não são coincidentes."
+msgstr "A sua palavra-passe é numérica"
 
 #: live-installer/validate.py:67
-#, fuzzy
 msgid "Your password must have big letters"
-msgstr "As suas palavras-passe não são coincidentes."
+msgstr "A sua palavra-passe deve ter letras maiúsculas"
 
 #: live-installer/validate.py:71
-#, fuzzy
 msgid "Your password must have small letters"
-msgstr "As suas palavras-passe não são coincidentes."
+msgstr "A sua palavra-passe deve ter letras minúsculas"
 
 #: live-installer/validate.py:75
-#, fuzzy
 msgid "Your password must not be the same as the user name"
-msgstr "As suas palavras-passe não são coincidentes."
+msgstr "A sua palavra-passe não deve ser a mesma que o nome de utilizador"
 
 #: live-installer/validate.py:79
 msgid "Your password length must be minimum 8 characters"
-msgstr ""
+msgstr "O comprimento mínimo da sua palavra-passe deve ser de 8 caracteres"
 
 #: live-installer/validate.py:99
-#, fuzzy
 msgid "Your password must have exclusive characters"
-msgstr "As suas palavras-passe não são coincidentes."
+msgstr "A sua palavra-passe deve ter caracteres exclusivos"
 
 #: live-installer/validate.py:103
-#, fuzzy
 msgid "Your password must have numbers"
-msgstr "As suas palavras-passe não são coincidentes."
+msgstr "A sua palavra-passe deve ter números"
 
 #: live-installer/validate.py:107
 msgid "Please provide a password for your user account."
-msgstr "Por favor introduza a palavra-passe da sua conta de utilizador."
+msgstr "Introduza a palavra-passe da sua conta de utilizador."
 
 #~ msgid "Your passphrases do not match."
 #~ msgstr "Disparidade nas palavras-passe."

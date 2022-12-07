@@ -5,3 +5,6 @@ clean binary:
 build:
 	make
 	make install DESTDIR=debian/17g-installer
+
+override_dh_builddeb:
+	dh_builddeb -- -Zgzip
