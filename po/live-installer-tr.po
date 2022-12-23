@@ -186,7 +186,7 @@ msgstr "Minimal kurulum"
 msgid ""
 "This will only install a minimal desktop environment with a browser and "
 "utilities."
-msgstr "Sadece minimal masaüstü ile tarayıca ve temel araçlar kurulacak."
+msgstr "Sadece minimal masaüstü ile tarayıcı ve temel araçlar kurulacak."
 
 #: live-installer/resources/interface.ui:1162
 #: live-installer/resources/interface2.ui:1097
@@ -761,7 +761,7 @@ msgstr "Kurulum aracı bölümlendirme yapmayacak"
 
 #: live-installer/frontend/gtk_interface.py:532
 msgid "Remove Windows & Install"
-msgstr "Winsowsu sil ve yerine yükle"
+msgstr "Windowsu sil ve yerine yükle"
 
 #: live-installer/frontend/gtk_interface.py:534
 msgid "Remove existsing windows and install system on it."

@@ -727,7 +727,7 @@ class InstallerEngine:
         if self.setup.minimal_installation:
             self.update_progress(_("Removing extra packages"), True)
             pkgs = open("branding/extra_packages.txt").read().split("\n")
-            self.run_and_update("chroot||yes | {}".format(config.package_manager(
+            self.run_and_update("chroot /target {}".format(config.package_manager(
                 "remove_package_with_unusing_deps", pkgs)))
 
         # Update if enabled
