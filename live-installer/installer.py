@@ -262,7 +262,7 @@ class InstallerEngine:
         # Create partitions on the selected disk (automated installation)
         partition_prefix = ""
         self.max_part_num = 0
-        if self.setup.disk.startswith("/dev/nvme"):
+        if self.setup.disk.startswith("/dev/nvme") or self.setup.disk.startswith("/dev/mmcblk"):
             partition_prefix = "p"
         def get_next():
             self.max_part_num +=1

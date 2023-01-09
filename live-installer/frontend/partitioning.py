@@ -60,6 +60,8 @@ def get_disks():
                 typevar, device, removable, size, model = elements
             if size == "0B":
                 continue;
+            if "mmcblk" in device and "boot" in device:
+                continue;
             device = "/dev/" + device
             if str(typevar) == "b'disk" and device not in exclude_devices:
                 # convert size to manufacturer's size for show, e.g. in GB, not
@@ -127,6 +129,8 @@ def get_partition_flags(part):
 
 
 def get_disk_size(disk):
+    if disk == None:
+        return 0
     name = os.path.basename(disk)
     lsblk = subprocess.getoutput(
         'LC_ALL=en_US.UTF-8 lsblk -rbindo TYPE,NAME,RM,SIZE,MODEL | sort -k3,2')
@@ -134,7 +138,6 @@ def get_disk_size(disk):
         if line.split(" ")[1] == name:
             return int(line.split(" ")[3])
     return 0;
-        
 
 def build_partitions(_installer):
     global installer
@@ -379,7 +382,7 @@ def full_disk_format(device, create_boot=False, create_swap=False,swap_size=1024
             _("The partition table couldn't be written for %s. Restart the computer and try again.") % device.path)
         Gtk.main_quit()
         sys.exit(1)
-    
+
     mkpart = (
         # (condition, mount_as, format_as, mkfs command, size_mb)
         # EFI
@@ -397,7 +400,7 @@ def full_disk_format(device, create_boot=False, create_swap=False,swap_size=1024
     start_mb = 2
     partition_number = 0
     partition_prefix = ""
-    if device.path.startswith("/dev/nvme"):
+    if device.path.startswith("/dev/nvme") or device.path.startswith("/dev/mmcblk"):
         partition_prefix = "p"
     for partition in mkpart:
         if partition[0]:
@@ -621,7 +624,7 @@ class PartitionDialog(object):
         model = Gtk.ListStore(str)
         for i in filesystems:
             model.append([i])
-        
+
         check_readonly = self.builder.get_object("checkbutton_readonly")
         check_readonly.set_active(read_only)
         self.builder.get_object("combobox_use_as").set_model(model)
