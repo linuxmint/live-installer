@@ -8,7 +8,7 @@ fetch_deb(){
         if [ "" !=  "$f" ] ; then
             cp -pvf "$f" /target/debs/
         else
-            missing+=(pkg)
+            missing+=(${pkg})
         fi
     done
     if [[ ${#missing[@]} -gt 0 ]]  ; then
