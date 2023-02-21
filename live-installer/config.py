@@ -22,9 +22,9 @@ def load_config(config_path):
         return {}
 
     try:
-        return yaml.load(content, Loader=yaml.FullLoader) or {}
+        return yaml.safe_load(content, Loader=yaml.FullLoader) or {}
     except BaseException:
-        return yaml.load(content) or {}
+        return yaml.safe_load(content) or {}
 
 
 # Define subconfigs

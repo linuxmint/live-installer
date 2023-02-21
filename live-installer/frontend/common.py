@@ -1,11 +1,8 @@
 import os
 import subprocess
-try:
-    import xml.etree.cElementTree as ET
-except ImportError:
-    import xml.etree.ElementTree as ET
-kbdxml = ET.parse('/usr/share/X11/xkb/rules/base.xml')
-kbdxml_extra = ET.parse('/usr/share/X11/xkb/rules/base.extras.xml')
+from defusedxml import ElementTree
+kbdxml = ElementTree.parse('/usr/share/X11/xkb/rules/base.xml')
+kbdxml_extra = ElementTree.parse('/usr/share/X11/xkb/rules/base.extras.xml')
 ignored_language = ["ku_TR", "el_CY","C"]
 
 def get_user_list():

@@ -374,7 +374,7 @@ class InstallerEngine:
                 elif (partition.format_as == "jfs"):
                     cmd = "mkfs.%s -q %s" % (partition.format_as,
                                              partition.path)
-                elif (partition.format_as == "xfs"):
+                elif (partition.format_as in ["btrfs", "xfs"]):
                     cmd = "mkfs.%s -f %s" % (partition.format_as,
                                              partition.path)
                 elif (partition.format_as == "vfat"):
@@ -413,7 +413,25 @@ class InstallerEngine:
                                          'partition': partition.path, 'mountpoint': "/target/"})
                     log(" ------ Mounting partition %s on %s" %
                         (partition.path, "/target/"))
-                    if 0 != self.do_mount(partition.path, "/target", partition.type, None):
+                    fs = partition.type
+                    if 0 == self.do_mount(partition.path, "/target", partition.type, None):
+                        if fs == "btrfs":
+                            # Create subvolumes for Btrfs
+                            os.system("btrfs subvolume create /target/@")
+                            os.system("btrfs subvolume list -p /target")
+                            log(" ------ Umount btrfs to remount subvolume @")
+                            os.system("umount --force /target")
+                            self.do_mount(partition.path, "/target", fs, "subvol=@")
+                            if not self.setup_has_dedicated_home():
+                                # If there is no dedicated home partition, add a @home subvolume to /
+                                os.system("mkdir -p /target/home")
+                                self.do_mount(partition.path, "/target/home", fs, None)
+                                os.system("btrfs subvolume create /target/home/@home")
+                                os.system("btrfs subvolume list -p /target/home")
+                                log(" ------- Umount btrfs to remount subvolume @home")
+                                os.system("umount --force /target/home")
+                                self.do_mount(partition.path, "/target/home", fs, "subvol=@home")
+                    else:
                         self.error_message(
                             "Cannot mount rootfs (type: {}): {}".format(partition.type, partition.path))
                     break
@@ -441,6 +459,13 @@ class InstallerEngine:
                     fs = partition.type
                 self.do_mount(partition.path, "/target" +
                               partition.mount_as, fs, None)
+                if partition.mount_as == "/home" and fs == "btrfs":
+                    # Dedicated home partition with Btrfs, needs a @home subvolume
+                    os.system("btrfs subvolume create /target/home/@home")
+                    os.system("btrfs subvolume list -p /target/home")
+                    print(" ------- Umount btrfs to remount subvolume @home")
+                    os.system("umount --force /target/home")
+                    self.do_mount(partition.path, "/target/home", fs, "subvol=@home")
 
     def get_blkid(self, path):
         uuid = path  # If we can't find the UUID we use the path
@@ -455,6 +480,15 @@ class InstallerEngine:
                         break
                 break
         return uuid
+
+    def setup_has_dedicated_home(self):
+        # Find out if there is a dedicated home partition
+        has_dedicated_home = False
+        for partition in self.setup.partitions:
+            if partition.mount_as == "/home":
+                has_dedicated_home = True
+                break
+        return has_dedicated_home
 
     def write_fstab(self):
         # write the /etc/fstab
@@ -496,18 +530,22 @@ class InstallerEngine:
                 if (partition.mount_as is not None and partition.mount_as !=
                         "" and partition.mount_as != "None"):
                     fstab.write("# %s\n" % (partition.path))
-                    if(partition.mount_as == "/"):
+                    fs = partition.type
+                    if(fs != "btrfs" and partition.mount_as == "/"):
                         fstab_fsck_option = "1"
                     else:
                         fstab_fsck_option = "0"
                     rw="rw"
                     if partition.read_only:
                         rw="ro"
-                    fstab_mount_options = "defaults,{}".format(rw)
-                    if partition.type == "fat16" or partition.type == "fat32":
+                    if fs == "fat16" or fs == "fat32":
                         fs = "vfat"
+                    if fs == "btrfs" and partition.mount_as == "/":
+                        fstab_mount_options = "defaults,subvol=@"
+                    elif fs == "btrfs" and self.setup_has_dedicated_home():
+                        fstab_mount_options = "defaults,subvol=@home"
                     else:
-                        fs = partition.type
+                        fstab_mount_options = "defaults,{}".format(rw)
 
                     partition_uuid = self.get_blkid(partition.path)
                     if(fs == "swap"):
@@ -516,6 +554,10 @@ class InstallerEngine:
                     else:
                         fstab.write("%s %s %s %s %s %s\n" % (
                             partition_uuid, partition.mount_as, fs, fstab_mount_options, "0", fstab_fsck_option))
+
+                    if fs == "btrfs" and partition.mount_as == "/" and not self.setup_has_dedicated_home():
+                        fstab.write("%s %s %s %s %s %s\n" % (
+                            partition_uuid, "/home", "btrfs", "defaults,subvol=@home", "0", "0"))
 
         if self.setup.luks:
             self.run("echo '{}   {}   none   luks,tries=3' >> /target/etc/crypttab".format(

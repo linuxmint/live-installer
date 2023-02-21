@@ -8,21 +8,22 @@ Package: 17g-installer
 Priority: extra  
 Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends},
-                    rsync,
-                    python3-parted,
                     live-boot,
-                    live-config,
                     live-tools,
                     locales,
+                    python3-parted,
                     gparted,
                     python3-gi,
                     gir1.2-gtk-3.0,
+                    python3-cairo,
+                    python3-defusedxml,
                     python3-yaml,
                     gettext-base,
                     isoquery,
                     librsvg2-common,
                     parted,
                     dosfstools,
-                    console-setup
+                    console-setup,
+                    btrfs-progs
 Description: 17g live installer
  17G is an alternative live installation tools.
