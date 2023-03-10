@@ -765,18 +765,12 @@ class InstallerEngine:
             self.run("chroot||glib-compile-schemas /usr/share/glib-2.0/schemas/",vital=False)
 
 
-        # Update if enabled
+        # minimize if enabled
         if self.setup.minimal_installation:
             self.update_progress(_("Removing extra packages"), True)
             pkgs = open("branding/extra_packages.txt").read().split("\n")
             self.run_and_update("chroot /target {}".format(config.package_manager(
                 "remove_package_with_unusing_deps", pkgs)))
-
-        # Update if enabled
-        if self.setup.install_updates:
-            self.update_progress(_("Trying to install updates"), True)
-            self.run_and_update(config.package_manager(
-                "full_system_update"),True)
 
         # remove 17g
         self.update_progress(_("Clearing package manager"), True)
@@ -785,6 +779,14 @@ class InstallerEngine:
         self.run("chroot||yes | {}".format(config.package_manager(
             "remove_package_with_unusing_deps", config.get("remove_packages", ["17g-installer"]))))
         self.run("chroot|| rm -rf /lib/live-installer",vital=False)
+
+
+        # Update if enabled
+        if self.setup.install_updates:
+            self.update_progress(_("Trying to install updates"), True)
+            self.run_and_update(config.package_manager(
+                "full_system_update"),True)
+
 
         #if self.setup.luks:
         #    with open("/target/etc/default/grub", "a") as f:
