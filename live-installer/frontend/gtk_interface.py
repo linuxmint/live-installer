@@ -729,6 +729,8 @@ class InstallerWindow:
             row = model[active]
             self.setup.disk = row[1]
             self.setup.diskname = row[0]
+        self.setup.password1 = self.builder.get_object("entry_password").get_text()
+        self.setup.password2 = self.builder.get_object("entry_confirm").get_text()
         self.setup.passphrase1 = self.builder.get_object("entry_passphrase").get_text()
         self.setup.passphrase2 = self.builder.get_object("entry_passphrase2").get_text()
         self.setup.hostname = self.builder.get_object("entry_hostname").get_text()
@@ -1373,24 +1375,25 @@ class InstallerWindow:
                                                   '(%s)' % self.setup.keyboard_variant_description if self.setup.keyboard_variant_description else ''),))
         if not config.get("skip_user", False):
             top = model.append(None, (_("User settings"),))
-            model.append(top, (_("Real name: ") + bold(self.setup.real_name),))
-            model.append(top, (_("Username: ") + bold(self.setup.username),))
+            _realname = self.builder.get_object("entry_name").get_text()
+            _username = self.builder.get_object("entry_name").get_text()
+            _pass1 = self.builder.get_object("entry_password").get_text()
+            model.append(top, (_("Real name: ") + bold(_realname),))
+            model.append(top, (_("Username: ") + bold(_username),))
             model.append(
-                top, (_("Password: ") + bold(len(str(self.setup.password1)) * "*"),))
+                top, (_("Password: ") + bold(len(str(_pass1)) * "*"),))
             if config.get("autologin_enabled", True):
                 model.append(top, (_("Automatic login: ") + bold(_("enabled")
                                                              if self.setup.autologin else _("disabled")),))
-    #        if config.get("encryption_enabled", True):
-    #            model.append(top, (_("Home encryption: ") + bold(_("enabled")
-    #                                                            if self.setup.ecryptfs else _("disabled")),))
         top = model.append(None, (_("System settings"),))
+        _hostname = self.builder.get_object("entry_hostname").get_text()
         model.append(top, (_("Computer's name: ") +
-                           bold(self.setup.hostname),))
+                           bold(_hostname),))
         if self.setup.gptonefi:
             model.append(top, (_("Bios type: ") + bold("UEFI"),))
         else:
             model.append(top, (_("Bios type: ") + bold("Legacy"),))
-        if self.setup.install_updates:
+        if self.builder.get_object("check_updates").get_active():
             model.append(top, (_("Install updates after installation"),))
         top = model.append(None, (_("Filesystem operations"),))
         model.append(top, (bold(_("Install bootloader on %s") % self.setup.grub_device)
@@ -1398,7 +1401,7 @@ class InstallerWindow:
         if self.setup.skip_mount:
             model.append(top, (bold(_("Use already-mounted /target.")),))
             return
-        if self.setup.automated:
+        if self.builder.get_object("radio_automated").get_active():
             self.setup.grub_device = self.setup.disk
             model.append(
                 top, (bold(_("Automated installation on %s") % self.setup.diskname),))
@@ -1412,11 +1415,13 @@ class InstallerWindow:
                     model.append(top, (bold(_("Mount %(path)s as %(mount)s") % {
                                  'path': p.path, 'mount': p.mount_as}),))
         if config.get("lvm_enabled", True):
+            _lvm = self.builder.get_object("check_lvm").get_active()
+            _lux = self.builder.get_object("check_encrypt").get_active()
             model.append(top, (_("LVM: ") + bold(_("enabled")
-                                   if self.setup.lvm else _("disabled")),))
+                                   if _lvm else _("disabled")),))
         if config.get("encryption_enabled", True):
             model.append(top, (_("Disk Encryption: ") +
-                                   bold(_("enabled") if self.setup.luks else _("disabled")),))
+                                   bold(_("enabled") if _lux else _("disabled")),))
         self.builder.get_object("treeview_overview").expand_all()
 
     @idle
