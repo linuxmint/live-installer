@@ -158,7 +158,7 @@ class InstallerWindow:
             self.setup.disk = row[1]
             self.setup.diskname = row[0]
             # Fix calculate max spaw_size value
-            self.assign_type_options(None,None)
+            self.assign_options(None,None)
         else:
             self.builder.get_object("swap_size").set_range(1,1)
 
@@ -168,17 +168,17 @@ class InstallerWindow:
         self.builder.get_object("entry_passphrase2").connect(
             "changed", self.assign_passphrase)
         self.builder.get_object("radio_automated").connect(
-            "toggled", self.assign_type_options)
+            "toggled", self.assign_options)
         self.builder.get_object("radio_manual").connect(
-            "toggled", self.assign_type_options)
+            "toggled", self.assign_options)
         self.builder.get_object("check_badblocks").connect(
-            "toggled", self.assign_type_options)
+            "toggled", self.assign_options)
         self.builder.get_object("check_encrypt").connect(
-            "toggled", self.assign_type_options)
+            "toggled", self.assign_options)
         self.builder.get_object("check_lvm").connect(
-            "toggled", self.assign_type_options)
+            "toggled", self.assign_options)
         self.builder.get_object("combo_disk").connect(
-            "changed", self.assign_type_options)
+            "changed", self.assign_options)
 
         # options
         self.builder.get_object("check_updates").connect(
@@ -220,8 +220,6 @@ class InstallerWindow:
 
         self.builder.get_object("entry_name").connect(
             "changed", self.assign_realname)
-        self.builder.get_object("swap_size").connect(
-            "changed", self.assign_swap_size)
         self.builder.get_object("entry_username").connect(
             "changed", self.assign_username)
         self.builder.get_object("entry_hostname").connect(
@@ -359,7 +357,6 @@ class InstallerWindow:
         self.assign_entry("entry_password")
         self.assign_entry("entry_confirm")
 
-        self.assign_hostname(self.builder.get_object("entry_hostname"))
         self.assign_password(None)
 
         self.builder.get_object("box_replace_win").hide()
@@ -592,14 +589,7 @@ class InstallerWindow:
         entry.set_visibility(False)
         entry.set_icon_from_icon_name(0,"view-reveal-symbolic")
 
-    def assign_swap_size(self, entry):
-        try:
-            self.setup.swap_size = int(entry.props.text)*1024
-        except:
-            self.setup.swap_size = 1
-
     def assign_realname(self, entry):
-        self.setup.real_name = entry.props.text
         errorFound = False
         # Try to set the username (doesn't matter if it fails)
         try:
@@ -607,34 +597,32 @@ class InstallerWindow:
             if " " in entry.props.text:
                 elements = text.split()
                 text = elements[0]
-            self.setup.username = text
             self.builder.get_object("entry_username").set_text(text)
         except BaseException:
             pass
-        if self.setup.real_name == "":
+        if entry.props.text == "":
             errorFound = True
         self.assign_entry("entry_name", errorFound)
 
     def assign_username(self, entry):
-        self.setup.username = entry.props.text
         errorFound = False
-        if validate.username(self.setup.username):
+        if validate.username(entry.props.text):
             errorFound = True
         self.assign_entry("entry_username", errorFound)
 
     def assign_hostname(self, entry):
-        self.setup.hostname = entry.props.text
         errorFound = False
-        if validate.hostname(self.setup.hostname):
+        if validate.hostname(entry.props.text):
             errorFound = True
         self.assign_entry("entry_hostname", errorFound)
 
     def assign_password(self, widget):
         wlabel = self.builder.get_object("label_password_warning")
-        self.setup.password1 = self.builder.get_object("entry_password").get_text()
-        self.setup.password2 = self.builder.get_object("entry_confirm").get_text()
+        _pass1 = self.builder.get_object("entry_password").get_text()
+        _pass2 = self.builder.get_object("entry_confirm").get_text()
+        _user = self.builder.get_object("entry_username").get_text()
 
-        password_error, weekMessage, weeklevel = validate.password(self.setup.password1,self.setup.username)
+        password_error, weekMessage, weeklevel = validate.password(_pass1,_user)
         wlabel.set_text(weekMessage.split("\n")[0])
         self.builder.get_object("password_strong_level").set_fraction((100-weeklevel)/100)
 
@@ -648,42 +636,23 @@ class InstallerWindow:
         self.week_warning = weekMessage
         self.assign_entry("entry_password", errorFound ,self.week_password)
 
-        errorFound = (self.setup.password1 != self.setup.password2 or self.setup.password2 == "")
+        errorFound = (_pass1 != _pass2 or _pass2 == "")
         self.assign_entry("entry_confirm", errorFound,self.week_password)
 
-    def assign_options(self, widget, data=None):
-        self.setup.install_updates = self.builder.get_object(
-            "check_updates").get_active()
-        self.setup.minimal_installation = self.builder.get_object(
-            "check_minimal").get_active()
-        self.setup.create_swap = self.builder.get_object(
-            "check_swap").get_active()
-        self.builder.get_object("swap_size").set_sensitive(self.setup.create_swap)
-        self.builder.get_object("swap_size").set_value(1)
-            
 
-    def assign_type_options(self, widget, data=None):
-        self.setup.automated = self.builder.get_object(
-            "radio_automated").get_active()
-        self.setup.replace_windows = self.builder.get_object(
-            "radio_replace_win").get_active()
-        self.setup.expert_mode = self.builder.get_object(
-            "radio_expert_mode").get_active()
-        self.builder.get_object("check_swap").set_sensitive(
-            self.setup.automated)
-        self.builder.get_object("check_badblocks").set_sensitive(
-            self.setup.automated)
-        self.builder.get_object("check_encrypt").set_sensitive(
-            self.setup.automated)
-        self.builder.get_object("check_lvm").set_sensitive(
-            self.setup.automated)
-        self.builder.get_object("combo_disk").set_sensitive(
-            self.setup.automated)
-        self.builder.get_object("entry_passphrase").set_sensitive(
-            self.setup.automated)
-        self.builder.get_object("entry_passphrase2").set_sensitive(
-            self.setup.automated)
-        if not self.setup.automated:
+    def assign_options(self, widget, data=None):
+        _auto = self.builder.get_object("radio_automated").get_active()
+        _lvm = self.builder.get_object("check_lvm").get_active()
+        _encrypt = self.builder.get_object("check_encrypt").get_active()
+        _swap = self.builder.get_object("check_swap").get_active()
+        self.builder.get_object("check_swap").set_sensitive(_auto)
+        self.builder.get_object("check_badblocks").set_sensitive(_auto)
+        self.builder.get_object("check_encrypt").set_sensitive(_auto)
+        self.builder.get_object("check_lvm").set_sensitive(_auto)
+        self.builder.get_object("combo_disk").set_sensitive(_auto)
+        self.builder.get_object("entry_passphrase").set_sensitive(_auto)
+        self.builder.get_object("entry_passphrase2").set_sensitive(_auto)
+        if not _auto:
             self.builder.get_object("check_badblocks").set_active(False)
             self.builder.get_object("check_encrypt").set_active(False)
             self.builder.get_object("check_lvm").set_active(False)
@@ -691,8 +660,8 @@ class InstallerWindow:
             self.builder.get_object("entry_passphrase").set_text("")
             self.builder.get_object("entry_passphrase2").set_text("")
 
-        self.setup.lvm = self.builder.get_object("check_lvm").get_active()
-        if not self.setup.lvm:
+
+        if not _lvm:
             # Force LVM for LUKs
             self.builder.get_object("check_badblocks").set_active(False)
             self.builder.get_object("check_encrypt").set_active(False)
@@ -701,18 +670,7 @@ class InstallerWindow:
             self.builder.get_object("check_badblocks").set_sensitive(False)
             self.builder.get_object("check_encrypt").set_sensitive(False)
 
-        self.setup.passphrase1 = self.builder.get_object(
-            "entry_passphrase").get_text()
-        self.setup.passphrase2 = self.builder.get_object(
-            "entry_passphrase2").get_text()
-        self.setup.luks = self.builder.get_object("check_encrypt").get_active()
-        model = self.builder.get_object("combo_disk").get_model()
-        active = self.builder.get_object("combo_disk").get_active()
-        if(active > -1):
-            row = model[active]
-            self.setup.disk = row[1]
-            self.setup.diskname = row[0]
-        if not self.builder.get_object("check_encrypt").get_active():
+        if not _encrypt:
             self.builder.get_object("entry_passphrase").set_text("")
             self.builder.get_object("entry_passphrase2").set_text("")
             self.builder.get_object("entry_passphrase").set_sensitive(False)
@@ -724,24 +682,17 @@ class InstallerWindow:
             self.builder.get_object("entry_passphrase2").set_sensitive(True)
             self.builder.get_object("check_badblocks").set_sensitive(True)
 
-        self.setup.badblocks = self.builder.get_object(
-            "check_badblocks").get_active()
-
-        size = partitioning.get_disk_size(self.setup.disk)
-        size =  size / 1024**3 # convert GB 
-        self.builder.get_object("swap_size").set_range(1,size/2)
-                
+        self.builder.get_object("swap_size").set_range(1,32)
+        self.builder.get_object("swap_size").set_sensitive(_swap)
 
     def assign_passphrase(self, widget=None):
-        self.setup.passphrase1 = self.builder.get_object(
-            "entry_passphrase").get_text()
-        self.setup.passphrase2 = self.builder.get_object(
-            "entry_passphrase2").get_text()
-        if self.setup.passphrase1 == "":
+        _pass1 = self.builder.get_object("entry_passphrase").get_text()
+        _pass2 = self.builder.get_object("entry_passphrase2").get_text()
+        if _pass1 == "":
             return _("Please provide a passphrase for the encryption."), ""
-        if self.setup.passphrase2 != self.setup.passphrase1:
+        if _pass1 != _pass2:
             return _("Your passwords do not match."), ""
-        password_error, weekMessage, weeklevel = validate.password(self.setup.passphrase1,"")
+        password_error, weekMessage, weeklevel = validate.password(_pass1,"")
         return password_error, weekMessage
 
     def quit_cb(self, widget, data=None):
@@ -759,6 +710,31 @@ class InstallerWindow:
             entry.set_icon_from_icon_name(1,"password-status-warning-symbolic")
         if not isWeek and not isInvalid:
             entry.set_icon_from_icon_name(1,"password-status-ok-symbolic")
+
+    def update_variables(self,widget=None):
+        self.setup.automated = self.builder.get_object("radio_automated").get_active()
+        self.setup.replace_windows = self.builder.get_object("radio_replace_win").get_active()
+        self.setup.expert_mode = self.builder.get_object("radio_expert_mode").get_active()
+        self.setup.lvm = self.builder.get_object("check_lvm").get_active()
+        self.setup.passphrase1 = self.builder.get_object("entry_passphrase").get_text()
+        self.setup.passphrase2 = self.builder.get_object("entry_passphrase2").get_text()
+        self.setup.luks = self.builder.get_object("check_encrypt").get_active()
+        self.setup.badblocks = self.builder.get_object("check_badblocks").get_active()
+        self.setup.install_updates = self.builder.get_object("check_updates").get_active()
+        self.setup.minimal_installation = self.builder.get_object("check_minimal").get_active()
+        self.setup.create_swap = self.builder.get_object("check_swap").get_active()
+        model = self.builder.get_object("combo_disk").get_model()
+        active = self.builder.get_object("combo_disk").get_active()
+        if(active > -1):
+            row = model[active]
+            self.setup.disk = row[1]
+            self.setup.diskname = row[0]
+        self.setup.passphrase1 = self.builder.get_object("entry_passphrase").get_text()
+        self.setup.passphrase2 = self.builder.get_object("entry_passphrase2").get_text()
+        self.setup.hostname = self.builder.get_object("entry_hostname").get_text()
+        self.setup.username = self.builder.get_object("entry_username").get_text()
+        self.setup.real_name = self.builder.get_object("entry_name").get_text()
+        self.setup.swap_size = int(self.builder.get_object("swap_size").get_text())*1024
 
     @asynchronous
     def build_lang_list(self):
@@ -1130,15 +1106,21 @@ class InstallerWindow:
         elif index == self.PAGE_USER and not goback:
             errorMessage = ""
             focus_widget = None
-            password_error, weekMessage, weeklevel = validate.password(self.setup.password1,self.setup.username)
-            username_error = validate.username(self.setup.username)
-            hostname_error = validate.hostname(self.setup.hostname)
-            if self.setup.password1 != self.setup.password2:
+            _pass1 = self.builder.get_object("entry_password").get_text()
+            _pass2 = self.builder.get_object("entry_confirm").get_text()
+            _user = self.builder.get_object("entry_username").get_text()
+            _realname = self.builder.get_object("entry_name").get_text()
+            _host = self.builder.get_object("entry_hostname").get_text()
+
+            password_error, weekMessage, weeklevel = validate.password(_pass1, _user)
+            username_error = validate.username(_user)
+            hostname_error = validate.hostname(_host)
+            if _pass1 != _pass2:
                 password_error = _("Your passwords do not match.")
             for error in [password_error, username_error, hostname_error]:
                 if error:
                     errorMessage += error+"\n"
-            if self.setup.real_name == "" or self.setup.real_name == None:
+            if _realname == "" or _realname == None:
                 errorMessage += _("Please provide your full name.") + "\n"
             if errorMessage != "":
                 WarningDialog(_("Installer"), errorMessage)
@@ -1473,6 +1455,7 @@ class InstallerWindow:
         do_try_finish_install = True
 
         try:
+            self.update_variables()
             self.installer.start_installation()
         except Exception as detail1:
             raise detail1
