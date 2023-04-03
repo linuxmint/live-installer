@@ -1148,6 +1148,10 @@ class InstallerWindow:
                             if not QuestionDialog(_("Installer"), _(
                                 "Root filesystem type not specified. Installation will continue without disk formatting. Do you want to continue?")):
                                 return
+                        if int(float(partition.partition.getLength('GB'))) < 16:
+                            if not QuestionDialog(_("Installer"), _(
+                                "The root partition is too small. It should be at least 16GB. Do you want to continue?")):
+                                return
 
                 if not found_root_partition:
                     ErrorDialog(_("Installer"), "<b>%s</b>" % _("Please select a root (/) partition."), _(
@@ -1169,25 +1173,25 @@ class InstallerWindow:
                                     partition.set_boot()
                                 else:
                                     return
-                            if int(float(partition.partition.getLength('MB'))) < 35:
+                            if int(float(partition.partition.getLength('MB'))) < 100:
                                 ErrorDialog(_("Installer"), _(
-                                    "The EFI partition is too small. It must be at least 35MB."))
+                                    "The EFI partition is too small. It must be at least 100MB."))
                                 return
                             if partition.format_as is None or partition.format_as == "":
                                 # No partitioning
-                                if partition.type != "vfat" and partition.type != "fat32" and partition.type != "fat16":
+                                if partition.type not in ["fat", "vfat", "fat32", "fat16"]:
                                     ErrorDialog(_("Installer"), _(
                                         "The EFI partition must be formatted as vfat."))
                                     return
                             else:
-                                if partition.format_as != "vfat":
+                                if partition.format_as not in ["fat", "vfat", "fat32", "fat16"]:
                                     ErrorDialog(_("Installer"), _(
                                         "The EFI partition must be formatted as vfat."))
                                     return
 
                     if not found_efi_partition:
                         ErrorDialog(_("Installer"), "<b>%s</b>" % _("Please select an EFI partition."), _(
-                            "An EFI system partition is needed with the following requirements:\n\n - Mount point: /boot/efi\n - Partition flags: Bootable\n - Size: at least 35MB (100MB or more recommended)\n - Format: vfat or fat32\n\nTo ensure compatibility with Windows we recommend you use the first partition of the disk as the EFI system partition.\n "))
+                            "An EFI system partition is needed with the following requirements:\n\n - Mount point: /boot/efi\n - Partition flags: Bootable\n - Size: at least 100MB \n - Format: vfat or fat32\n\nTo ensure compatibility with Windows we recommend you use the first partition of the disk as the EFI system partition.\n "))
                         return
 
         elif index == self.PAGE_OVERVIEW:

@@ -781,13 +781,6 @@ class InstallerEngine:
         self.run("chroot|| rm -rf /lib/live-installer",vital=False)
 
 
-        # Update if enabled
-        if self.setup.install_updates:
-            self.update_progress(_("Trying to install updates"), True)
-            self.run_and_update(config.package_manager(
-                "full_system_update"),True)
-
-
         #if self.setup.luks:
         #    with open("/target/etc/default/grub", "a") as f:
         #        f.write("\nGRUB_CMDLINE_LINUX_DEFAULT+=\" cryptdevice=%s:lvmlmde root=/dev/lvmlmde/root%s\"\n" %
@@ -846,6 +839,13 @@ class InstallerEngine:
                     self.error_message(message=_(
                         "WARNING: The grub bootloader was not configured properly! You need to configure it manually."))
                     break
+
+
+        # Update if enabled
+        if self.setup.install_updates:
+            self.update_progress(_("Trying to install updates"), True)
+            self.run_and_update(config.package_manager(
+                "full_system_update"),True)
 
         # Custom commands
         self.do_hook_commands("post_install_hook")
