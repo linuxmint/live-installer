@@ -151,7 +151,7 @@ class InstallerWindow:
         self.builder.get_object("combo_disk").pack_start(renderer_text, True)
         self.builder.get_object("combo_disk").add_attribute(
             renderer_text, "text", 0)
-        if len(partitioning.get_disks()) == 1:
+        if len(partitioning.get_disks()) >= 1:
             self.builder.get_object("combo_disk").set_active_iter(disk_iterators[0])
             model = self.builder.get_object("combo_disk").get_model()
             row = model[0]
@@ -1230,10 +1230,10 @@ class InstallerWindow:
         self.builder.get_object("notebook1").set_visible_child_name(str(nex))
 
     def activate_page_type(self):
-        if self.testmode or self.setup.expert_mode:
+        if self.testmode or self.builder.get_object("radio_expert_mode").get_active():
             self.activate_page(self.PAGE_USER)
             return
-        if self.setup.automated:
+        if self.builder.get_object("radio_automated").get_active():
             errorFound = False
             errorMessage = ""
             if self.setup.disk is None:
@@ -1258,7 +1258,7 @@ class InstallerWindow:
                         self.activate_page(self.PAGE_OVERVIEW)
                     else:
                         self.activate_page(self.PAGE_USER)
-        elif self.setup.replace_windows:
+        elif self.builder.get_object("radio_replace_win").get_active():
             rootfs = partitioning.PartitionBase()
             rootfs.path = self.setup.winroot
             rootfs.format_as = 'ext4'

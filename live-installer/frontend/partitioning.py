@@ -59,9 +59,11 @@ def get_disks():
             else:
                 typevar, device, removable, size, model = elements
             if size == "0B":
-                continue;
+                continue
             if "mmcblk" in device and "boot" in device:
-                continue;
+                continue
+            if removable == "1":
+                continue
             device = "/dev/" + device
             if str(typevar) == "b'disk" and device not in exclude_devices:
                 # convert size to manufacturer's size for show, e.g. in GB, not
@@ -137,7 +139,7 @@ def get_disk_size(disk):
     for line in lsblk.split("\n"):
         if line.split(" ")[1] == name:
             return int(line.split(" ")[3])
-    return 0;
+    return 0
 
 def build_partitions(_installer):
     global installer

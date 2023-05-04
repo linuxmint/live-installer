@@ -943,6 +943,19 @@ class InstallerEngine:
 
 
 class Setup(object):
+    def __init__(self):
+        self.objects = {}
+
+    def set(self, name="", obj=None):
+       if obj:
+          self.objects[str(name)] = obj
+
+    def get(self, name=""):
+        if name in self.objects:
+            return self.objects[name]
+        else:
+            return None
+
     language = None
     timezone = None
     keyboard_model = None
