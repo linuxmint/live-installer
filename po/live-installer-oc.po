@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2022-03-07 12:03+0000\n"
-"PO-Revision-Date: 2022-07-13 06:47+0000\n"
+"PO-Revision-Date: 2023-02-14 19:28+0000\n"
 "Last-Translator: Quentin PAGÈS <Unknown>\n"
 "Language-Team: Occitan (post 1500) <oc@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2022-07-24 09:34+0000\n"
-"X-Generator: Launchpad (build 025a39fd866a641b6ae33074cda0d02a2c712d38)\n"
+"X-Launchpad-Export-Date: 2023-06-08 10:17+0000\n"
+"X-Generator: Launchpad (build 620cd5280e3a973662e263ebf9346837ed657a46)\n"
 "Language: oc\n"
 
 #: usr/lib/live-installer/installer.py:44
@@ -486,23 +486,23 @@ msgstr "Aqueste camp pòt pas èsser void."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:395
 msgid "This field may not contain space characters."
-msgstr ""
+msgstr "Aqueste camp deu pas conténer d’espacis."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:398
 msgid "This field must be lower case."
-msgstr ""
+msgstr "Aqueste camp deu èsser en minuscula."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:402
 msgid "The entry is too short."
-msgstr ""
+msgstr "L’entrada es tròp corta."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:404
 msgid "The entry is too long."
-msgstr ""
+msgstr "L’entrada es tròp longa."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:409
 msgid "This field contains invalid characters."
-msgstr ""
+msgstr "Aqueste camp conten de caractèrs invalids."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:568
 msgid "Quit?"
@@ -533,7 +533,7 @@ msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:961
 msgid "Please select a root (/) partition."
-msgstr ""
+msgstr "Volgatz seleccionar una particion raiç (/)."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:962
 msgid ""
@@ -790,7 +790,7 @@ msgstr "Periferic :"
 
 #: usr/lib/live-installer/partitioning.py:579
 msgid "Format as:"
-msgstr ""
+msgstr "Formatar en :"
 
 #: usr/lib/live-installer/partitioning.py:580
 msgid "Mount point:"
@@ -816,4 +816,4 @@ msgstr "Òc"
 
 #: usr/share/live-installer/interface.ui.h:1
 msgid " "
-msgstr ""
+msgstr " "

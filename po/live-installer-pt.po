@@ -1,28 +1,29 @@
 # Portuguese translation for linuxmint
 # Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
 # This file is distributed under the same license as the linuxmint package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+# Hugo Carvalho <hugokarvalho@hotmail.com>, 2019, 2020, 2021, 2022.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: linuxmint\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-07 12:03+0000\n"
-"PO-Revision-Date: 2022-07-03 12:03+0000\n"
+"PO-Revision-Date: 2022-11-21 15:18+0000\n"
 "Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
 "Language-Team: Portuguese <pt@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2022-07-24 09:34+0000\n"
-"X-Generator: Launchpad (build 025a39fd866a641b6ae33074cda0d02a2c712d38)\n"
+"X-Launchpad-Export-Date: 2023-06-08 10:17+0000\n"
+"X-Generator: Launchpad (build 620cd5280e3a973662e263ebf9346837ed657a46)\n"
+"Language: pt\n"
 
 #: usr/lib/live-installer/installer.py:44
 msgid ""
 "ERROR: You must first manually mount your target filesystem(s) at /target to "
 "do a custom install!"
 msgstr ""
-"Erro: tem de primeiro montar o seu sistema de ficheiros alvo em /target para "
+"ERRO: tem de primeiro montar o seu sistema de ficheiros alvo em /target para "
 "fazer uma instalação personalizada!"
 
 #: usr/lib/live-installer/installer.py:86
@@ -175,7 +176,7 @@ msgstr "Disposição do teclado"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:293
 msgid "What is your keyboard layout?"
-msgstr "Qual é o seu esquema de teclado?"
+msgstr "Qual é a sua disposição de teclado?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:294
 msgid "User account"
@@ -192,7 +193,7 @@ msgstr "Tipo de instalação"
 #: usr/lib/live-installer/frontend/gtk_interface.py:295
 #: usr/lib/live-installer/frontend/gtk_interface.py:296
 msgid "Where do you want to install LMDE?"
-msgstr "Onde pretende instalar LMDE?"
+msgstr "Onde pretende instalar o LMDE?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:296
 msgid "Partitioning"
@@ -245,7 +246,7 @@ msgstr "Bem-vindo ao %s!"
 msgid ""
 "This program will ask you some questions and set up LMDE on your computer."
 msgstr ""
-"Este programa irá efetuar algumas perguntas e configurar LMDE no seu "
+"Este programa irá efetuar algumas perguntas e configurar o LMDE no seu "
 "computador."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:311
@@ -261,7 +262,7 @@ msgstr "Modelo do teclado:"
 #: usr/lib/live-installer/frontend/gtk_interface.py:321
 #: usr/share/live-installer/interface.ui.h:7
 msgid "Type here to test your keyboard layout"
-msgstr "Digite algo aqui para testar o teclado"
+msgstr "Escreva algo aqui para testar a disposição do teclado"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:322
 msgid ""
@@ -270,8 +271,8 @@ msgid ""
 "as the default. You can switch layouts by pressing Super+Space."
 msgstr ""
 "* O nome de utilizador, o nome do computador e a palavra-passe devem conter "
-"apenas caracteres do Latim. Para além do esquema selecionado, o Inglês (US) "
-"é definido como predefinido. Pode trocar o esquema premindo Super+Espaço."
+"apenas caracteres do Latim. Para além da disposição selecionada, o Inglês "
+"(US) é definido como padrão. Pode trocar a disposição premindo Super+Espaço."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:325
 #: usr/share/live-installer/interface.ui.h:8
@@ -327,7 +328,7 @@ msgstr "Instalação automatizada"
 #: usr/lib/live-installer/frontend/gtk_interface.py:338
 #: usr/share/live-installer/interface.ui.h:18
 msgid "Erase a disk and install LMDE on it."
-msgstr "Apagar disco e instalar LMDE."
+msgstr "Apagar disco e instalar o LMDE."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:339
 #: usr/share/live-installer/interface.ui.h:19
@@ -337,7 +338,7 @@ msgstr "Disco:"
 #: usr/lib/live-installer/frontend/gtk_interface.py:340
 #: usr/share/live-installer/interface.ui.h:21
 msgid "Encrypt the operating system"
-msgstr "Cifrar sistema operativo"
+msgstr "Encriptar o sistema operativo"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:341
 #: usr/share/live-installer/interface.ui.h:22
@@ -347,7 +348,7 @@ msgstr "Palavra-passe"
 #: usr/lib/live-installer/frontend/gtk_interface.py:342
 #: usr/share/live-installer/interface.ui.h:23
 msgid "Confirm passphrase"
-msgstr "Confirmação de palavra-passse"
+msgstr "Confirmação de palavra-passe"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:343
 #: usr/share/live-installer/interface.ui.h:20
@@ -362,7 +363,7 @@ msgstr "Particionamento manual"
 #: usr/lib/live-installer/frontend/gtk_interface.py:345
 #: usr/share/live-installer/interface.ui.h:27
 msgid "Manually create, resize or choose partitions for LMDE."
-msgstr "Criar, redimensionar e escolher as partições para LMDE."
+msgstr "Criar, redimensionar e escolher as partições para o LMDE."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:346
 #: usr/share/live-installer/interface.ui.h:25
@@ -445,14 +446,16 @@ msgid ""
 "During the install, you will be given time to chroot into /target and "
 "install any packages that will be needed to boot your new system."
 msgstr ""
-"Durante a instalação ser-lhe-á dado tenpo para chroot em /target e instalar "
+"Durante a instalação ser-lhe-á dado tempo para chroot em /target e instalar "
 "quaisquer pacotes que precise para arrancar o seu novo sistema."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:371
 #: usr/share/live-installer/interface.ui.h:35
 msgid ""
 "During the install, you will be required to write your own /etc/fstab."
-msgstr "Durante a instalação terá de escrever em /etc/fstab."
+msgstr ""
+"Durante a instalação, ser-lhe-á solicitado que grave o seu próprio "
+"/etc/fstab."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:374
 #: usr/share/live-installer/interface.ui.h:36
@@ -466,7 +469,7 @@ msgid ""
 "new system, matching those currently mounted at /target (without using the "
 "/target prefix in the mount paths themselves)."
 msgstr ""
-"Crie  /target/etc/fstab para os sistemas de ficheiros tal como eles serão "
+"Crie /target/etc/fstab para os sistemas de ficheiros tal como eles serão "
 "montados no seu novo sistema, correspondendo aos atualmente montados em "
 "/target (sem utilizar o prefixo /target nos pontos de montagem)"
 
@@ -525,7 +528,7 @@ msgstr "O inserido é muito curto."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:404
 msgid "The entry is too long."
-msgstr "O inserido é muito comprido."
+msgstr "O inserido é demasiado comprido."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:409
 msgid "This field contains invalid characters."
@@ -537,7 +540,7 @@ msgstr "Sair?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:568
 msgid "Are you sure you want to quit the installer?"
-msgstr "Tem a certeza de que deseja sair do instalador?"
+msgstr "Sair do instalador?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:901
 msgid "Please choose a language"
@@ -550,19 +553,19 @@ msgstr "Aviso"
 #: usr/lib/live-installer/frontend/gtk_interface.py:941
 #, python-format
 msgid "This will delete all the data on %s. Are you sure?"
-msgstr "Está prestes a apagar todos os dados em %s. Tem a certeza?"
+msgstr "Está prestes a eliminar todos os dados em %s. Tem a certeza?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:957
 msgid ""
 "Please indicate a filesystem to format the root (/) partition with before "
 "proceeding."
 msgstr ""
-"Por favor indique o sistema de ficheiros para formatar a partição raiz (/) "
-"antes de avançar."
+"Indique o sistema de ficheiros para formatar a partição root (/) antes de "
+"avançar."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:961
 msgid "Please select a root (/) partition."
-msgstr "Por favor selecione a partição root (/)."
+msgstr "Selecione uma partição root (/)."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:962
 msgid ""
@@ -580,8 +583,7 @@ msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:974
 msgid "The EFI partition is not bootable. Please edit the partition flags."
-msgstr ""
-"A partição EFI não é de arranque. Por favor edite as 'flags' da partição."
+msgstr "A partição EFI não é de arranque. Edite as 'flags' da partição."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:977
 msgid "The EFI partition is too small. It must be at least 35MB."
@@ -594,7 +596,7 @@ msgstr "A partição EFI tem que ser formatada como vfat."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:990
 msgid "Please select an EFI partition."
-msgstr "Por favor selecione a partição EFI."
+msgstr "Selecione a partição EFI."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:990
 msgid ""
@@ -646,7 +648,7 @@ msgstr "Definições de utilizador"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1066
 msgid "Real name: "
-msgstr "Nome real: "
+msgstr "Nome verdadeiro: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1067
 msgid "Username: "
@@ -710,7 +712,7 @@ msgstr "LVM: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1080
 msgid "Disk Encryption: "
-msgstr "Cifra de disco: "
+msgstr "Encriptação de disco: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1084
 #, python-format
@@ -727,7 +729,7 @@ msgid ""
 "The installation is now complete. Do you want to restart your computer to "
 "use the new system?"
 msgstr ""
-"A instalação está agora terminada. Deseja reiniciar o computador agora e "
+"A instalação está agora concluída. Deseja reiniciar o computador agora e "
 "utilizar o seu novo sistema?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1112
@@ -736,7 +738,7 @@ msgid ""
 "carefully before clicking Next to finish the installation."
 msgstr ""
 "A instalação está em pausa. Leia as instruções cuidadosamente antes de "
-"clicar em Seguinte para terminar a instalação."
+"clicar em Seguinte para concluir a instalação."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1145
 #: usr/lib/live-installer/frontend/gtk_interface.py:1148
@@ -771,7 +773,7 @@ msgstr "TB"
 
 #: usr/lib/live-installer/partitioning.py:95
 msgid "Removable:"
-msgstr "Amovível:"
+msgstr "Removível:"
 
 #: usr/lib/live-installer/partitioning.py:174
 msgid "Edit"
@@ -801,8 +803,8 @@ msgid ""
 "DATA present on this disk."
 msgstr ""
 "Não foi encontrada qualquer tabela de partições no disco rígido: %s. Deseja "
-"que o instalador crie um conjunto de partições para si? Note: irá apagar "
-"todos os dados deste disco."
+"que o instalador crie um conjunto de partições para si? Note: irá APAGAR "
+"TODOS OS DADOS deste disco."
 
 #: usr/lib/live-installer/partitioning.py:361
 #, python-format
@@ -810,7 +812,7 @@ msgid ""
 "The partition table couldn't be written for %s. Restart the computer and try "
 "again."
 msgstr ""
-"A tabela de partição não pôde ser escrita para %s. Reinicie o computador e "
+"A tabela de partições não pôde ser gravada para %s. Reinicie o computador e "
 "tente novamente."
 
 #: usr/lib/live-installer/partitioning.py:400
@@ -832,7 +834,7 @@ msgstr "Partição expandida"
 
 #: usr/lib/live-installer/partitioning.py:462
 msgid "Unknown"
-msgstr "Desconhecido"
+msgstr "Desconhecida"
 
 #: usr/lib/live-installer/partitioning.py:576
 msgid "Edit partition"
@@ -858,7 +860,7 @@ msgstr "Cancelar"
 #: usr/lib/live-installer/dialogs.py:31 usr/lib/live-installer/dialogs.py:42
 #: usr/lib/live-installer/dialogs.py:47
 msgid "OK"
-msgstr "OK"
+msgstr "Aceitar"
 
 #: usr/lib/live-installer/dialogs.py:36
 msgid "No"

@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2022-03-07 12:03+0000\n"
-"PO-Revision-Date: 2022-03-07 17:58+0000\n"
+"PO-Revision-Date: 2023-02-22 16:10+0000\n"
 "Last-Translator: Alan Mortensen <alanmortensen.am@gmail.com>\n"
 "Language-Team: Danish <da@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2022-07-24 09:34+0000\n"
-"X-Generator: Launchpad (build 025a39fd866a641b6ae33074cda0d02a2c712d38)\n"
+"X-Launchpad-Export-Date: 2023-06-08 10:17+0000\n"
+"X-Generator: Launchpad (build 620cd5280e3a973662e263ebf9346837ed657a46)\n"
 
 #: usr/lib/live-installer/installer.py:44
 msgid ""
@@ -251,7 +251,7 @@ msgstr ""
 #: usr/lib/live-installer/frontend/gtk_interface.py:311
 #: usr/share/live-installer/interface.ui.h:5
 msgid "Let's go!"
-msgstr "Lad os komme igang!"
+msgstr "Lad os komme i gang!"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:318
 #: usr/share/live-installer/interface.ui.h:6
@@ -443,7 +443,7 @@ msgid ""
 "During the install, you will be given time to chroot into /target and "
 "install any packages that will be needed to boot your new system."
 msgstr ""
-"Under installationen vil du få lejlighed til at \"chroot\" ind i /mål og "
+"Under installationen vil du få lejlighed til at “chroot” ind i /mål og "
 "installere pakker, som er påkrævede for at boote dit nye system."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:371
@@ -476,7 +476,7 @@ msgid ""
 "get/aptitude installations."
 msgstr ""
 "Installér pakker, som kan være nødvendige for den første opstart (mdadm, "
-"cryptsetup, dmraid osv.) ved at køre \"sudo chroot /mål\" efterfulgt af de "
+"cryptsetup, dmraid osv.) ved at køre “sudo chroot /mål” efterfulgt af de "
 "relevante installeringer med apt-get/aptitude."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:377

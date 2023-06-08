@@ -3,14 +3,14 @@ msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-07 12:03+0000\n"
-"PO-Revision-Date: 2020-11-26 04:09+0000\n"
-"Last-Translator: radwan emad <Unknown>\n"
+"PO-Revision-Date: 2022-09-07 14:10+0000\n"
+"Last-Translator: أنس <Unknown>\n"
 "Language-Team: anwar AL_iskandrany <anwareleskndrany13@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2022-07-24 09:34+0000\n"
-"X-Generator: Launchpad (build 025a39fd866a641b6ae33074cda0d02a2c712d38)\n"
+"X-Launchpad-Export-Date: 2023-06-08 10:17+0000\n"
+"X-Generator: Launchpad (build 620cd5280e3a973662e263ebf9346837ed657a46)\n"
 "Language: ar_EG\n"
 
 #: usr/lib/live-installer/installer.py:44
@@ -53,6 +53,8 @@ msgstr "تحميل %(partition)s على %(mountpoint)s"
 msgid ""
 "Filling %s with random data (please be patient, this can take hours...)"
 msgstr ""
+"جارِ ملأ %s ببيانات عشوائية (من فضلك تحلّى بالصبر، قد يستغرق هذا الامر "
+"ساعات...)"
 
 #: usr/lib/live-installer/installer.py:262
 #, python-format
@@ -121,7 +123,7 @@ msgstr "اللغة"
 #: usr/lib/live-installer/frontend/gtk_interface.py:122
 #: usr/lib/live-installer/frontend/gtk_interface.py:315
 msgid "Location"
-msgstr ""
+msgstr "الموقع"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:204
 #: usr/lib/live-installer/frontend/gtk_interface.py:319
@@ -185,7 +187,7 @@ msgstr "نوع التثبيث"
 #: usr/lib/live-installer/frontend/gtk_interface.py:295
 #: usr/lib/live-installer/frontend/gtk_interface.py:296
 msgid "Where do you want to install LMDE?"
-msgstr ""
+msgstr "أين تريد تثبيت LMDE؟"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:296
 msgid "Partitioning"
@@ -231,28 +233,28 @@ msgstr "التالي"
 #: usr/share/live-installer/interface.ui.h:3
 #, python-format
 msgid "Welcome to %s!"
-msgstr ""
+msgstr "مرحبا بك الى %s!"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:310
 #: usr/share/live-installer/interface.ui.h:4
 msgid ""
 "This program will ask you some questions and set up LMDE on your computer."
-msgstr ""
+msgstr "هذا البرنامج سيطرح عليك بعض الأسئلة ثم سيقوم بتثبيت LMDE في حاسوبك."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:311
 #: usr/share/live-installer/interface.ui.h:5
 msgid "Let's go!"
-msgstr ""
+msgstr "إبدأ!"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:318
 #: usr/share/live-installer/interface.ui.h:6
 msgid "Keyboard Model:"
-msgstr ""
+msgstr "نموذج لوحة المفايتح:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:321
 #: usr/share/live-installer/interface.ui.h:7
 msgid "Type here to test your keyboard layout"
-msgstr ""
+msgstr "اكتب هنا  لاختبار  مخطط لوحة المفاتيح الخاصة بك"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:322
 msgid ""
@@ -309,12 +311,12 @@ msgstr "تشفير المجلد الرئيسي"
 #: usr/lib/live-installer/frontend/gtk_interface.py:337
 #: usr/share/live-installer/interface.ui.h:17
 msgid "Automated Installation"
-msgstr ""
+msgstr "تثبيت تلقائي"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:338
 #: usr/share/live-installer/interface.ui.h:18
 msgid "Erase a disk and install LMDE on it."
-msgstr ""
+msgstr "إمسح القرص وثبّت LMDE فيه."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:339
 #: usr/share/live-installer/interface.ui.h:19
@@ -324,7 +326,7 @@ msgstr "القرص:"
 #: usr/lib/live-installer/frontend/gtk_interface.py:340
 #: usr/share/live-installer/interface.ui.h:21
 msgid "Encrypt the operating system"
-msgstr ""
+msgstr "شفّر نظام التشغيل"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:341
 #: usr/share/live-installer/interface.ui.h:22
@@ -344,7 +346,7 @@ msgstr ""
 #: usr/lib/live-installer/frontend/gtk_interface.py:344
 #: usr/share/live-installer/interface.ui.h:26
 msgid "Manual Partitioning"
-msgstr ""
+msgstr "تقسيم يدوي"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:345
 #: usr/share/live-installer/interface.ui.h:27
@@ -354,12 +356,12 @@ msgstr ""
 #: usr/lib/live-installer/frontend/gtk_interface.py:346
 #: usr/share/live-installer/interface.ui.h:25
 msgid "Fill the disk with random data"
-msgstr ""
+msgstr "إملأ القرص ببيانات عشوائية"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:347
 #: usr/share/live-installer/interface.ui.h:24
 msgid "This provides extra security but it can take hours."
-msgstr ""
+msgstr "هذا الخيار يوفر حماية إضافية ولكن قد يستغرق ساعات."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:350
 #: usr/share/live-installer/interface.ui.h:29
@@ -441,7 +443,7 @@ msgstr "أثناء التثبيت، سيُطلب منك كتابة /etc/fstab ا
 #: usr/lib/live-installer/frontend/gtk_interface.py:374
 #: usr/share/live-installer/interface.ui.h:36
 msgid "Do the following and then click Next to finish installation:"
-msgstr ""
+msgstr "قم بالإجراءات التالية ثم أنقر على التالي لإتمام التثبيت:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:375
 #: usr/share/live-installer/interface.ui.h:37
@@ -488,19 +490,19 @@ msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:389
 msgid "The values do not match."
-msgstr ""
+msgstr "القيم لا تتطابق."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:392
 msgid "This field cannot be empty."
-msgstr ""
+msgstr "هذا الحقل لا يمكن أن يكون فارغا."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:395
 msgid "This field may not contain space characters."
-msgstr ""
+msgstr "هذا الحقل لا يمكن أن يحتوي على مسافات فارغة."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:398
 msgid "This field must be lower case."
-msgstr ""
+msgstr "هذا الحقل يجب أن يكون بأحرف صغيرة."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:402
 msgid "The entry is too short."
@@ -508,11 +510,11 @@ msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:404
 msgid "The entry is too long."
-msgstr ""
+msgstr "البيانات المدخلة طويلة جدا."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:409
 msgid "This field contains invalid characters."
-msgstr ""
+msgstr "هذا الحقل يحتوي على رموز غير مقبولة."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:568
 msgid "Quit?"
@@ -533,7 +535,7 @@ msgstr "تحذير"
 #: usr/lib/live-installer/frontend/gtk_interface.py:941
 #, python-format
 msgid "This will delete all the data on %s. Are you sure?"
-msgstr ""
+msgstr "هذا سيحذف جميع البيانات الموجودة في %s. هل أنت متأكد؟"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:957
 msgid ""
@@ -637,7 +639,7 @@ msgstr "معطل"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1069
 msgid "Home encryption: "
-msgstr ""
+msgstr "تشفير المنزل: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1070
 msgid "System settings"
@@ -645,7 +647,7 @@ msgstr "إعدادات النظام"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1071
 msgid "Computer's name: "
-msgstr ""
+msgstr "اسم الحاسوب: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1072
 msgid "Filesystem operations"
@@ -667,7 +669,7 @@ msgstr "استخدم المحمل بالفعل /target."
 #: usr/lib/live-installer/frontend/gtk_interface.py:1078
 #, python-format
 msgid "Automated installation on %s"
-msgstr ""
+msgstr "تثبيت تلقائي في %s"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1079
 msgid "LVM: "
@@ -675,7 +677,7 @@ msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1080
 msgid "Disk Encryption: "
-msgstr ""
+msgstr "تشفير القرص: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1084
 #, python-format
@@ -699,6 +701,8 @@ msgid ""
 "The installation is now paused. Please read the instructions on the page "
 "carefully before clicking Next to finish the installation."
 msgstr ""
+"تم إيقاف التثبيت. من فضلك إقرأ التعليمات في الصفحة بحذر قبل النقر على التالي "
+"لإتمام التثبيت."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1145
 #: usr/lib/live-installer/frontend/gtk_interface.py:1148

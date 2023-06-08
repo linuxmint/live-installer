@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2022-03-07 12:03+0000\n"
-"PO-Revision-Date: 2020-03-11 17:37+0000\n"
-"Last-Translator: spacy01 <Unknown>\n"
+"PO-Revision-Date: 2022-09-21 19:06+0000\n"
+"Last-Translator: Nikolay Trifonov <trifonov88@gmail.com>\n"
 "Language-Team: Bulgarian <bg@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2022-07-24 09:34+0000\n"
-"X-Generator: Launchpad (build 025a39fd866a641b6ae33074cda0d02a2c712d38)\n"
+"X-Launchpad-Export-Date: 2023-06-08 10:17+0000\n"
+"X-Generator: Launchpad (build 620cd5280e3a973662e263ebf9346837ed657a46)\n"
 
 #: usr/lib/live-installer/installer.py:44
 msgid ""
@@ -128,7 +128,7 @@ msgstr "Език"
 #: usr/lib/live-installer/frontend/gtk_interface.py:122
 #: usr/lib/live-installer/frontend/gtk_interface.py:315
 msgid "Location"
-msgstr ""
+msgstr "Местоположение"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:204
 #: usr/lib/live-installer/frontend/gtk_interface.py:319
@@ -238,7 +238,7 @@ msgstr "Следващ"
 #: usr/share/live-installer/interface.ui.h:3
 #, python-format
 msgid "Welcome to %s!"
-msgstr ""
+msgstr "Добре дошли в %s!"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:310
 #: usr/share/live-installer/interface.ui.h:4
@@ -251,7 +251,7 @@ msgstr ""
 #: usr/lib/live-installer/frontend/gtk_interface.py:311
 #: usr/share/live-installer/interface.ui.h:5
 msgid "Let's go!"
-msgstr ""
+msgstr "Хайде!"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:318
 #: usr/share/live-installer/interface.ui.h:6
@@ -269,6 +269,10 @@ msgid ""
 "Latin characters. In addition to your selected layout, English (US) is set "
 "as the default. You can switch layouts by pressing Super+Space."
 msgstr ""
+"* Вашето потребителско име, името на компютъра ви и паролата ви трябва да "
+"съдържат само символи на латиница. В допълнение към избраната от вас "
+"клавиатурна подредба, English (US) ще бъде опцията по подразбиране. Можете "
+"да превключвате между подредбите като натиснете Super+Space."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:325
 #: usr/share/live-installer/interface.ui.h:8
@@ -504,31 +508,31 @@ msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:389
 msgid "The values do not match."
-msgstr ""
+msgstr "Полетата не съвпадат."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:392
 msgid "This field cannot be empty."
-msgstr ""
+msgstr "Полето не може да бъде празно."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:395
 msgid "This field may not contain space characters."
-msgstr ""
+msgstr "Полето не може да съдържа празни пространства."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:398
 msgid "This field must be lower case."
-msgstr ""
+msgstr "Полето не може да съдържа главни букви."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:402
 msgid "The entry is too short."
-msgstr ""
+msgstr "Въведеният текст е прекалено къс."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:404
 msgid "The entry is too long."
-msgstr ""
+msgstr "Въведеният текст е прекалено дълъг."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:409
 msgid "This field contains invalid characters."
-msgstr ""
+msgstr "Полето съдържа непозволени символи."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:568
 msgid "Quit?"
@@ -571,6 +575,11 @@ msgid ""
 " - Recommended size: 30GB\n"
 " - Recommended filesystem format: ext4\n"
 msgstr ""
+"Необходим е основен дял на който да бъде инсталиран Linux Mint.\n"
+"\n"
+" - Точка за монтиране: /\n"
+" - Препоръчителен размер: 30GB\n"
+" - Препоръчителна файлова система: ext4\n"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:974
 msgid "The EFI partition is not bootable. Please edit the partition flags."
@@ -862,4 +871,4 @@ msgstr "Да"
 
 #: usr/share/live-installer/interface.ui.h:1
 msgid " "
-msgstr ""
+msgstr " "
