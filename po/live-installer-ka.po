@@ -8,14 +8,15 @@ msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2022-03-07 12:03+0000\n"
-"PO-Revision-Date: 2014-10-16 18:58+0000\n"
-"Last-Translator: Tornike Batavani <Unknown>\n"
+"PO-Revision-Date: 2023-01-13 21:06+0000\n"
+"Last-Translator: NorwayFun <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <ka@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2022-07-24 09:34+0000\n"
-"X-Generator: Launchpad (build 025a39fd866a641b6ae33074cda0d02a2c712d38)\n"
+"X-Launchpad-Export-Date: 2023-06-08 10:17+0000\n"
+"X-Generator: Launchpad (build 620cd5280e3a973662e263ebf9346837ed657a46)\n"
+"Language: ka\n"
 
 #: usr/lib/live-installer/installer.py:44
 msgid ""
@@ -68,19 +69,19 @@ msgstr ""
 
 #: usr/lib/live-installer/installer.py:464
 msgid "Setting hostname"
-msgstr ""
+msgstr "ჰოსტის სახელის დაყენება"
 
 #: usr/lib/live-installer/installer.py:483
 msgid "Setting locale"
-msgstr ""
+msgstr "ენის დაყენება"
 
 #: usr/lib/live-installer/installer.py:498
 msgid "Localizing packages"
-msgstr ""
+msgstr "პაკეტების ენებს დაყენება"
 
 #: usr/lib/live-installer/installer.py:513
 msgid "Installing drivers"
-msgstr ""
+msgstr "დრაივერების დაყენება"
 
 #: usr/lib/live-installer/installer.py:544
 msgid "Setting keyboard options"
@@ -88,7 +89,7 @@ msgstr ""
 
 #: usr/lib/live-installer/installer.py:601
 msgid "Installing bootloader"
-msgstr ""
+msgstr "ჩამტვირთავის დაყენება"
 
 #: usr/lib/live-installer/installer.py:614
 msgid ""
@@ -103,15 +104,15 @@ msgstr ""
 #: usr/lib/live-installer/installer.py:663
 #: usr/lib/live-installer/frontend/gtk_interface.py:1097
 msgid "Installation finished"
-msgstr ""
+msgstr "დაყენება დასრულდა"
 
 #: usr/lib/live-installer/installer.py:672
 msgid "Configuring bootloader"
-msgstr ""
+msgstr "ჩამტვირთავის მორგება"
 
 #: usr/lib/live-installer/installer.py:681
 msgid "Checking bootloader"
-msgstr ""
+msgstr "ჩამტვირთავის შემოწმება"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:114
 #: usr/lib/live-installer/frontend/gtk_interface.py:291
@@ -122,17 +123,17 @@ msgstr "ენა"
 #: usr/lib/live-installer/frontend/gtk_interface.py:122
 #: usr/lib/live-installer/frontend/gtk_interface.py:315
 msgid "Location"
-msgstr ""
+msgstr "დებარეობა"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:204
 #: usr/lib/live-installer/frontend/gtk_interface.py:319
 msgid "Layout"
-msgstr ""
+msgstr "განლაგება"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:210
 #: usr/lib/live-installer/frontend/gtk_interface.py:320
 msgid "Variant"
-msgstr ""
+msgstr "ვარიანტი"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:224
 msgid "Calculating file indexes ..."
@@ -153,7 +154,7 @@ msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:291
 msgid "What language would you like to use?"
-msgstr ""
+msgstr "რომელი ენის გამოყენება გნებავთ დაყენების პროცესში?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:292
 msgid "Timezone"
@@ -161,27 +162,27 @@ msgstr "დროის სარტყელი"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:292
 msgid "Where are you?"
-msgstr ""
+msgstr "სად ბრძანდებით?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:293
 msgid "Keyboard layout"
-msgstr ""
+msgstr "კლავიატურის განლაგება"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:293
 msgid "What is your keyboard layout?"
-msgstr ""
+msgstr "რომელი კლავიატურის განლაგება გნებავთ?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:294
 msgid "User account"
-msgstr ""
+msgstr "მომხმარებლის ანგარიში"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:294
 msgid "Who are you?"
-msgstr ""
+msgstr "ვინ ბრძანდებით?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:295
 msgid "Installation Type"
-msgstr ""
+msgstr "დაყენების ტიპი"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:295
 #: usr/lib/live-installer/frontend/gtk_interface.py:296
@@ -190,49 +191,49 @@ msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:296
 msgid "Partitioning"
-msgstr ""
+msgstr "დაყოფა"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:297
 msgid "Advanced options"
-msgstr ""
+msgstr "დამატებითი პარამეტრები"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:298
 msgid "Summary"
-msgstr ""
+msgstr "შეჯამება"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:299
 msgid "Installing"
-msgstr ""
+msgstr "დაყენება"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:300
 #: usr/lib/live-installer/frontend/gtk_interface.py:352
 #: usr/share/live-installer/interface.ui.h:28
 msgid "Expert mode"
-msgstr ""
+msgstr "ექსპერტული რეჟიმი"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:301
 #: usr/lib/live-installer/frontend/gtk_interface.py:1112
 msgid "Installation paused"
-msgstr ""
+msgstr "დაყენება შეჩერდა"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:304
 msgid "Quit"
-msgstr ""
+msgstr "გასვლა"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:305
 msgid "Back"
-msgstr ""
+msgstr "უკან"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:306
 #: usr/lib/live-installer/frontend/gtk_interface.py:1107
 msgid "Next"
-msgstr ""
+msgstr "შემდეგი"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:309
 #: usr/share/live-installer/interface.ui.h:3
 #, python-format
 msgid "Welcome to %s!"
-msgstr ""
+msgstr "მოგესალმებით %s!"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:310
 #: usr/share/live-installer/interface.ui.h:4
@@ -243,12 +244,12 @@ msgstr ""
 #: usr/lib/live-installer/frontend/gtk_interface.py:311
 #: usr/share/live-installer/interface.ui.h:5
 msgid "Let's go!"
-msgstr ""
+msgstr "წავედით!"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:318
 #: usr/share/live-installer/interface.ui.h:6
 msgid "Keyboard Model:"
-msgstr ""
+msgstr "კლავიატურის მოდელი:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:321
 #: usr/share/live-installer/interface.ui.h:7
@@ -265,12 +266,12 @@ msgstr ""
 #: usr/lib/live-installer/frontend/gtk_interface.py:325
 #: usr/share/live-installer/interface.ui.h:8
 msgid "Your name:"
-msgstr ""
+msgstr "თქვენი სახელი:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:326
 #: usr/share/live-installer/interface.ui.h:9
 msgid "Your computer's name:"
-msgstr ""
+msgstr "თქვენი კომპიუტერის სახელი:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:327
 #: usr/share/live-installer/interface.ui.h:11
@@ -280,22 +281,22 @@ msgstr ""
 #: usr/lib/live-installer/frontend/gtk_interface.py:328
 #: usr/share/live-installer/interface.ui.h:10
 msgid "Pick a username:"
-msgstr ""
+msgstr "აირჩიეთ მომხმარებლის სახელი:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:329
 #: usr/share/live-installer/interface.ui.h:12
 msgid "Choose a password:"
-msgstr ""
+msgstr "შეიყვანეთ პაროლი:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:330
 #: usr/share/live-installer/interface.ui.h:13
 msgid "Confirm your password:"
-msgstr ""
+msgstr "გაიმეორეთ პაროლი:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:332
 #: usr/share/live-installer/interface.ui.h:14
 msgid "Log in automatically"
-msgstr ""
+msgstr "ავტომატური შესვლა"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:333
 #: usr/share/live-installer/interface.ui.h:15
@@ -305,12 +306,12 @@ msgstr ""
 #: usr/lib/live-installer/frontend/gtk_interface.py:334
 #: usr/share/live-installer/interface.ui.h:16
 msgid "Encrypt my home folder"
-msgstr ""
+msgstr "საწყისი საქაღალდის დაშიფვრა"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:337
 #: usr/share/live-installer/interface.ui.h:17
 msgid "Automated Installation"
-msgstr ""
+msgstr "ავტომატური დაყენება"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:338
 #: usr/share/live-installer/interface.ui.h:18
@@ -320,22 +321,22 @@ msgstr ""
 #: usr/lib/live-installer/frontend/gtk_interface.py:339
 #: usr/share/live-installer/interface.ui.h:19
 msgid "Disk:"
-msgstr ""
+msgstr "დისკი:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:340
 #: usr/share/live-installer/interface.ui.h:21
 msgid "Encrypt the operating system"
-msgstr ""
+msgstr "ოპერაციული სისტემის დაშიფვრა"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:341
 #: usr/share/live-installer/interface.ui.h:22
 msgid "Passphrase"
-msgstr ""
+msgstr "კოდური ფრაზა"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:342
 #: usr/share/live-installer/interface.ui.h:23
 msgid "Confirm passphrase"
-msgstr ""
+msgstr "დაადასტურეთ საკვანძო ფრაზა"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:343
 #: usr/share/live-installer/interface.ui.h:20
@@ -345,7 +346,7 @@ msgstr ""
 #: usr/lib/live-installer/frontend/gtk_interface.py:344
 #: usr/share/live-installer/interface.ui.h:26
 msgid "Manual Partitioning"
-msgstr ""
+msgstr "ხელით დაყოფა"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:345
 #: usr/share/live-installer/interface.ui.h:27
@@ -365,15 +366,15 @@ msgstr ""
 #: usr/lib/live-installer/frontend/gtk_interface.py:350
 #: usr/share/live-installer/interface.ui.h:29
 msgid "Edit partitions"
-msgstr ""
+msgstr "დანაყოფების ჩასწორება"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:351
 msgid "Refresh"
-msgstr ""
+msgstr "განახლება"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:354
 msgid "Device"
-msgstr ""
+msgstr "მოწყობილობა"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:355
 msgid "Type"
@@ -385,20 +386,20 @@ msgstr "ოპერაციული სისტემა"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:357
 msgid "Mount point"
-msgstr ""
+msgstr "მიმაგრების წერტილი"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:358
 msgid "Format as"
-msgstr ""
+msgstr "დაფორმატება, როგორც"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:359
 msgid "Size"
-msgstr ""
+msgstr "ზომა"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:360
 #: usr/lib/live-installer/partitioning.py:459
 msgid "Free space"
-msgstr ""
+msgstr "თავისუფალი სივრცე"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:364
 #: usr/share/live-installer/interface.ui.h:30
@@ -475,11 +476,11 @@ msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:389
 msgid "The values do not match."
-msgstr ""
+msgstr "მნიშვნელობები არ ემთხვევა."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:392
 msgid "This field cannot be empty."
-msgstr ""
+msgstr "ველი არ შეიძლება ცარიელი იყოს."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:395
 msgid "This field may not contain space characters."
@@ -491,11 +492,11 @@ msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:402
 msgid "The entry is too short."
-msgstr ""
+msgstr "ჩანაწერი მეტისმეტად მოკლეა."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:404
 msgid "The entry is too long."
-msgstr ""
+msgstr "ჩანაწერი მეტისმეტად გრძელია."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:409
 msgid "This field contains invalid characters."
@@ -503,7 +504,7 @@ msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:568
 msgid "Quit?"
-msgstr ""
+msgstr "გავიდე?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:568
 msgid "Are you sure you want to quit the installer?"
@@ -511,11 +512,11 @@ msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:901
 msgid "Please choose a language"
-msgstr ""
+msgstr "აირჩიეთ ენ"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:941
 msgid "Warning"
-msgstr ""
+msgstr "გაფრთხილება"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:941
 #, python-format
@@ -574,53 +575,53 @@ msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1003
 msgid "Install"
-msgstr ""
+msgstr "დაყენება"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1059
 msgid "Localization"
-msgstr ""
+msgstr "ლოკალიზაცია"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1060
 msgid "Language: "
-msgstr ""
+msgstr "ენა: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1061
 msgid "Timezone: "
-msgstr ""
+msgstr "დროის სარტყელი: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1062
 msgid "Keyboard layout: "
-msgstr ""
+msgstr "კლავიატურის განლაგება: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1065
 msgid "User settings"
-msgstr ""
+msgstr "მომხმარებლის მორგება"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1066
 msgid "Real name: "
-msgstr ""
+msgstr "ნამდვილი სახელი: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1067
 msgid "Username: "
-msgstr ""
+msgstr "მომხმარებელი: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1068
 msgid "Automatic login: "
-msgstr ""
+msgstr "ავტომატური შესვლა: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1068
 #: usr/lib/live-installer/frontend/gtk_interface.py:1069
 #: usr/lib/live-installer/frontend/gtk_interface.py:1079
 #: usr/lib/live-installer/frontend/gtk_interface.py:1080
 msgid "enabled"
-msgstr ""
+msgstr "ჩართულია"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1068
 #: usr/lib/live-installer/frontend/gtk_interface.py:1069
 #: usr/lib/live-installer/frontend/gtk_interface.py:1079
 #: usr/lib/live-installer/frontend/gtk_interface.py:1080
 msgid "disabled"
-msgstr ""
+msgstr "გამორთულია"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1069
 msgid "Home encryption: "
@@ -628,15 +629,15 @@ msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1070
 msgid "System settings"
-msgstr ""
+msgstr "სისტემის მორგება"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1071
 msgid "Computer's name: "
-msgstr ""
+msgstr "კომპიუტერის სახელი: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1072
 msgid "Filesystem operations"
-msgstr ""
+msgstr "ფაილური სისტემის ოპერაციები"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1073
 #, python-format
@@ -645,7 +646,7 @@ msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1073
 msgid "Do not install bootloader"
-msgstr ""
+msgstr "ჩამტვირთავი დაყენებული არ იქნება"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1075
 msgid "Use already-mounted /target."
@@ -658,11 +659,11 @@ msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1079
 msgid "LVM: "
-msgstr ""
+msgstr "LVM: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1080
 msgid "Disk Encryption: "
-msgstr ""
+msgstr "დისკის დაშიფვრა: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1084
 #, python-format
@@ -691,39 +692,39 @@ msgstr ""
 #: usr/lib/live-installer/frontend/gtk_interface.py:1162
 #: usr/lib/live-installer/frontend/gtk_interface.py:1170
 msgid "Installation error"
-msgstr ""
+msgstr "დაყენების შეცდომა"
 
 #: usr/lib/live-installer/partitioning.py:90
 msgid "B"
-msgstr ""
+msgstr "ბ"
 
 #: usr/lib/live-installer/partitioning.py:90
 #: usr/lib/live-installer/partitioning.py:413
 msgid "kB"
-msgstr ""
+msgstr "კბ"
 
 #: usr/lib/live-installer/partitioning.py:90
 #: usr/lib/live-installer/partitioning.py:413
 msgid "MB"
-msgstr ""
+msgstr "მბ"
 
 #: usr/lib/live-installer/partitioning.py:90
 #: usr/lib/live-installer/partitioning.py:413
 msgid "GB"
-msgstr ""
+msgstr "გბ"
 
 #: usr/lib/live-installer/partitioning.py:90
 #: usr/lib/live-installer/partitioning.py:413
 msgid "TB"
-msgstr ""
+msgstr "ტბ"
 
 #: usr/lib/live-installer/partitioning.py:95
 msgid "Removable:"
-msgstr ""
+msgstr "მოხსნადი:"
 
 #: usr/lib/live-installer/partitioning.py:174
 msgid "Edit"
-msgstr ""
+msgstr "ჩასწორება"
 
 #: usr/lib/live-installer/partitioning.py:181
 msgid "Assign to /"
@@ -765,50 +766,50 @@ msgstr ""
 
 #: usr/lib/live-installer/partitioning.py:457
 msgid "Logical partition"
-msgstr ""
+msgstr "ლოგიკური დანაყოფი"
 
 #: usr/lib/live-installer/partitioning.py:458
 msgid "Extended partition"
-msgstr ""
+msgstr "გაფართოებული განაყოფი"
 
 #: usr/lib/live-installer/partitioning.py:462
 msgid "Unknown"
-msgstr ""
+msgstr "უცნობი"
 
 #: usr/lib/live-installer/partitioning.py:576
 msgid "Edit partition"
-msgstr ""
+msgstr "დანაყოფის ჩასწორება"
 
 #: usr/lib/live-installer/partitioning.py:577
 msgid "Device:"
-msgstr ""
+msgstr "მოწყობილობა:"
 
 #: usr/lib/live-installer/partitioning.py:579
 msgid "Format as:"
-msgstr ""
+msgstr "დაფორმატება, როგორც:"
 
 #: usr/lib/live-installer/partitioning.py:580
 msgid "Mount point:"
-msgstr ""
+msgstr "მიმაგრების წერტილი:"
 
 #: usr/lib/live-installer/partitioning.py:581
 msgid "Cancel"
-msgstr ""
+msgstr "გაუქმენა"
 
 #: usr/lib/live-installer/partitioning.py:582
 #: usr/lib/live-installer/dialogs.py:31 usr/lib/live-installer/dialogs.py:42
 #: usr/lib/live-installer/dialogs.py:47
 msgid "OK"
-msgstr ""
+msgstr "დიახ"
 
 #: usr/lib/live-installer/dialogs.py:36
 msgid "No"
-msgstr ""
+msgstr "არა"
 
 #: usr/lib/live-installer/dialogs.py:37
 msgid "Yes"
-msgstr ""
+msgstr "დიახ"
 
 #: usr/share/live-installer/interface.ui.h:1
 msgid " "
-msgstr ""
+msgstr " "

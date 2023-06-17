@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2022-03-07 12:03+0000\n"
-"PO-Revision-Date: 2022-06-26 09:00+0000\n"
+"PO-Revision-Date: 2022-12-08 11:57+0000\n"
 "Last-Translator: Anton Hryb <Unknown>\n"
 "Language-Team: Belarusian <be@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2022-07-24 09:34+0000\n"
-"X-Generator: Launchpad (build 025a39fd866a641b6ae33074cda0d02a2c712d38)\n"
+"X-Launchpad-Export-Date: 2023-06-08 10:17+0000\n"
+"X-Generator: Launchpad (build 620cd5280e3a973662e263ebf9346837ed657a46)\n"
 
 #: usr/lib/live-installer/installer.py:44
 msgid ""
@@ -23,7 +23,7 @@ msgid ""
 "do a custom install!"
 msgstr ""
 "ПАМЫЛКА: Спачатку прымантуйце ўручную мэтавую файлавую сістэму ў /target, "
-"каб зрабіць нестандартную ўсталёўку!"
+"каб зрабіць нестандартнае ўсталяванне!"
 
 #: usr/lib/live-installer/installer.py:86
 #, python-format
@@ -50,7 +50,7 @@ msgstr "Запіс схемы падключэння файлавых сістэ
 #: usr/lib/live-installer/installer.py:335
 #, python-format
 msgid "Mounting %(partition)s on %(mountpoint)s"
-msgstr "Падключэнне %(partition)s да %(mountpoint)s"
+msgstr "Мантаванне %(partition)s да %(mountpoint)s"
 
 #: usr/lib/live-installer/installer.py:257
 #, python-format
@@ -185,7 +185,7 @@ msgstr "Хто вы?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:295
 msgid "Installation Type"
-msgstr "Тып усталёўкі"
+msgstr "Тып усталявання"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:295
 #: usr/lib/live-installer/frontend/gtk_interface.py:296
@@ -314,7 +314,7 @@ msgstr "Патрабаваць пароль для ўваходу ў сістэ�
 #: usr/lib/live-installer/frontend/gtk_interface.py:334
 #: usr/share/live-installer/interface.ui.h:16
 msgid "Encrypt my home folder"
-msgstr "Шыфраваць маю хатнюю папку"
+msgstr "Зашыфраваць маю хатнюю папку"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:337
 #: usr/share/live-installer/interface.ui.h:17
@@ -334,7 +334,7 @@ msgstr "Дыск:"
 #: usr/lib/live-installer/frontend/gtk_interface.py:340
 #: usr/share/live-installer/interface.ui.h:21
 msgid "Encrypt the operating system"
-msgstr "Шыфраваць аперацыйную сістэму"
+msgstr "Зашыфраваць аперацыйную сістэму"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:341
 #: usr/share/live-installer/interface.ui.h:22
