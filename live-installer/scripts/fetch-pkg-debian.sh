@@ -28,7 +28,7 @@ rm -rf /target/debs
 
 # fetch common grub packages
 fetch_deb "grub-common" "grub2-common" "os-prober" "gettext-base" \
-           "libefiboot1" "libefivar1"
+           "libefiboot1" "libefivar1" "libfuse2"
 
 # fetch platform spesific packages
 if [ -d /sys/firmware/efi ] ; then
