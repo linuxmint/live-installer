@@ -1,3 +1,17 @@
+live-installer (2023.08.19) faye; urgency=medium
+
+  [ Clement Lefebvre ]
+  * Fix locale flags in HiDPI
+
+  [ Michael Webster ]
+  * Fix a few problems with passwords, usernames and hostnames.
+
+  [ Clement Lefebvre ]
+  * LUKS: Add discard option in crypttab
+  * l10n: Update translations
+
+ -- Clement Lefebvre <root@linuxmint.com>  Sat, 19 Aug 2023 17:41:00 +0200
+
 live-installer (2022.03.12) elsie; urgency=medium
 
   * l10n: Fix a few errors
