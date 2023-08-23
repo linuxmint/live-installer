@@ -273,10 +273,8 @@ class InstallerWindow:
         return True
 
     def i18n(self):
+        title = "LMDE 6 'Faye'"
         subtitle = _("Installer")
-        with open("/etc/lsb-release") as f:
-            config = dict([line.strip().split("=") for line in f])
-            title = config['DISTRIB_DESCRIPTION'].replace('"', '')
 
         if __debug__:
             subtitle += ' - debug mode'
@@ -287,7 +285,7 @@ class InstallerWindow:
         else:
             self.builder.get_object("button_expert").hide()
 
-        self.builder.get_object("headerbar").set_title("LMDE 5 'Elsie'")
+        self.builder.get_object("headerbar").set_title(title)
         self.builder.get_object("headerbar").set_subtitle(subtitle)
 
         # Header
