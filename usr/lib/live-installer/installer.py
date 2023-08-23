@@ -184,9 +184,9 @@ class InstallerEngine:
             # it defaults to /sys anyway, so we just need to create an empty /etc/mtab file at this stage.
             self.do_run_in_chroot('touch /etc/mtab')
             self.do_run_in_chroot('modprobe ecryptfs')
-            self.do_run_in_chroot('adduser --disabled-login --encrypt-home --gecos "{real_name}" {username}'.format(real_name=self.setup.real_name.replace('"', r'\"'), username=self.setup.username))
+            self.do_run_in_chroot('adduser --disabled-password --encrypt-home --gecos "{real_name}" {username}'.format(real_name=self.setup.real_name.replace('"', r'\"'), username=self.setup.username))
         else:
-            self.do_run_in_chroot('adduser --disabled-login --gecos "{real_name}" {username}'.format(real_name=self.setup.real_name.replace('"', r'\"'), username=self.setup.username))
+            self.do_run_in_chroot('adduser --disabled-password --gecos "{real_name}" {username}'.format(real_name=self.setup.real_name.replace('"', r'\"'), username=self.setup.username))
         for group in 'adm audio bluetooth cdrom dialout dip fax floppy fuse lpadmin netdev plugdev powerdev sambashare scanner sudo tape users vboxusers video'.split():
             self.do_run_in_chroot("adduser {user} {group}".format(user=self.setup.username, group=group))
 
