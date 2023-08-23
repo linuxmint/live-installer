@@ -1,3 +1,9 @@
+live-installer (2023.08.23.1) faye; urgency=medium
+
+  * Don't install microcode pkgs
+
+ -- Clement Lefebvre <root@linuxmint.com>  Wed, 23 Aug 2023 16:27:55 +0100
+
 live-installer (2023.08.23) faye; urgency=medium
 
   * frontend: Update title
