@@ -37,6 +37,9 @@ HOSTNAME_TOTAL_LENGTH = 253
 WHITESPACE_REGEX = r"[\s]+"
 HAS_LOWER_REGEX = r"[A-Z]+"
 
+VERSION = "6"
+CODENAME = "Faye"
+
 # Used as a decorator to run things in the background
 def asynchronous(func):
     def wrapper(*args, **kwargs):
@@ -273,7 +276,7 @@ class InstallerWindow:
         return True
 
     def i18n(self):
-        title = "LMDE 6 'Faye'"
+        title = f"LMDE {VERSION} '{CODENAME}'"
         subtitle = _("Installer")
 
         if __debug__:
@@ -308,7 +311,7 @@ class InstallerWindow:
         self.builder.get_object("button_next").set_label(_("Next"))
 
         # Welcome page
-        self.builder.get_object("label_welcome1").set_text(_("Welcome to %s!") % "LMDE 5")
+        self.builder.get_object("label_welcome1").set_text(_("Welcome to %s!") % f"LMDE {VERSION}")
         self.builder.get_object("label_welcome2").set_text(_("This program will ask you some questions and set up LMDE on your computer."))
         self.builder.get_object("button_lets_go").set_label(_("Let's go!"))
 
