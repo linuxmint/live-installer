@@ -1,3 +1,10 @@
+live-installer (2023.08.24) faye; urgency=medium
+
+  * Revert "Don't install microcode pkgs"
+  * Fix installation of iucode-tool
+
+ -- Clement Lefebvre <root@linuxmint.com>  Thu, 24 Aug 2023 10:30:03 +0100
+
 live-installer (2023.08.23.1) faye; urgency=medium
 
   * Don't install microcode pkgs
