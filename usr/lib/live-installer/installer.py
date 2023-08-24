@@ -147,6 +147,14 @@ class InstallerEngine:
             self.do_run_in_chroot("dpkg -i /debs/*")
             os.system("rm -rf /target/debs")
 
+        print(" --> Installing microcode packages")
+        os.system("mkdir -p /target/debs")
+        os.system("cp /run/live/medium/pool/non-free/i/intel-microcode/* /target/debs/")
+        os.system("cp /run/live/medium/pool/non-free/a/amd64-microcode/* /target/debs/")
+        os.system("cp /run/live/medium/pool/contrib/i/iucode-tool/* /target/debs/")
+        self.do_run_in_chroot("dpkg -i /debs/*")
+        os.system("rm -rf /target/debs")
+
         # Detect cdrom device
         # TODO : properly detect cdrom device
         # Mount it
