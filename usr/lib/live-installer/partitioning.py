@@ -310,10 +310,10 @@ class PartitionSetup(Gtk.TreeStore):
             except NameError: pass
             print("      - Iterating partitions...")
             # Needed to fix the 1% minimum Partition.size_percent
-            sum_size_percent = sum(p.size_percent for p in partitions) + .5  # .5 for good measure
+            sum_size_percent = sum(p.size_percent for p in partitions) + 5  # 5% extra for good measure
             for partition in partitions:
                 print("        . Appending partition %s..." % partition.name)
-                partition.size_percent = round(partition.size_percent / sum_size_percent * 100, 1)
+                partition.size_percent = round(partition.size_percent / sum_size_percent * 100, 0)
                 installer.setup.partitions.append(partition)
                 self.append(disk_iter, (partition.name,
                                         '<span foreground="{}">{}</span>'.format(partition.color, partition.type),
