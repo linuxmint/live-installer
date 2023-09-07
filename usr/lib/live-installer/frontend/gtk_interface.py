@@ -162,9 +162,10 @@ class InstallerWindow:
 
         # partitions
         self.builder.get_object("button_expert").connect("clicked", self.show_customwarning)
-        self.builder.get_object("button_edit").connect("clicked", partitioning.manually_edit_partitions)
+        self.builder.get_object("button_gparted").connect("clicked", partitioning.manually_edit_partitions)
+        self.builder.get_object("button_edit").connect("clicked", partitioning.edit_partition_dialog)
         self.builder.get_object("button_refresh").connect("clicked", lambda _: partitioning.build_partitions(self))
-        self.builder.get_object("treeview_disks").get_selection().connect("changed", partitioning.update_html_preview)
+        self.builder.get_object("treeview_disks").get_selection().connect("changed", partitioning.selection_changed)
         self.builder.get_object("treeview_disks").connect("row_activated", partitioning.edit_partition_dialog)
         self.builder.get_object("treeview_disks").connect("button-release-event", partitioning.partitions_popup_menu)
         text = Gtk.CellRendererText()
@@ -352,7 +353,8 @@ class InstallerWindow:
         self.builder.get_object("check_badblocks").set_tooltip_text(_("This provides extra security but it can take hours."))
 
         # Partitions page
-        self.builder.get_object("button_edit").set_label(_("Edit partitions"))
+        self.builder.get_object("button_edit").set_label(_("Edit"))
+        self.builder.get_object("button_gparted").set_label(_("Launch GParted"))
         self.builder.get_object("button_refresh").set_label(_("Refresh"))
         self.builder.get_object("button_expert").set_label(_("Expert mode"))
         for col, title in zip(self.builder.get_object("treeview_disks").get_columns(),

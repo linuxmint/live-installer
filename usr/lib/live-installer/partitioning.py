@@ -117,6 +117,17 @@ def build_partitions(_installer):
     installer.window.get_window().set_cursor(None)
     installer.window.set_sensitive(True)
 
+def selection_changed(selection):
+    model, iter = installer.builder.get_object("treeview_disks").get_selection().get_selected()
+    if not iter: return
+    row = model[iter]
+    partition = row[IDX_PART_OBJECT]
+    if (partition is None or partition.partition.type == parted.PARTITION_EXTENDED or partition.partition.number == -1):
+        installer.builder.get_object("button_edit").set_sensitive(False)
+    else:
+        installer.builder.get_object("button_edit").set_sensitive(True)
+    update_html_preview(selection)
+
 def update_html_preview(selection):
     model, row = selection.get_selected()
     try: disk = model[row][IDX_PART_DISK]
@@ -125,7 +136,7 @@ def update_html_preview(selection):
         installer._selected_disk = disk
         installer.partitions_browser.load_html(model.get_html(disk), 'file:///')
 
-def edit_partition_dialog(widget, path, viewcol):
+def edit_partition_dialog(*args):
     ''' assign the partition ... '''
     model, iter = installer.builder.get_object("treeview_disks").get_selection().get_selected()
     if not iter: return
