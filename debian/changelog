@@ -1,3 +1,13 @@
+live-installer (2023.09.07) faye; urgency=medium
+
+  * Inject eject message within plymouth theme
+  * partitioning: Include parted.getDevice() in the try/catch
+  * partitioning: Add an edit button
+  * l10n: Update POT
+  * partitioning: Fix HTML partition preview wrapping
+
+ -- Clement Lefebvre <root@linuxmint.com>  Thu, 07 Sep 2023 14:53:00 +0100
+
 live-installer (2023.08.24.1) faye; urgency=medium
 
   * Fix title
