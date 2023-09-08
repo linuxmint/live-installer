@@ -1,3 +1,9 @@
+live-installer (2023.09.08) faye; urgency=medium
+
+  * Rephrase live media eject msg
+
+ -- Clement Lefebvre <root@linuxmint.com>  Fri, 08 Sep 2023 11:32:19 +0100
+
 live-installer (2023.09.07) faye; urgency=medium
 
   * Inject eject message within plymouth theme
