@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Inject eject message within plymouth theme
-msg="SubTitle=Remove the live-medium and press ENTER to continue..."
+msg="SubTitle=Remove the installation media and press ENTER to continue..."
 theme_file=/usr/share/plymouth/themes/mint-logo/mint-logo.plymouth
 sed -i -e "/${msg}/d" ${theme_file}
 sed -i -e "/\[reboot\]/a ${msg}" ${theme_file}
