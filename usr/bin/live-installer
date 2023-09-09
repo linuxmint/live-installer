@@ -1,5 +1,12 @@
 #!/bin/sh
 
+# Inject eject message within plymouth theme
+msg="SubTitle=Remove the live-medium and press ENTER to continue..."
+theme_file=/usr/share/plymouth/themes/mint-logo/mint-logo.plymouth
+sed -i -e "/${msg}/d" ${theme_file}
+sed -i -e "/\[reboot\]/a ${msg}" ${theme_file}
+sed -i -e "/\[shutdown\]/a ${msg}" ${theme_file}
+
 optimize='OO'; case "$*" in *--debug*) unset optimize; esac
 
 python3 -tt${optimize} //usr/lib/live-installer/main.py "$@"

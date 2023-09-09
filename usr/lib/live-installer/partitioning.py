@@ -117,6 +117,17 @@ def build_partitions(_installer):
     installer.window.get_window().set_cursor(None)
     installer.window.set_sensitive(True)
 
+def selection_changed(selection):
+    model, iter = installer.builder.get_object("treeview_disks").get_selection().get_selected()
+    if not iter: return
+    row = model[iter]
+    partition = row[IDX_PART_OBJECT]
+    if (partition is None or partition.partition.type == parted.PARTITION_EXTENDED or partition.partition.number == -1):
+        installer.builder.get_object("button_edit").set_sensitive(False)
+    else:
+        installer.builder.get_object("button_edit").set_sensitive(True)
+    update_html_preview(selection)
+
 def update_html_preview(selection):
     model, row = selection.get_selected()
     try: disk = model[row][IDX_PART_DISK]
@@ -125,7 +136,7 @@ def update_html_preview(selection):
         installer._selected_disk = disk
         installer.partitions_browser.load_html(model.get_html(disk), 'file:///')
 
-def edit_partition_dialog(widget, path, viewcol):
+def edit_partition_dialog(*args):
     ''' assign the partition ... '''
     model, iter = installer.builder.get_object("treeview_disks").get_selection().get_selected()
     if not iter: return
@@ -233,10 +244,10 @@ class PartitionSetup(Gtk.TreeStore):
         print('Disks: ', self.disks)
         already_done_full_disk_format = False
         for disk_path, disk_description in self.disks:
-            print("    Analyzing path='%s' description='%s'" % (disk_path, disk_description))
-            disk_device = parted.getDevice(disk_path)
-            print("      - Found the device...")
             try:
+                print("    Analyzing path='%s' description='%s'" % (disk_path, disk_description))
+                disk_device = parted.getDevice(disk_path)
+                print("      - Found the device...")
                 disk = parted.Disk(disk_device)
                 print("      - Found the disk...")
             except Exception as detail:
@@ -299,10 +310,10 @@ class PartitionSetup(Gtk.TreeStore):
             except NameError: pass
             print("      - Iterating partitions...")
             # Needed to fix the 1% minimum Partition.size_percent
-            sum_size_percent = sum(p.size_percent for p in partitions) + .5  # .5 for good measure
+            sum_size_percent = sum(p.size_percent for p in partitions) + 5  # 5% extra for good measure
             for partition in partitions:
                 print("        . Appending partition %s..." % partition.name)
-                partition.size_percent = round(partition.size_percent / sum_size_percent * 100, 1)
+                partition.size_percent = round(partition.size_percent / sum_size_percent * 100, 0)
                 installer.setup.partitions.append(partition)
                 self.append(disk_iter, (partition.name,
                                         '<span foreground="{}">{}</span>'.format(partition.color, partition.type),

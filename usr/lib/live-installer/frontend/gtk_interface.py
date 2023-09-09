@@ -37,6 +37,9 @@ HOSTNAME_TOTAL_LENGTH = 253
 WHITESPACE_REGEX = r"[\s]+"
 HAS_LOWER_REGEX = r"[A-Z]+"
 
+VERSION = "6"
+CODENAME = "Faye"
+
 # Used as a decorator to run things in the background
 def asynchronous(func):
     def wrapper(*args, **kwargs):
@@ -160,9 +163,10 @@ class InstallerWindow:
 
         # partitions
         self.builder.get_object("button_expert").connect("clicked", self.show_customwarning)
-        self.builder.get_object("button_edit").connect("clicked", partitioning.manually_edit_partitions)
+        self.builder.get_object("button_gparted").connect("clicked", partitioning.manually_edit_partitions)
+        self.builder.get_object("button_edit").connect("clicked", partitioning.edit_partition_dialog)
         self.builder.get_object("button_refresh").connect("clicked", lambda _: partitioning.build_partitions(self))
-        self.builder.get_object("treeview_disks").get_selection().connect("changed", partitioning.update_html_preview)
+        self.builder.get_object("treeview_disks").get_selection().connect("changed", partitioning.selection_changed)
         self.builder.get_object("treeview_disks").connect("row_activated", partitioning.edit_partition_dialog)
         self.builder.get_object("treeview_disks").connect("button-release-event", partitioning.partitions_popup_menu)
         text = Gtk.CellRendererText()
@@ -274,10 +278,8 @@ class InstallerWindow:
         return True
 
     def i18n(self):
+        title = f"LMDE {VERSION} '{CODENAME}'"
         subtitle = _("Installer")
-        with open("/etc/lsb-release") as f:
-            config = dict([line.strip().split("=") for line in f])
-            title = config['DISTRIB_DESCRIPTION'].replace('"', '')
 
         if __debug__:
             subtitle += ' - debug mode'
@@ -288,7 +290,7 @@ class InstallerWindow:
         else:
             self.builder.get_object("button_expert").hide()
 
-        self.builder.get_object("headerbar").set_title("LMDE 5 'Elsie'")
+        self.builder.get_object("headerbar").set_title(title)
         self.builder.get_object("headerbar").set_subtitle(subtitle)
 
         # Header
@@ -311,7 +313,7 @@ class InstallerWindow:
         self.builder.get_object("button_next").set_label(_("Next"))
 
         # Welcome page
-        self.builder.get_object("label_welcome1").set_text(_("Welcome to %s!") % "LMDE 5")
+        self.builder.get_object("label_welcome1").set_text(_("Welcome to %s!") % f"LMDE {VERSION}")
         self.builder.get_object("label_welcome2").set_text(_("This program will ask you some questions and set up LMDE on your computer."))
         self.builder.get_object("button_lets_go").set_label(_("Let's go!"))
 
@@ -354,7 +356,8 @@ class InstallerWindow:
         self.builder.get_object("check_badblocks").set_tooltip_text(_("This provides extra security but it can take hours."))
 
         # Partitions page
-        self.builder.get_object("button_edit").set_label(_("Edit partitions"))
+        self.builder.get_object("button_edit").set_label(_("Edit"))
+        self.builder.get_object("button_gparted").set_label(_("Launch GParted"))
         self.builder.get_object("button_refresh").set_label(_("Refresh"))
         self.builder.get_object("button_expert").set_label(_("Expert mode"))
         for col, title in zip(self.builder.get_object("treeview_disks").get_columns(),

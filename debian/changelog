@@ -1,3 +1,53 @@
+live-installer (2023.09.07) faye; urgency=medium
+
+  * Inject eject message within plymouth theme
+  * partitioning: Include parted.getDevice() in the try/catch
+  * partitioning: Add an edit button
+  * l10n: Update POT
+  * partitioning: Fix HTML partition preview wrapping
+
+ -- Clement Lefebvre <root@linuxmint.com>  Thu, 07 Sep 2023 14:53:00 +0100
+
+live-installer (2023.08.24.1) faye; urgency=medium
+
+  * Fix title
+
+ -- Clement Lefebvre <root@linuxmint.com>  Thu, 24 Aug 2023 20:43:03 +0100
+
+live-installer (2023.08.24) faye; urgency=medium
+
+  * Revert "Don't install microcode pkgs"
+  * Fix installation of iucode-tool
+
+ -- Clement Lefebvre <root@linuxmint.com>  Thu, 24 Aug 2023 10:30:03 +0100
+
+live-installer (2023.08.23.1) faye; urgency=medium
+
+  * Don't install microcode pkgs
+
+ -- Clement Lefebvre <root@linuxmint.com>  Wed, 23 Aug 2023 16:27:55 +0100
+
+live-installer (2023.08.23) faye; urgency=medium
+
+  * frontend: Update title
+  * adduser: Use --disabled-password
+
+ -- Clement Lefebvre <root@linuxmint.com>  Wed, 23 Aug 2023 11:40:39 +0100
+
+live-installer (2023.08.19) faye; urgency=medium
+
+  [ Clement Lefebvre ]
+  * Fix locale flags in HiDPI
+
+  [ Michael Webster ]
+  * Fix a few problems with passwords, usernames and hostnames.
+
+  [ Clement Lefebvre ]
+  * LUKS: Add discard option in crypttab
+  * l10n: Update translations
+
+ -- Clement Lefebvre <root@linuxmint.com>  Sat, 19 Aug 2023 17:41:00 +0200
+
 live-installer (2022.03.12) elsie; urgency=medium
 
   * l10n: Fix a few errors
