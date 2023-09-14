@@ -1,3 +1,13 @@
+live-installer (2023.09.14) faye; urgency=medium
+
+  * live-installer-expert-mode: Call live-installer shell script
+  * live-installer: Don't accept to be run without sudo
+  * installer: support /casper path to find the squashfs file
+  * interface: Use white dots
+  * UI: Show a dialog when the medium is not found
+
+ -- Clement Lefebvre <root@linuxmint.com>  Thu, 14 Sep 2023 17:15:01 +0100
+
 live-installer (2023.09.08) faye; urgency=medium
 
   * Rephrase live media eject msg
