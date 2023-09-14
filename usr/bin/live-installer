@@ -1,5 +1,10 @@
 #!/bin/sh
 
+if [ "$(id -u)" -ne 0 ]; then
+	echo 'live-installer must be run with sudo.' >&2
+	exit 1
+fi
+
 # Inject eject message within plymouth theme
 msg="SubTitle=Remove the installation media and press ENTER to continue..."
 theme_file=/usr/share/plymouth/themes/mint-logo/mint-logo.plymouth
