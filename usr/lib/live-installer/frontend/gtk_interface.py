@@ -74,9 +74,18 @@ class InstallerWindow:
 
         Gtk.Settings.get_default().set_property("gtk-application-prefer-dark-theme", True)
 
-        # build the setup object (where we put all our choices) and the installer
+        media = None
+        for path in ['/run/live/medium/live/filesystem.squashfs', '/run/live/medium/casper/filesystem.squashfs']:
+            if os.path.exists(path):
+                media = path
+                break
+        if media is None and not __debug__:
+            ErrorDialog(_("Installer"), "Critical Error: Live medium not found!")
+            sys.exit(1)
+
+        # build the setup object (where we put all our choices)
         self.setup = Setup()
-        self.installer = InstallerEngine(self.setup)
+        self.installer = InstallerEngine(self.setup, media)
 
         self.resource_dir = '/usr/share/live-installer/'
         glade_file = os.path.join(self.resource_dir, 'interface.ui')
