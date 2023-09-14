@@ -21,9 +21,13 @@ class InstallerEngine:
         self.setup = setup
 
         # find the squashfs..
-        self.media = '/run/live/medium/live/filesystem.squashfs'
-        if(not os.path.exists(self.media) and not __debug__):
-            print("Critical Error: Live medium (%s) not found!" % self.media)
+        self.media = None
+        for path in ['/run/live/medium/live/filesystem.squashfs', '/run/live/medium/casper/filesystem.squashfs']:
+            if os.path.exists(path):
+                self.media = path
+                break
+        if self.media is None and not __debug__:
+            print("Critical Error: Live medium not found!")
             sys.exit(1)
 
     def set_progress_hook(self, progresshook):
