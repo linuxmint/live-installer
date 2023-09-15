@@ -1018,6 +1018,9 @@ class InstallerWindow:
                 self.activate_page(self.PAGE_ADVANCED)
 
             elif(sel == self.PAGE_CUSTOMWARNING):
+                if not os.path.exists("/target"):
+                    ErrorDialog(_("Installer"), _("Before continuing, mount your target filesystem(s) on /target."))
+                    return
                 partitioning.build_grub_partitions()
                 self.activate_page(self.PAGE_ADVANCED)
             elif(sel == self.PAGE_ADVANCED):
