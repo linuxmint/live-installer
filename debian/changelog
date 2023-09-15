@@ -1,3 +1,9 @@
+live-installer (2023.09.15) faye; urgency=medium
+
+  * expert mode: Don't let user press Next if /target is not mounted
+
+ -- Clement Lefebvre <root@linuxmint.com>  Fri, 15 Sep 2023 10:49:20 +0100
+
 live-installer (2023.09.14) faye; urgency=medium
 
   * live-installer-expert-mode: Call live-installer shell script
