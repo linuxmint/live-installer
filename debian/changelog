@@ -1,3 +1,11 @@
+live-installer (2023.09.18) faye; urgency=medium
+
+  * UI: Fix "Next" button label when the back button is pressed.
+  * partitioning: Refactor get_disks()
+  * partitioning: Exclude eMMC hardware devices
+
+ -- Clement Lefebvre <root@linuxmint.com>  Mon, 18 Sep 2023 12:09:17 +0100
+
 live-installer (2023.09.15) faye; urgency=medium
 
   * expert mode: Don't let user press Next if /target is not mounted
