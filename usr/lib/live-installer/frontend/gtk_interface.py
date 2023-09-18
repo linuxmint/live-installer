@@ -74,9 +74,18 @@ class InstallerWindow:
 
         Gtk.Settings.get_default().set_property("gtk-application-prefer-dark-theme", True)
 
-        # build the setup object (where we put all our choices) and the installer
+        media = None
+        for path in ['/run/live/medium/live/filesystem.squashfs', '/run/live/medium/casper/filesystem.squashfs']:
+            if os.path.exists(path):
+                media = path
+                break
+        if media is None and not __debug__:
+            ErrorDialog(_("Installer"), "Critical Error: Live medium not found!")
+            sys.exit(1)
+
+        # build the setup object (where we put all our choices)
         self.setup = Setup()
-        self.installer = InstallerEngine(self.setup)
+        self.installer = InstallerEngine(self.setup, media)
 
         self.resource_dir = '/usr/share/live-installer/'
         glade_file = os.path.join(self.resource_dir, 'interface.ui')
@@ -1016,6 +1025,9 @@ class InstallerWindow:
                 self.activate_page(self.PAGE_ADVANCED)
 
             elif(sel == self.PAGE_CUSTOMWARNING):
+                if not os.path.exists("/target"):
+                    ErrorDialog(_("Installer"), _("Before continuing, mount your target filesystem(s) on /target."))
+                    return
                 partitioning.build_grub_partitions()
                 self.activate_page(self.PAGE_ADVANCED)
             elif(sel == self.PAGE_ADVANCED):
@@ -1052,6 +1064,7 @@ class InstallerWindow:
         else:
             self.builder.get_object("button_back").set_sensitive(True)
             self.builder.get_object("button_next").set_sensitive(True)
+            self.builder.get_object("button_next").set_label(_("Next"))
             if(sel == self.PAGE_OVERVIEW):
                 self.activate_page(self.PAGE_ADVANCED)
             elif(sel == self.PAGE_ADVANCED):

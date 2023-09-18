@@ -17,14 +17,9 @@ NON_LATIN_KB_LAYOUTS = ['am', 'af', 'ara', 'ben', 'bd', 'bg', 'bn', 'bt', 'by', 
 class InstallerEngine:
     ''' This is central to the live installer '''
 
-    def __init__(self, setup):
+    def __init__(self, setup, media):
         self.setup = setup
-
-        # find the squashfs..
-        self.media = '/run/live/medium/live/filesystem.squashfs'
-        if(not os.path.exists(self.media) and not __debug__):
-            print("Critical Error: Live medium (%s) not found!" % self.media)
-            sys.exit(1)
+        self.media = media
 
     def set_progress_hook(self, progresshook):
         ''' Set a callback to be called on progress updates '''
