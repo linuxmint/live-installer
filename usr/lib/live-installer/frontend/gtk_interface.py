@@ -606,7 +606,6 @@ class InstallerWindow:
         cell.set_property("surface", surface)
 
     def flag(self, lang, language, ccode):
-        print (language.lower())
         for filename in [language.lower(), ccode.lower(), "united_nations"]:
             path = f"/usr/share/circle-flags-svg/{filename}.svg"
             if os.path.exists(path):

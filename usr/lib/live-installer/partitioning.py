@@ -65,35 +65,53 @@ with open(RESOURCE_DIR + 'disk-partitions.html') as f:
 
 def get_disks():
     disks = []
-    exclude_devices = ['/dev/sr0', '/dev/sr1', '/dev/cdrom', '/dev/dvd', '/dev/fd0']
     live_device = subprocess.getoutput("findmnt -n -o source /run/live/medium").split('\n')[0]
     live_device = re.sub('[0-9]+$', '', live_device) # remove partition numbers if any
-    if live_device is not None and live_device.startswith('/dev/'):
-        exclude_devices.append(live_device)
-        print("Excluding %s (detected as the live device)" % live_device)
     lsblk = shell_exec('LC_ALL=en_US.UTF-8 lsblk -rindo TYPE,NAME,RM,SIZE,MODEL | sort -k3,2')
     for line in lsblk.stdout:
         try:
+            # Extract info from blkid output
             elements = line.strip().split(" ", 4)
             if len(elements) < 4:
                 print("Can't parse blkid output: %s" % elements)
                 continue
-            elif len(elements) < 5:
-                print("Can't find model in blkid output: %s" % elements)
-                type, device, removable, size, model = elements[0], elements[1], elements[2], elements[3], elements[1]
+            device_type, device, removable, size = elements[0], elements[1], elements[2], elements[3]
+            if len(elements) < 5:
+                # No model info in blkid output
+                model = elements[1]
             else:
-                type, device, removable, size, model = elements
+                model = elements[4]
+
+            # Exclude non-disk devices (/dev/loop0 for instance)
+            if device_type != "disk":
+                print("Excluding %s (not disk type)" % device)
+                continue
             device = "/dev/" + device
-            if type == "disk" and device not in exclude_devices:
-                # convert size to manufacturer's size for show, e.g. in GB, not GiB!
-                unit_index = 'BKMGTPEZY'.index(size.upper()[-1])
-                l10n_unit = [_('B'), _('kB'), _('MB'), _('GB'), _('TB'), 'PB', 'EB', 'ZB', 'YB'][unit_index]
-                size = "%s %s" % (str(int(float(size[:-1]) * (1024/1000)**unit_index)), l10n_unit)
-                model = model.replace("\\x20", " ")
-                description = '{} ({})'.format(model.strip(), size)
-                if int(removable):
-                    description = _('Removable:') + ' ' + description
-                disks.append((device, description))
+            # Exclude the live device
+            if device == live_device:
+                print("Excluding %s (detected as the live device)" % device)
+                continue
+            # Exclude unwanted devices
+            if device in ['/dev/sr0', '/dev/sr1', '/dev/cdrom', '/dev/dvd', '/dev/fd0']:
+                print("Excluding %s" % device)
+                continue
+            # Exclude hardware eMMC hardware devices
+            if re.match("/dev/mmcblk[0-9]+boot[0-9]+$", device):
+                print("Excluding %s (eMMC hardware device)" % device)
+                continue
+            if re.match("/dev/mmcblk[0-9]+rpmb$", device):
+                print("Excluding %s (eMMC hardware device)" % device)
+                continue
+
+            # Convert size to manufacturer's size (i.e. GB, not GiB)
+            unit_index = 'BKMGTPEZY'.index(size.upper()[-1])
+            l10n_unit = [_('B'), _('kB'), _('MB'), _('GB'), _('TB'), 'PB', 'EB', 'ZB', 'YB'][unit_index]
+            size = "%s %s" % (str(int(float(size[:-1]) * (1024/1000)**unit_index)), l10n_unit)
+            model = model.replace("\\x20", " ")
+            description = '{} ({})'.format(model.strip(), size)
+            if int(removable):
+                description = _('Removable:') + ' ' + description
+            disks.append((device, description))
         except Exception as detail:
             print("Could not parse blkid output: %s (%s)" % (line, detail))
     return disks

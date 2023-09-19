@@ -1,3 +1,19 @@
+live-installer (2023.09.19) faye; urgency=medium
+
+  * Remove leftover print statement
+  * Don't install microcode pkgs
+  * Remove unused code
+
+ -- Clement Lefebvre <root@linuxmint.com>  Tue, 19 Sep 2023 09:57:45 +0100
+
+live-installer (2023.09.18) faye; urgency=medium
+
+  * UI: Fix "Next" button label when the back button is pressed.
+  * partitioning: Refactor get_disks()
+  * partitioning: Exclude eMMC hardware devices
+
+ -- Clement Lefebvre <root@linuxmint.com>  Mon, 18 Sep 2023 12:09:17 +0100
+
 live-installer (2023.09.15) faye; urgency=medium
 
   * expert mode: Don't let user press Next if /target is not mounted

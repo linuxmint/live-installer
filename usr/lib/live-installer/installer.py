@@ -142,22 +142,6 @@ class InstallerEngine:
             self.do_run_in_chroot("dpkg -i /debs/*")
             os.system("rm -rf /target/debs")
 
-        print(" --> Installing microcode packages")
-        os.system("mkdir -p /target/debs")
-        os.system("cp /run/live/medium/pool/*/i/intel-microcode/* /target/debs/")
-        os.system("cp /run/live/medium/pool/*/a/amd64-microcode/* /target/debs/")
-        os.system("cp /run/live/medium/pool/*/i/iucode-tool/* /target/debs/")
-        self.do_run_in_chroot("dpkg -i /debs/*")
-        os.system("rm -rf /target/debs")
-
-        # Detect cdrom device
-        # TODO : properly detect cdrom device
-        # Mount it
-        # os.system("mkdir -p /target/media/cdrom")
-        # if (int(os.system("mount /dev/sr0 /target/media/cdrom"))):
-        #     print(" --> Failed to mount CDROM. Install will fail")
-        # self.do_run_in_chroot("apt-cdrom -o Acquire::cdrom::AutoDetect=false -m add")
-
         # remove live-packages (or w/e)
         print(" --> Removing live packages")
         our_current += 1
