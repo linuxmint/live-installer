@@ -102,6 +102,10 @@ def get_disks():
             if re.match("/dev/mmcblk[0-9]+rpmb$", device):
                 print("Excluding %s (eMMC hardware device)" % device)
                 continue
+            # Exclude empty devices (for instance: a card reader with no card in it)
+            if size[:-1] == "0":
+                print("Excluding %s (device's size is 0)" % device)
+                continue
 
             # Convert size to manufacturer's size (i.e. GB, not GiB)
             unit_index = 'BKMGTPEZY'.index(size.upper()[-1])
