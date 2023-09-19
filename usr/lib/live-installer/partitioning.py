@@ -102,10 +102,6 @@ def get_disks():
             if re.match("/dev/mmcblk[0-9]+rpmb$", device):
                 print("Excluding %s (eMMC hardware device)" % device)
                 continue
-            # Exclude empty devices (for instance: a card reader with no card in it)
-            if size[:-1] == "0":
-                print("Excluding %s (device's size is 0)" % device)
-                continue
 
             # Convert size to manufacturer's size (i.e. GB, not GiB)
             unit_index = 'BKMGTPEZY'.index(size.upper()[-1])
@@ -266,10 +262,16 @@ class PartitionSetup(Gtk.TreeStore):
         print('Disks: ', self.disks)
         already_done_full_disk_format = False
         for disk_path, disk_description in self.disks:
+            # Get the device from parted
             try:
                 print("    Analyzing path='%s' description='%s'" % (disk_path, disk_description))
                 disk_device = parted.getDevice(disk_path)
                 print("      - Found the device...")
+            except Exception as detail:
+                print("      - Found an issue while looking for the device: %s" % detail)
+                continue
+            # Get the partitions from parted
+            try:
                 disk = parted.Disk(disk_device)
                 print("      - Found the disk...")
             except Exception as detail:
