@@ -1,3 +1,9 @@
+live-installer (2023.09.19.2) faye; urgency=medium
+
+  * partitioning: Handle exceptions differently for getDevice() and Disk()
+
+ -- Clement Lefebvre <root@linuxmint.com>  Tue, 19 Sep 2023 15:54:33 +0100
+
 live-installer (2023.09.19.1) faye; urgency=medium
 
   * partitioning: Exclude empty devices
