@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2023-09-07 14:04+0100\n"
-"PO-Revision-Date: 2023-09-07 18:12+0000\n"
-"Last-Translator: Dragone2 <Unknown>\n"
+"PO-Revision-Date: 2024-01-28 14:18+0000\n"
+"Last-Translator: Fs00 <Unknown>\n"
 "Language-Team: Italian <it@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2024-01-04 14:53+0000\n"
-"X-Generator: Launchpad (build e1eeab5b20e19239bd7d5f36676f7a52988db88b)\n"
+"X-Launchpad-Export-Date: 2024-06-18 17:50+0000\n"
+"X-Generator: Launchpad (build bbfa2351d9d6a9ddfe262109428f7bf5516e65d1)\n"
 
 #: usr/lib/live-installer/installer.py:45
 msgid ""
@@ -187,7 +187,7 @@ msgstr "Chi sei?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:301
 msgid "Installation Type"
-msgstr "Tipologia di Installazione"
+msgstr "Tipologia di installazione"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:301
 #: usr/lib/live-installer/frontend/gtk_interface.py:302
@@ -255,12 +255,12 @@ msgstr "Iniziamo!"
 #: usr/lib/live-installer/frontend/gtk_interface.py:324
 #: usr/share/live-installer/interface.ui.h:6
 msgid "Keyboard Model:"
-msgstr "Modello Tastiera:"
+msgstr "Modello tastiera:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:327
 #: usr/share/live-installer/interface.ui.h:7
 msgid "Type here to test your keyboard layout"
-msgstr "Digita qui per testare il layout della tua tastiera"
+msgstr "Digita qui per provare il layout della tastiera"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:328
 msgid ""
@@ -321,7 +321,7 @@ msgstr "Crittografa la mia cartella personale"
 #: usr/lib/live-installer/frontend/gtk_interface.py:343
 #: usr/share/live-installer/interface.ui.h:17
 msgid "Automated Installation"
-msgstr "Installazione Automatica"
+msgstr "Installazione automatica"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:344
 #: usr/share/live-installer/interface.ui.h:18
@@ -356,7 +356,7 @@ msgstr "Usa LVM (Logical Volume Management)"
 #: usr/lib/live-installer/frontend/gtk_interface.py:350
 #: usr/share/live-installer/interface.ui.h:26
 msgid "Manual Partitioning"
-msgstr "Partizionamento Manuale"
+msgstr "Partizionamento manuale"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:351
 #: usr/share/live-installer/interface.ui.h:27
@@ -595,9 +595,7 @@ msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:989
 msgid "The EFI partition is not bootable. Please edit the partition flags."
-msgstr ""
-"La partizione EFI non è avviabile, per favore modifica i flag della "
-"partizione."
+msgstr "La partizione EFI non è avviabile. Modifica i flag della partizione."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:992
 msgid "The EFI partition is too small. It must be at least 35MB."
@@ -610,7 +608,7 @@ msgstr "La partizione EFI deve essere formattata in vfat."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1005
 msgid "Please select an EFI partition."
-msgstr "Per piacere selezionare una partizione EFI."
+msgstr "Seleziona una partizione EFI."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1005
 msgid ""
@@ -688,7 +686,7 @@ msgstr "disattivato"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1084
 msgid "Home encryption: "
-msgstr "Crittografia della Home: "
+msgstr "Crittografia della cartella home: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1085
 msgid "System settings"
@@ -705,7 +703,7 @@ msgstr "Operazioni sul filesystem"
 #: usr/lib/live-installer/frontend/gtk_interface.py:1088
 #, python-format
 msgid "Install bootloader on %s"
-msgstr "Installare bootloader in %s"
+msgstr "Installa il bootloader in %s"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1088
 msgid "Do not install bootloader"
@@ -718,7 +716,7 @@ msgstr "Utilizzare il /target già montato."
 #: usr/lib/live-installer/frontend/gtk_interface.py:1093
 #, python-format
 msgid "Automated installation on %s"
-msgstr "Installazione automatizzata su %s"
+msgstr "Installazione automatica su %s"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1094
 msgid "LVM: "
@@ -726,7 +724,7 @@ msgstr "LVM: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1095
 msgid "Disk Encryption: "
-msgstr "Crittografia Disco: "
+msgstr "Crittografia del disco: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1099
 #, python-format
@@ -743,7 +741,7 @@ msgid ""
 "The installation is now complete. Do you want to restart your computer to "
 "use the new system?"
 msgstr ""
-"L' installazione è completata. Vuoi riavviare il computer per usare il nuovo "
+"L'installazione è completata. Vuoi riavviare il computer per usare il nuovo "
 "sistema?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1127
@@ -787,7 +785,7 @@ msgstr "TB"
 
 #: usr/lib/live-installer/partitioning.py:95
 msgid "Removable:"
-msgstr "Rimuovibile:"
+msgstr "Rimovibile:"
 
 #: usr/lib/live-installer/partitioning.py:192
 msgid "Assign to /"
@@ -812,7 +810,7 @@ msgid ""
 "installer to create a set of partitions for you? Note: This will ERASE ALL "
 "DATA present on this disk."
 msgstr ""
-"Impossibile trovare una tavola di partizioni nel disco: %s. Vuoi che il "
+"Impossibile trovare una tabella partizioni nel disco: %s. Vuoi che il "
 "programma d'installazione si occupi della creazione delle partizioni per te? "
 "Attenzione: Questa operazione CANCELLERÀ TUTTI I DATI presenti in questo "
 "disco."

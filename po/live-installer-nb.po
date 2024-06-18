@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2023-09-07 14:04+0100\n"
-"PO-Revision-Date: 2022-07-21 23:19+0000\n"
-"Last-Translator: Herman <Unknown>\n"
+"PO-Revision-Date: 2024-02-25 23:55+0000\n"
+"Last-Translator: Kim André <kimamb11@gmail.com>\n"
 "Language-Team: Norwegian Bokmal <nb@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2024-01-04 14:53+0000\n"
-"X-Generator: Launchpad (build e1eeab5b20e19239bd7d5f36676f7a52988db88b)\n"
+"X-Launchpad-Export-Date: 2024-06-18 17:50+0000\n"
+"X-Generator: Launchpad (build bbfa2351d9d6a9ddfe262109428f7bf5516e65d1)\n"
 
 #: usr/lib/live-installer/installer.py:45
 msgid ""
@@ -153,7 +153,7 @@ msgstr "Kalkulerer filindekser ..."
 #: usr/lib/live-installer/frontend/gtk_interface.py:1005
 #: usr/lib/live-installer/partitioning.py:340
 msgid "Installer"
-msgstr ""
+msgstr "Installer"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:297
 msgid "What language would you like to use?"
@@ -173,7 +173,7 @@ msgstr "Tastaturoppsett"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:299
 msgid "What is your keyboard layout?"
-msgstr ""
+msgstr "Hva er ditt tastaturoppsett?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:300
 msgid "User account"
@@ -249,17 +249,17 @@ msgstr ""
 #: usr/lib/live-installer/frontend/gtk_interface.py:317
 #: usr/share/live-installer/interface.ui.h:5
 msgid "Let's go!"
-msgstr ""
+msgstr "Kjør på!"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:324
 #: usr/share/live-installer/interface.ui.h:6
 msgid "Keyboard Model:"
-msgstr ""
+msgstr "Tastaturmodell:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:327
 #: usr/share/live-installer/interface.ui.h:7
 msgid "Type here to test your keyboard layout"
-msgstr ""
+msgstr "Skriv her for å teste ditt tastaturoppsett"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:328
 msgid ""
@@ -267,6 +267,9 @@ msgid ""
 "Latin characters. In addition to your selected layout, English (US) is set "
 "as the default. You can switch layouts by pressing Super+Space."
 msgstr ""
+"* Ditt brukernavn, din datamaskins navn og ditt passord burde kun inneholde "
+"latinske bokstaver. I tillegg til ditt valgte oppsett, English (US) er satt "
+"som standard. Oppsett kan byttes ved å trykke Super+Mellomrom"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:331
 #: usr/share/live-installer/interface.ui.h:8
@@ -281,7 +284,7 @@ msgstr "Navnet på denne datamaskinen:"
 #: usr/lib/live-installer/frontend/gtk_interface.py:333
 #: usr/share/live-installer/interface.ui.h:11
 msgid "The name it uses when it talks to other computers."
-msgstr ""
+msgstr "Navn som datamaskinen bruker når den snakker med andre maskiner."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:334
 #: usr/share/live-installer/interface.ui.h:10
@@ -316,12 +319,12 @@ msgstr "Krypter hjemmemappe"
 #: usr/lib/live-installer/frontend/gtk_interface.py:343
 #: usr/share/live-installer/interface.ui.h:17
 msgid "Automated Installation"
-msgstr ""
+msgstr "Automatisert installasjon"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:344
 #: usr/share/live-installer/interface.ui.h:18
 msgid "Erase a disk and install LMDE on it."
-msgstr ""
+msgstr "Slett en disk, og installér LMDE på den."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:345
 #: usr/share/live-installer/interface.ui.h:19
@@ -351,12 +354,12 @@ msgstr "Bruk LVM (Logical Volume Management)"
 #: usr/lib/live-installer/frontend/gtk_interface.py:350
 #: usr/share/live-installer/interface.ui.h:26
 msgid "Manual Partitioning"
-msgstr ""
+msgstr "Manuell partisjonering."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:351
 #: usr/share/live-installer/interface.ui.h:27
 msgid "Manually create, resize or choose partitions for LMDE."
-msgstr ""
+msgstr "Manuelt lag, endre størrelse, eller valg partisjoner for LMDE."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:352
 #: usr/share/live-installer/interface.ui.h:25
@@ -366,7 +369,7 @@ msgstr "Fyll disken med tilfeldig data"
 #: usr/lib/live-installer/frontend/gtk_interface.py:353
 #: usr/share/live-installer/interface.ui.h:24
 msgid "This provides extra security but it can take hours."
-msgstr ""
+msgstr "Dette tilbyr ekstra sikkerhet, men kan ta timer."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:356
 #: usr/lib/live-installer/partitioning.py:185
@@ -377,7 +380,7 @@ msgstr "Endre"
 #: usr/lib/live-installer/frontend/gtk_interface.py:357
 #: usr/share/live-installer/interface.ui.h:30
 msgid "Launch GParted"
-msgstr ""
+msgstr "Start GParted"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:358
 msgid "Refresh"
@@ -415,7 +418,7 @@ msgstr "Tilgjengelig plass"
 #: usr/lib/live-installer/frontend/gtk_interface.py:371
 #: usr/share/live-installer/interface.ui.h:31
 msgid "Install the GRUB boot menu on:"
-msgstr ""
+msgstr "Installér GRUB oppstartsmeny på:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:374
 #: usr/share/live-installer/interface.ui.h:32
@@ -423,11 +426,13 @@ msgid ""
 "You selected to manage your partitions manually, this feature is for "
 "ADVANCED USERS ONLY."
 msgstr ""
+"Du valgte å behandle partisjonene dine manuelt, denne funksjonen er for "
+"AVANSERTE BRUKERE KUN."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:375
 #: usr/share/live-installer/interface.ui.h:33
 msgid "Before continuing, mount your target filesystem(s) on /target."
-msgstr ""
+msgstr "Før du fortsetter, montér målfilsystemet/målfilsystemene på /target."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:376
 #: usr/share/live-installer/interface.ui.h:34
@@ -455,7 +460,7 @@ msgstr ""
 #: usr/lib/live-installer/frontend/gtk_interface.py:381
 #: usr/share/live-installer/interface.ui.h:37
 msgid "Do the following and then click Next to finish installation:"
-msgstr ""
+msgstr "Gjør følgende og så klikk \"neste\" for å avslutte installasjonen:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:382
 #: usr/share/live-installer/interface.ui.h:38
@@ -502,7 +507,7 @@ msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:396
 msgid "The values do not match."
-msgstr ""
+msgstr "Verdiene samsvarer ikke."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:399
 msgid "This field cannot be empty."
@@ -510,27 +515,28 @@ msgstr "Dette feltet kan ikke være tomt."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:402
 msgid "This field may not contain space characters."
-msgstr ""
+msgstr "Dette feltet kan ikke inneholde mellomromskarakterer."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:405
 msgid "This field must be lower case."
-msgstr ""
+msgstr "Dette feltet må være i små bokstaver."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:408
 msgid "This field cannot start or end with a hyphen or period."
 msgstr ""
+"Dette feltet kan ikke starte eller slutte med et mellomrom eller punktum."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:412
 msgid "The entry is too short."
-msgstr ""
+msgstr "Oppføringen er for kort."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:414
 msgid "The entry is too long."
-msgstr ""
+msgstr "Oppføringen er for lang."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:419
 msgid "This field contains invalid characters."
-msgstr ""
+msgstr "Dette feltet inneholder feilaktige karakterer."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:578
 msgid "Quit?"
@@ -551,7 +557,7 @@ msgstr "Advarsel"
 #: usr/lib/live-installer/frontend/gtk_interface.py:956
 #, python-format
 msgid "This will delete all the data on %s. Are you sure?"
-msgstr ""
+msgstr "Dette vil slette all data på %s. Er du sikker?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:972
 msgid ""
@@ -573,6 +579,11 @@ msgid ""
 " - Recommended size: 30GB\n"
 " - Recommended filesystem format: ext4\n"
 msgstr ""
+"En rotpartisjon er nødvendig for å installere Linux Mint på.\n"
+"\n"
+" - Monteringspunkt: /\n"
+" - Anbefalt størrelse: 30GB\n"
+" - Anbefalt filsystemformat: ext4\n"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:989
 msgid "The EFI partition is not bootable. Please edit the partition flags."
@@ -581,7 +592,7 @@ msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:992
 msgid "The EFI partition is too small. It must be at least 35MB."
-msgstr ""
+msgstr "EFI-partisjonen er for liten. Den må være minst 35MB"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:997
 #: usr/lib/live-installer/frontend/gtk_interface.py:1001
@@ -605,6 +616,16 @@ msgid ""
 "partition of the disk as the EFI system partition.\n"
 " "
 msgstr ""
+"En EFI systempartisjon kreves med følgende kriterier:\n"
+"\n"
+" - Monteringspunkt: /boot/efi\n"
+" - Partisjonsflagg: Bootable\n"
+" - Størrelse: minst 35MB (100MB eller mer er anbefalt)\n"
+" - Format: vfat eller fat32\n"
+"\n"
+"For å sikre kompabilitet med Windows, anbefaler vi å bruke første "
+"partisjonen av disken som EFI systempartisjon\n"
+" "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1018
 msgid "Install"
@@ -658,7 +679,7 @@ msgstr "deaktivert"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1084
 msgid "Home encryption: "
-msgstr ""
+msgstr "Hjemmemappekryptering: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1085
 msgid "System settings"
@@ -666,7 +687,7 @@ msgstr "Systeminnstillinger"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1086
 msgid "Computer's name: "
-msgstr ""
+msgstr "Datamaskinens navn:_ "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1087
 msgid "Filesystem operations"
@@ -688,7 +709,7 @@ msgstr "Bruk den allerede monterte /target."
 #: usr/lib/live-installer/frontend/gtk_interface.py:1093
 #, python-format
 msgid "Automated installation on %s"
-msgstr ""
+msgstr "Automatisert installasjon på %s"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1094
 msgid "LVM: "
@@ -696,7 +717,7 @@ msgstr "LVM: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1095
 msgid "Disk Encryption: "
-msgstr ""
+msgstr "Diskkryptering: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1099
 #, python-format
@@ -721,6 +742,8 @@ msgid ""
 "The installation is now paused. Please read the instructions on the page "
 "carefully before clicking Next to finish the installation."
 msgstr ""
+"Installasjonen er nå pauset. Venligst les instruskjonene på siden nøye før "
+"du klikker \"neste\" for å fullføre installasjonen."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1160
 #: usr/lib/live-installer/frontend/gtk_interface.py:1163
@@ -790,6 +813,8 @@ msgid ""
 "The partition table couldn't be written for %s. Restart the computer and try "
 "again."
 msgstr ""
+"Partisjonstabellen kunne ikke bli skrivet for %s. Vennligst restart "
+"datamaskinen og prøv igjen."
 
 #: usr/lib/live-installer/partitioning.py:411
 #, python-format
@@ -797,6 +822,8 @@ msgid ""
 "The partition %s could not be created. The installation will stop. Restart "
 "the computer and try again."
 msgstr ""
+"Partisjonen %s kunne ikke bli skapt. Installasjonen vil nå stoppe. Restart "
+"datamaskinen og prøv igjen."
 
 #: usr/lib/live-installer/partitioning.py:468
 msgid "Logical partition"
@@ -846,4 +873,4 @@ msgstr "Ja"
 
 #: usr/share/live-installer/interface.ui.h:1
 msgid " "
-msgstr ""
+msgstr " "

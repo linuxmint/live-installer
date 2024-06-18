@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2023-09-07 14:04+0100\n"
-"PO-Revision-Date: 2020-11-14 04:42+0000\n"
-"Last-Translator: James <Unknown>\n"
+"PO-Revision-Date: 2024-03-29 14:45+0000\n"
+"Last-Translator: thieninox <Unknown>\n"
 "Language-Team: Vietnamese <vi@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2024-01-04 14:53+0000\n"
-"X-Generator: Launchpad (build e1eeab5b20e19239bd7d5f36676f7a52988db88b)\n"
+"X-Launchpad-Export-Date: 2024-06-18 17:50+0000\n"
+"X-Generator: Launchpad (build bbfa2351d9d6a9ddfe262109428f7bf5516e65d1)\n"
 
 #: usr/lib/live-installer/installer.py:45
 msgid ""
@@ -71,11 +71,11 @@ msgstr "Đang định dạng %(partition)s thành %(format)s ..."
 
 #: usr/lib/live-installer/installer.py:484
 msgid "Setting hostname"
-msgstr "Đang thiết lập tên máy"
+msgstr "Đặt tên máy chủ"
 
 #: usr/lib/live-installer/installer.py:503
 msgid "Setting locale"
-msgstr "Đang thiết lập ngôn ngữ theo vùng hiện tại"
+msgstr "Cài đặt ngôn ngữ"
 
 #: usr/lib/live-installer/installer.py:518
 msgid "Localizing packages"
@@ -87,7 +87,7 @@ msgstr "Đang cài drivers"
 
 #: usr/lib/live-installer/installer.py:564
 msgid "Setting keyboard options"
-msgstr "Đang thiếp lập tùy chọn bàn phím"
+msgstr "Cài đặt tùy chọn bàn phím"
 
 #: usr/lib/live-installer/installer.py:621
 msgid "Installing bootloader"
@@ -127,7 +127,7 @@ msgstr "Ngôn ngữ"
 #: usr/lib/live-installer/frontend/gtk_interface.py:129
 #: usr/lib/live-installer/frontend/gtk_interface.py:321
 msgid "Location"
-msgstr ""
+msgstr "Vị trí"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:212
 #: usr/lib/live-installer/frontend/gtk_interface.py:325
@@ -237,7 +237,7 @@ msgstr "Tiếp theo"
 #: usr/share/live-installer/interface.ui.h:3
 #, python-format
 msgid "Welcome to %s!"
-msgstr ""
+msgstr "Chào mừng đến với %s!"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:316
 #: usr/share/live-installer/interface.ui.h:4
@@ -248,7 +248,7 @@ msgstr "Chương trình sẽ hỏi bạn một số câu hỏi và cài LMDE lê
 #: usr/lib/live-installer/frontend/gtk_interface.py:317
 #: usr/share/live-installer/interface.ui.h:5
 msgid "Let's go!"
-msgstr ""
+msgstr "Đi nào!"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:324
 #: usr/share/live-installer/interface.ui.h:6
@@ -266,6 +266,9 @@ msgid ""
 "Latin characters. In addition to your selected layout, English (US) is set "
 "as the default. You can switch layouts by pressing Super+Space."
 msgstr ""
+"* Tên người dùng, tên máy tính và mật khẩu của bạn chỉ được chứa các ký tự "
+"Latinh. Ngoài bố cục bạn đã chọn, tiếng Anh (Mỹ) được đặt làm mặc định. Bạn "
+"có thể chuyển đổi bố cục bằng cách nhấn Super+Space."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:331
 #: usr/share/live-installer/interface.ui.h:8
@@ -376,7 +379,7 @@ msgstr "Chỉnh sửa"
 #: usr/lib/live-installer/frontend/gtk_interface.py:357
 #: usr/share/live-installer/interface.ui.h:30
 msgid "Launch GParted"
-msgstr ""
+msgstr "Khởi chạy GParted"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:358
 msgid "Refresh"
@@ -456,7 +459,7 @@ msgstr ""
 #: usr/lib/live-installer/frontend/gtk_interface.py:381
 #: usr/share/live-installer/interface.ui.h:37
 msgid "Do the following and then click Next to finish installation:"
-msgstr ""
+msgstr "Thực hiện như sau rồi nhấn Tiếp theo để hoàn tất cài đặt:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:382
 #: usr/share/live-installer/interface.ui.h:38
@@ -503,35 +506,36 @@ msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:396
 msgid "The values do not match."
-msgstr ""
+msgstr "Các giá trị không khớp."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:399
 msgid "This field cannot be empty."
-msgstr ""
+msgstr "Trường này không thể để trống."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:402
 msgid "This field may not contain space characters."
-msgstr ""
+msgstr "Trường này có thể không chứa ký tự khoảng trắng."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:405
 msgid "This field must be lower case."
-msgstr ""
+msgstr "Trường này phải là chữ thường."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:408
 msgid "This field cannot start or end with a hyphen or period."
 msgstr ""
+"Trường này không thể bắt đầu hoặc kết thúc bằng dấu gạch nối hoặc dấu chấm."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:412
 msgid "The entry is too short."
-msgstr ""
+msgstr "Mục nhập quá ngắn."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:414
 msgid "The entry is too long."
-msgstr ""
+msgstr "Mục nhập quá dài."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:419
 msgid "This field contains invalid characters."
-msgstr ""
+msgstr "Trường này chứa các ký tự không hợp lệ."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:578
 msgid "Quit?"
@@ -547,12 +551,12 @@ msgstr "Vui lòng chọn ngôn ngữ"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:956
 msgid "Warning"
-msgstr ""
+msgstr "Cảnh báo"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:956
 #, python-format
 msgid "This will delete all the data on %s. Are you sure?"
-msgstr ""
+msgstr "Thao tác này sẽ xóa tất cả dữ liệu trên %s. Bạn có chắc không?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:972
 msgid ""
@@ -574,6 +578,11 @@ msgid ""
 " - Recommended size: 30GB\n"
 " - Recommended filesystem format: ext4\n"
 msgstr ""
+"Cần có phân vùng gốc để cài đặt Linux Mint.\n"
+"\n"
+" - Điểm gắn kết: /\n"
+" - Kích thước đề xuất: 30GB\n"
+" - Định dạng hệ thống tập tin được đề xuất: ext4\n"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:989
 msgid "The EFI partition is not bootable. Please edit the partition flags."
@@ -581,7 +590,7 @@ msgstr "Phân vùng EFI không khởi động được. Vui lòng chỉnh sửa 
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:992
 msgid "The EFI partition is too small. It must be at least 35MB."
-msgstr ""
+msgstr "Phân vùng EFI quá nhỏ. Nó phải có ít nhất 35 MB."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:997
 #: usr/lib/live-installer/frontend/gtk_interface.py:1001
@@ -605,10 +614,20 @@ msgid ""
 "partition of the disk as the EFI system partition.\n"
 " "
 msgstr ""
+"Cần có phân vùng hệ thống EFI với các yêu cầu sau:\n"
+"\n"
+" - Điểm gắn kết: /boot/efi\n"
+" - Cờ phân vùng: Có khả năng khởi động\n"
+" - Kích thước: tối thiểu 35 MB (khuyến nghị 100 MB trở lên)\n"
+" - Định dạng: vfat hoặc fat32\n"
+"\n"
+"Để đảm bảo khả năng tương thích với Windows, chúng tôi khuyên bạn nên sử "
+"dụng phân vùng đầu tiên của đĩa làm phân vùng hệ thống EFI.\n"
+" "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1018
 msgid "Install"
-msgstr ""
+msgstr "Cài đặt"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1074
 msgid "Localization"
@@ -628,7 +647,7 @@ msgstr "Bố trí bàn phím: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1080
 msgid "User settings"
-msgstr "Thiết lập người dùng"
+msgstr "Cài đặt người dùng"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1081
 msgid "Real name: "
@@ -658,15 +677,15 @@ msgstr "tắt"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1084
 msgid "Home encryption: "
-msgstr ""
+msgstr "Mã hóa Nhà: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1085
 msgid "System settings"
-msgstr "Thiết lập hệ thống"
+msgstr "Cài đặt hệ thống"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1086
 msgid "Computer's name: "
-msgstr ""
+msgstr "Tên máy tính: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1087
 msgid "Filesystem operations"
@@ -688,15 +707,15 @@ msgstr "Dùng /target đã gắn kết."
 #: usr/lib/live-installer/frontend/gtk_interface.py:1093
 #, python-format
 msgid "Automated installation on %s"
-msgstr ""
+msgstr "Cài đặt tự động trên %s"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1094
 msgid "LVM: "
-msgstr ""
+msgstr "LVM: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1095
 msgid "Disk Encryption: "
-msgstr ""
+msgstr "Mã hóa ổ đĩa: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1099
 #, python-format
@@ -721,6 +740,8 @@ msgid ""
 "The installation is now paused. Please read the instructions on the page "
 "carefully before clicking Next to finish the installation."
 msgstr ""
+"Quá trình cài đặt hiện đã bị tạm dừng. Vui lòng đọc kỹ hướng dẫn trên trang "
+"trước khi nhấp vào Tiếp theo để hoàn tất cài đặt."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1160
 #: usr/lib/live-installer/frontend/gtk_interface.py:1163
@@ -790,6 +811,7 @@ msgid ""
 "The partition table couldn't be written for %s. Restart the computer and try "
 "again."
 msgstr ""
+"Không thể ghi bảng phân vùng cho %s. Khởi động lại máy tính và thử lại."
 
 #: usr/lib/live-installer/partitioning.py:411
 #, python-format
@@ -797,6 +819,8 @@ msgid ""
 "The partition %s could not be created. The installation will stop. Restart "
 "the computer and try again."
 msgstr ""
+"Không thể tạo phân vùng %s. Quá trình cài đặt sẽ dừng lại. Khởi động lại máy "
+"tính và thử lại."
 
 #: usr/lib/live-installer/partitioning.py:468
 msgid "Logical partition"
@@ -828,22 +852,22 @@ msgstr "Điểm gắn kết:"
 
 #: usr/lib/live-installer/partitioning.py:592
 msgid "Cancel"
-msgstr ""
+msgstr "Hủy bỏ"
 
 #: usr/lib/live-installer/partitioning.py:593
 #: usr/lib/live-installer/dialogs.py:31 usr/lib/live-installer/dialogs.py:42
 #: usr/lib/live-installer/dialogs.py:47
 msgid "OK"
-msgstr ""
+msgstr "Chấp nhận"
 
 #: usr/lib/live-installer/dialogs.py:36
 msgid "No"
-msgstr ""
+msgstr "Không"
 
 #: usr/lib/live-installer/dialogs.py:37
 msgid "Yes"
-msgstr ""
+msgstr "Có"
 
 #: usr/share/live-installer/interface.ui.h:1
 msgid " "
-msgstr ""
+msgstr " "

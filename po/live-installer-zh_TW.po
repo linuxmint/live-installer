@@ -8,25 +8,25 @@ msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2023-09-07 14:04+0100\n"
-"PO-Revision-Date: 2020-07-18 08:12+0000\n"
-"Last-Translator: H.G. <Unknown>\n"
+"PO-Revision-Date: 2024-02-14 01:29+0000\n"
+"Last-Translator: 爽自由 <coby2023t@gmail.com>\n"
 "Language-Team: Chinese (Traditional) <zh_TW@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2024-01-04 14:53+0000\n"
-"X-Generator: Launchpad (build e1eeab5b20e19239bd7d5f36676f7a52988db88b)\n"
+"X-Launchpad-Export-Date: 2024-06-18 17:50+0000\n"
+"X-Generator: Launchpad (build bbfa2351d9d6a9ddfe262109428f7bf5516e65d1)\n"
 
 #: usr/lib/live-installer/installer.py:45
 msgid ""
 "ERROR: You must first manually mount your target filesystem(s) at /target to "
 "do a custom install!"
-msgstr "錯誤: 您必須先手動掛載目標檔案系統於 /target 以進行自訂安裝!"
+msgstr "錯誤: 您必須先手動掛載目標檔案系統到 /target 才能進行自訂安裝!"
 
 #: usr/lib/live-installer/installer.py:106
 #, python-format
 msgid "Copying /%s"
-msgstr "複製中 /%s"
+msgstr "正在複製 /%s"
 
 #: usr/lib/live-installer/installer.py:114
 msgid "Entering the system ..."
@@ -42,19 +42,19 @@ msgstr "為系統新增使用者"
 
 #: usr/lib/live-installer/installer.py:212
 msgid "Writing filesystem mount information to /etc/fstab"
-msgstr "寫入檔案系統掛載資訊至 /etc/fstab 中"
+msgstr "將檔案系統掛載資訊寫入 /etc/fstab"
 
 #: usr/lib/live-installer/installer.py:220
 #: usr/lib/live-installer/installer.py:355
 #, python-format
 msgid "Mounting %(partition)s on %(mountpoint)s"
-msgstr "將 %(partition)s 掛載於 %(mountpoint)s 中"
+msgstr "將 %(partition)s 掛載到 %(mountpoint)s"
 
 #: usr/lib/live-installer/installer.py:277
 #, python-format
 msgid ""
 "Filling %s with random data (please be patient, this can take hours...)"
-msgstr "以隨機資料填充 %s （請耐心等待，這可能需要幾小時...）"
+msgstr "以隨機資料填入 %s （可能要幾小時，請耐心等待）"
 
 #: usr/lib/live-installer/installer.py:282
 #, python-format
@@ -88,13 +88,13 @@ msgstr "設定鍵盤選項中"
 
 #: usr/lib/live-installer/installer.py:621
 msgid "Installing bootloader"
-msgstr "安裝開機載入器中"
+msgstr "正在安裝開機載入程式"
 
 #: usr/lib/live-installer/installer.py:634
 msgid ""
 "WARNING: The grub bootloader was not configured properly! You need to "
 "configure it manually."
-msgstr "警示: grub 開機載入器組態未正常設定! 您需要為其手動設定組態。"
+msgstr "警告：Grub 開機載入碼未正確設定，需手動設定"
 
 #: usr/lib/live-installer/installer.py:648
 msgid "Cleaning APT"
@@ -107,11 +107,11 @@ msgstr "完成安裝"
 
 #: usr/lib/live-installer/installer.py:692
 msgid "Configuring bootloader"
-msgstr "設定開機載入器組態中"
+msgstr "設定開機載入程式"
 
 #: usr/lib/live-installer/installer.py:701
 msgid "Checking bootloader"
-msgstr "檢查開機載入器中"
+msgstr "檢查開機載入程式"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:121
 #: usr/lib/live-installer/frontend/gtk_interface.py:297
@@ -122,7 +122,7 @@ msgstr "語言"
 #: usr/lib/live-installer/frontend/gtk_interface.py:129
 #: usr/lib/live-installer/frontend/gtk_interface.py:321
 msgid "Location"
-msgstr ""
+msgstr "位置"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:212
 #: usr/lib/live-installer/frontend/gtk_interface.py:325
@@ -232,18 +232,18 @@ msgstr "下一步"
 #: usr/share/live-installer/interface.ui.h:3
 #, python-format
 msgid "Welcome to %s!"
-msgstr ""
+msgstr "歡迎到 %s !"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:316
 #: usr/share/live-installer/interface.ui.h:4
 msgid ""
 "This program will ask you some questions and set up LMDE on your computer."
-msgstr "此程式將詢問您幾個問題，並在電腦上設定好 LMDE。"
+msgstr "本程式將詢問一些問題，並在電腦上設置好 LMDE"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:317
 #: usr/share/live-installer/interface.ui.h:5
 msgid "Let's go!"
-msgstr ""
+msgstr "開始吧！"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:324
 #: usr/share/live-installer/interface.ui.h:6
@@ -260,7 +260,7 @@ msgid ""
 "* Your username, your computer's name and your password should only contain "
 "Latin characters. In addition to your selected layout, English (US) is set "
 "as the default. You can switch layouts by pressing Super+Space."
-msgstr ""
+msgstr "* 用戶名，電腦名以及密碼只限用拉丁字母。此外，鍵盤預設為英文 (US) ，也可按 Super + 空白來切換。"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:331
 #: usr/share/live-installer/interface.ui.h:8
@@ -280,7 +280,7 @@ msgstr "當它與其他電腦溝通時所使用的名稱。"
 #: usr/lib/live-installer/frontend/gtk_interface.py:334
 #: usr/share/live-installer/interface.ui.h:10
 msgid "Pick a username:"
-msgstr "想一個使用者名稱："
+msgstr "選個用戶名："
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:335
 #: usr/share/live-installer/interface.ui.h:12
@@ -315,7 +315,7 @@ msgstr "自動化安裝"
 #: usr/lib/live-installer/frontend/gtk_interface.py:344
 #: usr/share/live-installer/interface.ui.h:18
 msgid "Erase a disk and install LMDE on it."
-msgstr "抹除一塊硬碟，並安裝 LMDE 在上頭。"
+msgstr "清除磁碟後安裝 LMDE"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:345
 #: usr/share/live-installer/interface.ui.h:19
@@ -325,27 +325,27 @@ msgstr "磁碟："
 #: usr/lib/live-installer/frontend/gtk_interface.py:346
 #: usr/share/live-installer/interface.ui.h:21
 msgid "Encrypt the operating system"
-msgstr "加密整個作業系統"
+msgstr "加密作業系統"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:347
 #: usr/share/live-installer/interface.ui.h:22
 msgid "Passphrase"
-msgstr "通關密語"
+msgstr "密碼"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:348
 #: usr/share/live-installer/interface.ui.h:23
 msgid "Confirm passphrase"
-msgstr "確認通關密語"
+msgstr "確認密碼"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:349
 #: usr/share/live-installer/interface.ui.h:20
 msgid "Use LVM (Logical Volume Management)"
-msgstr ""
+msgstr "使用 LVM (邏輯磁碟管理)"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:350
 #: usr/share/live-installer/interface.ui.h:26
 msgid "Manual Partitioning"
-msgstr "手動規劃分割區"
+msgstr "手動分割磁區"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:351
 #: usr/share/live-installer/interface.ui.h:27
@@ -371,7 +371,7 @@ msgstr "編輯"
 #: usr/lib/live-installer/frontend/gtk_interface.py:357
 #: usr/share/live-installer/interface.ui.h:30
 msgid "Launch GParted"
-msgstr ""
+msgstr "啟動 GParted"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:358
 msgid "Refresh"
@@ -416,7 +416,7 @@ msgstr "將 GRUB 開機選單安裝在："
 msgid ""
 "You selected to manage your partitions manually, this feature is for "
 "ADVANCED USERS ONLY."
-msgstr "您選擇要手動管理分割區，此功能僅供「進階使用者」操作"
+msgstr "您選擇要手動管理分割區，此功能限「進階用戶」使用"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:375
 #: usr/share/live-installer/interface.ui.h:33
@@ -488,35 +488,35 @@ msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:396
 msgid "The values do not match."
-msgstr ""
+msgstr "數值不符"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:399
 msgid "This field cannot be empty."
-msgstr ""
+msgstr "此欄位不能空白"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:402
 msgid "This field may not contain space characters."
-msgstr ""
+msgstr "此欄位不能有空白字元"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:405
 msgid "This field must be lower case."
-msgstr ""
+msgstr "此欄位須小寫"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:408
 msgid "This field cannot start or end with a hyphen or period."
-msgstr ""
+msgstr "此欄位前後不能是減號或逗號"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:412
 msgid "The entry is too short."
-msgstr ""
+msgstr "太短了"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:414
 msgid "The entry is too long."
-msgstr ""
+msgstr "太長了"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:419
 msgid "This field contains invalid characters."
-msgstr ""
+msgstr "此欄位有非法字元"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:578
 msgid "Quit?"
@@ -537,17 +537,17 @@ msgstr "警告"
 #: usr/lib/live-installer/frontend/gtk_interface.py:956
 #, python-format
 msgid "This will delete all the data on %s. Are you sure?"
-msgstr "這將刪除 %s 上的所有資料。確定嗎？"
+msgstr "這將刪除 %s 的全部資料。確定嗎？"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:972
 msgid ""
 "Please indicate a filesystem to format the root (/) partition with before "
 "proceeding."
-msgstr "請先指定檔案系統以格式化根 (/) 磁碟分割。"
+msgstr "繼續前，請先指定根 (/) 磁碟的將被格式化成哪種檔案系統。"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:976
 msgid "Please select a root (/) partition."
-msgstr "請選擇根 (/) 磁碟分割。"
+msgstr "請選擇根目錄 (/) 的磁區"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:977
 msgid ""
@@ -557,6 +557,11 @@ msgid ""
 " - Recommended size: 30GB\n"
 " - Recommended filesystem format: ext4\n"
 msgstr ""
+"安裝 Linux Mint 需要有根磁區\n"
+"\n"
+"- 掛載點: /\n"
+"- 建議大小: 30 GB\n"
+"- 建議檔案系統格式: ext4\n"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:989
 msgid "The EFI partition is not bootable. Please edit the partition flags."
@@ -564,7 +569,7 @@ msgstr "EFI 磁碟分割無法用於開機。請編輯磁碟分割旗標。"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:992
 msgid "The EFI partition is too small. It must be at least 35MB."
-msgstr ""
+msgstr "EFI 分割區太小，最少要 35MB。"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:997
 #: usr/lib/live-installer/frontend/gtk_interface.py:1001
@@ -588,6 +593,15 @@ msgid ""
 "partition of the disk as the EFI system partition.\n"
 " "
 msgstr ""
+"EFI 系統分區需滿足下列要求：\n"
+"\n"
+" -掛載點: /boot/efi\n"
+" -磁區標記: 可開機\n"
+" -大小: 至少35MB (建議至少 100MB)\n"
+" -格式: vfat 或 fat32\n"
+"\n"
+"為確保 Windows 的相容性，硬碟的第1個分割區建議設為 EFI 系統分割區。\n"
+" "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1018
 msgid "Install"
@@ -641,7 +655,7 @@ msgstr "停用"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1084
 msgid "Home encryption: "
-msgstr ""
+msgstr "加密家目錄 "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1085
 msgid "System settings"
@@ -658,24 +672,24 @@ msgstr "檔案系統操作"
 #: usr/lib/live-installer/frontend/gtk_interface.py:1088
 #, python-format
 msgid "Install bootloader on %s"
-msgstr "安裝開機載入器於 %s"
+msgstr "安裝開機載入程式到 %s"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1088
 msgid "Do not install bootloader"
-msgstr "不安裝開機載入器"
+msgstr "不安裝開機載入程式"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1090
 msgid "Use already-mounted /target."
-msgstr "使用已掛載 /target。"
+msgstr "使用已掛載的 /target。"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1093
 #, python-format
 msgid "Automated installation on %s"
-msgstr "在 %s 上自動化安裝"
+msgstr "在 %s 上自動安裝"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1094
 msgid "LVM: "
-msgstr ""
+msgstr "LVM: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1095
 msgid "Disk Encryption: "
@@ -767,14 +781,14 @@ msgstr "硬碟 %s 找不到磁碟分割表。您是否要安裝程式為您建�
 msgid ""
 "The partition table couldn't be written for %s. Restart the computer and try "
 "again."
-msgstr ""
+msgstr "分割表無法寫入 %s，請重啓電腦再試試"
 
 #: usr/lib/live-installer/partitioning.py:411
 #, python-format
 msgid ""
 "The partition %s could not be created. The installation will stop. Restart "
 "the computer and try again."
-msgstr "無法建立 %s 分割區。安裝程序將中止。重開電腦再試一次。"
+msgstr "無法建立 %s 分割區，將中止安裝。請重啟電腦再試。"
 
 #: usr/lib/live-installer/partitioning.py:468
 msgid "Logical partition"
@@ -824,4 +838,4 @@ msgstr "是"
 
 #: usr/share/live-installer/interface.ui.h:1
 msgid " "
-msgstr ""
+msgstr " "

@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2023-09-07 14:04+0100\n"
-"PO-Revision-Date: 2023-12-31 05:23+0000\n"
+"PO-Revision-Date: 2024-02-17 00:28+0000\n"
 "Last-Translator: famese <Unknown>\n"
 "Language-Team: Interlingua <ia@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2024-01-04 14:53+0000\n"
-"X-Generator: Launchpad (build e1eeab5b20e19239bd7d5f36676f7a52988db88b)\n"
+"X-Launchpad-Export-Date: 2024-06-18 17:50+0000\n"
+"X-Generator: Launchpad (build bbfa2351d9d6a9ddfe262109428f7bf5516e65d1)\n"
 
 #: usr/lib/live-installer/installer.py:45
 msgid ""
@@ -99,8 +99,8 @@ msgid ""
 "WARNING: The grub bootloader was not configured properly! You need to "
 "configure it manually."
 msgstr ""
-"ATTENTION: le bootloader grub non era configurate correctemente! Il besonia "
-"que tu lo configura manualmente."
+"ATTENTION: le bootloader grub non esseva configurate correctemente! Il "
+"besonia que tu lo configura manualmente."
 
 #: usr/lib/live-installer/installer.py:648
 msgid "Cleaning APT"
@@ -452,16 +452,17 @@ msgid ""
 "During the install, you will be given time to chroot into /target and "
 "install any packages that will be needed to boot your new system."
 msgstr ""
-"Durante le installation, te essera date tempore pro cambiar chroot in "
-"/target e installar omne pacchettos que essera necessari pro facer le initio "
-"de tu nove systema."
+"Durante le installation, tu habera tempore pro facer chroot in /target e "
+"installar omne pacchettos que essera necessari pro facer le initio de tu "
+"nove systema."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:378
 #: usr/share/live-installer/interface.ui.h:36
 msgid ""
 "During the install, you will be required to write your own /etc/fstab."
 msgstr ""
-"Durante le installation, te sera requirite de scriber tu proprie /etc/fstab."
+"Durante le installation, tu essera requirite de scriber tu proprie "
+"/etc/fstab."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:381
 #: usr/share/live-installer/interface.ui.h:37
@@ -551,7 +552,7 @@ msgstr "Quitar?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:578
 msgid "Are you sure you want to quit the installer?"
-msgstr "Desira tu vermente quitar le installator?"
+msgstr "Es tu secur que tu vole quitar le installator?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:916
 msgid "Please choose a language"
@@ -604,7 +605,7 @@ msgstr "Le partition EFI es troppo micre. Illo debe esser al minus 35MB."
 #: usr/lib/live-installer/frontend/gtk_interface.py:997
 #: usr/lib/live-installer/frontend/gtk_interface.py:1001
 msgid "The EFI partition must be formatted as vfat."
-msgstr "Le partition EFI debe ser formattate como vfat."
+msgstr "Le partition EFI debe esser formattate como vfat."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1005
 msgid "Please select an EFI partition."
@@ -741,8 +742,8 @@ msgid ""
 "The installation is now complete. Do you want to restart your computer to "
 "use the new system?"
 msgstr ""
-"Le installation es ora complete. Desira tu reinitiar tu computator pro usar "
-"le nove systema?"
+"Le installation es ora complete. Vole tu reinitiar tu computator pro usar le "
+"nove systema?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1127
 msgid ""
