@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2023-09-07 14:04+0100\n"
-"PO-Revision-Date: 2024-06-18 13:44+0000\n"
+"PO-Revision-Date: 2024-06-26 15:03+0000\n"
 "Last-Translator: Quentin PAGÈS <Unknown>\n"
 "Language-Team: Occitan (post 1500) <oc@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2024-06-18 17:50+0000\n"
+"X-Launchpad-Export-Date: 2024-07-21 08:57+0000\n"
 "X-Generator: Launchpad (build bbfa2351d9d6a9ddfe262109428f7bf5516e65d1)\n"
 "Language: oc\n"
 
@@ -23,6 +23,8 @@ msgid ""
 "ERROR: You must first manually mount your target filesystem(s) at /target to "
 "do a custom install!"
 msgstr ""
+"ERROR : devètz d’en primièr montar manualament lo(s) sistèma(s) de fichièrs "
+"cible(s) a l’emplaçament /target per far una installacion personalizada !"
 
 #: usr/lib/live-installer/installer.py:106
 #, python-format
@@ -43,7 +45,7 @@ msgstr "Creacion del compte utilizaire"
 
 #: usr/lib/live-installer/installer.py:212
 msgid "Writing filesystem mount information to /etc/fstab"
-msgstr ""
+msgstr "Escritura de las informacions de montatge dins /etc/fstab"
 
 #: usr/lib/live-installer/installer.py:220
 #: usr/lib/live-installer/installer.py:355
@@ -56,6 +58,8 @@ msgstr "Montatge de %(partition)s sus %(mountpoint)s"
 msgid ""
 "Filling %s with random data (please be patient, this can take hours...)"
 msgstr ""
+"Emplenament del disc %s amb de donadas aleatòrias (mercés d’esperar, pòt "
+"prendre oras…)"
 
 #: usr/lib/live-installer/installer.py:282
 #, python-format
@@ -242,6 +246,8 @@ msgstr "Benvenguda dins %s !"
 msgid ""
 "This program will ask you some questions and set up LMDE on your computer."
 msgstr ""
+"Aqueste logicial vos pausarà d’unas questions e metrà LMDE en plaça sus "
+"l’ordenador."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:317
 #: usr/share/live-installer/interface.ui.h:5
@@ -264,6 +270,10 @@ msgid ""
 "Latin characters. In addition to your selected layout, English (US) is set "
 "as the default. You can switch layouts by pressing Super+Space."
 msgstr ""
+"* Vòstre nom d’utilizaire, de maquina e vòstre senhal pòdon pas que conténer "
+"de caractèrs latins. Anglés (USA) es apondut a l’agençament de clavièr de "
+"vòstra causida e seleccionat per defaut. Podètz bascular d’un agençament a "
+"l’autre en quichant Super+Espaci."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:331
 #: usr/share/live-installer/interface.ui.h:8
@@ -354,6 +364,7 @@ msgstr "Particionament manual"
 #: usr/share/live-installer/interface.ui.h:27
 msgid "Manually create, resize or choose partitions for LMDE."
 msgstr ""
+"Creatz manualament, redimensionatz o seleccionatz de particions per LMDE."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:352
 #: usr/share/live-installer/interface.ui.h:25
@@ -420,17 +431,22 @@ msgid ""
 "You selected to manage your partitions manually, this feature is for "
 "ADVANCED USERS ONLY."
 msgstr ""
+"Avètz seleccionat de gerir vòstras particions manualament, aquesta foncion "
+"ES PAS QUE PELS UTILIZAIRES EXPÈRTS."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:375
 #: usr/share/live-installer/interface.ui.h:33
 msgid "Before continuing, mount your target filesystem(s) on /target."
 msgstr ""
+"Abans de contunhar, montatz vòstres sistèma de fichièrs ciblas sus /target."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:376
 #: usr/share/live-installer/interface.ui.h:34
 msgid ""
 "Do NOT mount virtual devices such as /dev, /proc, /sys, etc on /target/."
 msgstr ""
+"Montetz PAS de sistèmas virtuals (coma /dev, /pro, /sys, etc) a "
+"l’emplaçament /target/."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:377
 #: usr/share/live-installer/interface.ui.h:35
@@ -438,17 +454,22 @@ msgid ""
 "During the install, you will be given time to chroot into /target and "
 "install any packages that will be needed to boot your new system."
 msgstr ""
+"Pendent l’installacion, auretz l’ocasion de realizar un chrtoot al repertòri "
+"/target per installar los paquets suplementaris."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:378
 #: usr/share/live-installer/interface.ui.h:36
 msgid ""
 "During the install, you will be required to write your own /etc/fstab."
 msgstr ""
+"Pendent la procedura d’installacion, deuretz escriure vòstre pròpi fichièr "
+"/etc/fstab."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:381
 #: usr/share/live-installer/interface.ui.h:37
 msgid "Do the following and then click Next to finish installation:"
 msgstr ""
+"Fasètz çò que seguís, puèi clicatz Seguent per acabar l’installacion :"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:382
 #: usr/share/live-installer/interface.ui.h:38
@@ -457,6 +478,10 @@ msgid ""
 "new system, matching those currently mounted at /target (without using the "
 "/target prefix in the mount paths themselves)."
 msgstr ""
+"Volgatz crear lo fichier /target/etc/fstab pels sistèmas de fichièrs que "
+"seràn montats al vòstre sistèma novèl, correspondent a çò montat actualament "
+"a l’emplaçament /target (sens utilizar lo prefix /target dins lo camin dels "
+"punts de montatge)."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:383
 #: usr/share/live-installer/interface.ui.h:39
@@ -465,6 +490,9 @@ msgid ""
 "dmraid, etc) by calling \"sudo chroot /target\" followed by the relevant apt-"
 "get/aptitude installations."
 msgstr ""
+"Volgatz installar l’ensemble dels paquets necessaris a la primièra aviada "
+"del sistèma (mdadm, cryptsetup, dmraid, etc) en executant la comanda « sudo "
+"chroot /target », seguida de las comandas apt-get/aptitude pertinentas."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:384
 #: usr/share/live-installer/interface.ui.h:40
@@ -473,6 +501,9 @@ msgid ""
 "as dm-crypt), you may need to have drives currently mounted using the same "
 "block device name as they appear in /target/etc/fstab."
 msgstr ""
+"Notatz qu’update-initramf requerís dins d’unes cases (coma dm-crypt) que los "
+"lectors actualament montats utilizen los noms de periferics per blòc coma "
+"apareisson dins lo fichièr /target/etc/fstab."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:385
 #: usr/share/live-installer/interface.ui.h:41
@@ -481,6 +512,9 @@ msgid ""
 "system will have at first boot, and matches what is currently mounted at "
 "/target."
 msgstr ""
+"Verificatz amb atencion que lo fichièr /target/etc/fstab es corrècte, que "
+"correspond a la configuracion del sistèma a sa primièra aviada e que "
+"correspond a çò qu'es actualament montat a l’emplaçament /target."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:396
 msgid "The values do not match."
@@ -500,7 +534,7 @@ msgstr "Aqueste camp deu èsser en minuscula."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:408
 msgid "This field cannot start or end with a hyphen or period."
-msgstr ""
+msgstr "Aqueste camp pòt pas començar o s’acabar per un jonhent o un punt."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:412
 msgid "The entry is too short."
@@ -533,13 +567,14 @@ msgstr "Avertiment"
 #: usr/lib/live-installer/frontend/gtk_interface.py:956
 #, python-format
 msgid "This will delete all the data on %s. Are you sure?"
-msgstr ""
+msgstr "Totas las donadas de %s seràn suprimidas. O volètz vertadièrament ?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:972
 msgid ""
 "Please indicate a filesystem to format the root (/) partition with before "
 "proceeding."
 msgstr ""
+"Volgatz causir un sistèma de fichièrs per formatar la particion raiç (/)."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:976
 msgid "Please select a root (/) partition."
@@ -553,19 +588,26 @@ msgid ""
 " - Recommended size: 30GB\n"
 " - Recommended filesystem format: ext4\n"
 msgstr ""
+"Una particion raiç (root) es necessària per installar Linux Mint.\n"
+"\n"
+"– Punt de montatge : /\n"
+"– Talha recomandada : 30GB\n"
+"– Format recomandat : ext4\n"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:989
 msgid "The EFI partition is not bootable. Please edit the partition flags."
 msgstr ""
+"La particion EFI es pas aviabla. Volgatz modificar las proprietats de la "
+"particion."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:992
 msgid "The EFI partition is too small. It must be at least 35MB."
-msgstr ""
+msgstr "La particion EFI es tròpa pichona. Deu èsser d’almens 35 Mo."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:997
 #: usr/lib/live-installer/frontend/gtk_interface.py:1001
 msgid "The EFI partition must be formatted as vfat."
-msgstr ""
+msgstr "La particion EFI deu èsser formatada en vfat."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1005
 msgid "Please select an EFI partition."
@@ -584,6 +626,16 @@ msgid ""
 "partition of the disk as the EFI system partition.\n"
 " "
 msgstr ""
+"Una particion sistèma EFI es necessària aamb las exigéncias seguentas :\n"
+"\n"
+" –Punt de montatge : /boot/efi\n"
+" – Drapèl de la particion : boot\n"
+" – Talha : almens 35 Mo (se recomanda 100 Mo)\n"
+" – Format : vfat o fat32\n"
+"\n"
+"Per garantir la compatibilitat amb Windows, recomandam d’utilizar la "
+"primièra particion del disc coma particion sistèma EFI\n"
+" "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1018
 msgid "Install"
@@ -637,7 +689,7 @@ msgstr "desactivat"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1084
 msgid "Home encryption: "
-msgstr ""
+msgstr "Chiframent de home : "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1085
 msgid "System settings"
@@ -654,7 +706,7 @@ msgstr "Operacions del sistèma de fichièrs"
 #: usr/lib/live-installer/frontend/gtk_interface.py:1088
 #, python-format
 msgid "Install bootloader on %s"
-msgstr ""
+msgstr "Installacion del cargador d’aviada sus %s"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1088
 msgid "Do not install bootloader"
@@ -662,7 +714,7 @@ msgstr "Installar pas cap de cargador d'amorsatge"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1090
 msgid "Use already-mounted /target."
-msgstr ""
+msgstr "Utilizacion de la particion /target ja montada."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1093
 #, python-format
@@ -700,6 +752,8 @@ msgid ""
 "The installation is now paused. Please read the instructions on the page "
 "carefully before clicking Next to finish the installation."
 msgstr ""
+"L’installacion es ara en pausa. Volgatz legir amb atencion las instruccions "
+"de la pagina abans de clicar Seguent per terminar l’installacion."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1160
 #: usr/lib/live-installer/frontend/gtk_interface.py:1163
@@ -759,6 +813,9 @@ msgid ""
 "installer to create a set of partitions for you? Note: This will ERASE ALL "
 "DATA present on this disk."
 msgstr ""
+"Cap de taula de particion es pas estada trobada sul disc %s. Volètz que lo "
+"programa d’installacion crèe un jòc de particions per vos ? Nòta : TOTAS LAS "
+"DONADAS presentas sul disc SERÀN ESCAFADAS."
 
 #: usr/lib/live-installer/partitioning.py:372
 #, python-format
@@ -766,6 +823,8 @@ msgid ""
 "The partition table couldn't be written for %s. Restart the computer and try "
 "again."
 msgstr ""
+"Escritura impossibla de la taula de particion per %s. Volgatz reaviar "
+"l’ordenador e tornar ensajar."
 
 #: usr/lib/live-installer/partitioning.py:411
 #, python-format
@@ -773,6 +832,8 @@ msgid ""
 "The partition %s could not be created. The installation will stop. Restart "
 "the computer and try again."
 msgstr ""
+"Creacion impossibla de la particion %s. Es a mand de s’arrestar "
+"l’installacion. Volgatz reaviar l’ordenador e tornar ensajar."
 
 #: usr/lib/live-installer/partitioning.py:468
 msgid "Logical partition"
