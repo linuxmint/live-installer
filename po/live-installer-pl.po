@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2023-09-07 14:04+0100\n"
-"PO-Revision-Date: 2023-09-07 13:23+0000\n"
+"PO-Revision-Date: 2024-11-29 17:56+0000\n"
 "Last-Translator: Marek Adamski <Unknown>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2024-07-21 08:57+0000\n"
-"X-Generator: Launchpad (build bbfa2351d9d6a9ddfe262109428f7bf5516e65d1)\n"
+"X-Launchpad-Export-Date: 2024-12-05 10:11+0000\n"
+"X-Generator: Launchpad (build 1519c6efe8e9bd78e6c5ebf2eb5bcb040b95ad32)\n"
 
 #: usr/lib/live-installer/installer.py:45
 msgid ""
@@ -76,7 +76,7 @@ msgstr "Ustawianie nazwy komputera"
 
 #: usr/lib/live-installer/installer.py:503
 msgid "Setting locale"
-msgstr "Ustawianie opcji lokalnych"
+msgstr "Ustawianie lokalizacji"
 
 #: usr/lib/live-installer/installer.py:518
 msgid "Localizing packages"
@@ -275,7 +275,7 @@ msgstr ""
 #: usr/lib/live-installer/frontend/gtk_interface.py:331
 #: usr/share/live-installer/interface.ui.h:8
 msgid "Your name:"
-msgstr "Twoje imię:"
+msgstr "Twoje imię i nazwisko:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:332
 #: usr/share/live-installer/interface.ui.h:9
@@ -315,7 +315,7 @@ msgstr "Wymaganie hasła do zalogowania"
 #: usr/lib/live-installer/frontend/gtk_interface.py:340
 #: usr/share/live-installer/interface.ui.h:16
 msgid "Encrypt my home folder"
-msgstr "Zaszyfrowanie katalogu użytkownika"
+msgstr "Zaszyfrowanie katalogu domowego"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:343
 #: usr/share/live-installer/interface.ui.h:17
@@ -350,7 +350,7 @@ msgstr "Potwierdź hasło"
 #: usr/lib/live-installer/frontend/gtk_interface.py:349
 #: usr/share/live-installer/interface.ui.h:20
 msgid "Use LVM (Logical Volume Management)"
-msgstr "Użyj LVM (Logiczne Zarządzanie Wolumenów)"
+msgstr "Użyj zarządcy woluminów logicznych (LVM)"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:350
 #: usr/share/live-installer/interface.ui.h:26
@@ -466,7 +466,7 @@ msgstr ""
 #: usr/share/live-installer/interface.ui.h:37
 msgid "Do the following and then click Next to finish installation:"
 msgstr ""
-"Wykonaj następujące kroki i kliknij Następne w celu zakończenia instalacji:"
+"Wykonaj następujące kroki i kliknij Dalej w celu zakończenia instalacji:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:382
 #: usr/share/live-installer/interface.ui.h:38
@@ -740,16 +740,16 @@ msgid ""
 "The installation is now complete. Do you want to restart your computer to "
 "use the new system?"
 msgstr ""
-"Instalacja jest już ukończona. Czy chcesz uruchomić ponownie komputer, aby "
-"móc użyć nowego systemu?"
+"Instalacja została ukończona. Czy chcesz ponownie uruchomić komputer, aby "
+"móc korzystać z nowego systemu?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1127
 msgid ""
 "The installation is now paused. Please read the instructions on the page "
 "carefully before clicking Next to finish the installation."
 msgstr ""
-"Instalacja została zapauzowana. Proszę przeczytać uważnie instrukcje na "
-"stronie przed kliknięciem Następny w celu ukończenia instalacji."
+"Instalacja została wstrzymana. Przeczytaj uważnie instrukcje na stronie "
+"przed kliknięciem Dalej, aby ukończyć instalację."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1160
 #: usr/lib/live-installer/frontend/gtk_interface.py:1163

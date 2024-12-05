@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2023-09-07 14:04+0100\n"
-"PO-Revision-Date: 2011-11-11 02:32+0000\n"
-"Last-Translator: Praveen Illa <mail2ipn@gmail.com>\n"
+"PO-Revision-Date: 2024-09-05 06:38+0000\n"
+"Last-Translator: Pathanjali Tallapragada <Unknown>\n"
 "Language-Team: Telugu <te@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2024-07-21 08:57+0000\n"
-"X-Generator: Launchpad (build bbfa2351d9d6a9ddfe262109428f7bf5516e65d1)\n"
+"X-Launchpad-Export-Date: 2024-12-05 10:11+0000\n"
+"X-Generator: Launchpad (build 1519c6efe8e9bd78e6c5ebf2eb5bcb040b95ad32)\n"
 
 #: usr/lib/live-installer/installer.py:45
 msgid ""
@@ -38,7 +38,7 @@ msgstr "ప్యాకేజిల  ప్రత్యక్ష కన్ఫి
 
 #: usr/lib/live-installer/installer.py:181
 msgid "Adding new user to the system"
-msgstr ""
+msgstr "సిస్టం లో ఒక కొత్త వినియాగదారుడిని చేర్చబోతున్నాము"
 
 #: usr/lib/live-installer/installer.py:212
 msgid "Writing filesystem mount information to /etc/fstab"
@@ -59,7 +59,7 @@ msgstr ""
 #: usr/lib/live-installer/installer.py:282
 #, python-format
 msgid "Creating partitions on %s"
-msgstr ""
+msgstr "%s  లో విభజన చేయబడుతోంది"
 
 #: usr/lib/live-installer/installer.py:329
 #, python-format
@@ -119,7 +119,7 @@ msgstr "బూట్‌లోడర్‌ని తనిఖీ చేస్త�
 #: usr/lib/live-installer/frontend/gtk_interface.py:297
 #: usr/lib/live-installer/frontend/gtk_interface.py:320
 msgid "Language"
-msgstr ""
+msgstr "భాష"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:129
 #: usr/lib/live-installer/frontend/gtk_interface.py:321
@@ -138,7 +138,7 @@ msgstr "చరరాశి"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:232
 msgid "Calculating file indexes ..."
-msgstr ""
+msgstr "ఫైల్ సూచికలు లెక్కించబడుతున్నాయి"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:281
 #: usr/lib/live-installer/frontend/gtk_interface.py:916
@@ -155,7 +155,7 @@ msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:297
 msgid "What language would you like to use?"
-msgstr ""
+msgstr "మీరు ఏ భాషను ఉపయోగించాలనుకుంటున్నారు?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:298
 msgid "Timezone"
@@ -163,72 +163,72 @@ msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:298
 msgid "Where are you?"
-msgstr ""
+msgstr "మీరు ఎక్కడ ఉన్నారు?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:299
 msgid "Keyboard layout"
-msgstr ""
+msgstr "కీబోర్డు నమూనా"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:299
 msgid "What is your keyboard layout?"
-msgstr ""
+msgstr "మీ కీబోర్డ్ నమూనా ఏంటి?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:300
 msgid "User account"
-msgstr ""
+msgstr "వినియాగదారుడి ఖాతా"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:300
 msgid "Who are you?"
-msgstr ""
+msgstr "మీరు ఎవరు?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:301
 msgid "Installation Type"
-msgstr ""
+msgstr "స్థాపన పద్ధతి"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:301
 #: usr/lib/live-installer/frontend/gtk_interface.py:302
 msgid "Where do you want to install LMDE?"
-msgstr ""
+msgstr "మీరు LMDE ని ఎక్కడ ఇన్స్టాల్ చేయమంటారు?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:302
 msgid "Partitioning"
-msgstr ""
+msgstr "విభజిస్తోంది"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:303
 msgid "Advanced options"
-msgstr ""
+msgstr "అధునాతన ఎంపికలు"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:304
 msgid "Summary"
-msgstr ""
+msgstr "సారాంశం"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:305
 msgid "Installing"
-msgstr ""
+msgstr "స్థాపిస్తున్నాము"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:306
 #: usr/lib/live-installer/frontend/gtk_interface.py:359
 #: usr/share/live-installer/interface.ui.h:28
 msgid "Expert mode"
-msgstr ""
+msgstr "నిపుణుని విధము"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:307
 #: usr/lib/live-installer/frontend/gtk_interface.py:1127
 msgid "Installation paused"
-msgstr ""
+msgstr "స్థాపన కు విరామము"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:310
 msgid "Quit"
-msgstr ""
+msgstr "వదిలి పెట్టు"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:311
 msgid "Back"
-msgstr ""
+msgstr "వెనక్కి"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:312
 #: usr/lib/live-installer/frontend/gtk_interface.py:1122
 msgid "Next"
-msgstr ""
+msgstr "తదుపరి"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:315
 #: usr/share/live-installer/interface.ui.h:3
