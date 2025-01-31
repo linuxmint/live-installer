@@ -5,7 +5,7 @@ import os
 from slideshow import Slideshow
 
 gi.require_version("Gtk", "3.0")
-gi.require_version("WebKit2", "4.0")
+gi.require_version("WebKit2", "4.1")
 
 from gi.repository import Gtk, Gdk, WebKit2
 
