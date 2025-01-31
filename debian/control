@@ -19,7 +19,6 @@ Depends: ${misc:Depends}, gir1.2-webkit2-4.0
   , isoquery
   , desktop-file-utils
   , shared-mime-info
-  , sysv-rc
   , menu
   , gdisk
   , isoquery, iso-codes, locales
