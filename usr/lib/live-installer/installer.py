@@ -158,7 +158,12 @@ class InstallerEngine:
         print(" --> Removing live packages")
         our_current += 1
         self.update_progress(our_current, our_total, False, False, _("Removing live configuration (packages)"))
-        with open(f"{CASPER}/filesystem.packages-remove", "r") as fd:
+
+        removals = f"{CASPER}/filesystem.packages-remove"
+        if not os.path.exists(removals):
+            removals = f"{CASPER}/filesystem.manifest-remove"
+
+        with open(removals, "r") as fd:
             line = fd.read().replace('\n', ' ')
         self.do_run_in_chroot("apt-get remove --purge --yes --force-yes %s" % line)
 
