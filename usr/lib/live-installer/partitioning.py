@@ -14,6 +14,10 @@ import parted
 import gettext
 import time
 
+import misc
+
+osinfo = misc.OsRelease()
+
 gettext.install("live-installer", "/usr/share/locale")
 
 # Used as a decorator to run things in the main loop, from another thread
@@ -65,7 +69,10 @@ with open(RESOURCE_DIR + 'disk-partitions.html') as f:
 
 def get_disks():
     disks = []
-    live_device = subprocess.getoutput("findmnt -n -o source /run/live/medium").split('\n')[0]
+    if osinfo.is_mint:
+        live_device = subprocess.getoutput("findmnt -n -o source /cdrom").split('\n')[0]
+    else:
+        live_device = subprocess.getoutput("findmnt -n -o source /run/live/medium").split('\n')[0]
     live_device = re.sub('[0-9]+$', '', live_device) # remove partition numbers if any
     lsblk = shell_exec('LC_ALL=en_US.UTF-8 lsblk -rindo TYPE,NAME,RM,SIZE,MODEL | sort -k3,2')
     for line in lsblk.stdout:

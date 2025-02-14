@@ -7,8 +7,19 @@ import gettext
 import sys
 import parted
 import partitioning
+import misc
 import shlex
 from functools import cmp_to_key
+
+osinfo = misc.OsRelease()
+
+# base paths
+if osinfo.is_mint:
+    CASPER = "/cdrom/casper"
+    POOL = "/cdrom/pool"
+else:
+    CASPER = "/run/live/medium/casper"
+    POOL = "/run/live/medium/pool"
 
 gettext.install("live-installer", "/usr/share/locale")
 
@@ -120,10 +131,11 @@ class InstallerEngine:
             os.system("mkdir -p /target/sys/firmware/efi/efivars")
             os.system("mount --bind /sys/firmware/efi/efivars /target/sys/firmware/efi/efivars/")
 
+
         kernelversion= subprocess.getoutput("uname -r")
-        os.system("cp /run/live/medium/live/vmlinuz /target/boot/vmlinuz-%s" % kernelversion)
+        os.system(f"cp {CASPER}/vmlinuz /target/boot/vmlinuz-%s" % kernelversion)
         found_initrd = False
-        for initrd in ["/run/live/medium/live/initrd.img", "/run/live/medium/live/initrd.lz"]:
+        for initrd in [f"{CASPER}/initrd.img", f"{CASPER}/initrd.lz"]:
             if os.path.exists(initrd):
                 os.system("cp %s /target/boot/initrd.img-%s" % (initrd, kernelversion))
                 found_initrd = True
@@ -135,9 +147,9 @@ class InstallerEngine:
         if self.setup.grub_device and self.setup.gptonefi:
             print(" --> Installing signed boot loader")
             os.system("mkdir -p /target/debs")
-            os.system("cp /run/live/medium/pool/main/g/grub2/grub-efi* /target/debs/")
-            os.system("cp /run/live/medium/pool/main/g/grub-efi-amd64-signed/* /target/debs/")
-            os.system("cp /run/live/medium/pool/main/s/shim*/* /target/debs/")
+            os.system(f"cp {POOL}/main/g/grub2/grub-efi* /target/debs/")
+            os.system(f"cp {POOL}/main/g/grub-efi-amd64-signed/* /target/debs/")
+            os.system(f"cp {POOL}/main/s/shim*/* /target/debs/")
             self.do_run_in_chroot("DEBIAN_FRONTEND=noninteractive apt-get remove --purge --yes grub-pc")
             self.do_run_in_chroot("dpkg -i /debs/*")
             os.system("rm -rf /target/debs")
@@ -146,7 +158,7 @@ class InstallerEngine:
         print(" --> Removing live packages")
         our_current += 1
         self.update_progress(our_current, our_total, False, False, _("Removing live configuration (packages)"))
-        with open("/run/live/medium/live/filesystem.packages-remove", "r") as fd:
+        with open(f"{CASPER}/filesystem.packages-remove", "r") as fd:
             line = fd.read().replace('\n', ' ')
         self.do_run_in_chroot("apt-get remove --purge --yes --force-yes %s" % line)
 
@@ -500,7 +512,7 @@ class InstallerEngine:
             language_code = self.setup.language
             if "_" in self.setup.language:
                 language_code = self.setup.language.split("_")[0]
-            l10ns = subprocess.getoutput("find /run/live/medium/pool | grep 'l10n-%s\\|hunspell-%s'" % (language_code, language_code))
+            l10ns = subprocess.getoutput(f"find {POOL} | grep 'l10n-%s\\|hunspell-%s'" % (language_code, language_code))
             for l10n in l10ns.split("\n"):
                 os.system("cp %s /target/debs/" % l10n)
             self.do_run_in_chroot("dpkg -i /debs/*")
@@ -516,7 +528,7 @@ class InstallerEngine:
             if "broadcom-sta-dkms" in drivers:
                 try:
                     os.system("mkdir -p /target/debs")
-                    os.system("cp /run/live/medium/pool/non-free/b/broadcom-sta/*.deb /target/debs/")
+                    os.system(f"cp {POOL}/non-free/b/broadcom-sta/*.deb /target/debs/")
                     self.do_run_in_chroot("dpkg -i /debs/*")
                     self.do_run_in_chroot("modprobe wl")
                     os.system("rm -rf /target/debs")
