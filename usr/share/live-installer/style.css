@@ -4,12 +4,6 @@
   border-radius: 4px;
 }
 
-.live-installer-welcome {
-  background-color: #2b2b2b;
-  background-image: repeating-linear-gradient(-45deg, transparent, transparent 35px, rgba(255,255,255,.05) 35px, rgba(255,255,255,.05) 70px);
-  color: #efefef;
-}
-
 .live-installer-header {
   color: #efefef;
   background-color: #3c3c3c;

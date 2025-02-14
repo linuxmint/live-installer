@@ -56,11 +56,11 @@ SWAP_MOUNT_POINT = 'swap'
 with open(RESOURCE_DIR + 'disk-partitions.html') as f:
     DISK_TEMPLATE = f.read()
     # cut out the single partition (skeleton) block
-    PARTITION_TEMPLATE = re.search('CUT_HERE([\s\S]+?)CUT_HERE', DISK_TEMPLATE, re.MULTILINE).group(1)
+    PARTITION_TEMPLATE = re.search(r'CUT_HERE([\s\S]+?)CUT_HERE', DISK_TEMPLATE, re.MULTILINE).group(1)
     # delete the skeleton from original
     DISK_TEMPLATE = DISK_TEMPLATE.replace(PARTITION_TEMPLATE, '')
     # duplicate all { or } in original CSS so they don't get interpreted as part of string formatting
-    DISK_TEMPLATE = re.sub('<style>[\s\S]+?</style>', lambda match: match.group().replace('{', '{{').replace('}', '}}'), DISK_TEMPLATE)
+    DISK_TEMPLATE = re.sub(r'<style>[\s\S]+?</style>', lambda match: match.group().replace('{', '{{').replace('}', '}}'), DISK_TEMPLATE)
 
 
 def get_disks():

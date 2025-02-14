@@ -283,7 +283,7 @@ class InstallerEngine:
             swap_size = int(round(int(subprocess.getoutput("awk '/^MemTotal/{ print $2 }' /proc/meminfo")) / 1024, 0))
             os.system("lvcreate -y -n swap -L %dMB lvmlmde" % swap_size)
             print(" --> LVM: Extending LV root")
-            os.system("lvextend -l 100\%FREE /dev/lvmlmde/root")
+            os.system(r"lvextend -l 100\%FREE /dev/lvmlmde/root")
             print(" --> LVM: Formatting LV root")
             os.system("mkfs.ext4 /dev/mapper/lvmlmde-root -FF")
             print(" --> LVM: Formatting LV swap")

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.38.2 -->
-<interface>
+<!-- Generated with glade 3.40.0 -->
+<interface domain="live-installer">
   <requires lib="gtk+" version="3.18"/>
   <object class="GtkListStore" id="model2">
     <columns>
@@ -64,7 +64,7 @@
                   <object class="GtkLabel" id="label_welcome1">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="label" translatable="yes">Welcome to %s!</property>
+                    <property name="label">Welcome to Linux Mint 22.1!</property>
                     <property name="justify">center</property>
                     <attributes>
                       <attribute name="weight" value="bold"/>
@@ -81,7 +81,7 @@
                   <object class="GtkLabel" id="label_welcome2">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="label" translatable="yes">This program will ask you some questions and set up LMDE on your computer.</property>
+                    <property name="label">This program will ask you some questions and set up Linux Mint on your computer.</property>
                     <property name="use-markup">True</property>
                     <property name="justify">center</property>
                     <property name="wrap">True</property>
@@ -536,6 +536,7 @@
                             <child>
                               <object class="GtkLabel" id="label_non_latin">
                                 <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">* Your username, your computer's name and your password should only contain Latin characters. In addition to your selected layout, English (US) is set as the default. You can switch layouts by pressing Super+Space.</property>
                                 <property name="wrap">True</property>
                               </object>
                             </child>
@@ -966,8 +967,9 @@
                                   <object class="GtkLabel" id="label_automated">
                                     <property name="visible">True</property>
                                     <property name="can-focus">False</property>
-                                    <property name="halign">start</property>
                                     <property name="label" translatable="yes">Automated Installation</property>
+                                    <property name="wrap">True</property>
+                                    <property name="xalign">0</property>
                                     <attributes>
                                       <attribute name="weight" value="bold"/>
                                     </attributes>
@@ -982,8 +984,9 @@
                                   <object class="GtkLabel" id="label_automated2">
                                     <property name="visible">True</property>
                                     <property name="can-focus">False</property>
-                                    <property name="halign">start</property>
-                                    <property name="label" translatable="yes">Erase a disk and install LMDE on it.</property>
+                                    <property name="label">Erase a disk and install Linux Mint on it.</property>
+                                    <property name="wrap">True</property>
+                                    <property name="xalign">0</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -1239,8 +1242,8 @@
                                   <object class="GtkLabel" id="label_manual">
                                     <property name="visible">True</property>
                                     <property name="can-focus">False</property>
-                                    <property name="halign">start</property>
                                     <property name="label" translatable="yes">Manual Partitioning</property>
+                                    <property name="xalign">0</property>
                                     <attributes>
                                       <attribute name="weight" value="bold"/>
                                     </attributes>
@@ -1255,8 +1258,8 @@
                                   <object class="GtkLabel" id="label_manual2">
                                     <property name="visible">True</property>
                                     <property name="can-focus">False</property>
-                                    <property name="halign">start</property>
-                                    <property name="label" translatable="yes">Manually create, resize or choose partitions for LMDE.</property>
+                                    <property name="label">Manually create, resize or choose partitions for Linux Mint.</property>
+                                    <property name="xalign">0</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -1372,7 +1375,7 @@
                             </child>
                             <child>
                               <object class="GtkButton" id="button_refresh">
-                                <property name="label">Refresh</property>
+                                <property name="label" translatable="yes">Refresh</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">True</property>
                                 <property name="receives-default">True</property>
@@ -1908,6 +1911,7 @@
                                   <object class="GtkLabel" id="label_install_progress">
                                     <property name="visible">True</property>
                                     <property name="can-focus">False</property>
+                                    <property name="label" translatable="yes">Calculating file indexes ...</property>
                                     <property name="ellipsize">middle</property>
                                     <property name="xalign">0</property>
                                   </object>
@@ -2005,7 +2009,7 @@
                         <property name="layout-style">end</property>
                         <child>
                           <object class="GtkButton" id="button_quit">
-                            <property name="label">Quit</property>
+                            <property name="label" translatable="yes">Quit</property>
                             <property name="visible">True</property>
                             <property name="can-focus">True</property>
                             <property name="receives-default">True</property>
@@ -2019,7 +2023,7 @@
                         </child>
                         <child>
                           <object class="GtkButton" id="button_back">
-                            <property name="label">Back</property>
+                            <property name="label" translatable="yes">Back</property>
                             <property name="visible">True</property>
                             <property name="can-focus">True</property>
                             <property name="receives-default">True</property>
@@ -2033,7 +2037,7 @@
                         </child>
                         <child>
                           <object class="GtkButton" id="button_next">
-                            <property name="label">Next</property>
+                            <property name="label" translatable="yes">Next</property>
                             <property name="visible">True</property>
                             <property name="can-focus">True</property>
                             <property name="receives-default">True</property>
