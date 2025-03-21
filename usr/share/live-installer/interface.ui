@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.38.2 -->
+<!-- Generated with glade 3.40.0 -->
 <interface>
   <requires lib="gtk+" version="3.18"/>
+  <object class="GtkSizeGroup">
+    <property name="mode">vertical</property>
+  </object>
   <object class="GtkListStore" id="model2">
     <columns>
       <!-- column-name gchararray -->
@@ -493,37 +496,12 @@
                         <property name="orientation">vertical</property>
                         <property name="spacing">6</property>
                         <child>
-                          <object class="GtkBox">
+                          <object class="GtkImage" id="image_keyboard">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
-                            <property name="vexpand">False</property>
-                            <property name="border-width">15</property>
-                            <child>
-                              <object class="GtkSpinner" id="kb_spinner">
-                                <property name="visible">True</property>
-                                <property name="can-focus">False</property>
-                              </object>
-                              <packing>
-                                <property name="expand">True</property>
-                                <property name="fill">True</property>
-                                <property name="position">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkImage" id="image_keyboard">
-                                <property name="visible">True</property>
-                                <property name="can-focus">False</property>
-                                <property name="stock">gtk-missing-image</property>
-                              </object>
-                              <packing>
-                                <property name="expand">True</property>
-                                <property name="fill">True</property>
-                                <property name="position">1</property>
-                              </packing>
-                            </child>
                           </object>
                           <packing>
-                            <property name="expand">False</property>
+                            <property name="expand">True</property>
                             <property name="fill">True</property>
                             <property name="position">0</property>
                           </packing>
@@ -2082,13 +2060,6 @@
         </child>
       </object>
     </child>
-  </object>
-  <object class="GtkSizeGroup">
-    <property name="mode">vertical</property>
-    <widgets>
-      <widget name="kb_spinner"/>
-      <widget name="image_keyboard"/>
-    </widgets>
   </object>
   <object class="GtkDialog" id="dialog">
     <property name="can-focus">False</property>

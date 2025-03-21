@@ -848,10 +848,6 @@ class InstallerWindow:
             self.setup.print_setup()
 
         # Set preview image
-        self.builder.get_object("image_keyboard").hide()
-        self.builder.get_object("kb_spinner").show()
-        self.builder.get_object("kb_spinner").start()
-
         self._generate_keyboard_layout_preview()
 
     @idle
@@ -873,13 +869,7 @@ class InstallerWindow:
     @idle
     def _on_layout_generated(self):
         filename = "/tmp/live-install-keyboard-layout.png"
-
-        self.builder.get_object("kb_spinner").stop()
-        self.builder.get_object("kb_spinner").hide()
-
         widget = self.builder.get_object("image_keyboard")
-        widget.show()
-
         try:
             pixbuf = GdkPixbuf.Pixbuf.new_from_file(filename)
             surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, widget.get_scale_factor(), widget.get_window())
