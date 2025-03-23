@@ -13,6 +13,7 @@ from gi.repository import Gtk, Gdk, GObject
 import parted
 import gettext
 import time
+from dialogs import MessageDialog, QuestionDialog, ErrorDialog, WarningDialog
 
 gettext.install("live-installer", "/usr/share/locale")
 
@@ -276,7 +277,6 @@ class PartitionSetup(Gtk.TreeStore):
                 print("      - Found the disk...")
             except Exception as detail:
                 print("      - Found an issue while looking for the disk: %s" % detail)
-                from frontend.gtk_interface import QuestionDialog
                 dialog = QuestionDialog(_("Installation Tool"),
                                         _("No partition table was found on the hard drive: %s. Do you want the installer to create a set of partitions for you? Note: This will ERASE ALL DATA present on this disk.") % disk_description,
                                         None, installer.window)
@@ -360,7 +360,6 @@ class PartitionSetup(Gtk.TreeStore):
 
 @idle
 def show_error(message):
-    from frontend.gtk_interface import ErrorDialog
     ErrorDialog(_("Installer"), message)
 
 # Returns "" for traditional devices (/dev/sda1, /dev/sdb2..etc..)
