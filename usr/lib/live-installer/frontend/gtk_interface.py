@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from installer import InstallerEngine, Setup, NON_LATIN_KB_LAYOUTS
+from installer import InstallerEngine, Setup
 from dialogs import MessageDialog, QuestionDialog, ErrorDialog, WarningDialog
 import timezones
 import partitioning
@@ -39,6 +39,8 @@ HAS_LOWER_REGEX = r"[A-Z]+"
 
 VERSION = "6"
 CODENAME = "Faye"
+
+NON_LATIN_KB_LAYOUTS = ['am', 'af', 'ara', 'ben', 'bd', 'bg', 'bn', 'bt', 'by', 'deva', 'et', 'ge', 'gh', 'gn', 'gr', 'guj', 'guru', 'id', 'il', 'iku', 'in', 'iq', 'ir', 'kan', 'kg', 'kh', 'kz', 'la', 'lao', 'lk', 'ma', 'mk', 'mm', 'mn', 'mv', 'mal', 'my', 'np', 'ori', 'pk', 'ru', 'rs', 'scc', 'sy', 'syr', 'tel', 'th', 'tj', 'tam', 'tz', 'ua', 'uz']
 
 # Used as a decorator to run things in the background
 def asynchronous(func):
