@@ -1,0 +1,5 @@
+[Desktop Entry]
+Name=OEM Session
+Comment=Minimal session for OEM setup
+Exec=/usr/bin/oem-session
+Type=Application

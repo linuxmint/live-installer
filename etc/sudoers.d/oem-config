@@ -1,0 +1,3 @@
+# Allow oem-config to be run by the oem user
+
+oem ALL=(ALL) NOPASSWD: /usr/bin/oem-config

@@ -1,0 +1,6 @@
+#!/bin/bash
+
+metacity &
+gnome-terminal &
+
+sudo /usr/bin/oem-config
