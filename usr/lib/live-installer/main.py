@@ -70,10 +70,11 @@ class InstallerWindow:
     # the keyboard layout list
     kbd_preview_generation = -1
 
-    def __init__(self, expert_mode=False, oem_mode=False):
+    def __init__(self, expert_mode=False, oem_mode=False, oem_config=False):
 
         self.expert_mode = expert_mode
         self.oem_mode = oem_mode
+        self.oem_config = oem_config
 
         Gtk.Settings.get_default().set_property("gtk-application-prefer-dark-theme", True)
 
@@ -89,6 +90,7 @@ class InstallerWindow:
         # build the setup object (where we put all our choices)
         self.setup = Setup()
         self.setup.oem_mode = oem_mode
+        self.setup.oem_config = oem_config
         self.installer = InstallerEngine(self.setup, media)
 
         self.resource_dir = '/usr/share/live-installer/'
@@ -319,6 +321,8 @@ class InstallerWindow:
             subtitle += ' - debug mode'
         if self.oem_mode:
             subtitle += ' - OEM mode'
+        if self.oem_config:
+            subtitle += ' - OEM config'
         self.builder.get_object("button_expert").set_no_show_all(True)
         if self.expert_mode:
             subtitle += ' - expert mode'
@@ -976,8 +980,15 @@ class InstallerWindow:
                 self.activate_page(self.PAGE_USER)
                 self.validate_user_page(focus_widget=True)
             elif(sel == self.PAGE_USER):
-                self.activate_page(self.PAGE_TYPE)
-                self.assign_type_options()
+                if self.oem_config:
+                    # OEM config, skip straight from user page to overview. HDD, GRUB is already set up.
+                    self.activate_page(self.PAGE_OVERVIEW)
+                    self.show_overview()
+                    self.builder.get_object("treeview_overview").expand_all()
+                    self.builder.get_object("button_next").set_label(_("Install"))
+                else:
+                    self.activate_page(self.PAGE_TYPE)
+                    self.assign_type_options()
             elif(sel == self.PAGE_TYPE):
                 if self.setup.automated:
                     if QuestionDialog(_("Warning"), _("This will delete all the data on %s. Are you sure?") % self.setup.diskname):
@@ -1077,7 +1088,10 @@ class InstallerWindow:
             self.builder.get_object("button_next").set_sensitive(True)
             self.builder.get_object("button_next").set_label(_("Next"))
             if(sel == self.PAGE_OVERVIEW):
-                self.activate_page(self.PAGE_ADVANCED)
+                if self.oem_config:
+                    self.activate_page(self.PAGE_USER)
+                else:
+                    self.activate_page(self.PAGE_ADVANCED)
             elif(sel == self.PAGE_ADVANCED):
                 if (self.setup.skip_mount):
                     self.activate_page(self.PAGE_CUSTOMWARNING)
@@ -1115,22 +1129,24 @@ class InstallerWindow:
         model.append(top, (_("Home encryption: ") + bold(_("enabled") if self.setup.ecryptfs else _("disabled")),))
         top = model.append(None, (_("System settings"),))
         model.append(top, (_("Computer's name: ") + bold(self.setup.hostname),))
-        top = model.append(None, (_("Filesystem operations"),))
-        model.append(top, (bold(_("Install bootloader on %s") % self.setup.grub_device) if self.setup.grub_device else _("Do not install bootloader"),))
-        if self.setup.skip_mount:
-            model.append(top, (bold(_("Use already-mounted /target.")),))
-            return
-        if self.setup.automated:
-            model.append(top, (bold(_("Automated installation on %s") % self.setup.diskname),))
-            model.append(top, (_("LVM: ") + bold(_("enabled") if self.setup.lvm else _("disabled")),))
-            model.append(top, (_("Disk Encryption: ") + bold(_("enabled") if self.setup.luks else _("disabled")),))
-        else:
-            for p in self.setup.partitions:
-                if p.format_as:
-                    model.append(top, (bold(_("Format %(path)s as %(filesystem)s") % {'path':p.path, 'filesystem':p.format_as}),))
-            for p in self.setup.partitions:
-                if p.mount_as:
-                    model.append(top, (bold(_("Mount %(path)s as %(mount)s") % {'path': p.path, 'mount':p.mount_as}),))
+
+        if not self.oem_config:
+            top = model.append(None, (_("Filesystem operations"),))
+            model.append(top, (bold(_("Install bootloader on %s") % self.setup.grub_device) if self.setup.grub_device else _("Do not install bootloader"),))
+            if self.setup.skip_mount:
+                model.append(top, (bold(_("Use already-mounted /target.")),))
+                return
+            if self.setup.automated:
+                model.append(top, (bold(_("Automated installation on %s") % self.setup.diskname),))
+                model.append(top, (_("LVM: ") + bold(_("enabled") if self.setup.lvm else _("disabled")),))
+                model.append(top, (_("Disk Encryption: ") + bold(_("enabled") if self.setup.luks else _("disabled")),))
+            else:
+                for p in self.setup.partitions:
+                    if p.format_as:
+                        model.append(top, (bold(_("Format %(path)s as %(filesystem)s") % {'path':p.path, 'filesystem':p.format_as}),))
+                for p in self.setup.partitions:
+                    if p.mount_as:
+                        model.append(top, (bold(_("Mount %(path)s as %(mount)s") % {'path': p.path, 'mount':p.mount_as}),))
 
     @idle
     def show_error_dialog(self, message, detail):
@@ -1268,7 +1284,8 @@ class InstallerWindow:
 if __name__ == "__main__":
     expert_mode = "--expert-mode" in sys.argv
     oem_mode = "--oem-mode" in sys.argv
+    oem_config = "--oem-config" in sys.argv
     if "oem-mode" in subprocess.getoutput("cat /proc/cmdline"):
         oem_mode = True
-    win = InstallerWindow(expert_mode, oem_mode)
+    win = InstallerWindow(expert_mode, oem_mode, oem_config)
     Gtk.main()

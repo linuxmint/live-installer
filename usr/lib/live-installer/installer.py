@@ -196,6 +196,13 @@ class InstallerEngine:
         self.write_mtab()
         self.write_crypttab()
 
+        # OEM Config cleanup
+        print(" --> Cleaning up OEM config")
+        if self.setup.oem_config:
+            os.system("rm -f /etc/lightdm/lightdm.conf.d/90-oem-config.conf")
+            os.system("apt-get remove --purge --yes --force-yes live-installer")
+            os.system("touch /etc/live-installer-oem-config.done") # Leave a flag for mintsystem to clean up the OEM user account
+
     def mount_source(self):
         # Mount the installation media
         print(" --> Mounting partitions")
