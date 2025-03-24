@@ -29,6 +29,158 @@ class InstallerEngine:
         ''' Set a callback to be called on errors '''
         self.error_message = errorhook
 
+    def setup_user(self):
+        print(" --> Adding new user")
+        if self.setup.ecryptfs:
+            # ecryptfs looks for the /sys mount point in /etc/mtab.. which doesn't exist during the installation.
+            # it defaults to /sys anyway, so we just need to create an empty /etc/mtab file at this stage.
+            self.do_run_in_chroot('touch /etc/mtab')
+            self.do_run_in_chroot('modprobe ecryptfs')
+            self.do_run_in_chroot('adduser --disabled-password --encrypt-home --gecos "{real_name}" {username}'.format(real_name=self.setup.real_name.replace('"', r'\"'), username=self.setup.username))
+        else:
+            self.do_run_in_chroot('adduser --disabled-password --gecos "{real_name}" {username}'.format(real_name=self.setup.real_name.replace('"', r'\"'), username=self.setup.username))
+        for group in 'adm audio bluetooth cdrom dialout dip fax floppy fuse lpadmin netdev plugdev powerdev sambashare scanner sudo tape users vboxusers video'.split():
+            self.do_run_in_chroot("adduser {user} {group}".format(user=self.setup.username, group=group))
+
+        fp = open("/target/dev/shm/.passwd", "w")
+        fp.write(self.setup.username +  ":" + self.setup.password1 + "\n")
+        fp.close()
+        self.do_run_in_chroot("cat /dev/shm/.passwd | chpasswd")
+        os.system("rm -f /target/dev/shm/.passwd")
+
+        # Set autologin
+        if self.setup.oem_mode:
+            os.system("cp /usr/share/live-installer/lightdm-oem-config.conf /target/etc/lightdm/lightdm.conf.d/90-oem-config.conf")
+        elif self.setup.autologin:
+            self.do_run_in_chroot(r"sed -i -r 's/^#?(autologin-user)\s*=.*/\1={user}/' /etc/lightdm/lightdm.conf".format(user=self.setup.username))
+
+    def setup_hostname(self):
+        print(" --> Writing hostname")
+        hostnamefh = open("/target/etc/hostname", "w")
+        hostnamefh.write("%s\n" % self.setup.hostname)
+        hostnamefh.close()
+        hostsfh = open("/target/etc/hosts", "w")
+        hostsfh.write("127.0.0.1\tlocalhost\n")
+        hostsfh.write("127.0.1.1\t%s\n" % self.setup.hostname)
+        hostsfh.write("# The following lines are desirable for IPv6 capable hosts\n")
+        hostsfh.write("::1     localhost ip6-localhost ip6-loopback\n")
+        hostsfh.write("fe00::0 ip6-localnet\n")
+        hostsfh.write("ff00::0 ip6-mcastprefix\n")
+        hostsfh.write("ff02::1 ip6-allnodes\n")
+        hostsfh.write("ff02::2 ip6-allrouters\n")
+        hostsfh.write("ff02::3 ip6-allhosts\n")
+        hostsfh.close()
+
+    def setup_locale(self):
+        print(" --> Setting the locale")
+        os.system("echo \"%s.UTF-8 UTF-8\" >> /target/etc/locale.gen" % self.setup.language)
+        self.do_run_in_chroot("locale-gen")
+        os.system("echo \"\" > /target/etc/default/locale")
+        self.do_run_in_chroot("update-locale LANG=\"%s.UTF-8\"" % self.setup.language)
+        self.do_run_in_chroot("update-locale LANG=%s.UTF-8" % self.setup.language)
+
+    def setup_timezone(self):
+        print(" --> Setting the timezone")
+        os.system("echo \"%s\" > /target/etc/timezone" % self.setup.timezone)
+        os.system("rm -f /target/etc/localtime")
+        os.system("ln -s /usr/share/zoneinfo/%s /target/etc/localtime" % self.setup.timezone)
+
+    def setup_localization(self):
+        print(" --> Localizing packages")
+        if self.setup.language != "en_US":
+            os.system("mkdir -p /target/debs")
+            language_code = self.setup.language
+            if "_" in self.setup.language:
+                language_code = self.setup.language.split("_")[0]
+            l10ns = subprocess.getoutput("find /run/live/medium/pool | grep 'l10n-%s\\|hunspell-%s'" % (language_code, language_code))
+            for l10n in l10ns.split("\n"):
+                os.system("cp %s /target/debs/" % l10n)
+            self.do_run_in_chroot("dpkg -i /debs/*")
+            os.system("rm -rf /target/debs")
+
+    def setup_keyboard(self):
+        print(" --> Setting the keyboard")
+        consolefh = open("/target/etc/default/console-setup", "r")
+        newconsolefh = open("/target/etc/default/console-setup.new", "w")
+        for line in consolefh:
+            line = line.rstrip("\r\n")
+            if(line.startswith("XKBMODEL=")):
+                newconsolefh.write("XKBMODEL=\"%s\"\n" % self.setup.keyboard_model)
+            elif(line.startswith("XKBLAYOUT=")):
+                newconsolefh.write("XKBLAYOUT=\"%s\"\n" % self.setup.keyboard_layout)
+            elif(line.startswith("XKBVARIANT=") and self.setup.keyboard_variant is not None and self.setup.keyboard_variant != ""):
+                newconsolefh.write("XKBVARIANT=\"%s\"\n" % self.setup.keyboard_variant)
+            else:
+                newconsolefh.write("%s\n" % line)
+        consolefh.close()
+        newconsolefh.close()
+        self.do_run_in_chroot("rm /etc/default/console-setup")
+        self.do_run_in_chroot("mv /etc/default/console-setup.new /etc/default/console-setup")
+
+        consolefh = open("/target/etc/default/keyboard", "r")
+        newconsolefh = open("/target/etc/default/keyboard.new", "w")
+        for line in consolefh:
+            line = line.rstrip("\r\n")
+            if(line.startswith("XKBMODEL=")):
+                newconsolefh.write("XKBMODEL=\"%s\"\n" % self.setup.keyboard_model)
+            elif(line.startswith("XKBLAYOUT=")):
+                newconsolefh.write("XKBLAYOUT=\"%s\"\n" % self.setup.keyboard_layout)
+            elif(line.startswith("XKBVARIANT=") and self.setup.keyboard_variant is not None and self.setup.keyboard_variant != ""):
+                newconsolefh.write("XKBVARIANT=\"%s\"\n" % self.setup.keyboard_variant)
+            elif(line.startswith("XKBOPTIONS=")):
+                newconsolefh.write("XKBOPTIONS=grp:win_space_toggle")
+            else:
+                newconsolefh.write("%s\n" % line)
+        consolefh.close()
+        newconsolefh.close()
+        self.do_run_in_chroot("rm /etc/default/keyboard")
+        self.do_run_in_chroot("mv /etc/default/keyboard.new /etc/default/keyboard")
+
+    def clean_apt(self):
+        print(" --> Cleaning APT")
+        os.system("chroot /target/ /bin/sh -c \"dpkg --configure -a\"")
+        self.do_run_in_chroot("sed -i 's/^deb cdrom/#deb cdrom/' /etc/apt/sources.list")
+        self.do_run_in_chroot("apt-get -y --force-yes autoremove")
+
+    def perform_oem_config(self):
+        print(" --> Performing OEM config")
+
+        # Setup a /target -> / link, this is so we can reuse code used for the live installation.
+        os.system("ln -s / /target")
+
+        self.update_progress(10, False, False, _("Adding new user to the system"))
+        self.setup_user()
+
+        self.update_progress(20, False, False, _("Setting hostname"))
+        self.setup_hostname()
+
+        self.update_progress(30, False, False, _("Setting locale"))
+        self.setup_locale()
+
+        self.update_progress(40, False, False, _("Setting timezone"))
+        self.setup_timezone()
+
+        self.update_progress(50, False, False, _("Localizing packages"))
+        self.setup_localization()
+
+        self.update_progress(60, False, False, _("Setting keyboard options"))
+        self.setup_keyboard()
+
+        self.update_progress(70, True, False, _("Cleaning APT"))
+        self.clean_apt()
+
+        # OEM Config cleanup
+        print(" --> Cleaning up OEM config")
+        self.update_progress(80, True, False, _("Cleaning OEM configuration"))
+        os.system("rm -f /etc/lightdm/lightdm.conf.d/90-oem-config.conf")
+        os.system("apt-get remove --purge --yes --force-yes live-installer")
+        os.system("rm -f /target")
+        os.system("touch /etc/live-installer-oem-config.done") # Leave a flag for mintsystem to clean up the OEM user account
+
+        self.update_progress(100, False, True, _("Installation finished"))
+        print(" --> All done")
+
+
     def start_installation(self):
 
         # mount the media location.
@@ -81,10 +233,10 @@ class InstallerEngine:
         SOURCE = "/source/"
         DEST = "/target/"
         EXCLUDE_DIRS = "home/* dev/* proc/* sys/* tmp/* run/* mnt/* media/* lost+found source target".split()
-        our_current = 0
+        num_copied = 0
         # (Valid) assumption: num-of-files-to-copy ~= num-of-used-inodes-on-/
-        our_total = int(subprocess.getoutput("df --inodes /{src} | awk 'END{{ print $3 }}'".format(src=SOURCE.strip('/'))))
-        print(" --> Copying {} files".format(our_total))
+        num_files = int(subprocess.getoutput("df --inodes /{src} | awk 'END{{ print $3 }}'".format(src=SOURCE.strip('/'))))
+        print(f" --> Copying {num_files} files")
         rsync_filter = ' '.join('--exclude=' + SOURCE + d for d in EXCLUDE_DIRS)
         rsync = subprocess.Popen("rsync --verbose --archive --no-D --acls "
                                  "--hard-links --xattrs {rsync_filter} "
@@ -95,16 +247,14 @@ class InstallerEngine:
             if not line:  # still copying the previous file, just wait
                 time.sleep(0.1)
             else:
-                our_current = min(our_current + 1, our_total)
-                self.update_progress(our_current, our_total, False, False, _("Copying /%s") % line)
+                num_copied = min(num_copied + 1, num_files)
+                percentage = int(float(num_copied) / float(num_files) * 100)
+                self.update_progress(percentage, False, False, _("Copying /%s") % line)
         print("rsync exited with returncode: " + str(rsync.poll()))
 
-        # Steps:
-        our_total = 11
-        our_current = 0
         # chroot
         print(" --> Chrooting")
-        self.update_progress(our_current, our_total, False, False, _("Entering the system ..."))
+        self.update_progress(10, False, False, _("Entering the system ..."))
         os.system("mount --bind /dev/ /target/dev/")
         os.system("mount --bind /dev/shm /target/dev/shm")
         os.system("mount --bind /dev/pts /target/dev/pts")
@@ -142,8 +292,7 @@ class InstallerEngine:
 
         # remove live-packages (or w/e)
         print(" --> Removing live packages")
-        our_current += 1
-        self.update_progress(our_current, our_total, False, False, _("Removing live configuration (packages)"))
+        self.update_progress(20, False, False, _("Removing live configuration (packages)"))
         with open("/run/live/medium/live/filesystem.packages-remove", "r") as fd:
             line = fd.read().replace('\n', ' ')
         if self.setup.oem_mode:
@@ -157,25 +306,8 @@ class InstallerEngine:
         self.do_run_in_chroot("rm -rf /lib/live")
 
         # add new user
-        print(" --> Adding new user")
-        our_current += 1
-        self.update_progress(our_current, our_total, False, False, _("Adding new user to the system"))
-        if self.setup.ecryptfs:
-            # ecryptfs looks for the /sys mount point in /etc/mtab.. which doesn't exist during the installation.
-            # it defaults to /sys anyway, so we just need to create an empty /etc/mtab file at this stage.
-            self.do_run_in_chroot('touch /etc/mtab')
-            self.do_run_in_chroot('modprobe ecryptfs')
-            self.do_run_in_chroot('adduser --disabled-password --encrypt-home --gecos "{real_name}" {username}'.format(real_name=self.setup.real_name.replace('"', r'\"'), username=self.setup.username))
-        else:
-            self.do_run_in_chroot('adduser --disabled-password --gecos "{real_name}" {username}'.format(real_name=self.setup.real_name.replace('"', r'\"'), username=self.setup.username))
-        for group in 'adm audio bluetooth cdrom dialout dip fax floppy fuse lpadmin netdev plugdev powerdev sambashare scanner sudo tape users vboxusers video'.split():
-            self.do_run_in_chroot("adduser {user} {group}".format(user=self.setup.username, group=group))
-
-        fp = open("/target/dev/shm/.passwd", "w")
-        fp.write(self.setup.username +  ":" + self.setup.password1 + "\n")
-        fp.close()
-        self.do_run_in_chroot("cat /dev/shm/.passwd | chpasswd")
-        os.system("rm -f /target/dev/shm/.passwd")
+        self.update_progress(30, False, False, _("Adding new user to the system"))
+        self.setup_user()
 
         # Lock and delete root password
         self.do_run_in_chroot("passwd -dl root")
@@ -183,30 +315,16 @@ class InstallerEngine:
         # Set LightDM to show user list by default
         self.do_run_in_chroot(r"sed -i -r 's/^#?(greeter-hide-users)\s*=.*/\1=false/' /etc/lightdm/lightdm.conf")
 
-        # Set autologin
-        if self.setup.oem_mode:
-            os.system("cp /usr/share/live-installer/lightdm-oem-config.conf /target/etc/lightdm/lightdm.conf.d/90-oem-config.conf")
-        elif self.setup.autologin:
-            self.do_run_in_chroot(r"sed -i -r 's/^#?(autologin-user)\s*=.*/\1={user}/' /etc/lightdm/lightdm.conf".format(user=self.setup.username))
-
         # /etc/fstab, mtab and crypttab
-        our_current += 1
-        self.update_progress(our_current, our_total, False, False, _("Writing filesystem mount information to /etc/fstab"))
+        self.update_progress(40, False, False, _("Writing filesystem mount information to /etc/fstab"))
         self.write_fstab()
         self.write_mtab()
         self.write_crypttab()
 
-        # OEM Config cleanup
-        print(" --> Cleaning up OEM config")
-        if self.setup.oem_config:
-            os.system("rm -f /etc/lightdm/lightdm.conf.d/90-oem-config.conf")
-            os.system("apt-get remove --purge --yes --force-yes live-installer")
-            os.system("touch /etc/live-installer-oem-config.done") # Leave a flag for mintsystem to clean up the OEM user account
-
     def mount_source(self):
         # Mount the installation media
         print(" --> Mounting partitions")
-        self.update_progress(2, 4, False, False, _("Mounting %(partition)s on %(mountpoint)s") % {'partition':self.media, 'mountpoint':"/source/"})
+        self.update_progress(50, False, False, _("Mounting %(partition)s on %(mountpoint)s") % {'partition':self.media, 'mountpoint':"/source/"})
         print(" ------ Mounting %s on %s" % (self.media, "/source/"))
         self.do_mount(self.media, "/source/", "squashfs", options="loop")
 
@@ -263,12 +381,12 @@ class InstallerEngine:
 
         # Wipe HDD
         if self.setup.badblocks:
-            self.update_progress(1, 4, False, False, _("Filling %s with random data (please be patient, this can take hours...)") % self.setup.disk)
+            self.update_progress(25, False, False, _("Filling %s with random data (please be patient, this can take hours...)") % self.setup.disk)
             print(" --> Filling %s with random data" % self.setup.disk)
             os.system("badblocks -c 10240 -s -w -t random -v %s" % self.setup.disk)
 
         # Create partitions
-        self.update_progress(1, 4, False, False, _("Creating partitions on %s") % self.setup.disk)
+        self.update_progress(25, False, False, _("Creating partitions on %s") % self.setup.disk)
         print(" --> Creating partitions on %s" % self.setup.disk)
         disk_device = parted.getDevice(self.setup.disk)
         partitioning.full_disk_format(disk_device, create_boot=(self.auto_boot_partition is not None), create_swap=(self.auto_swap_partition is not None))
@@ -315,7 +433,7 @@ class InstallerEngine:
         for partition in self.setup.partitions:
             if(partition.format_as is not None and partition.format_as != ""):
                 # report it. should grab the total count of filesystems to be formatted ..
-                self.update_progress(1, 4, True, False, _("Formatting %(partition)s as %(format)s ...") % {'partition':partition.path, 'format':partition.format_as})
+                self.update_progress(25, True, False, _("Formatting %(partition)s as %(format)s ...") % {'partition':partition.path, 'format':partition.format_as})
 
                 #Format it
                 if partition.format_as == "swap":
@@ -341,7 +459,7 @@ class InstallerEngine:
         for partition in self.setup.partitions:
             if(partition.mount_as is not None and partition.mount_as != ""):
                 if partition.mount_as == "/":
-                    self.update_progress(3, 4, False, False, _("Mounting %(partition)s on %(mountpoint)s") % {'partition':partition.path, 'mountpoint':"/target/"})
+                    self.update_progress(75, False, False, _("Mounting %(partition)s on %(mountpoint)s") % {'partition':partition.path, 'mountpoint':"/target/"})
                     print(" ------ Mounting partition %s on %s" % (partition.path, "/target/"))
                     fs = partition.type
                     if fs == "fat32":
@@ -463,63 +581,23 @@ class InstallerEngine:
             os.system(f"echo 'lvmlmde   {self.get_blkid(self.auto_root_physical_partition)}   none   luks,discard,tries=3' >> {path}")
 
     def finish_installation(self):
-        # Steps:
-        our_total = 11
-        our_current = 4
 
-        # write host+hostname infos
-        print(" --> Writing hostname")
-        our_current += 1
-        self.update_progress(our_current, our_total, False, False, _("Setting hostname"))
-        hostnamefh = open("/target/etc/hostname", "w")
-        hostnamefh.write("%s\n" % self.setup.hostname)
-        hostnamefh.close()
-        hostsfh = open("/target/etc/hosts", "w")
-        hostsfh.write("127.0.0.1\tlocalhost\n")
-        hostsfh.write("127.0.1.1\t%s\n" % self.setup.hostname)
-        hostsfh.write("# The following lines are desirable for IPv6 capable hosts\n")
-        hostsfh.write("::1     localhost ip6-localhost ip6-loopback\n")
-        hostsfh.write("fe00::0 ip6-localnet\n")
-        hostsfh.write("ff00::0 ip6-mcastprefix\n")
-        hostsfh.write("ff02::1 ip6-allnodes\n")
-        hostsfh.write("ff02::2 ip6-allrouters\n")
-        hostsfh.write("ff02::3 ip6-allhosts\n")
-        hostsfh.close()
+        self.update_progress(50, False, False, _("Setting hostname"))
+        self.setup_hostname()
 
-        # set the locale
-        print(" --> Setting the locale")
-        our_current += 1
-        self.update_progress(our_current, our_total, False, False, _("Setting locale"))
-        os.system("echo \"%s.UTF-8 UTF-8\" >> /target/etc/locale.gen" % self.setup.language)
-        self.do_run_in_chroot("locale-gen")
-        os.system("echo \"\" > /target/etc/default/locale")
-        self.do_run_in_chroot("update-locale LANG=\"%s.UTF-8\"" % self.setup.language)
-        self.do_run_in_chroot("update-locale LANG=%s.UTF-8" % self.setup.language)
+        self.update_progress(55, False, False, _("Setting locale"))
+        self.setup_locale()
 
-        # set the timezone
-        print(" --> Setting the timezone")
-        os.system("echo \"%s\" > /target/etc/timezone" % self.setup.timezone)
-        os.system("rm -f /target/etc/localtime")
-        os.system("ln -s /usr/share/zoneinfo/%s /target/etc/localtime" % self.setup.timezone)
+        self.update_progress(60, False, False, _("Setting timezone"))
+        self.setup_timezone()
 
-        # localizing
-        print(" --> Localizing packages")
-        self.update_progress(our_current, our_total, False, False, _("Localizing packages"))
-        if self.setup.language != "en_US":
-            os.system("mkdir -p /target/debs")
-            language_code = self.setup.language
-            if "_" in self.setup.language:
-                language_code = self.setup.language.split("_")[0]
-            l10ns = subprocess.getoutput("find /run/live/medium/pool | grep 'l10n-%s\\|hunspell-%s'" % (language_code, language_code))
-            for l10n in l10ns.split("\n"):
-                os.system("cp %s /target/debs/" % l10n)
-            self.do_run_in_chroot("dpkg -i /debs/*")
-            os.system("rm -rf /target/debs")
+        self.update_progress(65, False, False, _("Localizing packages"))
+        self.setup_localization()
 
         if os.path.exists("/etc/linuxmint/info"):
             # drivers
             print(" --> Installing drivers")
-            self.update_progress(our_current, our_total, False, False, _("Installing drivers"))
+            self.update_progress(70, False, False, _("Installing drivers"))
 
             # Broadcom
             drivers = subprocess.getoutput("mint-drivers")
@@ -548,44 +626,8 @@ class InstallerEngine:
                 os.system("rm -f /target/usr/share/live-installer/nvidia-driver.tar.gz")
 
         # set the keyboard options..
-        print(" --> Setting the keyboard")
-        our_current += 1
-        self.update_progress(our_current, our_total, False, False, _("Setting keyboard options"))
-        consolefh = open("/target/etc/default/console-setup", "r")
-        newconsolefh = open("/target/etc/default/console-setup.new", "w")
-        for line in consolefh:
-            line = line.rstrip("\r\n")
-            if(line.startswith("XKBMODEL=")):
-                newconsolefh.write("XKBMODEL=\"%s\"\n" % self.setup.keyboard_model)
-            elif(line.startswith("XKBLAYOUT=")):
-                newconsolefh.write("XKBLAYOUT=\"%s\"\n" % self.setup.keyboard_layout)
-            elif(line.startswith("XKBVARIANT=") and self.setup.keyboard_variant is not None and self.setup.keyboard_variant != ""):
-                newconsolefh.write("XKBVARIANT=\"%s\"\n" % self.setup.keyboard_variant)
-            else:
-                newconsolefh.write("%s\n" % line)
-        consolefh.close()
-        newconsolefh.close()
-        self.do_run_in_chroot("rm /etc/default/console-setup")
-        self.do_run_in_chroot("mv /etc/default/console-setup.new /etc/default/console-setup")
-
-        consolefh = open("/target/etc/default/keyboard", "r")
-        newconsolefh = open("/target/etc/default/keyboard.new", "w")
-        for line in consolefh:
-            line = line.rstrip("\r\n")
-            if(line.startswith("XKBMODEL=")):
-                newconsolefh.write("XKBMODEL=\"%s\"\n" % self.setup.keyboard_model)
-            elif(line.startswith("XKBLAYOUT=")):
-                newconsolefh.write("XKBLAYOUT=\"%s\"\n" % self.setup.keyboard_layout)
-            elif(line.startswith("XKBVARIANT=") and self.setup.keyboard_variant is not None and self.setup.keyboard_variant != ""):
-                newconsolefh.write("XKBVARIANT=\"%s\"\n" % self.setup.keyboard_variant)
-            elif(line.startswith("XKBOPTIONS=")):
-                newconsolefh.write("XKBOPTIONS=grp:win_space_toggle")
-            else:
-                newconsolefh.write("%s\n" % line)
-        consolefh.close()
-        newconsolefh.close()
-        self.do_run_in_chroot("rm /etc/default/keyboard")
-        self.do_run_in_chroot("mv /etc/default/keyboard.new /etc/default/keyboard")
+        self.update_progress(75, False, False, _("Setting keyboard options"))
+        self.setup_keyboard()
 
         # Perform OS adjustments
         if os.path.exists("/target/usr/lib/linuxmint/mintSystem/mint-adjust.py"):
@@ -605,19 +647,18 @@ class InstallerEngine:
 
         # write MBR (grub)
         print(" --> Configuring Grub")
-        our_current += 1
         if(self.setup.grub_device is not None):
-            self.update_progress(our_current, our_total, False, False, _("Installing bootloader"))
+            self.update_progress(80, False, False, _("Installing bootloader"))
             print(" --> Running grub-install")
             self.do_run_in_chroot("grub-install --force %s" % self.setup.grub_device)
             # Remove memtest86+ package (it provides multiple memtest unwanted grub entries)
             self.do_run_in_chroot("apt-get remove --purge --yes --force-yes memtest86+")
             #fix not add windows grub entry
             self.do_run_in_chroot("update-grub")
-            self.do_configure_grub(our_total, our_current)
+            self.do_configure_grub()
             grub_retries = 0
-            while (not self.do_check_grub(our_total, our_current)):
-                self.do_configure_grub(our_total, our_current)
+            while (not self.do_check_grub()):
+                self.do_configure_grub()
                 grub_retries = grub_retries + 1
                 if grub_retries >= 5:
                     self.error_message(message=_("WARNING: The grub bootloader was not configured properly! You need to configure it manually."))
@@ -625,19 +666,14 @@ class InstallerEngine:
 
         # recreate initramfs (needed in case of skip_mount also, to include things like mdadm/dm-crypt/etc in case its needed to boot a custom install)
         print(" --> Configuring Initramfs")
-        our_current += 1
         self.do_run_in_chroot("/usr/sbin/update-initramfs -t -u -k all")
         self.do_run_in_chroot("/usr/share/debian-system-adjustments/systemd/adjust-grub-title")
         kernelversion= subprocess.getoutput("uname -r")
         self.do_run_in_chroot("/usr/bin/sha1sum /boot/initrd.img-%s > /var/lib/initramfs-tools/%s" % (kernelversion,kernelversion))
 
         # Clean APT
-        print(" --> Cleaning APT")
-        our_current += 1
-        self.update_progress(our_current, our_total, True, False, _("Cleaning APT"))
-        os.system("chroot /target/ /bin/sh -c \"dpkg --configure -a\"")
-        self.do_run_in_chroot("sed -i 's/^deb cdrom/#deb cdrom/' /etc/apt/sources.list")
-        self.do_run_in_chroot("apt-get -y --force-yes autoremove")
+        self.update_progress(95, True, False, _("Cleaning APT"))
+        self.clean_apt()
 
         # now unmount it
         print(" --> Unmounting partitions")
@@ -669,7 +705,7 @@ class InstallerEngine:
             self.exec_cmd(cmd)
         self.do_unmount("/source")
 
-        self.update_progress(0, 0, False, True, _("Installation finished"))
+        self.update_progress(100, False, True, _("Installation finished"))
         print(" --> All done")
 
     def do_run_in_chroot(self, command):
@@ -677,8 +713,8 @@ class InstallerEngine:
         print("chroot /target/ /bin/sh -c \"%s\"" % command)
         os.system("chroot /target/ /bin/sh -c \"%s\"" % command)
 
-    def do_configure_grub(self, our_total, our_current):
-        self.update_progress(our_current, our_total, True, False, _("Configuring bootloader"))
+    def do_configure_grub(self):
+        self.update_progress(85, True, False, _("Configuring bootloader"))
         print(" --> Running grub-mkconfig")
         self.do_run_in_chroot("grub-mkconfig -o /boot/grub/grub.cfg")
         grub_output = subprocess.getoutput("chroot /target/ /bin/sh -c \"grub-mkconfig -o /boot/grub/grub.cfg\"")
@@ -686,8 +722,8 @@ class InstallerEngine:
         grubfh.writelines(grub_output)
         grubfh.close()
 
-    def do_check_grub(self, our_total, our_current):
-        self.update_progress(our_current, our_total, True, False, _("Checking bootloader"))
+    def do_check_grub(self):
+        self.update_progress(90, True, False, _("Checking bootloader"))
         print(" --> Checking Grub configuration")
         time.sleep(5)
         found_entry = False

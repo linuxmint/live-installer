@@ -1062,7 +1062,10 @@ class InstallerWindow:
                 self.builder.get_object("button_next").set_sensitive(False)
                 self.builder.get_object("button_back").set_sensitive(False)
                 self.builder.get_object("button_quit").set_sensitive(False)
-                self.do_install()
+                if self.oem_config:
+                    self.do_oem_config()
+                else:
+                    self.do_install()
                 self.slideshow_browser = WebKit2.WebView()
                 s = self.slideshow_browser.get_settings()
                 s.set_allow_file_access_from_file_urls(True)
@@ -1174,6 +1177,32 @@ class InstallerWindow:
         MessageDialog(_("Installation paused"), _("The installation is now paused. Please read the instructions on the page carefully before clicking Next to finish the installation."))
 
     @asynchronous
+    def do_oem_config(self):
+        print(" ## OEM CONFIG ")
+        print(' Actually perform the OEM config .. ')
+
+        if __debug__:
+            print(" ## DEBUG MODE - OEM CONFIG NOT LAUNCHED")
+            time.sleep(200)
+            Gtk.main_quit()
+            sys.exit(0)
+
+        self.installer.set_progress_hook(self.update_progress)
+        self.installer.set_error_hook(self.error_message)
+
+        try:
+            self.installer.perform_oem_config()
+        except Exception as detail:
+            print(detail)
+            self.show_error_dialog(_("OEM config error"), str(detail))
+
+        print(" ## OEM CONFIG COMPLETE ")
+
+        os.system("reboot")
+        Gtk.main_quit()
+        sys.exit(0)
+
+    @asynchronous
     def do_install(self):
         print(" ## INSTALLATION ")
         print(' Actually perform the installation .. ')
@@ -1246,7 +1275,7 @@ class InstallerWindow:
         self.critical_error_message = message
 
     @idle
-    def update_progress(self, current, total, pulse, done, message):
+    def update_progress(self, percentage, pulse, done, message):
         if(pulse):
             self.builder.get_object("label_install_progress").set_label(message)
             self.do_progress_pulse(message)
@@ -1258,11 +1287,8 @@ class InstallerWindow:
             self.builder.get_object("label_install_progress").set_label(message)
             return
         self.should_pulse = False
-        _total = float(total)
-        _current = float(current)
-        pct = float(_current/_total)
-        szPct = int(pct)
-        self.builder.get_object("progressbar").set_fraction(pct)
+        fraction = float(percentage) / float(100)
+        self.builder.get_object("progressbar").set_fraction(fraction)
         self.builder.get_object("label_install_progress").set_label(message)
 
     @idle
