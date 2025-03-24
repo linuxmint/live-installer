@@ -722,6 +722,7 @@ class InstallerEngine:
 
 # Represents the choices made by the user
 class Setup(object):
+    oem_mode = False
     language = None
     timezone = None
     keyboard_model = None
@@ -764,6 +765,7 @@ class Setup(object):
     def print_setup(self):
         if __debug__:
             print("-------------------------------------------------------------------------")
+            print("OEM mode: %s" % self.oem_mode)
             print("language: %s" % self.language)
             print("timezone: %s" % self.timezone)
             print("keyboard: %s - %s (%s) - %s - %s (%s)" % (self.keyboard_model, self.keyboard_layout, self.keyboard_variant, self.keyboard_model_description, self.keyboard_layout_description, self.keyboard_variant_description))

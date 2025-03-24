@@ -70,9 +70,10 @@ class InstallerWindow:
     # the keyboard layout list
     kbd_preview_generation = -1
 
-    def __init__(self, expert_mode=False):
+    def __init__(self, expert_mode=False, oem_mode=False):
 
         self.expert_mode = expert_mode
+        self.oem_mode = oem_mode
 
         Gtk.Settings.get_default().set_property("gtk-application-prefer-dark-theme", True)
 
@@ -87,6 +88,7 @@ class InstallerWindow:
 
         # build the setup object (where we put all our choices)
         self.setup = Setup()
+        self.setup.oem_mode = oem_mode
         self.installer = InstallerEngine(self.setup, media)
 
         self.resource_dir = '/usr/share/live-installer/'
@@ -253,6 +255,28 @@ class InstallerWindow:
             self.builder.get_object("entry_password").set_text("dummy_password")
             self.builder.get_object("entry_confirm").set_text("dummy_password")
 
+        if self.oem_mode:
+            self.builder.get_object("entry_name").set_text("Temporary OEM User")
+            self.builder.get_object("entry_name").set_sensitive(False)
+            self.builder.get_object("entry_username").set_text("oem")
+            self.builder.get_object("entry_username").set_sensitive(False)
+            self.builder.get_object("entry_hostname").set_text("oem")
+            self.builder.get_object("entry_hostname").set_sensitive(False)
+            self.builder.get_object("entry_password").set_text("oem")
+            self.builder.get_object("entry_password").set_visibility(True)
+            self.builder.get_object("entry_password").set_sensitive(False)
+            self.builder.get_object("entry_confirm").set_text("oem")
+            self.builder.get_object("entry_confirm").set_visibility(True)
+            self.builder.get_object("entry_confirm").set_sensitive(False)
+            self.builder.get_object("radiobutton_autologin").set_active(True)
+            self.builder.get_object("radiobutton_autologin").set_sensitive(False)
+            self.builder.get_object("radiobutton_passwordlogin").set_sensitive(False)
+            self.builder.get_object("check_lvm").set_sensitive(False)
+            self.builder.get_object("check_badblocks").set_sensitive(False)
+            self.builder.get_object("check_encrypt").set_sensitive(False)
+            self.builder.get_object("entry_passphrase").set_sensitive(False)
+            self.builder.get_object("entry_passphrase2").set_sensitive(False)
+
         # build partition list
         self.should_pulse = False
 
@@ -293,6 +317,8 @@ class InstallerWindow:
 
         if __debug__:
             subtitle += ' - debug mode'
+        if self.oem_mode:
+            subtitle += ' - OEM mode'
         self.builder.get_object("button_expert").set_no_show_all(True)
         if self.expert_mode:
             subtitle += ' - expert mode'
@@ -512,12 +538,13 @@ class InstallerWindow:
 
     def assign_type_options(self, widget=None, data=None):
         self.setup.automated = self.builder.get_object("radio_automated").get_active()
-        self.builder.get_object("check_badblocks").set_sensitive(self.setup.automated)
-        self.builder.get_object("check_encrypt").set_sensitive(self.setup.automated)
-        self.builder.get_object("check_lvm").set_sensitive(self.setup.automated)
         self.builder.get_object("combo_disk").set_sensitive(self.setup.automated)
-        self.builder.get_object("entry_passphrase").set_sensitive(self.setup.automated)
-        self.builder.get_object("entry_passphrase2").set_sensitive(self.setup.automated)
+        if not self.oem_mode:
+            self.builder.get_object("check_badblocks").set_sensitive(self.setup.automated)
+            self.builder.get_object("check_encrypt").set_sensitive(self.setup.automated)
+            self.builder.get_object("check_lvm").set_sensitive(self.setup.automated)
+            self.builder.get_object("entry_passphrase").set_sensitive(self.setup.automated)
+            self.builder.get_object("entry_passphrase2").set_sensitive(self.setup.automated)
         if not self.setup.automated:
             self.builder.get_object("check_badblocks").set_active(False)
             self.builder.get_object("check_encrypt").set_active(False)
@@ -1239,9 +1266,9 @@ class InstallerWindow:
 
 # main entry
 if __name__ == "__main__":
-
-    if ("--expert-mode" in sys.argv):
-        win = InstallerWindow(expert_mode=True)
-    else:
-        win = InstallerWindow()
+    expert_mode = "--expert-mode" in sys.argv
+    oem_mode = "--oem-mode" in sys.argv
+    if "oem-mode" in subprocess.getoutput("cat /proc/cmdline"):
+        oem_mode = True
+    win = InstallerWindow(expert_mode, oem_mode)
     Gtk.main()

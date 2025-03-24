@@ -11,4 +11,4 @@ sudo rm -rf /usr/share/live-installer-slideshow
 
 sudo cp -R usr /
 
-sudo live-installer --debug --expert-mode
+sudo live-installer --debug --expert-mode --oem-mode
