@@ -146,6 +146,10 @@ class InstallerEngine:
         self.update_progress(our_current, our_total, False, False, _("Removing live configuration (packages)"))
         with open("/run/live/medium/live/filesystem.packages-remove", "r") as fd:
             line = fd.read().replace('\n', ' ')
+        if self.setup.oem_mode:
+            # in OEM mode don't remove live-installer just yet, only remove its menu item
+            line = line.replace('live-installer ', '')
+            self.do_run_in_chroot("rm -f /usr/share/applications/debian-installer-launcher.desktop")
         self.do_run_in_chroot("apt-get remove --purge --yes --force-yes %s" % line)
 
         # remove live leftovers
@@ -179,9 +183,10 @@ class InstallerEngine:
         # Set LightDM to show user list by default
         self.do_run_in_chroot(r"sed -i -r 's/^#?(greeter-hide-users)\s*=.*/\1=false/' /etc/lightdm/lightdm.conf")
 
-        # Set autologin for user if they so elected
-        if self.setup.autologin:
-            # LightDM
+        # Set autologin
+        if self.setup.oem_mode:
+            os.system("cp /usr/share/live-installer/lightdm-oem-config.conf /target/etc/lightdm/lightdm.conf.d/90-oem-config.conf")
+        elif self.setup.autologin:
             self.do_run_in_chroot(r"sed -i -r 's/^#?(autologin-user)\s*=.*/\1={user}/' /etc/lightdm/lightdm.conf".format(user=self.setup.username))
 
         # /etc/fstab, mtab and crypttab
