@@ -173,7 +173,8 @@ class InstallerEngine:
         print(" --> Cleaning up OEM config")
         self.update_progress(80, True, False, _("Cleaning OEM configuration"))
         os.system("rm -f /etc/lightdm/lightdm.conf.d/90-oem-config.conf")
-        os.system("apt-get remove --purge --yes --force-yes live-installer")
+        os.system("apt-get remove --purge --yes --force-yes `cat /etc/live-installer-oem-config.package-remove`")
+        os.system("rm -f /etc/live-installer-oem-config.package-remove")
         os.system("rm -f /target")
         os.system("touch /etc/live-installer-oem-config.done") # Leave a flag for mintsystem to clean up the OEM user account
 
@@ -296,10 +297,11 @@ class InstallerEngine:
         with open("/run/live/medium/live/filesystem.packages-remove", "r") as fd:
             line = fd.read().replace('\n', ' ')
         if self.setup.oem_mode:
-            # in OEM mode don't remove live-installer just yet, only remove its menu item
-            line = line.replace('live-installer ', '')
+            # in OEM mode don't remove pkgs just yet
+            self.do_run_in_chroot(f'echo "{line}" > /etc/live-installer-oem-config.package-remove')
             self.do_run_in_chroot("rm -f /usr/share/applications/debian-installer-launcher.desktop")
-        self.do_run_in_chroot("apt-get remove --purge --yes --force-yes %s" % line)
+        else:
+            self.do_run_in_chroot("apt-get remove --purge --yes --force-yes %s" % line)
 
         # remove live leftovers
         self.do_run_in_chroot("rm -rf /etc/live")
