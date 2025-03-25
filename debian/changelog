@@ -1,3 +1,20 @@
+live-installer (2025.03.25) gigi; urgency=medium
+
+  * l10n: Update translations
+  * Remove test-slideshow (obsolete)
+  * Switch to Webkit2 4.1
+  * Keyboard layout: Don't use a spinner animation
+  * Keyboard layout: Switch from Qt to PIL
+  * Move constant to the right python file
+  * Reorganize code files
+  * Start implementing OEM mode
+  * OEM: Add an X session which calls the installer in oem-config mode
+  * OEM: Implement oem-mode
+  * OEM: Start implementing oem-config
+  * OEM: Implement oem-config
+
+ -- Clement Lefebvre <root@linuxmint.com>  Tue, 25 Mar 2025 12:05:59 +0000
+
 live-installer (2023.09.19.2) faye; urgency=medium
 
   * partitioning: Handle exceptions differently for getDevice() and Disk()
