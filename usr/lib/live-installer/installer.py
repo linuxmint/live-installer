@@ -249,12 +249,12 @@ class InstallerEngine:
             else:
                 num_copied = min(num_copied + 1, num_files)
                 percentage = int(float(num_copied) / float(num_files) * 100)
-                self.update_progress(percentage, False, False, _("Copying /%s") % line)
+                self.update_progress(percentage, False, False, _("Copying files..."))
         print("rsync exited with returncode: " + str(rsync.poll()))
 
         # chroot
         print(" --> Chrooting")
-        self.update_progress(10, False, False, _("Entering the system ..."))
+        self.update_progress(10, False, False, _("Entering the system..."))
         os.system("mount --bind /dev/ /target/dev/")
         os.system("mount --bind /dev/shm /target/dev/shm")
         os.system("mount --bind /dev/pts /target/dev/pts")
@@ -324,7 +324,7 @@ class InstallerEngine:
     def mount_source(self):
         # Mount the installation media
         print(" --> Mounting partitions")
-        self.update_progress(50, False, False, _("Mounting %(partition)s on %(mountpoint)s") % {'partition':self.media, 'mountpoint':"/source/"})
+        self.update_progress(50, False, False, _("Mounting partitions..."))
         print(" ------ Mounting %s on %s" % (self.media, "/source/"))
         self.do_mount(self.media, "/source/", "squashfs", options="loop")
 
@@ -381,7 +381,7 @@ class InstallerEngine:
 
         # Wipe HDD
         if self.setup.badblocks:
-            self.update_progress(25, False, False, _("Filling %s with random data (please be patient, this can take hours...)") % self.setup.disk)
+            self.update_progress(25, False, False, _("Filling disk with random data (please be patient, this can take hours...)"))
             print(" --> Filling %s with random data" % self.setup.disk)
             os.system("badblocks -c 10240 -s -w -t random -v %s" % self.setup.disk)
 
@@ -433,7 +433,7 @@ class InstallerEngine:
         for partition in self.setup.partitions:
             if(partition.format_as is not None and partition.format_as != ""):
                 # report it. should grab the total count of filesystems to be formatted ..
-                self.update_progress(25, True, False, _("Formatting %(partition)s as %(format)s ...") % {'partition':partition.path, 'format':partition.format_as})
+                self.update_progress(25, True, False, _("Formatting partitions..."))
 
                 #Format it
                 if partition.format_as == "swap":
