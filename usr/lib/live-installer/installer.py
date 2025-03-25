@@ -15,9 +15,8 @@ gettext.install("live-installer", "/usr/share/locale")
 class InstallerEngine:
     ''' This is central to the live installer '''
 
-    def __init__(self, setup, media):
+    def __init__(self, setup):
         self.setup = setup
-        self.media = media
 
     def set_progress_hook(self, progresshook):
         ''' Set a callback to be called on progress updates '''
@@ -202,7 +201,19 @@ class InstallerEngine:
         os.system("umount --force /target/proc/")
         os.system("umount --force /target/run/")
 
-        self.mount_source()
+        # Mount the installation media
+        print(" --> Mounting partitions")
+        self.update_progress(50, False, False, _("Mounting partitions..."))
+        media = None
+        for path in ['/run/live/medium/live/filesystem.squashfs', '/run/live/medium/casper/filesystem.squashfs']:
+            if os.path.exists(path):
+                media = path
+                break
+        if media is None and not __debug__:
+            self.error_message(message=_("ERROR: Live medium not found!"))
+            return
+        print(" ------ Mounting %s on %s" % (media, "/source/"))
+        self.do_mount(media, "/source/", "squashfs", options="loop")
 
         def rootiest_first(parta, partb):
             if parta.mount_as == None or parta.mount_as == "" or \
@@ -322,13 +333,6 @@ class InstallerEngine:
         self.write_fstab()
         self.write_mtab()
         self.write_crypttab()
-
-    def mount_source(self):
-        # Mount the installation media
-        print(" --> Mounting partitions")
-        self.update_progress(50, False, False, _("Mounting partitions..."))
-        print(" ------ Mounting %s on %s" % (self.media, "/source/"))
-        self.do_mount(self.media, "/source/", "squashfs", options="loop")
 
     def create_partitions(self):
         # Create partitions on the selected disk (automated installation)
