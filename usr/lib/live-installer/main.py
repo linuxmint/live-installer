@@ -98,6 +98,8 @@ class InstallerWindow:
         # load the window object
         self.window = self.builder.get_object("main_window")
         self.window.connect("delete-event", self.quit_cb)
+        if self.oem_config:
+            self.window.connect('key-press-event', self.on_key_press)
         self.scale = self.window.get_scale_factor()
 
         # wizard pages
@@ -287,6 +289,13 @@ class InstallerWindow:
         self.builder.get_object("button_lets_go").connect("clicked", self.on_lets_go_clicked)
 
         self.window.show_all()
+
+    def on_key_press(self, widget, event):
+        # CTRL+T key
+        if (event.state & Gdk.ModifierType.CONTROL_MASK and event.keyval == Gdk.KEY_t):
+            subprocess.Popen(['x-terminal-emulator'])
+            return True
+        return False
 
     def on_lets_go_clicked(self, button):
         self.activate_page(self.PAGE_LANGUAGE)
