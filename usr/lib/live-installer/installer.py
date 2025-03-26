@@ -86,12 +86,21 @@ class InstallerEngine:
 
     def setup_localization(self):
         print(" --> Localizing packages")
-        if self.setup.language != "en_US":
+        if self.setup.oem_mode:
+            # Copy the l10n pkgs from the ISO to the target so oem-config can install from it later on.
+            os.system("mkdir -p /target/oem/l10n_pkgs")
+            l10ns = subprocess.getoutput("find /run/live/medium/pool | grep 'l10n-\\|hunspell-'")
+            for l10n in l10ns.split("\n"):
+                os.system(f"cp {l10n} /target/oem/l10n_pkgs/")
+        elif self.setup.language != "en_US":
             os.system("mkdir -p /target/debs")
             language_code = self.setup.language
             if "_" in self.setup.language:
                 language_code = self.setup.language.split("_")[0]
-            l10ns = subprocess.getoutput("find /run/live/medium/pool | grep 'l10n-%s\\|hunspell-%s'" % (language_code, language_code))
+            if self.setup.oem_config:
+                l10ns = subprocess.getoutput("find /oem/l10n_pkgs | grep 'l10n-%s\\|hunspell-%s'" % (language_code, language_code))
+            else:
+                l10ns = subprocess.getoutput("find /run/live/medium/pool | grep 'l10n-%s\\|hunspell-%s'" % (language_code, language_code))
             for l10n in l10ns.split("\n"):
                 os.system("cp %s /target/debs/" % l10n)
             self.do_run_in_chroot("dpkg -i /debs/*")
@@ -172,10 +181,10 @@ class InstallerEngine:
         print(" --> Cleaning up OEM config")
         self.update_progress(80, True, False, _("Cleaning OEM configuration"))
         os.system("rm -f /etc/lightdm/lightdm.conf.d/90-oem-config.conf")
-        os.system("apt-get remove --purge --yes --force-yes `cat /etc/live-installer-oem-config.package-remove`")
-        os.system("rm -f /etc/live-installer-oem-config.package-remove")
+        os.system("apt-get remove --purge --yes --force-yes `cat /oem/live-packages.list`")
+        os.system("rm -f /oem/live-packages.list")
         os.system("rm -f /target")
-        os.system("touch /etc/live-installer-oem-config.done") # Leave a flag for mintsystem to clean up the OEM user account
+        os.system("touch /oem/done.flag") # Leave a flag for mintsystem to clean up the OEM user account
 
         self.update_progress(100, False, True, _("Installation finished"))
         print(" --> All done")
@@ -302,6 +311,10 @@ class InstallerEngine:
             self.do_run_in_chroot("dpkg -i /debs/*")
             os.system("rm -rf /target/debs")
 
+        # Prepare directory for oem_config
+        if self.setup.oem_mode:
+            os.system("mkdir -p /target/oem/")
+
         # remove live-packages (or w/e)
         print(" --> Removing live packages")
         self.update_progress(20, False, False, _("Removing live configuration (packages)"))
@@ -309,7 +322,7 @@ class InstallerEngine:
             line = fd.read().replace('\n', ' ')
         if self.setup.oem_mode:
             # in OEM mode don't remove pkgs just yet
-            self.do_run_in_chroot(f'echo "{line}" > /etc/live-installer-oem-config.package-remove')
+            self.do_run_in_chroot(f'echo "{line}" > /oem/live-packages.list')
             self.do_run_in_chroot("rm -f /usr/share/applications/debian-installer-launcher.desktop")
         else:
             self.do_run_in_chroot("apt-get remove --purge --yes --force-yes %s" % line)
