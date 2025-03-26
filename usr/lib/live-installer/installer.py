@@ -53,6 +53,13 @@ class InstallerEngine:
         elif self.setup.autologin:
             self.do_run_in_chroot(r"sed -i -r 's/^#?(autologin-user)\s*=.*/\1={user}/' /etc/lightdm/lightdm.conf".format(user=self.setup.username))
 
+        # In OEM mode, set the GTK themes (since oem_config will run without a settings daemon)
+        if self.setup.oem_mode:
+            self.do_run_in_chroot("mkdir -p /home/oem/.config/gtk-3.0")
+            self.do_run_in_chroot("echo '[Settings]' > /home/oem/.config/gtk-3.0/settings.ini")
+            self.do_run_in_chroot("echo 'gtk-theme-name=Mint-Y-Aqua' >> /home/oem/.config/gtk-3.0/settings.ini")
+            self.do_run_in_chroot("echo 'gtk-icon-theme-name=Mint-Y-Sand' >> /home/oem/.config/gtk-3.0/settings.ini")
+
     def setup_hostname(self):
         print(" --> Writing hostname")
         hostnamefh = open("/target/etc/hostname", "w")
