@@ -234,9 +234,6 @@ class InstallerWindow:
         self.column12.add_attribute(ren, "markup", 0)
         self.builder.get_object("treeview_overview").append_column(self.column12)
 
-        # install page
-        self.builder.get_object("label_install_progress").set_text(_("Calculating file indexes ..."))
-
         # i18n
         self.i18n()
 
@@ -415,6 +412,8 @@ class InstallerWindow:
         self.builder.get_object("label_custom_install_paused_3").set_label(_("Install any packages that may be needed for first boot (mdadm, cryptsetup, dmraid, etc) by calling \"sudo chroot /target\" followed by the relevant apt-get/aptitude installations."))
         self.builder.get_object("label_custom_install_paused_4").set_label(_("Note that in order for update-initramfs to work properly in some cases (such as dm-crypt), you may need to have drives currently mounted using the same block device name as they appear in /target/etc/fstab."))
         self.builder.get_object("label_custom_install_paused_5").set_label(_("Double-check that your /target/etc/fstab is correct, matches what your new system will have at first boot, and matches what is currently mounted at /target."))
+
+        self.builder.get_object("label_install_progress").set_text(_("Calculating file indexes ..."))
 
         # Refresh the current title and help question in the page header
         self.activate_page(self.PAGE_LANGUAGE)
