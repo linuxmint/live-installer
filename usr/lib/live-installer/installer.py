@@ -59,6 +59,8 @@ class InstallerEngine:
             self.do_run_in_chroot("echo '[Settings]' > /home/oem/.config/gtk-3.0/settings.ini")
             self.do_run_in_chroot("echo 'gtk-theme-name=Mint-Y-Aqua' >> /home/oem/.config/gtk-3.0/settings.ini")
             self.do_run_in_chroot("echo 'gtk-icon-theme-name=Mint-Y-Sand' >> /home/oem/.config/gtk-3.0/settings.ini")
+            self.do_run_in_chroot("mkdir -p /root/.config/gtk-3.0")
+            self.do_run_in_chroot("cp /home/oem/.config/gtk-3.0/settings.ini /root/.config/gtk-3.0/")
 
     def setup_hostname(self):
         print(" --> Writing hostname")
@@ -188,6 +190,7 @@ class InstallerEngine:
         print(" --> Cleaning up OEM config")
         self.update_progress(80, True, False, _("Cleaning OEM configuration"))
         os.system("rm -f /etc/lightdm/lightdm.conf.d/90-oem-config.conf")
+        os.system("rm -rf /root/.config/gtk-3.0")
         os.system("apt-get remove --purge --yes --force-yes `cat /oem/live-packages.list`")
         os.system("rm -f /oem/live-packages.list")
         os.system("rm -f /target")
