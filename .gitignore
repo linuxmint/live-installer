@@ -1,0 +1,6 @@
+debian/live-installer
+debian/*debhelper*
+debian/files
+debian/*substvar*
+*interface.ui~
+usr/share/locale/*
