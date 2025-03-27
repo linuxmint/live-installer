@@ -39,7 +39,7 @@
         <property name="transition-duration">500</property>
         <property name="transition-type">under-up</property>
         <child>
-          <object class="GtkEventBox">
+          <object class="GtkEventBox" id="event_box">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <child>
@@ -49,13 +49,11 @@
                 <property name="halign">center</property>
                 <property name="valign">center</property>
                 <property name="orientation">vertical</property>
-                <property name="spacing">15</property>
+                <property name="spacing">10</property>
                 <child>
-                  <object class="GtkImage">
+                  <object class="GtkImage" id="welcome_image">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="pixel-size">140</property>
-                    <property name="icon-name">linuxmint-logo-filled-ring</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -64,11 +62,13 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkLabel" id="label_welcome1">
+                  <object class="GtkLabel" id="welcome_release_label">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="no-show-all">True</property>
                     <property name="label" translatable="yes">Welcome to %s!</property>
                     <property name="justify">center</property>
+                    <property name="wrap">True</property>
                     <attributes>
                       <attribute name="weight" value="bold"/>
                       <attribute name="scale" value="2"/>
@@ -81,10 +81,21 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkLabel" id="label_welcome2">
+                  <object class="GtkSeparator" id="welcome_separator">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="label" translatable="yes">This program will ask you some questions and set up LMDE on your computer.</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="welcome_label">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">This program will ask you some questions and install LMDE on your computer.</property>
                     <property name="use-markup">True</property>
                     <property name="justify">center</property>
                     <property name="wrap">True</property>
@@ -92,27 +103,31 @@
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">False</property>
-                    <property name="position">2</property>
+                    <property name="position">3</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkButton" id="button_lets_go">
-                    <property name="label" translatable="yes">Let's go!</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
+                    <child>
+                      <object class="GtkLabel" id="welcome_button_label">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="label" translatable="yes">Let's go!</property>
+                        <property name="use-markup">True</property>
+                      </object>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="position">3</property>
+                    <property name="position">4</property>
                   </packing>
                 </child>
               </object>
             </child>
-            <style>
-              <class name="live-installer-welcome"/>
-            </style>
           </object>
           <packing>
             <property name="name">page_welcome</property>
@@ -2056,7 +2071,10 @@
         <property name="can-focus">False</property>
         <property name="show-close-button">True</property>
         <child>
-          <placeholder/>
+          <object class="GtkLabel" id="debug_label">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+          </object>
         </child>
       </object>
     </child>

@@ -76,8 +76,6 @@ class InstallerWindow:
         self.oem_mode = oem_mode
         self.oem_config = oem_config
 
-        Gtk.Settings.get_default().set_property("gtk-application-prefer-dark-theme", True)
-
         # build the setup object (where we put all our choices)
         self.setup = Setup()
         self.setup.oem_mode = oem_mode
@@ -98,9 +96,15 @@ class InstallerWindow:
         # load the window object
         self.window = self.builder.get_object("main_window")
         self.window.connect("delete-event", self.quit_cb)
+        self.scale = self.window.get_scale_factor()
+
         if self.oem_config:
             self.window.connect('key-press-event', self.on_key_press)
-        self.scale = self.window.get_scale_factor()
+            self.builder.get_object("event_box").get_style_context().add_class("live-installer-welcome-oem-config")
+            self.builder.get_object("welcome_release_label").hide()
+        else:
+            Gtk.Settings.get_default().set_property("gtk-application-prefer-dark-theme", True)
+            self.builder.get_object("event_box").get_style_context().add_class("live-installer-welcome")
 
         # wizard pages
         (self.PAGE_LANGUAGE,
@@ -311,24 +315,21 @@ class InstallerWindow:
         return True
 
     def i18n(self):
-        title = f"LMDE {VERSION} '{CODENAME}'"
-        subtitle = _("Installer")
-
-        if __debug__:
-            subtitle += ' - debug mode'
+        title = _("Installer")
         if self.oem_mode:
-            subtitle += ' - OEM mode'
+            title = "OEM Installation"
         if self.oem_config:
-            subtitle += ' - OEM config'
+            title = _("Initial Setup")
         self.builder.get_object("button_expert").set_no_show_all(True)
         if self.expert_mode:
-            subtitle += ' - expert mode'
             self.builder.get_object("button_expert").show()
         else:
             self.builder.get_object("button_expert").hide()
 
+        if __debug__:
+            self.builder.get_object("debug_label").set_text("Debug mode")
+
         self.builder.get_object("headerbar").set_title(title)
-        self.builder.get_object("headerbar").set_subtitle(subtitle)
 
         # Header
         self.wizard_pages = list(range(11))
@@ -350,9 +351,25 @@ class InstallerWindow:
         self.builder.get_object("button_next").set_label(_("Next"))
 
         # Welcome page
-        self.builder.get_object("label_welcome1").set_text(_("Welcome to %s!") % f"LMDE {VERSION}")
-        self.builder.get_object("label_welcome2").set_text(_("This program will ask you some questions and set up LMDE on your computer."))
-        self.builder.get_object("button_lets_go").set_label(_("Let's go!"))
+        self.builder.get_object("welcome_release_label").set_text(_("Welcome to %s!") % f"LMDE {VERSION}")
+        image_widget = self.builder.get_object("welcome_image")
+        if self.oem_config:
+            # Localized to the language chosen by the manufacturer
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale("/usr/share/live-installer/welcome.svg", -1, 400 * self.scale, True)
+            self.builder.get_object("welcome_label").set_markup("<b><span size='large'>%s</span></b>" % _("Welcome to your new computer!"))
+            self.builder.get_object("welcome_button_label").set_markup("<b><span size='large'>%s</span></b>" % _("Start"))
+        elif self.oem_mode:
+            # Always in English
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale("/usr/share/live-installer/logo.svg", -1, 150 * self.scale, True)
+            self.builder.get_object("welcome_label").set_text(f"This program will pre-install LMDE on this computer.")
+            self.builder.get_object("welcome_button_label").set_label("Let's go!")
+        else:
+            # Always in English
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale("/usr/share/live-installer/logo.svg", -1, 150 * self.scale, True)
+            self.builder.get_object("welcome_label").set_text("This program will ask you some questions and install LMDE on your computer.")
+            self.builder.get_object("welcome_button_label").set_label("Let's go!")
+        surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, self.scale, image_widget.get_window())
+        image_widget.set_from_surface(surface)
 
         # Language page
         self.language_column.set_title(_("Language"))
@@ -616,7 +633,7 @@ class InstallerWindow:
         self.builder.get_object("button_next").set_sensitive(not error)
 
     def quit_cb(self, widget, data=None):
-        if QuestionDialog(_("Quit?"), _("Are you sure you want to quit the installer?")):
+        if QuestionDialog(_("Quit?"), _("Are you sure you want to quit?")):
             Gtk.main_quit()
             return False
         else:
