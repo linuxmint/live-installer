@@ -105,6 +105,7 @@ class InstallerWindow:
             self.window.connect('key-press-event', self.on_key_press)
             self.builder.get_object("event_box").get_style_context().add_class("live-installer-welcome-oem-config")
             self.builder.get_object("welcome_release_label").hide()
+            self.builder.get_object("headerbar").set_show_close_button(False) # Hide all window controls
         else:
             Gtk.Settings.get_default().set_property("gtk-application-prefer-dark-theme", True)
             self.builder.get_object("event_box").get_style_context().add_class("live-installer-welcome")
