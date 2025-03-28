@@ -3,7 +3,6 @@
 sudo rm -rf /usr/bin/live-installer
 sudo rm -rf /usr/lib/live-installer
 sudo rm -rf /usr/share/live-installer
-sudo rm -rf /usr/share/menu/live-installer
 sudo rm -rf /usr/share/icons/live-installer.png
 sudo rm -rf /usr/share/icons/live-installer.xpm
 sudo rm -rf /usr/share/applications/live-installer-launcher.desktop
