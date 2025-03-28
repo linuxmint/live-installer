@@ -2,6 +2,7 @@
 
 from installer import InstallerEngine, Setup
 from dialogs import MessageDialog, QuestionDialog, ErrorDialog, WarningDialog
+import distro
 import timezones
 import partitioning
 import gettext
@@ -37,8 +38,9 @@ HOSTNAME_TOTAL_LENGTH = 253
 WHITESPACE_REGEX = r"[\s]+"
 HAS_LOWER_REGEX = r"[A-Z]+"
 
-VERSION = "6"
-CODENAME = "Faye"
+DISTRIBUTION = distro.name()
+VERSION = distro.version()
+IS_MINT = "ubuntu" in distro.like()
 
 NON_LATIN_KB_LAYOUTS = ['am', 'af', 'ara', 'ben', 'bd', 'bg', 'bn', 'bt', 'by', 'deva', 'et', 'ge', 'gh', 'gn', 'gr', 'guj', 'guru', 'id', 'il', 'iku', 'in', 'iq', 'ir', 'kan', 'kg', 'kh', 'kz', 'la', 'lao', 'lk', 'ma', 'mk', 'mm', 'mn', 'mv', 'mal', 'my', 'np', 'ori', 'pk', 'ru', 'rs', 'scc', 'sy', 'syr', 'tel', 'th', 'tj', 'tam', 'tz', 'ua', 'uz']
 
@@ -337,8 +339,8 @@ class InstallerWindow:
         self.wizard_pages[self.PAGE_TIMEZONE] = WizardPage(_("Timezone"), "mark-location-symbolic", _("Where are you?"))
         self.wizard_pages[self.PAGE_KEYBOARD] = WizardPage(_("Keyboard layout"), "preferences-desktop-keyboard-symbolic", _("What is your keyboard layout?"))
         self.wizard_pages[self.PAGE_USER] = WizardPage(_("User account"), "avatar-default-symbolic", _("Who are you?"))
-        self.wizard_pages[self.PAGE_TYPE] = WizardPage(_("Installation Type"), "drive-harddisk-system-symbolic", _("Where do you want to install LMDE?"))
-        self.wizard_pages[self.PAGE_PARTITIONS] = WizardPage(_("Partitioning"), "drive-harddisk-system-symbolic", _("Where do you want to install LMDE?"))
+        self.wizard_pages[self.PAGE_TYPE] = WizardPage(_("Installation Type"), "drive-harddisk-system-symbolic", _("Where do you want to install %s?") % DISTRIBUTION)
+        self.wizard_pages[self.PAGE_PARTITIONS] = WizardPage(_("Partitioning"), "drive-harddisk-system-symbolic", _("Where do you want to install %s?") % DISTRIBUTION)
         self.wizard_pages[self.PAGE_ADVANCED] = WizardPage(_("Advanced options"), "preferences-system-symbolic", _("Configure the boot menu"))
         self.wizard_pages[self.PAGE_OVERVIEW] = WizardPage(_("Summary"), "object-select-symbolic", _("Check that everything is correct"))
         self.wizard_pages[self.PAGE_INSTALL] = WizardPage(_("Installing"), "system-run-symbolic", "Please wait...")
@@ -351,7 +353,7 @@ class InstallerWindow:
         self.builder.get_object("button_next").set_label(_("Next"))
 
         # Welcome page
-        self.builder.get_object("welcome_release_label").set_text(_("Welcome to %s!") % f"LMDE {VERSION}")
+        self.builder.get_object("welcome_release_label").set_text(_("Welcome to %s!") % f"{DISTRIBUTION} {VERSION}")
         image_widget = self.builder.get_object("welcome_image")
         if self.oem_config:
             # Localized to the language chosen by the manufacturer
@@ -361,12 +363,12 @@ class InstallerWindow:
         elif self.oem_mode:
             # Always in English
             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale("/usr/share/live-installer/logo.svg", -1, 150 * self.scale, True)
-            self.builder.get_object("welcome_label").set_text(f"This program will pre-install LMDE on this computer.")
+            self.builder.get_object("welcome_label").set_text(f"This program will pre-install {DISTRIBUTION} on this computer.")
             self.builder.get_object("welcome_button_label").set_label("Let's go!")
         else:
             # Always in English
             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale("/usr/share/live-installer/logo.svg", -1, 150 * self.scale, True)
-            self.builder.get_object("welcome_label").set_text("This program will ask you some questions and install LMDE on your computer.")
+            self.builder.get_object("welcome_label").set_text(f"This program will ask you some questions and install {DISTRIBUTION} on your computer.")
             self.builder.get_object("welcome_button_label").set_label("Let's go!")
         surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, self.scale, image_widget.get_window())
         image_widget.set_from_surface(surface)
@@ -396,14 +398,14 @@ class InstallerWindow:
 
         # Type page
         self.builder.get_object("label_automated").set_text(_("Automated Installation"))
-        self.builder.get_object("label_automated2").set_text(_("Erase a disk and install LMDE on it."))
+        self.builder.get_object("label_automated2").set_text(_("Erase a disk and install %s on it.") % DISTRIBUTION)
         self.builder.get_object("label_disk").set_text(_("Disk:"))
         self.builder.get_object("label_encrypt").set_text(_("Encrypt the operating system"))
         self.builder.get_object("entry_passphrase").set_placeholder_text(_("Passphrase"))
         self.builder.get_object("entry_passphrase2").set_placeholder_text(_("Confirm passphrase"))
         self.builder.get_object("label_lvm").set_text(_("Use LVM (Logical Volume Management)"))
         self.builder.get_object("label_manual").set_text(_("Manual Partitioning"))
-        self.builder.get_object("label_manual2").set_text(_("Manually create, resize or choose partitions for LMDE."))
+        self.builder.get_object("label_manual2").set_text(_("Manually create, resize or choose partitions for %s.") % DISTRIBUTION)
         self.builder.get_object("label_badblocks").set_text(_("Fill the disk with random data"))
         self.builder.get_object("check_badblocks").set_tooltip_text(_("This provides extra security but it can take hours."))
 
