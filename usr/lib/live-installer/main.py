@@ -150,8 +150,7 @@ class InstallerWindow:
 
         self.builder.get_object("treeview_language_list").connect("cursor-changed", self.assign_language)
 
-        # build the language list
-        self.build_lang_list()
+        self.detect_geoip()
 
         # build timezones
         timezones.build_timezones(self)
@@ -305,6 +304,7 @@ class InstallerWindow:
         return False
 
     def on_lets_go_clicked(self, button):
+        self.build_lang_list()
         self.activate_page(self.PAGE_LANGUAGE)
         self.builder.get_object("stack").set_visible_child_name("page_notebook")
         GObject.timeout_add(400, self.remove_dark_mode)
@@ -354,7 +354,6 @@ class InstallerWindow:
         self.builder.get_object("button_next").set_label(_("Next"))
 
         # Welcome page
-        self.builder.get_object("welcome_release_label").set_text(_("Welcome to %s!") % f"{DISTRIBUTION} {VERSION}")
         image_widget = self.builder.get_object("welcome_image")
         if self.oem_config:
             # Localized to the language chosen by the manufacturer
@@ -364,11 +363,13 @@ class InstallerWindow:
         elif self.oem_mode:
             # Always in English
             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale("/usr/share/live-installer/logo.svg", -1, 150 * self.scale, True)
+            self.builder.get_object("welcome_release_label").set_text(f"Welcome to {DISTRIBUTION} {VERSION}!")
             self.builder.get_object("welcome_label").set_text(f"This program will pre-install {DISTRIBUTION} on this computer.")
             self.builder.get_object("welcome_button_label").set_label("Let's go!")
         else:
             # Always in English
             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale("/usr/share/live-installer/logo.svg", -1, 150 * self.scale, True)
+            self.builder.get_object("welcome_release_label").set_text(f"Welcome to {DISTRIBUTION} {VERSION}!")
             self.builder.get_object("welcome_label").set_text(f"This program will ask you some questions and install {DISTRIBUTION} on your computer.")
             self.builder.get_object("welcome_button_label").set_label("Let's go!")
         surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, self.scale, image_widget.get_window())
@@ -658,8 +659,7 @@ class InstallerWindow:
         pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(path, -1, 18 * self.scale)
         return pixbuf
 
-    def build_lang_list(self):
-
+    def detect_geoip(self):
         # Try to find out where we're located...
         try:
             lookup = requests.get('http://geoip.ubuntu.com/lookup', timeout=5).content.decode("UTF-8")
@@ -670,6 +670,7 @@ class InstallerWindow:
         except:
             self.cur_country_code, self.cur_timezone = "US", "America/New_York"  # no internet connection
 
+    def build_lang_list(self):
         #Load countries into memory
         countries = {}
         iso_standard = "3166"
