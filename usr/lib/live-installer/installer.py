@@ -17,6 +17,14 @@ class InstallerEngine:
 
     def __init__(self, setup):
         self.setup = setup
+        if self.setup.is_mint:
+            self.casper = "/cdrom/casper"
+            self.pool = "/cdrom/pool"
+            self.manifest = "/cdrom/casper/filesystem.manifest"
+        else:
+            self.casper = "/run/live/medium/live"
+            self.pool = "/run/live/medium/pool"
+            self.manifest = "/run/live/medium/live/filesystem.packages"
 
     def set_progress_hook(self, progresshook):
         ''' Set a callback to be called on progress updates '''
@@ -98,7 +106,7 @@ class InstallerEngine:
         if self.setup.oem_mode:
             # Copy the l10n pkgs from the ISO to the target so oem-config can install from it later on.
             os.system("mkdir -p /target/oem/l10n_pkgs")
-            l10ns = subprocess.getoutput("find /run/live/medium/pool | grep 'l10n-\\|hunspell-'")
+            l10ns = subprocess.getoutput(f"find {self.pool} | grep 'l10n-\\|hunspell-'")
             for l10n in l10ns.split("\n"):
                 os.system(f"cp {l10n} /target/oem/l10n_pkgs/")
         elif self.setup.language != "en_US":
@@ -109,7 +117,7 @@ class InstallerEngine:
             if self.setup.oem_config:
                 l10ns = subprocess.getoutput("find /oem/l10n_pkgs | grep 'l10n-%s\\|hunspell-%s'" % (language_code, language_code))
             else:
-                l10ns = subprocess.getoutput("find /run/live/medium/pool | grep 'l10n-%s\\|hunspell-%s'" % (language_code, language_code))
+                l10ns = subprocess.getoutput(f"find {self.pool} | grep 'l10n-%s\\|hunspell-%s'" % (language_code, language_code))
             for l10n in l10ns.split("\n"):
                 os.system("cp %s /target/debs/" % l10n)
             self.do_run_in_chroot("dpkg -i /debs/*")
@@ -223,12 +231,8 @@ class InstallerEngine:
         # Mount the installation media
         print(" --> Mounting partitions")
         self.update_progress(50, False, False, _("Mounting partitions..."))
-        media = None
-        for path in ['/run/live/medium/live/filesystem.squashfs', '/run/live/medium/casper/filesystem.squashfs']:
-            if os.path.exists(path):
-                media = path
-                break
-        if media is None and not __debug__:
+        media = f"{self.casper}/filesystem.squashfs"
+        if not os.path.exists(media) and not __debug__:
             self.error_message(message=_("ERROR: Live medium not found!"))
             return
         print(" ------ Mounting %s on %s" % (media, "/source/"))
@@ -300,9 +304,9 @@ class InstallerEngine:
             os.system("mount --bind /sys/firmware/efi/efivars /target/sys/firmware/efi/efivars/")
 
         kernelversion= subprocess.getoutput("uname -r")
-        os.system("cp /run/live/medium/live/vmlinuz /target/boot/vmlinuz-%s" % kernelversion)
+        os.system(f"cp {self.casper}/vmlinuz /target/boot/vmlinuz-{kernelversion}")
         found_initrd = False
-        for initrd in ["/run/live/medium/live/initrd.img", "/run/live/medium/live/initrd.lz"]:
+        for initrd in [f"{self.casper}/initrd.img", f"{self.casper}/initrd.lz"]:
             if os.path.exists(initrd):
                 os.system("cp %s /target/boot/initrd.img-%s" % (initrd, kernelversion))
                 found_initrd = True
@@ -314,9 +318,9 @@ class InstallerEngine:
         if self.setup.grub_device and self.setup.gptonefi:
             print(" --> Installing signed boot loader")
             os.system("mkdir -p /target/debs")
-            os.system("cp /run/live/medium/pool/main/g/grub2/grub-efi* /target/debs/")
-            os.system("cp /run/live/medium/pool/main/g/grub-efi-amd64-signed/* /target/debs/")
-            os.system("cp /run/live/medium/pool/main/s/shim*/* /target/debs/")
+            os.system(f"cp {self.pool}/main/g/grub2/grub-efi* /target/debs/")
+            os.system(f"cp {self.pool}/main/g/grub-efi-amd64-signed/* /target/debs/")
+            os.system(f"cp {self.pool}/main/s/shim*/* /target/debs/")
             self.do_run_in_chroot("DEBIAN_FRONTEND=noninteractive apt-get remove --purge --yes grub-pc")
             self.do_run_in_chroot("dpkg -i /debs/*")
             os.system("rm -rf /target/debs")
@@ -328,7 +332,7 @@ class InstallerEngine:
         # remove live-packages (or w/e)
         print(" --> Removing live packages")
         self.update_progress(20, False, False, _("Removing live configuration (packages)"))
-        with open("/run/live/medium/live/filesystem.packages-remove", "r") as fd:
+        with open(f"{self.manifest}-remove", "r") as fd:
             line = fd.read().replace('\n', ' ')
         if self.setup.oem_mode:
             # in OEM mode don't remove pkgs just yet
@@ -340,6 +344,10 @@ class InstallerEngine:
         # remove live leftovers
         self.do_run_in_chroot("rm -rf /etc/live")
         self.do_run_in_chroot("rm -rf /lib/live")
+        self.do_run_in_chroot("rm -rf /etc/casper*")
+        self.do_run_in_chroot("rm -rf /lib/casper")
+        self.do_run_in_chroot("rm -rf /usr/lib/casper")
+        self.do_run_in_chroot("rm -rf /usr/share/casper")
 
         # add new user
         self.update_progress(30, False, False, _("Adding new user to the system"))
@@ -633,7 +641,7 @@ class InstallerEngine:
             if "broadcom-sta-dkms" in drivers:
                 try:
                     os.system("mkdir -p /target/debs")
-                    os.system("cp /run/live/medium/pool/non-free/b/broadcom-sta/*.deb /target/debs/")
+                    os.system(f"cp {self.pool}/non-free/b/broadcom-sta/*.deb /target/debs/")
                     self.do_run_in_chroot("dpkg -i /debs/*")
                     self.do_run_in_chroot("modprobe wl")
                     os.system("rm -rf /target/debs")
@@ -799,6 +807,7 @@ class InstallerEngine:
 
 # Represents the choices made by the user
 class Setup(object):
+    is_mint = False
     oem_mode = False
     language = None
     timezone = None
@@ -842,6 +851,7 @@ class Setup(object):
     def print_setup(self):
         if __debug__:
             print("-------------------------------------------------------------------------")
+            print("Is Mint: %s" % self.is_mint)
             print("OEM mode: %s" % self.oem_mode)
             print("language: %s" % self.language)
             print("timezone: %s" % self.timezone)

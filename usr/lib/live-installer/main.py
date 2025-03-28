@@ -82,6 +82,7 @@ class InstallerWindow:
         self.setup = Setup()
         self.setup.oem_mode = oem_mode
         self.setup.oem_config = oem_config
+        self.setup.is_mint = IS_MINT
         self.installer = InstallerEngine(self.setup)
 
         self.resource_dir = '/usr/share/live-installer/'
@@ -498,7 +499,7 @@ class InstallerWindow:
                     self.builder.get_object("button_next").set_sensitive(False)
                 return
         self.builder.get_object("button_next").set_sensitive(True)
-# 
+
     def hostname_too_long(self, hostname):
         segments = hostname.split(".")
 
