@@ -8,29 +8,31 @@ msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2023-09-07 14:04+0100\n"
-"PO-Revision-Date: 2024-09-05 06:38+0000\n"
-"Last-Translator: Pathanjali Tallapragada <Unknown>\n"
+"PO-Revision-Date: 2025-06-24 08:39+0000\n"
+"Last-Translator: Aryan Karamtoth <Unknown>\n"
 "Language-Team: Telugu <te@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2025-01-06 11:51+0000\n"
-"X-Generator: Launchpad (build 6394e03793719e8d73f5a60b5439440e693c92f1)\n"
+"X-Launchpad-Export-Date: 2025-07-31 09:15+0000\n"
+"X-Generator: Launchpad (build 647c49fc7f614412c17a151d8ba4fadd90c06a00)\n"
 
 #: usr/lib/live-installer/installer.py:45
 msgid ""
 "ERROR: You must first manually mount your target filesystem(s) at /target to "
 "do a custom install!"
 msgstr ""
+"లోపం: కస్టమ్ ఇన్‌స్టాల్ చేయడానికి మీరు ముందుగా /target వద్ద మీ లక్ష్య "
+"ఫైల్‌సిస్టమ్(ల)ను మాన్యువల్‌గా మౌంట్ చేయాలి!"
 
 #: usr/lib/live-installer/installer.py:106
 #, python-format
 msgid "Copying /%s"
-msgstr ""
+msgstr "/%s ని కాపీ చేస్తోంది"
 
 #: usr/lib/live-installer/installer.py:114
 msgid "Entering the system ..."
-msgstr ""
+msgstr "వ్యవస్థలోకి ప్రవేశిస్తోంది..."
 
 #: usr/lib/live-installer/installer.py:169
 msgid "Removing live configuration (packages)"
@@ -42,7 +44,7 @@ msgstr "సిస్టం లో ఒక కొత్త వినియాగ�
 
 #: usr/lib/live-installer/installer.py:212
 msgid "Writing filesystem mount information to /etc/fstab"
-msgstr ""
+msgstr "ఫైల్‌సిస్టమ్ మౌంట్ సమాచారాన్ని /etc/fstab కు వ్రాయడం"
 
 #: usr/lib/live-installer/installer.py:220
 #: usr/lib/live-installer/installer.py:355
@@ -55,6 +57,8 @@ msgstr "%(partition)s లను %(mountpoint)s పై మౌంటుచేస�
 msgid ""
 "Filling %s with random data (please be patient, this can take hours...)"
 msgstr ""
+"%s ని యాదృచ్ఛిక డేటాతో నింపుతోంది (దయచేసి ఓపికపట్టండి, దీనికి గంటలు "
+"పట్టవచ్చు...)"
 
 #: usr/lib/live-installer/installer.py:282
 #, python-format
@@ -64,7 +68,7 @@ msgstr "%s  లో విభజన చేయబడుతోంది"
 #: usr/lib/live-installer/installer.py:329
 #, python-format
 msgid "Formatting %(partition)s as %(format)s ..."
-msgstr ""
+msgstr "%(partition)s లను %(format)s గా ఫార్మాట్ చేస్తోంది ..."
 
 #: usr/lib/live-installer/installer.py:484
 msgid "Setting hostname"
@@ -76,11 +80,11 @@ msgstr "భాషను అమర్చుతున్నది"
 
 #: usr/lib/live-installer/installer.py:518
 msgid "Localizing packages"
-msgstr ""
+msgstr "ప్యాకేజీలను స్థానికీకరించడం"
 
 #: usr/lib/live-installer/installer.py:533
 msgid "Installing drivers"
-msgstr ""
+msgstr "డ్రైవర్లను ఇన్‌స్టాల్ చేస్తోంది"
 
 #: usr/lib/live-installer/installer.py:564
 msgid "Setting keyboard options"
@@ -124,7 +128,7 @@ msgstr "భాష"
 #: usr/lib/live-installer/frontend/gtk_interface.py:129
 #: usr/lib/live-installer/frontend/gtk_interface.py:321
 msgid "Location"
-msgstr ""
+msgstr "స్థానము"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:212
 #: usr/lib/live-installer/frontend/gtk_interface.py:325
@@ -151,7 +155,7 @@ msgstr "ఫైల్ సూచికలు లెక్కించబడుత�
 #: usr/lib/live-installer/frontend/gtk_interface.py:1005
 #: usr/lib/live-installer/partitioning.py:340
 msgid "Installer"
-msgstr ""
+msgstr "ఇన్‌స్టాలర్"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:297
 msgid "What language would you like to use?"
@@ -159,7 +163,7 @@ msgstr "మీరు ఏ భాషను ఉపయోగించాలనుక
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:298
 msgid "Timezone"
-msgstr ""
+msgstr "సమయక్షేత్రం"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:298
 msgid "Where are you?"
@@ -234,28 +238,30 @@ msgstr "తదుపరి"
 #: usr/share/live-installer/interface.ui.h:3
 #, python-format
 msgid "Welcome to %s!"
-msgstr ""
+msgstr "%s కు స్వాగతం!"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:316
 #: usr/share/live-installer/interface.ui.h:4
 msgid ""
 "This program will ask you some questions and set up LMDE on your computer."
 msgstr ""
+"ఈ ప్రోగ్రామ్ మిమ్మల్ని కొన్ని ప్రశ్నలు అడుగుతుంది మరియు మీ కంప్యూటర్‌లో "
+"LMDEని సెటప్ చేస్తుంది."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:317
 #: usr/share/live-installer/interface.ui.h:5
 msgid "Let's go!"
-msgstr ""
+msgstr "వెళ్దాం!"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:324
 #: usr/share/live-installer/interface.ui.h:6
 msgid "Keyboard Model:"
-msgstr ""
+msgstr "కీబోర్డ్ మోడల్:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:327
 #: usr/share/live-installer/interface.ui.h:7
 msgid "Type here to test your keyboard layout"
-msgstr ""
+msgstr "మీ కీబోర్డ్ లేఅవుట్‌ను పరీక్షించడానికి ఇక్కడ టైప్ చేయండి."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:328
 msgid ""
@@ -263,121 +269,126 @@ msgid ""
 "Latin characters. In addition to your selected layout, English (US) is set "
 "as the default. You can switch layouts by pressing Super+Space."
 msgstr ""
+"* మీ యూజర్‌నేమ్, మీ కంప్యూటర్ పేరు మరియు మీ పాస్‌వర్డ్‌లో లాటిన్ అక్షరాలు "
+"మాత్రమే ఉండాలి. మీరు ఎంచుకున్న లేఅవుట్‌తో పాటు, ఇంగ్లీష్ (US) డిఫాల్ట్‌గా "
+"సెట్ చేయబడింది. మీరు Super+Space నొక్కడం ద్వారా లేఅవుట్‌లను మార్చవచ్చు."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:331
 #: usr/share/live-installer/interface.ui.h:8
 msgid "Your name:"
-msgstr ""
+msgstr "మీ పేరు:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:332
 #: usr/share/live-installer/interface.ui.h:9
 msgid "Your computer's name:"
-msgstr ""
+msgstr "మీ కంప్యూటర్ పేరు:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:333
 #: usr/share/live-installer/interface.ui.h:11
 msgid "The name it uses when it talks to other computers."
-msgstr ""
+msgstr "ఇతర కంప్యూటర్లతో అనుసంధానమయినపుడు ఇది ఈ పేరు వాడుతుంది."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:334
 #: usr/share/live-installer/interface.ui.h:10
 msgid "Pick a username:"
-msgstr ""
+msgstr "ఒక వాడుకరి పేరును ఎంచుకోండి:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:335
 #: usr/share/live-installer/interface.ui.h:12
 msgid "Choose a password:"
-msgstr ""
+msgstr "ఒక సంకేతపదాన్ని ఎంచుకోండి:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:336
 #: usr/share/live-installer/interface.ui.h:13
 msgid "Confirm your password:"
-msgstr ""
+msgstr "మీ సంకేతపదాన్ని ఖచ్చితపరచండి:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:338
 #: usr/share/live-installer/interface.ui.h:14
 msgid "Log in automatically"
-msgstr ""
+msgstr "స్వయంచాలకంగా ప్రవేశించు"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:339
 #: usr/share/live-installer/interface.ui.h:15
 msgid "Require my password to log in"
-msgstr ""
+msgstr "ప్రవేశించుటకు నా సంకేతపదం అవసరం"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:340
 #: usr/share/live-installer/interface.ui.h:16
 msgid "Encrypt my home folder"
-msgstr ""
+msgstr "నా నివాస సంచయాన్ని ఎన్‌ క్రిప్ట్ చేయి"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:343
 #: usr/share/live-installer/interface.ui.h:17
 msgid "Automated Installation"
-msgstr ""
+msgstr "ఆటోమేటెడ్ ఇన్‌స్టాలేషన్"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:344
 #: usr/share/live-installer/interface.ui.h:18
 msgid "Erase a disk and install LMDE on it."
-msgstr ""
+msgstr "ఒక డిస్క్‌ను తొలగించి దానిపై LMDE ని ఇన్‌స్టాల్ చేయండి."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:345
 #: usr/share/live-installer/interface.ui.h:19
 msgid "Disk:"
-msgstr ""
+msgstr "డిస్క్:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:346
 #: usr/share/live-installer/interface.ui.h:21
 msgid "Encrypt the operating system"
-msgstr ""
+msgstr "ఆపరేటింగ్ సిస్టమ్‌ను ఎన్‌క్రిప్ట్ చేయండి"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:347
 #: usr/share/live-installer/interface.ui.h:22
 msgid "Passphrase"
-msgstr ""
+msgstr "సంకేతపదము"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:348
 #: usr/share/live-installer/interface.ui.h:23
 msgid "Confirm passphrase"
-msgstr ""
+msgstr "పాస్‌ఫ్రేజ్‌ని నిర్ధారించండి"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:349
 #: usr/share/live-installer/interface.ui.h:20
 msgid "Use LVM (Logical Volume Management)"
-msgstr ""
+msgstr "LVM (లాజికల్ వాల్యూమ్ మేనేజ్‌మెంట్) ఉపయోగించండి"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:350
 #: usr/share/live-installer/interface.ui.h:26
 msgid "Manual Partitioning"
-msgstr ""
+msgstr "మాన్యువల్ విభజన"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:351
 #: usr/share/live-installer/interface.ui.h:27
 msgid "Manually create, resize or choose partitions for LMDE."
 msgstr ""
+"LMDE కోసం విభజనలను మాన్యువల్‌గా సృష్టించండి, పరిమాణాన్ని మార్చండి లేదా "
+"ఎంచుకోండి."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:352
 #: usr/share/live-installer/interface.ui.h:25
 msgid "Fill the disk with random data"
-msgstr ""
+msgstr "యాదృచ్ఛిక డేటాతో డిస్క్ నింపండి"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:353
 #: usr/share/live-installer/interface.ui.h:24
 msgid "This provides extra security but it can take hours."
-msgstr ""
+msgstr "ఇది అదనపు భద్రతను అందిస్తుంది కానీ దీనికి గంటలు పట్టవచ్చు."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:356
 #: usr/lib/live-installer/partitioning.py:185
 #: usr/share/live-installer/interface.ui.h:29
 msgid "Edit"
-msgstr ""
+msgstr "మార్చు"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:357
 #: usr/share/live-installer/interface.ui.h:30
 msgid "Launch GParted"
-msgstr ""
+msgstr "GPartedని ప్రారంభించండి"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:358
 msgid "Refresh"
-msgstr ""
+msgstr "రీఫ్రెష్ చేయి"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:361
 msgid "Device"
@@ -397,7 +408,7 @@ msgstr "మౌంట్ పాయింట్"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:365
 msgid "Format as"
-msgstr ""
+msgstr "ఇలా ఫార్మాట్ చేయండి"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:366
 msgid "Size"
@@ -411,7 +422,7 @@ msgstr "ఖాళీ స్థలం"
 #: usr/lib/live-installer/frontend/gtk_interface.py:371
 #: usr/share/live-installer/interface.ui.h:31
 msgid "Install the GRUB boot menu on:"
-msgstr ""
+msgstr "GRUB బూట్ మెనూను ఇక్కడ ఇన్‌స్టాల్ చేయండి:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:374
 #: usr/share/live-installer/interface.ui.h:32
@@ -419,17 +430,21 @@ msgid ""
 "You selected to manage your partitions manually, this feature is for "
 "ADVANCED USERS ONLY."
 msgstr ""
+"మీరు మీ విభజనలను మాన్యువల్‌గా నిర్వహించడానికి ఎంచుకున్నారు, ఈ లక్షణం అధునాతన "
+"వినియోగదారులకు మాత్రమే."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:375
 #: usr/share/live-installer/interface.ui.h:33
 msgid "Before continuing, mount your target filesystem(s) on /target."
 msgstr ""
+"కొనసాగే ముందు, మీ లక్ష్య ఫైల్‌సిస్టమ్(లు) ను /target పై మౌంట్ చేయండి."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:376
 #: usr/share/live-installer/interface.ui.h:34
 msgid ""
 "Do NOT mount virtual devices such as /dev, /proc, /sys, etc on /target/."
 msgstr ""
+"/target/ పై /dev, /proc, /sys, మొదలైన వర్చువల్ పరికరాలను మౌంట్ చేయవద్దు."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:377
 #: usr/share/live-installer/interface.ui.h:35
@@ -437,17 +452,22 @@ msgid ""
 "During the install, you will be given time to chroot into /target and "
 "install any packages that will be needed to boot your new system."
 msgstr ""
+"ఇన్‌స్టాల్ సమయంలో, మీకు /target లోకి chroot చేయడానికి మరియు మీ కొత్త "
+"సిస్టమ్‌ను బూట్ చేయడానికి అవసరమైన ఏవైనా ప్యాకేజీలను ఇన్‌స్టాల్ చేయడానికి "
+"సమయం ఇవ్వబడుతుంది."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:378
 #: usr/share/live-installer/interface.ui.h:36
 msgid ""
 "During the install, you will be required to write your own /etc/fstab."
 msgstr ""
+"ఇన్‌స్టాల్ చేస్తున్నప్పుడు, మీరు మీ స్వంత /etc/fstab ను వ్రాయవలసి ఉంటుంది."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:381
 #: usr/share/live-installer/interface.ui.h:37
 msgid "Do the following and then click Next to finish installation:"
 msgstr ""
+"ఇన్‌స్టాలేషన్‌ను పూర్తి చేయడానికి కింది వాటిని చేసి, తదుపరి క్లిక్ చేయండి:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:382
 #: usr/share/live-installer/interface.ui.h:38
@@ -456,6 +476,9 @@ msgid ""
 "new system, matching those currently mounted at /target (without using the "
 "/target prefix in the mount paths themselves)."
 msgstr ""
+"మీ కొత్త వ్యవస్థలో మౌంట్ చేయబడే ఫైల్ సిస్టమ్‌ల కోసం /target/etc/fstab ను "
+"సృష్టించండి, ప్రస్తుతం /target వద్ద మౌంట్ చేయబడిన వాటికి సరిపోలుతుంది (మౌంట్ "
+"పాత్‌లలో /target ఉపసర్గను ఉపయోగించకుండా)."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:383
 #: usr/share/live-installer/interface.ui.h:39
@@ -464,6 +487,9 @@ msgid ""
 "dmraid, etc) by calling \"sudo chroot /target\" followed by the relevant apt-"
 "get/aptitude installations."
 msgstr ""
+"మొదటి బూట్ (mdadm, cryptsetup, dmraid, మొదలైనవి) కు అవసరమైన ఏవైనా "
+"ప్యాకేజీలను \"sudo chroot /target\" కు కాల్ చేసి, ఆ తరువాత సంబంధిత apt-"
+"get/aptitude ఇన్‌స్టాలేషన్‌లను ఇన్‌స్టాల్ చేయండి."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:384
 #: usr/share/live-installer/interface.ui.h:40
@@ -472,6 +498,9 @@ msgid ""
 "as dm-crypt), you may need to have drives currently mounted using the same "
 "block device name as they appear in /target/etc/fstab."
 msgstr ""
+"కొన్ని సందర్భాలలో (dm-crypt వంటివి) update-initramfs సరిగ్గా పనిచేయాలంటే, "
+"మీరు /target/etc/fstab లో కనిపించే బ్లాక్ పరికర పేరును ఉపయోగించి ప్రస్తుతం "
+"మౌంట్ చేయబడిన డ్రైవ్‌లను కలిగి ఉండవలసి రావచ్చు."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:385
 #: usr/share/live-installer/interface.ui.h:41
@@ -480,69 +509,75 @@ msgid ""
 "system will have at first boot, and matches what is currently mounted at "
 "/target."
 msgstr ""
+"మీ /target/etc/fstab సరైనదేనా, మీ కొత్త సిస్టమ్ మొదటి బూట్‌లో కలిగి ఉన్న "
+"దానితో సరిపోలుతుందో లేదో మరియు ప్రస్తుతం /target వద్ద మౌంట్ చేయబడిన దానితో "
+"సరిపోలుతుందో లేదో ఒకటికి రెండుసార్లు తనిఖీ చేయండి."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:396
 msgid "The values do not match."
-msgstr ""
+msgstr "విలువలు సరిపోలడం లేదు."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:399
 msgid "This field cannot be empty."
-msgstr ""
+msgstr "ఈ ఫీల్డ్ ఖాళీగా ఉండకూడదు."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:402
 msgid "This field may not contain space characters."
-msgstr ""
+msgstr "ఈ ఫీల్డ్‌లో ఖాళీ అక్షరాలు ఉండకపోవచ్చు."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:405
 msgid "This field must be lower case."
-msgstr ""
+msgstr "ఈ ఫీల్డ్ తప్పనిసరిగా చిన్న అక్షరాలలో ఉండాలి."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:408
 msgid "This field cannot start or end with a hyphen or period."
-msgstr ""
+msgstr "ఈ ఫీల్డ్ హైఫన్ లేదా చుక్కతో ప్రారంభం లేదా ముగింపు ఉండకూడదు."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:412
 msgid "The entry is too short."
-msgstr ""
+msgstr "ఎంట్రీ చాలా చిన్నది."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:414
 msgid "The entry is too long."
-msgstr ""
+msgstr "ఎంట్రీ చాలా పొడవుగా ఉంది."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:419
 msgid "This field contains invalid characters."
-msgstr ""
+msgstr "ఈ ఫీల్డ్‌లో చెల్లని అక్షరాలు ఉన్నాయి."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:578
 msgid "Quit?"
-msgstr ""
+msgstr "త్యజించు?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:578
 msgid "Are you sure you want to quit the installer?"
-msgstr ""
+msgstr "మీరు ఖచ్చితంగా ఇన్‌స్టాలర్ నుండి నిష్క్రమించాలనుకుంటున్నారా?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:916
 msgid "Please choose a language"
-msgstr ""
+msgstr "దయచేసి ఒక భాషను ఎంచుకోండి"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:956
 msgid "Warning"
-msgstr ""
+msgstr "హెచ్చరిక"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:956
 #, python-format
 msgid "This will delete all the data on %s. Are you sure?"
 msgstr ""
+"ఇది %s లోని మొత్తం డేటాను తొలగిస్తుంది. మీరు ఖచ్చితంగా చేయాలనుకుంటున్నారా?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:972
 msgid ""
 "Please indicate a filesystem to format the root (/) partition with before "
 "proceeding."
 msgstr ""
+"దయచేసి కొనసాగే ముందు రూట్ (/) విభజనను ఫార్మాట్ చేయడానికి ఒక ఫైల్ సిస్టమ్‌ను "
+"సూచించండి."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:976
 msgid "Please select a root (/) partition."
-msgstr ""
+msgstr "దయచేసి రూట్ (/) విభజనను ఎంచుకోండి."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:977
 msgid ""
@@ -552,23 +587,28 @@ msgid ""
 " - Recommended size: 30GB\n"
 " - Recommended filesystem format: ext4\n"
 msgstr ""
+"Linux Mint ని ఇన్‌స్టాల్ చేయడానికి రూట్ విభజన అవసరం.\n"
+"\n"
+" - మౌంట్ పాయింట్: /\n"
+" - సిఫార్సు చేయబడిన పరిమాణం: 30GB\n"
+" - సిఫార్సు చేయబడిన ఫైల్‌సిస్టమ్ ఫార్మాట్: ext4\n"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:989
 msgid "The EFI partition is not bootable. Please edit the partition flags."
-msgstr ""
+msgstr "EFI విభజన బూటబుల్ కాదు. దయచేసి విభజన ఫ్లాగ్‌లను సవరించండి."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:992
 msgid "The EFI partition is too small. It must be at least 35MB."
-msgstr ""
+msgstr "EFI విభజన చాలా చిన్నది. ఇది కనీసం 35MB ఉండాలి."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:997
 #: usr/lib/live-installer/frontend/gtk_interface.py:1001
 msgid "The EFI partition must be formatted as vfat."
-msgstr ""
+msgstr "EFI విభజనను vfat గా ఫార్మాట్ చేయాలి."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1005
 msgid "Please select an EFI partition."
-msgstr ""
+msgstr "దయచేసి ఒక EFI విభజనను ఎంచుకోండి."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1005
 msgid ""
@@ -583,10 +623,20 @@ msgid ""
 "partition of the disk as the EFI system partition.\n"
 " "
 msgstr ""
+"కింది అవసరాలతో EFI సిస్టమ్ విభజన అవసరం:\n"
+"\n"
+" - మౌంట్ పాయింట్: /boot/efi\n"
+" - విభజన ఫ్లాగ్‌లు: బూటబుల్\n"
+" - పరిమాణం: కనీసం 35MB (100MB లేదా అంతకంటే ఎక్కువ సిఫార్సు చేయబడింది)\n"
+" - ఫార్మాట్: vfat లేదా fat32\n"
+"\n"
+"Windows తో అనుకూలతను నిర్ధారించుకోవడానికి డిస్క్ యొక్క మొదటి విభజనను EFI "
+"సిస్టమ్ విభజనగా ఉపయోగించమని మేము మీకు సిఫార్సు చేస్తున్నాము.\n"
+" "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1018
 msgid "Install"
-msgstr ""
+msgstr "స్థాపించు"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1074
 msgid "Localization"
@@ -618,25 +668,25 @@ msgstr "వాడుకరిపేరు: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1083
 msgid "Automatic login: "
-msgstr ""
+msgstr "స్వయంచాలక లాగిన్: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1083
 #: usr/lib/live-installer/frontend/gtk_interface.py:1084
 #: usr/lib/live-installer/frontend/gtk_interface.py:1094
 #: usr/lib/live-installer/frontend/gtk_interface.py:1095
 msgid "enabled"
-msgstr ""
+msgstr "చేతనమైంది"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1083
 #: usr/lib/live-installer/frontend/gtk_interface.py:1084
 #: usr/lib/live-installer/frontend/gtk_interface.py:1094
 #: usr/lib/live-installer/frontend/gtk_interface.py:1095
 msgid "disabled"
-msgstr ""
+msgstr "అచేతనమైంది"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1084
 msgid "Home encryption: "
-msgstr ""
+msgstr "హోమ్ ఎన్‌క్రిప్షన్: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1085
 msgid "System settings"
@@ -644,7 +694,7 @@ msgstr "వ్యవస్థ అమరికలు"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1086
 msgid "Computer's name: "
-msgstr ""
+msgstr "కంప్యూటర్ పేరు: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1087
 msgid "Filesystem operations"
@@ -653,7 +703,7 @@ msgstr "ఫైల్ వ్యవస్థ కార్యాలు"
 #: usr/lib/live-installer/frontend/gtk_interface.py:1088
 #, python-format
 msgid "Install bootloader on %s"
-msgstr ""
+msgstr "%s లో బూట్‌లోడర్‌ను ఇన్‌స్టాల్ చేయండి"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1088
 msgid "Do not install bootloader"
@@ -661,42 +711,46 @@ msgstr "బూట్‌లోడర్‌ను స్థాపించవద�
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1090
 msgid "Use already-mounted /target."
-msgstr ""
+msgstr "ఇప్పటికే మౌంట్ చేయబడిన /target ని ఉపయోగించండి."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1093
 #, python-format
 msgid "Automated installation on %s"
-msgstr ""
+msgstr "%s పై ఆటోమేటెడ్ ఇన్‌స్టాలేషన్"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1094
 msgid "LVM: "
-msgstr ""
+msgstr "LVM: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1095
 msgid "Disk Encryption: "
-msgstr ""
+msgstr "డిస్క్ ఎన్క్రిప్షన్: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1099
 #, python-format
 msgid "Format %(path)s as %(filesystem)s"
-msgstr ""
+msgstr "%(path)s ను %(filesystem)s గా ఫార్మాట్ చేయండి"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1102
 #, python-format
 msgid "Mount %(path)s as %(mount)s"
-msgstr ""
+msgstr "%(path)s ని %(mount)s లాగా మౌంట్ చేయి"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1112
 msgid ""
 "The installation is now complete. Do you want to restart your computer to "
 "use the new system?"
 msgstr ""
+"ఇన్‌స్టాలేషన్ ఇప్పుడు పూర్తయింది. కొత్త సిస్టమ్‌ను ఉపయోగించడానికి మీరు మీ "
+"కంప్యూటర్‌ను పునఃప్రారంభించాలనుకుంటున్నారా?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1127
 msgid ""
 "The installation is now paused. Please read the instructions on the page "
 "carefully before clicking Next to finish the installation."
 msgstr ""
+"ఇన్‌స్టాలేషన్ ఇప్పుడు పాజ్ చేయబడింది. ఇన్‌స్టాలేషన్‌ను పూర్తి చేయడానికి "
+"తదుపరి క్లిక్ చేసే ముందు దయచేసి పేజీలోని సూచనలను జాగ్రత్తగా చదవండి."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1160
 #: usr/lib/live-installer/frontend/gtk_interface.py:1163
@@ -707,43 +761,43 @@ msgstr "స్థాపన ప్రక్రియ దోషము"
 
 #: usr/lib/live-installer/partitioning.py:90
 msgid "B"
-msgstr ""
+msgstr "B"
 
 #: usr/lib/live-installer/partitioning.py:90
 #: usr/lib/live-installer/partitioning.py:424
 msgid "kB"
-msgstr ""
+msgstr "kB"
 
 #: usr/lib/live-installer/partitioning.py:90
 #: usr/lib/live-installer/partitioning.py:424
 msgid "MB"
-msgstr ""
+msgstr "MB"
 
 #: usr/lib/live-installer/partitioning.py:90
 #: usr/lib/live-installer/partitioning.py:424
 msgid "GB"
-msgstr ""
+msgstr "GB"
 
 #: usr/lib/live-installer/partitioning.py:90
 #: usr/lib/live-installer/partitioning.py:424
 msgid "TB"
-msgstr ""
+msgstr "TB"
 
 #: usr/lib/live-installer/partitioning.py:95
 msgid "Removable:"
-msgstr ""
+msgstr "తొలగించదగినది:"
 
 #: usr/lib/live-installer/partitioning.py:192
 msgid "Assign to /"
-msgstr ""
+msgstr "వీరికి కేటాయించండి /"
 
 #: usr/lib/live-installer/partitioning.py:195
 msgid "Assign to /home"
-msgstr ""
+msgstr "/home కి అప్పగించండి"
 
 #: usr/lib/live-installer/partitioning.py:201
 msgid "Assign to /boot/efi"
-msgstr ""
+msgstr "/boot/efi కి కేటాయించండి"
 
 #: usr/lib/live-installer/partitioning.py:256
 msgid "Installation Tool"
@@ -756,6 +810,9 @@ msgid ""
 "installer to create a set of partitions for you? Note: This will ERASE ALL "
 "DATA present on this disk."
 msgstr ""
+"%s అనే హార్డ్ డ్రైవ్‌లో విభజన పట్టిక కనుగొనబడలేదు. ఇన్‌స్టాలర్ మీ కోసం "
+"విభజనల సమితిని సృష్టించాలని మీరు కోరుకుంటున్నారా? గమనిక: ఇది ఈ డిస్క్‌లోని "
+"అన్ని డేటాను తొలగిస్తుంది."
 
 #: usr/lib/live-installer/partitioning.py:372
 #, python-format
@@ -763,6 +820,8 @@ msgid ""
 "The partition table couldn't be written for %s. Restart the computer and try "
 "again."
 msgstr ""
+"%s కోసం విభజన పట్టికను వ్రాయడం సాధ్యం కాలేదు. కంప్యూటర్‌ను పునఃప్రారంభించి "
+"మళ్ళీ ప్రయత్నించండి."
 
 #: usr/lib/live-installer/partitioning.py:411
 #, python-format
@@ -770,53 +829,55 @@ msgid ""
 "The partition %s could not be created. The installation will stop. Restart "
 "the computer and try again."
 msgstr ""
+"%s విభజనను సృష్టించలేకపోయాము. సంస్థాపన ఆగిపోతుంది. కంప్యూటర్‌ను "
+"పునఃప్రారంభించి మళ్ళీ ప్రయత్నించండి."
 
 #: usr/lib/live-installer/partitioning.py:468
 msgid "Logical partition"
-msgstr ""
+msgstr "లాజికల్ విభజన"
 
 #: usr/lib/live-installer/partitioning.py:469
 msgid "Extended partition"
-msgstr ""
+msgstr "పొడిగించిన విభజన"
 
 #: usr/lib/live-installer/partitioning.py:473
 msgid "Unknown"
-msgstr ""
+msgstr "తెలియనది"
 
 #: usr/lib/live-installer/partitioning.py:587
 msgid "Edit partition"
-msgstr ""
+msgstr "పార్టిషన్‌ను సవరించు"
 
 #: usr/lib/live-installer/partitioning.py:588
 msgid "Device:"
-msgstr ""
+msgstr "పరికరం:"
 
 #: usr/lib/live-installer/partitioning.py:590
 msgid "Format as:"
-msgstr ""
+msgstr "ఇలా ఫార్మాట్ చేయండి:"
 
 #: usr/lib/live-installer/partitioning.py:591
 msgid "Mount point:"
-msgstr ""
+msgstr "అనుసంధాన కేంద్రము:"
 
 #: usr/lib/live-installer/partitioning.py:592
 msgid "Cancel"
-msgstr ""
+msgstr "రద్దు చేయి"
 
 #: usr/lib/live-installer/partitioning.py:593
 #: usr/lib/live-installer/dialogs.py:31 usr/lib/live-installer/dialogs.py:42
 #: usr/lib/live-installer/dialogs.py:47
 msgid "OK"
-msgstr ""
+msgstr "సరే"
 
 #: usr/lib/live-installer/dialogs.py:36
 msgid "No"
-msgstr ""
+msgstr "వద్దు"
 
 #: usr/lib/live-installer/dialogs.py:37
 msgid "Yes"
-msgstr ""
+msgstr "అవును"
 
 #: usr/share/live-installer/interface.ui.h:1
 msgid " "
-msgstr ""
+msgstr " "
