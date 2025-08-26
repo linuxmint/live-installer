@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2023-09-07 14:04+0100\n"
-"PO-Revision-Date: 2025-01-10 02:37+0000\n"
-"Last-Translator: Kim André <kimamb11@gmail.com>\n"
+"PO-Revision-Date: 2025-08-23 10:30+0000\n"
+"Last-Translator: ovl-1 <Unknown>\n"
 "Language-Team: Norwegian Bokmal <nb@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2025-07-31 09:15+0000\n"
-"X-Generator: Launchpad (build 647c49fc7f614412c17a151d8ba4fadd90c06a00)\n"
+"X-Launchpad-Export-Date: 2025-08-26 15:18+0000\n"
+"X-Generator: Launchpad (build 919009172d854f2b8e4e8262db447f12f11d25eb)\n"
 "Language: nb\n"
 
 #: usr/lib/live-installer/installer.py:45
@@ -23,7 +23,7 @@ msgid ""
 "ERROR: You must first manually mount your target filesystem(s) at /target to "
 "do a custom install!"
 msgstr ""
-"FEIL: Du må først montere ditt mål filsystem(er) på /target for å gjøre en "
+"FEIL: Du må først manuelt montere målfilsystem(er) på /target for å gjøre en "
 "tilpasset installasjon!"
 
 #: usr/lib/live-installer/installer.py:106
@@ -33,7 +33,7 @@ msgstr "Kopierer /%s"
 
 #: usr/lib/live-installer/installer.py:114
 msgid "Entering the system ..."
-msgstr "Starter systemet ..."
+msgstr "Går inn i systemet ..."
 
 #: usr/lib/live-installer/installer.py:169
 msgid "Removing live configuration (packages)"
@@ -360,7 +360,7 @@ msgstr "Manuell partisjonering"
 #: usr/lib/live-installer/frontend/gtk_interface.py:351
 #: usr/share/live-installer/interface.ui.h:27
 msgid "Manually create, resize or choose partitions for LMDE."
-msgstr "Manuelt lag, endre størrelse, eller valg partisjoner for LMDE."
+msgstr "Manuelt opprette, endre størrelse eller velg partisjoner for LMDE."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:352
 #: usr/share/live-installer/interface.ui.h:25
@@ -376,7 +376,7 @@ msgstr "Dette tilbyr ekstra sikkerhet, men kan ta timer."
 #: usr/lib/live-installer/partitioning.py:185
 #: usr/share/live-installer/interface.ui.h:29
 msgid "Edit"
-msgstr "Endre"
+msgstr "Rediger"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:357
 #: usr/share/live-installer/interface.ui.h:30
@@ -516,7 +516,7 @@ msgstr "Dette feltet kan ikke være tomt."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:402
 msgid "This field may not contain space characters."
-msgstr "Dette feltet kan ikke inneholde mellomromskarakterer."
+msgstr "Dette feltet kan ikke inneholde mellomromstegn."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:405
 msgid "This field must be lower case."
@@ -525,7 +525,7 @@ msgstr "Dette feltet må være i små bokstaver."
 #: usr/lib/live-installer/frontend/gtk_interface.py:408
 msgid "This field cannot start or end with a hyphen or period."
 msgstr ""
-"Dette feltet kan ikke starte eller slutte med et mellomrom eller punktum."
+"Dette feltet kan ikke starte eller slutte med bindestrek eller punktum."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:412
 msgid "The entry is too short."
@@ -537,7 +537,7 @@ msgstr "Oppføringen er for lang."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:419
 msgid "This field contains invalid characters."
-msgstr "Dette feltet inneholder feilaktige karakterer."
+msgstr "Dette feltet inneholder ugyldige tegn."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:578
 msgid "Quit?"
@@ -565,8 +565,8 @@ msgid ""
 "Please indicate a filesystem to format the root (/) partition with before "
 "proceeding."
 msgstr ""
-"Vennligst indiker ett filsystem du vil formatere rotpartisjonen (/)  med før "
-"du fortsetter."
+"Indiker et filsystem du vil formatere rotpartisjonen (/) med før du "
+"fortsetter."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:976
 msgid "Please select a root (/) partition."
@@ -743,8 +743,8 @@ msgid ""
 "The installation is now paused. Please read the instructions on the page "
 "carefully before clicking Next to finish the installation."
 msgstr ""
-"Installasjonen er nå pauset. Venligst les instruskjonene på siden nøye før "
-"du klikker \"neste\" for å fullføre installasjonen."
+"Installasjonen er nå satt på pause. Les instruksjonene på siden nøye før du "
+"klikker på Neste for å fullføre installasjonen."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1160
 #: usr/lib/live-installer/frontend/gtk_interface.py:1163
@@ -814,8 +814,8 @@ msgid ""
 "The partition table couldn't be written for %s. Restart the computer and try "
 "again."
 msgstr ""
-"Partisjonstabellen kunne ikke bli skrivet for %s. Vennligst restart "
-"datamaskinen og prøv igjen."
+"Partisjonstabellen kunne ikke skrives for %s. Start datamaskinen på nytt og "
+"prøv igjen."
 
 #: usr/lib/live-installer/partitioning.py:411
 #, python-format
@@ -823,8 +823,8 @@ msgid ""
 "The partition %s could not be created. The installation will stop. Restart "
 "the computer and try again."
 msgstr ""
-"Partisjonen %s kunne ikke bli skapt. Installasjonen vil nå stoppe. Restart "
-"datamaskinen og prøv igjen."
+"Partisjonen %s kunne ikke opprettes. Installasjonen stoppes. Start "
+"datamaskinen på nytt og prøv igjen."
 
 #: usr/lib/live-installer/partitioning.py:468
 msgid "Logical partition"
@@ -840,7 +840,7 @@ msgstr "Ukjent"
 
 #: usr/lib/live-installer/partitioning.py:587
 msgid "Edit partition"
-msgstr "Endre partisjon"
+msgstr "Rediger partisjon"
 
 #: usr/lib/live-installer/partitioning.py:588
 msgid "Device:"
