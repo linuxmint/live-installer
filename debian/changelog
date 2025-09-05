@@ -1,3 +1,28 @@
+live-installer (2025.10.05) gigi; urgency=medium
+
+  * Add .gitignore
+  * deps: remove sysv-rc
+  * Don't localize the first page
+  * l10n: Apply selected language to label
+  * l10n: Fix missing translations
+  * l10n: Simplify msgids
+  * l10n: Update translations
+  * Mint: Don't hardcode casper/live paths
+  * Mint: Don't hardcode distribution info
+  * OEM: Apply the GTK theme to root
+  * OEM: Don't refer to fonts in the SVG
+  * OEM: Don't show window controls in oem-config mode
+  * OEM: Don't touch plymouth in oem-config mode
+  * OEM: Fix localization
+  * OEM: Give oem-config a different splash screen
+  * OEM: Launch a terminal when Ctrl+T is pressed
+  * OEM: Only remove live packages after oem-config is done
+  * OEM: Set the GTK and icon themes
+  * Only mount the live media in live mode
+  * Remove unused content
+
+ -- Clement Lefebvre <root@linuxmint.com>  Fri, 05 Sep 2025 16:58:33 +0100
+
 live-installer (2025.03.25) gigi; urgency=medium
 
   * l10n: Update translations
