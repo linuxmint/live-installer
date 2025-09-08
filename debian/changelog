@@ -1,3 +1,10 @@
+live-installer (2025.10.08) gigi; urgency=medium
+
+  [ Michael Webster ]
+  * oem-config: Detect hidpi mode (#168)
+
+ -- Clement Lefebvre <root@linuxmint.com>  Mon, 08 Sep 2025 18:05:28 +0100
+
 live-installer (2025.10.05) gigi; urgency=medium
 
   * Add .gitignore
