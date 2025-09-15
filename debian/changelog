@@ -1,3 +1,11 @@
+live-installer (2025.10.11) gigi; urgency=medium
+
+  [ Michael Webster ]
+  * Add WEBKIT_DISABLE_COMPOSITING_MODE=1 to live-installer and oem config.
+  * language selection: Fix auto-scrolling position for pre-selected language.
+
+ -- Clement Lefebvre <root@linuxmint.com>  Mon, 15 Sep 2025 17:09:47 +0100
+
 live-installer (2025.10.10) gigi; urgency=medium
 
   * Update banner background color
