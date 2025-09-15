@@ -744,7 +744,7 @@ class InstallerWindow:
         if set_iter:
             path = model.get_path(set_iter)
             treeview.set_cursor(path)
-            treeview.scroll_to_cell(path)
+            treeview.scroll_to_cell(path, None, True, 0.0, 0.0)
 
     def build_kb_lists(self):
         ''' Do some xml kung-fu and load the keyboard stuffs '''
