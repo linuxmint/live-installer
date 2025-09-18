@@ -1,3 +1,9 @@
+live-installer (2025.10.12) gigi; urgency=medium
+
+  * partitioning: Add an empty mount point option
+
+ -- Clement Lefebvre <root@linuxmint.com>  Thu, 18 Sep 2025 15:11:12 +0100
+
 live-installer (2025.10.11) gigi; urgency=medium
 
   [ Michael Webster ]
