@@ -38,14 +38,17 @@ class InstallerEngine:
 
     def setup_user(self):
         print(" --> Adding new user")
+        adduser_options = ""
         if self.setup.ecryptfs:
             # ecryptfs looks for the /sys mount point in /etc/mtab.. which doesn't exist during the installation.
             # it defaults to /sys anyway, so we just need to create an empty /etc/mtab file at this stage.
             self.do_run_in_chroot('touch /etc/mtab')
             self.do_run_in_chroot('modprobe ecryptfs')
-            self.do_run_in_chroot('adduser --disabled-password --encrypt-home --gecos "{real_name}" {username}'.format(real_name=self.setup.real_name.replace('"', r'\"'), username=self.setup.username))
-        else:
-            self.do_run_in_chroot('adduser --disabled-password --gecos "{real_name}" {username}'.format(real_name=self.setup.real_name.replace('"', r'\"'), username=self.setup.username))
+            adduser_options += "--encrypt-home "
+        if self.setup.oem_mode:
+            # Use a different UID for Temporary OEM User, and keep FIRST_UID (1000) available for the actual user.
+            adduser_options += "--firstuid 2000 "
+        self.do_run_in_chroot('adduser --disabled-password {options}--gecos "{real_name}" {username}'.format(options=adduser_options, real_name=self.setup.real_name.replace('"', r'\"'), username=self.setup.username))
         for group in 'adm audio bluetooth cdrom dialout dip fax floppy fuse lpadmin netdev plugdev powerdev sambashare scanner sudo tape users vboxusers video'.split():
             self.do_run_in_chroot("adduser {user} {group}".format(user=self.setup.username, group=group))
 
