@@ -8,43 +8,43 @@ msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2023-09-07 14:04+0100\n"
-"PO-Revision-Date: 2014-06-22 18:10+0000\n"
-"Last-Translator: Juris Daikteris <juris.daikteris@gmail.com>\n"
+"PO-Revision-Date: 2025-09-08 17:40+0000\n"
+"Last-Translator: Klavs Petersons <Unknown>\n"
 "Language-Team: Latvian <lv@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2025-08-26 15:18+0000\n"
-"X-Generator: Launchpad (build 919009172d854f2b8e4e8262db447f12f11d25eb)\n"
+"X-Launchpad-Export-Date: 2025-12-12 13:26+0000\n"
+"X-Generator: Launchpad (build 379e22b8475e3402088a4cdb4a6e7936a4d28414)\n"
 
 #: usr/lib/live-installer/installer.py:45
 msgid ""
 "ERROR: You must first manually mount your target filesystem(s) at /target to "
 "do a custom install!"
 msgstr ""
-"KĻŪDA: Jums vispirms manuāli jāpievieno jūsu mērķa failu sistēma(-as), pie "
-"/mērķis, lai veiktu pielāgotu instalēšanu!"
+"KĻŪDA: lai veiktu pielāgotu instalēšanu, vispirms manuāli jāmontē mērķa "
+"failu sistēmas šeit:/target."
 
 #: usr/lib/live-installer/installer.py:106
 #, python-format
 msgid "Copying /%s"
-msgstr ""
+msgstr "Kopē /%s"
 
 #: usr/lib/live-installer/installer.py:114
 msgid "Entering the system ..."
-msgstr ""
+msgstr "Ieiet sistēmā..."
 
 #: usr/lib/live-installer/installer.py:169
 msgid "Removing live configuration (packages)"
-msgstr "Noņem Live konfigurāciju (pakotnes)"
+msgstr "Notiek tiešās konfigurācijas (pakotņu) noņemšana"
 
 #: usr/lib/live-installer/installer.py:181
 msgid "Adding new user to the system"
-msgstr ""
+msgstr "Jauna lietotāja pievienošana sistēmai"
 
 #: usr/lib/live-installer/installer.py:212
 msgid "Writing filesystem mount information to /etc/fstab"
-msgstr ""
+msgstr "Failu sistēmas montāžas informācijas rakstīšana /etc/fstab"
 
 #: usr/lib/live-installer/installer.py:220
 #: usr/lib/live-installer/installer.py:355
@@ -57,24 +57,26 @@ msgstr "Piemontē %(partition)s pie %(mountpoint)s"
 msgid ""
 "Filling %s with random data (please be patient, this can take hours...)"
 msgstr ""
+"Aizpilda %s ar nejaušiem datiem (lūdzu, esiet pacietīgs, tas var ilgt "
+"stundas...)"
 
 #: usr/lib/live-installer/installer.py:282
 #, python-format
 msgid "Creating partitions on %s"
-msgstr ""
+msgstr "Partīciju izveide uz %s"
 
 #: usr/lib/live-installer/installer.py:329
 #, python-format
 msgid "Formatting %(partition)s as %(format)s ..."
-msgstr ""
+msgstr "Formatē %(partition)s kā %(format)s ..."
 
 #: usr/lib/live-installer/installer.py:484
 msgid "Setting hostname"
-msgstr "Iestata saimniekdatora nosaukumu"
+msgstr "Resursdatora nosaukuma iestatīšana"
 
 #: usr/lib/live-installer/installer.py:503
 msgid "Setting locale"
-msgstr "Iestata atrašanās vietu"
+msgstr "Lokalizācijas iestatīšana"
 
 #: usr/lib/live-installer/installer.py:518
 msgid "Localizing packages"
@@ -82,40 +84,40 @@ msgstr "Pakotņu lokalizēšana"
 
 #: usr/lib/live-installer/installer.py:533
 msgid "Installing drivers"
-msgstr ""
+msgstr "Draiveru instalēšana"
 
 #: usr/lib/live-installer/installer.py:564
 msgid "Setting keyboard options"
-msgstr "Iestata klaviatūras opcijas"
+msgstr "Tastatūras opciju iestatīšana"
 
 #: usr/lib/live-installer/installer.py:621
 msgid "Installing bootloader"
-msgstr "Uzstāda sāknēšanās failu"
+msgstr "Sāknēšanas ielādētāja uzstādīšana"
 
 #: usr/lib/live-installer/installer.py:634
 msgid ""
 "WARNING: The grub bootloader was not configured properly! You need to "
 "configure it manually."
 msgstr ""
-"Brīdinājums: Grub bootloaderis nav konfigurēts pareizi! Jums tas ir "
-"janokonfigurē manuāli."
+"BRĪDINĀJUMS: grub sāknēšanas ielādētājs nav pareizi konfigurēts! Tas ir "
+"jākonfigurē manuāli."
 
 #: usr/lib/live-installer/installer.py:648
 msgid "Cleaning APT"
-msgstr "Iztīra ATP"
+msgstr "APT tīrīšana"
 
 #: usr/lib/live-installer/installer.py:683
 #: usr/lib/live-installer/frontend/gtk_interface.py:1112
 msgid "Installation finished"
-msgstr "Instalācija pabeigta"
+msgstr "Instalēšana pabeigta"
 
 #: usr/lib/live-installer/installer.py:692
 msgid "Configuring bootloader"
-msgstr "Konfigurē bootloaderi"
+msgstr "Sāknēšanas ielādētāja konfigurēšana"
 
 #: usr/lib/live-installer/installer.py:701
 msgid "Checking bootloader"
-msgstr "Pārbauda sistēmas palaidēju"
+msgstr "Notiek sāknēšanas ielādētāja pārbaude"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:121
 #: usr/lib/live-installer/frontend/gtk_interface.py:297
@@ -126,7 +128,7 @@ msgstr "Valoda"
 #: usr/lib/live-installer/frontend/gtk_interface.py:129
 #: usr/lib/live-installer/frontend/gtk_interface.py:321
 msgid "Location"
-msgstr ""
+msgstr "Atrašanās vieta"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:212
 #: usr/lib/live-installer/frontend/gtk_interface.py:325
@@ -140,7 +142,7 @@ msgstr "Variants"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:232
 msgid "Calculating file indexes ..."
-msgstr ""
+msgstr "Notiek failu indeksu aprēķināšana..."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:281
 #: usr/lib/live-installer/frontend/gtk_interface.py:916
@@ -153,11 +155,11 @@ msgstr ""
 #: usr/lib/live-installer/frontend/gtk_interface.py:1005
 #: usr/lib/live-installer/partitioning.py:340
 msgid "Installer"
-msgstr ""
+msgstr "Instalētājs"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:297
 msgid "What language would you like to use?"
-msgstr ""
+msgstr "Kādu valodu vēlaties izmantot?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:298
 msgid "Timezone"
@@ -165,7 +167,7 @@ msgstr "Laika josla"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:298
 msgid "Where are you?"
-msgstr ""
+msgstr "Kur tu esi?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:299
 msgid "Keyboard layout"
@@ -173,32 +175,32 @@ msgstr "Tastatūras izkārtojums"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:299
 msgid "What is your keyboard layout?"
-msgstr ""
+msgstr "Kāds ir jūsu tastatūras izkārtojums?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:300
 msgid "User account"
-msgstr ""
+msgstr "Lietotāja konts"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:300
 msgid "Who are you?"
-msgstr ""
+msgstr "Kas jūs esat?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:301
 msgid "Installation Type"
-msgstr ""
+msgstr "Instalācijas tips"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:301
 #: usr/lib/live-installer/frontend/gtk_interface.py:302
 msgid "Where do you want to install LMDE?"
-msgstr ""
+msgstr "Kur vēlaties instalēt LMDE?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:302
 msgid "Partitioning"
-msgstr "Nodalīšana"
+msgstr "Sadalīšana"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:303
 msgid "Advanced options"
-msgstr "Paplašinātās opcijas"
+msgstr "Papildu opcijas"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:304
 msgid "Summary"
@@ -206,58 +208,58 @@ msgstr "Kopsavilkums"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:305
 msgid "Installing"
-msgstr ""
+msgstr "Instalē"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:306
 #: usr/lib/live-installer/frontend/gtk_interface.py:359
 #: usr/share/live-installer/interface.ui.h:28
 msgid "Expert mode"
-msgstr ""
+msgstr "Eksperta režīms"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:307
 #: usr/lib/live-installer/frontend/gtk_interface.py:1127
 msgid "Installation paused"
-msgstr ""
+msgstr "Instalēšana ir apturēta"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:310
 msgid "Quit"
-msgstr ""
+msgstr "Iziet"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:311
 msgid "Back"
-msgstr ""
+msgstr "Atpakaļ"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:312
 #: usr/lib/live-installer/frontend/gtk_interface.py:1122
 msgid "Next"
-msgstr ""
+msgstr "Tālāk"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:315
 #: usr/share/live-installer/interface.ui.h:3
 #, python-format
 msgid "Welcome to %s!"
-msgstr ""
+msgstr "Laipni lūdzam %s!"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:316
 #: usr/share/live-installer/interface.ui.h:4
 msgid ""
 "This program will ask you some questions and set up LMDE on your computer."
-msgstr ""
+msgstr "Šī programma jums uzdos dažus jautājumus un datorā iestatīs LMDE."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:317
 #: usr/share/live-installer/interface.ui.h:5
 msgid "Let's go!"
-msgstr ""
+msgstr "Aiziet!"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:324
 #: usr/share/live-installer/interface.ui.h:6
 msgid "Keyboard Model:"
-msgstr ""
+msgstr "Tastatūras modelis:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:327
 #: usr/share/live-installer/interface.ui.h:7
 msgid "Type here to test your keyboard layout"
-msgstr ""
+msgstr "Ierakstiet šeit, lai pārbaudītu tastatūras izkārtojumu"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:328
 msgid ""
@@ -265,121 +267,126 @@ msgid ""
 "Latin characters. In addition to your selected layout, English (US) is set "
 "as the default. You can switch layouts by pressing Super+Space."
 msgstr ""
+"* Jūsu lietotājvārdā, datora nosaukumā un parolē drīkst būt tikai latīņu "
+"alfabēta rakstzīmes. Papildus atlasītajam izkārtojumam noklusējuma "
+"iestatījums ir angļu valoda (US). Izkārtojumus var pārslēgt, nospiežot "
+"taustiņu kombināciju Super+atstarpe."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:331
 #: usr/share/live-installer/interface.ui.h:8
 msgid "Your name:"
-msgstr ""
+msgstr "Jūsu vārds:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:332
 #: usr/share/live-installer/interface.ui.h:9
 msgid "Your computer's name:"
-msgstr ""
+msgstr "Jūsu datora nosaukums:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:333
 #: usr/share/live-installer/interface.ui.h:11
 msgid "The name it uses when it talks to other computers."
-msgstr ""
+msgstr "Nosaukums, ko tas izmanto, runājot ar citiem datoriem."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:334
 #: usr/share/live-installer/interface.ui.h:10
 msgid "Pick a username:"
-msgstr ""
+msgstr "Izvēlieties lietotājvārdu:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:335
 #: usr/share/live-installer/interface.ui.h:12
 msgid "Choose a password:"
-msgstr ""
+msgstr "Izvēlieties paroli:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:336
 #: usr/share/live-installer/interface.ui.h:13
 msgid "Confirm your password:"
-msgstr ""
+msgstr "Apstipriniet savu paroli:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:338
 #: usr/share/live-installer/interface.ui.h:14
 msgid "Log in automatically"
-msgstr ""
+msgstr "Pieteikties automātiski"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:339
 #: usr/share/live-installer/interface.ui.h:15
 msgid "Require my password to log in"
-msgstr ""
+msgstr "Pieprasīt paroli, lai pieteiktos"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:340
 #: usr/share/live-installer/interface.ui.h:16
 msgid "Encrypt my home folder"
-msgstr ""
+msgstr "Šifrēt manu mājas mapi"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:343
 #: usr/share/live-installer/interface.ui.h:17
 msgid "Automated Installation"
-msgstr ""
+msgstr "Automatizēta instalēšana"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:344
 #: usr/share/live-installer/interface.ui.h:18
 msgid "Erase a disk and install LMDE on it."
-msgstr ""
+msgstr "Izdzēsiet disku un instalējiet tajā LMDE."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:345
 #: usr/share/live-installer/interface.ui.h:19
 msgid "Disk:"
-msgstr ""
+msgstr "Disks:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:346
 #: usr/share/live-installer/interface.ui.h:21
 msgid "Encrypt the operating system"
-msgstr ""
+msgstr "Šifrēt operētājsistēmu"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:347
 #: usr/share/live-installer/interface.ui.h:22
 msgid "Passphrase"
-msgstr ""
+msgstr "Ieejas frāze"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:348
 #: usr/share/live-installer/interface.ui.h:23
 msgid "Confirm passphrase"
-msgstr ""
+msgstr "Apstipriniet ieejas frāzi"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:349
 #: usr/share/live-installer/interface.ui.h:20
 msgid "Use LVM (Logical Volume Management)"
-msgstr ""
+msgstr "Izmantot LVM (loģiskā apjoma pārvaldība)"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:350
 #: usr/share/live-installer/interface.ui.h:26
 msgid "Manual Partitioning"
-msgstr ""
+msgstr "Manuāla sadalīšana"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:351
 #: usr/share/live-installer/interface.ui.h:27
 msgid "Manually create, resize or choose partitions for LMDE."
 msgstr ""
+"Manuāli izveidojiet, mainiet izmērus vai izvēlieties nodalījumus LMDE."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:352
 #: usr/share/live-installer/interface.ui.h:25
 msgid "Fill the disk with random data"
-msgstr ""
+msgstr "Diska aizpildīšana ar nejaušiem datiem"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:353
 #: usr/share/live-installer/interface.ui.h:24
 msgid "This provides extra security but it can take hours."
-msgstr ""
+msgstr "Tas nodrošina papildu drošību, bet var paiet vairākas stundas."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:356
 #: usr/lib/live-installer/partitioning.py:185
 #: usr/share/live-installer/interface.ui.h:29
 msgid "Edit"
-msgstr ""
+msgstr "Rediģēt"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:357
 #: usr/share/live-installer/interface.ui.h:30
 msgid "Launch GParted"
-msgstr ""
+msgstr "Palaist GParted"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:358
 msgid "Refresh"
-msgstr ""
+msgstr "Atsvaidzināt"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:361
 msgid "Device"
@@ -399,21 +406,21 @@ msgstr "Montēšanas punkts"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:365
 msgid "Format as"
-msgstr ""
+msgstr "Formatēt kā"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:366
 msgid "Size"
-msgstr "Izmērs"
+msgstr "Lielums"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:367
 #: usr/lib/live-installer/partitioning.py:470
 msgid "Free space"
-msgstr "Brīva vieta"
+msgstr "Brīvā vieta"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:371
 #: usr/share/live-installer/interface.ui.h:31
 msgid "Install the GRUB boot menu on:"
-msgstr ""
+msgstr "Instalējiet GRUB sāknēšanas izvēlni šeit:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:374
 #: usr/share/live-installer/interface.ui.h:32
@@ -421,18 +428,20 @@ msgid ""
 "You selected to manage your partitions manually, this feature is for "
 "ADVANCED USERS ONLY."
 msgstr ""
+"Jūs izvēlējāties pārvaldīt nodalījumus manuāli, šis līdzeklis ir paredzēts "
+"TIKAI PIEREDZĒJUŠIEM LIETOTĀJIEM."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:375
 #: usr/share/live-installer/interface.ui.h:33
 msgid "Before continuing, mount your target filesystem(s) on /target."
-msgstr ""
+msgstr "Pirms turpināt, uzstādiet mērķa failu sistēmas uz/mērķis."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:376
 #: usr/share/live-installer/interface.ui.h:34
 msgid ""
 "Do NOT mount virtual devices such as /dev, /proc, /sys, etc on /target/."
 msgstr ""
-"Nepievienojiet virtuālās ierīces, piemēram, /dev, /proc, /sys pie /mērķis/."
+"NEUZSTĀDIET tādas virtuālās ierīces kā /dev, /proc, /sys pie /mērķis/."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:377
 #: usr/share/live-installer/interface.ui.h:35
@@ -440,17 +449,20 @@ msgid ""
 "During the install, you will be given time to chroot into /target and "
 "install any packages that will be needed to boot your new system."
 msgstr ""
+"Instalēšanas laikā jums tiks dots laiks chroot iekš/mērķa un instalēt visas "
+"pakotnes, kas būs nepieciešamas, lai sāknētu jauno sistēmu."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:378
 #: usr/share/live-installer/interface.ui.h:36
 msgid ""
 "During the install, you will be required to write your own /etc/fstab."
-msgstr ""
+msgstr "Instalēšanas laikā jums būs jāraksta savs /etc/fstab."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:381
 #: usr/share/live-installer/interface.ui.h:37
 msgid "Do the following and then click Next to finish installation:"
 msgstr ""
+"Lai pabeigtu instalēšanu, rīkojieties šādi un pēc tam noklikšķiniet uz Tālāk:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:382
 #: usr/share/live-installer/interface.ui.h:38
@@ -459,6 +471,9 @@ msgid ""
 "new system, matching those currently mounted at /target (without using the "
 "/target prefix in the mount paths themselves)."
 msgstr ""
+"Izveidojiet/target/etc/fstab failu sistēmām, kuras tiks uzstādītas jaunajā "
+"sistēmā, un tās atbilst jau esošajām pie/target, bet nelietojiet/target "
+"prefiksu pašiem montāžas ceļiem."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:383
 #: usr/share/live-installer/interface.ui.h:39
@@ -467,6 +482,9 @@ msgid ""
 "dmraid, etc) by calling \"sudo chroot /target\" followed by the relevant apt-"
 "get/aptitude installations."
 msgstr ""
+"Instalējiet visas pakotnes, kas var būt nepieciešamas pirmajai sāknēšanai "
+"(mdadm, cryptsetup, dmraid utt.), izsaucot “sudo chroot/target”, kam seko "
+"attiecīgās APT-GET/aptitude instalācijas."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:384
 #: usr/share/live-installer/interface.ui.h:40
@@ -475,6 +493,10 @@ msgid ""
 "as dm-crypt), you may need to have drives currently mounted using the same "
 "block device name as they appear in /target/etc/fstab."
 msgstr ""
+"Ņemiet vērā, ka, lai update-initramfs dažos gadījumos (piemēram, dm-crypt) "
+"darbotos pareizi, iespējams, ir nepieciešami diski, kas pašlaik ir "
+"uzstādīti, izmantojot to pašu bloka ierīces nosaukumu, kāds tiek "
+"parādīts/target/etc/fstab."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:385
 #: usr/share/live-installer/interface.ui.h:41
@@ -483,69 +505,74 @@ msgid ""
 "system will have at first boot, and matches what is currently mounted at "
 "/target."
 msgstr ""
+"Vēlreiz pārbaudiet, vai jūsu/target/etc/fstab ir pareizs, atbilst tam, kas "
+"jūsu jaunajai sistēmai būs pirmajā sāknēšanas reizē, un atbilst tam, kas "
+"pašlaik ir uzstādīts/target."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:396
 msgid "The values do not match."
-msgstr ""
+msgstr "Vērtības nesakrīt."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:399
 msgid "This field cannot be empty."
-msgstr ""
+msgstr "Šis lauks nevar būt tukšs."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:402
 msgid "This field may not contain space characters."
-msgstr ""
+msgstr "Šajā laukā nedrīkst būt atstarpes rakstzīmes."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:405
 msgid "This field must be lower case."
-msgstr ""
+msgstr "Šim laukam jābūt mazajam burtam."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:408
 msgid "This field cannot start or end with a hyphen or period."
-msgstr ""
+msgstr "Šis lauks nevar sākties vai beigties ar defisi vai punktu."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:412
 msgid "The entry is too short."
-msgstr ""
+msgstr "Ieraksts ir pārāk īss."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:414
 msgid "The entry is too long."
-msgstr ""
+msgstr "Ieraksts ir pārāk garš."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:419
 msgid "This field contains invalid characters."
-msgstr ""
+msgstr "Šajā laukā ir nederīgas rakstzīmes."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:578
 msgid "Quit?"
-msgstr ""
+msgstr "Iziet?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:578
 msgid "Are you sure you want to quit the installer?"
-msgstr ""
+msgstr "Vai tiešām vēlaties iziet no instalēšanas programmas?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:916
 msgid "Please choose a language"
-msgstr ""
+msgstr "Lūdzu, izvēlieties valodu"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:956
 msgid "Warning"
-msgstr ""
+msgstr "Brīdinājums"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:956
 #, python-format
 msgid "This will delete all the data on %s. Are you sure?"
-msgstr ""
+msgstr "Šādi tiks dzēsti visi %s dati. Vai esi pārliecināts?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:972
 msgid ""
 "Please indicate a filesystem to format the root (/) partition with before "
 "proceeding."
 msgstr ""
+"Pirms turpināt, lūdzu, norādiet failu sistēmu, ar kuru formatēt root (/) "
+"partīciju."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:976
 msgid "Please select a root (/) partition."
-msgstr ""
+msgstr "Lūdzu, atlasiet root (/) partīciju."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:977
 msgid ""
@@ -555,23 +582,29 @@ msgid ""
 " - Recommended size: 30GB\n"
 " - Recommended filesystem format: ext4\n"
 msgstr ""
+"Lai instalētu Linux Mint ir nepieciešama root partīcija.\n"
+"\n"
+"Montēšanas punkts: /\n"
+"Ieteicamais izmērs: 30 GB\n"
+"Ieteicamais failu sistēmas formāts: ext4\n"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:989
 msgid "The EFI partition is not bootable. Please edit the partition flags."
 msgstr ""
+"EFI nodalījums nav sāknējams. Lūdzu, rediģējiet partīcijas karodziņus."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:992
 msgid "The EFI partition is too small. It must be at least 35MB."
-msgstr ""
+msgstr "EFI nodalījums ir pārāk mazs. Tam jābūt vismaz 35 MB."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:997
 #: usr/lib/live-installer/frontend/gtk_interface.py:1001
 msgid "The EFI partition must be formatted as vfat."
-msgstr ""
+msgstr "EFI partīcijai jābūt formatētai kā vfat."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1005
 msgid "Please select an EFI partition."
-msgstr ""
+msgstr "Lūdzu, atlasiet EFI partīciju."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1005
 msgid ""
@@ -586,10 +619,20 @@ msgid ""
 "partition of the disk as the EFI system partition.\n"
 " "
 msgstr ""
+"EFI sistēmas partīcija ir nepieciešama ar šādām prasībām:\n"
+"\n"
+"Montēšanas punkts: /boot/efi\n"
+"Partīcijas karodziņi: Bootable\n"
+"Izmērs: vismaz 35 MB (ieteicams 100 MB vai vairāk)\n"
+"Formāts: vfat vai fat32\n"
+"\n"
+"Lai nodrošinātu saderību ar sistēmu Windows, ieteicams izmantot pirmo diska "
+"partīciju kā EFI sistēmas partīciju.\n"
+" "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1018
 msgid "Install"
-msgstr ""
+msgstr "Instalēt"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1074
 msgid "Localization"
@@ -609,7 +652,7 @@ msgstr "Tastatūras izkārtojums "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1080
 msgid "User settings"
-msgstr "Lietotāja uzstādījumi"
+msgstr "Lietotāja iestatījumi"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1081
 msgid "Real name: "
@@ -621,25 +664,25 @@ msgstr "Lietotājvārds: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1083
 msgid "Automatic login: "
-msgstr ""
+msgstr "Automātiska pieteikšanās: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1083
 #: usr/lib/live-installer/frontend/gtk_interface.py:1084
 #: usr/lib/live-installer/frontend/gtk_interface.py:1094
 #: usr/lib/live-installer/frontend/gtk_interface.py:1095
 msgid "enabled"
-msgstr ""
+msgstr "iespējots"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1083
 #: usr/lib/live-installer/frontend/gtk_interface.py:1084
 #: usr/lib/live-installer/frontend/gtk_interface.py:1094
 #: usr/lib/live-installer/frontend/gtk_interface.py:1095
 msgid "disabled"
-msgstr ""
+msgstr "atspējots"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1084
 msgid "Home encryption: "
-msgstr ""
+msgstr "Mājas mapes  šifrēšana: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1085
 msgid "System settings"
@@ -647,7 +690,7 @@ msgstr "Sistēmas iestatījumi"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1086
 msgid "Computer's name: "
-msgstr ""
+msgstr "Datora nosaukums: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1087
 msgid "Filesystem operations"
@@ -656,97 +699,101 @@ msgstr "Failu sistēmas darbības"
 #: usr/lib/live-installer/frontend/gtk_interface.py:1088
 #, python-format
 msgid "Install bootloader on %s"
-msgstr ""
+msgstr "Instalēt sāknēšanas ielādētāju %s"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1088
 msgid "Do not install bootloader"
-msgstr "Neuzstādīt sāknēšanaās failu"
+msgstr "Neuzstādiet sāknēšanas ielādētāju"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1090
 msgid "Use already-mounted /target."
-msgstr ""
+msgstr "Izmantojiet jau uzstādītu/mērķētu."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1093
 #, python-format
 msgid "Automated installation on %s"
-msgstr ""
+msgstr "Automatizēta instalēšana uz %s"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1094
 msgid "LVM: "
-msgstr ""
+msgstr "LVM: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1095
 msgid "Disk Encryption: "
-msgstr ""
+msgstr "Diska šifrēšana: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1099
 #, python-format
 msgid "Format %(path)s as %(filesystem)s"
-msgstr ""
+msgstr "Formatēt %(path)s kā %(filesystem)s"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1102
 #, python-format
 msgid "Mount %(path)s as %(mount)s"
-msgstr ""
+msgstr "Montēt %(path)s kā %(mount)s"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1112
 msgid ""
 "The installation is now complete. Do you want to restart your computer to "
 "use the new system?"
 msgstr ""
+"Instalēšana ir pabeigta. Vai vēlaties restartēt datoru, lai izmantotu jauno "
+"sistēmu?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1127
 msgid ""
 "The installation is now paused. Please read the instructions on the page "
 "carefully before clicking Next to finish the installation."
 msgstr ""
+"Instalēšana tagad ir apturēta. Lūdzu, uzmanīgi izlasiet lapā sniegtos "
+"norādījumus, pirms noklikšķināt uz Tālāk, lai pabeigtu instalēšanu."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1160
 #: usr/lib/live-installer/frontend/gtk_interface.py:1163
 #: usr/lib/live-installer/frontend/gtk_interface.py:1177
 #: usr/lib/live-installer/frontend/gtk_interface.py:1185
 msgid "Installation error"
-msgstr "Uzstādīšanas kļūda"
+msgstr "Instalēšanas kļūda"
 
 #: usr/lib/live-installer/partitioning.py:90
 msgid "B"
-msgstr ""
+msgstr "B"
 
 #: usr/lib/live-installer/partitioning.py:90
 #: usr/lib/live-installer/partitioning.py:424
 msgid "kB"
-msgstr ""
+msgstr "kB"
 
 #: usr/lib/live-installer/partitioning.py:90
 #: usr/lib/live-installer/partitioning.py:424
 msgid "MB"
-msgstr ""
+msgstr "MB"
 
 #: usr/lib/live-installer/partitioning.py:90
 #: usr/lib/live-installer/partitioning.py:424
 msgid "GB"
-msgstr ""
+msgstr "GB"
 
 #: usr/lib/live-installer/partitioning.py:90
 #: usr/lib/live-installer/partitioning.py:424
 msgid "TB"
-msgstr ""
+msgstr "TB"
 
 #: usr/lib/live-installer/partitioning.py:95
 msgid "Removable:"
-msgstr ""
+msgstr "Noņemams:"
 
 #: usr/lib/live-installer/partitioning.py:192
 msgid "Assign to /"
-msgstr ""
+msgstr "Piešķirt /"
 
 #: usr/lib/live-installer/partitioning.py:195
 msgid "Assign to /home"
-msgstr ""
+msgstr "Piešķirt /home"
 
 #: usr/lib/live-installer/partitioning.py:201
 msgid "Assign to /boot/efi"
-msgstr ""
+msgstr "Piešķirt /boot/efi"
 
 #: usr/lib/live-installer/partitioning.py:256
 msgid "Installation Tool"
@@ -759,6 +806,9 @@ msgid ""
 "installer to create a set of partitions for you? Note: This will ERASE ALL "
 "DATA present on this disk."
 msgstr ""
+"Cietajā diskā netika atrasta partīcijas tabula: %s. Vai vēlaties, lai "
+"instalēšanas programma jums izveidotu partīciju kopu? Piezīme. Tādējādi tiks "
+"IZDZĒSTI VISI šajā diskā esošie DATI."
 
 #: usr/lib/live-installer/partitioning.py:372
 #, python-format
@@ -766,6 +816,8 @@ msgid ""
 "The partition table couldn't be written for %s. Restart the computer and try "
 "again."
 msgstr ""
+"Partīcijas tabulu nevarēja ierakstīt %s. Restartējiet datoru un mēģiniet "
+"vēlreiz."
 
 #: usr/lib/live-installer/partitioning.py:411
 #, python-format
@@ -773,53 +825,55 @@ msgid ""
 "The partition %s could not be created. The installation will stop. Restart "
 "the computer and try again."
 msgstr ""
+"Nodalījumu %s nevarēja izveidot. Instalēšana tika apturēta. Restartējiet "
+"datoru un mēģiniet vēlreiz."
 
 #: usr/lib/live-installer/partitioning.py:468
 msgid "Logical partition"
-msgstr ""
+msgstr "Loģiskā partīcija"
 
 #: usr/lib/live-installer/partitioning.py:469
 msgid "Extended partition"
-msgstr ""
+msgstr "Paplašinātā partīcija"
 
 #: usr/lib/live-installer/partitioning.py:473
 msgid "Unknown"
-msgstr ""
+msgstr "Nezināms"
 
 #: usr/lib/live-installer/partitioning.py:587
 msgid "Edit partition"
-msgstr ""
+msgstr "Rediģēt partīciju"
 
 #: usr/lib/live-installer/partitioning.py:588
 msgid "Device:"
-msgstr ""
+msgstr "Ierīce:"
 
 #: usr/lib/live-installer/partitioning.py:590
 msgid "Format as:"
-msgstr ""
+msgstr "Formatēt kā:"
 
 #: usr/lib/live-installer/partitioning.py:591
 msgid "Mount point:"
-msgstr ""
+msgstr "Montēšanas punkts:"
 
 #: usr/lib/live-installer/partitioning.py:592
 msgid "Cancel"
-msgstr ""
+msgstr "Atcelt"
 
 #: usr/lib/live-installer/partitioning.py:593
 #: usr/lib/live-installer/dialogs.py:31 usr/lib/live-installer/dialogs.py:42
 #: usr/lib/live-installer/dialogs.py:47
 msgid "OK"
-msgstr ""
+msgstr "LABI"
 
 #: usr/lib/live-installer/dialogs.py:36
 msgid "No"
-msgstr ""
+msgstr "Nē"
 
 #: usr/lib/live-installer/dialogs.py:37
 msgid "Yes"
-msgstr ""
+msgstr "Jā"
 
 #: usr/share/live-installer/interface.ui.h:1
 msgid " "
-msgstr ""
+msgstr " "

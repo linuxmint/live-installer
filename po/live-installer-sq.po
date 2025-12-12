@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2023-09-07 14:04+0100\n"
-"PO-Revision-Date: 2016-07-21 13:03+0000\n"
-"Last-Translator: Indrit Bashkimi <indrit.bashkimi@gmail.com>\n"
+"PO-Revision-Date: 2025-09-14 11:54+0000\n"
+"Last-Translator: Vilson Gjeci <vilsongjeci@gmail.com>\n"
 "Language-Team: Albanian <sq@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2025-08-26 15:18+0000\n"
-"X-Generator: Launchpad (build 919009172d854f2b8e4e8262db447f12f11d25eb)\n"
+"X-Launchpad-Export-Date: 2025-12-12 13:26+0000\n"
+"X-Generator: Launchpad (build 379e22b8475e3402088a4cdb4a6e7936a4d28414)\n"
 
 #: usr/lib/live-installer/installer.py:45
 msgid ""
@@ -28,7 +28,7 @@ msgstr ""
 #: usr/lib/live-installer/installer.py:106
 #, python-format
 msgid "Copying /%s"
-msgstr ""
+msgstr "Duke kopjuar /%s"
 
 #: usr/lib/live-installer/installer.py:114
 msgid "Entering the system ..."
@@ -57,11 +57,13 @@ msgstr "Duke montuar %(partition)s në %(mountpoint)s"
 msgid ""
 "Filling %s with random data (please be patient, this can take hours...)"
 msgstr ""
+"Po mbush %s me të dhëna të rastësishme (ju lutem kini durim, kjo mund të "
+"zgjasë me orë të tëra...)"
 
 #: usr/lib/live-installer/installer.py:282
 #, python-format
 msgid "Creating partitions on %s"
-msgstr ""
+msgstr "Krijimi i ndarjeve në %s"
 
 #: usr/lib/live-installer/installer.py:329
 #, python-format
@@ -126,7 +128,7 @@ msgstr "Gjuha"
 #: usr/lib/live-installer/frontend/gtk_interface.py:129
 #: usr/lib/live-installer/frontend/gtk_interface.py:321
 msgid "Location"
-msgstr ""
+msgstr "Vendndodhja"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:212
 #: usr/lib/live-installer/frontend/gtk_interface.py:325
@@ -153,11 +155,11 @@ msgstr "Duke llogaritur indekset e skedarëve"
 #: usr/lib/live-installer/frontend/gtk_interface.py:1005
 #: usr/lib/live-installer/partitioning.py:340
 msgid "Installer"
-msgstr ""
+msgstr "Instalues"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:297
 msgid "What language would you like to use?"
-msgstr ""
+msgstr "Çfarë gjuhe dëshironi të përdorni?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:298
 msgid "Timezone"
@@ -165,7 +167,7 @@ msgstr "Zonë kohe"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:298
 msgid "Where are you?"
-msgstr ""
+msgstr "Ku je?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:299
 msgid "Keyboard layout"
@@ -173,24 +175,24 @@ msgstr "Skema e tastierës"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:299
 msgid "What is your keyboard layout?"
-msgstr ""
+msgstr "Cili është plani i tastierës suaj?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:300
 msgid "User account"
-msgstr ""
+msgstr "Llogaria e përdoruesit"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:300
 msgid "Who are you?"
-msgstr ""
+msgstr "Kush je ti?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:301
 msgid "Installation Type"
-msgstr ""
+msgstr "Lloji i instalimit"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:301
 #: usr/lib/live-installer/frontend/gtk_interface.py:302
 msgid "Where do you want to install LMDE?"
-msgstr ""
+msgstr "Ku doni ta instaloni LMDE-në?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:302
 msgid "Partitioning"
@@ -206,7 +208,7 @@ msgstr "Përmbledhje"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:305
 msgid "Installing"
-msgstr ""
+msgstr "Instalimi"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:306
 #: usr/lib/live-installer/frontend/gtk_interface.py:359
@@ -217,47 +219,49 @@ msgstr "Mënyra e avancuar"
 #: usr/lib/live-installer/frontend/gtk_interface.py:307
 #: usr/lib/live-installer/frontend/gtk_interface.py:1127
 msgid "Installation paused"
-msgstr ""
+msgstr "Instalimi u ndërpre"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:310
 msgid "Quit"
-msgstr ""
+msgstr "Dil"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:311
 msgid "Back"
-msgstr ""
+msgstr "Mbrapa"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:312
 #: usr/lib/live-installer/frontend/gtk_interface.py:1122
 msgid "Next"
-msgstr ""
+msgstr "Tjetra"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:315
 #: usr/share/live-installer/interface.ui.h:3
 #, python-format
 msgid "Welcome to %s!"
-msgstr ""
+msgstr "Mirë se vini në %s!"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:316
 #: usr/share/live-installer/interface.ui.h:4
 msgid ""
 "This program will ask you some questions and set up LMDE on your computer."
 msgstr ""
+"Ky program do t'ju bëjë disa pyetje dhe do të konfigurojë LMDE në "
+"kompjuterin tuaj."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:317
 #: usr/share/live-installer/interface.ui.h:5
 msgid "Let's go!"
-msgstr ""
+msgstr "Le të shkojmë!"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:324
 #: usr/share/live-installer/interface.ui.h:6
 msgid "Keyboard Model:"
-msgstr ""
+msgstr "Modele të shijshme:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:327
 #: usr/share/live-installer/interface.ui.h:7
 msgid "Type here to test your keyboard layout"
-msgstr ""
+msgstr "Shkruaj këtu për të testuar pamjen e shijshme"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:328
 msgid ""
@@ -265,36 +269,40 @@ msgid ""
 "Latin characters. In addition to your selected layout, English (US) is set "
 "as the default. You can switch layouts by pressing Super+Space."
 msgstr ""
+"* Emri juaj i përdoruesit, emri i kompjuterit tuaj dhe fjalëkalimi juaj "
+"duhet të përmbajnë vetëm karaktere latine. Përveç paraqitjes që keni "
+"zgjedhur, anglishtja (SHBA) është vendosur si parazgjedhje. Mund të ndërroni "
+"paraqitjet duke shtypur Super+Hapësirë."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:331
 #: usr/share/live-installer/interface.ui.h:8
 msgid "Your name:"
-msgstr ""
+msgstr "Emri juaj:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:332
 #: usr/share/live-installer/interface.ui.h:9
 msgid "Your computer's name:"
-msgstr ""
+msgstr "Emri i kompjuterit tuaj:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:333
 #: usr/share/live-installer/interface.ui.h:11
 msgid "The name it uses when it talks to other computers."
-msgstr ""
+msgstr "Emri që përdor kur komunikon me kompjuterë të tjerë."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:334
 #: usr/share/live-installer/interface.ui.h:10
 msgid "Pick a username:"
-msgstr ""
+msgstr "Zgjidh një emër përdoruesi:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:335
 #: usr/share/live-installer/interface.ui.h:12
 msgid "Choose a password:"
-msgstr ""
+msgstr "Zgjidhni një fjalëkalim:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:336
 #: usr/share/live-installer/interface.ui.h:13
 msgid "Confirm your password:"
-msgstr ""
+msgstr "Konfirmo fjalëkalimin tënd:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:338
 #: usr/share/live-installer/interface.ui.h:14
@@ -304,67 +312,68 @@ msgstr "Hyr automatikisht"
 #: usr/lib/live-installer/frontend/gtk_interface.py:339
 #: usr/share/live-installer/interface.ui.h:15
 msgid "Require my password to log in"
-msgstr ""
+msgstr "Kërko fjalëkalimin tim për t'u identifikuar"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:340
 #: usr/share/live-installer/interface.ui.h:16
 msgid "Encrypt my home folder"
-msgstr ""
+msgstr "Enkripto dosjen time kryesore"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:343
 #: usr/share/live-installer/interface.ui.h:17
 msgid "Automated Installation"
-msgstr ""
+msgstr "Instalimi dhe Automatizimi"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:344
 #: usr/share/live-installer/interface.ui.h:18
 msgid "Erase a disk and install LMDE on it."
-msgstr ""
+msgstr "Fshini një disk dhe instaloni LMDE në të."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:345
 #: usr/share/live-installer/interface.ui.h:19
 msgid "Disk:"
-msgstr ""
+msgstr "Disku:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:346
 #: usr/share/live-installer/interface.ui.h:21
 msgid "Encrypt the operating system"
-msgstr ""
+msgstr "Enkripto sistemin operativ"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:347
 #: usr/share/live-installer/interface.ui.h:22
 msgid "Passphrase"
-msgstr ""
+msgstr "Fjalëkalimi"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:348
 #: usr/share/live-installer/interface.ui.h:23
 msgid "Confirm passphrase"
-msgstr ""
+msgstr "Konfirmo fjalëkalimin"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:349
 #: usr/share/live-installer/interface.ui.h:20
 msgid "Use LVM (Logical Volume Management)"
-msgstr ""
+msgstr "Përdorni LVM (Menaxhimi Logjik i Vëllimit)"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:350
 #: usr/share/live-installer/interface.ui.h:26
 msgid "Manual Partitioning"
-msgstr ""
+msgstr "Ndarja manuale"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:351
 #: usr/share/live-installer/interface.ui.h:27
 msgid "Manually create, resize or choose partitions for LMDE."
 msgstr ""
+"Krijoni, ndryshoni madhësinë ose zgjidhni manualisht ndarjet për LMDE."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:352
 #: usr/share/live-installer/interface.ui.h:25
 msgid "Fill the disk with random data"
-msgstr ""
+msgstr "Mbush diskun me të tjera të rastësishme"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:353
 #: usr/share/live-installer/interface.ui.h:24
 msgid "This provides extra security but it can take hours."
-msgstr ""
+msgstr "Kjo ofron siguri shtesë, por mund të zgjasë me orë të tëra."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:356
 #: usr/lib/live-installer/partitioning.py:185
@@ -375,7 +384,7 @@ msgstr "Ndrysho"
 #: usr/lib/live-installer/frontend/gtk_interface.py:357
 #: usr/share/live-installer/interface.ui.h:30
 msgid "Launch GParted"
-msgstr ""
+msgstr "Happy GParted"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:358
 msgid "Refresh"
@@ -413,7 +422,7 @@ msgstr "Hapësira e lirë"
 #: usr/lib/live-installer/frontend/gtk_interface.py:371
 #: usr/share/live-installer/interface.ui.h:31
 msgid "Install the GRUB boot menu on:"
-msgstr ""
+msgstr "Instaloni menunë e nisjes GRUB në:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:374
 #: usr/share/live-installer/interface.ui.h:32
@@ -421,11 +430,14 @@ msgid ""
 "You selected to manage your partitions manually, this feature is for "
 "ADVANCED USERS ONLY."
 msgstr ""
+"Ju zgjodhët t'i menaxhoni ndarjet tuaja manualisht, kjo veçori është VETËM "
+"PËR PËRDORUESIT E AVANCUAR."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:375
 #: usr/share/live-installer/interface.ui.h:33
 msgid "Before continuing, mount your target filesystem(s) on /target."
 msgstr ""
+"Para se të vazhdoni, montoni sistemin(et) e skedarëve të synuar në /target."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:376
 #: usr/share/live-installer/interface.ui.h:34
@@ -452,7 +464,7 @@ msgstr ""
 #: usr/lib/live-installer/frontend/gtk_interface.py:381
 #: usr/share/live-installer/interface.ui.h:37
 msgid "Do the following and then click Next to finish installation:"
-msgstr ""
+msgstr "mësim sa vijon dhe më pas klikoni Tjetër për të instaluar:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:382
 #: usr/share/live-installer/interface.ui.h:38
@@ -501,35 +513,36 @@ msgstr ""
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:396
 msgid "The values do not match."
-msgstr ""
+msgstr "Vlerat nuk përputhen."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:399
 msgid "This field cannot be empty."
-msgstr ""
+msgstr "Kjo fushë nuk mund të jetë bosh."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:402
 msgid "This field may not contain space characters."
-msgstr ""
+msgstr "Kjo fushë nuk mund të përmbajë karaktere hapësirash."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:405
 msgid "This field must be lower case."
-msgstr ""
+msgstr "Kjo fushë duhet të jetë me shkronja të vogla."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:408
 msgid "This field cannot start or end with a hyphen or period."
 msgstr ""
+"Kjo fushë nuk mund të mbushë ose të mbarojë me vizë ndarëse ose pikë."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:412
 msgid "The entry is too short."
-msgstr ""
+msgstr "Hyrja është shumë e shkurtër."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:414
 msgid "The entry is too long."
-msgstr ""
+msgstr "Hyrja është shumë e gjatë."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:419
 msgid "This field contains invalid characters."
-msgstr ""
+msgstr "Kjo fushë karaktere të pavlefshme."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:578
 msgid "Quit?"
@@ -545,22 +558,24 @@ msgstr "Zgjidhni një gjuhë"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:956
 msgid "Warning"
-msgstr ""
+msgstr "Paralajmërim"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:956
 #, python-format
 msgid "This will delete all the data on %s. Are you sure?"
-msgstr ""
+msgstr "Kjo do të fshijë të gjitha të dhënat në %s. Je i sigurt?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:972
 msgid ""
 "Please indicate a filesystem to format the root (/) partition with before "
 "proceeding."
 msgstr ""
+"Ju lutemi tregoni një sistem skedarësh për të formatuar ndarjen rrënjë (/) "
+"përpara se të vazhdoni."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:976
 msgid "Please select a root (/) partition."
-msgstr ""
+msgstr "Ju lutem zgjidhni një ndarje rrënjë (/)."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:977
 msgid ""
@@ -570,6 +585,11 @@ msgid ""
 " - Recommended size: 30GB\n"
 " - Recommended filesystem format: ext4\n"
 msgstr ""
+"Një ndarje rrënjë është e nevojshme për të instaluar Linux Mint.\n"
+"\n"
+" - Pika e montimit: /\n"
+" - Madhësia e rekomanduar: 30 GB\n"
+" - Formati i rekomanduar i sistemit të skedarëve: ext4\n"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:989
 msgid "The EFI partition is not bootable. Please edit the partition flags."
@@ -577,7 +597,7 @@ msgstr "Ndarje EFI nuk është bootable. Ju lutemi editoni flamujt ndarje."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:992
 msgid "The EFI partition is too small. It must be at least 35MB."
-msgstr ""
+msgstr "Ndarja EFI është shumë e vogël. Duhet të jetë të jetë 35MB."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:997
 #: usr/lib/live-installer/frontend/gtk_interface.py:1001
@@ -586,7 +606,7 @@ msgstr "Ndarje EFI duhet të jetë i formatuar si VFAT."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1005
 msgid "Please select an EFI partition."
-msgstr ""
+msgstr "Ju lutem zgjidhni një ndarje EFI."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1005
 msgid ""
@@ -601,10 +621,20 @@ msgid ""
 "partition of the disk as the EFI system partition.\n"
 " "
 msgstr ""
+"Nevojitet një ndarje e sistemit EFI me kërkesat e mëposhtme:\n"
+"\n"
+" - Pika e montimit: /boot/efi\n"
+" - Flamujt e ndarjes: I nisshëm\n"
+" - Madhësia: të paktën 35MB (rekomandohet 100MB ose më shumë)\n"
+" - Formati: vfat ose fat32 \n"
+"\n"
+"Për të siguruar përputhshmërinë me Windows, ne ju rekomandojmë të përdorni "
+"ndarjen e parë të diskut si ndarje të sistemit EFI.\n"
+" "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1018
 msgid "Install"
-msgstr ""
+msgstr "Instalo"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1074
 msgid "Localization"
@@ -636,7 +666,7 @@ msgstr "Emri i përdruesit: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1083
 msgid "Automatic login: "
-msgstr ""
+msgstr "Hyrje automatike: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1083
 #: usr/lib/live-installer/frontend/gtk_interface.py:1084
@@ -654,7 +684,7 @@ msgstr "çaktivizuar"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1084
 msgid "Home encryption: "
-msgstr ""
+msgstr "Enkriptimi i shtëpisë: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1085
 msgid "System settings"
@@ -662,7 +692,7 @@ msgstr "Parametrat e sistemit"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1086
 msgid "Computer's name: "
-msgstr ""
+msgstr "Emri i kompjuterit: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1087
 msgid "Filesystem operations"
@@ -671,7 +701,7 @@ msgstr "Veprimet e sistemit të skedarëve"
 #: usr/lib/live-installer/frontend/gtk_interface.py:1088
 #, python-format
 msgid "Install bootloader on %s"
-msgstr ""
+msgstr "Instalo ngarkuesin e nisjes në %s"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1088
 msgid "Do not install bootloader"
@@ -679,30 +709,30 @@ msgstr "Mos e instalo ngarkuesin e nisjes"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1090
 msgid "Use already-mounted /target."
-msgstr ""
+msgstr "Përdor /target të montuar tashmë."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1093
 #, python-format
 msgid "Automated installation on %s"
-msgstr ""
+msgstr "Instalim automatik në %s"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1094
 msgid "LVM: "
-msgstr ""
+msgstr "LVM: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1095
 msgid "Disk Encryption: "
-msgstr ""
+msgstr "Enkriptimi i diskut: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1099
 #, python-format
 msgid "Format %(path)s as %(filesystem)s"
-msgstr ""
+msgstr "Formato %(path)s si %(filesystem)s"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1102
 #, python-format
 msgid "Mount %(path)s as %(mount)s"
-msgstr ""
+msgstr "Montimi i %(path)s si %(mount)s"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1112
 msgid ""
@@ -717,6 +747,8 @@ msgid ""
 "The installation is now paused. Please read the instructions on the page "
 "carefully before clicking Next to finish the installation."
 msgstr ""
+"Instalimi tani është ndaluar. Ju lutemi lexoni me kujdes udhëzimet në faqe "
+"përpara se të klikoni te Tjetër për të përfunduar instalimin."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1160
 #: usr/lib/live-installer/frontend/gtk_interface.py:1163
@@ -727,7 +759,7 @@ msgstr "Gabim instalimi"
 
 #: usr/lib/live-installer/partitioning.py:90
 msgid "B"
-msgstr ""
+msgstr "B"
 
 #: usr/lib/live-installer/partitioning.py:90
 #: usr/lib/live-installer/partitioning.py:424
@@ -751,19 +783,19 @@ msgstr "TB"
 
 #: usr/lib/live-installer/partitioning.py:95
 msgid "Removable:"
-msgstr ""
+msgstr "I lëvizshëm:"
 
 #: usr/lib/live-installer/partitioning.py:192
 msgid "Assign to /"
-msgstr ""
+msgstr "Cakto te /"
 
 #: usr/lib/live-installer/partitioning.py:195
 msgid "Assign to /home"
-msgstr ""
+msgstr "Cakto te /home"
 
 #: usr/lib/live-installer/partitioning.py:201
 msgid "Assign to /boot/efi"
-msgstr ""
+msgstr "Cakto te /boot/efi"
 
 #: usr/lib/live-installer/partitioning.py:256
 msgid "Installation Tool"
@@ -776,6 +808,9 @@ msgid ""
 "installer to create a set of partitions for you? Note: This will ERASE ALL "
 "DATA present on this disk."
 msgstr ""
+"Nuk u gjet asnjë tabelë ndarjesh në hard diskun: %s. A doni që instaluesi të "
+"krijojë një grup ndarjesh për ju? Shënim: Kjo do të FSHISË TË GJITHA TË "
+"DHËNAT e pranishme në këtë disk."
 
 #: usr/lib/live-installer/partitioning.py:372
 #, python-format
@@ -783,6 +818,8 @@ msgid ""
 "The partition table couldn't be written for %s. Restart the computer and try "
 "again."
 msgstr ""
+"Tabela e ndarjes nuk mund të shkruhej për %s. Rinisni kompjuterin dhe "
+"provoni përsëri."
 
 #: usr/lib/live-installer/partitioning.py:411
 #, python-format
@@ -790,14 +827,16 @@ msgid ""
 "The partition %s could not be created. The installation will stop. Restart "
 "the computer and try again."
 msgstr ""
+"Ndarja %s nuk mund të krijohej. Instalimi do të ndalet. Rinisni kompjuterin "
+"dhe provoni përsëri."
 
 #: usr/lib/live-installer/partitioning.py:468
 msgid "Logical partition"
-msgstr ""
+msgstr "Ndarje logjike"
 
 #: usr/lib/live-installer/partitioning.py:469
 msgid "Extended partition"
-msgstr ""
+msgstr "Ndarje e zgjeruar"
 
 #: usr/lib/live-installer/partitioning.py:473
 msgid "Unknown"
@@ -805,7 +844,7 @@ msgstr "Panjohur"
 
 #: usr/lib/live-installer/partitioning.py:587
 msgid "Edit partition"
-msgstr ""
+msgstr "Modifiko ndarjen"
 
 #: usr/lib/live-installer/partitioning.py:588
 msgid "Device:"
@@ -821,22 +860,22 @@ msgstr "Pika e montimit:"
 
 #: usr/lib/live-installer/partitioning.py:592
 msgid "Cancel"
-msgstr ""
+msgstr "Anulo"
 
 #: usr/lib/live-installer/partitioning.py:593
 #: usr/lib/live-installer/dialogs.py:31 usr/lib/live-installer/dialogs.py:42
 #: usr/lib/live-installer/dialogs.py:47
 msgid "OK"
-msgstr ""
+msgstr "Në rregull"
 
 #: usr/lib/live-installer/dialogs.py:36
 msgid "No"
-msgstr ""
+msgstr "Jo"
 
 #: usr/lib/live-installer/dialogs.py:37
 msgid "Yes"
-msgstr ""
+msgstr "Po"
 
 #: usr/share/live-installer/interface.ui.h:1
 msgid " "
-msgstr ""
+msgstr " "

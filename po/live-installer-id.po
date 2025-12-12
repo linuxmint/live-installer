@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2023-09-07 14:04+0100\n"
-"PO-Revision-Date: 2023-10-25 10:15+0000\n"
-"Last-Translator: Safri Natrio <Unknown>\n"
+"PO-Revision-Date: 2025-09-23 11:58+0000\n"
+"Last-Translator: Andika Triwidada <andika@gmail.com>\n"
 "Language-Team: Indonesian <id@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2025-08-26 15:18+0000\n"
-"X-Generator: Launchpad (build 919009172d854f2b8e4e8262db447f12f11d25eb)\n"
+"X-Launchpad-Export-Date: 2025-12-12 13:26+0000\n"
+"X-Generator: Launchpad (build 379e22b8475e3402088a4cdb4a6e7936a4d28414)\n"
 
 #: usr/lib/live-installer/installer.py:45
 msgid ""
@@ -36,15 +36,15 @@ msgstr "Memasuki sistem..."
 
 #: usr/lib/live-installer/installer.py:169
 msgid "Removing live configuration (packages)"
-msgstr "Menghapus konfigurasi yang aktif (paket-paket)"
+msgstr "Menghapus konfigurasi live (paket)"
 
 #: usr/lib/live-installer/installer.py:181
 msgid "Adding new user to the system"
-msgstr "Menambahkan pengguna baru ke dalam sistem..."
+msgstr "Menambahkan pengguna baru ke sistem"
 
 #: usr/lib/live-installer/installer.py:212
 msgid "Writing filesystem mount information to /etc/fstab"
-msgstr "Menuliskan informasi mount filesystem ke /etc/fstab"
+msgstr "Menuliskan informasi mount sistem berkas ke /etc/fstab"
 
 #: usr/lib/live-installer/installer.py:220
 #: usr/lib/live-installer/installer.py:355
@@ -72,23 +72,23 @@ msgstr "Memformat %(partition)s sebagai %(format)s ..."
 
 #: usr/lib/live-installer/installer.py:484
 msgid "Setting hostname"
-msgstr "Pengaturan hostname"
+msgstr "Mengatur nama host"
 
 #: usr/lib/live-installer/installer.py:503
 msgid "Setting locale"
-msgstr "Pengaturan lokal"
+msgstr "Mengatur lokal"
 
 #: usr/lib/live-installer/installer.py:518
 msgid "Localizing packages"
-msgstr "melokalisir paket"
+msgstr "Melokalkan paket"
 
 #: usr/lib/live-installer/installer.py:533
 msgid "Installing drivers"
-msgstr "Menginstal driver"
+msgstr "Memasang driver"
 
 #: usr/lib/live-installer/installer.py:564
 msgid "Setting keyboard options"
-msgstr "Pengaturan pilihan keyboard"
+msgstr "Mengaturan opsi papan tik"
 
 #: usr/lib/live-installer/installer.py:621
 msgid "Installing bootloader"
@@ -117,13 +117,13 @@ msgstr "Mengkonfigurasi bootloader"
 
 #: usr/lib/live-installer/installer.py:701
 msgid "Checking bootloader"
-msgstr "Mengecek bootloader"
+msgstr "Memeriksa bootloader"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:121
 #: usr/lib/live-installer/frontend/gtk_interface.py:297
 #: usr/lib/live-installer/frontend/gtk_interface.py:320
 msgid "Language"
-msgstr "bahasa"
+msgstr "Bahasa"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:129
 #: usr/lib/live-installer/frontend/gtk_interface.py:321
@@ -133,7 +133,7 @@ msgstr "Lokasi"
 #: usr/lib/live-installer/frontend/gtk_interface.py:212
 #: usr/lib/live-installer/frontend/gtk_interface.py:325
 msgid "Layout"
-msgstr "Tata letak"
+msgstr "Tata Letak"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:218
 #: usr/lib/live-installer/frontend/gtk_interface.py:326
@@ -142,7 +142,7 @@ msgstr "Varian"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:232
 msgid "Calculating file indexes ..."
-msgstr "Menghitung indeks file..."
+msgstr "Menghitung indeks berkas..."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:281
 #: usr/lib/live-installer/frontend/gtk_interface.py:916
@@ -163,11 +163,11 @@ msgstr "Apa bahasa yang ingin Anda gunakan?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:298
 msgid "Timezone"
-msgstr "Wilayah waktu"
+msgstr "Zona Waktu"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:298
 msgid "Where are you?"
-msgstr "Dimanakah Anda?"
+msgstr "Anda di mana?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:299
 msgid "Keyboard layout"
@@ -175,7 +175,7 @@ msgstr "Tata letak papan ketik"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:299
 msgid "What is your keyboard layout?"
-msgstr "Apa tata letak keyboard Anda?"
+msgstr "Apa tata letak papan tik Anda?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:300
 msgid "User account"
@@ -196,11 +196,11 @@ msgstr "Di mana Anda ingin memasang LMDE?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:302
 msgid "Partitioning"
-msgstr "Pembagian"
+msgstr "Pemartisian"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:303
 msgid "Advanced options"
-msgstr "Opsi lebih lanjut"
+msgstr "Opsi tingkat lanjut"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:304
 msgid "Summary"
@@ -219,7 +219,7 @@ msgstr "Mode ahli"
 #: usr/lib/live-installer/frontend/gtk_interface.py:307
 #: usr/lib/live-installer/frontend/gtk_interface.py:1127
 msgid "Installation paused"
-msgstr "Pemasangan ditunda"
+msgstr "Pemasangan dijeda"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:310
 msgid "Quit"
@@ -256,12 +256,12 @@ msgstr "Ayo!"
 #: usr/lib/live-installer/frontend/gtk_interface.py:324
 #: usr/share/live-installer/interface.ui.h:6
 msgid "Keyboard Model:"
-msgstr "Model Keyboard:"
+msgstr "Model Papan Tik:"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:327
 #: usr/share/live-installer/interface.ui.h:7
 msgid "Type here to test your keyboard layout"
-msgstr "Ketik di sini untuk menguji tata letak keyboard Anda"
+msgstr "Ketik di sini untuk menguji tata letak papan tik Anda"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:328
 msgid ""
@@ -435,7 +435,7 @@ msgstr ""
 #: usr/lib/live-installer/frontend/gtk_interface.py:375
 #: usr/share/live-installer/interface.ui.h:33
 msgid "Before continuing, mount your target filesystem(s) on /target."
-msgstr "Sebelum melanjutkan, masukkan sistem file target Anda di /target."
+msgstr "Sebelum melanjutkan, kaitkan sistem berkas target Anda di /target."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:376
 #: usr/share/live-installer/interface.ui.h:34
@@ -452,16 +452,13 @@ msgid ""
 "install any packages that will be needed to boot your new system."
 msgstr ""
 "Selama instalasi, Anda akan diberikan waktu untuk chroot ke dalam /target "
-"dan menginstal paket-paket yang dibutuhkan untuk menjalankan boot sistem "
-"baru Anda."
+"dan memasang paket-paket yang dibutuhkan untuk mem-boot sistem baru Anda."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:378
 #: usr/share/live-installer/interface.ui.h:36
 msgid ""
 "During the install, you will be required to write your own /etc/fstab."
-msgstr ""
-"Selama proses instalasi, anda akan dibutuhkan untuk menulis sendiri "
-"/etc/fstab anda."
+msgstr "Selama instalasi, Anda akan perlu menulis sendiri /etc/fstab Anda."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:381
 #: usr/share/live-installer/interface.ui.h:37
@@ -477,8 +474,8 @@ msgid ""
 "/target prefix in the mount paths themselves)."
 msgstr ""
 "Buat /target/etc/fstab untuk sistem berkas sebagaimana itu akan dipasang "
-"pada sistem baru anda, menyesuaikan dengan yang sekarang telah terpasang "
-"pada /target (tanpa menggunakan awalan /target pada path pemasangan)"
+"pada sistem baru Anda, cocok dengan yang sekarang telah terpasang pada "
+"/target (tanpa menggunakan awalan /target pada path pemasangan)"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:383
 #: usr/share/live-installer/interface.ui.h:39
@@ -487,7 +484,7 @@ msgid ""
 "dmraid, etc) by calling \"sudo chroot /target\" followed by the relevant apt-"
 "get/aptitude installations."
 msgstr ""
-"Instal beberapa paket yang mungkin diperlukan untuk booting pertama (mdadm, "
+"Pasang sebarang paket yang mungkin diperlukan untuk boot pertama (mdadm, "
 "cryptsetup, dmraid, dsb) dengan menggunakan \"sudo chroot /target\" diikuti "
 "dengan instalasi yang relevan menggunakan apt-get/aptitude."
 
@@ -499,7 +496,7 @@ msgid ""
 "block device name as they appear in /target/etc/fstab."
 msgstr ""
 "Perhatikan bahwa supaya update-intramfs dapat bekerja dengan baik pada "
-"beberapa kasus (seperti pada dm-crypt), anda mungkin perlu memiliki drive "
+"beberapa kasus (seperti pada dm-crypt), Anda mungkin perlu memiliki drive "
 "yang saat ini terpasang menggunakan nama perangkat blok yang sama  "
 "sebagaimana yang muncul pada /target/etc/fstab."
 
@@ -510,9 +507,9 @@ msgid ""
 "system will have at first boot, and matches what is currently mounted at "
 "/target."
 msgstr ""
-"Cek ulang bahwa /target/etc/fstab anda benar, cocokkan apa yang akan "
-"dilakukan sistem baru anda pada booting pertama, dan cocokkan apa yang saat "
-"ini terpasang pada /target."
+"Cek ulang bahwa /target/etc/fstab Anda benar, cocok dengan yang akan "
+"dilmiliki sistem baru Anda pada boot pertama, dan cocok dengan yang saat ini "
+"terpasang pada /target."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:396
 msgid "The values do not match."
@@ -557,7 +554,7 @@ msgstr "Anda yakin ingin menghentikan installer?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:916
 msgid "Please choose a language"
-msgstr "Silakan pilih sebuah bahasa."
+msgstr "Silakan pilih sebuah bahasa"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:956
 msgid "Warning"
@@ -573,8 +570,8 @@ msgid ""
 "Please indicate a filesystem to format the root (/) partition with before "
 "proceeding."
 msgstr ""
-"Harap menunjukkan filesystem untuk memformat partisi root (/) sebelum "
-"melanjutkan."
+"Harap indikasikan suatu sistem berkas untuk memformat partisi root (/) "
+"sebelum melanjutkan."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:976
 msgid "Please select a root (/) partition."
@@ -588,11 +585,11 @@ msgid ""
 " - Recommended size: 30GB\n"
 " - Recommended filesystem format: ext4\n"
 msgstr ""
-"Partisi root dibutuhkan untuk menginstall Linux Mint.\n"
+"Partisi root dibutuhkan untuk memasang Linux Mint.\n"
 "\n"
-" - Titik mount: /\n"
+" - Titik kait: /\n"
 " - Rekomendasi ukuran: 30GB\n"
-" - Rekomendasi format filesystem: ext4\n"
+" - Rekomendasi format sistem berkas: ext4\n"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:989
 msgid "The EFI partition is not bootable. Please edit the partition flags."
@@ -605,7 +602,7 @@ msgstr "Partisi EFI terlalu kecil. Setidaknya harus 35MB."
 #: usr/lib/live-installer/frontend/gtk_interface.py:997
 #: usr/lib/live-installer/frontend/gtk_interface.py:1001
 msgid "The EFI partition must be formatted as vfat."
-msgstr "Partisi EFI harus diformat dalam vfat."
+msgstr "Partisi EFI harus diformat sebagai vfat."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1005
 msgid "Please select an EFI partition."
@@ -641,7 +638,7 @@ msgstr "Pasang"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1074
 msgid "Localization"
-msgstr "Pengaturan Kedaerahan"
+msgstr "Pelokalan"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1075
 msgid "Language: "
@@ -653,7 +650,7 @@ msgstr "Zona Waktu "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1077
 msgid "Keyboard layout: "
-msgstr "Susunan papan ketik "
+msgstr "Tata letak papan tik "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1080
 msgid "User settings"
@@ -661,7 +658,7 @@ msgstr "Pengaturan pengguna"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1081
 msgid "Real name: "
-msgstr "Nama asli "
+msgstr "Nama asli: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1082
 msgid "Username: "
@@ -699,12 +696,12 @@ msgstr "Nama komputer: "
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1087
 msgid "Filesystem operations"
-msgstr "Pekerjaan-pekerjaan sistem berkas"
+msgstr "Operasi sistem berkas"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1088
 #, python-format
 msgid "Install bootloader on %s"
-msgstr "Install bootloader pada %s"
+msgstr "Pasang bootloader pada %s"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1088
 msgid "Do not install bootloader"
@@ -735,15 +732,15 @@ msgstr "Format %(path)s sebagai %(filesystem)s"
 #: usr/lib/live-installer/frontend/gtk_interface.py:1102
 #, python-format
 msgid "Mount %(path)s as %(mount)s"
-msgstr "Mount %(path)s as %(mount)s"
+msgstr "Kait %(path)s sebagai %(mount)s"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1112
 msgid ""
 "The installation is now complete. Do you want to restart your computer to "
 "use the new system?"
 msgstr ""
-"Instalasi sekarang telah lengkap. Apakah anda ingin me-restart komputer anda "
-"untuk menggunakan sistem baru?"
+"Instalasi sekarang telah lengkap. Apakah Anda ingin memulai ulang komputer "
+"Anda untuk menggunakan sistem baru?"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:1127
 msgid ""
@@ -758,7 +755,7 @@ msgstr ""
 #: usr/lib/live-installer/frontend/gtk_interface.py:1177
 #: usr/lib/live-installer/frontend/gtk_interface.py:1185
 msgid "Installation error"
-msgstr "Instalasi mengalami gangguan"
+msgstr "Galat instalasi"
 
 #: usr/lib/live-installer/partitioning.py:90
 msgid "B"
@@ -786,7 +783,7 @@ msgstr "TB"
 
 #: usr/lib/live-installer/partitioning.py:95
 msgid "Removable:"
-msgstr "Removable:"
+msgstr "Lepasan:"
 
 #: usr/lib/live-installer/partitioning.py:192
 msgid "Assign to /"
@@ -811,9 +808,9 @@ msgid ""
 "installer to create a set of partitions for you? Note: This will ERASE ALL "
 "DATA present on this disk."
 msgstr ""
-"Tak ada partisi tabel yang ditemukan pada hard drive: %s. Anda ingin "
-"installer untuk membuat sendiri paket partisi secara otomatis? Catatan: "
-"Tindakan ini akan MENGHAPUS SEMUA DATA yang mungkin ada di hardisk ini."
+"Tidak ada tabel partisi yang ditemukan pada hard drive: %s. Anda ingin "
+"pemasang untuk membuat sendiri set partisi secara otomatis? Catatan: Ini "
+"akan MENGHAPUS SEMUA DATA yang mungkin ada di disk ini."
 
 #: usr/lib/live-installer/partitioning.py:372
 #, python-format
@@ -835,11 +832,11 @@ msgstr ""
 
 #: usr/lib/live-installer/partitioning.py:468
 msgid "Logical partition"
-msgstr "Partisi Logical"
+msgstr "Partisi logis"
 
 #: usr/lib/live-installer/partitioning.py:469
 msgid "Extended partition"
-msgstr "Partisi Extended"
+msgstr "Partisi extended"
 
 #: usr/lib/live-installer/partitioning.py:473
 msgid "Unknown"
@@ -847,7 +844,7 @@ msgstr "Tidak diketahui"
 
 #: usr/lib/live-installer/partitioning.py:587
 msgid "Edit partition"
-msgstr "Sunting Partisi"
+msgstr "Sunting partisi"
 
 #: usr/lib/live-installer/partitioning.py:588
 msgid "Device:"
@@ -859,7 +856,7 @@ msgstr "Format sebagai:"
 
 #: usr/lib/live-installer/partitioning.py:591
 msgid "Mount point:"
-msgstr "Titik mount:"
+msgstr "Titik kait:"
 
 #: usr/lib/live-installer/partitioning.py:592
 msgid "Cancel"
