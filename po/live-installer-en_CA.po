@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: linuxmint\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2023-09-07 14:04+0100\n"
-"PO-Revision-Date: 2022-08-11 00:42+0000\n"
-"Last-Translator: John Doe <Unknown>\n"
+"PO-Revision-Date: 2025-12-18 18:04+0000\n"
+"Last-Translator: R Reyx <Unknown>\n"
 "Language-Team: English (Canada) <en_CA@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2025-12-12 13:26+0000\n"
-"X-Generator: Launchpad (build 379e22b8475e3402088a4cdb4a6e7936a4d28414)\n"
+"X-Launchpad-Export-Date: 2026-01-08 15:35+0000\n"
+"X-Generator: Launchpad (build 99c00f518760bdd50fc6e353e7736d2fff8fba4a)\n"
 
 #: usr/lib/live-installer/installer.py:45
 msgid ""
@@ -380,7 +380,7 @@ msgstr "Edit"
 #: usr/lib/live-installer/frontend/gtk_interface.py:357
 #: usr/share/live-installer/interface.ui.h:30
 msgid "Launch GParted"
-msgstr ""
+msgstr "Launch GParted"
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:358
 msgid "Refresh"
@@ -524,7 +524,7 @@ msgstr "This field must be lower case."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:408
 msgid "This field cannot start or end with a hyphen or period."
-msgstr ""
+msgstr "This field cannot start or end with a hyphen or period."
 
 #: usr/lib/live-installer/frontend/gtk_interface.py:412
 msgid "The entry is too short."
