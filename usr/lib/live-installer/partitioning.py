@@ -360,6 +360,7 @@ class PartitionSetup(Gtk.TreeStore):
 
 @idle
 def show_error(message):
+    print(message)
     ErrorDialog(_("Installer"), message)
 
 # Returns "" for traditional devices (/dev/sda1, /dev/sdb2..etc..)
