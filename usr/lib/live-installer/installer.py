@@ -31,7 +31,7 @@ class InstallerEngine:
 
     def set_error_hook(self, errorhook):
         ''' Set a callback to be called on errors '''
-        self.error_message = errorhook
+        self.set_critical_error = errorhook
 
     def setup_user(self):
         print(" --> Adding new user")
@@ -211,7 +211,7 @@ class InstallerEngine:
         print(" --> Installation started")
         if(not os.path.exists("/target")):
             if (self.setup.skip_mount):
-                self.error_message(message=_("ERROR: You must first manually mount your target filesystem(s) at /target to do a custom install!"))
+                self.set_critical_error(message=_("ERROR: You must first manually mount your target filesystem(s) at /target to do a custom install!"))
                 return
             os.mkdir("/target")
         if(not os.path.exists("/source")):
@@ -230,7 +230,7 @@ class InstallerEngine:
         self.update_progress(50, False, False, _("Mounting partitions..."))
         media = f"{self.casper}/filesystem.squashfs"
         if not os.path.exists(media) and not __debug__:
-            self.error_message(message=_("ERROR: Live medium not found!"))
+            self.set_critical_error(message=_("ERROR: Live medium not found!"))
             return
         print(" ------ Mounting %s on %s" % (media, "/source/"))
         self.do_mount(media, "/source/", "squashfs", options="loop")
@@ -695,7 +695,7 @@ class InstallerEngine:
                 self.do_configure_grub()
                 grub_retries = grub_retries + 1
                 if grub_retries >= 5:
-                    self.error_message(message=_("WARNING: The grub bootloader was not configured properly! You need to configure it manually."))
+                    self.set_critical_error(message=_("WARNING: The grub bootloader was not configured properly! You need to configure it manually."))
                     break
 
         # recreate initramfs (needed in case of skip_mount also, to include things like mdadm/dm-crypt/etc in case its needed to boot a custom install)

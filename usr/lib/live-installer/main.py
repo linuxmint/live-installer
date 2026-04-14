@@ -1208,7 +1208,7 @@ class InstallerWindow:
             sys.exit(0)
 
         self.installer.set_progress_hook(self.update_progress)
-        self.installer.set_error_hook(self.error_message)
+        self.installer.set_error_hook(self.set_critical_error)
 
         try:
             self.installer.perform_oem_config()
@@ -1240,7 +1240,7 @@ class InstallerWindow:
             sys.exit(0)
 
         self.installer.set_progress_hook(self.update_progress)
-        self.installer.set_error_hook(self.error_message)
+        self.installer.set_error_hook(self.set_critical_error)
 
         # do we dare? ..
         self.critical_error_happened = False
@@ -1290,7 +1290,7 @@ class InstallerWindow:
         Gtk.main_quit()
         sys.exit(0)
 
-    def error_message(self, message=""):
+    def set_critical_error(self, message=""):
         self.critical_error_happened = True
         self.critical_error_message = message
 
