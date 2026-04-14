@@ -9,7 +9,7 @@ import subprocess
 from collections import defaultdict
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, Gdk, GObject
+from gi.repository import Gtk, Gdk, GLib
 import parted
 import gettext
 import time
@@ -20,7 +20,7 @@ gettext.install("live-installer", "/usr/share/locale")
 # Used as a decorator to run things in the main loop, from another thread
 def idle(func):
     def wrapper(*args, **kwargs):
-        GObject.idle_add(func, *args, **kwargs)
+        GLib.idle_add(func, *args, **kwargs)
     return wrapper
 
 def shell_exec(command):
