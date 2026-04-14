@@ -1209,12 +1209,18 @@ class InstallerWindow:
 
         self.installer.set_progress_hook(self.update_progress)
         self.installer.set_error_hook(self.set_critical_error)
+        self.critical_error_happened = False
 
         try:
             self.installer.perform_oem_config()
         except Exception as detail:
-            print(detail)
-            self.show_error_dialog(_("OEM config error"), str(detail))
+            self.set_critical_error(str(detail))
+
+        if self.critical_error_happened:
+            self.showing_last_dialog = True
+            self.show_error_dialog(_("OEM config error"), self.critical_error_message)
+            while(self.showing_last_dialog):
+                time.sleep(0.1)
 
         print(" ## OEM CONFIG COMPLETE ")
 
@@ -1241,25 +1247,14 @@ class InstallerWindow:
 
         self.installer.set_progress_hook(self.update_progress)
         self.installer.set_error_hook(self.set_critical_error)
-
-        # do we dare? ..
         self.critical_error_happened = False
-
-        # Start installing
-        do_try_finish_install = True
 
         try:
             self.installer.start_installation()
         except Exception as detail1:
-            print(detail1)
-            do_try_finish_install = False
-            self.show_error_dialog(_("Installation error"), str(detail1))
+            self.set_critical_error(str(detail1))
 
-        if self.critical_error_happened:
-            self.show_error_dialog(_("Installation error"), self.critical_error_message)
-            do_try_finish_install = False
-
-        if do_try_finish_install:
+        if not self.critical_error_happened:
             if(self.setup.skip_mount):
                 self.paused = True
                 self.pause_installation()
@@ -1269,30 +1264,30 @@ class InstallerWindow:
             try:
                 self.installer.finish_installation()
             except Exception as detail1:
-                print(detail1)
-                self.show_error_dialog(_("Installation error"), str(detail1))
+                self.set_critical_error(str(detail1))
 
-            # show a message dialog thingum
-            while(not self.done):
-                time.sleep(0.1)
+        # Wait for the end of the installation (or a critical error)
+        while(not self.done):
+            time.sleep(0.1)
 
-            self.showing_last_dialog = True
-            if self.critical_error_happened:
-                self.show_error_dialog(_("Installation error"), self.critical_error_message)
-            else:
-                self.show_reboot_dialog()
-
-            while(self.showing_last_dialog):
-                time.sleep(0.1)
-
-            print(" ## INSTALLATION COMPLETE ")
+        # Either show a critical error, or a reboot dialog
+        # In both cases, wait for the user to acknowledge the dialog before quitting the installer
+        self.showing_last_dialog = True
+        if self.critical_error_happened:
+            self.show_error_dialog(_("Installation error"), self.critical_error_message)
+        else:
+            self.show_reboot_dialog()
+        while(self.showing_last_dialog):
+            time.sleep(0.1)
 
         Gtk.main_quit()
         sys.exit(0)
 
     def set_critical_error(self, message=""):
+        print(" ## CRITICAL ERROR: %s" % message)
         self.critical_error_happened = True
         self.critical_error_message = message
+        self.done = True
 
     @idle
     def update_progress(self, percentage, pulse, done, message):
