@@ -387,6 +387,9 @@ def full_disk_format(device, create_boot=False, create_swap=True):
     except Exception as e:
         print("Failed to detect LVM volumes!")
         print(e)
+    # Disable swap in case a partition on this device is used as swap,
+    # which would cause parted mklabel to fail.
+    os.system("swapoff -a")
     # Create a default partition set up
     disk_label = ('gpt' if device.getLength('B') > 2**32*.9 * device.sectorSize  # size of disk > ~2TB
                            or installer.setup.gptonefi
