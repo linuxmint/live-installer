@@ -6,7 +6,6 @@ import subprocess
 from gi.repository import Gtk, Gdk
 from collections import defaultdict, namedtuple
 from datetime import datetime, timedelta
-from PIL import Image
 
 # Check map size, MAP_CENTER depends on this size to be exact
 MAP_FILE = '/usr/share/live-installer/miller.png'

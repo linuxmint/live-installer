@@ -13,7 +13,7 @@ from gi.repository import Gtk, Gdk, GLib
 import parted
 import gettext
 import time
-from dialogs import MessageDialog, QuestionDialog, ErrorDialog, WarningDialog
+from dialogs import QuestionDialog, ErrorDialog
 
 gettext.install("live-installer", "/usr/share/locale")
 

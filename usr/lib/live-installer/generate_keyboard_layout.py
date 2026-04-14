@@ -3,7 +3,6 @@
 import subprocess
 import sys
 from PIL import Image, ImageDraw, ImageFont
-import math
 
 FONT_NAME = "/usr/share/live-installer/GoNotoCurrent-Regular.ttf"
 

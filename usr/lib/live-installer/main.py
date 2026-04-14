@@ -13,7 +13,6 @@ import sys
 import threading
 import time
 import parted
-import cairo
 import requests
 
 import gi
