@@ -1,3 +1,18 @@
+live-installer (2026.04.14) unstable; urgency=medium
+
+  * l10n: Update translations
+  * Fix deprecation warning on idle_add
+  * Remove unused imports
+  * Rename function
+  * Simplify error handling
+  * Fix deprecation warnings
+  * Fix syntax warnings
+  * Print expected live-medium path when not found
+  * Detect Mint even when base-files isn't patched.
+  * Detect Mint/LMDE grub adjustment script
+
+ -- Clement Lefebvre <root@linuxmint.com>  Tue, 14 Apr 2026 18:36:20 +0100
+
 live-installer (2025.10.12) gigi; urgency=medium
 
   * partitioning: Add an empty mount point option
