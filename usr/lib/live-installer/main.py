@@ -18,7 +18,7 @@ import requests
 import gi
 gi.require_version('Gtk', '3.0')
 gi.require_version('WebKit2', '4.1')
-from gi.repository import Gtk, Gdk, GdkPixbuf, GObject, WebKit2, Pango, GLib
+from gi.repository import Gtk, Gdk, GdkPixbuf, WebKit2, Pango, GLib
 
 gettext.install("live-installer", "/usr/share/locale")
 
@@ -307,7 +307,7 @@ class InstallerWindow:
         self.build_lang_list()
         self.activate_page(self.PAGE_LANGUAGE)
         self.builder.get_object("stack").set_visible_child_name("page_notebook")
-        GObject.timeout_add(400, self.remove_dark_mode)
+        GLib.timeout_add(400, self.remove_dark_mode)
 
     def remove_dark_mode(self):
         Gtk.Settings.get_default().set_property("gtk-application-prefer-dark-theme", False)
@@ -1315,7 +1315,7 @@ class InstallerWindow:
             return self.should_pulse
         if(not self.should_pulse):
             self.should_pulse = True
-            GObject.timeout_add(100, pbar_pulse)
+            GLib.timeout_add(100, pbar_pulse)
         else:
             # asssume we're "pulsing" already
             self.should_pulse = True
