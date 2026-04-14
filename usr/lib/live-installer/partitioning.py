@@ -4,7 +4,6 @@
 import json
 import os
 import re
-import sys
 import subprocess
 from collections import defaultdict
 import gi
@@ -13,7 +12,7 @@ from gi.repository import Gtk, Gdk, GLib
 import parted
 import gettext
 import time
-from dialogs import QuestionDialog, ErrorDialog
+from dialogs import QuestionDialog
 
 gettext.install("live-installer", "/usr/share/locale")
 
@@ -358,11 +357,6 @@ class PartitionSetup(Gtk.TreeStore):
         else:
             return ""
 
-@idle
-def show_error(message):
-    print(message)
-    ErrorDialog(_("Installer"), message)
-
 # Returns "" for traditional devices (/dev/sda1, /dev/sdb2..etc..)
 # or "p" for devices using a "p" in their partition naming schemes (NVMe, eMMC..etc)
 # for instance /dev/mmcblk0p1 or /dev/nvme0p1
@@ -396,9 +390,7 @@ def full_disk_format(device, create_boot=False, create_swap=True):
                         else 'msdos')
     return_code = os.system("parted -s %s mklabel %s" % (device.path, disk_label))
     if return_code != 0:
-        show_error(_("The partition table couldn't be written for %s. Restart the computer and try again.") % device.path)
-        Gtk.main_quit()
-        sys.exit(1)
+        raise Exception(_("The partition table couldn't be written for %s. Restart the computer and try again.") % device.path)
 
     mkpart = (
         # (condition, mount_as, format_as, mkfs command, size_mb)
@@ -435,9 +427,7 @@ def full_disk_format(device, create_boot=False, create_swap=True):
                     os.system("sync")
                     time.sleep(1)
                 else:
-                    show_error(_("The partition %s could not be created. The installation will stop. Restart the computer and try again.") % partition_path)
-                    Gtk.main_quit()
-                    sys.exit(1)
+                    raise Exception(_("The partition %s could not be created. The installation will stop. Restart the computer and try again.") % partition_path)
             mkfs = mkfs.format(partition_path)
             print(mkfs)
             os.system(mkfs)
