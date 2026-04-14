@@ -230,7 +230,8 @@ class InstallerEngine:
         self.update_progress(50, False, False, _("Mounting partitions..."))
         media = f"{self.casper}/filesystem.squashfs"
         if not os.path.exists(media) and not __debug__:
-            self.set_critical_error(message=_("ERROR: Live medium not found!"))
+            print("Live medium expected at %s" % media)
+            self.set_critical_error(message=_("Live medium not found!"))
             return
         print(" ------ Mounting %s on %s" % (media, "/source/"))
         self.do_mount(media, "/source/", "squashfs", options="loop")
