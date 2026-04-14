@@ -18,10 +18,12 @@ class InstallerEngine:
             self.casper = "/cdrom/casper"
             self.pool = "/cdrom/pool"
             self.manifest = "/cdrom/casper/filesystem.manifest"
+            self.grub_adjustment_script = "/usr/share/ubuntu-system-adjustments/systemd/adjust-grub-title"
         else:
             self.casper = "/run/live/medium/live"
             self.pool = "/run/live/medium/pool"
             self.manifest = "/run/live/medium/live/filesystem.packages"
+            self.grub_adjustment_script = "/usr/share/debian-system-adjustments/systemd/adjust-grub-title"
 
     def set_progress_hook(self, progresshook):
         ''' Set a callback to be called on progress updates '''
@@ -702,7 +704,7 @@ class InstallerEngine:
         # recreate initramfs (needed in case of skip_mount also, to include things like mdadm/dm-crypt/etc in case its needed to boot a custom install)
         print(" --> Configuring Initramfs")
         self.do_run_in_chroot("/usr/sbin/update-initramfs -t -u -k all")
-        self.do_run_in_chroot("/usr/share/debian-system-adjustments/systemd/adjust-grub-title")
+        self.do_run_in_chroot(self.grub_adjustment_script)
         kernelversion= subprocess.getoutput("uname -r")
         self.do_run_in_chroot("/usr/bin/sha1sum /boot/initrd.img-%s > /var/lib/initramfs-tools/%s" % (kernelversion,kernelversion))
 
@@ -763,7 +765,7 @@ class InstallerEngine:
         time.sleep(5)
         found_entry = False
         if os.path.exists("/target/boot/grub/grub.cfg"):
-            self.do_run_in_chroot("/usr/share/debian-system-adjustments/systemd/adjust-grub-title")
+            self.do_run_in_chroot(self.grub_adjustment_script)
             grubfh = open("/target/boot/grub/grub.cfg", "r")
             for line in grubfh:
                 line = line.rstrip("\r\n")
