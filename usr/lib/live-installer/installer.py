@@ -444,30 +444,30 @@ class InstallerEngine:
             print(" --> Encrypting root partition %s" % self.auto_root_partition)
             os.system("echo -n %s | cryptsetup luksFormat -c aes-xts-plain64 -h sha256 -s 512 %s" % (shlex.quote(self.setup.passphrase1), self.auto_root_partition))
             print(" --> Opening root partition %s" % self.auto_root_partition)
-            os.system("echo -n %s | cryptsetup luksOpen %s lvmlmde" % (shlex.quote(self.setup.passphrase1), self.auto_root_partition))
-            self.auto_root_partition = "/dev/mapper/lvmlmde"
+            os.system("echo -n %s | cryptsetup luksOpen %s lvmmint" % (shlex.quote(self.setup.passphrase1), self.auto_root_partition))
+            self.auto_root_partition = "/dev/mapper/lvmmint"
 
         # Setup LVM
         if self.setup.lvm:
             print(" --> LVM: Creating PV")
             os.system("pvcreate -y %s" % self.auto_root_partition)
             print(" --> LVM: Creating VG")
-            os.system("vgcreate -y lvmlmde %s" % self.auto_root_partition)
+            os.system("vgcreate -y lvmmint %s" % self.auto_root_partition)
             print(" --> LVM: Creating LV root")
-            os.system("lvcreate -y -n root -L 1GB lvmlmde")
+            os.system("lvcreate -y -n root -L 1GB lvmmint")
             print(" --> LVM: Creating LV swap")
             swap_size = int(round(int(subprocess.getoutput("awk '/^MemTotal/{ print $2 }' /proc/meminfo")) / 1024, 0))
-            os.system("lvcreate -y -n swap -L %dMB lvmlmde" % swap_size)
+            os.system("lvcreate -y -n swap -L %dMB lvmmint" % swap_size)
             print(" --> LVM: Extending LV root")
-            os.system(r"lvextend -l 100%FREE /dev/lvmlmde/root")
+            os.system(r"lvextend -l 100%FREE /dev/lvmmint/root")
             print(" --> LVM: Formatting LV root")
-            os.system("mkfs.ext4 /dev/mapper/lvmlmde-root -FF")
+            os.system("mkfs.ext4 /dev/mapper/lvmmint-root -FF")
             print(" --> LVM: Formatting LV swap")
-            os.system("mkswap -f /dev/mapper/lvmlmde-swap")
+            os.system("mkswap -f /dev/mapper/lvmmint-swap")
             print(" --> LVM: Enabling LV swap")
-            os.system("swapon /dev/mapper/lvmlmde-swap")
-            self.auto_root_partition = "/dev/mapper/lvmlmde-root"
-            self.auto_swap_partition = "/dev/mapper/lvmlmde-swap"
+            os.system("swapon /dev/mapper/lvmmint-swap")
+            self.auto_root_partition = "/dev/mapper/lvmmint-root"
+            self.auto_swap_partition = "/dev/mapper/lvmmint-swap"
 
         self.do_mount(self.auto_root_partition, "/target", "ext4", None)
         if (self.auto_boot_partition is not None):
@@ -626,7 +626,7 @@ class InstallerEngine:
 
     def write_crypttab(self, path="/target/etc/crypttab"):
         if self.setup.luks:
-            os.system(f"echo 'lvmlmde   {self.get_blkid(self.auto_root_physical_partition)}   none   luks,discard,tries=3' >> {path}")
+            os.system(f"echo 'lvmmint   {self.get_blkid(self.auto_root_physical_partition)}   none   luks,discard,tries=3' >> {path}")
 
     def finish_installation(self):
 
@@ -690,7 +690,7 @@ class InstallerEngine:
             with open("/target/etc/default/grub.d/61_live-installer.cfg", "w") as f:
                 f.write("#! /bin/sh\n")
                 f.write("set -e\n\n")
-                f.write('GRUB_CMDLINE_LINUX="cryptdevice=%s:lvmlmde root=/dev/mapper/lvmlmde-root resume=/dev/mapper/lvmlmde-swap"\n' % self.get_blkid(self.auto_root_physical_partition))
+                f.write('GRUB_CMDLINE_LINUX="cryptdevice=%s:lvmmint root=/dev/mapper/lvmmint-root resume=/dev/mapper/lvmmint-swap"\n' % self.get_blkid(self.auto_root_physical_partition))
             self.do_run_in_chroot("echo \"power/disk = shutdown\" >> /etc/sysfs.d/local.conf")
 
         # write MBR (grub)
