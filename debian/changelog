@@ -1,3 +1,10 @@
+live-installer (2026.04.15.2) unstable; urgency=medium
+
+  * lvm: Rename to lvmmint
+  * LVM: Set the SWAP partition to 2GB
+
+ -- Clement Lefebvre <root@linuxmint.com>  Wed, 15 Apr 2026 16:11:55 +0100
+
 live-installer (2026.04.15.1) unstable; urgency=medium
 
   * Fix wrong import
