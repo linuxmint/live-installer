@@ -1,3 +1,12 @@
+live-installer (2026.04.15) unstable; urgency=medium
+
+  * partitioning: Print error messages to stdout
+  * partitioning: Swapoff any partition before full format
+  * partitioning: Fix errors not showing up
+  * grub: Only install needed packages and don't hardcode their path
+
+ -- Clement Lefebvre <root@linuxmint.com>  Wed, 15 Apr 2026 10:34:47 +0100
+
 live-installer (2026.04.14) unstable; urgency=medium
 
   * l10n: Update translations
