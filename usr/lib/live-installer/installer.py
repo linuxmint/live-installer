@@ -326,7 +326,7 @@ class InstallerEngine:
                 "shim-signed",
             ]
             for pkg in EFI_PACKAGES:
-                matches = glob.glob(f"{self.pool}/main/**/{pkg}_*.deb", recursive=True)
+                matches = glob(f"{self.pool}/main/**/{pkg}_*.deb", recursive=True)
                 if not matches:
                     raise Exception(f"Missing EFI package: {pkg}")
                 os.system(f"cp {max(matches)} /target/debs/")
