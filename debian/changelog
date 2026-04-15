@@ -1,3 +1,11 @@
+live-installer (2026.04.15.1) unstable; urgency=medium
+
+  * Fix wrong import
+  * partitioning: Umount /target before full format
+  * grub: Add missing grub-efi-amd64-unsigned
+
+ -- Clement Lefebvre <root@linuxmint.com>  Wed, 15 Apr 2026 11:49:38 +0100
+
 live-installer (2026.04.15) unstable; urgency=medium
 
   * partitioning: Print error messages to stdout
