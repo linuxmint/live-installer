@@ -322,6 +322,7 @@ class InstallerEngine:
             EFI_PACKAGES = [
                 "grub-efi-amd64",
                 "grub-efi-amd64-bin",
+                "grub-efi-amd64-unsigned",
                 "grub-efi-amd64-signed",
                 "shim-signed",
             ]
