@@ -1,3 +1,4 @@
+from glob import glob
 import os
 import subprocess
 import time
@@ -318,10 +319,19 @@ class InstallerEngine:
         if self.setup.grub_device and self.setup.gptonefi:
             print(" --> Installing signed boot loader")
             os.system("mkdir -p /target/debs")
-            os.system(f"cp {self.pool}/main/g/grub2/grub-efi* /target/debs/")
-            os.system(f"cp {self.pool}/main/g/grub-efi-amd64-signed/* /target/debs/")
-            os.system(f"cp {self.pool}/main/s/shim*/* /target/debs/")
-            self.do_run_in_chroot("DEBIAN_FRONTEND=noninteractive apt-get remove --purge --yes grub-pc")
+            EFI_PACKAGES = [
+                "grub-efi-amd64",
+                "grub-efi-amd64-bin",
+                "grub-efi-amd64-signed",
+                "shim-signed",
+            ]
+            for pkg in EFI_PACKAGES:
+                matches = glob.glob(f"{self.pool}/main/**/{pkg}_*.deb", recursive=True)
+                if not matches:
+                    raise Exception(f"Missing EFI package: {pkg}")
+                os.system(f"cp {max(matches)} /target/debs/")
+
+            self.do_run_in_chroot("DEBIAN_FRONTEND=noninteractive apt-get remove --purge --yes grub-pc grub-pc-bin grub-gfxpayload-lists")
             self.do_run_in_chroot("dpkg -i /debs/*")
             os.system("rm -rf /target/debs")
 
