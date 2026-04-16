@@ -592,9 +592,9 @@ class InstallerEngine:
                         if "ext" in fs:
                             fstab_mount_options = "rw,errors=remount-ro"
                         elif fs == "btrfs" and partition.mount_as == "/":
-                            fstab_mount_options = "subvol=@,defaults,noatime,compress=zstd:1,discard=async"
+                            fstab_mount_options = "subvol=@,defaults,noatime,compress=zstd:1"
                         elif fs == "btrfs" and partition.mount_as == "/home":
-                            fstab_mount_options = "subvol=@home,defaults,noatime,compress=zstd:1,discard=async"
+                            fstab_mount_options = "subvol=@home,defaults,noatime,compress=zstd:1"
                         else:
                             fstab_mount_options = "defaults"
 
@@ -606,7 +606,7 @@ class InstallerEngine:
 
                         if fs == "btrfs" and partition.mount_as == "/" and not self.setup_has_dedicated_home():
                             # Special case, if / is btrfs and there is no dedicated /home, add the @home subvolume to /
-                            fstab.write("%s\t%s\t%s\t%s\t%s\t%s\n" % (partition_uuid, "/home", "btrfs", "subvol=@home,defaults,noatime,compress=zstd:1,discard=async", "0", "0"))
+                            fstab.write("%s\t%s\t%s\t%s\t%s\t%s\n" % (partition_uuid, "/home", "btrfs", "subvol=@home,defaults,noatime,compress=zstd:1", "0", "0"))
         fstab.close()
 
     def write_mtab(self, fstab="/target/etc/fstab", mtab="/target/etc/mtab"):
