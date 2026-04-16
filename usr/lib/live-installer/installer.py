@@ -693,7 +693,7 @@ class InstallerEngine:
                 f.write("#! /bin/sh\n")
                 f.write("set -e\n\n")
                 f.write('GRUB_CMDLINE_LINUX="cryptdevice=%s:lvmmint root=/dev/mapper/lvmmint-root resume=/dev/mapper/lvmmint-swap"\n' % self.get_blkid(self.auto_root_physical_partition))
-            self.do_run_in_chroot("echo \"power/disk = shutdown\" >> /etc/sysfs.d/local.conf")
+            self.do_run_in_chroot("echo 'w /sys/power/disk - - - - shutdown' > /etc/tmpfiles.d/encrypted-swap.conf")
 
         # write MBR (grub)
         print(" --> Configuring Grub")
