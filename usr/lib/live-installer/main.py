@@ -747,9 +747,26 @@ class InstallerWindow:
 
     def build_kb_lists(self):
         ''' Do some xml kung-fu and load the keyboard stuffs '''
-        # Determine the layouts in use
-        (keyboard_geom,
-         self.setup.keyboard_layout) = subprocess.getoutput("setxkbmap -query | awk '/^(model|layout)/{print $2}'").split()
+        # Best-effort detection of the live session's current keyboard model
+        # and layout. If setxkbmap is unavailable or returns unexpected output
+        # (e.g. a shell error, or an environment where the X-protocol query
+        # fails), leave these as None so the dropdowns simply aren't
+        # pre-selected -- the downstream "except NameError" blocks already
+        # handle that gracefully. Crashing the installer here is much worse
+        # than asking the user to pick from the list.
+        keyboard_geom = None
+        self.setup.keyboard_layout = None
+        try:
+            for line in subprocess.getoutput("setxkbmap -query").splitlines():
+                parts = line.split()
+                if len(parts) < 2:
+                    continue
+                if parts[0] == "model:":
+                    keyboard_geom = parts[1]
+                elif parts[0] == "layout:":
+                    self.setup.keyboard_layout = parts[1]
+        except Exception:
+            pass
         # Build the models
         from collections import defaultdict
         def _ListStore_factory():
