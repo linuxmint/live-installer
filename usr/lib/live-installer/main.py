@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 from installer import InstallerEngine, Setup
-from dialogs import MessageDialog, QuestionDialog, ErrorDialog, WarningDialog
+from dialogs import MessageDialog, QuestionDialog, ErrorDialog, WarningDialog, ConfirmDialog
 import distro
 import timezones
 import partitioning
@@ -955,6 +955,27 @@ class InstallerWindow:
         if index == self.PAGE_CUSTOMWARNING:
             self.setup.skip_mount = True
 
+    def ensure_paths_unmounted(self, mounted):
+        # Offer to unmount any mounted partitions that would cause format to fail.
+        if not mounted:
+            return True
+        paths = ""
+        for p in mounted:
+            paths += f"{GLib.markup_escape_text(p)}\n"
+        title = _("Unmount required")
+        text = "<b>%s</b>" % _("The following partitions must be unmounted before proceeding:")
+
+        if not ConfirmDialog(title, text, paths, _("Unmount"), _("Cancel")):
+            return False
+
+        failed = partitioning.unmount_partitions(mounted)
+
+        if failed:
+            details = "\n".join(failed)
+            ErrorDialog(_("Installer"), _("Failed to unmount one or more partitions."), details)
+            return False
+        return True
+
     def wizard_cb(self, widget, goback, data=None):
         ''' wizard buttons '''
         sel = self.builder.get_object("notebook1").get_current_page()
@@ -1012,6 +1033,8 @@ class InstallerWindow:
             elif(sel == self.PAGE_TYPE):
                 if self.setup.automated:
                     if QuestionDialog(_("Warning"), _("This will delete all the data on %s. Are you sure?") % self.setup.diskname):
+                        if not self.ensure_paths_unmounted(partitioning.get_mounted_partitions_on_target_disk(self.setup.disk)):
+                            return
                         partitioning.build_partitions(self)
                         partitioning.build_grub_partitions()
                         self.activate_page(self.PAGE_ADVANCED)
@@ -1020,6 +1043,9 @@ class InstallerWindow:
                     partitioning.build_partitions(self)
             elif(sel == self.PAGE_PARTITIONS):
                 model = self.builder.get_object("treeview_disks").get_model()
+
+                if not self.ensure_paths_unmounted(partitioning.get_mounted_target_partitions(self.setup.partitions)):
+                    return
 
                 # Check for root partition
                 found_root_partition = False

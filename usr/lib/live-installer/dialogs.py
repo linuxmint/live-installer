@@ -46,3 +46,9 @@ def ErrorDialog(*args):
     dialog = Dialog(Gtk.MessageType.ERROR, Gtk.ButtonsType.NONE, *args)
     dialog.add_button(_("OK"), Gtk.ResponseType.OK)
     return dialog.show()
+
+def ConfirmDialog(title, text, text2, ok_label, cancel_label, style=Gtk.MessageType.WARNING):
+    dialog = Dialog(style, Gtk.ButtonsType.NONE, title, text, text2)
+    dialog.add_button(cancel_label, Gtk.ResponseType.CANCEL)
+    dialog.add_button(ok_label, Gtk.ResponseType.OK)
+    return dialog.show()

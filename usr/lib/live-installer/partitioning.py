@@ -52,6 +52,55 @@ RESOURCE_DIR = '/usr/share/live-installer/'
 EFI_MOUNT_POINT = '/boot/efi'
 SWAP_MOUNT_POINT = 'swap'
 
+def _active_swaps():
+    try:
+        with open('/proc/swaps', 'r') as f:
+            return [line.split()[0] for line in f.readlines()[1:] if line.split()]
+    except OSError:
+        return []
+
+def get_mounted_target_partitions(partitions):
+    mounted = []
+    swaps = _active_swaps()
+    for p in partitions:
+        if not p.format_as:
+            continue
+        target = subprocess.run(['findmnt', '-n', '-o', 'TARGET', '--source', p.path],
+                                capture_output=True, text=True).stdout.strip()
+        if (target and target != TMP_MOUNTPOINT) or p.path in swaps:
+            mounted.append(p.path)
+    return mounted
+
+def get_mounted_partitions_on_target_disk(disk_path):
+    # Return mounted device paths (including active swap) whose source
+    # begins with disk_path.
+    paths = []
+    output = subprocess.run(['findmnt', '-nro', 'SOURCE,TARGET'],
+                            capture_output=True, text=True).stdout
+    for line in output.splitlines():
+        parts = line.split(None, 1)
+        if len(parts) != 2:
+            continue
+        source, target = parts
+        if source.startswith(disk_path) and target != TMP_MOUNTPOINT:
+            paths.append(source)
+    for swap in _active_swaps():
+        if swap.startswith(disk_path) and swap not in paths:
+            paths.append(swap)
+    return paths
+
+def unmount_partitions(paths):
+    # Try to release each device path (umount, or swapoff for active swap).
+    # Returns a list of error strings.
+    failed = []
+    swaps = _active_swaps()
+    for path in paths:
+        cmd = ['swapoff', path] if path in swaps else ['umount', path]
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        if result.returncode != 0:
+            err = (result.stderr or result.stdout).strip() or _("unknown error")
+            failed.append(err)
+    return failed
 
 with open(RESOURCE_DIR + 'disk-partitions.html') as f:
     DISK_TEMPLATE = f.read()
