@@ -1349,6 +1349,21 @@ class InstallerWindow:
 
 # main entry
 if __name__ == "__main__":
+    # Unattended installation: --automated=<source> on the command line, or
+    # live-installer.auto=<source> on the kernel command line. Everything
+    # else falls through to the GUI unchanged.
+    cmdline = subprocess.getoutput("cat /proc/cmdline")
+    if ("live-installer.auto=" in cmdline
+            or any(arg.startswith("--automated") for arg in sys.argv)):
+        import auto_installer
+        auto_argv = []
+        for arg in sys.argv[1:]:
+            if arg.startswith("--automated="):
+                auto_argv += ["--config", arg.split("=", 1)[1]]
+            elif arg in ("--insecure", "--dry-run"):
+                auto_argv.append(arg)
+        sys.exit(auto_installer.main(auto_argv))
+
     expert_mode = "--expert-mode" in sys.argv
     oem_mode = "--oem-mode" in sys.argv
     oem_config = "--oem-config" in sys.argv

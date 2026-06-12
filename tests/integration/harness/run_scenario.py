@@ -45,7 +45,11 @@ DEFAULTS = {
     "disk_gb": 25,
     "install_timeout_s": 1800,
     "boot_timeout_s": 300,
-    "expect": {"serial_markers": ["Installation finished"]},
+    # success/failure markers printed by the headless driver
+    "expect": {
+        "serial_markers": ["Automated installation complete"],
+        "failure_markers": ["Automated installation FAILED"],
+    },
     "verify": [],
 }
 
@@ -141,10 +145,16 @@ def run_full(scenario, iso, workdir, scenario_dir):
         machine.start(iso=iso, boot="cdrom", firmware=scenario["firmware"],
                       tpm=scenario["tpm"], ssh_port=ssh_port, append=append)
         try:
+            success = scenario["expect"]["serial_markers"]
+            failure = scenario["expect"].get("failure_markers", [])
             marker = machine.wait_serial(
-                scenario["expect"]["serial_markers"],
+                success + failure,
                 scenario["install_timeout_s"],
             )
+            if marker in failure:
+                cases.append(("install", False,
+                              f"installer reported failure: {marker}"))
+                return cases
             cases.append(("install", True, f"matched: {marker}"))
         except (TimeoutError, vm.VMError) as exc:
             cases.append(("install", False, str(exc)))

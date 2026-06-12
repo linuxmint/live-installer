@@ -53,7 +53,10 @@ class InstallerEngine:
         fp = open("/target/dev/shm/.passwd", "w")
         fp.write(self.setup.username +  ":" + self.setup.password1 + "\n")
         fp.close()
-        self.do_run_in_chroot("cat /dev/shm/.passwd | chpasswd")
+        # password_is_crypted: password1 is a crypt(5) hash (unattended
+        # installs never carry plaintext); -e tells chpasswd it's pre-hashed
+        chpasswd = "chpasswd -e" if self.setup.password_is_crypted else "chpasswd"
+        self.do_run_in_chroot("cat /dev/shm/.passwd | %s" % chpasswd)
         self.runner.run("rm -f /target/dev/shm/.passwd")
 
         # Set autologin
@@ -832,6 +835,7 @@ class Setup(object):
     ecryptfs = False
     password1 = None
     password2 = None
+    password_is_crypted = False
     real_name = None
     grub_device = None
     disks = []

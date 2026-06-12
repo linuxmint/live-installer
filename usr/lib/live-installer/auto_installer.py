@@ -1,0 +1,410 @@
+#!/usr/bin/python3
+# coding: utf-8
+"""Headless driver for unattended installation.
+
+Sits beside the GTK InstallerWindow as a second consumer of
+InstallerEngine: it builds a Setup from a validated answer file
+(schema.py), resolves the target disk by stable attributes
+(diskmatch.py), registers console/log implementations of the engine's
+progress and error hooks, and runs the same
+start_installation()/finish_installation() sequence the GUI does.
+After the engine finishes, it re-enters the target to create any
+additional users, apply package changes and run post-install steps,
+honouring the answer file's per-failure-mode abort/continue policy.
+
+Answer-file sources: a local path, or an http(s) URL.  Plain HTTP is
+refused (answer files carry password hashes) unless --insecure is
+given.  On the kernel command line: live-installer.auto=<source>.
+"""
+
+import argparse
+import os
+import shlex
+import sys
+import urllib.error
+import urllib.request
+
+import diskmatch
+import schema
+from commandrunner import CommandRunner
+
+FINAL_MARKER = "Automated installation complete"
+FAILURE_MARKER = "Automated installation FAILED"
+CMDLINE_KEY = "live-installer.auto="
+
+# Mirrors main.py's IS_MINT detection without importing the GTK module
+def _is_mint():
+    try:
+        import distro
+        like = distro.like()
+    except ImportError:
+        like = ""
+    return (
+        os.path.exists("/usr/share/doc/ubuntu-system-adjustments/copyright")
+        or "ubuntu" in like
+    )
+
+
+class InstallationFailed(Exception):
+    pass
+
+
+def fetch_answer_file(source, insecure=False):
+    """Return the text of the answer file from a path or URL."""
+    if source.startswith("http://") and not insecure:
+        raise schema.ConfigError(
+            "Refusing to fetch the answer file over plain HTTP: it contains "
+            "password hashes. Use https://, or pass --insecure if you "
+            "accept the risk."
+        )
+    if source.startswith(("http://", "https://")):
+        try:
+            with urllib.request.urlopen(source, timeout=60) as response:
+                return response.read().decode("utf-8")
+        except (urllib.error.URLError, OSError) as exc:
+            raise schema.ConfigError(
+                f"Could not fetch answer file from {source}: {exc}"
+            )
+    try:
+        with open(source, encoding="utf-8") as f:
+            return f.read()
+    except OSError as exc:
+        raise schema.ConfigError(f"Cannot read answer file {source}: {exc}")
+
+
+def cmdline_source(cmdline_path="/proc/cmdline"):
+    """Extract the answer-file source from the kernel command line."""
+    try:
+        with open(cmdline_path) as f:
+            cmdline = f.read()
+    except OSError:
+        return None
+    for token in cmdline.split():
+        if token.startswith(CMDLINE_KEY):
+            return token[len(CMDLINE_KEY):]
+    return None
+
+
+def build_setup(config, *, disk=None, efi=None, is_mint=None):
+    """Map a validated AutoInstallConfig onto the engine's Setup object.
+
+    disk/efi/is_mint are injectable for tests; by default the disk is
+    resolved from the config's match expression and EFI/edition are
+    detected from the running system.
+    """
+    import installer
+    import partitioning
+
+    setup = installer.Setup()
+    setup.automated = True
+    setup.skip_mount = False
+    setup.is_mint = _is_mint() if is_mint is None else is_mint
+
+    setup.language = config.locale.language.split(".")[0]
+    setup.timezone = config.locale.timezone
+    setup.keyboard_model = config.keyboard.model
+    setup.keyboard_layout = config.keyboard.layout
+    setup.keyboard_variant = config.keyboard.variant
+    setup.hostname = config.network.hostname or "mint"
+
+    primary = config.users[0]
+    setup.username = primary.username
+    setup.real_name = primary.full_name or primary.username
+    setup.password1 = primary.password_crypted
+    setup.password2 = primary.password_crypted
+    setup.password_is_crypted = True
+    setup.autologin = primary.autologin
+    setup.ecryptfs = primary.ecryptfs_home
+
+    setup.lvm = config.storage.layout in ("lvm", "lvm-on-luks")
+    setup.luks = config.storage.layout == "lvm-on-luks"
+    if setup.luks:
+        luks = config.storage.luks
+        if luks.passphrase_source == "keyfile":
+            try:
+                with open(luks.keyfile, encoding="utf-8") as f:
+                    passphrase = f.read().strip()
+            except OSError as exc:
+                raise schema.ConfigError(
+                    f"Cannot read LUKS keyfile {luks.keyfile}: {exc}"
+                )
+            if not passphrase:
+                raise schema.ConfigError(
+                    f"LUKS keyfile {luks.keyfile} is empty"
+                )
+            setup.passphrase1 = setup.passphrase2 = passphrase
+        else:
+            raise schema.ConfigError(
+                f"passphrase_source: {luks.passphrase_source} is not yet "
+                "implemented in the headless driver (use 'keyfile')"
+            )
+
+    setup.disk = disk or diskmatch.resolve_disk(config.storage.target.match)
+    setup.diskname = os.path.basename(setup.disk)
+    setup.grub_device = setup.disk
+    setup.gptonefi = partitioning.is_efi_supported() if efi is None else efi
+    setup.oem_mode = config.oem.enabled
+    return setup
+
+
+class HeadlessDriver:
+    """Drives InstallerEngine without a GUI."""
+
+    def __init__(self, config, runner=None, engine_factory=None):
+        self.config = config
+        self._log_file = None
+        self._serial = None
+        self._failed = False
+        self._open_logs()
+        self.runner = runner or CommandRunner(log=self.log)
+        self._engine_factory = engine_factory
+
+    # -- logging / hooks ---------------------------------------------------
+
+    def _open_logs(self):
+        logging_cfg = self.config.logging
+        try:
+            os.makedirs(os.path.dirname(logging_cfg.destination), exist_ok=True)
+            self._log_file = open(logging_cfg.destination, "a", buffering=1)
+        except OSError:
+            self._log_file = None
+        if logging_cfg.also_serial:
+            try:
+                device = logging_cfg.also_serial
+                if not device.startswith("/dev/"):
+                    device = "/dev/" + device
+                self._serial = open(device, "w", buffering=1)
+            except OSError:
+                self._serial = None
+
+    def log(self, message):
+        line = str(message)
+        print(line, flush=True)
+        for sink in (self._log_file, self._serial):
+            if sink is not None:
+                try:
+                    sink.write(line + "\n")
+                except OSError:
+                    pass
+
+    def on_progress(self, percentage, pulse, done, message):
+        self.log(f"[{percentage:3d}%] {message}")
+
+    def on_error(self, message=""):
+        self._failed = True
+        self.log(f"ERROR: {message}")
+
+    # -- failure policy ----------------------------------------------------
+
+    def _policy(self, failure_mode, what):
+        """Apply the answer file's abort/continue policy for a failure."""
+        policy = getattr(self.config.on_failure, failure_mode)
+        if policy == "abort":
+            raise InstallationFailed(f"{what} (on_failure.{failure_mode}: abort)")
+        self.log(f"WARNING: {what} — continuing (on_failure.{failure_mode})")
+
+    # -- post-engine steps -------------------------------------------------
+
+    def _mount_chroot(self):
+        for command in (
+            "mount --bind /dev/ /target/dev/",
+            "mount --bind /dev/pts /target/dev/pts",
+            "mount --bind /sys/ /target/sys/",
+            "mount --bind /proc/ /target/proc/",
+            "mount --bind /run/ /target/run/",
+            "cp -f /etc/resolv.conf /target/etc/resolv.conf",
+        ):
+            self.runner.run(command)
+
+    def _unmount_chroot(self):
+        for command in (
+            "umount --force /target/dev/pts",
+            "umount --force /target/dev/",
+            "umount --force /target/sys/",
+            "umount --force /target/proc/",
+            "umount --force /target/run/",
+        ):
+            self.runner.run(command)
+
+    def _create_extra_users(self):
+        for user in self.config.users[1:]:
+            self.log(f" --> Creating additional user {user.username}")
+            gecos = (user.full_name or user.username).replace('"', "'")
+            rc = self.runner.chroot(
+                f'adduser --disabled-password --gecos "{gecos}" {user.username}'
+            )
+            if rc != 0:
+                self._policy("post_install_script_failure",
+                             f"adduser {user.username} failed")
+                continue
+            # Write the hash via a file, exactly like the engine does for the
+            # primary user: crypt hashes contain '$' and must never pass
+            # through a shell.
+            with open("/target/dev/shm/.passwd", "w") as fp:
+                fp.write(user.username + ":" + user.password_crypted + "\n")
+            self.runner.chroot("cat /dev/shm/.passwd | chpasswd -e")
+            self.runner.run("rm -f /target/dev/shm/.passwd")
+            if user.sudo:
+                self.runner.chroot(f"adduser {user.username} sudo")
+
+    def _apply_apt_steps(self):
+        packages = self.config.packages
+        sources_changed = False
+        for step in self.config.post_install:
+            if hasattr(step, "apt_key_url"):
+                name = os.path.basename(step.apt_key_url) or "extra-key"
+                rc = self.runner.chroot(
+                    f"wget -O /etc/apt/trusted.gpg.d/{name} "
+                    + shlex.quote(step.apt_key_url)
+                )
+                if rc != 0:
+                    self._policy("network_unavailable",
+                                 f"fetching {step.apt_key_url} failed")
+                sources_changed = True
+            elif hasattr(step, "apt_source"):
+                self.runner.chroot(
+                    f"echo {shlex.quote(step.apt_source)} "
+                    ">> /etc/apt/sources.list.d/live-installer-auto.list"
+                )
+                sources_changed = True
+
+        if packages.add or sources_changed:
+            rc = self.runner.chroot("apt-get update")
+            if rc != 0:
+                self._policy("network_unavailable", "apt-get update failed")
+        if packages.add:
+            self.log(" --> Installing packages: " + " ".join(packages.add))
+            rc = self.runner.chroot(
+                "DEBIAN_FRONTEND=noninteractive apt-get install -y "
+                + " ".join(shlex.quote(p) for p in packages.add)
+            )
+            if rc != 0:
+                self._policy("package_install_failure",
+                             "package installation failed")
+        if packages.remove:
+            self.log(" --> Removing packages: " + " ".join(packages.remove))
+            rc = self.runner.chroot(
+                "DEBIAN_FRONTEND=noninteractive apt-get remove --purge -y "
+                + " ".join(shlex.quote(p) for p in packages.remove)
+            )
+            if rc != 0:
+                self._policy("package_install_failure",
+                             "package removal failed")
+
+    def _run_shell_steps(self):
+        for step in self.config.post_install:
+            if not hasattr(step, "shell"):
+                continue
+            script = step.shell
+            self.log(f" --> Running post-install script {script}")
+            if os.path.exists(script):
+                # script lives in the live environment (e.g. on the install
+                # media) — copy it into the target so the chroot can see it
+                self.runner.run(f"cp {shlex.quote(script)} /target/tmp/")
+                target_path = "/tmp/" + os.path.basename(script)
+                rc = self.runner.chroot(f"sh {target_path}")
+                self.runner.run(f"rm -f /target{target_path}")
+            else:
+                rc = self.runner.chroot(f"sh {shlex.quote(script)}")
+            if rc != 0:
+                self._policy("post_install_script_failure",
+                             f"{script} exited {rc}")
+
+    # -- main flow ----------------------------------------------------------
+
+    def run(self, setup=None):
+        """Run the full unattended installation.  Returns an exit code."""
+        import installer
+
+        try:
+            if setup is None:
+                setup = build_setup(self.config)
+            self.log(f" --> Target disk: {setup.disk}")
+            setup.print_setup()
+
+            if self._engine_factory is not None:
+                engine = self._engine_factory(setup, self.runner)
+            else:
+                engine = installer.InstallerEngine(setup, runner=self.runner)
+            engine.set_progress_hook(self.on_progress)
+            engine.set_error_hook(self.on_error)
+
+            engine.start_installation()
+            if self._failed:
+                raise InstallationFailed("engine error during installation")
+            engine.finish_installation()
+            if self._failed:
+                raise InstallationFailed("engine error during finalization")
+
+            if (len(self.config.users) > 1 or self.config.packages.add
+                    or self.config.packages.remove or self.config.post_install):
+                self.log(" --> Applying post-install configuration")
+                self._mount_chroot()
+                try:
+                    self._create_extra_users()
+                    self._apply_apt_steps()
+                    self._run_shell_steps()
+                finally:
+                    self._unmount_chroot()
+        except (schema.ConfigError, diskmatch.DiskMatchError,
+                InstallationFailed) as exc:
+            self.log(f"ERROR: {exc}")
+            self.log(FAILURE_MARKER)
+            return 1
+        except Exception as exc:  # never die silently on a target machine
+            self.log(f"ERROR: unexpected failure: {exc!r}")
+            self.log(FAILURE_MARKER)
+            return 1
+
+        self.log(FINAL_MARKER)
+        return 0
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(
+        prog="live-installer --automated",
+        description="Unattended installation from a YAML answer file",
+    )
+    parser.add_argument(
+        "--config",
+        help="answer file path or URL (default: live-installer.auto= "
+             "from the kernel command line)",
+    )
+    parser.add_argument(
+        "--insecure", action="store_true",
+        help="allow fetching the answer file over plain HTTP",
+    )
+    parser.add_argument(
+        "--dry-run", action="store_true",
+        help="validate the answer file and resolve the target disk, "
+             "then exit without installing",
+    )
+    args = parser.parse_args(argv)
+
+    source = args.config or cmdline_source()
+    if not source:
+        parser.error(
+            f"no answer file: pass --config or boot with {CMDLINE_KEY}<source>"
+        )
+
+    try:
+        config = schema.parse_config(fetch_answer_file(source, args.insecure))
+    except schema.ConfigError as exc:
+        print(f"ERROR: {exc}", flush=True)
+        print(FAILURE_MARKER, flush=True)
+        return 1
+
+    if args.dry_run:
+        try:
+            setup = build_setup(config)
+        except (schema.ConfigError, diskmatch.DiskMatchError) as exc:
+            print(f"ERROR: {exc}", flush=True)
+            return 1
+        print(f"Answer file OK; would install to {setup.disk}", flush=True)
+        return 0
+
+    return HeadlessDriver(config).run()
+
+
+if __name__ == "__main__":
+    sys.exit(main())
