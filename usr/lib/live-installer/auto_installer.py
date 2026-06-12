@@ -247,6 +247,23 @@ class HeadlessDriver:
             if user.sudo:
                 self.runner.chroot(f"adduser {user.username} sudo")
 
+    def _apply_ssh_keys(self):
+        for user in self.config.users:
+            if not user.ssh_authorized_keys:
+                continue
+            self.log(f" --> Installing SSH keys for {user.username}")
+            ssh_dir = f"/home/{user.username}/.ssh"
+            self.runner.chroot(f"mkdir -p {ssh_dir}")
+            # written via /target to keep key material out of shell commands
+            with open(f"/target{ssh_dir}/authorized_keys", "a") as fp:
+                for key in user.ssh_authorized_keys:
+                    fp.write(key.rstrip("\n") + "\n")
+            self.runner.chroot(f"chmod 700 {ssh_dir}")
+            self.runner.chroot(f"chmod 600 {ssh_dir}/authorized_keys")
+            self.runner.chroot(
+                f"chown -R {user.username}:{user.username} {ssh_dir}"
+            )
+
     def _apply_apt_steps(self):
         packages = self.config.packages
         sources_changed = False
@@ -336,12 +353,18 @@ class HeadlessDriver:
             if self._failed:
                 raise InstallationFailed("engine error during finalization")
 
-            if (len(self.config.users) > 1 or self.config.packages.add
-                    or self.config.packages.remove or self.config.post_install):
+            needs_post = (
+                len(self.config.users) > 1
+                or any(user.ssh_authorized_keys for user in self.config.users)
+                or self.config.packages.add or self.config.packages.remove
+                or self.config.post_install
+            )
+            if needs_post:
                 self.log(" --> Applying post-install configuration")
                 self._mount_chroot()
                 try:
                     self._create_extra_users()
+                    self._apply_ssh_keys()
                     self._apply_apt_steps()
                     self._run_shell_steps()
                 finally:

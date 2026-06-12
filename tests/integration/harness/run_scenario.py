@@ -19,6 +19,7 @@ import argparse
 import http.server
 import shutil
 import socketserver
+import subprocess
 import sys
 import threading
 import time
@@ -29,12 +30,14 @@ from xml.sax.saxutils import escape
 import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import isotools  # noqa: E402
 import verify_install  # noqa: E402
 import vm  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
 INTEGRATION_DIR = HERE.parent
 DEFAULT_ISO = INTEGRATION_DIR / "fixtures" / "lmde-7-cinnamon-64bit.iso"
+DEFAULT_DEV_ISO = INTEGRATION_DIR / "fixtures" / "lmde-7-dev.iso"
 WORK_ROOT = INTEGRATION_DIR / ".work"
 
 DEFAULTS = {
@@ -119,9 +122,43 @@ def run_smoke(scenario, iso, workdir, smoke_seconds):
         machine.stop()
 
 
+def generate_ssh_key(workdir):
+    """Per-run keypair; the public key is injected into the answer file."""
+    key = workdir / "id_ed25519"
+    subprocess.run(
+        ["ssh-keygen", "-t", "ed25519", "-N", "", "-q", "-f", str(key),
+         "-C", "live-installer-harness"],
+        check=True,
+    )
+    return key, (workdir / "id_ed25519.pub").read_text().strip()
+
+
+def stage_answer_file(scenario_dir, answer_rel, workdir, pubkey):
+    """Copy the scenario's answer file into a served directory, adding the
+    harness SSH public key to the first user so verify can log in."""
+    serve_dir = workdir / "serve"
+    target = serve_dir / answer_rel
+    target.parent.mkdir(parents=True, exist_ok=True)
+    with open(scenario_dir / answer_rel) as f:
+        answer = yaml.safe_load(f)
+    user = answer["users"][0]
+    user.setdefault("ssh_authorized_keys", []).append(pubkey)
+    with open(target, "w") as f:
+        yaml.safe_dump(answer, f, sort_keys=False)
+    return serve_dir
+
+
 def run_full(scenario, iso, workdir, scenario_dir):
     cases = []
-    httpd, http_port = serve_directory(scenario_dir)
+    answer = scenario.get("answer_file")
+    if not answer:
+        return [("install", False, "scenario has no answer_file")]
+
+    ssh_key, pubkey = generate_ssh_key(workdir)
+    serve_dir = stage_answer_file(scenario_dir, answer, workdir, pubkey)
+    kernel, initrd = isotools.extract_boot_files(iso, workdir / "boot")
+
+    httpd, http_port = serve_directory(serve_dir)
     try:
         machine = vm.VM(
             workdir,
@@ -132,18 +169,15 @@ def run_full(scenario, iso, workdir, scenario_dir):
         machine.create_disk(scenario["disk_gb"])
         ssh_port = vm.free_port()
 
-        # Phase 1: install from live media
-        # NOTE: requires the headless driver + answer-file support in the
-        # installer, plus direct-kernel boot to pass live-installer.auto=.
-        answer = scenario.get("answer_file")
-        append = None
-        if answer:
-            append = (
-                "boot=live components quiet "
-                f"live-installer.auto=http://10.0.2.2:{http_port}/{answer}"
-            )
+        # Phase 1: direct-kernel boot of the live ISO with the answer-file
+        # URL on the kernel command line (10.0.2.2 = the host)
+        append = (
+            "boot=live components console=ttyS0 "
+            f"live-installer.auto=http://10.0.2.2:{http_port}/{answer}"
+        )
         machine.start(iso=iso, boot="cdrom", firmware=scenario["firmware"],
-                      tpm=scenario["tpm"], ssh_port=ssh_port, append=append)
+                      tpm=scenario["tpm"], ssh_port=ssh_port,
+                      kernel=kernel, initrd=initrd, append=append)
         try:
             success = scenario["expect"]["serial_markers"]
             failure = scenario["expect"].get("failure_markers", [])
@@ -172,10 +206,11 @@ def run_full(scenario, iso, workdir, scenario_dir):
                               "SSH never came up on installed system"))
                 return cases
             cases.append(("first-boot", True, ""))
+            ssh_cfg = dict(scenario.get("ssh") or {})
+            ssh_cfg["key"] = str(ssh_key)
             cases.extend(
                 verify_install.run_assertions(
-                    "127.0.0.1", ssh_port, scenario.get("ssh", {}),
-                    scenario["verify"],
+                    "127.0.0.1", ssh_port, ssh_cfg, scenario["verify"],
                 )
             )
         finally:
@@ -188,7 +223,11 @@ def run_full(scenario, iso, workdir, scenario_dir):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("scenario", help="scenario YAML file")
-    parser.add_argument("--iso", default=str(DEFAULT_ISO))
+    parser.add_argument(
+        "--iso", default=None,
+        help="ISO to boot (default: stock ISO for --smoke, dev ISO "
+             "from make_test_iso.py for full runs)",
+    )
     parser.add_argument("--smoke", action="store_true",
                         help="boot the ISO and verify the VM stays up")
     parser.add_argument("--smoke-seconds", type=int, default=90)
@@ -199,9 +238,16 @@ def main():
 
     scenario_path = Path(args.scenario)
     scenario = load_scenario(scenario_path)
-    iso = Path(args.iso)
+    if args.iso:
+        iso = Path(args.iso)
+    elif args.smoke:
+        iso = DEFAULT_ISO
+    else:
+        iso = DEFAULT_DEV_ISO
     if not iso.exists():
-        sys.exit(f"ISO not found: {iso} (download it to fixtures/ first)")
+        hint = ("download it to fixtures/ first" if args.smoke or args.iso
+                else "build it with harness/make_test_iso.py first")
+        sys.exit(f"ISO not found: {iso} ({hint})")
 
     workdir = WORK_ROOT / scenario["name"]
     if workdir.exists():
