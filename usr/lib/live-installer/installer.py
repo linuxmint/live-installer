@@ -443,7 +443,7 @@ class InstallerEngine:
         self.update_progress(25, False, False, _("Creating partitions on %s") % self.setup.disk)
         print(" --> Creating partitions on %s" % self.setup.disk)
         disk_device = parted.getDevice(self.setup.disk)
-        partitioning.full_disk_format(disk_device, create_boot=(self.auto_boot_partition is not None), create_swap=(self.auto_swap_partition is not None))
+        partitioning.full_disk_format(disk_device, self.setup, create_boot=(self.auto_boot_partition is not None), create_swap=(self.auto_swap_partition is not None))
 
         # Encrypt root partition
         if self.setup.luks:

@@ -415,7 +415,7 @@ def get_device_naming_scheme_prefix(device_name):
     else:
         return ""
 
-def full_disk_format(device, create_boot=False, create_swap=True):
+def full_disk_format(device, setup, create_boot=False, create_swap=True):
     # If some LVM volumes use the selected device, remove them.
     try:
         output = subprocess.getoutput("pvs --reportformat json")
@@ -437,7 +437,7 @@ def full_disk_format(device, create_boot=False, create_swap=True):
     os.system("umount -R /target 2>/dev/null || true")
     # Create a default partition set up
     disk_label = ('gpt' if device.getLength('B') > 2**32*.9 * device.sectorSize  # size of disk > ~2TB
-                           or installer.setup.gptonefi
+                           or setup.gptonefi
                         else 'msdos')
     return_code = os.system("parted -s %s mklabel %s" % (device.path, disk_label))
     if return_code != 0:
@@ -446,7 +446,7 @@ def full_disk_format(device, create_boot=False, create_swap=True):
     mkpart = (
         # (condition, mount_as, format_as, mkfs command, size_mb)
         # EFI
-        (installer.setup.gptonefi, EFI_MOUNT_POINT, 'vfat', 'mkfs.vfat {} -F 32 ', 300),
+        (setup.gptonefi, EFI_MOUNT_POINT, 'vfat', 'mkfs.vfat {} -F 32 ', 300),
         # boot
         (create_boot, '/boot', 'ext4', 'mkfs.ext4 -F {}', 1024),
         # swap - equal to RAM for hibernate to work well (but capped at ~8GB)
@@ -483,7 +483,7 @@ def full_disk_format(device, create_boot=False, create_swap=True):
             print(mkfs)
             os.system(mkfs)
             start_mb += size_mb + 1
-    if installer.setup.gptonefi:
+    if setup.gptonefi:
         run_parted('set 1 boot on')
     return ((i[1], i[2]) for i in mkpart if i[0])
 
