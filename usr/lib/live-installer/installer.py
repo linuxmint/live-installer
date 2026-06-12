@@ -633,7 +633,7 @@ class InstallerEngine:
         if self.setup.luks:
             self.runner.run(f"echo 'lvmmint   {self.get_blkid(self.auto_root_physical_partition)}   none   luks,discard,tries=3' >> {path}")
 
-    def finish_installation(self):
+    def finish_installation(self, before_unmount_hook=None):
 
         self.update_progress(50, False, False, _("Setting hostname"))
         self.setup_hostname()
@@ -727,6 +727,12 @@ class InstallerEngine:
         # Clean APT
         self.update_progress(95, True, False, _("Cleaning APT"))
         self.clean_apt()
+
+        # Give the caller a chance to act on the fully-configured system
+        # while the chroot is still mounted and has network access (the
+        # headless driver applies extra users / packages / scripts here)
+        if before_unmount_hook is not None:
+            before_unmount_hook()
 
         # now unmount it
         print(" --> Unmounting partitions")

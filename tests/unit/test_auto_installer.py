@@ -180,10 +180,15 @@ class FakeEngine:
         if self.fail_in == "start":
             self._error_hook(message="boom in start")
 
-    def finish_installation(self):
+    def finish_installation(self, before_unmount_hook=None):
         self.calls.append("finish")
         if self.fail_in == "finish":
             self._error_hook(message="boom in finish")
+            return
+        # mirror the real engine: hook runs while the chroot is mounted
+        if before_unmount_hook is not None:
+            self.calls.append("hook")
+            before_unmount_hook()
 
 
 def make_driver(config, fail_in=None):
@@ -253,11 +258,6 @@ class TestHeadlessDriver:
         chroots = [c for c in runner.commands if c.startswith("chroot")]
         assert any("apt-get update" in c for c in chroots)
         assert any("apt-get install -y openssh-server" in c for c in chroots)
-        # chroot was mounted and unmounted around the steps
-        assert any("mount --bind /proc/ /target/proc/" in c
-                   for c in runner.commands)
-        assert any("umount --force /target/proc/" in c
-                   for c in runner.commands)
 
     def test_package_failure_policy_abort(self, tmp_path):
         config = make_config(
