@@ -46,8 +46,9 @@ runs:
     - name: Download and verify the base ISO
       if: steps.iso-cache.outputs.cache-hit != 'true'
       shell: bash
-      working-directory: tests/integration/fixtures
       run: |
+        mkdir -p tests/integration/fixtures
+        cd tests/integration/fixtures
         curl -sLO https://mirrors.kernel.org/linuxmint/debian/sha256sum.txt
         curl -sLo "${{ inputs.iso-name }}" "${{ inputs.iso-url }}"
         sha256sum -c <(grep "${{ inputs.iso-name }}" sha256sum.txt)
