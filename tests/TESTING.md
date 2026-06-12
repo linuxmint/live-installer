@@ -219,6 +219,34 @@ the relevant code.
   parses them against the schema so the two can't drift; if you change
   the schema, update the fixtures.
 
+## Mint vs LMDE coverage
+
+The engine reads the live filesystem and the grub-title script from
+different places depending on edition (`Setup.is_mint`):
+
+| | Mint (Ubuntu/casper) | LMDE (Debian/live-boot) |
+|---|---|---|
+| squashfs / kernel | `/cdrom/casper` | `/run/live/medium/live` |
+| grub-title script | `ubuntu-system-adjustments` | `debian-system-adjustments` |
+
+**Integration tests currently cover the LMDE branch only**, because LMDE
+is the edition that ships `live-installer` today. Mint does not adopt it
+until Mint 23. The `is_mint=True` path-selection is covered by unit tests
+(`TestEditionPaths`) so a wrong path can't regress silently, but it is
+not yet exercised end-to-end.
+
+To add Mint-side integration coverage:
+
+- A Mint ISO's live session is **casper**-based, not Debian live-boot, so
+  `isotools.build_dev_iso` (which adds an overlay squashfs under `/live`
+  for live-boot to union-mount) needs a casper variant — casper layers
+  squashfs differently and the installer autostart differs.
+- Until a Mint 23 ISO exists, the Mint 22.x beta can stand in as a
+  *casper environment* proxy (it exercises the same `is_mint=True` paths)
+  even though Ubiquity, not live-installer, is its native installer.
+- This is best validated against the **Mint 23 beta** when it lands; its
+  live environment is the real target and may differ from 22.x.
+
 ## CI
 
 Two GitHub Actions workflows (`.github/workflows/`):

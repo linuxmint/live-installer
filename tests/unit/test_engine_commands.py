@@ -77,6 +77,42 @@ class TestEngineWiring:
         assert engine.get_blkid("/dev/sda9") == "/dev/sda9"
 
 
+class TestEditionPaths:
+    """The engine reads the live filesystem and grub-title script from
+    different locations on Mint (Ubuntu/casper) vs LMDE (Debian/live-boot).
+    Integration tests only ever exercise the LMDE branch, so pin both here
+    — a wrong path on Mint 23 would otherwise go unnoticed until release."""
+
+    def test_lmde_paths(self):
+        setup = installer.Setup()
+        setup.is_mint = False
+        engine = installer.InstallerEngine(setup, runner=RecordingRunner())
+        assert engine.casper == "/run/live/medium/live"
+        assert engine.pool == "/run/live/medium/pool"
+        assert engine.manifest == "/run/live/medium/live/filesystem.packages"
+        assert "debian-system-adjustments" in engine.grub_adjustment_script
+
+    def test_mint_paths(self):
+        setup = installer.Setup()
+        setup.is_mint = True
+        engine = installer.InstallerEngine(setup, runner=RecordingRunner())
+        assert engine.casper == "/cdrom/casper"
+        assert engine.pool == "/cdrom/pool"
+        assert engine.manifest == "/cdrom/casper/filesystem.manifest"
+        assert "ubuntu-system-adjustments" in engine.grub_adjustment_script
+
+    def test_squashfs_path_follows_edition(self):
+        # the media mounted in start_installation is <casper>/filesystem.squashfs
+        for is_mint, expected in [
+            (False, "/run/live/medium/live/filesystem.squashfs"),
+            (True, "/cdrom/casper/filesystem.squashfs"),
+        ]:
+            setup = installer.Setup()
+            setup.is_mint = is_mint
+            engine = installer.InstallerEngine(setup, runner=RecordingRunner())
+            assert f"{engine.casper}/filesystem.squashfs" == expected
+
+
 class TestCommandRunner:
     def test_run_returns_exit_code(self):
         runner = CommandRunner(log=lambda *a: None)
