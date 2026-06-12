@@ -1,0 +1,27 @@
+# UEFI firmware, LVM-on-LUKS layout, passphrase from a keyfile URL.
+#
+# The boot/verify phase is skipped: the installed system prompts for the
+# LUKS passphrase at the initramfs, which needs interactive serial
+# support in the harness (planned). The install phase still exercises
+# luksFormat, LVM-on-LUKS stacking, crypttab and grub-efi.
+name: uefi-lvm-luks
+description: Unattended UEFI install with LUKS-encrypted LVM
+
+firmware: uefi
+tpm: false
+memory_mb: 4096
+cpus: 2
+disk_gb: 25
+
+answer_file: answers/uefi-lvm-luks.yaml
+
+install_timeout_s: 1800
+
+skip_boot_phase: true
+skip_boot_reason: "LUKS unlock at initramfs needs interactive serial (TODO)"
+
+expect:
+  serial_markers:
+    - "Automated installation complete"
+  failure_markers:
+    - "Automated installation FAILED"

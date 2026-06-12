@@ -52,12 +52,17 @@ class InstallationFailed(Exception):
 
 
 def fetch_answer_file(source, insecure=False):
-    """Return the text of the answer file from a path or URL."""
+    """Return the text of an unattended-install file from a path or URL.
+
+    Used for the answer file and for LUKS keyfiles — both carry secrets,
+    so plain HTTP is refused unless explicitly opted into.
+    """
     if source.startswith("http://") and not insecure:
         raise schema.ConfigError(
-            "Refusing to fetch the answer file over plain HTTP: it contains "
-            "password hashes. Use https://, or pass --insecure if you "
-            "accept the risk."
+            f"Refusing to fetch {source} over plain HTTP: unattended-install "
+            "files carry secrets (password hashes, key material). Use "
+            "https://, or pass --insecure / boot with "
+            f"{CMDLINE_INSECURE} if you accept the risk."
         )
     if source.startswith(("http://", "https://")):
         try:
@@ -65,13 +70,13 @@ def fetch_answer_file(source, insecure=False):
                 return response.read().decode("utf-8")
         except (urllib.error.URLError, OSError) as exc:
             raise schema.ConfigError(
-                f"Could not fetch answer file from {source}: {exc}"
+                f"Could not fetch {source}: {exc}"
             )
     try:
         with open(source, encoding="utf-8") as f:
             return f.read()
     except OSError as exc:
-        raise schema.ConfigError(f"Cannot read answer file {source}: {exc}")
+        raise schema.ConfigError(f"Cannot read {source}: {exc}")
 
 
 def cmdline_source(cmdline_path="/proc/cmdline"):
@@ -96,7 +101,7 @@ def cmdline_insecure(cmdline_path="/proc/cmdline"):
         return False
 
 
-def build_setup(config, *, disk=None, efi=None, is_mint=None):
+def build_setup(config, *, disk=None, efi=None, is_mint=None, insecure=False):
     """Map a validated AutoInstallConfig onto the engine's Setup object.
 
     disk/efi/is_mint are injectable for tests; by default the disk is
@@ -132,13 +137,10 @@ def build_setup(config, *, disk=None, efi=None, is_mint=None):
     if setup.luks:
         luks = config.storage.luks
         if luks.passphrase_source == "keyfile":
-            try:
-                with open(luks.keyfile, encoding="utf-8") as f:
-                    passphrase = f.read().strip()
-            except OSError as exc:
-                raise schema.ConfigError(
-                    f"Cannot read LUKS keyfile {luks.keyfile}: {exc}"
-                )
+            # The keyfile may be a local path (install media) or an http(s)
+            # URL (per-machine keyfiles from a provisioning server); URLs
+            # follow the same HTTPS-only rule as the answer file itself.
+            passphrase = fetch_answer_file(luks.keyfile, insecure).strip()
             if not passphrase:
                 raise schema.ConfigError(
                     f"LUKS keyfile {luks.keyfile} is empty"
@@ -161,8 +163,10 @@ def build_setup(config, *, disk=None, efi=None, is_mint=None):
 class HeadlessDriver:
     """Drives InstallerEngine without a GUI."""
 
-    def __init__(self, config, runner=None, engine_factory=None):
+    def __init__(self, config, runner=None, engine_factory=None,
+                 insecure=False):
         self.config = config
+        self.insecure = insecure
         self._log_file = None
         self._serial = None
         self._failed = False
@@ -345,7 +349,7 @@ class HeadlessDriver:
 
         try:
             if setup is None:
-                setup = build_setup(self.config)
+                setup = build_setup(self.config, insecure=self.insecure)
             self.log(f" --> Target disk: {setup.disk}")
             setup.print_setup()
 
@@ -430,14 +434,14 @@ def main(argv=None):
 
     if args.dry_run:
         try:
-            setup = build_setup(config)
+            setup = build_setup(config, insecure=insecure)
         except (schema.ConfigError, diskmatch.DiskMatchError) as exc:
             print(f"ERROR: {exc}", flush=True)
             return 1
         print(f"Answer file OK; would install to {setup.disk}", flush=True)
         return 0
 
-    return HeadlessDriver(config).run()
+    return HeadlessDriver(config, insecure=insecure).run()
 
 
 if __name__ == "__main__":
