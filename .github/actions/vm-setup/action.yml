@@ -1,0 +1,57 @@
+name: VM test setup
+description: >
+  Enable KVM, install QEMU/OVMF/swtpm and ISO tooling, fetch the pinned
+  LMDE ISO (cached), and build the dev ISO with the working-tree
+  installer. Leaves fixtures/lmde-7-dev.iso ready for run_scenario.py.
+
+inputs:
+  iso-name:
+    description: Base ISO filename under tests/integration/fixtures
+    default: lmde-7-cinnamon-64bit.iso
+  iso-url:
+    description: Download URL for the base ISO
+    default: https://mirrors.kernel.org/linuxmint/debian/lmde-7-cinnamon-64bit.iso
+
+runs:
+  using: composite
+  steps:
+    - name: Enable KVM for the runner user
+      shell: bash
+      run: |
+        echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
+          | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+        sudo udevadm control --reload-rules
+        sudo udevadm trigger --name-match=kvm
+        test -w /dev/kvm && echo "KVM is writable" || (echo "KVM not available"; exit 1)
+
+    - name: Install QEMU, OVMF, swtpm and ISO tooling
+      shell: bash
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y --no-install-recommends \
+          qemu-system-x86 qemu-utils ovmf swtpm swtpm-tools \
+          squashfs-tools xorriso openssh-client
+
+    - name: Install Python deps for the harness
+      shell: bash
+      run: pip install pyyaml
+
+    - name: Cache the base ISO
+      id: iso-cache
+      uses: actions/cache@v4
+      with:
+        path: tests/integration/fixtures/${{ inputs.iso-name }}
+        key: lmde-iso-${{ inputs.iso-name }}
+
+    - name: Download and verify the base ISO
+      if: steps.iso-cache.outputs.cache-hit != 'true'
+      shell: bash
+      working-directory: tests/integration/fixtures
+      run: |
+        curl -sLO https://mirrors.kernel.org/linuxmint/debian/sha256sum.txt
+        curl -sLo "${{ inputs.iso-name }}" "${{ inputs.iso-url }}"
+        sha256sum -c <(grep "${{ inputs.iso-name }}" sha256sum.txt)
+
+    - name: Build the dev ISO
+      shell: bash
+      run: python tests/integration/harness/make_test_iso.py
