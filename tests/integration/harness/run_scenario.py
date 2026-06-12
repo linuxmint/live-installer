@@ -243,9 +243,11 @@ def run_full(scenario, iso, workdir, scenario_dir):
                                                          "skip_boot_phase set"))))
             return cases
 
-        # Phase 2: boot the installed system and verify over SSH
+        # Phase 2: boot the installed system and verify over SSH. In a
+        # multi-disk VM, boot the disk the OS landed on (boot_disk_serial).
         machine.start(boot="disk", firmware=scenario["firmware"],
-                      tpm=scenario["tpm"], ssh_port=ssh_port)
+                      tpm=scenario["tpm"], ssh_port=ssh_port,
+                      boot_serial=scenario.get("boot_disk_serial"))
         try:
             # Encrypted installs prompt for the LUKS passphrase at the
             # initramfs; type it over serial as a real admin would via SOL.
