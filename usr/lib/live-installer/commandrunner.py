@@ -31,22 +31,33 @@ class CommandRunner:
     def __init__(self, log=print):
         self.log = log
 
-    def run(self, command, check=False, secrets=()):
+    def run(self, command, check=False, secrets=(), stdin=None):
         """Run a shell command; return its exit code (os.system replacement).
 
         Non-zero exit codes are logged.  With check=True a non-zero exit
         raises CommandError instead of being silently tolerated.
 
+        `stdin`, if given, is written to the command's standard input. This
+        is the safe channel for secrets (key material): unlike a command
+        argument it is never visible to `ps` and never reaches the logs.
+
         Any strings in `secrets` (and their shell-quoted forms) are
-        replaced with [REDACTED] in everything that gets logged — the
-        console, journal and serial log must never see key material.
+        replaced with [REDACTED] in everything that gets logged — a
+        belt-and-braces guard for cases where a secret must still appear in
+        the command itself. Prefer `stdin` over `secrets` whenever the tool
+        can read the secret from standard input.
         """
         loggable = command
         for secret in secrets:
             for needle in (shlex.quote(secret), secret):
                 loggable = loggable.replace(needle, "[REDACTED]")
         self.log("EXEC: %s" % loggable)
-        returncode = subprocess.call(command, shell=True)
+        if stdin is not None:
+            proc = subprocess.run(command, shell=True,
+                                  input=stdin.encode("utf-8"))
+            returncode = proc.returncode
+        else:
+            returncode = subprocess.call(command, shell=True)
         if returncode != 0:
             self.log("EXEC failed (rc=%d): %s" % (returncode, loggable))
             if check:
