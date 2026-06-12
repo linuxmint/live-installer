@@ -110,6 +110,16 @@ class TestCommandRunner:
         assert all("s3cret" not in line for line in logged)
         assert any("[REDACTED]" in line for line in logged)
 
+    def test_stdin_feeds_command_without_logging_it(self, tmp_path):
+        logged = []
+        runner = CommandRunner(log=logged.append)
+        out = tmp_path / "out"
+        # cat reads the secret from stdin; the command line never carries it
+        rc = runner.run(f"cat > {out}", stdin="luks-passphrase-xyz")
+        assert rc == 0
+        assert out.read_text() == "luks-passphrase-xyz"  # reached the command
+        assert all("luks-passphrase-xyz" not in line for line in logged)
+
     def test_chroot_command_shape(self):
         captured = []
         runner = CommandRunner(log=lambda *a: None)
