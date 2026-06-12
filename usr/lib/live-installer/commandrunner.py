@@ -9,6 +9,7 @@ historically did with os.system / subprocess.getoutput / subprocess.Popen:
 failures are logged but do not raise unless check=True is passed.
 """
 
+import shlex
 import subprocess
 
 
@@ -30,18 +31,26 @@ class CommandRunner:
     def __init__(self, log=print):
         self.log = log
 
-    def run(self, command, check=False):
+    def run(self, command, check=False, secrets=()):
         """Run a shell command; return its exit code (os.system replacement).
 
         Non-zero exit codes are logged.  With check=True a non-zero exit
         raises CommandError instead of being silently tolerated.
+
+        Any strings in `secrets` (and their shell-quoted forms) are
+        replaced with [REDACTED] in everything that gets logged — the
+        console, journal and serial log must never see key material.
         """
-        self.log("EXEC: %s" % command)
+        loggable = command
+        for secret in secrets:
+            for needle in (shlex.quote(secret), secret):
+                loggable = loggable.replace(needle, "[REDACTED]")
+        self.log("EXEC: %s" % loggable)
         returncode = subprocess.call(command, shell=True)
         if returncode != 0:
-            self.log("EXEC failed (rc=%d): %s" % (returncode, command))
+            self.log("EXEC failed (rc=%d): %s" % (returncode, loggable))
             if check:
-                raise CommandError(command, returncode)
+                raise CommandError(loggable, returncode)
         return returncode
 
     def output(self, command, check=False):

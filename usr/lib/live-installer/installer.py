@@ -448,9 +448,9 @@ class InstallerEngine:
         # Encrypt root partition
         if self.setup.luks:
             print(" --> Encrypting root partition %s" % self.auto_root_partition)
-            self.runner.run("echo -n %s | cryptsetup luksFormat -c aes-xts-plain64 -h sha256 -s 512 %s" % (shlex.quote(self.setup.passphrase1), self.auto_root_partition))
+            self.runner.run("echo -n %s | cryptsetup luksFormat -c aes-xts-plain64 -h sha256 -s 512 %s" % (shlex.quote(self.setup.passphrase1), self.auto_root_partition), secrets=[self.setup.passphrase1])
             print(" --> Opening root partition %s" % self.auto_root_partition)
-            self.runner.run("echo -n %s | cryptsetup luksOpen %s lvmmint" % (shlex.quote(self.setup.passphrase1), self.auto_root_partition))
+            self.runner.run("echo -n %s | cryptsetup luksOpen %s lvmmint" % (shlex.quote(self.setup.passphrase1), self.auto_root_partition), secrets=[self.setup.passphrase1])
             self.auto_root_partition = "/dev/mapper/lvmmint"
 
         # Setup LVM
