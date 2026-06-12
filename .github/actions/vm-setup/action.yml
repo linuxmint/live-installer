@@ -38,7 +38,7 @@ runs:
 
     - name: Cache the base ISO
       id: iso-cache
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: tests/integration/fixtures/${{ inputs.iso-name }}
         key: lmde-iso-${{ inputs.iso-name }}
