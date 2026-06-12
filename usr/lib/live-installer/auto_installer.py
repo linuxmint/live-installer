@@ -289,6 +289,16 @@ class HeadlessDriver:
             rc = self.runner.chroot("apt-get update")
             if rc != 0:
                 self._policy("network_unavailable", "apt-get update failed")
+            # On EFI installs the engine dpkg-installs the bootloader stack
+            # (shim-signed, grub-efi) from the ISO pool without its full
+            # dependency closure, leaving dpkg in a state apt refuses to
+            # build on. Complete it before installing anything else.
+            rc = self.runner.chroot(
+                "DEBIAN_FRONTEND=noninteractive apt-get install -f -y"
+            )
+            if rc != 0:
+                self.log("WARNING: apt-get install -f failed; "
+                         "continuing to package installation")
         if packages.add:
             self.log(" --> Installing packages: " + " ".join(packages.add))
             rc = self.runner.chroot(
