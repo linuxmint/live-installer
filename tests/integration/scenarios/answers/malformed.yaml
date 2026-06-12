@@ -1,0 +1,4 @@
+# Deliberately malformed: unbalanced brace + tab indentation.
+version: 1
+locale: {language: en_US.UTF-8
+	timezone: broken
