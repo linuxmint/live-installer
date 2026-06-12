@@ -19,6 +19,8 @@ Requires squashfs-tools and xorriso.
 
 import shutil
 import subprocess
+import sys
+import zipfile
 from pathlib import Path
 
 # Sorts after "filesystem.squashfs"; live-boot stacks images in sorted
@@ -64,6 +66,39 @@ def build_overlay_tree(source_tree, overlay_dir):
     return overlay_dir
 
 
+# Runtime deps of the headless installer that the stock live ISO does not
+# ship (they come from debian/control Depends when installed as a .deb).
+# LMDE 7 is Debian 13: Python 3.13 on x86_64.
+PYTHON_DEPS = ["pyyaml", "pydantic"]
+TARGET_PYTHON = "313"
+TARGET_PLATFORM = "manylinux_2_17_x86_64"
+
+
+def bundle_python_deps(overlay_dir, cache_dir):
+    """Download wheels for the target live system's Python and unpack them
+    into the overlay's dist-packages, standing in for the .deb Depends."""
+    wheel_dir = Path(cache_dir) / "wheels"
+    wheel_dir.mkdir(parents=True, exist_ok=True)
+    if not any(wheel_dir.glob("*.whl")):
+        _run([
+            sys.executable, "-m", "pip", "download", "-q",
+            "--only-binary", ":all:",
+            "--python-version", TARGET_PYTHON,
+            "--platform", TARGET_PLATFORM,
+            "-d", str(wheel_dir),
+            *PYTHON_DEPS,
+        ])
+    dist_packages = Path(overlay_dir) / "usr" / "lib" / "python3" / "dist-packages"
+    dist_packages.mkdir(parents=True, exist_ok=True)
+    for wheel in sorted(wheel_dir.glob("*.whl")):
+        with zipfile.ZipFile(wheel) as zf:
+            zf.extractall(dist_packages)
+    # zipfile does not preserve the +x/read bits the live system needs on
+    # shared objects; normalize everything to world-readable
+    for path in dist_packages.rglob("*"):
+        path.chmod(0o755 if path.is_dir() or path.suffix == ".so" else 0o644)
+
+
 def build_dev_iso(source_iso, source_tree, output_iso, workdir):
     """Create output_iso = source_iso + overlay squashfs with our code."""
     _require("mksquashfs", "squashfs-tools")
@@ -72,6 +107,7 @@ def build_dev_iso(source_iso, source_tree, output_iso, workdir):
     workdir.mkdir(parents=True, exist_ok=True)
 
     overlay_dir = build_overlay_tree(source_tree, workdir / "overlay")
+    bundle_python_deps(overlay_dir, workdir)
     overlay_squash = workdir / OVERLAY_NAME
     overlay_squash.unlink(missing_ok=True)
     _run([
