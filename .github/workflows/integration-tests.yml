@@ -12,11 +12,18 @@ on:
         required: false
         default: ""
 
+# A newer run supersedes an in-flight one on the same ref (these are
+# expensive; don't pile them up).
+concurrency:
+  group: integration-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   # Fast gate: the failure-mode scenarios abort in ~2 min and need no
   # successful install, so they run first and block the slow matrix.
   failure-modes:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/vm-setup
@@ -36,6 +43,7 @@ jobs:
   install-scenarios:
     needs: failure-modes
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     strategy:
       fail-fast: false
       matrix:
