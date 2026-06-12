@@ -145,6 +145,7 @@ class VM:
         kernel=None,
         initrd=None,
         append=None,
+        boot_serial=None,
     ):
         if self.process is not None:
             raise VMError("VM already running")
@@ -202,6 +203,11 @@ class VM:
             dev = f"virtio-blk-pci,drive={node}"
             if serial:
                 dev += f",serial={serial}"
+            # When booting from disk in a multi-disk VM, the firmware must
+            # boot the disk the OS was installed to — not whichever disk
+            # enumerates first. Pin it with bootindex.
+            if boot == "disk" and boot_serial is not None and serial == boot_serial:
+                dev += ",bootindex=0"
             cmd += ["-device", dev]
         if iso:
             cmd += ["-cdrom", str(iso)]

@@ -21,6 +21,11 @@ disks:
 install_timeout_s: 1800
 boot_timeout_s: 300
 
+# Phase 2 must boot the disk the OS was installed to, not the decoy
+# (which enumerates first). This is the test harness telling QEMU what
+# the firmware on a real machine would be configured to boot.
+boot_disk_serial: installtarget
+
 expect:
   serial_markers:
     - "Automated installation complete"
