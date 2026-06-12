@@ -295,6 +295,38 @@ class TestHeadlessDriver:
                        if "install -y openssh-server" in c)
         assert fix < install
 
+    def test_kernel_cmdline_applied_in_chroot(self, tmp_path):
+        config = make_config(
+            extra="""\
+                kernel:
+                  cmdline_extra: "console=ttyS0"
+            """,
+            logging_dest=str(tmp_path / "auto.log"),
+        )
+        # the step writes a helper into /target/tmp; redirect that write
+        target_tmp = tmp_path / "target-tmp"
+        target_tmp.mkdir()
+        driver, runner, engine = make_driver(config)
+        import builtins
+        real_open = builtins.open
+
+        def redir_open(path, *a, **k):
+            if isinstance(path, str) and path.startswith("/target/tmp/"):
+                path = str(target_tmp / path.split("/target/tmp/")[1])
+            return real_open(path, *a, **k)
+
+        builtins.open = redir_open
+        try:
+            setup = auto_installer.build_setup(
+                config, disk="/dev/vda", efi=False, is_mint=False)
+            rc = driver.run(setup=setup)
+        finally:
+            builtins.open = real_open
+        assert rc == 0
+        chroots = [c for c in runner.commands if c.startswith("chroot")]
+        assert any("_cmdline.py" in c for c in chroots)
+        assert any("update-grub" in c for c in chroots)
+
     def test_package_failure_policy_abort(self, tmp_path):
         config = make_config(
             extra="""\

@@ -1,0 +1,49 @@
+# BIOS, two disks, by-id selection of the SECOND disk.
+#
+# Proves the installer targets the disk named by its stable by-id, not
+# whichever the kernel enumerated first — the failure this design exists
+# to prevent (wiping the wrong disk). The decoy disk (vda) is larger and
+# first, so any "biggest" or "first" heuristic would pick it instead.
+name: bios-multi-disk
+description: Unattended BIOS install selecting the target disk by by-id
+
+firmware: bios
+tpm: false
+memory_mb: 4096
+cpus: 2
+
+disks:
+  - size_gb: 30           # vda — decoy: first and largest
+    serial: systemdecoy
+  - size_gb: 20           # vdb — the actual target
+    serial: installtarget
+
+install_timeout_s: 1800
+boot_timeout_s: 300
+
+expect:
+  serial_markers:
+    - "Automated installation complete"
+  failure_markers:
+    - "Automated installation FAILED"
+
+answer_file: answers/bios-multi-disk.yaml
+
+ssh:
+  user: testuser
+
+verify:
+  - name: hostname-applied
+    type: command
+    command: hostname
+    expect_substring: "lmde-multidisk-01"
+  - name: root-on-target-disk-by-serial
+    # the disk holding / must be the one with serial 'installtarget'
+    type: command
+    command: "lsblk -dno SERIAL \"/dev/$(lsblk -no PKNAME \"$(findmnt -no SOURCE /)\" | head -1)\""
+    expect_substring: "installtarget"
+  - name: decoy-disk-untouched
+    # the decoy disk must have no partition table (no children)
+    type: command
+    command: "lsblk -rno NAME \"/dev/$(lsblk -dno NAME,SERIAL | awk '/systemdecoy/{print $1}')\" | wc -l"
+    expect_substring: "1"

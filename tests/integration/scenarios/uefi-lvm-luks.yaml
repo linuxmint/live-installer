@@ -1,9 +1,10 @@
 # UEFI firmware, LVM-on-LUKS layout, passphrase from a keyfile URL.
 #
-# The boot/verify phase is skipped: the installed system prompts for the
-# LUKS passphrase at the initramfs, which needs interactive serial
-# support in the harness (planned). The install phase still exercises
-# luksFormat, LVM-on-LUKS stacking, crypttab and grub-efi.
+# Full boot/verify: the installed system prompts for the LUKS passphrase
+# at the initramfs (on serial, via kernel.cmdline_extra in the answer
+# file); the harness types it over the serial console, then verifies the
+# unlocked system over SSH. Exercises luksFormat, LVM-on-LUKS stacking,
+# crypttab, grub-efi, and the cmdline_extra path.
 name: uefi-lvm-luks
 description: Unattended UEFI install with LUKS-encrypted LVM
 
@@ -16,12 +17,36 @@ disk_gb: 25
 answer_file: answers/uefi-lvm-luks.yaml
 
 install_timeout_s: 1800
+boot_timeout_s: 300
 
-skip_boot_phase: true
-skip_boot_reason: "LUKS unlock at initramfs needs interactive serial (TODO)"
+boot_unlock:
+  prompt: "Please unlock disk"
+  passphrase_file: answers/luks.key
+  timeout_s: 180
 
 expect:
   serial_markers:
     - "Automated installation complete"
   failure_markers:
     - "Automated installation FAILED"
+
+ssh:
+  user: testuser
+
+verify:
+  - name: os-is-lmde
+    type: command
+    command: ". /etc/os-release && echo $PRETTY_NAME"
+    expect_substring: "LMDE"
+  - name: hostname-applied
+    type: command
+    command: hostname
+    expect_substring: "lmde-luks-01"
+  - name: root-on-luks-lvm
+    type: mount_source
+    mountpoint: /
+    source_contains: "lvmmint-root"
+  - name: luks-device-open
+    type: command
+    command: "lsblk -rno TYPE | grep -c crypt"
+    expect_substring: "1"

@@ -1,5 +1,5 @@
-# Answer file for the uefi-lvm-luks scenario.
-# {server} is expanded by the harness to its HTTP server's base URL.
+# Answer file for bios-multi-disk: select the target by stable by-id,
+# NOT by enumeration order. The target is the second disk (vdb).
 version: 1
 
 locale:
@@ -11,7 +11,7 @@ keyboard:
   layout: us
 
 network:
-  hostname: lmde-luks-01
+  hostname: lmde-multidisk-01
 
 users:
   - username: testuser
@@ -23,17 +23,14 @@ users:
 storage:
   target:
     match:
-      first-non-removable: true
+      # virtio serial 'installtarget' -> /dev/disk/by-id/virtio-installtarget
+      by-id: "virtio-installtarget"
     on_no_match: abort
-  layout: lvm-on-luks
-  luks:
-    passphrase_source: keyfile
-    keyfile: "{server}/answers/luks.key"
+  layout: simple
 
-kernel:
-  # Put the console on serial so the initramfs LUKS prompt appears there
-  # (and can be answered over IPMI Serial-over-LAN on real hardware).
-  cmdline_extra: "console=tty0 console=ttyS0"
+packages:
+  add:
+    - openssh-server
 
 on_failure:
   partition_mismatch: abort

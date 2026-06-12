@@ -12,6 +12,7 @@ import re
 import shutil
 import socket
 import subprocess
+import threading
 import time
 from pathlib import Path
 
@@ -84,15 +85,33 @@ class VM:
         self.serial_log = self.workdir / f"{name}-serial.log"
         self.process = None
         self._swtpm = None
+        self._serial_sock = None
+        self._serial_reader = None
+        self._serial_stop = None
+        self._disks = []  # list of (path, serial)
 
     # -- setup ------------------------------------------------------------
 
-    def create_disk(self, size_gb):
+    def create_disk(self, size_gb, serial=None):
+        """Create the primary target disk. An optional serial surfaces in
+        the guest as /dev/disk/by-id/virtio-<serial>, for by-id matching."""
         subprocess.run(
             ["qemu-img", "create", "-f", "qcow2", str(self.disk), f"{size_gb}G"],
             check=True,
             capture_output=True,
         )
+        self._disks = [(self.disk, serial)]
+
+    def add_disk(self, size_gb, serial):
+        """Attach an additional disk (multi-disk by-id scenarios)."""
+        path = self.workdir / f"{self.name}-disk{len(self._disks)}.qcow2"
+        subprocess.run(
+            ["qemu-img", "create", "-f", "qcow2", str(path), f"{size_gb}G"],
+            check=True,
+            capture_output=True,
+        )
+        self._disks.append((path, serial))
+        return path
 
     def _start_swtpm(self):
         tpm_dir = self.workdir / "tpm"
@@ -131,6 +150,12 @@ class VM:
             raise VMError("VM already running")
         self.serial_log.unlink(missing_ok=True)
 
+        # Serial goes to a unix socket QEMU listens on; a reader thread tees
+        # everything to serial_log (so wait_serial still works on the file)
+        # and the same socket carries keystrokes back via send_serial — the
+        # channel a real admin drives over IPMI Serial-over-LAN.
+        serial_path = self.workdir / f"{self.name}-serial.sock"
+        serial_path.unlink(missing_ok=True)
         cmd = [
             find_qemu(),
             "-name", self.name,
@@ -138,9 +163,11 @@ class VM:
             "-m", str(self.memory_mb),
             "-smp", str(self.cpus),
             "-display", "none",
-            "-serial", f"file:{self.serial_log}",
+            "-chardev", f"socket,id=ser0,path={serial_path},server=on,wait=off",
+            "-serial", "chardev:ser0",
             "-monitor", "none",
         ]
+        self._serial_path = serial_path
         if kvm_available():
             cmd += ["-accel", "kvm", "-cpu", "host"]
         else:  # slow, but lets the harness run where nesting is unavailable
@@ -158,8 +185,24 @@ class VM:
             if firmware == "uefi-secureboot":
                 cmd += ["-global", "driver=cfi.pflash01,property=secure,value=on"]
 
-        if self.disk.exists():
-            cmd += ["-drive", f"file={self.disk},if=virtio,format=qcow2"]
+        # Attach disks via explicit blockdev+device so each can carry a
+        # serial (-> /dev/disk/by-id/virtio-<serial> in the guest). Fall
+        # back to the legacy single-drive form when create_disk was never
+        # called but the qcow2 exists (boot-from-disk phase 2).
+        disks = self._disks
+        if not disks and self.disk.exists():
+            disks = [(self.disk, None)]
+        for index, (path, serial) in enumerate(disks):
+            if not Path(path).exists():
+                continue
+            node = f"disk{index}"
+            cmd += ["-blockdev",
+                    f"driver=qcow2,node-name={node},"
+                    f"file.driver=file,file.filename={path}"]
+            dev = f"virtio-blk-pci,drive={node}"
+            if serial:
+                dev += f",serial={serial}"
+            cmd += ["-device", dev]
         if iso:
             cmd += ["-cdrom", str(iso)]
         cmd += ["-boot", {"cdrom": "d", "disk": "c"}[boot]]
@@ -189,7 +232,51 @@ class VM:
             stdout=subprocess.DEVNULL,
             stderr=subprocess.PIPE,
         )
+        self._start_serial_reader()
         return self
+
+    def _start_serial_reader(self):
+        # Connect to QEMU's serial socket (created at launch) and tee
+        # everything received to serial_log in a background thread.
+        sock = None
+        for _ in range(100):
+            try:
+                sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+                sock.connect(str(self._serial_path))
+                break
+            except OSError:
+                sock.close()
+                sock = None
+                time.sleep(0.1)
+        if sock is None:
+            raise VMError("could not connect to QEMU serial socket")
+        self._serial_sock = sock
+        self._serial_stop = threading.Event()
+
+        def reader():
+            sock.settimeout(0.5)
+            with open(self.serial_log, "ab", buffering=0) as log:
+                while not self._serial_stop.is_set():
+                    try:
+                        chunk = sock.recv(4096)
+                    except socket.timeout:
+                        continue
+                    except OSError:
+                        break
+                    if not chunk:
+                        break
+                    log.write(chunk)
+
+        self._serial_reader = threading.Thread(target=reader, daemon=True)
+        self._serial_reader.start()
+
+    def send_serial(self, text):
+        """Type `text` into the guest's serial console (e.g. a LUKS
+        passphrase at the initramfs unlock prompt). Include the trailing
+        newline yourself."""
+        if self._serial_sock is None:
+            raise VMError("serial socket not connected")
+        self._serial_sock.sendall(text.encode("utf-8"))
 
     def alive(self):
         return self.process is not None and self.process.poll() is None
@@ -226,6 +313,8 @@ class VM:
         )
 
     def stop(self, grace_s=10):
+        if self._serial_stop is not None:
+            self._serial_stop.set()
         if self.process is not None and self.process.poll() is None:
             self.process.terminate()
             try:
@@ -234,6 +323,12 @@ class VM:
                 self.process.kill()
                 self.process.wait()
         self.process = None
+        if self._serial_reader is not None:
+            self._serial_reader.join(timeout=2)
+            self._serial_reader = None
+        if self._serial_sock is not None:
+            self._serial_sock.close()
+            self._serial_sock = None
         if self._swtpm is not None:
             self._swtpm.terminate()
             self._swtpm = None
