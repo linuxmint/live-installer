@@ -31,6 +31,8 @@ from commandrunner import CommandRunner
 FINAL_MARKER = "Automated installation complete"
 FAILURE_MARKER = "Automated installation FAILED"
 CMDLINE_KEY = "live-installer.auto="
+# kernel-cmdline equivalent of --insecure (cmdline boots have no argv)
+CMDLINE_INSECURE = "live-installer.auto-insecure"
 
 # Mirrors main.py's IS_MINT detection without importing the GTK module
 def _is_mint():
@@ -83,6 +85,15 @@ def cmdline_source(cmdline_path="/proc/cmdline"):
         if token.startswith(CMDLINE_KEY):
             return token[len(CMDLINE_KEY):]
     return None
+
+
+def cmdline_insecure(cmdline_path="/proc/cmdline"):
+    """True if the kernel command line opts in to plain-HTTP answer files."""
+    try:
+        with open(cmdline_path) as f:
+            return CMDLINE_INSECURE in f.read().split()
+    except OSError:
+        return False
 
 
 def build_setup(config, *, disk=None, efi=None, is_mint=None):
@@ -409,9 +420,10 @@ def main(argv=None):
         parser.error(
             f"no answer file: pass --config or boot with {CMDLINE_KEY}<source>"
         )
+    insecure = args.insecure or cmdline_insecure()
 
     try:
-        config = schema.parse_config(fetch_answer_file(source, args.insecure))
+        config = schema.parse_config(fetch_answer_file(source, insecure))
     except schema.ConfigError as exc:
         print(f"ERROR: {exc}", flush=True)
         print(FAILURE_MARKER, flush=True)
