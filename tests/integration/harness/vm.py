@@ -12,6 +12,7 @@ import re
 import shutil
 import socket
 import subprocess
+import tempfile
 import threading
 import time
 from pathlib import Path
@@ -88,6 +89,7 @@ class VM:
         self._serial_sock = None
         self._serial_reader = None
         self._serial_stop = None
+        self._serial_dir = None
         self._disks = []  # list of (path, serial)
 
     # -- setup ------------------------------------------------------------
@@ -155,8 +157,12 @@ class VM:
         # everything to serial_log (so wait_serial still works on the file)
         # and the same socket carries keystrokes back via send_serial — the
         # channel a real admin drives over IPMI Serial-over-LAN.
-        serial_path = self.workdir / f"{self.name}-serial.sock"
-        serial_path.unlink(missing_ok=True)
+        #
+        # The socket lives in a short tempdir, NOT the workdir: AF_UNIX paths
+        # are capped at ~108 bytes and a deep workdir (e.g. on a CI runner)
+        # blows past it, so QEMU silently fails to create the socket.
+        self._serial_dir = tempfile.mkdtemp(prefix="li-ser-")
+        serial_path = Path(self._serial_dir) / "s"
         cmd = [
             find_qemu(),
             "-name", self.name,
@@ -246,6 +252,14 @@ class VM:
         # everything received to serial_log in a background thread.
         sock = None
         for _ in range(100):
+            # If QEMU died at launch the socket will never appear; surface
+            # its stderr instead of a misleading "socket" error.
+            if self.process.poll() is not None:
+                stderr = self.process.stderr.read().decode(errors="replace")
+                raise VMError(
+                    f"QEMU exited at launch (rc={self.process.returncode}).\n"
+                    f"stderr: {stderr[-2000:]}"
+                )
             try:
                 sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
                 sock.connect(str(self._serial_path))
@@ -255,7 +269,10 @@ class VM:
                 sock = None
                 time.sleep(0.1)
         if sock is None:
-            raise VMError("could not connect to QEMU serial socket")
+            raise VMError(
+                f"could not connect to QEMU serial socket {self._serial_path} "
+                "(QEMU is running but never created it)"
+            )
         self._serial_sock = sock
         self._serial_stop = threading.Event()
 
@@ -335,6 +352,9 @@ class VM:
         if self._serial_sock is not None:
             self._serial_sock.close()
             self._serial_sock = None
+        if self._serial_dir is not None:
+            shutil.rmtree(self._serial_dir, ignore_errors=True)
+            self._serial_dir = None
         if self._swtpm is not None:
             self._swtpm.terminate()
             self._swtpm = None

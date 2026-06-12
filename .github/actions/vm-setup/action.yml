@@ -21,17 +21,17 @@ runs:
         echo "=== KVM diagnostics ==="
         echo "cpu virt flags: $(grep -c -E 'vmx|svm' /proc/cpuinfo) cores"
         ls -l /dev/kvm 2>&1 || echo "/dev/kvm absent"
+        # The udev rule persists the permission; the direct chmod applies
+        # it synchronously so there is no race with the next step (the
+        # udev trigger is asynchronous and `test -w` can run before it).
         echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
           | sudo tee /etc/udev/rules.d/99-kvm4all.rules
         sudo udevadm control --reload-rules
         sudo udevadm trigger --name-match=kvm || true
-        ls -l /dev/kvm 2>&1 || echo "/dev/kvm still absent after udev"
-        if test -w /dev/kvm; then
-          echo "KVM is writable"
-        else
-          echo "KVM NOT available — hosted runner lacks hardware virtualization"
-          exit 1
-        fi
+        sudo chmod 0666 /dev/kvm
+        ls -l /dev/kvm
+        test -w /dev/kvm && echo "KVM is writable" \
+          || { echo "KVM NOT available — hosted runner lacks hardware virtualization"; exit 1; }
 
     - name: Install QEMU, OVMF, swtpm and ISO tooling
       shell: bash
