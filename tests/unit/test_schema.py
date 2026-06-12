@@ -97,6 +97,16 @@ class TestValidConfigs:
         assert config.storage.luks is not None
         assert config.storage.luks.passphrase_source == "prompt-on-first-boot"
 
+    def test_ssh_authorized_keys_accepted(self):
+        text = VALID_MINIMAL.replace(
+            'password_crypted: "$6$rounds=4096$salt$hashhashhash"',
+            'password_crypted: "$6$rounds=4096$salt$hashhashhash"\n'
+            "    ssh_authorized_keys:\n"
+            '      - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAA test@host"',
+        )
+        config = parse_config(text)
+        assert config.users[0].ssh_authorized_keys[0].startswith("ssh-ed25519")
+
     def test_scenario_fixture_parses(self):
         # the integration-test answer file must always track the schema
         from pathlib import Path
@@ -244,6 +254,15 @@ class TestRejections:
             "    apt_source: also-this",
         )
         _expect_error(bad, "post_install")
+
+    def test_garbage_ssh_key_rejected(self):
+        bad = VALID_MINIMAL.replace(
+            'password_crypted: "$6$rounds=4096$salt$hashhashhash"',
+            'password_crypted: "$6$rounds=4096$salt$hashhashhash"\n'
+            "    ssh_authorized_keys:\n"
+            '      - "not a key at all"',
+        )
+        _expect_error(bad, "OpenSSH public key")
 
     def test_norway_problem_is_defanged(self):
         # YAML 1.1 would coerce `no` to boolean false; a boolean is not a

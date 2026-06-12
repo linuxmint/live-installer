@@ -1,0 +1,19 @@
+[Unit]
+Description=Unattended installation (live-installer)
+Documentation=man:live-installer(1)
+# Only runs when an answer-file source is on the kernel command line.
+# ConditionKernelCommandLine= cannot prefix-match live-installer.auto=<url>,
+# so the check is an ExecCondition instead.
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecCondition=/bin/sh -c 'grep -q live-installer.auto= /proc/cmdline'
+ExecStart=/usr/bin/live-installer
+StandardOutput=journal+console
+StandardError=journal+console
+TimeoutStartSec=infinity
+
+[Install]
+WantedBy=multi-user.target

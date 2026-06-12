@@ -103,6 +103,18 @@ class User(_StrictModel):
     autologin: bool = False
     sudo: bool = False
     ecryptfs_home: bool = False
+    ssh_authorized_keys: list[str] = Field(default_factory=list)
+
+    @field_validator("ssh_authorized_keys")
+    @classmethod
+    def _check_ssh_keys(cls, value):
+        for key in value:
+            if not key.startswith(("ssh-", "ecdsa-", "sk-")):
+                raise ValueError(
+                    f"{key[:40]!r}... does not look like an OpenSSH public "
+                    "key (expected ssh-ed25519/ssh-rsa/ecdsa-.../sk-...)"
+                )
+        return value
 
     @field_validator("username")
     @classmethod
