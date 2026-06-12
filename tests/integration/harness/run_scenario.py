@@ -171,9 +171,12 @@ def run_full(scenario, iso, workdir, scenario_dir):
 
         # Phase 1: direct-kernel boot of the live ISO with the answer-file
         # URL on the kernel command line (10.0.2.2 = the host)
+        # auto-insecure: the answer file travels over QEMU's host-only user
+        # network; there is no TLS endpoint to offer
         append = (
             "boot=live components console=ttyS0 "
-            f"live-installer.auto=http://10.0.2.2:{http_port}/{answer}"
+            f"live-installer.auto=http://10.0.2.2:{http_port}/{answer} "
+            "live-installer.auto-insecure"
         )
         machine.start(iso=iso, boot="cdrom", firmware=scenario["firmware"],
                       tpm=scenario["tpm"], ssh_port=ssh_port,

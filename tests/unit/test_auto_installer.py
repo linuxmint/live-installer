@@ -63,6 +63,19 @@ class TestCmdlineSource:
         cmdline.write_text("boot=live quiet splash\n")
         assert auto_installer.cmdline_source(str(cmdline)) is None
 
+    def test_insecure_flag(self, tmp_path):
+        cmdline = tmp_path / "cmdline"
+        cmdline.write_text(
+            "boot=live live-installer.auto=http://h/a.yaml "
+            "live-installer.auto-insecure\n"
+        )
+        assert auto_installer.cmdline_insecure(str(cmdline)) is True
+
+    def test_insecure_flag_absent(self, tmp_path):
+        cmdline = tmp_path / "cmdline"
+        cmdline.write_text("boot=live live-installer.auto=https://h/a.yaml\n")
+        assert auto_installer.cmdline_insecure(str(cmdline)) is False
+
 
 class TestBuildSetup:
     def test_basic_mapping(self):
