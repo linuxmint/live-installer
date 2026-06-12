@@ -18,7 +18,7 @@ jobs:
   failure-modes:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: ./.github/actions/vm-setup
       - name: Run failure-mode scenarios
         run: |
@@ -27,7 +27,7 @@ jobs:
               "tests/integration/scenarios/$s.yaml" \
               --junit "tests/integration/.work/$s.xml"
           done
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: failure-mode-results
@@ -41,7 +41,7 @@ jobs:
       matrix:
         scenario: [bios-simple, uefi-simple, uefi-lvm, uefi-lvm-luks]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Skip if not selected
         id: gate
@@ -72,7 +72,7 @@ jobs:
             "artifacts/${{ matrix.scenario }}-serial.log" || true
           cp tests/integration/.work/*.xml artifacts/ || true
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always() && steps.gate.outputs.run == 'true'
         with:
           name: ${{ matrix.scenario }}-results
