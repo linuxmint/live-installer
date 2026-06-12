@@ -322,31 +322,42 @@ class HeadlessDriver:
                 self._policy("package_install_failure",
                              "package removal failed")
 
-    def _apply_kernel_cmdline(self):
-        extra = self.config.kernel.cmdline_extra.strip()
-        if not extra:
+    def _apply_kernel_config(self):
+        kernel = self.config.kernel
+        extra = kernel.cmdline_extra.strip()
+        serial = kernel.serial_console.strip()
+        if not extra and not serial:
             return
-        self.log(f" --> Appending kernel cmdline: {extra}")
-        # Append to GRUB_CMDLINE_LINUX_DEFAULT and regenerate grub.cfg
-        # (the engine already ran grub-mkconfig, so this re-runs it). The
-        # python one-liner edits the value in place, quoting-safe.
-        script = (
-            "import re,io\n"
-            "p='/etc/default/grub'\n"
-            "s=open(p).read()\n"
-            "extra=%r\n"
-            "m=re.search(r'^GRUB_CMDLINE_LINUX_DEFAULT=\"(.*)\"', s, re.M)\n"
-            "if m and extra not in m.group(1):\n"
-            "    s=s[:m.start(1)]+(m.group(1)+' '+extra).strip()+s[m.end(1):]\n"
-            "elif not m:\n"
-            "    s=s.rstrip()+'\\nGRUB_CMDLINE_LINUX_DEFAULT=\"'+extra+'\"\\n'\n"
-            "open(p,'w').write(s)\n"
-        ) % extra
-        # write the script into the target and run it with the target python
-        with open("/target/tmp/_cmdline.py", "w") as f:
-            f.write(script)
-        rc = self.runner.chroot("python3 /tmp/_cmdline.py")
-        self.runner.run("rm -f /target/tmp/_cmdline.py")
+
+        args = []
+        if serial:
+            device, _, speed = serial.partition(",")
+            speed = speed or "115200"
+            unit = device[len("ttyS"):]
+            self.log(f" --> Provisioning serial console on {device}")
+            # quiet/splash let plymouth grab prompts graphically — drop them
+            # so boot output and the LUKS unlock prompt reach the serial line
+            args += ["--remove-cmdline", "quiet", "--remove-cmdline", "splash"]
+            args += ["--append-cmdline", "console=tty0",
+                     "--append-cmdline", f"console={device},{speed}n8"]
+            args += ["--set", "GRUB_TERMINAL=console serial",
+                     "--set",
+                     f"GRUB_SERIAL_COMMAND=serial --unit={unit} --speed={speed}"]
+        if extra:
+            self.log(f" --> Appending kernel cmdline: {extra}")
+            for token in extra.split():
+                args += ["--append-cmdline", token]
+
+        # The editor script ships in the installer; copy it into the target
+        # and run it with the target python, then regenerate grub.cfg.
+        self.runner.run(
+            "cp /usr/lib/live-installer/configure_grub_default.py /target/tmp/"
+        )
+        rc = self.runner.chroot(
+            "python3 /tmp/configure_grub_default.py "
+            + " ".join(shlex.quote(a) for a in args)
+        )
+        self.runner.run("rm -f /target/tmp/configure_grub_default.py")
         if rc != 0:
             self._policy("post_install_script_failure",
                          "editing /etc/default/grub failed")
@@ -403,6 +414,7 @@ class HeadlessDriver:
                 or self.config.packages.add or self.config.packages.remove
                 or self.config.post_install
                 or self.config.kernel.cmdline_extra.strip()
+                or self.config.kernel.serial_console.strip()
             )
 
             def post_install_hook():
@@ -410,7 +422,7 @@ class HeadlessDriver:
                 self._create_extra_users()
                 self._apply_ssh_keys()
                 self._apply_apt_steps()
-                self._apply_kernel_cmdline()
+                self._apply_kernel_config()
                 self._run_shell_steps()
 
             engine.finish_installation(

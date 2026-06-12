@@ -299,33 +299,41 @@ class TestHeadlessDriver:
         config = make_config(
             extra="""\
                 kernel:
-                  cmdline_extra: "console=ttyS0"
+                  cmdline_extra: "mitigations=off"
             """,
             logging_dest=str(tmp_path / "auto.log"),
         )
-        # the step writes a helper into /target/tmp; redirect that write
-        target_tmp = tmp_path / "target-tmp"
-        target_tmp.mkdir()
         driver, runner, engine = make_driver(config)
-        import builtins
-        real_open = builtins.open
-
-        def redir_open(path, *a, **k):
-            if isinstance(path, str) and path.startswith("/target/tmp/"):
-                path = str(target_tmp / path.split("/target/tmp/")[1])
-            return real_open(path, *a, **k)
-
-        builtins.open = redir_open
-        try:
-            setup = auto_installer.build_setup(
-                config, disk="/dev/vda", efi=False, is_mint=False)
-            rc = driver.run(setup=setup)
-        finally:
-            builtins.open = real_open
+        setup = auto_installer.build_setup(
+            config, disk="/dev/vda", efi=False, is_mint=False)
+        rc = driver.run(setup=setup)
         assert rc == 0
+        joined = " ".join(runner.commands)
+        assert "configure_grub_default.py" in joined
+        assert "--append-cmdline mitigations=off" in joined
         chroots = [c for c in runner.commands if c.startswith("chroot")]
-        assert any("_cmdline.py" in c for c in chroots)
         assert any("update-grub" in c for c in chroots)
+
+    def test_serial_console_provisioning_args(self, tmp_path):
+        config = make_config(
+            extra="""\
+                kernel:
+                  serial_console: "ttyS0,115200"
+            """,
+            logging_dest=str(tmp_path / "auto.log"),
+        )
+        driver, runner, engine = make_driver(config)
+        setup = auto_installer.build_setup(
+            config, disk="/dev/vda", efi=False, is_mint=False)
+        rc = driver.run(setup=setup)
+        assert rc == 0
+        joined = " ".join(runner.commands)
+        # drops plymouth grabbers, adds consoles, configures GRUB serial
+        assert "--remove-cmdline quiet" in joined
+        assert "--remove-cmdline splash" in joined
+        assert "console=ttyS0,115200n8" in joined
+        assert "GRUB_TERMINAL=console serial" in joined
+        assert "--unit=0 --speed=115200" in joined
 
     def test_package_failure_policy_abort(self, tmp_path):
         config = make_config(

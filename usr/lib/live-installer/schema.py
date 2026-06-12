@@ -280,8 +280,25 @@ class AptSourceStep(_StrictModel):
 
 class Kernel(_StrictModel):
     # Appended to GRUB_CMDLINE_LINUX_DEFAULT on the installed system —
-    # serial console, driver blacklists, etc. for headless/fleet hosts.
+    # driver blacklists, sysctl-ish params, etc. for headless/fleet hosts.
     cmdline_extra: str = ""
+    # Provision a full serial console on the installed system: e.g.
+    # "ttyS0" or "ttyS0,115200". Drops quiet/splash (so the boot — and a
+    # LUKS unlock prompt — is visible on serial rather than grabbed by
+    # plymouth), adds console= to the kernel cmdline, and points GRUB's
+    # terminal at the serial line. The channel an admin uses over IPMI
+    # Serial-over-LAN on a headless box.
+    serial_console: str = ""
+
+    @field_validator("serial_console")
+    @classmethod
+    def _check_serial(cls, value):
+        if value and not re.match(r"^ttyS\d+(,\d+)?$", value):
+            raise ValueError(
+                f"{value!r} is not a valid serial console "
+                "(expected e.g. ttyS0 or ttyS0,115200)"
+            )
+        return value
 
 
 class Oem(_StrictModel):
