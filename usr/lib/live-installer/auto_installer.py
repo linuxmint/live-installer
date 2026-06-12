@@ -166,6 +166,7 @@ class HeadlessDriver:
         self._log_file = None
         self._serial = None
         self._failed = False
+        self._last_progress = None
         self._open_logs()
         self.runner = runner or CommandRunner(log=self.log)
         self._engine_factory = engine_factory
@@ -199,7 +200,14 @@ class HeadlessDriver:
                     pass
 
     def on_progress(self, percentage, pulse, done, message):
-        self.log(f"[{percentage:3d}%] {message}")
+        # The engine fires this once per copied file during the rsync phase
+        # (hundreds of thousands of calls); only log actual changes or the
+        # serial console becomes the bottleneck of the entire installation.
+        line = f"[{percentage:3d}%] {message}"
+        if line == self._last_progress:
+            return
+        self._last_progress = line
+        self.log(line)
 
     def on_error(self, message=""):
         self._failed = True

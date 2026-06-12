@@ -223,6 +223,16 @@ class TestHeadlessDriver:
         out = capsys.readouterr().out
         assert auto_installer.FAILURE_MARKER in out
 
+    def test_progress_is_deduplicated(self, tmp_path, capsys):
+        config = make_config(logging_dest=str(tmp_path / "auto.log"))
+        driver, _, _ = make_driver(config)
+        for _ in range(1000):
+            driver.on_progress(7, False, False, "Copying files...")
+        driver.on_progress(8, False, False, "Copying files...")
+        out = capsys.readouterr().out
+        assert out.count("[  7%] Copying files...") == 1
+        assert out.count("[  8%] Copying files...") == 1
+
     def test_log_file_receives_output(self, tmp_path):
         log = tmp_path / "auto.log"
         config = make_config(logging_dest=str(log))
