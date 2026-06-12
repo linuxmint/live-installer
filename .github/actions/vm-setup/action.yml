@@ -18,11 +18,20 @@ runs:
     - name: Enable KVM for the runner user
       shell: bash
       run: |
+        echo "=== KVM diagnostics ==="
+        echo "cpu virt flags: $(grep -c -E 'vmx|svm' /proc/cpuinfo) cores"
+        ls -l /dev/kvm 2>&1 || echo "/dev/kvm absent"
         echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
           | sudo tee /etc/udev/rules.d/99-kvm4all.rules
         sudo udevadm control --reload-rules
-        sudo udevadm trigger --name-match=kvm
-        test -w /dev/kvm && echo "KVM is writable" || (echo "KVM not available"; exit 1)
+        sudo udevadm trigger --name-match=kvm || true
+        ls -l /dev/kvm 2>&1 || echo "/dev/kvm still absent after udev"
+        if test -w /dev/kvm; then
+          echo "KVM is writable"
+        else
+          echo "KVM NOT available — hosted runner lacks hardware virtualization"
+          exit 1
+        fi
 
     - name: Install QEMU, OVMF, swtpm and ISO tooling
       shell: bash
