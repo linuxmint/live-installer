@@ -1,0 +1,41 @@
+# Answer file for the uefi-lvm scenario.
+version: 1
+
+locale:
+  language: en_US.UTF-8
+  timezone: America/Toronto
+
+keyboard:
+  model: pc105
+  layout: us
+
+network:
+  hostname: lmde-lvm-01
+
+users:
+  - username: testuser
+    full_name: Integration Test User
+    # "testpass", sha512crypt — test fixture only
+    password_crypted: "$6$rounds=4096$integration.test$kPEsZSlAg3pjDM0yaeSdAVPbHcsiBVMobBC0SXmdGRX9WtflVB.ETP6/yo8Lw0PRJlXP6tEXkbQjnLnnyG5BV1"
+    autologin: false
+    sudo: true
+
+storage:
+  target:
+    match:
+      first-non-removable: true
+    on_no_match: abort
+  layout: lvm
+
+packages:
+  add:
+    - openssh-server
+
+on_failure:
+  partition_mismatch: abort
+  network_unavailable: continue
+  package_install_failure: abort
+
+logging:
+  destination: /var/log/live-installer-auto.log
+  also_serial: ttyS0

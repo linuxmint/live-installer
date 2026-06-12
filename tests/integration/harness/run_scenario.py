@@ -154,8 +154,16 @@ def run_full(scenario, iso, workdir, scenario_dir):
     if not answer:
         return [("install", False, "scenario has no answer_file")]
 
-    ssh_key, pubkey = generate_ssh_key(workdir)
-    serve_dir = stage_answer_file(scenario_dir, answer, workdir, pubkey)
+    # Failure-mode scenarios assert that bad input fails fast and cleanly:
+    # the failure marker is the expected outcome and there is no phase 2.
+    # The answer file is served verbatim (it may be deliberately malformed).
+    expect_failure = scenario["expect"].get("outcome") == "failure"
+    if expect_failure:
+        ssh_key = None
+        serve_dir = scenario_dir
+    else:
+        ssh_key, pubkey = generate_ssh_key(workdir)
+        serve_dir = stage_answer_file(scenario_dir, answer, workdir, pubkey)
     kernel, initrd = isotools.extract_boot_files(iso, workdir / "boot")
 
     httpd, http_port = serve_directory(serve_dir)
@@ -188,13 +196,21 @@ def run_full(scenario, iso, workdir, scenario_dir):
                 success + failure,
                 scenario["install_timeout_s"],
             )
+            if expect_failure:
+                if marker in failure:
+                    cases.append(("fails-cleanly", True, f"matched: {marker}"))
+                else:
+                    cases.append(("fails-cleanly", False,
+                                  f"unexpectedly succeeded: {marker}"))
+                return cases
             if marker in failure:
                 cases.append(("install", False,
                               f"installer reported failure: {marker}"))
                 return cases
             cases.append(("install", True, f"matched: {marker}"))
         except (TimeoutError, vm.VMError) as exc:
-            cases.append(("install", False, str(exc)))
+            name = "fails-cleanly" if expect_failure else "install"
+            cases.append((name, False, str(exc)))
             return cases
         finally:
             machine.stop()
