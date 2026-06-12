@@ -31,9 +31,11 @@ storage:
     keyfile: "{server}/answers/luks.key"
 
 kernel:
-  # Put the console on serial so the initramfs LUKS prompt appears there
-  # (and can be answered over IPMI Serial-over-LAN on real hardware).
-  cmdline_extra: "console=tty0 console=ttyS0"
+  # Full serial-console provisioning: drops quiet/splash, adds console=,
+  # and points GRUB at the serial line — so the initramfs LUKS prompt
+  # appears on serial (and can be answered over IPMI Serial-over-LAN on
+  # real hardware) instead of being grabbed by plymouth.
+  serial_console: "ttyS0,115200"
 
 on_failure:
   partition_mismatch: abort

@@ -1,12 +1,13 @@
 # UEFI firmware, LVM-on-LUKS layout, passphrase from a keyfile URL.
 #
-# Full boot/verify: the installed system prompts for the LUKS passphrase
-# at the initramfs (on serial, via kernel.cmdline_extra in the answer
-# file); the harness types it over the serial console, then verifies the
-# unlocked system over SSH. Exercises luksFormat, LVM-on-LUKS stacking,
-# crypttab, grub-efi, and the cmdline_extra path.
+# Full boot/verify: the answer file's kernel.serial_console provisions a
+# serial console on the installed system, so the initramfs LUKS prompt
+# appears on ttyS0; the harness types the passphrase over serial, then
+# verifies the unlocked system over SSH. Exercises luksFormat (passphrase
+# via stdin), LVM-on-LUKS stacking, crypttab, grub-efi, and the
+# serial-console provisioning path end to end.
 name: uefi-lvm-luks
-description: Unattended UEFI install with LUKS-encrypted LVM
+description: Unattended UEFI install with LUKS-encrypted LVM, unlocked over serial
 
 firmware: uefi
 tpm: false
@@ -17,22 +18,32 @@ disk_gb: 25
 answer_file: answers/uefi-lvm-luks.yaml
 
 install_timeout_s: 1800
+boot_timeout_s: 300
 
-# Boot/verify is skipped: typing the passphrase over serial needs the
-# installed system to surface the cryptsetup prompt on ttyS0, which
-# requires dropping 'quiet splash' from the kernel cmdline (plymouth
-# otherwise grabs the prompt graphically) AND a GRUB serial terminal —
-# i.e. full serial-console provisioning, not just an appended
-# console=ttyS0. The harness CAN type over serial (VM.send_serial,
-# exercised once the system is provisioned for serial); wiring that end
-# to end is tracked as follow-up. The install phase here still exercises
-# luksFormat (passphrase via stdin), LVM-on-LUKS, crypttab, grub-efi and
-# the kernel.cmdline_extra path.
-skip_boot_phase: true
-skip_boot_reason: "LUKS unlock over serial needs full serial-console provisioning (drop quiet/splash + GRUB serial terminal) — follow-up"
+boot_unlock:
+  prompt: "Please unlock disk"
+  passphrase_file: answers/luks.key
+  timeout_s: 180
 
 expect:
   serial_markers:
     - "Automated installation complete"
   failure_markers:
     - "Automated installation FAILED"
+
+ssh:
+  user: testuser
+
+verify:
+  - name: hostname-applied
+    type: command
+    command: hostname
+    expect_substring: "lmde-luks-01"
+  - name: root-on-luks-lvm
+    type: mount_source
+    mountpoint: /
+    source_contains: "lvmmint-root"
+  - name: luks-device-open
+    type: command
+    command: "lsblk -rno TYPE | grep -c crypt"
+    expect_substring: "1"
