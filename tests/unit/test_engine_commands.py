@@ -98,6 +98,18 @@ class TestCommandRunner:
         runner = CommandRunner(log=lambda *a: None)
         assert runner.output("echo oops >&2") == "oops"
 
+    def test_secrets_are_redacted_from_logs_but_executed(self, tmp_path):
+        logged = []
+        runner = CommandRunner(log=logged.append)
+        out = tmp_path / "out"
+        rc = runner.run(
+            f"echo -n 's3cret pass' > {out}", secrets=["s3cret pass"]
+        )
+        assert rc == 0
+        assert out.read_text() == "s3cret pass"  # command ran unredacted
+        assert all("s3cret" not in line for line in logged)
+        assert any("[REDACTED]" in line for line in logged)
+
     def test_chroot_command_shape(self):
         captured = []
         runner = CommandRunner(log=lambda *a: None)
