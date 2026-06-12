@@ -322,6 +322,39 @@ class HeadlessDriver:
                 self._policy("package_install_failure",
                              "package removal failed")
 
+    def _apply_kernel_cmdline(self):
+        extra = self.config.kernel.cmdline_extra.strip()
+        if not extra:
+            return
+        self.log(f" --> Appending kernel cmdline: {extra}")
+        # Append to GRUB_CMDLINE_LINUX_DEFAULT and regenerate grub.cfg
+        # (the engine already ran grub-mkconfig, so this re-runs it). The
+        # python one-liner edits the value in place, quoting-safe.
+        script = (
+            "import re,io\n"
+            "p='/etc/default/grub'\n"
+            "s=open(p).read()\n"
+            "extra=%r\n"
+            "m=re.search(r'^GRUB_CMDLINE_LINUX_DEFAULT=\"(.*)\"', s, re.M)\n"
+            "if m and extra not in m.group(1):\n"
+            "    s=s[:m.start(1)]+(m.group(1)+' '+extra).strip()+s[m.end(1):]\n"
+            "elif not m:\n"
+            "    s=s.rstrip()+'\\nGRUB_CMDLINE_LINUX_DEFAULT=\"'+extra+'\"\\n'\n"
+            "open(p,'w').write(s)\n"
+        ) % extra
+        # write the script into the target and run it with the target python
+        with open("/target/tmp/_cmdline.py", "w") as f:
+            f.write(script)
+        rc = self.runner.chroot("python3 /tmp/_cmdline.py")
+        self.runner.run("rm -f /target/tmp/_cmdline.py")
+        if rc != 0:
+            self._policy("post_install_script_failure",
+                         "editing /etc/default/grub failed")
+            return
+        rc = self.runner.chroot("update-grub")
+        if rc != 0:
+            self._policy("post_install_script_failure", "update-grub failed")
+
     def _run_shell_steps(self):
         for step in self.config.post_install:
             if not hasattr(step, "shell"):
@@ -369,6 +402,7 @@ class HeadlessDriver:
                 or any(user.ssh_authorized_keys for user in self.config.users)
                 or self.config.packages.add or self.config.packages.remove
                 or self.config.post_install
+                or self.config.kernel.cmdline_extra.strip()
             )
 
             def post_install_hook():
@@ -376,6 +410,7 @@ class HeadlessDriver:
                 self._create_extra_users()
                 self._apply_ssh_keys()
                 self._apply_apt_steps()
+                self._apply_kernel_cmdline()
                 self._run_shell_steps()
 
             engine.finish_installation(

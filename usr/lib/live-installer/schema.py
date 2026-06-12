@@ -278,6 +278,12 @@ class AptSourceStep(_StrictModel):
     apt_source: str
 
 
+class Kernel(_StrictModel):
+    # Appended to GRUB_CMDLINE_LINUX_DEFAULT on the installed system —
+    # serial console, driver blacklists, etc. for headless/fleet hosts.
+    cmdline_extra: str = ""
+
+
 class Oem(_StrictModel):
     enabled: bool = False
 
@@ -316,6 +322,7 @@ class AutoInstallConfig(_StrictModel):
     post_install: list[ShellStep | AptKeyStep | AptSourceStep] = Field(
         default_factory=list
     )
+    kernel: Kernel = Field(default_factory=Kernel)
     oem: Oem = Field(default_factory=Oem)
     on_failure: OnFailure = Field(default_factory=OnFailure)
     logging: Logging = Field(default_factory=Logging)

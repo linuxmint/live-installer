@@ -30,6 +30,11 @@ storage:
     passphrase_source: keyfile
     keyfile: "{server}/answers/luks.key"
 
+kernel:
+  # Put the console on serial so the initramfs LUKS prompt appears there
+  # (and can be answered over IPMI Serial-over-LAN on real hardware).
+  cmdline_extra: "console=tty0 console=ttyS0"
+
 on_failure:
   partition_mismatch: abort
   network_unavailable: continue

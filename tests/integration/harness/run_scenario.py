@@ -185,7 +185,15 @@ def run_full(scenario, iso, workdir, scenario_dir):
             memory_mb=scenario["memory_mb"],
             cpus=scenario["cpus"],
         )
-        machine.create_disk(scenario["disk_gb"])
+        # Disk topology. Default: one unnamed disk. A scenario may instead
+        # declare `disks: [{size_gb, serial?}, ...]`; the first is primary.
+        disks = scenario.get("disks")
+        if disks:
+            machine.create_disk(disks[0]["size_gb"], disks[0].get("serial"))
+            for extra in disks[1:]:
+                machine.add_disk(extra["size_gb"], extra.get("serial"))
+        else:
+            machine.create_disk(scenario["disk_gb"])
         ssh_port = vm.free_port()
 
         # Phase 1: direct-kernel boot of the live ISO with the answer-file
@@ -239,6 +247,21 @@ def run_full(scenario, iso, workdir, scenario_dir):
         machine.start(boot="disk", firmware=scenario["firmware"],
                       tpm=scenario["tpm"], ssh_port=ssh_port)
         try:
+            # Encrypted installs prompt for the LUKS passphrase at the
+            # initramfs; type it over serial as a real admin would via SOL.
+            unlock = scenario.get("boot_unlock")
+            if unlock:
+                passphrase = (scenario_dir / unlock["passphrase_file"]).read_text()
+                try:
+                    machine.wait_serial([unlock["prompt"]],
+                                        unlock.get("timeout_s", 180))
+                    time.sleep(1)
+                    machine.send_serial(passphrase.rstrip("\n") + "\n")
+                    cases.append(("luks-unlock", True, ""))
+                except (TimeoutError, vm.VMError) as exc:
+                    cases.append(("luks-unlock", False,
+                                  f"unlock prompt never appeared: {exc}"))
+                    return cases
             if not verify_install.wait_for_ssh("127.0.0.1", ssh_port,
                                                scenario["boot_timeout_s"]):
                 cases.append(("first-boot", False,
