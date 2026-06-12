@@ -1,11 +1,11 @@
 from glob import glob
 import os
-import subprocess
 import time
 import gettext
 import parted
 import partitioning
 import shlex
+from commandrunner import CommandRunner
 from functools import cmp_to_key
 
 gettext.install("live-installer", "/usr/share/locale")
@@ -13,8 +13,9 @@ gettext.install("live-installer", "/usr/share/locale")
 class InstallerEngine:
     ''' This is central to the live installer '''
 
-    def __init__(self, setup):
+    def __init__(self, setup, runner=None):
         self.setup = setup
+        self.runner = runner or CommandRunner()
         if self.setup.is_mint:
             self.casper = "/cdrom/casper"
             self.pool = "/cdrom/pool"
@@ -53,11 +54,11 @@ class InstallerEngine:
         fp.write(self.setup.username +  ":" + self.setup.password1 + "\n")
         fp.close()
         self.do_run_in_chroot("cat /dev/shm/.passwd | chpasswd")
-        os.system("rm -f /target/dev/shm/.passwd")
+        self.runner.run("rm -f /target/dev/shm/.passwd")
 
         # Set autologin
         if self.setup.oem_mode:
-            os.system("cp /usr/share/live-installer/lightdm-oem-config.conf /target/etc/lightdm/lightdm.conf.d/90-oem-config.conf")
+            self.runner.run("cp /usr/share/live-installer/lightdm-oem-config.conf /target/etc/lightdm/lightdm.conf.d/90-oem-config.conf")
         elif self.setup.autologin:
             self.do_run_in_chroot(r"sed -i -r 's/^#?(autologin-user)\s*=.*/\1={user}/' /etc/lightdm/lightdm.conf".format(user=self.setup.username))
 
@@ -89,39 +90,39 @@ class InstallerEngine:
 
     def setup_locale(self):
         print(" --> Setting the locale")
-        os.system("echo \"%s.UTF-8 UTF-8\" >> /target/etc/locale.gen" % self.setup.language)
+        self.runner.run("echo \"%s.UTF-8 UTF-8\" >> /target/etc/locale.gen" % self.setup.language)
         self.do_run_in_chroot("locale-gen")
-        os.system("echo \"\" > /target/etc/default/locale")
+        self.runner.run("echo \"\" > /target/etc/default/locale")
         self.do_run_in_chroot("update-locale LANG=\"%s.UTF-8\"" % self.setup.language)
         self.do_run_in_chroot("update-locale LANG=%s.UTF-8" % self.setup.language)
 
     def setup_timezone(self):
         print(" --> Setting the timezone")
-        os.system("echo \"%s\" > /target/etc/timezone" % self.setup.timezone)
-        os.system("rm -f /target/etc/localtime")
-        os.system("ln -s /usr/share/zoneinfo/%s /target/etc/localtime" % self.setup.timezone)
+        self.runner.run("echo \"%s\" > /target/etc/timezone" % self.setup.timezone)
+        self.runner.run("rm -f /target/etc/localtime")
+        self.runner.run("ln -s /usr/share/zoneinfo/%s /target/etc/localtime" % self.setup.timezone)
 
     def setup_localization(self):
         print(" --> Localizing packages")
         if self.setup.oem_mode:
             # Copy the l10n pkgs from the ISO to the target so oem-config can install from it later on.
-            os.system("mkdir -p /target/oem/l10n_pkgs")
-            l10ns = subprocess.getoutput(f"find {self.pool} | grep 'l10n-\\|hunspell-'")
+            self.runner.run("mkdir -p /target/oem/l10n_pkgs")
+            l10ns = self.runner.output(f"find {self.pool} | grep 'l10n-\\|hunspell-'")
             for l10n in l10ns.split("\n"):
-                os.system(f"cp {l10n} /target/oem/l10n_pkgs/")
+                self.runner.run(f"cp {l10n} /target/oem/l10n_pkgs/")
         elif self.setup.language != "en_US":
-            os.system("mkdir -p /target/debs")
+            self.runner.run("mkdir -p /target/debs")
             language_code = self.setup.language
             if "_" in self.setup.language:
                 language_code = self.setup.language.split("_")[0]
             if self.setup.oem_config:
-                l10ns = subprocess.getoutput("find /oem/l10n_pkgs | grep 'l10n-%s\\|hunspell-%s'" % (language_code, language_code))
+                l10ns = self.runner.output("find /oem/l10n_pkgs | grep 'l10n-%s\\|hunspell-%s'" % (language_code, language_code))
             else:
-                l10ns = subprocess.getoutput(f"find {self.pool} | grep 'l10n-%s\\|hunspell-%s'" % (language_code, language_code))
+                l10ns = self.runner.output(f"find {self.pool} | grep 'l10n-%s\\|hunspell-%s'" % (language_code, language_code))
             for l10n in l10ns.split("\n"):
-                os.system("cp %s /target/debs/" % l10n)
+                self.runner.run("cp %s /target/debs/" % l10n)
             self.do_run_in_chroot("dpkg -i /debs/*")
-            os.system("rm -rf /target/debs")
+            self.runner.run("rm -rf /target/debs")
 
     def setup_keyboard(self):
         print(" --> Setting the keyboard")
@@ -163,7 +164,7 @@ class InstallerEngine:
 
     def clean_apt(self):
         print(" --> Cleaning APT")
-        os.system("chroot /target/ /bin/sh -c \"dpkg --configure -a\"")
+        self.runner.run("chroot /target/ /bin/sh -c \"dpkg --configure -a\"")
         self.do_run_in_chroot("sed -i 's/^deb cdrom/#deb cdrom/' /etc/apt/sources.list")
         self.do_run_in_chroot("apt-get -y --force-yes autoremove")
 
@@ -171,7 +172,7 @@ class InstallerEngine:
         print(" --> Performing OEM config")
 
         # Setup a /target -> / link, this is so we can reuse code used for the live installation.
-        os.system("ln -s / /target")
+        self.runner.run("ln -s / /target")
 
         self.update_progress(10, False, False, _("Adding new user to the system"))
         self.setup_user()
@@ -197,12 +198,12 @@ class InstallerEngine:
         # OEM Config cleanup
         print(" --> Cleaning up OEM config")
         self.update_progress(80, True, False, _("Cleaning OEM configuration"))
-        os.system("rm -f /etc/lightdm/lightdm.conf.d/90-oem-config.conf")
-        os.system("rm -rf /root/.config/gtk-3.0")
-        os.system("apt-get remove --purge --yes --force-yes `cat /oem/live-packages.list`")
-        os.system("rm -f /oem/live-packages.list")
-        os.system("rm -f /target")
-        os.system("touch /oem/done.flag") # Leave a flag for mintsystem to clean up the OEM user account
+        self.runner.run("rm -f /etc/lightdm/lightdm.conf.d/90-oem-config.conf")
+        self.runner.run("rm -rf /root/.config/gtk-3.0")
+        self.runner.run("apt-get remove --purge --yes --force-yes `cat /oem/live-packages.list`")
+        self.runner.run("rm -f /oem/live-packages.list")
+        self.runner.run("rm -f /target")
+        self.runner.run("touch /oem/done.flag") # Leave a flag for mintsystem to clean up the OEM user account
 
         self.update_progress(100, False, True, _("Installation finished"))
         print(" --> All done")
@@ -220,13 +221,13 @@ class InstallerEngine:
         if(not os.path.exists("/source")):
             os.mkdir("/source")
 
-        os.system("umount --force /target/sys/firmware/efi/efivars")
-        os.system("umount --force /target/dev/shm")
-        os.system("umount --force /target/dev/pts")
-        os.system("umount --force /target/dev/")
-        os.system("umount --force /target/sys/")
-        os.system("umount --force /target/proc/")
-        os.system("umount --force /target/run/")
+        self.runner.run("umount --force /target/sys/firmware/efi/efivars")
+        self.runner.run("umount --force /target/dev/shm")
+        self.runner.run("umount --force /target/dev/pts")
+        self.runner.run("umount --force /target/dev/")
+        self.runner.run("umount --force /target/sys/")
+        self.runner.run("umount --force /target/proc/")
+        self.runner.run("umount --force /target/run/")
 
         # Mount the installation media
         print(" --> Mounting partitions")
@@ -271,13 +272,12 @@ class InstallerEngine:
         EXCLUDE_DIRS = "home/* dev/* proc/* sys/* tmp/* run/* mnt/* media/* lost+found source target".split()
         num_copied = 0
         # (Valid) assumption: num-of-files-to-copy ~= num-of-used-inodes-on-/
-        num_files = int(subprocess.getoutput("df --inodes /{src} | awk 'END{{ print $3 }}'".format(src=SOURCE.strip('/'))))
+        num_files = int(self.runner.output("df --inodes /{src} | awk 'END{{ print $3 }}'".format(src=SOURCE.strip('/'))))
         print(f" --> Copying {num_files} files")
         rsync_filter = ' '.join('--exclude=' + SOURCE + d for d in EXCLUDE_DIRS)
-        rsync = subprocess.Popen("rsync --verbose --archive --no-D --acls "
-                                 "--hard-links --xattrs {rsync_filter} "
-                                 "{src}* {dst}".format(src=SOURCE, dst=DEST, rsync_filter=rsync_filter),
-                                 shell=True, encoding='utf-8', errors='ignore', stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        rsync = self.runner.popen("rsync --verbose --archive --no-D --acls "
+                                  "--hard-links --xattrs {rsync_filter} "
+                                  "{src}* {dst}".format(src=SOURCE, dst=DEST, rsync_filter=rsync_filter))
         while rsync.poll() is None:
             line = rsync.stdout.readline()
             if not line:  # still copying the previous file, just wait
@@ -291,25 +291,25 @@ class InstallerEngine:
         # chroot
         print(" --> Chrooting")
         self.update_progress(10, False, False, _("Entering the system..."))
-        os.system("mount --bind /dev/ /target/dev/")
-        os.system("mount --bind /dev/shm /target/dev/shm")
-        os.system("mount --bind /dev/pts /target/dev/pts")
-        os.system("mount --bind /sys/ /target/sys/")
-        os.system("mount --bind /proc/ /target/proc/")
-        os.system("mount --bind /run/ /target/run/")
-        os.system("mv /target/etc/resolv.conf /target/etc/resolv.conf.bk")
-        os.system("cp -f /etc/resolv.conf /target/etc/resolv.conf")
+        self.runner.run("mount --bind /dev/ /target/dev/")
+        self.runner.run("mount --bind /dev/shm /target/dev/shm")
+        self.runner.run("mount --bind /dev/pts /target/dev/pts")
+        self.runner.run("mount --bind /sys/ /target/sys/")
+        self.runner.run("mount --bind /proc/ /target/proc/")
+        self.runner.run("mount --bind /run/ /target/run/")
+        self.runner.run("mv /target/etc/resolv.conf /target/etc/resolv.conf.bk")
+        self.runner.run("cp -f /etc/resolv.conf /target/etc/resolv.conf")
 
         if os.path.exists("/sys/firmware/efi/efivars"):
-            os.system("mkdir -p /target/sys/firmware/efi/efivars")
-            os.system("mount --bind /sys/firmware/efi/efivars /target/sys/firmware/efi/efivars/")
+            self.runner.run("mkdir -p /target/sys/firmware/efi/efivars")
+            self.runner.run("mount --bind /sys/firmware/efi/efivars /target/sys/firmware/efi/efivars/")
 
-        kernelversion= subprocess.getoutput("uname -r")
-        os.system(f"cp {self.casper}/vmlinuz /target/boot/vmlinuz-{kernelversion}")
+        kernelversion= self.runner.output("uname -r")
+        self.runner.run(f"cp {self.casper}/vmlinuz /target/boot/vmlinuz-{kernelversion}")
         found_initrd = False
         for initrd in [f"{self.casper}/initrd.img", f"{self.casper}/initrd.lz"]:
             if os.path.exists(initrd):
-                os.system("cp %s /target/boot/initrd.img-%s" % (initrd, kernelversion))
+                self.runner.run("cp %s /target/boot/initrd.img-%s" % (initrd, kernelversion))
                 found_initrd = True
                 break
 
@@ -318,7 +318,7 @@ class InstallerEngine:
 
         if self.setup.grub_device and self.setup.gptonefi:
             print(" --> Installing signed boot loader")
-            os.system("mkdir -p /target/debs")
+            self.runner.run("mkdir -p /target/debs")
             EFI_PACKAGES = [
                 "grub-efi-amd64",
                 "grub-efi-amd64-bin",
@@ -330,18 +330,18 @@ class InstallerEngine:
                 matches = glob(f"{self.pool}/main/**/{pkg}_*.deb", recursive=True)
                 if not matches:
                     raise Exception(f"Missing EFI package: {pkg}")
-                os.system(f"cp {max(matches)} /target/debs/")
+                self.runner.run(f"cp {max(matches)} /target/debs/")
 
             self.do_run_in_chroot("DEBIAN_FRONTEND=noninteractive apt-get remove --purge --yes grub-pc grub-pc-bin grub-gfxpayload-lists")
             self.do_run_in_chroot("dpkg -i /debs/*")
-            os.system("rm -rf /target/debs")
+            self.runner.run("rm -rf /target/debs")
             # remove the MOK key generated by shim-signed. We want debconf to trigger the enrollment
             # of a new one when the user installs the first proprietary driver package that needs it
-            os.system("rm -rf /target/var/lib/shim-signed/mok/*")
+            self.runner.run("rm -rf /target/var/lib/shim-signed/mok/*")
 
         # Prepare directory for oem_config
         if self.setup.oem_mode:
-            os.system("mkdir -p /target/oem/")
+            self.runner.run("mkdir -p /target/oem/")
 
         # remove live-packages (or w/e)
         print(" --> Removing live packages")
@@ -434,7 +434,7 @@ class InstallerEngine:
         if self.setup.badblocks:
             self.update_progress(25, False, False, _("Filling disk with random data (please be patient, this can take hours...)"))
             print(" --> Filling %s with random data" % self.setup.disk)
-            os.system("badblocks -c 10240 -s -w -t random -v %s" % self.setup.disk)
+            self.runner.run("badblocks -c 10240 -s -w -t random -v %s" % self.setup.disk)
 
         # Create partitions
         self.update_progress(25, False, False, _("Creating partitions on %s") % self.setup.disk)
@@ -445,38 +445,38 @@ class InstallerEngine:
         # Encrypt root partition
         if self.setup.luks:
             print(" --> Encrypting root partition %s" % self.auto_root_partition)
-            os.system("echo -n %s | cryptsetup luksFormat -c aes-xts-plain64 -h sha256 -s 512 %s" % (shlex.quote(self.setup.passphrase1), self.auto_root_partition))
+            self.runner.run("echo -n %s | cryptsetup luksFormat -c aes-xts-plain64 -h sha256 -s 512 %s" % (shlex.quote(self.setup.passphrase1), self.auto_root_partition))
             print(" --> Opening root partition %s" % self.auto_root_partition)
-            os.system("echo -n %s | cryptsetup luksOpen %s lvmmint" % (shlex.quote(self.setup.passphrase1), self.auto_root_partition))
+            self.runner.run("echo -n %s | cryptsetup luksOpen %s lvmmint" % (shlex.quote(self.setup.passphrase1), self.auto_root_partition))
             self.auto_root_partition = "/dev/mapper/lvmmint"
 
         # Setup LVM
         if self.setup.lvm:
             print(" --> LVM: Creating PV")
-            os.system("pvcreate -y %s" % self.auto_root_partition)
+            self.runner.run("pvcreate -y %s" % self.auto_root_partition)
             print(" --> LVM: Creating VG")
-            os.system("vgcreate -y lvmmint %s" % self.auto_root_partition)
+            self.runner.run("vgcreate -y lvmmint %s" % self.auto_root_partition)
             print(" --> LVM: Creating LV root")
-            os.system("lvcreate -y -n root -L 1GB lvmmint")
+            self.runner.run("lvcreate -y -n root -L 1GB lvmmint")
             print(" --> LVM: Creating LV swap")
-            os.system("lvcreate -y -n swap -L 2GB lvmmint")
+            self.runner.run("lvcreate -y -n swap -L 2GB lvmmint")
             print(" --> LVM: Extending LV root")
-            os.system(r"lvextend -l 100%FREE /dev/lvmmint/root")
+            self.runner.run(r"lvextend -l 100%FREE /dev/lvmmint/root")
             print(" --> LVM: Formatting LV root")
-            os.system("mkfs.ext4 /dev/mapper/lvmmint-root -FF")
+            self.runner.run("mkfs.ext4 /dev/mapper/lvmmint-root -FF")
             print(" --> LVM: Formatting LV swap")
-            os.system("mkswap -f /dev/mapper/lvmmint-swap")
+            self.runner.run("mkswap -f /dev/mapper/lvmmint-swap")
             print(" --> LVM: Enabling LV swap")
-            os.system("swapon /dev/mapper/lvmmint-swap")
+            self.runner.run("swapon /dev/mapper/lvmmint-swap")
             self.auto_root_partition = "/dev/mapper/lvmmint-root"
             self.auto_swap_partition = "/dev/mapper/lvmmint-swap"
 
         self.do_mount(self.auto_root_partition, "/target", "ext4", None)
         if (self.auto_boot_partition is not None):
-            os.system("mkdir -p /target/boot")
+            self.runner.run("mkdir -p /target/boot")
             self.do_mount(self.auto_boot_partition, "/target/boot", "ext4", None)
         if (self.auto_efi_partition is not None):
-            os.system("mkdir -p /target/boot/efi")
+            self.runner.run("mkdir -p /target/boot/efi")
             self.do_mount(self.auto_efi_partition, "/target/boot/efi", "vfat", None)
 
     def format_partitions(self):
@@ -517,19 +517,19 @@ class InstallerEngine:
                     self.do_mount(partition.path, "/target", fs, None)
                     if fs == "btrfs":
                         # Create subvolumes for Btrfs
-                        os.system("btrfs subvolume create /target/@")
-                        os.system("btrfs subvolume list -p /target")
+                        self.runner.run("btrfs subvolume create /target/@")
+                        self.runner.run("btrfs subvolume list -p /target")
                         print(" ------ Umount btrfs to remount subvolume @")
-                        os.system("umount --force /target")
+                        self.runner.run("umount --force /target")
                         self.do_mount(partition.path, "/target", fs, "subvol=@")
                         if not self.setup_has_dedicated_home():
                             # If there is no dedicated home partition, add a @home subvolume to /
-                            os.system("mkdir -p /target/home")
+                            self.runner.run("mkdir -p /target/home")
                             self.do_mount(partition.path, "/target/home", fs, None)
-                            os.system("btrfs subvolume create /target/home/@home")
-                            os.system("btrfs subvolume list -p /target/home")
+                            self.runner.run("btrfs subvolume create /target/home/@home")
+                            self.runner.run("btrfs subvolume list -p /target/home")
                             print(" ------- Umount btrfs to remount subvolume @home")
-                            os.system("umount --force /target/home")
+                            self.runner.run("umount --force /target/home")
                             self.do_mount(partition.path, "/target/home", fs, "subvol=@home")
                     break
 
@@ -537,22 +537,22 @@ class InstallerEngine:
         for partition in self.setup.partitions:
             if(partition.mount_as is not None and partition.mount_as != "" and partition.mount_as != "/" and partition.mount_as != "swap"):
                 print(" ------ Mounting %s on %s" % (partition.path, "/target" + partition.mount_as))
-                os.system("mkdir -p /target" + partition.mount_as)
+                self.runner.run("mkdir -p /target" + partition.mount_as)
                 fs = partition.type
                 if fs == "fat16" or fs == "fat32":
                     fs = "vfat"
                 self.do_mount(partition.path, "/target" + partition.mount_as, fs, None)
                 if partition.mount_as == "/home" and fs == "btrfs":
                     # Dedicated home partition with Btrfs, needs a @home subvolume
-                    os.system("btrfs subvolume create /target/home/@home")
-                    os.system("btrfs subvolume list -p /target/home")
+                    self.runner.run("btrfs subvolume create /target/home/@home")
+                    self.runner.run("btrfs subvolume list -p /target/home")
                     print(" ------- Umount btrfs to remount subvolume @home")
-                    os.system("umount --force /target/home")
+                    self.runner.run("umount --force /target/home")
                     self.do_mount(partition.path, "/target/home", fs, "subvol=@home")
 
     def get_blkid(self, path):
         uuid = path # If we can't find the UUID we use the path
-        blkid = subprocess.getoutput('blkid').split('\n')
+        blkid = self.runner.output('blkid').split('\n')
         for blkid_line in blkid:
             blkid_elements = blkid_line.split(':')
             if blkid_elements[0] == path:
@@ -624,11 +624,11 @@ class InstallerEngine:
 
     def write_mtab(self, fstab="/target/etc/fstab", mtab="/target/etc/mtab"):
         if self.setup.lvm:
-            os.system(f"grep -v swap {fstab} > {mtab}")
+            self.runner.run(f"grep -v swap {fstab} > {mtab}")
 
     def write_crypttab(self, path="/target/etc/crypttab"):
         if self.setup.luks:
-            os.system(f"echo 'lvmmint   {self.get_blkid(self.auto_root_physical_partition)}   none   luks,discard,tries=3' >> {path}")
+            self.runner.run(f"echo 'lvmmint   {self.get_blkid(self.auto_root_physical_partition)}   none   luks,discard,tries=3' >> {path}")
 
     def finish_installation(self):
 
@@ -650,21 +650,21 @@ class InstallerEngine:
             self.update_progress(70, False, False, _("Installing drivers"))
 
             # Broadcom
-            drivers = subprocess.getoutput("mint-drivers")
+            drivers = self.runner.output("mint-drivers")
             if "broadcom-sta-dkms" in drivers:
                 try:
-                    os.system("mkdir -p /target/debs")
-                    os.system(f"cp {self.pool}/non-free/b/broadcom-sta/*.deb /target/debs/")
+                    self.runner.run("mkdir -p /target/debs")
+                    self.runner.run(f"cp {self.pool}/non-free/b/broadcom-sta/*.deb /target/debs/")
                     self.do_run_in_chroot("dpkg -i /debs/*")
                     self.do_run_in_chroot("modprobe wl")
-                    os.system("rm -rf /target/debs")
+                    self.runner.run("rm -rf /target/debs")
                 except:
                     print("Failed to install Broadcom drivers")
 
             # NVIDIA
             driver = "/usr/share/live-installer/nvidia-driver.tar.gz"
             if os.path.exists(driver):
-                if "install-nvidia" in subprocess.getoutput("cat /proc/cmdline"):
+                if "install-nvidia" in self.runner.output("cat /proc/cmdline"):
                     print(" --> Installing NVIDIA driver")
                     try:
                         self.do_run_in_chroot("tar zxvf %s" % driver)
@@ -673,7 +673,7 @@ class InstallerEngine:
                     except Exception as e:
                         print("Failed to install NVIDIA driver: ", e)
 
-                os.system("rm -f /target/usr/share/live-installer/nvidia-driver.tar.gz")
+                self.runner.run("rm -f /target/usr/share/live-installer/nvidia-driver.tar.gz")
 
         # set the keyboard options..
         self.update_progress(75, False, False, _("Setting keyboard options"))
@@ -718,7 +718,7 @@ class InstallerEngine:
         print(" --> Configuring Initramfs")
         self.do_run_in_chroot("/usr/sbin/update-initramfs -t -u -k all")
         self.do_run_in_chroot(self.grub_adjustment_script)
-        kernelversion= subprocess.getoutput("uname -r")
+        kernelversion= self.runner.output("uname -r")
         self.do_run_in_chroot("/usr/bin/sha1sum /boot/initrd.img-%s > /var/lib/initramfs-tools/%s" % (kernelversion,kernelversion))
 
         # Clean APT
@@ -729,20 +729,20 @@ class InstallerEngine:
         print(" --> Unmounting partitions")
 
         if os.path.exists("/target/sys/firmware/efi/efivars"):
-            os.system("umount --force /target/sys/firmware/efi/efivars")
+            self.runner.run("umount --force /target/sys/firmware/efi/efivars")
 
-        os.system("umount --force /target/dev/shm")
-        os.system("umount --force /target/dev/pts")
+        self.runner.run("umount --force /target/dev/shm")
+        self.runner.run("umount --force /target/dev/pts")
         if self.setup.gptonefi:
-            os.system("umount --force /target/boot/efi")
-            os.system("umount --force /target/media/cdrom")
-        os.system("umount --force /target/boot")
-        os.system("umount --force /target/dev/")
-        os.system("umount --force /target/sys/")
-        os.system("umount --force /target/proc/")
-        os.system("umount --force /target/run/")
-        os.system("rm -f /target/etc/resolv.conf")
-        os.system("mv /target/etc/resolv.conf.bk /target/etc/resolv.conf")
+            self.runner.run("umount --force /target/boot/efi")
+            self.runner.run("umount --force /target/media/cdrom")
+        self.runner.run("umount --force /target/boot")
+        self.runner.run("umount --force /target/dev/")
+        self.runner.run("umount --force /target/sys/")
+        self.runner.run("umount --force /target/proc/")
+        self.runner.run("umount --force /target/run/")
+        self.runner.run("rm -f /target/etc/resolv.conf")
+        self.runner.run("mv /target/etc/resolv.conf.bk /target/etc/resolv.conf")
         if(not self.setup.skip_mount):
             for partition in self.setup.partitions:
                 if(partition.mount_as is not None and partition.mount_as != "" and partition.mount_as != "/" and partition.mount_as != "swap"):
@@ -759,15 +759,13 @@ class InstallerEngine:
         print(" --> All done")
 
     def do_run_in_chroot(self, command):
-        command = command.replace('"', "'").strip()
-        print("chroot /target/ /bin/sh -c \"%s\"" % command)
-        os.system("chroot /target/ /bin/sh -c \"%s\"" % command)
+        self.runner.chroot(command)
 
     def do_configure_grub(self):
         self.update_progress(85, True, False, _("Configuring bootloader"))
         print(" --> Running grub-mkconfig")
         self.do_run_in_chroot("grub-mkconfig -o /boot/grub/grub.cfg")
-        grub_output = subprocess.getoutput("chroot /target/ /bin/sh -c \"grub-mkconfig -o /boot/grub/grub.cfg\"")
+        grub_output = self.runner.output("chroot /target/ /bin/sh -c \"grub-mkconfig -o /boot/grub/grub.cfg\"")
         grubfh = open("/var/log/live-installer-grub-output.log", "w")
         grubfh.writelines(grub_output)
         grubfh.close()
@@ -809,7 +807,7 @@ class InstallerEngine:
 
     # Execute schell command and return output in a list
     def exec_cmd(self, cmd):
-        p = subprocess.Popen(cmd, shell=True, encoding='utf-8', errors='ignore', stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        p = self.runner.popen(cmd)
         lstOut = []
         for line in p.stdout.readlines():
             # Strip the line, also from null spaces (strip() only strips white spaces)
