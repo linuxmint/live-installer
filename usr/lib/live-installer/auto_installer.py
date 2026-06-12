@@ -223,27 +223,8 @@ class HeadlessDriver:
         self.log(f"WARNING: {what} — continuing (on_failure.{failure_mode})")
 
     # -- post-engine steps -------------------------------------------------
-
-    def _mount_chroot(self):
-        for command in (
-            "mount --bind /dev/ /target/dev/",
-            "mount --bind /dev/pts /target/dev/pts",
-            "mount --bind /sys/ /target/sys/",
-            "mount --bind /proc/ /target/proc/",
-            "mount --bind /run/ /target/run/",
-            "cp -f /etc/resolv.conf /target/etc/resolv.conf",
-        ):
-            self.runner.run(command)
-
-    def _unmount_chroot(self):
-        for command in (
-            "umount --force /target/dev/pts",
-            "umount --force /target/dev/",
-            "umount --force /target/sys/",
-            "umount --force /target/proc/",
-            "umount --force /target/run/",
-        ):
-            self.runner.run(command)
+    # These run via the engine's before_unmount_hook: after the system is
+    # fully configured but while the chroot is still mounted with network.
 
     def _create_extra_users(self):
         for user in self.config.users[1:]:
@@ -368,9 +349,6 @@ class HeadlessDriver:
             engine.start_installation()
             if self._failed:
                 raise InstallationFailed("engine error during installation")
-            engine.finish_installation()
-            if self._failed:
-                raise InstallationFailed("engine error during finalization")
 
             needs_post = (
                 len(self.config.users) > 1
@@ -378,16 +356,19 @@ class HeadlessDriver:
                 or self.config.packages.add or self.config.packages.remove
                 or self.config.post_install
             )
-            if needs_post:
+
+            def post_install_hook():
                 self.log(" --> Applying post-install configuration")
-                self._mount_chroot()
-                try:
-                    self._create_extra_users()
-                    self._apply_ssh_keys()
-                    self._apply_apt_steps()
-                    self._run_shell_steps()
-                finally:
-                    self._unmount_chroot()
+                self._create_extra_users()
+                self._apply_ssh_keys()
+                self._apply_apt_steps()
+                self._run_shell_steps()
+
+            engine.finish_installation(
+                before_unmount_hook=post_install_hook if needs_post else None
+            )
+            if self._failed:
+                raise InstallationFailed("engine error during finalization")
         except (schema.ConfigError, diskmatch.DiskMatchError,
                 InstallationFailed) as exc:
             self.log(f"ERROR: {exc}")
