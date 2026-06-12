@@ -258,6 +258,12 @@ class TestHeadlessDriver:
         chroots = [c for c in runner.commands if c.startswith("chroot")]
         assert any("apt-get update" in c for c in chroots)
         assert any("apt-get install -y openssh-server" in c for c in chroots)
+        # dpkg state repair must run between update and install (the engine's
+        # offline EFI bootloader install leaves unmet dependencies behind)
+        fix = next(i for i, c in enumerate(chroots) if "install -f -y" in c)
+        install = next(i for i, c in enumerate(chroots)
+                       if "install -y openssh-server" in c)
+        assert fix < install
 
     def test_package_failure_policy_abort(self, tmp_path):
         config = make_config(
