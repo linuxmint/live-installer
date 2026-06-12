@@ -133,18 +133,23 @@ def generate_ssh_key(workdir):
     return key, (workdir / "id_ed25519.pub").read_text().strip()
 
 
-def stage_answer_file(scenario_dir, answer_rel, workdir, pubkey):
-    """Copy the scenario's answer file into a served directory, adding the
-    harness SSH public key to the first user so verify can log in."""
-    serve_dir = workdir / "serve"
+def stage_answer_file(scenario_dir, answer_rel, serve_dir, pubkey, base_url):
+    """Copy the scenario's answer file into the served directory: the
+    {server} placeholder is expanded to the harness HTTP server's base URL
+    (for auxiliary files like LUKS keyfiles), and the harness SSH public
+    key is added to the first user so verify can log in.  Auxiliary files
+    next to the answer file are copied verbatim."""
     target = serve_dir / answer_rel
     target.parent.mkdir(parents=True, exist_ok=True)
-    with open(scenario_dir / answer_rel) as f:
-        answer = yaml.safe_load(f)
+    text = (scenario_dir / answer_rel).read_text().replace("{server}", base_url)
+    answer = yaml.safe_load(text)
     user = answer["users"][0]
     user.setdefault("ssh_authorized_keys", []).append(pubkey)
     with open(target, "w") as f:
         yaml.safe_dump(answer, f, sort_keys=False)
+    for aux in (scenario_dir / answer_rel).parent.iterdir():
+        if aux.is_file() and aux.name != Path(answer_rel).name:
+            shutil.copyfile(aux, target.parent / aux.name)
     return serve_dir
 
 
@@ -161,12 +166,18 @@ def run_full(scenario, iso, workdir, scenario_dir):
     if expect_failure:
         ssh_key = None
         serve_dir = scenario_dir
+        httpd, http_port = serve_directory(serve_dir)
     else:
+        # the server starts first so its port can be substituted into the
+        # answer file ({server} placeholder); files appear afterwards
+        serve_dir = workdir / "serve"
+        serve_dir.mkdir(parents=True, exist_ok=True)
+        httpd, http_port = serve_directory(serve_dir)
         ssh_key, pubkey = generate_ssh_key(workdir)
-        serve_dir = stage_answer_file(scenario_dir, answer, workdir, pubkey)
+        stage_answer_file(scenario_dir, answer, serve_dir, pubkey,
+                          f"http://10.0.2.2:{http_port}")
     kernel, initrd = isotools.extract_boot_files(iso, workdir / "boot")
 
-    httpd, http_port = serve_directory(serve_dir)
     try:
         machine = vm.VM(
             workdir,
@@ -214,6 +225,15 @@ def run_full(scenario, iso, workdir, scenario_dir):
             return cases
         finally:
             machine.stop()
+
+        # Scenarios whose installed system cannot boot unattended yet
+        # (e.g. LUKS passphrase prompt at the initramfs) stop here until
+        # the harness can interact with the serial console.
+        if scenario.get("skip_boot_phase"):
+            cases.append(("boot-verify", True,
+                          "SKIPPED: " + str(scenario.get("skip_boot_reason",
+                                                         "skip_boot_phase set"))))
+            return cases
 
         # Phase 2: boot the installed system and verify over SSH
         machine.start(boot="disk", firmware=scenario["firmware"],

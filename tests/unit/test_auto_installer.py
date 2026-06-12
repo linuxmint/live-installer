@@ -124,6 +124,36 @@ class TestBuildSetup:
         assert setup.passphrase1 == "sekrit-passphrase"
         assert setup.gptonefi is True
 
+    def test_keyfile_over_plain_http_refused(self):
+        config = schema.parse_config(textwrap.dedent("""\
+            version: 1
+            locale:
+              language: en_CA.UTF-8
+              timezone: America/Toronto
+            users:
+              - username: admin
+                password_crypted: "$6$rounds=4096$salt$hash"
+            storage:
+              layout: lvm-on-luks
+              luks:
+                passphrase_source: keyfile
+                keyfile: http://server/luks.key
+              target:
+                match:
+                  first-non-removable: true
+        """))
+        with pytest.raises(schema.ConfigError) as excinfo:
+            auto_installer.build_setup(
+                config, disk="/dev/vda", efi=False, is_mint=False)
+        assert "plain HTTP" in str(excinfo.value)
+        # and allowed when insecure is explicitly granted (fetch will then
+        # fail on the unreachable host, which is a different error)
+        with pytest.raises(schema.ConfigError) as excinfo2:
+            auto_installer.build_setup(
+                config, disk="/dev/vda", efi=False, is_mint=False,
+                insecure=True)
+        assert "plain HTTP" not in str(excinfo2.value)
+
     def test_unimplemented_passphrase_source_fails_early(self):
         config = schema.parse_config(textwrap.dedent("""\
             version: 1
