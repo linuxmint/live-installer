@@ -36,9 +36,10 @@ verify:
     mountpoint: /
     source_contains: "lvmmint-root"
   - name: swap-on-lvm
+    # lsblk, not swapon: /usr/sbin is not on a non-root SSH user's PATH
     type: command
-    command: "swapon --show=NAME --noheadings"
-    expect_substring: "lvmmint-swap"
+    command: "lsblk -rno NAME,MOUNTPOINTS"
+    expect_substring: "lvmmint-swap [SWAP]"
   - name: network-manager-running
     type: command
     command: systemctl is-active NetworkManager
