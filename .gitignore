@@ -4,3 +4,7 @@ debian/files
 debian/*substvar*
 *interface.ui~
 usr/share/locale/*
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
