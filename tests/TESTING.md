@@ -171,10 +171,13 @@ Useful scenario knobs:
   passphrase over serial at the initramfs prompt during boot-verify.
 - `expect.outcome: failure` — a negative test: the failure marker is the
   expected result and there is no boot/verify phase.
-- `netboot: true` — PXE boot instead of attaching the ISO. The harness
-  serves the kernel/initrd over QEMU's built-in TFTP and the squashfs over
-  HTTP, and the NIC's iPXE ROM boots it (see `pxe-simple`). Give it more
-  `memory_mb` (live-boot fetches the squashfs into RAM).
+- `netboot: true` — PXE boot instead of attaching the ISO (see
+  `pxe-simple`). The harness builds a single combined squashfs with the
+  installer baked in (`isotools.build_combined_squashfs`), serves the
+  kernel/initrd over QEMU's built-in TFTP and the squashfs over HTTP, and
+  the NIC's iPXE ROM boots it. Give it more `memory_mb` (live-boot fetches
+  the squashfs into RAM). The netboot mechanics, image requirements, and
+  traps are documented in [../docs/pxe-netboot.md](../docs/pxe-netboot.md).
 
 Add the scenario name to the matrix in
 `.github/workflows/integration-tests.yml` so CI runs it.

@@ -124,6 +124,18 @@ well-known local paths `/cdrom/auto-install.yaml` and
 `/run/live/medium/auto-install.yaml`, so a USB or remastered ISO still
 works offline.
 
+### Network boot (PXE / iPXE)
+
+The installer can run from a fully network-booted live system, with no
+install media: DHCP/TFTP/iPXE boot the kernel and initrd, live-boot
+fetches the root filesystem over HTTP, and the installer fetches its
+answer file over HTTP as above. This needs a netboot-capable image (a
+single squashfs with the installer, the kernel/initrd/manifests carried
+in the rootfs, and a NetworkManager-based live system), which a normal
+desktop ISO is not. The mechanics, the boot command line, the image
+requirements, and the traps are documented separately in
+[pxe-netboot.md](pxe-netboot.md).
+
 ## Answer file reference
 
 The answer file is validated strictly: unknown keys, wrong types, and

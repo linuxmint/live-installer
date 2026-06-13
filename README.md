@@ -39,6 +39,8 @@ unchanged when no answer file is supplied.
 For the mechanics of serial-console provisioning and encrypted (LUKS)
 boot — and the live-system quirks they work around — see
 **[docs/serial-console-and-luks.md](docs/serial-console-and-luks.md)**.
+For running the installer from a fully network-booted (PXE/iPXE) live
+system, see **[docs/pxe-netboot.md](docs/pxe-netboot.md)**.
 
 ## Development & testing
 

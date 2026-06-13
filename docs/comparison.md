@@ -93,6 +93,7 @@ Legend: ✅ full, ◐ partial or preset-only, ✗ not supported.
 | HTTP(S) URL | ✅ | ✅ | ✅ | ✅ (HTTPS default, HTTP opt-in) |
 | NFS | ✅ | ✅ | ◐ | ✅ (cleartext, opt-in) |
 | Kernel cmdline trigger | ✅ | ✅ | ✅ | ✅ |
+| PXE / netboot install (no media) | ✅ | ✅ | ✅ | ◐ (BIOS, tested in CI; UEFI/IPv6 not yet) |
 | Per-machine by serial | ✅ | ◐ | ◐ | ✅ (auto-discovery by mac/serial/uuid) |
 | Includes / file composition | ✅ %include | ✅ | ✗ | ✗ |
 | Provisioning-server integration (Cobbler/MAAS/Foreman) | ✅ | ✅ | ✅ | ✗ |
