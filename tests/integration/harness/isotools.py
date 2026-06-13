@@ -273,6 +273,21 @@ def build_combined_squashfs(iso, source_tree, outdir, workdir):
     base.unlink(missing_ok=True)  # free the ~GB base image before re-squashing
     _run(["cp", "-a", f"{overlay}/.", f"{root}/"])
 
+    # A netboot medium has only the squashfs; the installer also needs the
+    # kernel, initrd, and the live-package-removal manifest, which on CD/USB
+    # sit next to the squashfs. Carry them in the rootfs where installer.py's
+    # netboot path (self.live_files) reads them.
+    bundle = root / "usr" / "lib" / "live-installer" / "netboot-live"
+    bundle.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(kernel, bundle / "vmlinuz")
+    shutil.copyfile(initrd, bundle / "initrd.img")
+    for manifest in ("filesystem.packages", "filesystem.packages-remove"):
+        try:
+            _run(["xorriso", "-osirrox", "on", "-indev", str(iso),
+                  "-extract", f"/live/{manifest}", str(bundle / manifest)])
+        except IsoToolsError:
+            pass  # absent on some images; the engine tolerates a missing one
+
     outdir = Path(outdir)
     outdir.mkdir(parents=True, exist_ok=True)
     combined = outdir / "filesystem.squashfs"

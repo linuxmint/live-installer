@@ -19,12 +19,21 @@ class InstallerEngine:
         if self.setup.is_mint:
             self.casper = "/cdrom/casper"
             self.pool = "/cdrom/pool"
+            self.live_files = self.casper
             self.manifest = "/cdrom/casper/filesystem.manifest"
             self.grub_adjustment_script = "/usr/share/ubuntu-system-adjustments/systemd/adjust-grub-title"
         else:
             self.casper = "/run/live/medium/live"
             self.pool = "/run/live/medium/pool"
-            self.manifest = "/run/live/medium/live/filesystem.packages"
+            # The kernel, initrd, and package manifests normally sit next to
+            # the squashfs on the medium. A PXE/netboot image can't: live-boot
+            # fetch= delivers only the squashfs, so a netboot image carries
+            # those files in the rootfs instead, and we read them from there.
+            self.live_files = self.casper
+            _bundled = "/usr/lib/live-installer/netboot-live"
+            if not os.path.exists(f"{self.casper}/vmlinuz") and os.path.isdir(_bundled):
+                self.live_files = _bundled
+            self.manifest = f"{self.live_files}/filesystem.packages"
             self.grub_adjustment_script = "/usr/share/debian-system-adjustments/systemd/adjust-grub-title"
 
     def set_progress_hook(self, progresshook):
@@ -308,9 +317,9 @@ class InstallerEngine:
             self.runner.run("mount --bind /sys/firmware/efi/efivars /target/sys/firmware/efi/efivars/")
 
         kernelversion= self.runner.output("uname -r")
-        self.runner.run(f"cp {self.casper}/vmlinuz /target/boot/vmlinuz-{kernelversion}")
+        self.runner.run(f"cp {self.live_files}/vmlinuz /target/boot/vmlinuz-{kernelversion}")
         found_initrd = False
-        for initrd in [f"{self.casper}/initrd.img", f"{self.casper}/initrd.lz"]:
+        for initrd in [f"{self.live_files}/initrd.img", f"{self.live_files}/initrd.lz"]:
             if os.path.exists(initrd):
                 self.runner.run("cp %s /target/boot/initrd.img-%s" % (initrd, kernelversion))
                 found_initrd = True
@@ -349,9 +358,17 @@ class InstallerEngine:
         # remove live-packages (or w/e)
         print(" --> Removing live packages")
         self.update_progress(20, False, False, _("Removing live configuration (packages)"))
-        with open(f"{self.manifest}-remove", "r") as fd:
-            line = fd.read().replace('\n', ' ')
-        if self.setup.oem_mode:
+        remove_manifest = f"{self.manifest}-remove"
+        if not os.path.exists(remove_manifest):
+            print(f"WARNING: no live-package manifest at {remove_manifest}; "
+                  "skipping live-package removal")
+            line = ""
+        else:
+            with open(remove_manifest, "r") as fd:
+                line = fd.read().replace('\n', ' ')
+        if not line.strip():
+            pass  # nothing to remove
+        elif self.setup.oem_mode:
             # in OEM mode don't remove pkgs just yet
             self.do_run_in_chroot(f'echo "{line}" > /oem/live-packages.list')
             self.do_run_in_chroot("rm -f /usr/share/applications/debian-installer-launcher.desktop")
