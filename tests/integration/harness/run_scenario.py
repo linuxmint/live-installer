@@ -57,6 +57,16 @@ DEFAULTS = {
 }
 
 
+# Strings live-boot/the kernel print when the system never reaches the
+# installer; treated as an immediate install failure so a broken boot does
+# not wait out the full install timeout.
+BOOT_FAILED_MARKERS = [
+    "Unable to find a live file system",
+    "BOOT FAILED",
+    "Kernel panic",
+]
+
+
 class _QuietHTTPHandler(http.server.SimpleHTTPRequestHandler):
     def log_message(self, fmt, *args):
         pass
@@ -238,9 +248,17 @@ def run_full(scenario, iso, workdir, scenario_dir):
             success = scenario["expect"]["serial_markers"]
             failure = scenario["expect"].get("failure_markers", [])
             marker = machine.wait_serial(
-                success + failure,
+                success + failure + BOOT_FAILED_MARKERS,
                 scenario["install_timeout_s"],
             )
+            # A boot that dies before the installer runs (e.g. live-boot can't
+            # fetch the rootfs over PXE) must fail fast, not wait out the full
+            # install timeout for a marker that will never come.
+            if marker in BOOT_FAILED_MARKERS:
+                label = "fails-cleanly" if expect_failure else "install"
+                cases.append((label, False,
+                              f"boot failed before the installer ran: {marker}"))
+                return cases
             if expect_failure:
                 if marker in failure:
                     cases.append(("fails-cleanly", True, f"matched: {marker}"))
