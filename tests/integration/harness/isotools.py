@@ -249,10 +249,12 @@ def build_combined_squashfs(iso, source_tree, outdir, workdir):
     root = workdir / "root"
     if root.exists():
         shutil.rmtree(root)
-    # unsquashfs runs unprivileged: it skips device nodes (the live rootfs has
-    # none; devtmpfs populates /dev at boot) and -all-root fixes ownership at
-    # re-squash, so root need not be real here.
-    _run(["unsquashfs", "-d", str(root), "-no-progress", str(base)])
+    # unsquashfs runs unprivileged: -no-xattrs skips security.* capability
+    # xattrs it cannot write as non-root (the installer runs as root and needs
+    # no file caps); it also skips device nodes (the live rootfs has none,
+    # devtmpfs populates /dev at boot); -all-root fixes ownership at re-squash.
+    _run(["unsquashfs", "-d", str(root), "-no-progress", "-no-xattrs",
+          str(base)])
     base.unlink(missing_ok=True)  # free the ~GB base image before re-squashing
     _run(["cp", "-a", f"{overlay}/.", f"{root}/"])
 
@@ -261,8 +263,8 @@ def build_combined_squashfs(iso, source_tree, outdir, workdir):
     combined = outdir / "filesystem.squashfs"
     combined.unlink(missing_ok=True)
     _run([
-        "mksquashfs", str(root), str(combined),
-        "-all-root", "-no-progress", "-quiet", "-comp", "zstd", "-noappend",
+        "mksquashfs", str(root), str(combined), "-all-root", "-no-xattrs",
+        "-no-progress", "-quiet", "-comp", "zstd", "-noappend",
     ])
     shutil.rmtree(root, ignore_errors=True)  # reclaim the unpacked tree
     return kernel, initrd, combined
