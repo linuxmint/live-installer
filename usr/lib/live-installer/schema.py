@@ -19,16 +19,18 @@ headless install.  Design rules:
 Where this overlaps with cloud-init / Ubuntu autoinstall, it uses the
 same key names and structure (top-level hostname/locale/timezone; users
 with name/gecos/passwd/groups/ssh_authorized_keys; a flat packages
-install list; runcmd). Installer-only concerns that cloud-init has no
+install list). Installer-only concerns that cloud-init has no
 equivalent for (disk selection, partition layout, LUKS, kernel cmdline,
 failure policy) keep their own shapes. Notable divergences:
   - `package_remove` is an extension: cloud-init has no declarative
     package removal.
-  - `repositories` is deliberately package-system-neutral (cloud-init
-    calls the equivalent `apt:`).
-  - `runcmd` runs in the target during install (in the chroot), not on
-    first boot as in cloud-init. Same name and structure, installer
-    semantics.
+  - `repositories` carries an apt sources.list line (cloud-init calls the
+    equivalent `apt:`).
+  - `late_commands` runs in the target during install (in the chroot),
+    matching Ubuntu autoinstall's `late-commands` and kickstart `%post`.
+    This is deliberately NOT cloud-init's `runcmd`, which runs on first
+    boot — a different lifecycle, so it gets a different name. `runcmd`
+    is left unused, reserved for true first-boot semantics later.
 
 Strict validation deliberately defangs YAML's type-coercion footguns:
 anything that does not parse cleanly into the declared types is an
@@ -353,7 +355,7 @@ class AutoInstallConfig(_StrictModel):
     packages: list[str] = Field(default_factory=list)        # cloud-init: installs
     package_remove: list[str] = Field(default_factory=list)  # extension
     repositories: list[Repository] = Field(default_factory=list)
-    runcmd: list[str] = Field(default_factory=list)          # cloud-init
+    late_commands: list[str] = Field(default_factory=list)   # autoinstall-style
     kernel: Kernel = Field(default_factory=Kernel)
     oem: Oem = Field(default_factory=Oem)
     on_failure: OnFailure = Field(default_factory=OnFailure)
