@@ -284,6 +284,33 @@ def run_driver(config, fail_in=None, **setup_kwargs):
     return rc, runner, engine
 
 
+class TestEnsureDns:
+    def _driver(self):
+        driver, _runner, _engine = make_driver(make_config())
+        return driver
+
+    def test_repairs_placeholder_from_dhcp_lease(self, tmp_path):
+        resolv = tmp_path / "resolv.conf"
+        resolv.write_text("nameserver dhcp\n")  # the netboot placeholder
+        (tmp_path / "net-enp0s3.conf").write_text(
+            "DEVICE=enp0s3\nIPV4DNS0=10.0.2.3\nIPV4DNS1=0.0.0.0\n")
+        self._driver()._ensure_dns(str(resolv), str(tmp_path / "net-*.conf"))
+        assert resolv.read_text() == "nameserver 10.0.2.3\n"  # 0.0.0.0 dropped
+
+    def test_noop_when_already_valid(self, tmp_path):
+        resolv = tmp_path / "resolv.conf"
+        resolv.write_text("nameserver 192.0.2.1\n")
+        (tmp_path / "net-x.conf").write_text("IPV4DNS0=10.0.2.3\n")
+        self._driver()._ensure_dns(str(resolv), str(tmp_path / "net-*.conf"))
+        assert resolv.read_text() == "nameserver 192.0.2.1\n"  # left untouched
+
+    def test_left_alone_when_no_lease_dns(self, tmp_path):
+        resolv = tmp_path / "resolv.conf"
+        resolv.write_text("nameserver dhcp\n")
+        self._driver()._ensure_dns(str(resolv), str(tmp_path / "absent-*.conf"))
+        assert resolv.read_text() == "nameserver dhcp\n"  # nothing to repair with
+
+
 class TestHeadlessDriver:
     def test_happy_path(self, tmp_path, capsys):
         config = make_config(logging_dest=str(tmp_path / "auto.log"))
