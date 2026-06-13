@@ -21,30 +21,20 @@ disk_gb: 25
 netboot: true
 ipv6: true
 
-answer_file: answers/bios-simple.yaml
+answer_file: answers/netboot-ipv6.yaml
 
 install_timeout_s: 1800
 boot_timeout_s: 300
+
+# The proof here is that the install completes after fetching the rootfs and
+# the answer file over IPv6. The installed-system boot + SSH verify is the same
+# code the BIOS/UEFI PXE scenarios already cover, and it needs apt (internet
+# DNS), which is out of scope for an IPv6 data-path test — so skip phase 2.
+skip_boot_phase: true
+skip_boot_reason: "IPv6 data-path scenario; phase-2 boot/verify covered by the PXE scenarios"
 
 expect:
   serial_markers:
     - "Automated installation complete"
   failure_markers:
     - "Automated installation FAILED"
-
-ssh:
-  user: testuser
-
-verify:
-  - name: os-is-lmde
-    type: command
-    command: ". /etc/os-release && echo $PRETTY_NAME"
-    expect_substring: "LMDE"
-  - name: hostname-applied
-    type: command
-    command: hostname
-    expect_substring: "lmde-test-01"
-  - name: network-manager-running
-    type: command
-    command: systemctl is-active NetworkManager
-    expect_substring: "active"
