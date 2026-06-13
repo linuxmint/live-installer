@@ -47,6 +47,41 @@ class TestFetchAnswerFile:
         assert "plain HTTP" in str(excinfo.value)
         assert "--insecure" in str(excinfo.value)
 
+    def test_nfs_refused_without_insecure(self):
+        with pytest.raises(schema.ConfigError) as excinfo:
+            auto_installer.fetch_answer_file("nfs://host/export/a.yaml")
+        assert "NFS" in str(excinfo.value)
+        assert "--insecure" in str(excinfo.value)
+
+
+class TestNfsFetch:
+    @pytest.mark.parametrize("url,expected", [
+        ("nfs://host/export/dir/a.yaml", ("host", "/export/dir", "a.yaml")),
+        ("nfs://host:2049/export/a.yaml", ("host", "/export", "a.yaml")),
+        ("nfs://10.0.0.1/srv/cfg/host.yaml", ("10.0.0.1", "/srv/cfg", "host.yaml")),
+    ])
+    def test_parse_nfs_url(self, url, expected):
+        assert auto_installer._parse_nfs_url(url) == expected
+
+    def test_parse_nfs_url_malformed(self):
+        with pytest.raises(schema.ConfigError):
+            auto_installer._parse_nfs_url("nfs://hostonly")
+
+    def test_fetch_nfs_mounts_reads_unmounts(self, tmp_path, monkeypatch):
+        # Stand in a real dir for the "mount", assert it is read and unmounted.
+        export = tmp_path / "export"
+        export.mkdir()
+        (export / "a.yaml").write_text("version: 1\n")
+        umounted = []
+        monkeypatch.setattr(auto_installer, "_nfs_mount",
+                            lambda host, d: str(export))
+        monkeypatch.setattr(auto_installer, "_nfs_umount",
+                            lambda mp: umounted.append(mp))
+        text = auto_installer.fetch_answer_file(
+            "nfs://host/export/a.yaml", insecure=True)
+        assert text == "version: 1\n"
+        assert umounted == [str(export)]  # always unmounts
+
 
 class TestCmdlineSource:
     def test_present(self, tmp_path):
@@ -484,3 +519,58 @@ class TestListDisks:
         rc = auto_installer.main(["--list-disks"])
         assert rc == 0
         assert "No installable disks" in capsys.readouterr().out
+
+
+class TestAcquireAnswerText:
+    MINIMAL = textwrap.dedent("""\
+        version: 1
+        locale: en_US.UTF-8
+        timezone: America/Toronto
+        users:
+          - name: admin
+            passwd: "$6$rounds=4096$salt$hash"
+        storage:
+          target:
+            match:
+              first-non-removable: true
+    """)
+
+    def test_plain_source_fetched_directly(self, tmp_path):
+        f = tmp_path / "a.yaml"
+        f.write_text(self.MINIMAL)
+        text = auto_installer.acquire_answer_text(str(f), insecure=False)
+        assert "version: 1" in text
+
+    def test_auto_discovers_by_identity(self, monkeypatch):
+        # The by-serial file exists; the by-mac one does not. Discovery must
+        # walk past the miss and land on the serial-keyed file.
+        served = {
+            "https://cfg/by-serial/SN1.yaml": self.MINIMAL,
+            "https://cfg/default.yaml": "version: 1\n",  # would be invalid
+        }
+        monkeypatch.setattr(
+            auto_installer.discovery, "read_machine_identity",
+            lambda *a, **k: {"macs": ["aa:bb:cc:dd:ee:ff"],
+                             "serial": "SN1", "uuid": None})
+
+        def fake_fetch(src, insecure=False):
+            if src in served:
+                return served[src]
+            raise schema.ConfigError(f"not found: {src}")
+
+        monkeypatch.setattr(auto_installer, "fetch_answer_file", fake_fetch)
+        text = auto_installer.acquire_answer_text("auto:https://cfg/",
+                                                  insecure=False)
+        assert "admin" in text
+
+    def test_auto_miss_raises_configerror(self, monkeypatch):
+        monkeypatch.setattr(
+            auto_installer.discovery, "read_machine_identity",
+            lambda *a, **k: {"macs": [], "serial": None, "uuid": None})
+        monkeypatch.setattr(
+            auto_installer, "fetch_answer_file",
+            lambda s, insecure=False: (_ for _ in ()).throw(
+                schema.ConfigError("nope")))
+        with pytest.raises(schema.ConfigError):
+            auto_installer.acquire_answer_text("auto:https://cfg/",
+                                               insecure=False)

@@ -91,9 +91,9 @@ Legend: ✅ full, ◐ partial or preset-only, ✗ not supported.
 |---|---|---|---|---|
 | Local file on media | ✅ | ✅ | ✅ | ✅ |
 | HTTP(S) URL | ✅ | ✅ | ✅ | ✅ (HTTPS default, HTTP opt-in) |
-| NFS | ✅ | ✅ | ◐ | ✗ |
+| NFS | ✅ | ✅ | ◐ | ✅ (cleartext, opt-in) |
 | Kernel cmdline trigger | ✅ | ✅ | ✅ | ✅ |
-| Per-machine by serial | ✅ | ◐ | ◐ | ◐ (URL templating) |
+| Per-machine by serial | ✅ | ◐ | ◐ | ✅ (auto-discovery by mac/serial/uuid) |
 | Includes / file composition | ✅ %include | ✅ | ✗ | ✗ |
 | Provisioning-server integration (Cobbler/MAAS/Foreman) | ✅ | ✅ | ✅ | ✗ |
 
