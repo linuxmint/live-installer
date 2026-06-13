@@ -8,6 +8,10 @@ If no answer file is supplied, the installer behaves exactly as before —
 the GUI wizard. The automated path is additive; it changes nothing for
 interactive desktop users.
 
+New to this? [getting-started.md](getting-started.md) is a step-by-step
+walkthrough for trying it on a VM or spare machine. This page is the
+reference.
+
 - [Quick start](#quick-start)
 - [Triggering an unattended install](#triggering-an-unattended-install)
 - [Answer file reference](#answer-file-reference)
@@ -217,6 +221,21 @@ This uses cloud-init's `runcmd` key and structure. One difference from
 cloud-init: these run in the target (in a chroot) at install time, not on
 first boot. A command whose first word is a file present on the install
 media is copied into the target and run there, so on-media scripts work.
+
+## Discovering disk names
+
+To target a disk you need one of its stable attributes, not `/dev/sdX`.
+Boot the live medium and run:
+
+```
+live-installer --automated --list-disks
+```
+
+It prints every installable disk with its `by-id`, `by-path`, `model`,
+and size — the values you can paste into a `storage.target.match`
+expression. `by-path` is stable per chassis slot (reusable across
+identical machines); `by-id` is unique to one physical drive. It touches
+nothing and exits.
 
 ## Validating an answer file
 
