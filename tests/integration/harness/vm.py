@@ -260,13 +260,25 @@ class VM:
             if append:
                 cmd += ["-append", append]
 
+        # QEMU stderr goes to a file, not an unread PIPE: a chatty backend
+        # (e.g. slirp warnings) can fill a 64K pipe and block QEMU's write,
+        # freezing the guest — alive but silent — until the harness times out.
+        self._stderr_path = self.workdir / f"{self.name}-qemu-stderr.log"
+        self._stderr_file = open(self._stderr_path, "wb")
         self.process = subprocess.Popen(
             cmd,
             stdout=subprocess.DEVNULL,
-            stderr=subprocess.PIPE,
+            stderr=self._stderr_file,
         )
         self._start_serial_reader()
         return self
+
+    def qemu_stderr(self):
+        try:
+            self._stderr_file.flush()
+            return self._stderr_path.read_text(errors="replace")
+        except (OSError, AttributeError):
+            return ""
 
     def _start_serial_reader(self):
         # Connect to QEMU's serial socket (created at launch) and tee
@@ -276,10 +288,9 @@ class VM:
             # If QEMU died at launch the socket will never appear; surface
             # its stderr instead of a misleading "socket" error.
             if self.process.poll() is not None:
-                stderr = self.process.stderr.read().decode(errors="replace")
                 raise VMError(
                     f"QEMU exited at launch (rc={self.process.returncode}).\n"
-                    f"stderr: {stderr[-2000:]}"
+                    f"stderr: {self.qemu_stderr()[-2000:]}"
                 )
             try:
                 sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
@@ -341,10 +352,9 @@ class VM:
                 if pattern.search(text):
                     return pattern.pattern
             if not self.alive():
-                stderr = self.process.stderr.read().decode(errors="replace")
                 raise VMError(
                     f"VM exited (rc={self.process.returncode}) while waiting "
-                    f"for serial output.\nstderr: {stderr[-2000:]}\n"
+                    f"for serial output.\nstderr: {self.qemu_stderr()[-2000:]}\n"
                     f"serial tail: {text[-2000:]}"
                 )
             time.sleep(poll_interval)
@@ -353,7 +363,8 @@ class VM:
             tail = self.serial_log.read_text(errors="replace")[-2000:]
         raise TimeoutError(
             f"Timed out after {timeout_s}s waiting for {patterns} on serial "
-            f"console.\nserial tail: {tail}"
+            f"console.\nserial tail: {tail}\n"
+            f"qemu stderr: {self.qemu_stderr()[-2000:]}"
         )
 
     def stop(self, grace_s=10):
