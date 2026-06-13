@@ -295,45 +295,59 @@ class TestHeadlessDriver:
                        if "install -y openssh-server" in c)
         assert fix < install
 
-    def test_kernel_cmdline_applied_in_chroot(self, tmp_path):
-        config = make_config(
-            extra="""\
-                kernel:
-                  cmdline_extra: "mitigations=off"
-            """,
-            logging_dest=str(tmp_path / "auto.log"),
-        )
-        driver, runner, engine = make_driver(config)
-        setup = auto_installer.build_setup(
-            config, disk="/dev/vda", efi=False, is_mint=False)
-        rc = driver.run(setup=setup)
-        assert rc == 0
-        joined = " ".join(runner.commands)
-        assert "configure_grub_default.py" in joined
-        assert "--append-cmdline mitigations=off" in joined
-        chroots = [c for c in runner.commands if c.startswith("chroot")]
-        assert any("update-grub" in c for c in chroots)
+    def _driver(self, kernel_yaml, tmp_path):
+        config = make_config(extra=kernel_yaml,
+                             logging_dest=str(tmp_path / "auto.log"))
+        driver, runner, _ = make_driver(config)
+        return driver, runner
 
-    def test_serial_console_provisioning_args(self, tmp_path):
-        config = make_config(
-            extra="""\
-                kernel:
-                  serial_console: "ttyS0,115200"
-            """,
-            logging_dest=str(tmp_path / "auto.log"),
-        )
-        driver, runner, engine = make_driver(config)
-        setup = auto_installer.build_setup(
-            config, disk="/dev/vda", efi=False, is_mint=False)
-        rc = driver.run(setup=setup)
+    def test_cmdline_extra_snippet(self, tmp_path):
+        driver, _ = self._driver(
+            'kernel:\n  cmdline_extra: "mitigations=off ipv6.disable=1"\n',
+            tmp_path)
+        snippet = driver._build_grub_snippet()
+        assert ('GRUB_CMDLINE_LINUX_DEFAULT="${GRUB_CMDLINE_LINUX_DEFAULT} '
+                'mitigations=off ipv6.disable=1"' in snippet)
+
+    def test_serial_console_snippet(self, tmp_path):
+        driver, _ = self._driver(
+            'kernel:\n  serial_console: "ttyS0,115200"\n', tmp_path)
+        snippet = driver._build_grub_snippet()
+        # strips plymouth grabbers, adds consoles + plymouth.enable=0,
+        # configures GRUB's serial terminal — sourced last so it wins
+        assert "s/ quiet / /g" in snippet and "s/ splash / /g" in snippet
+        assert "console=tty0 console=ttyS0,115200n8 plymouth.enable=0" in snippet
+        assert 'GRUB_TERMINAL="console serial"' in snippet
+        assert 'GRUB_SERIAL_COMMAND="serial --unit=0 --speed=115200"' in snippet
+
+    def test_kernel_config_writes_snippet_and_runs_update_grub(self, tmp_path):
+        target = tmp_path / "target"
+        (target / "etc/default/grub.d").mkdir(parents=True)
+        driver, runner = self._driver(
+            'kernel:\n  serial_console: "ttyS0"\n', tmp_path)
+        import builtins
+        real_open = builtins.open
+
+        def redir(path, *a, **k):
+            if isinstance(path, str) and path.startswith("/target/"):
+                path = str(target / path[len("/target/"):])
+            return real_open(path, *a, **k)
+
+        builtins.open = redir
+        try:
+            config = make_config(
+                extra='kernel:\n  serial_console: "ttyS0"\n',
+                logging_dest=str(tmp_path / "auto.log"))
+            d2, runner2, _ = make_driver(config)
+            setup = auto_installer.build_setup(
+                config, disk="/dev/vda", efi=False, is_mint=False)
+            rc = d2.run(setup=setup)
+        finally:
+            builtins.open = real_open
         assert rc == 0
-        joined = " ".join(runner.commands)
-        # drops plymouth grabbers, adds consoles, configures GRUB serial
-        assert "--remove-cmdline quiet" in joined
-        assert "--remove-cmdline splash" in joined
-        assert "console=ttyS0,115200n8" in joined
-        assert "GRUB_TERMINAL=console serial" in joined
-        assert "--unit=0 --speed=115200" in joined
+        snippet = (target / "etc/default/grub.d/zz-live-installer.cfg").read_text()
+        assert "console=ttyS0" in snippet
+        assert any("update-grub" in c for c in runner2.commands)
 
     def test_package_failure_policy_abort(self, tmp_path):
         config = make_config(

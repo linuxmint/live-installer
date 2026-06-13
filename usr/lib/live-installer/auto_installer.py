@@ -322,49 +322,63 @@ class HeadlessDriver:
                 self._policy("package_install_failure",
                              "package removal failed")
 
-    def _apply_kernel_config(self):
-        kernel = self.config.kernel
-        extra = kernel.cmdline_extra.strip()
-        serial = kernel.serial_console.strip()
-        if not extra and not serial:
-            return
+    def _build_grub_snippet(self):
+        """Build an /etc/default/grub.d snippet for kernel.* settings.
 
-        args = []
+        Written as a grub.d snippet rather than edits to /etc/default/grub
+        because distro snippets in that directory are sourced AFTER the
+        main file and would otherwise clobber our cmdline. Sourced last
+        (zz- name), this snippet sees the final GRUB_CMDLINE_LINUX_DEFAULT
+        and rewrites it, so our settings always win.
+        """
+        kernel = self.config.kernel
+        serial = kernel.serial_console.strip()
+        extra = kernel.cmdline_extra.strip()
+        lines = ["# Added by live-installer (automated installation)"]
         if serial:
             device, _, speed = serial.partition(",")
             speed = speed or "115200"
             unit = device[len("ttyS"):]
-            self.log(f" --> Provisioning serial console on {device}")
-            # quiet/splash let plymouth grab prompts graphically — drop them
-            # so boot output and the LUKS unlock prompt reach the serial line
-            args += ["--remove-cmdline", "quiet", "--remove-cmdline", "splash"]
-            args += ["--append-cmdline", "console=tty0",
-                     "--append-cmdline", f"console={device},{speed}n8"]
-            args += ["--set", "GRUB_TERMINAL=console serial",
-                     "--set",
-                     f"GRUB_SERIAL_COMMAND=serial --unit={unit} --speed={speed}"]
+            # strip quiet/splash from whatever earlier config set, then add
+            # the serial console + disable plymouth so the boot (and the
+            # LUKS unlock prompt) is a plain-text askpass on the serial line
+            lines.append(
+                'GRUB_CMDLINE_LINUX_DEFAULT="$(echo " ${GRUB_CMDLINE_LINUX_DEFAULT} "'
+                " | sed -e 's/ quiet / /g' -e 's/ splash / /g'"
+                " -e 's/^ *//' -e 's/ *$//')"
+                f' console=tty0 console={device},{speed}n8 plymouth.enable=0"'
+            )
+            lines.append('GRUB_TERMINAL="console serial"')
+            lines.append(
+                f'GRUB_SERIAL_COMMAND="serial --unit={unit} --speed={speed}"'
+            )
+        if extra:
+            lines.append(
+                f'GRUB_CMDLINE_LINUX_DEFAULT="${{GRUB_CMDLINE_LINUX_DEFAULT}} {extra}"'
+            )
+        return "\n".join(lines) + "\n"
+
+    def _apply_kernel_config(self):
+        kernel = self.config.kernel
+        serial = kernel.serial_console.strip()
+        extra = kernel.cmdline_extra.strip()
+        if not serial and not extra:
+            return
+        if serial:
+            self.log(f" --> Provisioning serial console on {serial}")
         if extra:
             self.log(f" --> Appending kernel cmdline: {extra}")
-            for token in extra.split():
-                args += ["--append-cmdline", token]
 
-        # The editor script ships in the installer; copy it into the target
-        # and run it with the target python, then regenerate grub.cfg.
-        self.runner.run(
-            "cp /usr/lib/live-installer/configure_grub_default.py /target/tmp/"
-        )
-        rc = self.runner.chroot(
-            "python3 /tmp/configure_grub_default.py "
-            + " ".join(shlex.quote(a) for a in args)
-        )
-        self.runner.run("rm -f /target/tmp/configure_grub_default.py")
-        if rc != 0:
-            self._policy("post_install_script_failure",
-                         "editing /etc/default/grub failed")
-            return
+        self.runner.run("mkdir -p /target/etc/default/grub.d")
+        with open("/target/etc/default/grub.d/zz-live-installer.cfg", "w") as f:
+            f.write(self._build_grub_snippet())
         rc = self.runner.chroot("update-grub")
         if rc != 0:
             self._policy("post_install_script_failure", "update-grub failed")
+        # Diagnostic: record the cmdline that actually landed in grub.cfg,
+        # so a serial-console/boot issue is traceable from the install log.
+        self.log(" --> grub.cfg kernel line: " + self.runner.output(
+            "grep -m1 'vmlinuz' /target/boot/grub/grub.cfg | sed 's/^[[:space:]]*//'"))
 
     def _run_shell_steps(self):
         for step in self.config.post_install:
