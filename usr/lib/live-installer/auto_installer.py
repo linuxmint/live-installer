@@ -327,23 +327,52 @@ class HeadlessDriver:
                 f"chown -R {user.name}:{user.name} {ssh_dir}"
             )
 
-    def _debug_network(self):
-        # TEMPORARY netboot-DNS diagnostic; removed once the cause is fixed.
-        for cmd in [
-            "readlink -f /etc/resolv.conf",
-            "cat /etc/resolv.conf",
-            "nmcli -t -f DEVICE,TYPE,STATE,CONNECTION device status",
-            "nmcli -t -f CONNECTIVITY general",
-            "resolvectl status",
-            "ip -4 -o addr show",
-            "ip -4 route",
-            "getent hosts deb.debian.org",
-        ]:
-            out = self.runner.output(f"{cmd} 2>&1 || true")
-            self.log(f"[netdiag] $ {cmd}\n{out}")
+    def _ensure_dns(self, resolv_path="/etc/resolv.conf",
+                    lease_glob="/run/net-*.conf"):
+        """Give the live session working DNS before any network step.
+
+        On a netboot the NIC is configured by the initramfs, so
+        NetworkManager never manages it and never rewrites /etc/resolv.conf
+        — it keeps the live image's placeholder (observed as
+        'nameserver dhcp'). The DHCP-provided nameservers are saved by the
+        initramfs in /run/net-*.conf; propagate them so package installs (and
+        the engine's copy of resolv.conf into the target) can resolve. A
+        no-op when resolv.conf already has a real nameserver (CD/USB boot).
+        """
+        import glob
+        import re
+
+        try:
+            current = open(resolv_path, encoding="utf-8").read()
+        except OSError:
+            current = ""
+        if re.search(r"(?m)^\s*nameserver\s+\d+\.\d+\.\d+\.\d+", current):
+            return  # already valid (NetworkManager-managed boot)
+
+        servers = []
+        for conf in sorted(glob.glob(lease_glob)):
+            try:
+                text = open(conf, encoding="utf-8").read()
+            except OSError:
+                continue
+            for match in re.finditer(r"(?m)^IPV4DNS\d+=(\d+\.\d+\.\d+\.\d+)", text):
+                ip = match.group(1)
+                if ip != "0.0.0.0" and ip not in servers:
+                    servers.append(ip)
+        if not servers:
+            self.log(f"WARNING: {resolv_path} has no usable nameserver and "
+                     f"no DHCP lease DNS was found in {lease_glob}")
+            return
+        try:
+            with open(resolv_path, "w", encoding="utf-8") as fd:
+                for ip in servers:
+                    fd.write(f"nameserver {ip}\n")
+            self.log(" --> Repaired /etc/resolv.conf with netboot DNS: "
+                     + ", ".join(servers))
+        except OSError as exc:
+            self.log(f"WARNING: could not write /etc/resolv.conf: {exc}")
 
     def _apply_packages(self):
-        self._debug_network()
         add = self.config.packages
         remove = self.config.package_remove
         repos = self.config.repositories
@@ -520,6 +549,11 @@ class HeadlessDriver:
                 setup = build_setup(self.config, insecure=self.insecure)
             self.log(f" --> Target disk: {setup.disk}")
             setup.print_setup()
+
+            # Before the engine copies resolv.conf into the target, make sure
+            # the live session can actually resolve names (netboot leaves a
+            # placeholder resolv.conf; see _ensure_dns).
+            self._ensure_dns()
 
             if self._engine_factory is not None:
                 engine = self._engine_factory(setup, self.runner)
