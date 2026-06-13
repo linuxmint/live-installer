@@ -322,6 +322,33 @@ class HeadlessDriver:
                 self._policy("package_install_failure",
                              "package removal failed")
 
+    def _regenerate_initramfs_if_luks(self):
+        """Rebuild the target initramfs so it can unlock the encrypted root.
+
+        The target is copied from the live squashfs, which carries
+        live-boot's diverted update-initramfs — a wrapper that no-ops
+        unless the live medium is mounted at /run/live/medium *inside the
+        chroot*. The engine bind-mounts /run but not that submount, so its
+        update-initramfs is skipped and the crypttab never reaches the
+        initramfs; the encrypted root then can't be unlocked at boot
+        (the system drops to an initramfs shell). Plain and LVM installs
+        boot from the stock initramfs and are unaffected, so this only
+        matters for lvm-on-luks. Make the medium visible and regenerate.
+        """
+        if self.config.storage.layout != "lvm-on-luks":
+            return
+        medium = "/run/live/medium" if os.path.exists(
+            "/run/live/medium/live") else "/cdrom"
+        self.log(" --> Regenerating initramfs for the encrypted root")
+        self.runner.run("mkdir -p /target%s" % medium)
+        bound = self.runner.run("mount --bind %s /target%s" % (medium, medium))
+        rc = self.runner.chroot("update-initramfs -u -k all")
+        if bound == 0:
+            self.runner.run("umount /target%s" % medium)
+        if rc != 0:
+            self._policy("post_install_script_failure",
+                         "regenerating the initramfs for LUKS failed")
+
     def _build_grub_snippet(self):
         """Build an /etc/default/grub.d snippet for kernel.* settings.
 
@@ -429,6 +456,7 @@ class HeadlessDriver:
                 or self.config.post_install
                 or self.config.kernel.cmdline_extra.strip()
                 or self.config.kernel.serial_console.strip()
+                or self.config.storage.layout == "lvm-on-luks"
             )
 
             def post_install_hook():
@@ -436,6 +464,7 @@ class HeadlessDriver:
                 self._create_extra_users()
                 self._apply_ssh_keys()
                 self._apply_apt_steps()
+                self._regenerate_initramfs_if_luks()
                 self._apply_kernel_config()
                 self._run_shell_steps()
 

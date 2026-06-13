@@ -309,6 +309,38 @@ class TestHeadlessDriver:
         assert ('GRUB_CMDLINE_LINUX_DEFAULT="${GRUB_CMDLINE_LINUX_DEFAULT} '
                 'mitigations=off ipv6.disable=1"' in snippet)
 
+    def test_luks_regenerates_initramfs_with_medium_bound(self, tmp_path):
+        config = schema.parse_config(textwrap.dedent(f"""\
+            version: 1
+            locale:
+              language: en_US.UTF-8
+              timezone: America/Toronto
+            users:
+              - username: admin
+                password_crypted: "$6$rounds=4096$salt$hash"
+            storage:
+              layout: lvm-on-luks
+              luks:
+                passphrase_source: keyfile
+                keyfile: {tmp_path / "k"}
+              target:
+                match:
+                  first-non-removable: true
+            logging:
+              destination: {tmp_path / "auto.log"}
+        """))
+        (tmp_path / "k").write_text("pass\n")
+        driver, runner, engine = make_driver(config)
+        setup = auto_installer.build_setup(
+            config, disk="/dev/vda", efi=False, is_mint=False)
+        rc = driver.run(setup=setup)
+        assert rc == 0
+        joined = " ".join(runner.commands)
+        # the medium is bind-mounted into the chroot and the initramfs is
+        # rebuilt so the crypttab lands in it
+        assert "mount --bind" in joined
+        assert any("update-initramfs -u -k all" in c for c in runner.commands)
+
     def test_serial_console_snippet(self, tmp_path):
         driver, _ = self._driver(
             'kernel:\n  serial_console: "ttyS0,115200"\n', tmp_path)
