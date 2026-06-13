@@ -338,18 +338,15 @@ class HeadlessDriver:
         if self.config.storage.layout != "lvm-on-luks":
             return
         self.log(" --> Regenerating initramfs for the encrypted root")
-        # The target inherited the live system's packages. Remove them
-        # before rebuilding the initramfs: their initramfs hooks reference
-        # live-only paths (e.g. /usr/lib/live/boot) and fail, and the
-        # installed system should not be a live system anyway. Purging
-        # live-tools also drops its update-initramfs diversion.
-        self.runner.chroot(
-            "DEBIAN_FRONTEND=noninteractive apt-get purge -y "
-            "live-boot live-boot-initramfs-tools live-config "
-            "live-config-systemd live-tools"
-        )
-        # Resolve the real update-initramfs (in case a diversion remains)
-        # and run it directly, bypassing the live-media no-op wrapper.
+        # Remove live-boot's initramfs hook: it references a live-only path
+        # (/usr/lib/live/boot) and fails on the installed system, which made
+        # update-initramfs exit non-zero. The installed system is not a live
+        # system, so the hook has no business in its initramfs.
+        self.runner.run(
+            "rm -f /target/usr/share/initramfs-tools/hooks/live")
+        # Resolve the real update-initramfs (live-tools diverts it to a
+        # wrapper that no-ops on live media) and run it directly so the
+        # crypttab is baked into the initramfs.
         real = self.runner.output(
             "chroot /target/ /bin/sh -c "
             "'dpkg-divert --truename /usr/sbin/update-initramfs'"
