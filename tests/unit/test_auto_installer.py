@@ -59,6 +59,11 @@ class TestNfsFetch:
         ("nfs://host/export/dir/a.yaml", ("host", "/export/dir", "a.yaml")),
         ("nfs://host:2049/export/a.yaml", ("host", "/export", "a.yaml")),
         ("nfs://10.0.0.1/srv/cfg/host.yaml", ("10.0.0.1", "/srv/cfg", "host.yaml")),
+        # IPv6 literals: urlsplit strips brackets and any :port
+        ("nfs://[2001:db8::1]/srv/cfg/host.yaml",
+         ("2001:db8::1", "/srv/cfg", "host.yaml")),
+        ("nfs://[2001:db8::1]:2049/export/a.yaml",
+         ("2001:db8::1", "/export", "a.yaml")),
     ])
     def test_parse_nfs_url(self, url, expected):
         assert auto_installer._parse_nfs_url(url) == expected
@@ -66,6 +71,15 @@ class TestNfsFetch:
     def test_parse_nfs_url_malformed(self):
         with pytest.raises(schema.ConfigError):
             auto_installer._parse_nfs_url("nfs://hostonly")
+
+    @pytest.mark.parametrize("host,export,expected", [
+        ("host", "/export", "host:/export"),
+        ("10.0.0.1", "/srv", "10.0.0.1:/srv"),
+        # an IPv6 literal must be bracketed or mount.nfs reads it as host:port
+        ("2001:db8::1", "/export", "[2001:db8::1]:/export"),
+    ])
+    def test_nfs_mount_source_brackets_ipv6(self, host, export, expected):
+        assert auto_installer._nfs_mount_source(host, export) == expected
 
     def test_fetch_nfs_mounts_reads_unmounts(self, tmp_path, monkeypatch):
         # Stand in a real dir for the "mount", assert it is read and unmounted.

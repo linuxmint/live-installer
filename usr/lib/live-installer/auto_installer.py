@@ -24,6 +24,7 @@ import subprocess
 import sys
 import tempfile
 import urllib.error
+import urllib.parse
 import urllib.request
 
 import discovery
@@ -80,30 +81,38 @@ def _parse_nfs_url(source):
     The whole directory is mounted and the file read from it; NFSv4 and most
     NFSv3 exports allow mounting a subdirectory of an export this way.
     """
-    rest = source[len("nfs://"):]
-    host, slash, path = rest.partition("/")
-    host = host.split(":")[0]  # a port is a mount option, not part of host:path
-    if not host or not slash or not path:
+    # urlsplit is IPv6-aware: it strips the brackets from a [2001:db8::1]
+    # literal and separates any :port, which a naive split(":") would mangle.
+    parts = urllib.parse.urlsplit(source)
+    host, path = parts.hostname, parts.path
+    if not host or not path or path == "/":
         raise schema.ConfigError(
             f"Malformed NFS URL {source!r}; expected nfs://host/export/file.yaml"
         )
-    full = "/" + path
-    return host, os.path.dirname(full), os.path.basename(full)
+    return host, os.path.dirname(path), os.path.basename(path)
+
+
+def _nfs_mount_source(host, export_dir):
+    """The host:export string mount.nfs expects, bracketing IPv6 literals
+    (a bare 2001:db8::1 would be misread as host:port)."""
+    spec_host = f"[{host}]" if ":" in host else host
+    return f"{spec_host}:{export_dir}"
 
 
 def _nfs_mount(host, export_dir):
     """Mount host:export_dir read-only on a fresh temp dir; return its path.
     Factored out so tests can stub the actual mount."""
     mountpoint = tempfile.mkdtemp(prefix="li-nfs-")
+    spec = _nfs_mount_source(host, export_dir)
     result = subprocess.run(
         ["mount", "-t", "nfs", "-o", "ro,nolock,soft,timeo=100,retrans=2",
-         f"{host}:{export_dir}", mountpoint],
+         spec, mountpoint],
         capture_output=True, text=True,
     )
     if result.returncode != 0:
         os.rmdir(mountpoint)
         raise schema.ConfigError(
-            f"Could not NFS-mount {host}:{export_dir}: "
+            f"Could not NFS-mount {spec}: "
             f"{result.stderr.strip() or result.returncode}"
         )
     return mountpoint
