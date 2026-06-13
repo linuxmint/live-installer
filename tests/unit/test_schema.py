@@ -9,12 +9,11 @@ from schema import ConfigError, parse_config
 
 VALID_MINIMAL = textwrap.dedent("""\
     version: 1
-    locale:
-      language: en_US.UTF-8
-      timezone: America/Toronto
+    locale: en_US.UTF-8
+    timezone: America/Toronto
     users:
-      - username: admin
-        password_crypted: "$6$rounds=4096$salt$hashhashhash"
+      - name: admin
+        passwd: "$6$rounds=4096$salt$hashhashhash"
     storage:
       target:
         match:
@@ -23,21 +22,20 @@ VALID_MINIMAL = textwrap.dedent("""\
 
 VALID_FULL = textwrap.dedent("""\
     version: 1
-    locale:
-      language: en_CA.UTF-8
-      timezone: America/Toronto
+    hostname: mint-ws-01
+    locale: en_CA.UTF-8
+    timezone: America/Toronto
     keyboard:
       model: pc105
       layout: us
       variant: ""
-    network:
-      hostname: mint-ws-01
     users:
-      - username: admin
-        full_name: Workstation Admin
-        password_crypted: "$6$rounds=4096$salt$hashhashhash"
-        autologin: false
-        sudo: true
+      - name: admin
+        gecos: Workstation Admin
+        passwd: "$6$rounds=4096$salt$hashhashhash"
+        groups: [sudo]
+        ssh_authorized_keys:
+          - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAA admin@host"
     storage:
       target:
         match:
@@ -46,13 +44,14 @@ VALID_FULL = textwrap.dedent("""\
       layout: lvm-on-luks
       luks:
         passphrase_source: prompt-on-first-boot
-    packages:
-      add: [openssh-server, build-essential]
-      remove: [hexchat]
-    post_install:
-      - shell: /cdrom/scripts/join-domain.sh
-      - apt_key_url: https://example.com/repo.gpg
-      - apt_source: "deb https://example.com/repo trixie main"
+    packages: [openssh-server, build-essential]
+    package_remove: [hexchat]
+    repositories:
+      - source: "deb https://example.com/repo trixie main"
+        key_url: https://example.com/repo.gpg
+    runcmd:
+      - /cdrom/scripts/join-domain.sh
+      - systemctl enable ssh
     oem:
       enabled: false
     on_failure:
@@ -70,7 +69,9 @@ class TestValidConfigs:
     def test_minimal(self):
         config = parse_config(VALID_MINIMAL)
         assert config.version == 1
-        assert config.users[0].username == "admin"
+        assert config.users[0].name == "admin"
+        assert config.locale == "en_US.UTF-8"
+        assert config.timezone == "America/Toronto"
         assert config.storage.target.match.first_non_removable is True
         # fail-closed defaults
         assert config.storage.layout == "simple"
@@ -80,12 +81,24 @@ class TestValidConfigs:
 
     def test_full(self):
         config = parse_config(VALID_FULL)
-        assert config.network.hostname == "mint-ws-01"
+        assert config.hostname == "mint-ws-01"
         assert config.storage.target.match.by_id == "nvme-Samsung_SSD_980_PRO_*"
         assert config.storage.luks.passphrase_source == "prompt-on-first-boot"
         assert config.on_failure.network_unavailable == "continue"
-        assert len(config.post_install) == 3
-        assert config.post_install[0].shell == "/cdrom/scripts/join-domain.sh"
+        assert config.packages == ["openssh-server", "build-essential"]
+        assert config.package_remove == ["hexchat"]
+        assert config.repositories[0].source.startswith("deb https://")
+        assert config.runcmd == ["/cdrom/scripts/join-domain.sh",
+                                 "systemctl enable ssh"]
+
+    def test_sudo_via_group(self):
+        config = parse_config(VALID_FULL)
+        assert config.users[0].groups == ["sudo"]
+        assert config.users[0].sudo is True  # convenience property
+
+    def test_no_sudo_when_not_in_group(self):
+        config = parse_config(VALID_MINIMAL)
+        assert config.users[0].sudo is False
 
     def test_lvm_on_luks_defaults_to_firstboot_prompt(self):
         config = parse_config(
@@ -98,13 +111,7 @@ class TestValidConfigs:
         assert config.storage.luks.passphrase_source == "prompt-on-first-boot"
 
     def test_ssh_authorized_keys_accepted(self):
-        text = VALID_MINIMAL.replace(
-            'password_crypted: "$6$rounds=4096$salt$hashhashhash"',
-            'password_crypted: "$6$rounds=4096$salt$hashhashhash"\n'
-            "    ssh_authorized_keys:\n"
-            '      - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAA test@host"',
-        )
-        config = parse_config(text)
+        config = parse_config(VALID_FULL)
         assert config.users[0].ssh_authorized_keys[0].startswith("ssh-ed25519")
 
     def test_scenario_fixture_parses(self):
@@ -116,8 +123,8 @@ class TestValidConfigs:
             / "integration" / "scenarios" / "answers" / "bios-simple.yaml"
         )
         config = schema.load_config(fixture)
-        assert config.network.hostname == "lmde-test-01"
-        assert config.packages.add == ["openssh-server"]
+        assert config.hostname == "lmde-test-01"
+        assert config.packages == ["openssh-server"]
 
 
 def _expect_error(yaml_text, *fragments):
@@ -168,7 +175,6 @@ class TestRejections:
 
     def test_custom_layout_rejected(self):
         bad = VALID_FULL.replace("layout: lvm-on-luks", "layout: custom")
-        # remove the now-invalid luks block too; the layout error must win
         bad = bad.replace(
             "      luks:\n        passphrase_source: prompt-on-first-boot\n", ""
         )
@@ -197,8 +203,8 @@ class TestRejections:
 
     def test_no_users_rejected(self):
         bad = VALID_MINIMAL.replace(
-            "users:\n  - username: admin\n"
-            '    password_crypted: "$6$rounds=4096$salt$hashhashhash"\n',
+            "users:\n  - name: admin\n"
+            '    passwd: "$6$rounds=4096$salt$hashhashhash"\n',
             "users: []\n",
         )
         _expect_error(bad, "users")
@@ -207,8 +213,8 @@ class TestRejections:
         bad = VALID_MINIMAL.replace(
             "users:",
             "users:\n"
-            "  - username: admin\n"
-            '    password_crypted: "$6$rounds=4096$salt$other"',
+            "  - name: admin\n"
+            '    passwd: "$6$rounds=4096$salt$other"',
         )
         _expect_error(bad, "duplicate usernames")
 
@@ -216,19 +222,23 @@ class TestRejections:
         bad = VALID_MINIMAL.replace(
             "users:",
             "users:\n"
-            "  - username: kiosk\n"
-            '    password_crypted: "$6$rounds=4096$salt$other"\n'
+            "  - name: kiosk\n"
+            '    passwd: "$6$rounds=4096$salt$other"\n'
             "    autologin: true",
         ).replace(
-            'password_crypted: "$6$rounds=4096$salt$hashhashhash"',
-            'password_crypted: "$6$rounds=4096$salt$hashhashhash"\n'
+            'passwd: "$6$rounds=4096$salt$hashhashhash"',
+            'passwd: "$6$rounds=4096$salt$hashhashhash"\n'
             "    autologin: true",
         )
         _expect_error(bad, "autologin")
 
     def test_bad_username_rejected(self):
-        bad = VALID_MINIMAL.replace("username: admin", "username: Admin User")
+        bad = VALID_MINIMAL.replace("name: admin", "name: Admin User")
         _expect_error(bad, "not a valid username")
+
+    def test_bad_group_rejected(self):
+        bad = VALID_FULL.replace("groups: [sudo]", "groups: [Bad Group]")
+        _expect_error(bad, "not a valid group name")
 
     def test_bad_hostname_rejected(self):
         bad = VALID_FULL.replace("hostname: mint-ws-01", "hostname: -bad-")
@@ -240,27 +250,17 @@ class TestRejections:
         )
         _expect_error(bad, "timezone")
 
-    def test_http_apt_key_rejected(self):
+    def test_http_repo_key_rejected(self):
         bad = VALID_FULL.replace(
-            "apt_key_url: https://example.com/repo.gpg",
-            "apt_key_url: http://example.com/repo.gpg",
+            "key_url: https://example.com/repo.gpg",
+            "key_url: http://example.com/repo.gpg",
         )
         _expect_error(bad, "https://")
 
-    def test_post_install_step_with_two_actions_rejected(self):
-        bad = VALID_FULL.replace(
-            "- shell: /cdrom/scripts/join-domain.sh",
-            "- shell: /cdrom/scripts/join-domain.sh\n"
-            "    apt_source: also-this",
-        )
-        _expect_error(bad, "post_install")
-
     def test_garbage_ssh_key_rejected(self):
-        bad = VALID_MINIMAL.replace(
-            'password_crypted: "$6$rounds=4096$salt$hashhashhash"',
-            'password_crypted: "$6$rounds=4096$salt$hashhashhash"\n'
-            "    ssh_authorized_keys:\n"
-            '      - "not a key at all"',
+        bad = VALID_FULL.replace(
+            '- "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAA admin@host"',
+            '- "not a key at all"',
         )
         _expect_error(bad, "OpenSSH public key")
 

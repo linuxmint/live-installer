@@ -1,13 +1,12 @@
 # Valid answer file whose disk matcher cannot match anything in the VM.
 version: 1
 
-locale:
-  language: en_US.UTF-8
-  timezone: America/Toronto
+locale: en_US.UTF-8
+timezone: America/Toronto
 
 users:
-  - username: testuser
-    password_crypted: "$6$rounds=4096$integration.test$kPEsZSlAg3pjDM0yaeSdAVPbHcsiBVMobBC0SXmdGRX9WtflVB.ETP6/yo8Lw0PRJlXP6tEXkbQjnLnnyG5BV1"
+  - name: testuser
+    passwd: "$6$rounds=4096$integration.test$kPEsZSlAg3pjDM0yaeSdAVPbHcsiBVMobBC0SXmdGRX9WtflVB.ETP6/yo8Lw0PRJlXP6tEXkbQjnLnnyG5BV1"
 
 storage:
   target:

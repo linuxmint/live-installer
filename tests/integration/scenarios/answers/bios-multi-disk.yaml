@@ -2,23 +2,19 @@
 # NOT by enumeration order. The target is the second disk (vdb).
 version: 1
 
-locale:
-  language: en_US.UTF-8
-  timezone: America/Toronto
+hostname: lmde-multidisk-01
+locale: en_US.UTF-8
+timezone: America/Toronto
 
 keyboard:
   model: pc105
   layout: us
 
-network:
-  hostname: lmde-multidisk-01
-
 users:
-  - username: testuser
-    full_name: Integration Test User
-    # "testpass", sha512crypt — test fixture only
-    password_crypted: "$6$rounds=4096$integration.test$kPEsZSlAg3pjDM0yaeSdAVPbHcsiBVMobBC0SXmdGRX9WtflVB.ETP6/yo8Lw0PRJlXP6tEXkbQjnLnnyG5BV1"
-    sudo: true
+  - name: testuser
+    gecos: Integration Test User
+    passwd: "$6$rounds=4096$integration.test$kPEsZSlAg3pjDM0yaeSdAVPbHcsiBVMobBC0SXmdGRX9WtflVB.ETP6/yo8Lw0PRJlXP6tEXkbQjnLnnyG5BV1"
+    groups: [sudo]
 
 storage:
   target:
@@ -28,9 +24,7 @@ storage:
     on_no_match: abort
   layout: simple
 
-packages:
-  add:
-    - openssh-server
+packages: [openssh-server]
 
 on_failure:
   partition_mismatch: abort

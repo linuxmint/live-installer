@@ -22,19 +22,23 @@ interactive desktop users.
 
    ```yaml
    version: 1
-   locale:
-     language: en_US.UTF-8
-     timezone: America/Toronto
+   locale: en_US.UTF-8
+   timezone: America/Toronto
    users:
-     - username: admin
-       password_crypted: "$6$rounds=4096$abc$..."   # openssl passwd -6
-       sudo: true
+     - name: admin
+       passwd: "$6$rounds=4096$abc$..."   # openssl passwd -6
+       groups: [sudo]
    storage:
      target:
        match:
          first-non-removable: true
      layout: simple
    ```
+
+   Where this overlaps with cloud-init (identity, users, packages, runcmd),
+   it uses the same keys and structure, so a cloud-init or Ubuntu
+   autoinstall user should find it familiar. It is not a drop-in for either
+   format.
 
 2. Put it on the install media (e.g. at `/cdrom/install.yaml`) **or** serve
    it over HTTPS.
@@ -86,16 +90,21 @@ aborts before any disk is touched.
 
 ### Top-level keys
 
+Keys that overlap with cloud-init use cloud-init's name and structure.
+
 | Key | Required | Description |
 |---|---|---|
 | `version` | yes | Schema version. Currently `1`. |
-| `locale` | yes | `language` (e.g. `en_US.UTF-8`) and `timezone` (IANA, e.g. `America/Toronto`). |
+| `locale` | yes | A locale string, e.g. `en_US.UTF-8` (cloud-init style, top level). |
+| `timezone` | yes | IANA timezone, e.g. `America/Toronto` (top level). |
 | `users` | yes | At least one user; see [users](#users). |
 | `storage` | yes | Disk target and layout; see [storage](#storage). |
+| `hostname` | no | System hostname. DHCP/default if omitted. |
 | `keyboard` | no | `model` (default `pc105`), `layout` (default `us`), `variant`. |
-| `network` | no | `hostname`. DHCP is used by default. |
-| `packages` | no | `add` / `remove` lists of package names. |
-| `post_install` | no | Ordered steps; see [post-install](#post-install-steps). |
+| `packages` | no | Flat list of packages to install (cloud-init style). |
+| `package_remove` | no | Flat list of packages to remove (extension; cloud-init has no declarative remove). |
+| `repositories` | no | Package repositories to add; see [repositories](#repositories). |
+| `runcmd` | no | List of shell commands; see [runcmd](#runcmd). |
 | `kernel` | no | `cmdline_extra` and `serial_console`; see [kernel](#kernel). |
 | `oem` | no | `enabled`: leave the machine in OEM first-boot state. |
 | `on_failure` | no | Per-failure-mode policy; see [failure handling](#failure-handling). |
@@ -103,17 +112,17 @@ aborts before any disk is touched.
 
 ### users
 
-Each entry:
+Uses cloud-init key names. Each entry:
 
 | Field | Required | Description |
 |---|---|---|
-| `username` | yes | Lowercase, starts with a letter/underscore, ≤ 32 chars. |
-| `password_crypted` | yes | A crypt(5) hash (`$6$…` sha512crypt, `$y$…` yescrypt, …). **Plaintext is rejected.** Generate with `openssl passwd -6` or `mkpasswd -m sha512crypt`. |
-| `full_name` | no | GECOS name. |
-| `sudo` | no | Add to the `sudo` group. |
-| `autologin` | no | At most one user may set this. |
-| `ecryptfs_home` | no | Encrypt the home directory with eCryptfs. |
+| `name` | yes | Username. Lowercase, starts with a letter/underscore, ≤ 32 chars. |
+| `passwd` | yes | A crypt(5) hash (`$6$…` sha512crypt, `$y$…` yescrypt, …). **Plaintext is rejected.** Generate with `openssl passwd -6` or `mkpasswd -m sha512crypt`. |
+| `gecos` | no | Full name (GECOS). |
+| `groups` | no | Supplementary groups. Put `sudo` here to grant admin (cloud-init idiom). |
 | `ssh_authorized_keys` | no | List of OpenSSH public keys installed to `~/.ssh/authorized_keys`. |
+| `autologin` | no | At most one user may set this. (Extension.) |
+| `ecryptfs_home` | no | Encrypt the home directory with eCryptfs. (Extension.) |
 
 The first user is the primary account created by the installer; any
 others are created during post-install.
@@ -180,20 +189,34 @@ Both are applied via a `grub.d` snippet and `update-grub`. For the
 mechanics and the live-system quirks involved, see
 [serial-console-and-luks.md](serial-console-and-luks.md).
 
-### post-install steps
+### repositories
 
-An ordered list, each entry one of:
+Package repositories to add before installing packages:
 
 ```yaml
-post_install:
-  - shell: /cdrom/scripts/join-domain.sh   # run a script in the target
-  - apt_key_url: https://example.com/repo.gpg
-  - apt_source: "deb https://example.com/repo trixie main"
+repositories:
+  - source: "deb https://example.com/repo trixie main"
+    key_url: https://example.com/repo.gpg   # optional, https only
 ```
 
-`shell` scripts present on the install media are copied into the target
-and executed in the chroot; package and repo steps run before the
-`packages.add` install.
+The section name is package-system-neutral (cloud-init calls the
+equivalent `apt:`); the `source` value is apt syntax on Debian/Mint.
+`key_url` must use HTTPS.
+
+### runcmd
+
+A list of shell commands, run in the target during install:
+
+```yaml
+runcmd:
+  - /cdrom/scripts/join-domain.sh
+  - systemctl enable ssh
+```
+
+This uses cloud-init's `runcmd` key and structure. One difference from
+cloud-init: these run in the target (in a chroot) at install time, not on
+first boot. A command whose first word is a file present on the install
+media is copied into the target and run there, so on-media scripts work.
 
 ## Worked examples
 
@@ -237,8 +260,8 @@ than half-installed.
 - **LUKS passphrases** are passed to `cryptsetup` on stdin, never as a
   command argument, so they are not visible in the process table; they
   are also redacted from all logs.
-- Do **not** put secrets in `post_install` shell command text — the
-  event log keeps it. Reference a script on the media instead.
+- Do not put secrets in `runcmd` command text. It is logged. Reference a
+  script on the media instead.
 
 ## Limitations (v1)
 

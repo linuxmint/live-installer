@@ -116,18 +116,18 @@ def build_setup(config, *, disk=None, efi=None, is_mint=None, insecure=False):
     setup.skip_mount = False
     setup.is_mint = _is_mint() if is_mint is None else is_mint
 
-    setup.language = config.locale.language.split(".")[0]
-    setup.timezone = config.locale.timezone
+    setup.language = config.locale.split(".")[0]
+    setup.timezone = config.timezone
     setup.keyboard_model = config.keyboard.model
     setup.keyboard_layout = config.keyboard.layout
     setup.keyboard_variant = config.keyboard.variant
-    setup.hostname = config.network.hostname or "mint"
+    setup.hostname = config.hostname or "mint"
 
     primary = config.users[0]
-    setup.username = primary.username
-    setup.real_name = primary.full_name or primary.username
-    setup.password1 = primary.password_crypted
-    setup.password2 = primary.password_crypted
+    setup.username = primary.name
+    setup.real_name = primary.gecos or primary.name
+    setup.password1 = primary.passwd
+    setup.password2 = primary.passwd
     setup.password_is_crypted = True
     setup.autologin = primary.autologin
     setup.ecryptfs = primary.ecryptfs_home
@@ -232,31 +232,31 @@ class HeadlessDriver:
 
     def _create_extra_users(self):
         for user in self.config.users[1:]:
-            self.log(f" --> Creating additional user {user.username}")
-            gecos = (user.full_name or user.username).replace('"', "'")
+            self.log(f" --> Creating additional user {user.name}")
+            gecos = (user.gecos or user.name).replace('"', "'")
             rc = self.runner.chroot(
-                f'adduser --disabled-password --gecos "{gecos}" {user.username}'
+                f'adduser --disabled-password --gecos "{gecos}" {user.name}'
             )
             if rc != 0:
                 self._policy("post_install_script_failure",
-                             f"adduser {user.username} failed")
+                             f"adduser {user.name} failed")
                 continue
             # Write the hash via a file, exactly like the engine does for the
             # primary user: crypt hashes contain '$' and must never pass
             # through a shell.
             with open("/target/dev/shm/.passwd", "w") as fp:
-                fp.write(user.username + ":" + user.password_crypted + "\n")
+                fp.write(user.name + ":" + user.passwd + "\n")
             self.runner.chroot("cat /dev/shm/.passwd | chpasswd -e")
             self.runner.run("rm -f /target/dev/shm/.passwd")
-            if user.sudo:
-                self.runner.chroot(f"adduser {user.username} sudo")
+            for group in user.groups:
+                self.runner.chroot(f"adduser {user.name} {group}")
 
     def _apply_ssh_keys(self):
         for user in self.config.users:
             if not user.ssh_authorized_keys:
                 continue
-            self.log(f" --> Installing SSH keys for {user.username}")
-            ssh_dir = f"/home/{user.username}/.ssh"
+            self.log(f" --> Installing SSH keys for {user.name}")
+            ssh_dir = f"/home/{user.name}/.ssh"
             self.runner.chroot(f"mkdir -p {ssh_dir}")
             # written via /target to keep key material out of shell commands
             with open(f"/target{ssh_dir}/authorized_keys", "a") as fp:
@@ -265,31 +265,30 @@ class HeadlessDriver:
             self.runner.chroot(f"chmod 700 {ssh_dir}")
             self.runner.chroot(f"chmod 600 {ssh_dir}/authorized_keys")
             self.runner.chroot(
-                f"chown -R {user.username}:{user.username} {ssh_dir}"
+                f"chown -R {user.name}:{user.name} {ssh_dir}"
             )
 
-    def _apply_apt_steps(self):
-        packages = self.config.packages
-        sources_changed = False
-        for step in self.config.post_install:
-            if hasattr(step, "apt_key_url"):
-                name = os.path.basename(step.apt_key_url) or "extra-key"
+    def _apply_packages(self):
+        add = self.config.packages
+        remove = self.config.package_remove
+        repos = self.config.repositories
+
+        for repo in repos:
+            if repo.key_url:
+                name = os.path.basename(repo.key_url) or "extra-key"
                 rc = self.runner.chroot(
                     f"wget -O /etc/apt/trusted.gpg.d/{name} "
-                    + shlex.quote(step.apt_key_url)
+                    + shlex.quote(repo.key_url)
                 )
                 if rc != 0:
                     self._policy("network_unavailable",
-                                 f"fetching {step.apt_key_url} failed")
-                sources_changed = True
-            elif hasattr(step, "apt_source"):
-                self.runner.chroot(
-                    f"echo {shlex.quote(step.apt_source)} "
-                    ">> /etc/apt/sources.list.d/live-installer-auto.list"
-                )
-                sources_changed = True
+                                 f"fetching {repo.key_url} failed")
+            self.runner.chroot(
+                f"echo {shlex.quote(repo.source)} "
+                ">> /etc/apt/sources.list.d/live-installer-auto.list"
+            )
 
-        if packages.add or sources_changed:
+        if add or repos:
             rc = self.runner.chroot("apt-get update")
             if rc != 0:
                 self._policy("network_unavailable", "apt-get update failed")
@@ -303,20 +302,20 @@ class HeadlessDriver:
             if rc != 0:
                 self.log("WARNING: apt-get install -f failed; "
                          "continuing to package installation")
-        if packages.add:
-            self.log(" --> Installing packages: " + " ".join(packages.add))
+        if add:
+            self.log(" --> Installing packages: " + " ".join(add))
             rc = self.runner.chroot(
                 "DEBIAN_FRONTEND=noninteractive apt-get install -y "
-                + " ".join(shlex.quote(p) for p in packages.add)
+                + " ".join(shlex.quote(p) for p in add)
             )
             if rc != 0:
                 self._policy("package_install_failure",
                              "package installation failed")
-        if packages.remove:
-            self.log(" --> Removing packages: " + " ".join(packages.remove))
+        if remove:
+            self.log(" --> Removing packages: " + " ".join(remove))
             rc = self.runner.chroot(
                 "DEBIAN_FRONTEND=noninteractive apt-get remove --purge -y "
-                + " ".join(shlex.quote(p) for p in packages.remove)
+                + " ".join(shlex.quote(p) for p in remove)
             )
             if rc != 0:
                 self._policy("package_install_failure",
@@ -414,24 +413,25 @@ class HeadlessDriver:
         self.log(" --> grub.cfg kernel line: " + self.runner.output(
             "grep -m1 'vmlinuz' /target/boot/grub/grub.cfg | sed 's/^[[:space:]]*//'"))
 
-    def _run_shell_steps(self):
-        for step in self.config.post_install:
-            if not hasattr(step, "shell"):
-                continue
-            script = step.shell
-            self.log(f" --> Running post-install script {script}")
-            if os.path.exists(script):
-                # script lives in the live environment (e.g. on the install
-                # media) — copy it into the target so the chroot can see it
-                self.runner.run(f"cp {shlex.quote(script)} /target/tmp/")
-                target_path = "/tmp/" + os.path.basename(script)
-                rc = self.runner.chroot(f"sh {target_path}")
+    def _run_commands(self):
+        # runcmd: cloud-init's key and structure (a list of shell commands),
+        # but run in the target chroot during install rather than on first
+        # boot. A command that is a path to a file present on the install
+        # media is copied into the target and run, so on-media scripts work.
+        for command in self.config.runcmd:
+            self.log(f" --> runcmd: {command}")
+            first = command.split()[0] if command.split() else ""
+            if first and os.path.isfile(first):
+                self.runner.run(f"cp {shlex.quote(first)} /target/tmp/")
+                target_path = "/tmp/" + os.path.basename(first)
+                rest = command[len(first):]
+                rc = self.runner.chroot(f"sh {target_path}{rest}")
                 self.runner.run(f"rm -f /target{target_path}")
             else:
-                rc = self.runner.chroot(f"sh {shlex.quote(script)}")
+                rc = self.runner.chroot(command)
             if rc != 0:
                 self._policy("post_install_script_failure",
-                             f"{script} exited {rc}")
+                             f"runcmd failed (rc={rc}): {command}")
 
     # -- main flow ----------------------------------------------------------
 
@@ -459,8 +459,8 @@ class HeadlessDriver:
             needs_post = (
                 len(self.config.users) > 1
                 or any(user.ssh_authorized_keys for user in self.config.users)
-                or self.config.packages.add or self.config.packages.remove
-                or self.config.post_install
+                or self.config.packages or self.config.package_remove
+                or self.config.repositories or self.config.runcmd
                 or self.config.kernel.cmdline_extra.strip()
                 or self.config.kernel.serial_console.strip()
                 or self.config.storage.layout == "lvm-on-luks"
@@ -470,10 +470,10 @@ class HeadlessDriver:
                 self.log(" --> Applying post-install configuration")
                 self._create_extra_users()
                 self._apply_ssh_keys()
-                self._apply_apt_steps()
+                self._apply_packages()
                 self._regenerate_initramfs_if_luks()
                 self._apply_kernel_config()
-                self._run_shell_steps()
+                self._run_commands()
 
             engine.finish_installation(
                 before_unmount_hook=post_install_hook if needs_post else None

@@ -243,6 +243,11 @@ def run_full(scenario, iso, workdir, scenario_dir):
                                                          "skip_boot_phase set"))))
             return cases
 
+        # Preserve the install-phase serial log; phase 2 truncates it.
+        if machine.serial_log.exists():
+            shutil.copyfile(machine.serial_log,
+                            machine.serial_log.with_suffix(".install.log"))
+
         # Phase 2: boot the installed system and verify over SSH. In a
         # multi-disk VM, boot the disk the OS landed on (boot_disk_serial).
         machine.start(boot="disk", firmware=scenario["firmware"],
