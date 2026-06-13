@@ -288,6 +288,19 @@ def build_combined_squashfs(iso, source_tree, outdir, workdir):
         except IsoToolsError:
             pass  # absent on some images; the engine tolerates a missing one
 
+    # On a netboot the NIC is configured by the initramfs, which NetworkManager
+    # leaves unmanaged by default — so it never DHCPs and never writes real DNS,
+    # leaving the live image's 'nameserver dhcp' placeholder and breaking apt.
+    # Force NM to manage ethernet so DHCP populates resolv.conf before install
+    # (a netboot image has to carry this; on CD/USB NM already manages the NIC).
+    nm_conf = root / "etc" / "NetworkManager" / "conf.d" / "99-netboot-manage.conf"
+    nm_conf.parent.mkdir(parents=True, exist_ok=True)
+    nm_conf.write_text(
+        "[device-netboot-manage]\n"
+        "match-device=interface-name:en*,interface-name:eth*\n"
+        "managed=1\n"
+    )
+
     outdir = Path(outdir)
     outdir.mkdir(parents=True, exist_ok=True)
     combined = outdir / "filesystem.squashfs"
