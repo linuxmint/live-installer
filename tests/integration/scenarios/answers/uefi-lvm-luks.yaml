@@ -37,6 +37,10 @@ kernel:
   # real hardware) instead of being grabbed by plymouth.
   serial_console: "ttyS0,115200"
 
+packages:
+  add:
+    - openssh-server
+
 on_failure:
   partition_mismatch: abort
   network_unavailable: continue

@@ -96,7 +96,7 @@ aborts before any disk is touched.
 | `network` | no | `hostname`. DHCP is used by default. |
 | `packages` | no | `add` / `remove` lists of package names. |
 | `post_install` | no | Ordered steps; see [post-install](#post-install-steps). |
-| `kernel` | no | `cmdline_extra`: string appended to the installed kernel command line (serial console, driver blacklists, …). |
+| `kernel` | no | `cmdline_extra` and `serial_console`; see [kernel](#kernel). |
 | `oem` | no | `enabled`: leave the machine in OEM first-boot state. |
 | `on_failure` | no | Per-failure-mode policy; see [failure handling](#failure-handling). |
 | `logging` | no | `destination` (log file path) and `also_serial` (e.g. `ttyS0`). |
@@ -157,6 +157,28 @@ For `lvm-on-luks`, `passphrase_source` selects how the volume is
 unlocked at boot: `prompt-on-first-boot` (the admin types it), `keyfile`
 (read from a local path or an http(s) URL — same TLS rule as the answer
 file), or `tpm2`.
+
+### kernel
+
+```yaml
+kernel:
+  cmdline_extra: "mitigations=off ipv6.disable=1"   # appended verbatim
+  serial_console: "ttyS0,115200"                    # provision a serial console
+```
+
+- `cmdline_extra` — appended to the installed system's kernel command
+  line (`GRUB_CMDLINE_LINUX_DEFAULT`).
+- `serial_console` — provision a full serial console on the installed
+  system (`ttyS0` or `ttyS0,<baud>`). This drops `quiet`/`splash`, adds
+  `console=tty0 console=<dev>,<baud>n8 plymouth.enable=0`, and points
+  GRUB's terminal at the serial line. Boot output — **including a LUKS
+  unlock passphrase prompt** — then appears on serial, so a headless box
+  can be unlocked and watched over IPMI Serial-over-LAN. Without this, an
+  encrypted machine prompts for its passphrase only on the local screen.
+
+Both are applied via a `grub.d` snippet and `update-grub`. For the
+mechanics and the live-system quirks involved, see
+[serial-console-and-luks.md](serial-console-and-luks.md).
 
 ### post-install steps
 

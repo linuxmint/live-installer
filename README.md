@@ -32,6 +32,10 @@ See **[docs/automated-install.md](docs/automated-install.md)** for the
 answer-file reference, delivery options, examples, and security notes.
 The interactive GUI is unchanged when no answer file is supplied.
 
+For the mechanics of serial-console provisioning and encrypted (LUKS)
+boot — and the live-system quirks they work around — see
+**[docs/serial-console-and-luks.md](docs/serial-console-and-luks.md)**.
+
 ## Development & testing
 
 Unit tests need only Python; integration tests perform real installs in a

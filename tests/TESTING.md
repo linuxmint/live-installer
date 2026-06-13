@@ -184,8 +184,16 @@ Run with `--keep` and look in `tests/integration/.work/<name>/`:
   `EXEC` line before a failure is usually the culprit. The log contains
   terminal escape sequences; strip them with
   `sed 's/\x1b\[[0-9;]*m//g'`.
+- `<name>-serial.install.log` — for full-boot scenarios, the serial log
+  of the **install** phase (phase 2 truncates the live `-serial.log`).
+  Look here for what the installer did; look in `-serial.log` for the
+  installed system's boot.
 - `<name>.qcow2` — the installed disk; boot it by hand with `qemu-system-x86_64`
-  if you need to poke around.
+  if you need to poke around (`--keep` preserves it).
+
+The driver also logs the resulting `grub.cfg` kernel line after it
+regenerates grub, so the booted cmdline is visible in the install log
+without re-running — invaluable for serial-console / boot debugging.
 
 The installer tolerates a failed command unless `check=True`, so a broken
 install can still "finish" — the `EXEC failed (rc=...)` lines in the log
@@ -218,6 +226,15 @@ the relevant code.
 - **The answer-file fixtures are also the docs' examples.** A unit test
   parses them against the schema so the two can't drift; if you change
   the schema, update the fixtures.
+- **Serial console & LUKS boot are a minefield of live-system quirks.**
+  Editing `/etc/default/grub` is silently overridden by distro `grub.d`
+  snippets; `update-initramfs` is a diverted no-op in the live session;
+  a live-boot initramfs hook fails on the installed system. Each is
+  invisible until you watch the installed system boot on serial. The full
+  map — what each piece does and which approaches were tried and rejected
+  — is in **[docs/serial-console-and-luks.md](../docs/serial-console-and-luks.md)**.
+  Read it before touching `_build_grub_snippet` or
+  `_regenerate_initramfs_if_luks` in `auto_installer.py`.
 
 ## Mint vs LMDE coverage
 
