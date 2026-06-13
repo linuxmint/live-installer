@@ -27,7 +27,7 @@ Legend: ✅ full, ◐ partial or preset-only, ✗ not supported.
 |---|---|---|---|---|
 | Config format | custom syntax | debconf k/v | YAML | YAML (cloud-init-flavored) |
 | Strict validation | ✅ ksvalidator | ◐ syntax check | ✅ JSON schema | ✅ pydantic |
-| Standalone validator CLI | ✅ | ◐ | ◐ built-in | ◐ `--dry-run` (see below) |
+| Standalone validator CLI | ✅ | ◐ | ◐ built-in | ✅ `--check` (no disk needed) |
 | Versioned schema | ✗ | ✗ | ✅ | ✅ |
 | Dump config from a manual install | ✅ anaconda-ks.cfg | ✗ | ✅ | ✗ |
 

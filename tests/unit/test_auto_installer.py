@@ -415,3 +415,47 @@ class TestHeadlessDriver:
             config, disk="/dev/vda", efi=False, is_mint=False)
         rc = driver.run(setup=setup)
         assert rc == 0  # policy says continue
+
+
+class TestCheckMode:
+    """--check is the ksvalidator analog: validate the schema and stop
+    before any disk resolution, so it runs anywhere (CI, a dev laptop)."""
+
+    def _valid_file(self, tmp_path):
+        f = tmp_path / "answer.yaml"
+        f.write_text(textwrap.dedent("""\
+            version: 1
+            locale: en_US.UTF-8
+            timezone: America/Toronto
+            users:
+              - name: admin
+                passwd: "$6$rounds=4096$salt$hash"
+            storage:
+              target:
+                match:
+                  first-non-removable: true
+        """))
+        return f
+
+    def test_valid_file_passes(self, tmp_path, capsys):
+        rc = auto_installer.main(["--check", "--config",
+                                  str(self._valid_file(tmp_path))])
+        assert rc == 0
+        assert "OK" in capsys.readouterr().out
+
+    def test_invalid_file_fails(self, tmp_path, capsys):
+        f = tmp_path / "bad.yaml"
+        f.write_text("version: 1\nbogus: yes\n")
+        rc = auto_installer.main(["--check", "--config", str(f)])
+        assert rc == 1
+        assert "validation" in capsys.readouterr().out
+
+    def test_check_resolves_no_disk(self, tmp_path, monkeypatch):
+        # --check must never call into disk resolution.
+        def boom(*a, **k):
+            raise AssertionError("disk resolution must not run under --check")
+
+        monkeypatch.setattr(auto_installer.diskmatch, "resolve_disk", boom)
+        rc = auto_installer.main(["--check", "--config",
+                                  str(self._valid_file(tmp_path))])
+        assert rc == 0

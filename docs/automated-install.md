@@ -218,6 +218,22 @@ cloud-init: these run in the target (in a chroot) at install time, not on
 first boot. A command whose first word is a file present on the install
 media is copied into the target and run there, so on-media scripts work.
 
+## Validating an answer file
+
+You do not need a target machine, or any disks, to check that an answer
+file is well-formed. `--check` validates syntax and schema and exits:
+
+```
+live-installer --automated --check --config install.yaml
+```
+
+It prints `Answer file OK` and exits `0` on success, or the list of
+problems and exits `1` on failure. Because it stops before any disk is
+resolved, it runs anywhere — CI, a build host, a laptop — which makes it
+the natural lint step in a pipeline that generates these files. (`--dry-run`
+goes one step further and also resolves the target disk, so it must run on
+a machine that actually has the disk.)
+
 ## Worked examples
 
 A complete, runnable answer file for each layout lives under
