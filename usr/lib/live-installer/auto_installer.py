@@ -327,7 +327,23 @@ class HeadlessDriver:
                 f"chown -R {user.name}:{user.name} {ssh_dir}"
             )
 
+    def _debug_network(self):
+        # TEMPORARY netboot-DNS diagnostic; removed once the cause is fixed.
+        for cmd in [
+            "readlink -f /etc/resolv.conf",
+            "cat /etc/resolv.conf",
+            "nmcli -t -f DEVICE,TYPE,STATE,CONNECTION device status",
+            "nmcli -t -f CONNECTIVITY general",
+            "resolvectl status",
+            "ip -4 -o addr show",
+            "ip -4 route",
+            "getent hosts deb.debian.org",
+        ]:
+            out = self.runner.output(f"{cmd} 2>&1 || true")
+            self.log(f"[netdiag] $ {cmd}\n{out}")
+
     def _apply_packages(self):
+        self._debug_network()
         add = self.config.packages
         remove = self.config.package_remove
         repos = self.config.repositories
