@@ -25,6 +25,7 @@ import urllib.error
 import urllib.request
 
 import diskmatch
+import mint_detect
 import schema
 from commandrunner import CommandRunner
 
@@ -35,18 +36,6 @@ CMDLINE_KEY = "live-installer.auto="
 CMDLINE_INSECURE = "live-installer.auto-insecure"
 
 # Mirrors main.py's IS_MINT detection without importing the GTK module
-def _is_mint():
-    try:
-        import distro
-        like = distro.like()
-    except ImportError:
-        like = ""
-    return (
-        os.path.exists("/usr/share/doc/ubuntu-system-adjustments/copyright")
-        or "ubuntu" in like
-    )
-
-
 class InstallationFailed(Exception):
     pass
 
@@ -114,7 +103,7 @@ def build_setup(config, *, disk=None, efi=None, is_mint=None, insecure=False):
     setup = installer.Setup()
     setup.automated = True
     setup.skip_mount = False
-    setup.is_mint = _is_mint() if is_mint is None else is_mint
+    setup.is_mint = mint_detect.is_mint() if is_mint is None else is_mint
 
     setup.language = config.locale.split(".")[0]
     setup.timezone = config.timezone

@@ -140,10 +140,22 @@ class TestResolveDisk:
                 match(model="Kingston*", size_min="100GB"), **fake_tree)
         assert "no disk matches" in str(excinfo.value)
 
-    def test_first_non_removable_skips_usb(self, fake_tree):
+    def test_non_removable_excludes_usb_but_refuses_to_guess(self, fake_tree):
+        # The USB stick is never a candidate, but with two internal disks
+        # left it must not pick one — that would be the enumeration-order
+        # guess the module forbids. It aborts as ambiguous, like any other.
+        with pytest.raises(DiskMatchError) as excinfo:
+            diskmatch.resolve_disk(match(first_non_removable=True), **fake_tree)
+        message = str(excinfo.value)
+        assert "2 disks qualify" in message
+        assert "/dev/nvme0n1" in message and "/dev/sda" in message
+        assert "/dev/sdb" not in message  # the removable USB was excluded
+
+    def test_non_removable_plus_discriminator_resolves(self, fake_tree):
+        # Adding a matcher that narrows to one internal disk makes it unique.
         result = diskmatch.resolve_disk(
-            match(first_non_removable=True), **fake_tree)
-        assert result == "/dev/nvme0n1"  # first in sorted order
+            match(first_non_removable=True, size_min="800GB"), **fake_tree)
+        assert result == "/dev/nvme0n1"
 
     def test_no_match_lists_available_disks(self, fake_tree):
         with pytest.raises(DiskMatchError) as excinfo:

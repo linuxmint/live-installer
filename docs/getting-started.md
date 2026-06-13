@@ -64,7 +64,7 @@ Which one to use:
 
 | You are... | Use |
 |---|---|
-| Installing one machine, single disk | `first-non-removable: true` (needs nothing from this list) |
+| Installing a machine with one internal disk | `first-non-removable: true` (needs nothing from this list; aborts if the machine has several internal disks) |
 | Picking one disk out of several, this exact machine | a `by-id` name (unique to the drive) |
 | Imaging a fleet of identical hardware | a `by-path` name (same slot on every unit) |
 | Going off a spec sheet, no machine in hand | `model` (with a trailing `*`) or `size-min` |

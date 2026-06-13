@@ -177,8 +177,13 @@ def resolve_disk(
         }
     if getattr(match, "first_non_removable", False):
         tried.append("first-non-removable")
-        fixed = [d for d in disks if d.name in candidates and not d.removable]
-        candidates = {fixed[0].name} if fixed else set()
+        # A constraint, not a tiebreaker: keep only the non-removable disks
+        # and let the ambiguity check below reject the multi-internal-disk
+        # case. Silently picking the "first" of several would be exactly the
+        # enumeration-order guess this module exists to refuse.
+        candidates = {
+            name for name in candidates if not by_name[name].removable
+        }
 
     if not candidates:
         raise DiskMatchError(

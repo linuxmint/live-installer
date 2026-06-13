@@ -155,7 +155,7 @@ match expression — at least one of:
 | `by-path` | a glob against `/dev/disk/by-path/*` names |
 | `model` | a glob against the disk model string |
 | `size-min` | disks at least this large (e.g. `500GB`, `1TB`) |
-| `first-non-removable` | the first fixed (non-USB) disk |
+| `first-non-removable` | the sole fixed (non-USB) disk. If a machine has more than one internal disk this is ambiguous and aborts — add `size-min`, `by-id`, or `by-path` to disambiguate. |
 
 All present matchers must agree. If **no** disk matches, or if **more
 than one** matches, the install aborts with the list of available disks
@@ -286,6 +286,17 @@ on_failure:
 warning and proceeds. On any abort the machine is left unbooted rather
 than half-installed.
 
+### If the answer file itself cannot be loaded
+
+A source that is unreachable, missing, malformed, or fails schema
+validation is a hard failure: the driver prints the reason and
+`Automated installation FAILED`, then exits non-zero. It does **not**
+fall through to the interactive GUI, and it does not retry — falling
+through would risk an operator walking up to a half-expected manual
+install, and a silent retry loop hides a broken config. The fix is to
+correct the source and reboot. Validate the file with `--check` before
+deploying it to avoid this class of failure entirely.
+
 ## Security notes
 
 - **Passwords** are crypt(5) hashes only; plaintext is rejected outright.
@@ -297,6 +308,22 @@ than half-installed.
   are also redacted from all logs.
 - Do not put secrets in `runcmd` command text. It is logged. Reference a
   script on the media instead.
+
+### When `--insecure` (plain HTTP) is appropriate
+
+The default refuses to fetch an answer file or keyfile over plain HTTP
+because both carry secrets. `--insecure` (or `live-installer.auto-insecure`)
+lifts that, and there are legitimate uses: an air-gapped lab, an isolated
+provisioning VLAN, or a manufacturing floor where standing up trusted TLS
+is real work for little gain, and the wire is already trusted.
+
+It is *not* appropriate on any network an untrusted party can reach. The
+residual risk on plain HTTP is that anyone who can capture packets can
+observe the password hashes (salted hashes resist offline cracking but are
+still worth protecting) and could tamper with the install in flight. Make
+the choice deliberately, per network — not as a reflex to silence the
+error. HTTP fetches still time out after 60 seconds, so a hung or hostile
+server cannot wedge the install indefinitely.
 
 ## Limitations (v1)
 

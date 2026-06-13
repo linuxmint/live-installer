@@ -237,10 +237,13 @@ class Storage(_StrictModel):
 
 
 class Repository(_StrictModel):
-    """A package repository to add. Package-system-neutral name; the
-    `source` value is distro-specific (apt on Debian/Mint)."""
+    """An apt repository to add. The `repositories:` key borrows cloud-init's
+    neutral concept, but the contents are apt-specific: on Debian/Mint
+    `source` is a sources.list line. A non-apt backend would need a
+    structured form (type/url/suite/components); that is not a goal today."""
 
-    source: str                          # e.g. "deb https://repo trixie main"
+    source: str                          # apt sources.list line, e.g.
+                                         # "deb https://repo trixie main"
     key_url: str = None                  # optional signing key, https only
 
     @field_validator("key_url")
