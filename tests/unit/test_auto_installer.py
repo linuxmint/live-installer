@@ -336,9 +336,9 @@ class TestHeadlessDriver:
         rc = driver.run(setup=setup)
         assert rc == 0
         joined = " ".join(runner.commands)
-        # the medium is bind-mounted into the chroot and the initramfs is
-        # rebuilt so the crypttab lands in it
-        assert "mount --bind" in joined
+        # resolves the real (un-diverted) update-initramfs and runs it so
+        # the crypttab lands in the initramfs
+        assert "dpkg-divert --truename /usr/sbin/update-initramfs" in joined
         assert any("update-initramfs -u -k all" in c for c in runner.commands)
 
     def test_serial_console_snippet(self, tmp_path):

@@ -337,14 +337,16 @@ class HeadlessDriver:
         """
         if self.config.storage.layout != "lvm-on-luks":
             return
-        medium = "/run/live/medium" if os.path.exists(
-            "/run/live/medium/live") else "/cdrom"
         self.log(" --> Regenerating initramfs for the encrypted root")
-        self.runner.run("mkdir -p /target%s" % medium)
-        bound = self.runner.run("mount --bind %s /target%s" % (medium, medium))
-        rc = self.runner.chroot("update-initramfs -u -k all")
-        if bound == 0:
-            self.runner.run("umount /target%s" % medium)
+        # live-tools diverts /usr/sbin/update-initramfs to a wrapper that
+        # refuses to run while booted from live media — so the engine's
+        # update-initramfs is a no-op and the crypttab never reaches the
+        # initramfs. Resolve the real (diverted) binary and run it directly.
+        real = self.runner.output(
+            "chroot /target/ /bin/sh -c "
+            "'dpkg-divert --truename /usr/sbin/update-initramfs'"
+        ).strip() or "/usr/sbin/update-initramfs"
+        rc = self.runner.chroot("%s -u -k all" % real)
         if rc != 0:
             self._policy("post_install_script_failure",
                          "regenerating the initramfs for LUKS failed")
