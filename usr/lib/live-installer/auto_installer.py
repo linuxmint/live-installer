@@ -20,10 +20,13 @@ given.  On the kernel command line: live-installer.auto=<source>.
 import argparse
 import os
 import shlex
+import subprocess
 import sys
+import tempfile
 import urllib.error
 import urllib.request
 
+import discovery
 import diskmatch
 import mint_detect
 import schema
@@ -35,7 +38,6 @@ CMDLINE_KEY = "live-installer.auto="
 # kernel-cmdline equivalent of --insecure (cmdline boots have no argv)
 CMDLINE_INSECURE = "live-installer.auto-insecure"
 
-# Mirrors main.py's IS_MINT detection without importing the GTK module
 class InstallationFailed(Exception):
     pass
 
@@ -44,11 +46,13 @@ def fetch_answer_file(source, insecure=False):
     """Return the text of an unattended-install file from a path or URL.
 
     Used for the answer file and for LUKS keyfiles — both carry secrets,
-    so plain HTTP is refused unless explicitly opted into.
+    so cleartext transports (plain HTTP, NFS) are refused unless explicitly
+    opted into.
     """
-    if source.startswith("http://") and not insecure:
+    if source.startswith(("http://", "nfs://")) and not insecure:
+        proto = "plain HTTP" if source.startswith("http://") else "NFS"
         raise schema.ConfigError(
-            f"Refusing to fetch {source} over plain HTTP: unattended-install "
+            f"Refusing to fetch {source} over {proto}: unattended-install "
             "files carry secrets (password hashes, key material). Use "
             "https://, or pass --insecure / boot with "
             f"{CMDLINE_INSECURE} if you accept the risk."
@@ -61,11 +65,68 @@ def fetch_answer_file(source, insecure=False):
             raise schema.ConfigError(
                 f"Could not fetch {source}: {exc}"
             )
+    if source.startswith("nfs://"):
+        return _fetch_nfs(source)
     try:
         with open(source, encoding="utf-8") as f:
             return f.read()
     except OSError as exc:
         raise schema.ConfigError(f"Cannot read {source}: {exc}")
+
+
+def _parse_nfs_url(source):
+    """nfs://host[:port]/export/dir/file.yaml -> (host, '/export/dir', 'file.yaml').
+
+    The whole directory is mounted and the file read from it; NFSv4 and most
+    NFSv3 exports allow mounting a subdirectory of an export this way.
+    """
+    rest = source[len("nfs://"):]
+    host, slash, path = rest.partition("/")
+    host = host.split(":")[0]  # a port is a mount option, not part of host:path
+    if not host or not slash or not path:
+        raise schema.ConfigError(
+            f"Malformed NFS URL {source!r}; expected nfs://host/export/file.yaml"
+        )
+    full = "/" + path
+    return host, os.path.dirname(full), os.path.basename(full)
+
+
+def _nfs_mount(host, export_dir):
+    """Mount host:export_dir read-only on a fresh temp dir; return its path.
+    Factored out so tests can stub the actual mount."""
+    mountpoint = tempfile.mkdtemp(prefix="li-nfs-")
+    result = subprocess.run(
+        ["mount", "-t", "nfs", "-o", "ro,nolock,soft,timeo=100,retrans=2",
+         f"{host}:{export_dir}", mountpoint],
+        capture_output=True, text=True,
+    )
+    if result.returncode != 0:
+        os.rmdir(mountpoint)
+        raise schema.ConfigError(
+            f"Could not NFS-mount {host}:{export_dir}: "
+            f"{result.stderr.strip() or result.returncode}"
+        )
+    return mountpoint
+
+
+def _nfs_umount(mountpoint):
+    subprocess.run(["umount", mountpoint], capture_output=True, text=True)
+    try:
+        os.rmdir(mountpoint)
+    except OSError:
+        pass
+
+
+def _fetch_nfs(source):
+    host, export_dir, filename = _parse_nfs_url(source)
+    mountpoint = _nfs_mount(host, export_dir)
+    try:
+        with open(os.path.join(mountpoint, filename), encoding="utf-8") as f:
+            return f.read()
+    except OSError as exc:
+        raise schema.ConfigError(f"Cannot read {source}: {exc}")
+    finally:
+        _nfs_umount(mountpoint)
 
 
 def cmdline_source(cmdline_path="/proc/cmdline"):
@@ -525,6 +586,33 @@ def format_disk_list(disks):
     return "\n".join(lines)
 
 
+def acquire_answer_text(source, insecure, log=lambda _m: None):
+    """Resolve an answer-file source to its text.
+
+    Handles the netboot discovery trigger ('auto' or 'auto:<base>'): the
+    machine's identity (MAC/serial/UUID) is read and a list of candidate
+    sources is tried in order until one fetches and validates. A plain
+    path/URL is fetched directly.
+    """
+    is_auto, base = discovery.parse_auto_trigger(source)
+    if not is_auto:
+        return fetch_answer_file(source, insecure)
+    identity = discovery.read_machine_identity()
+    candidates = discovery.candidate_sources(
+        base, macs=identity["macs"], serial=identity["serial"],
+        uuid=identity["uuid"])
+    try:
+        _resolved, text = discovery.discover(
+            candidates,
+            fetch=lambda s: fetch_answer_file(s, insecure),
+            validate=schema.parse_config,
+            log=log,
+        )
+    except discovery.DiscoveryError as exc:
+        raise schema.ConfigError(str(exc))
+    return text
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(
         prog="live-installer --automated",
@@ -532,12 +620,15 @@ def main(argv=None):
     )
     parser.add_argument(
         "--config",
-        help="answer file path or URL (default: live-installer.auto= "
-             "from the kernel command line)",
+        help="answer file path or URL (file, http(s)://, nfs://), or "
+             "'auto' / 'auto:<base-url>' to discover it from this machine's "
+             "MAC/serial/UUID. Default: live-installer.auto= from the kernel "
+             "command line.",
     )
     parser.add_argument(
         "--insecure", action="store_true",
-        help="allow fetching the answer file over plain HTTP",
+        help="allow fetching the answer file over cleartext transports "
+             "(plain HTTP, NFS)",
     )
     parser.add_argument(
         "--list-disks", action="store_true",
@@ -570,7 +661,9 @@ def main(argv=None):
     insecure = args.insecure or cmdline_insecure()
 
     try:
-        config = schema.parse_config(fetch_answer_file(source, insecure))
+        text = acquire_answer_text(
+            source, insecure, log=lambda m: print(m, flush=True))
+        config = schema.parse_config(text)
     except schema.ConfigError as exc:
         print(f"ERROR: {exc}", flush=True)
         print(FAILURE_MARKER, flush=True)

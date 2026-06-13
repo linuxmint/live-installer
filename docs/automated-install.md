@@ -71,10 +71,13 @@ The installer runs in automated mode when **either** is present:
 | Local path | `/cdrom/install.yaml` | On the install media or any mounted filesystem. Zero infrastructure. |
 | HTTPS URL | `https://cfg.example.com/host.yaml` | For PXE / netboot. TLS required (see below). |
 | HTTP URL | `http://10.0.0.1/host.yaml` | Refused unless `live-installer.auto-insecure` is also on the cmdline (or `--insecure`). |
+| NFS URL | `nfs://10.0.0.1/srv/cfg/host.yaml` | The directory is mounted read-only and the file read from it. Cleartext, so refused unless `live-installer.auto-insecure` (or `--insecure`). |
+| Auto-discovery | `auto:https://cfg.example.com/` | One entry for a whole fleet: the installer finds its own file from this machine's identity. See [auto-discovery](#auto-discovery-for-netboot). |
 
 Answer files carry password hashes (and may reference key material), so
-plain HTTP is refused by default. Use HTTPS, or opt in explicitly with
-`live-installer.auto-insecure` on a trusted network.
+cleartext transports (plain HTTP, NFS) are refused by default. Use HTTPS,
+or opt in explicitly with `live-installer.auto-insecure` on a trusted
+network.
 
 ### Per-machine answer files
 
@@ -85,6 +88,37 @@ SMBIOS serial in your PXE config:
 ```
 live-installer.auto=https://cfg.example.com/by-serial/${serial}.yaml
 ```
+
+### Auto-discovery for netboot
+
+Templating one PXE entry per machine does not scale. Instead, point every
+machine at the same base with `auto:<base-url>` and let the installer find
+its own file from its identity:
+
+```
+live-installer.auto=auto:https://cfg.example.com/configs/
+```
+
+It then tries, in order, the first that fetches **and** validates:
+
+```
+<base>/by-mac/<mac>.yaml      # one per ethernet NIC, in interface order
+<base>/by-serial/<serial>.yaml
+<base>/by-uuid/<uuid>.yaml
+<base>/default.yaml           # fleet-wide fallback
+```
+
+`<mac>` is lowercase colon-separated (e.g. `aa:bb:cc:00:11:22`); `<serial>`
+and `<uuid>` come from SMBIOS (`/sys/class/dmi/id`). So one boot entry
+covers the whole fleet: give a few machines their own `by-serial` file and
+everything else falls through to `default.yaml`. The chosen source is
+logged. If none validate, the install aborts with the list of what was
+tried.
+
+Bare `auto` (no base) skips the network step and only checks the
+well-known local paths `/cdrom/auto-install.yaml` and
+`/run/live/medium/auto-install.yaml`, so a USB or remastered ISO still
+works offline.
 
 ## Answer file reference
 
@@ -304,22 +338,23 @@ deploying it to avoid this class of failure entirely.
 ## Security notes
 
 - **Passwords** are crypt(5) hashes only; plaintext is rejected outright.
-- **Answer files and keyfiles** are refused over plain HTTP by default
-  (they carry secrets) — use HTTPS or opt in with
-  `live-installer.auto-insecure`.
+- **Answer files and keyfiles** are refused over cleartext transports
+  (plain HTTP, NFS) by default (they carry secrets) — use HTTPS or opt in
+  with `live-installer.auto-insecure`.
 - **LUKS passphrases** are passed to `cryptsetup` on stdin, never as a
   command argument, so they are not visible in the process table; they
   are also redacted from all logs.
 - Do not put secrets in `late_commands` command text. It is logged.
   Reference a script on the media instead.
 
-### When `--insecure` (plain HTTP) is appropriate
+### When `--insecure` (plain HTTP / NFS) is appropriate
 
-The default refuses to fetch an answer file or keyfile over plain HTTP
-because both carry secrets. `--insecure` (or `live-installer.auto-insecure`)
-lifts that, and there are legitimate uses: an air-gapped lab, an isolated
-provisioning VLAN, or a manufacturing floor where standing up trusted TLS
-is real work for little gain, and the wire is already trusted.
+The default refuses to fetch an answer file or keyfile over a cleartext
+transport (plain HTTP or NFS) because both carry secrets. `--insecure` (or
+`live-installer.auto-insecure`) lifts that, and there are legitimate uses:
+an air-gapped lab, an isolated provisioning VLAN, or a manufacturing floor
+where standing up trusted TLS is real work for little gain, and the wire is
+already trusted.
 
 It is *not* appropriate on any network an untrusted party can reach. The
 residual risk on plain HTTP is that anyone who can capture packets can
@@ -332,7 +367,7 @@ server cannot wedge the install indefinitely.
 ## Limitations (v1)
 
 - Custom partition layouts require the GUI installer.
-- Config delivery is local file or http(s) URL; TFTP, NFS, and DNS-SRV
-  discovery are not supported.
+- Config delivery is local file, http(s) URL, or NFS, plus `auto`
+  identity-based discovery; TFTP and DNS-SRV discovery are not supported.
 - The config is data, not a program — no conditionals, loops, or
   templating. Generate the YAML beforehand if you need that.
