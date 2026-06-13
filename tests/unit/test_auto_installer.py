@@ -13,17 +13,15 @@ from test_engine_commands import RecordingRunner
 def make_config(extra="", logging_dest="/tmp/test-auto-install.log"):
     return schema.parse_config(textwrap.dedent(f"""\
         version: 1
-        locale:
-          language: en_CA.UTF-8
-          timezone: America/Toronto
-        network:
-          hostname: ws-01
+        hostname: ws-01
+        locale: en_CA.UTF-8
+        timezone: America/Toronto
         users:
-          - username: admin
-            full_name: The Admin
-            password_crypted: "$6$rounds=4096$salt$hash"
+          - name: admin
+            gecos: The Admin
+            passwd: "$6$rounds=4096$salt$hash"
             autologin: true
-            sudo: true
+            groups: [sudo]
         storage:
           target:
             match:
@@ -86,7 +84,7 @@ class TestBuildSetup:
         assert setup.language == "en_CA"  # encoding suffix stripped
         assert setup.timezone == "America/Toronto"
         assert setup.hostname == "ws-01"
-        assert setup.username == "admin"
+        assert setup.username == "admin"  # Setup field name unchanged
         assert setup.real_name == "The Admin"
         assert setup.password1 == "$6$rounds=4096$salt$hash"
         assert setup.password_is_crypted is True
@@ -103,12 +101,11 @@ class TestBuildSetup:
         keyfile.write_text("sekrit-passphrase\n")
         config = schema.parse_config(textwrap.dedent(f"""\
             version: 1
-            locale:
-              language: en_CA.UTF-8
-              timezone: America/Toronto
+            locale: en_CA.UTF-8
+            timezone: America/Toronto
             users:
-              - username: admin
-                password_crypted: "$6$rounds=4096$salt$hash"
+              - name: admin
+                passwd: "$6$rounds=4096$salt$hash"
             storage:
               layout: lvm-on-luks
               luks:
@@ -127,12 +124,11 @@ class TestBuildSetup:
     def test_keyfile_over_plain_http_refused(self):
         config = schema.parse_config(textwrap.dedent("""\
             version: 1
-            locale:
-              language: en_CA.UTF-8
-              timezone: America/Toronto
+            locale: en_CA.UTF-8
+            timezone: America/Toronto
             users:
-              - username: admin
-                password_crypted: "$6$rounds=4096$salt$hash"
+              - name: admin
+                passwd: "$6$rounds=4096$salt$hash"
             storage:
               layout: lvm-on-luks
               luks:
@@ -157,12 +153,11 @@ class TestBuildSetup:
     def test_unimplemented_passphrase_source_fails_early(self):
         config = schema.parse_config(textwrap.dedent("""\
             version: 1
-            locale:
-              language: en_CA.UTF-8
-              timezone: America/Toronto
+            locale: en_CA.UTF-8
+            timezone: America/Toronto
             users:
-              - username: admin
-                password_crypted: "$6$rounds=4096$salt$hash"
+              - name: admin
+                passwd: "$6$rounds=4096$salt$hash"
             storage:
               layout: lvm-on-luks
               target:
@@ -177,12 +172,11 @@ class TestBuildSetup:
     def test_default_hostname(self):
         config = schema.parse_config(textwrap.dedent("""\
             version: 1
-            locale:
-              language: en_US.UTF-8
-              timezone: America/Toronto
+            locale: en_US.UTF-8
+            timezone: America/Toronto
             users:
-              - username: admin
-                password_crypted: "$6$rounds=4096$salt$hash"
+              - name: admin
+                passwd: "$6$rounds=4096$salt$hash"
             storage:
               target:
                 match:
@@ -278,8 +272,7 @@ class TestHeadlessDriver:
     def test_package_install_runs_in_chroot(self, tmp_path):
         config = make_config(
             extra="""\
-                packages:
-                  add: [openssh-server]
+                packages: [openssh-server]
             """,
             logging_dest=str(tmp_path / "auto.log"),
         )
@@ -312,12 +305,11 @@ class TestHeadlessDriver:
     def test_luks_regenerates_initramfs_with_medium_bound(self, tmp_path):
         config = schema.parse_config(textwrap.dedent(f"""\
             version: 1
-            locale:
-              language: en_US.UTF-8
-              timezone: America/Toronto
+            locale: en_US.UTF-8
+            timezone: America/Toronto
             users:
-              - username: admin
-                password_crypted: "$6$rounds=4096$salt$hash"
+              - name: admin
+                passwd: "$6$rounds=4096$salt$hash"
             storage:
               layout: lvm-on-luks
               luks:
@@ -384,8 +376,7 @@ class TestHeadlessDriver:
     def test_package_failure_policy_abort(self, tmp_path):
         config = make_config(
             extra="""\
-                packages:
-                  add: [doesnotexist]
+                packages: [doesnotexist]
             """,
             logging_dest=str(tmp_path / "auto.log"),
         )
@@ -406,8 +397,7 @@ class TestHeadlessDriver:
     def test_package_failure_policy_continue(self, tmp_path):
         config = make_config(
             extra="""\
-                packages:
-                  add: [doesnotexist]
+                packages: [doesnotexist]
                 on_failure:
                   package_install_failure: continue
                   network_unavailable: continue

@@ -3,7 +3,7 @@
 """Answer-file schema for unattended installation (version 1).
 
 Parses and strictly validates the YAML answer file that drives a
-headless install.  Design rules (see the automated-install proposal):
+headless install.  Design rules:
 
   1. Raw device paths (/dev/sdX) are rejected — disks are selected by
      stable match expressions only (by-id, by-path, model, size-min,
@@ -15,6 +15,20 @@ headless install.  Design rules (see the automated-install proposal):
      rejected outright, with no override.
   5. The config is data, not a program: unknown keys are errors and
      nothing is interpolated or templated.
+
+Where this overlaps with cloud-init / Ubuntu autoinstall, it uses the
+same key names and structure (top-level hostname/locale/timezone; users
+with name/gecos/passwd/groups/ssh_authorized_keys; a flat packages
+install list; runcmd). Installer-only concerns that cloud-init has no
+equivalent for (disk selection, partition layout, LUKS, kernel cmdline,
+failure policy) keep their own shapes. Notable divergences:
+  - `package_remove` is an extension: cloud-init has no declarative
+    package removal.
+  - `repositories` is deliberately package-system-neutral (cloud-init
+    calls the equivalent `apt:`).
+  - `runcmd` runs in the target during install (in the chroot), not on
+    first boot as in cloud-init. Same name and structure, installer
+    semantics.
 
 Strict validation deliberately defangs YAML's type-coercion footguns:
 anything that does not parse cleanly into the declared types is an
@@ -32,6 +46,7 @@ SCHEMA_VERSION = 1
 # yescrypt, $2a/2b/2y$ bcrypt
 _CRYPT_RE = re.compile(r"^\$(6|5|y|7|2[aby])\$\S+$")
 _USERNAME_RE = re.compile(r"^[a-z_][a-z0-9_-]{0,31}$")
+_GROUP_RE = re.compile(r"^[a-z_][a-z0-9_-]{0,31}$")
 _HOSTNAME_LABEL_RE = re.compile(r"^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?$")
 _LOCALE_RE = re.compile(r"^[a-z]{2,3}(_[A-Z]{2})?(\.[A-Za-z0-9-]+)?$")
 _SIZE_RE = re.compile(r"^\d+(\.\d+)?\s*[MGT]B$")
@@ -45,65 +60,51 @@ class _StrictModel(BaseModel):
     model_config = ConfigDict(extra="forbid", populate_by_name=True)
 
 
-class Locale(_StrictModel):
-    language: str
-    timezone: str
-
-    @field_validator("language")
-    @classmethod
-    def _check_language(cls, value):
-        if not _LOCALE_RE.match(value):
-            raise ValueError(
-                f"{value!r} is not a valid locale (expected e.g. en_US.UTF-8)"
-            )
-        return value
-
-    @field_validator("timezone")
-    @classmethod
-    def _check_timezone(cls, value):
-        try:
-            from zoneinfo import ZoneInfo
-
-            ZoneInfo(value)
-        except ImportError:  # minimal live environment without tzdata access
-            if not re.match(r"^[A-Za-z_+-]+(/[A-Za-z0-9_+-]+)*$", value):
-                raise ValueError(f"{value!r} is not a valid timezone")
-        except Exception:
-            raise ValueError(
-                f"{value!r} is not a valid IANA timezone (expected e.g. America/Toronto)"
-            )
-        return value
-
-
 class Keyboard(_StrictModel):
     model: str = "pc105"
     layout: str = "us"
     variant: str = ""
 
 
-class Network(_StrictModel):
-    hostname: str = None
+class User(_StrictModel):
+    # cloud-init key names: name, gecos, passwd, groups, ssh_authorized_keys
+    name: str
+    passwd: str
+    gecos: str = ""
+    groups: list[str] = Field(default_factory=list)
+    ssh_authorized_keys: list[str] = Field(default_factory=list)
+    # extensions (no cloud-init equivalent)
+    autologin: bool = False
+    ecryptfs_home: bool = False
 
-    @field_validator("hostname")
+    @field_validator("name")
     @classmethod
-    def _check_hostname(cls, value):
-        if value is None:
-            return value
-        if len(value) > 253 or not all(
-            _HOSTNAME_LABEL_RE.match(label) for label in value.split(".")
-        ):
-            raise ValueError(f"{value!r} is not a valid hostname")
+    def _check_name(cls, value):
+        if not _USERNAME_RE.match(value):
+            raise ValueError(
+                f"{value!r} is not a valid username (lowercase, must start "
+                "with a letter or underscore, max 32 chars)"
+            )
         return value
 
+    @field_validator("passwd")
+    @classmethod
+    def _check_crypted(cls, value):
+        if not _CRYPT_RE.match(value):
+            raise ValueError(
+                "passwd must be a crypt(5) hash (e.g. sha512crypt starting "
+                "with $6$). Plaintext passwords are not accepted; generate a "
+                "hash with: openssl passwd -6"
+            )
+        return value
 
-class User(_StrictModel):
-    username: str
-    password_crypted: str
-    full_name: str = ""
-    autologin: bool = False
-    sudo: bool = False
-    ecryptfs_home: bool = False
-    ssh_authorized_keys: list[str] = Field(default_factory=list)
+    @field_validator("groups")
+    @classmethod
+    def _check_groups(cls, value):
+        for group in value:
+            if not _GROUP_RE.match(group):
+                raise ValueError(f"{group!r} is not a valid group name")
+        return value
 
     @field_validator("ssh_authorized_keys")
     @classmethod
@@ -116,26 +117,10 @@ class User(_StrictModel):
                 )
         return value
 
-    @field_validator("username")
-    @classmethod
-    def _check_username(cls, value):
-        if not _USERNAME_RE.match(value):
-            raise ValueError(
-                f"{value!r} is not a valid username (lowercase, must start "
-                "with a letter or underscore, max 32 chars)"
-            )
-        return value
-
-    @field_validator("password_crypted")
-    @classmethod
-    def _check_crypted(cls, value):
-        if not _CRYPT_RE.match(value):
-            raise ValueError(
-                "password_crypted must be a crypt(5) hash (e.g. sha512crypt "
-                "starting with $6$). Plaintext passwords are not accepted; "
-                "generate a hash with: openssl passwd -6"
-            )
-        return value
+    @property
+    def sudo(self):
+        """True if this user is granted admin via the sudo group."""
+        return "sudo" in self.groups
 
 
 class DiskMatch(_StrictModel):
@@ -251,40 +236,31 @@ class Storage(_StrictModel):
         return self
 
 
-class Packages(_StrictModel):
-    add: list[str] = Field(default_factory=list)
-    remove: list[str] = Field(default_factory=list)
+class Repository(_StrictModel):
+    """A package repository to add. Package-system-neutral name; the
+    `source` value is distro-specific (apt on Debian/Mint)."""
 
+    source: str                          # e.g. "deb https://repo trixie main"
+    key_url: str = None                  # optional signing key, https only
 
-class ShellStep(_StrictModel):
-    shell: str
-
-
-class AptKeyStep(_StrictModel):
-    apt_key_url: str
-
-    @field_validator("apt_key_url")
+    @field_validator("key_url")
     @classmethod
     def _https_only(cls, value):
-        if not value.startswith("https://"):
+        if value is not None and not value.startswith("https://"):
             raise ValueError(
-                "apt_key_url must use https:// — keys fetched over plain "
-                "HTTP can be tampered with in transit"
+                "repositories[].key_url must use https:// — a key fetched "
+                "over plain HTTP can be tampered with in transit"
             )
         return value
 
 
-class AptSourceStep(_StrictModel):
-    apt_source: str
-
-
 class Kernel(_StrictModel):
-    # Appended to GRUB_CMDLINE_LINUX_DEFAULT on the installed system —
+    # Appended to GRUB_CMDLINE_LINUX_DEFAULT on the installed system:
     # driver blacklists, sysctl-ish params, etc. for headless/fleet hosts.
     cmdline_extra: str = ""
-    # Provision a full serial console on the installed system: e.g.
-    # "ttyS0" or "ttyS0,115200". Drops quiet/splash (so the boot — and a
-    # LUKS unlock prompt — is visible on serial rather than grabbed by
+    # Provision a full serial console on the installed system, e.g.
+    # "ttyS0" or "ttyS0,115200". Drops quiet/splash (so the boot, and a
+    # LUKS unlock prompt, is visible on serial rather than grabbed by
     # plymouth), adds console= to the kernel cmdline, and points GRUB's
     # terminal at the serial line. The channel an admin uses over IPMI
     # Serial-over-LAN on a headless box.
@@ -326,19 +302,55 @@ class Logging(_StrictModel):
     also_serial: str = None
 
 
+def _check_hostname(value):
+    if value is None:
+        return value
+    if len(value) > 253 or not all(
+        _HOSTNAME_LABEL_RE.match(label) for label in value.split(".")
+    ):
+        raise ValueError(f"{value!r} is not a valid hostname")
+    return value
+
+
+def _check_locale(value):
+    if not _LOCALE_RE.match(value):
+        raise ValueError(
+            f"{value!r} is not a valid locale (expected e.g. en_US.UTF-8)"
+        )
+    return value
+
+
+def _check_timezone(value):
+    try:
+        from zoneinfo import ZoneInfo
+
+        ZoneInfo(value)
+    except ImportError:  # minimal live environment without tzdata access
+        if not re.match(r"^[A-Za-z_+-]+(/[A-Za-z0-9_+-]+)*$", value):
+            raise ValueError(f"{value!r} is not a valid timezone")
+    except Exception:
+        raise ValueError(
+            f"{value!r} is not a valid IANA timezone (expected e.g. "
+            "America/Toronto)"
+        )
+    return value
+
+
 class AutoInstallConfig(_StrictModel):
     """Top-level answer file."""
 
     version: int
-    locale: Locale
+    # cloud-init style: identity at the top level
+    locale: str
+    timezone: str
     storage: Storage
     users: list[User] = Field(min_length=1)
+    hostname: str = None
     keyboard: Keyboard = Field(default_factory=Keyboard)
-    network: Network = Field(default_factory=Network)
-    packages: Packages = Field(default_factory=Packages)
-    post_install: list[ShellStep | AptKeyStep | AptSourceStep] = Field(
-        default_factory=list
-    )
+    packages: list[str] = Field(default_factory=list)        # cloud-init: installs
+    package_remove: list[str] = Field(default_factory=list)  # extension
+    repositories: list[Repository] = Field(default_factory=list)
+    runcmd: list[str] = Field(default_factory=list)          # cloud-init
     kernel: Kernel = Field(default_factory=Kernel)
     oem: Oem = Field(default_factory=Oem)
     on_failure: OnFailure = Field(default_factory=OnFailure)
@@ -354,9 +366,24 @@ class AutoInstallConfig(_StrictModel):
             )
         return value
 
+    @field_validator("locale")
+    @classmethod
+    def _v_locale(cls, value):
+        return _check_locale(value)
+
+    @field_validator("timezone")
+    @classmethod
+    def _v_timezone(cls, value):
+        return _check_timezone(value)
+
+    @field_validator("hostname")
+    @classmethod
+    def _v_hostname(cls, value):
+        return _check_hostname(value)
+
     @model_validator(mode="after")
     def _check_users(self):
-        names = [user.username for user in self.users]
+        names = [user.name for user in self.users]
         if len(names) != len(set(names)):
             raise ValueError("duplicate usernames in 'users'")
         if sum(1 for user in self.users if user.autologin) > 1:
