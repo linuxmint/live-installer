@@ -251,10 +251,25 @@ def build_combined_squashfs(iso, source_tree, outdir, workdir):
         shutil.rmtree(root)
     # unsquashfs runs unprivileged: -no-xattrs skips security.* capability
     # xattrs it cannot write as non-root (the installer runs as root and needs
-    # no file caps); it also skips device nodes (the live rootfs has none,
-    # devtmpfs populates /dev at boot); -all-root fixes ownership at re-squash.
-    _run(["unsquashfs", "-d", str(root), "-no-progress", "-no-xattrs",
-          str(base)])
+    # no file caps). It still returns rc=2 ("could not create some files")
+    # because it cannot mknod the rootfs's device/special files — but the live
+    # system's /dev is a devtmpfs created at boot, so those are not needed.
+    # Tolerate rc=2, then check the bulk of the tree really did extract.
+    # -all-root fixes ownership at re-squash, so root need not be real here.
+    result = subprocess.run(
+        ["unsquashfs", "-d", str(root), "-no-progress", "-no-xattrs",
+         str(base)],
+        capture_output=True, text=True,
+    )
+    if result.returncode not in (0, 2):
+        raise IsoToolsError(
+            f"unsquashfs failed (rc={result.returncode}):\n"
+            f"{result.stdout[-1000:]}\n{result.stderr[-1000:]}"
+        )
+    if not (root / "usr" / "bin").is_dir() or not (root / "etc").is_dir():
+        raise IsoToolsError(
+            f"unsquashfs produced an incomplete rootfs at {root}"
+        )
     base.unlink(missing_ok=True)  # free the ~GB base image before re-squashing
     _run(["cp", "-a", f"{overlay}/.", f"{root}/"])
 
