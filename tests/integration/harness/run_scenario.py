@@ -226,13 +226,30 @@ def run_full(scenario, iso, workdir, scenario_dir):
         answer_url = f"{http_base}/{answer}"
 
         if netboot:
-            # Phase 1 (PXE): no install media. The kernel/initrd come over
-            # TFTP from QEMU's built-in server; live-boot fetches a single
-            # squashfs over HTTP (live-boot's fetch= takes one URL, so our
-            # dev code is merged into the base image, not a second squashfs);
-            # the installer fetches its answer file over HTTP.
+            # No install media: build one combined squashfs (live-boot's
+            # fetch= takes a single URL, so our dev code is merged into the
+            # base image), served over HTTP; the installer fetches its answer
+            # file over HTTP too.
             kernel, initrd, squashfs = isotools.build_combined_squashfs(
                 iso, SOURCE_TREE, serve_dir / "live", workdir / "netboot")
+
+        if netboot and ipv6:
+            # Enabling IPv6 in QEMU's user-net breaks the firmware PXE boot
+            # (slirp has no DHCPv6 boot-URL and the v4 PXE ROM stalls), so boot
+            # the kernel directly instead — and still fetch the rootfs and the
+            # answer file over IPv6, which is the part our code owns.
+            append = (
+                "boot=live components ip=dhcp console=ttyS0 "
+                f"fetch={http_base}/live/{squashfs.name} "
+                f"live-installer.auto={answer_url} live-installer.auto-insecure"
+            )
+            machine.start(boot="disk", firmware=scenario["firmware"],
+                          tpm=scenario["tpm"], ssh_port=ssh_port,
+                          kernel=kernel, initrd=initrd, append=append,
+                          ipv6=True)
+        elif netboot:
+            # Phase 1 (PXE): kernel/initrd over TFTP, live-boot fetches the
+            # squashfs over HTTP.
             tftp_dir = workdir / "tftp"
             tftp_dir.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(kernel, tftp_dir / "vmlinuz")
@@ -250,7 +267,7 @@ def run_full(scenario, iso, workdir, scenario_dir):
                 bootfile = "boot.ipxe"
             machine.start(boot="net", firmware=scenario["firmware"],
                           tpm=scenario["tpm"], ssh_port=ssh_port,
-                          tftp_dir=str(tftp_dir), bootfile=bootfile, ipv6=ipv6)
+                          tftp_dir=str(tftp_dir), bootfile=bootfile)
         else:
             # Phase 1: direct-kernel boot of the live ISO (rootfs off the
             # attached CD) with the answer-file URL on the kernel cmdline.
