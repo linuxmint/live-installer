@@ -163,3 +163,79 @@ def extract_boot_files(iso, outdir):
     for name in ("vmlinuz", "initrd.img"):
         (outdir / name).chmod(0o644)
     return outdir / "vmlinuz", outdir / "initrd.img"
+
+
+def extract_netboot_assets(iso, outdir):
+    """Extract vmlinuz, initrd, and every /live/*.squashfs for network boot.
+
+    Unlike extract_boot_files (which only needs the kernel/initrd because the
+    rootfs comes off the attached CD), a PXE boot has no media: the squashfs
+    images must be served too, so live-boot can fetch them over HTTP.
+
+    Returns (kernel_path, initrd_path, [squashfs_paths]) with the squashfs
+    list in sorted (live-boot stacking) order.
+    """
+    _require("xorriso", "xorriso")
+    outdir = Path(outdir)
+    (outdir / "live").mkdir(parents=True, exist_ok=True)
+
+    listing = _run([
+        "xorriso", "-indev", str(iso), "-find", "/live", "-type", "f",
+    ]).stdout
+    kernel_name = initrd_name = None
+    squashfs = []  # (iso_path, basename)
+    for line in listing.splitlines():
+        name = line.strip().strip("'")
+        base = name.rsplit("/", 1)[-1]
+        if base.startswith("vmlinuz"):
+            kernel_name = name
+        elif base.startswith("initrd"):
+            initrd_name = name
+        elif base.endswith(".squashfs"):
+            squashfs.append((name, base))
+    if not kernel_name or not initrd_name or not squashfs:
+        raise IsoToolsError(
+            f"could not find vmlinuz/initrd/*.squashfs under /live in {iso}; "
+            f"listing:\n{listing}"
+        )
+
+    extract = [
+        "xorriso", "-osirrox", "on", "-indev", str(iso),
+        "-extract", kernel_name, str(outdir / "vmlinuz"),
+        "-extract", initrd_name, str(outdir / "initrd.img"),
+    ]
+    for iso_path, base in squashfs:
+        extract += ["-extract", iso_path, str(outdir / "live" / base)]
+    _run(extract)
+
+    (outdir / "vmlinuz").chmod(0o644)
+    (outdir / "initrd.img").chmod(0o644)
+    sq_paths = []
+    for _iso_path, base in sorted(squashfs, key=lambda pair: pair[1]):
+        path = outdir / "live" / base
+        path.chmod(0o644)
+        sq_paths.append(path)
+    return outdir / "vmlinuz", outdir / "initrd.img", sq_paths
+
+
+def write_ipxe_script(path, http_base, squashfs_names, answer_url,
+                      console="ttyS0"):
+    """Write a #!ipxe boot script for the PXE scenario.
+
+    The kernel and initrd come over TFTP (QEMU's built-in server); live-boot
+    then fetches the squashfs images over HTTP, and the installer fetches its
+    answer file over HTTP. So the whole boot is network-delivered, no media.
+    """
+    fetch = ",".join(f"{http_base}/live/{name}" for name in squashfs_names)
+    cmdline = (
+        f"boot=live components console={console} "
+        f"fetch={fetch} "
+        f"live-installer.auto={answer_url} live-installer.auto-insecure"
+    )
+    Path(path).write_text(
+        "#!ipxe\n"
+        f"kernel vmlinuz initrd=initrd.img {cmdline}\n"
+        "initrd initrd.img\n"
+        "boot\n"
+    )
+    return Path(path)
