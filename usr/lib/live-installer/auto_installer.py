@@ -509,6 +509,11 @@ def main(argv=None):
         help="allow fetching the answer file over plain HTTP",
     )
     parser.add_argument(
+        "--check", action="store_true",
+        help="validate the answer file's syntax and schema, then exit. "
+             "Touches no disks, so it runs anywhere (CI, a dev laptop).",
+    )
+    parser.add_argument(
         "--dry-run", action="store_true",
         help="validate the answer file and resolve the target disk, "
              "then exit without installing",
@@ -528,6 +533,10 @@ def main(argv=None):
         print(f"ERROR: {exc}", flush=True)
         print(FAILURE_MARKER, flush=True)
         return 1
+
+    if args.check:
+        print("Answer file OK", flush=True)
+        return 0
 
     if args.dry_run:
         try:
