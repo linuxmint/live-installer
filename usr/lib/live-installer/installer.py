@@ -33,6 +33,9 @@ class InstallerEngine:
             _bundled = "/usr/lib/live-installer/netboot-live"
             if not os.path.exists(f"{self.casper}/vmlinuz") and os.path.isdir(_bundled):
                 self.live_files = _bundled
+                # UEFI installs pull the signed bootloader .debs from the pool,
+                # which the netboot image carries in the bundle too.
+                self.pool = f"{_bundled}/pool"
             self.manifest = f"{self.live_files}/filesystem.packages"
             self.grub_adjustment_script = "/usr/share/debian-system-adjustments/systemd/adjust-grub-title"
 
