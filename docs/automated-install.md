@@ -79,6 +79,10 @@ cleartext transports (plain HTTP, NFS) are refused by default. Use HTTPS,
 or opt in explicitly with `live-installer.auto-insecure` on a trusted
 network.
 
+IPv6 works everywhere a host appears: use a bracketed literal
+(`https://[2001:db8::1]/host.yaml`, `nfs://[2001:db8::1]/srv/host.yaml`) or
+a hostname that resolves to an AAAA record.
+
 ### Per-machine answer files
 
 The source is a literal string, so a provisioning server can hand each

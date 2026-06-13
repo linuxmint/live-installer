@@ -56,6 +56,15 @@ class TestCandidateSources:
             "https://cfg", macs=[], serial=None, uuid=None, media_dirs=[])
         assert got == ["https://cfg/default.yaml"]
 
+    def test_ipv6_base_url_preserved(self):
+        # A bracketed IPv6 base must survive into the candidate URLs intact.
+        got = discovery.candidate_sources(
+            "https://[2001:db8::1]:8443/cfg/",
+            macs=["aa:bb:cc:00:11:22"], serial="SN1", media_dirs=[])
+        assert got[0] == (
+            "https://[2001:db8::1]:8443/cfg/by-mac/aa:bb:cc:00:11:22.yaml")
+        assert got[-1] == "https://[2001:db8::1]:8443/cfg/default.yaml"
+
 
 class TestReadMachineIdentity:
     @pytest.fixture
