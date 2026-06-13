@@ -3,6 +3,7 @@
 from installer import InstallerEngine, Setup
 from dialogs import MessageDialog, QuestionDialog, ErrorDialog, WarningDialog, ConfirmDialog
 import distro
+import mint_detect
 import timezones
 import partitioning
 import gettext
@@ -39,7 +40,7 @@ HAS_LOWER_REGEX = r"[A-Z]+"
 
 DISTRIBUTION = distro.name()
 VERSION = distro.version()
-IS_MINT = os.path.exists("/usr/share/doc/ubuntu-system-adjustments/copyright") or "ubuntu" in distro.like()
+IS_MINT = mint_detect.is_mint()
 
 NON_LATIN_KB_LAYOUTS = ['am', 'af', 'ara', 'ben', 'bd', 'bg', 'bn', 'bt', 'by', 'deva', 'et', 'ge', 'gh', 'gn', 'gr', 'guj', 'guru', 'id', 'il', 'iku', 'in', 'iq', 'ir', 'kan', 'kg', 'kh', 'kz', 'la', 'lao', 'lk', 'ma', 'mk', 'mm', 'mn', 'mv', 'mal', 'my', 'np', 'ori', 'pk', 'ru', 'rs', 'scc', 'sy', 'syr', 'tel', 'th', 'tj', 'tam', 'tz', 'ua', 'uz']
 
