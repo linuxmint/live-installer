@@ -18,11 +18,15 @@ given.  On the kernel command line: live-installer.auto=<source>.
 """
 
 import argparse
+import glob
 import os
+import re
 import shlex
+import shutil
 import subprocess
 import sys
 import tempfile
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -327,28 +331,29 @@ class HeadlessDriver:
                 f"chown -R {user.name}:{user.name} {ssh_dir}"
             )
 
+    @staticmethod
+    def _resolv_has_nameserver(path):
+        try:
+            text = open(path, encoding="utf-8").read()
+        except OSError:
+            return False
+        return bool(re.search(r"(?m)^\s*nameserver\s+\d+\.\d+\.\d+\.\d+", text))
+
     def _ensure_dns(self, resolv_path="/etc/resolv.conf",
                     lease_glob="/run/net-*.conf"):
         """Give the live session working DNS before any network step.
 
-        On a netboot the NIC is configured by the initramfs, so
-        NetworkManager never manages it and never rewrites /etc/resolv.conf
-        — it keeps the live image's placeholder (observed as
-        'nameserver dhcp'). The DHCP-provided nameservers are saved by the
-        initramfs in /run/net-*.conf; propagate them so package installs (and
-        the engine's copy of resolv.conf into the target) can resolve. A
-        no-op when resolv.conf already has a real nameserver (CD/USB boot).
+        On a netboot the NIC is configured by the initramfs, which
+        NetworkManager leaves unmanaged — so it never DHCPs and never writes
+        DNS, and /etc/resolv.conf keeps the live image's placeholder (observed
+        as 'nameserver dhcp'). apt then can't resolve. A no-op on CD/USB boot
+        where NetworkManager already populated resolv.conf.
         """
-        import glob
-        import re
+        if self._resolv_has_nameserver(resolv_path):
+            return
 
-        try:
-            current = open(resolv_path, encoding="utf-8").read()
-        except OSError:
-            current = ""
-        if re.search(r"(?m)^\s*nameserver\s+\d+\.\d+\.\d+\.\d+", current):
-            return  # already valid (NetworkManager-managed boot)
-
+        # Fast path: the DHCP nameservers the initramfs saved, if its
+        # /run/net-*.conf survived the pivot to the live system.
         servers = []
         for conf in sorted(glob.glob(lease_glob)):
             try:
@@ -359,18 +364,44 @@ class HeadlessDriver:
                 ip = match.group(1)
                 if ip != "0.0.0.0" and ip not in servers:
                     servers.append(ip)
-        if not servers:
-            self.log(f"WARNING: {resolv_path} has no usable nameserver and "
-                     f"no DHCP lease DNS was found in {lease_glob}")
+        if servers:
+            try:
+                with open(resolv_path, "w", encoding="utf-8") as fd:
+                    fd.writelines(f"nameserver {ip}\n" for ip in servers)
+                self.log(" --> Set DNS from netboot lease: " + ", ".join(servers))
+                return
+            except OSError as exc:
+                self.log(f"WARNING: could not write {resolv_path}: {exc}")
+
+        # The lease is usually gone (the initramfs /run does not survive the
+        # pivot), so drive NetworkManager to take over the boot NIC and DHCP
+        # it, which writes real nameservers into resolv.conf.
+        if self._nm_dhcp_boot_nic(resolv_path):
             return
-        try:
-            with open(resolv_path, "w", encoding="utf-8") as fd:
-                for ip in servers:
-                    fd.write(f"nameserver {ip}\n")
-            self.log(" --> Repaired /etc/resolv.conf with netboot DNS: "
-                     + ", ".join(servers))
-        except OSError as exc:
-            self.log(f"WARNING: could not write /etc/resolv.conf: {exc}")
+        self.log("WARNING: could not establish DNS in the live session; "
+                 "network-dependent install steps may fail")
+
+    def _nm_dhcp_boot_nic(self, resolv_path):
+        """Force NetworkManager to manage and DHCP the boot interface."""
+        if shutil.which("nmcli") is None:
+            return False
+        dev = self.runner.output(
+            "ip -o route show default 2>/dev/null | awk '{print $5; exit}'")
+        if not dev:
+            dev = self.runner.output(
+                "for d in /sys/class/net/*; do n=${d##*/}; "
+                'case $n in lo) ;; *) echo "$n"; break ;; esac; done')
+        if not dev:
+            return False
+        self.log(f" --> Asking NetworkManager to configure {dev} for DNS")
+        self.runner.run(f"nmcli device set {shlex.quote(dev)} managed yes")
+        self.runner.run(f"nmcli -w 30 device connect {shlex.quote(dev)}")
+        for _ in range(15):
+            if self._resolv_has_nameserver(resolv_path):
+                self.log(" --> DNS configured via NetworkManager")
+                return True
+            time.sleep(1)
+        return False
 
     def _apply_packages(self):
         add = self.config.packages
