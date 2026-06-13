@@ -399,13 +399,23 @@ class HeadlessDriver:
         d = shlex.quote(dev)
         self.log(f" --> Asking NetworkManager to configure {dev} for DNS")
         self.runner.run(f"nmcli device set {d} managed yes")
-        connect = self.runner.output(f"nmcli -w 30 device connect {d} 2>&1")
-        self.log(f"[nm] connect: {connect}")
+        # A plain 'connect' makes NM *assume* the initramfs IP config without
+        # doing DHCP, so it never learns DNS. Disconnect first to force a fresh
+        # DHCP lease on reconnect.
+        self.runner.run(f"nmcli device disconnect {d}")
+        self.runner.output(f"nmcli -w 30 device connect {d} 2>&1")
 
-        for _ in range(15):
-            dns_out = self.runner.output(
-                f"nmcli -t -f IP4.DNS device show {d} 2>/dev/null")
-            servers = re.findall(r"\d+\.\d+\.\d+\.\d+", dns_out)
+        info = ""
+        for _ in range(20):
+            info = self.runner.output(
+                f"nmcli -t -f IP4.DNS,DHCP4.OPTION device show {d} 2>/dev/null")
+            servers = []
+            for match in re.finditer(
+                    r"(?:IP4\.DNS\[\d+\]:|domain_name_servers\s*=\s*)"
+                    r"(\d+\.\d+\.\d+\.\d+)", info):
+                ip = match.group(1)
+                if ip not in servers:
+                    servers.append(ip)
             if servers:
                 try:
                     with open(resolv_path, "w", encoding="utf-8") as fd:
@@ -419,6 +429,7 @@ class HeadlessDriver:
             if self._resolv_has_nameserver(resolv_path):
                 return True  # NM owns resolv.conf after all
             time.sleep(1)
+        self.log(f"[nm] no DNS learned; last device show:\n{info}")
         return False
 
     def _apply_packages(self):
