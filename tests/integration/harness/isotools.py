@@ -227,8 +227,12 @@ def write_ipxe_script(path, http_base, squashfs_names, answer_url,
     answer file over HTTP. So the whole boot is network-delivered, no media.
     """
     fetch = ",".join(f"{http_base}/live/{name}" for name in squashfs_names)
+    # ip=dhcp: live-boot's fetch= runs in the initramfs, which has its own
+    # network stack separate from iPXE's — it must DHCP an interface before it
+    # can pull the squashfs, or it fails with "Unable to find a live file
+    # system on the network".
     cmdline = (
-        f"boot=live components console={console} "
+        f"boot=live components ip=dhcp console={console} "
         f"fetch={fetch} "
         f"live-installer.auto={answer_url} live-installer.auto-insecure"
     )
