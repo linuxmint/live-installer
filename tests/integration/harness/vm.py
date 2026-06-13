@@ -150,6 +150,7 @@ class VM:
         boot_serial=None,
         tftp_dir=None,
         bootfile=None,
+        ipv6=False,
     ):
         if self.process is not None:
             raise VMError("VM already running")
@@ -229,6 +230,11 @@ class VM:
         netdev = "user,id=net0"
         if ssh_port:
             netdev += f",hostfwd=tcp:127.0.0.1:{ssh_port}-:22"
+        if ipv6:
+            # Give the guest an IPv6 ULA (host at fd00::2) alongside IPv4, so a
+            # scenario can fetch the rootfs and answer file over IPv6. (PXE
+            # firmware boot stays IPv4: slirp has no DHCPv6 boot-URL option.)
+            netdev += ",ipv6=on,ipv6-net=fd00::/64"
         if tftp_dir:
             netdev += f",tftp={tftp_dir},bootfile={bootfile}"
         netcard = "virtio-net-pci,netdev=net0"

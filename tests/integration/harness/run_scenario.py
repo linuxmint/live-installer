@@ -18,6 +18,7 @@ installer driver exists.
 import argparse
 import http.server
 import shutil
+import socket
 import socketserver
 import subprocess
 import sys
@@ -73,10 +74,20 @@ class _QuietHTTPHandler(http.server.SimpleHTTPRequestHandler):
         pass
 
 
+class _DualStackServer(socketserver.TCPServer):
+    """Listen on :: with IPV6_V6ONLY off, so the same server is reachable from
+    the guest over both IPv4 (10.0.2.2) and IPv6 (the QEMU user-net host)."""
+    address_family = socket.AF_INET6
+
+    def server_bind(self):
+        self.socket.setsockopt(socket.IPPROTO_IPV6, socket.IPV6_V6ONLY, 0)
+        super().server_bind()
+
+
 def serve_directory(directory):
-    """Serve `directory` over HTTP on an ephemeral localhost port."""
+    """Serve `directory` over HTTP on an ephemeral port, dual-stack."""
     handler = lambda *a, **kw: _QuietHTTPHandler(*a, directory=str(directory), **kw)
-    httpd = socketserver.TCPServer(("127.0.0.1", 0), handler)
+    httpd = _DualStackServer(("::", 0), handler)
     thread = threading.Thread(target=httpd.serve_forever, daemon=True)
     thread.start()
     return httpd, httpd.server_address[1]
@@ -207,8 +218,12 @@ def run_full(scenario, iso, workdir, scenario_dir):
             machine.create_disk(scenario["disk_gb"])
         ssh_port = vm.free_port()
         # auto-insecure: the answer file travels over QEMU's host-only user
-        # network; there is no TLS endpoint to offer
-        answer_url = f"http://10.0.2.2:{http_port}/{answer}"
+        # network; there is no TLS endpoint to offer. An ipv6 scenario reaches
+        # the same dual-stack server at the QEMU user-net IPv6 host (fd00::2).
+        ipv6 = bool(scenario.get("ipv6"))
+        http_host = "[fd00::2]" if ipv6 else "10.0.2.2"
+        http_base = f"http://{http_host}:{http_port}"
+        answer_url = f"{http_base}/{answer}"
 
         if netboot:
             # Phase 1 (PXE): no install media. The kernel/initrd come over
@@ -223,8 +238,7 @@ def run_full(scenario, iso, workdir, scenario_dir):
             shutil.copyfile(kernel, tftp_dir / "vmlinuz")
             shutil.copyfile(initrd, tftp_dir / "initrd.img")
             isotools.write_ipxe_script(
-                tftp_dir / "boot.ipxe", f"http://10.0.2.2:{http_port}",
-                [squashfs.name], answer_url)
+                tftp_dir / "boot.ipxe", http_base, [squashfs.name], answer_url)
             # BIOS: the NIC's iPXE option ROM runs boot.ipxe directly. UEFI:
             # OVMF needs an EFI binary, so it loads ipxe.efi (built in
             # vm-setup), whose embedded script chainloads boot.ipxe over TFTP.
@@ -236,7 +250,7 @@ def run_full(scenario, iso, workdir, scenario_dir):
                 bootfile = "boot.ipxe"
             machine.start(boot="net", firmware=scenario["firmware"],
                           tpm=scenario["tpm"], ssh_port=ssh_port,
-                          tftp_dir=str(tftp_dir), bootfile=bootfile)
+                          tftp_dir=str(tftp_dir), bootfile=bootfile, ipv6=ipv6)
         else:
             # Phase 1: direct-kernel boot of the live ISO (rootfs off the
             # attached CD) with the answer-file URL on the kernel cmdline.
