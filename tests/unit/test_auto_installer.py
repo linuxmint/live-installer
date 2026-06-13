@@ -459,3 +459,28 @@ class TestCheckMode:
         rc = auto_installer.main(["--check", "--config",
                                   str(self._valid_file(tmp_path))])
         assert rc == 0
+
+
+class TestListDisks:
+    def test_format_renders_attributes(self):
+        out = auto_installer.format_disk_list([{
+            "path": "/dev/nvme0n1", "model": "Samsung 980 PRO",
+            "size_bytes": 1_000_000_000_000, "removable": False,
+            "by_id": ["nvme-Samsung_SSD_980_PRO_1TB_S5GX"],
+            "by_path": ["pci-0000:01:00.0-nvme-1"],
+        }])
+        assert "/dev/nvme0n1" in out
+        assert "1.0TB" in out
+        assert "nvme-Samsung_SSD_980_PRO_1TB_S5GX" in out
+        assert "pci-0000:01:00.0-nvme-1" in out
+
+    def test_format_handles_no_disks(self):
+        assert "No installable disks" in auto_installer.format_disk_list([])
+
+    def test_cli_needs_no_config(self, monkeypatch, capsys):
+        # --list-disks is a pre-flight helper: it must run with no answer file.
+        monkeypatch.setattr(auto_installer.diskmatch, "describe_disks",
+                            lambda **k: [])
+        rc = auto_installer.main(["--list-disks"])
+        assert rc == 0
+        assert "No installable disks" in capsys.readouterr().out

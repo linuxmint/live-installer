@@ -78,6 +78,47 @@ def list_disks(sys_block="/sys/block"):
     return disks
 
 
+def _links_for(disk_names, link_dir):
+    """Map each whole-disk device name to the symlink names under link_dir
+    that point at it (partitions and other devices excluded)."""
+    result = {name: [] for name in disk_names}
+    try:
+        entries = sorted(os.listdir(link_dir))
+    except OSError:
+        return result
+    for entry in entries:
+        name = os.path.basename(os.path.realpath(os.path.join(link_dir, entry)))
+        if name in result:
+            result[name].append(entry)
+    return result
+
+
+def describe_disks(
+    *,
+    sys_block="/sys/block",
+    by_id_dir="/dev/disk/by-id",
+    by_path_dir="/dev/disk/by-path",
+):
+    """Enumerate installable disks with every stable attribute a match
+    expression can use (the data behind --list-disks).  Returns a list of
+    dicts, in the same stable order as list_disks."""
+    disks = list_disks(sys_block)
+    names = {d.name for d in disks}
+    by_id = _links_for(names, by_id_dir)
+    by_path = _links_for(names, by_path_dir)
+    return [
+        {
+            "path": d.path,
+            "model": d.model,
+            "size_bytes": d.size_bytes,
+            "removable": d.removable,
+            "by_id": by_id.get(d.name, []),
+            "by_path": by_path.get(d.name, []),
+        }
+        for d in disks
+    ]
+
+
 def _match_symlink_dir(pattern, link_dir, disk_names):
     """Resolve a glob over /dev/disk/by-id (or by-path) symlink names to
     the set of whole-disk device names they point at."""

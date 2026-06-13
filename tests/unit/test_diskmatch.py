@@ -86,6 +86,27 @@ class TestListDisks:
         assert disks["nvme0n1"].model == "Samsung SSD 980 PRO 1TB"
 
 
+class TestDescribeDisks:
+    def test_collects_links_per_disk(self, fake_tree):
+        described = {d["path"]: d for d in diskmatch.describe_disks(**fake_tree)}
+        nvme = described["/dev/nvme0n1"]
+        # both whole-disk aliases, never the -part1 symlink
+        assert sorted(nvme["by_id"]) == [
+            "nvme-Samsung_SSD_980_PRO_1TB_S5GXNX0T123456",
+            "nvme-eui.0025385b21404566",
+        ]
+        assert described["/dev/sda"]["by_id"] == [
+            "ata-Samsung_SSD_860_EVO_500GB_S3Z8NB0K"
+        ]
+        assert nvme["size_bytes"] == 1_000_000_000_000
+        assert nvme["removable"] is False
+
+    def test_missing_by_path_dir_is_empty_not_error(self, fake_tree):
+        # fake_tree points by_path at a nonexistent dir
+        for d in diskmatch.describe_disks(**fake_tree):
+            assert d["by_path"] == []
+
+
 class TestResolveDisk:
     def test_by_id_glob(self, fake_tree):
         result = diskmatch.resolve_disk(

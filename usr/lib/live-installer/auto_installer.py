@@ -494,6 +494,47 @@ class HeadlessDriver:
         return 0
 
 
+def format_disk_list(disks):
+    """Render diskmatch.describe_disks() output as copy-pasteable text, so a
+    user can read the stable attributes off a live machine and build a match
+    expression for the answer file."""
+    if not disks:
+        return "No installable disks found."
+    def human_size(n):
+        if n >= 10**12:
+            return f"{n / 10**12:.1f}TB"
+        if n >= 10**9:
+            return f"{n / 10**9:.0f}GB"
+        return f"{n / 10**6:.0f}MB"
+
+    lines = []
+    for d in disks:
+        removable = "yes" if d["removable"] else "no"
+        lines.append(
+            f"{d['path']}  {human_size(d['size_bytes'])}  "
+            f"model={d['model']!r}  removable={removable}"
+        )
+        # by-path is stable per hardware slot (reusable across identical
+        # machines); by-id is unique to this physical drive.
+        if d["by_path"]:
+            lines.append("  by-path (stable per chassis slot, fleet-reusable):")
+            lines.extend(f"    {name}" for name in d["by_path"])
+        if d["by_id"]:
+            lines.append("  by-id (unique to this physical drive):")
+            lines.extend(f"    {name}" for name in d["by_id"])
+        if not d["by_path"] and not d["by_id"]:
+            lines.append("  (no by-id/by-path links; use model or size-min)")
+        lines.append("")
+    lines.append(
+        "Put one of these under storage.target.match in the answer file, "
+        "e.g.:\n"
+        "  match:\n"
+        '    by-id: "<paste a by-id name, globbing the serial with *>"\n'
+        "Run with --check to validate the file once written."
+    )
+    return "\n".join(lines)
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(
         prog="live-installer --automated",
@@ -509,6 +550,13 @@ def main(argv=None):
         help="allow fetching the answer file over plain HTTP",
     )
     parser.add_argument(
+        "--list-disks", action="store_true",
+        help="print this machine's disks with the stable attributes "
+             "(by-id, by-path, model, size) usable in a match expression, "
+             "then exit. Boot the live medium and run this to learn the "
+             "names to put in an answer file.",
+    )
+    parser.add_argument(
         "--check", action="store_true",
         help="validate the answer file's syntax and schema, then exit. "
              "Touches no disks, so it runs anywhere (CI, a dev laptop).",
@@ -519,6 +567,10 @@ def main(argv=None):
              "then exit without installing",
     )
     args = parser.parse_args(argv)
+
+    if args.list_disks:
+        print(format_disk_list(diskmatch.describe_disks()), flush=True)
+        return 0
 
     source = args.config or cmdline_source()
     if not source:

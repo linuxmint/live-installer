@@ -28,9 +28,13 @@ Boot the live medium with an answer file on the kernel command line:
 live-installer.auto=/cdrom/install.yaml
 ```
 
-See **[docs/automated-install.md](docs/automated-install.md)** for the
-answer-file reference, delivery options, examples, and security notes.
-The interactive GUI is unchanged when no answer file is supplied.
+New to it? **[docs/getting-started.md](docs/getting-started.md)** is a
+hands-on walkthrough for trying it on a VM or spare machine. For the full
+reference — every answer-file key, delivery options, examples, and security
+notes — see **[docs/automated-install.md](docs/automated-install.md)**.
+A feature comparison against kickstart, preseed, and autoinstall is in
+**[docs/comparison.md](docs/comparison.md)**. The interactive GUI is
+unchanged when no answer file is supplied.
 
 For the mechanics of serial-console provisioning and encrypted (LUKS)
 boot — and the live-system quirks they work around — see
