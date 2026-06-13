@@ -39,9 +39,9 @@ reference.
      layout: simple
    ```
 
-   Where this overlaps with cloud-init (identity, users, packages, runcmd),
-   it uses the same keys and structure, so a cloud-init or Ubuntu
-   autoinstall user should find it familiar. It is not a drop-in for either
+   Where this overlaps with cloud-init (identity, users, packages), it uses
+   the same keys and structure, so a cloud-init or Ubuntu autoinstall user
+   should find it familiar. It is not a drop-in for either
    format.
 
 2. Put it on the install media (e.g. at `/cdrom/install.yaml`) **or** serve
@@ -108,7 +108,7 @@ Keys that overlap with cloud-init use cloud-init's name and structure.
 | `packages` | no | Flat list of packages to install (cloud-init style). |
 | `package_remove` | no | Flat list of packages to remove (extension; cloud-init has no declarative remove). |
 | `repositories` | no | Package repositories to add; see [repositories](#repositories). |
-| `runcmd` | no | List of shell commands; see [runcmd](#runcmd). |
+| `late_commands` | no | Shell commands run in the target at end of install; see [late_commands](#late_commands). |
 | `kernel` | no | `cmdline_extra` and `serial_console`; see [kernel](#kernel). |
 | `oem` | no | `enabled`: leave the machine in OEM first-boot state. |
 | `on_failure` | no | Per-failure-mode policy; see [failure handling](#failure-handling). |
@@ -207,20 +207,24 @@ The section name is package-system-neutral (cloud-init calls the
 equivalent `apt:`); the `source` value is apt syntax on Debian/Mint.
 `key_url` must use HTTPS.
 
-### runcmd
+### late_commands
 
-A list of shell commands, run in the target during install:
+A list of shell commands, run in the target (in a chroot) at the end of
+the install:
 
 ```yaml
-runcmd:
+late_commands:
   - /cdrom/scripts/join-domain.sh
   - systemctl enable ssh
 ```
 
-This uses cloud-init's `runcmd` key and structure. One difference from
-cloud-init: these run in the target (in a chroot) at install time, not on
-first boot. A command whose first word is a file present on the install
-media is copied into the target and run there, so on-media scripts work.
+This matches Ubuntu autoinstall's `late-commands` and kickstart `%post`:
+the commands run in the installed system at install time. It is
+deliberately **not** named `runcmd`, because cloud-init's `runcmd` runs on
+first boot — a different lifecycle (network up, systemd running) that this
+key does not provide. A command whose first word is a file present on the
+install media is copied into the target and run there, so on-media scripts
+work.
 
 ## Discovering disk names
 
@@ -306,8 +310,8 @@ deploying it to avoid this class of failure entirely.
 - **LUKS passphrases** are passed to `cryptsetup` on stdin, never as a
   command argument, so they are not visible in the process table; they
   are also redacted from all logs.
-- Do not put secrets in `runcmd` command text. It is logged. Reference a
-  script on the media instead.
+- Do not put secrets in `late_commands` command text. It is logged.
+  Reference a script on the media instead.
 
 ### When `--insecure` (plain HTTP) is appropriate
 

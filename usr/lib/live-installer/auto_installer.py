@@ -403,12 +403,13 @@ class HeadlessDriver:
             "grep -m1 'vmlinuz' /target/boot/grub/grub.cfg | sed 's/^[[:space:]]*//'"))
 
     def _run_commands(self):
-        # runcmd: cloud-init's key and structure (a list of shell commands),
-        # but run in the target chroot during install rather than on first
-        # boot. A command that is a path to a file present on the install
-        # media is copied into the target and run, so on-media scripts work.
-        for command in self.config.runcmd:
-            self.log(f" --> runcmd: {command}")
+        # late_commands: a list of shell commands run in the target chroot at
+        # the end of the install, like Ubuntu autoinstall's late-commands and
+        # kickstart %post. A command that is a path to a file present on the
+        # install media is copied into the target and run, so on-media scripts
+        # work.
+        for command in self.config.late_commands:
+            self.log(f" --> late_command: {command}")
             first = command.split()[0] if command.split() else ""
             if first and os.path.isfile(first):
                 self.runner.run(f"cp {shlex.quote(first)} /target/tmp/")
@@ -420,7 +421,7 @@ class HeadlessDriver:
                 rc = self.runner.chroot(command)
             if rc != 0:
                 self._policy("post_install_script_failure",
-                             f"runcmd failed (rc={rc}): {command}")
+                             f"late_command failed (rc={rc}): {command}")
 
     # -- main flow ----------------------------------------------------------
 
@@ -449,7 +450,7 @@ class HeadlessDriver:
                 len(self.config.users) > 1
                 or any(user.ssh_authorized_keys for user in self.config.users)
                 or self.config.packages or self.config.package_remove
-                or self.config.repositories or self.config.runcmd
+                or self.config.repositories or self.config.late_commands
                 or self.config.kernel.cmdline_extra.strip()
                 or self.config.kernel.serial_console.strip()
                 or self.config.storage.layout == "lvm-on-luks"

@@ -49,7 +49,7 @@ VALID_FULL = textwrap.dedent("""\
     repositories:
       - source: "deb https://example.com/repo trixie main"
         key_url: https://example.com/repo.gpg
-    runcmd:
+    late_commands:
       - /cdrom/scripts/join-domain.sh
       - systemctl enable ssh
     oem:
@@ -88,8 +88,8 @@ class TestValidConfigs:
         assert config.packages == ["openssh-server", "build-essential"]
         assert config.package_remove == ["hexchat"]
         assert config.repositories[0].source.startswith("deb https://")
-        assert config.runcmd == ["/cdrom/scripts/join-domain.sh",
-                                 "systemctl enable ssh"]
+        assert config.late_commands == ["/cdrom/scripts/join-domain.sh",
+                                        "systemctl enable ssh"]
 
     def test_sudo_via_group(self):
         config = parse_config(VALID_FULL)

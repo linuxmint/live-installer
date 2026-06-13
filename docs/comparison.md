@@ -70,7 +70,7 @@ Legend: ✅ full, ◐ partial or preset-only, ✗ not supported.
 | Declarative package removal | ✅ | ◐ | ◐ | ✅ |
 | Add third-party repositories | ✅ | ◐ | ✅ | ✅ |
 | Pre-install scripts (%pre) | ✅ | ✅ | ✅ | ✗ |
-| Post-install scripts | ✅ | ✅ | ✅ | ✅ (runcmd, in target) |
+| Post-install scripts | ✅ | ✅ | ✅ | ✅ (late_commands, in target) |
 | First-boot scripts | ◐ | ✗ | ✅ cloud-init | ✗ |
 
 ## Services, security, and system config
