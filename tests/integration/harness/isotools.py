@@ -218,6 +218,56 @@ def extract_netboot_assets(iso, outdir):
     return outdir / "vmlinuz", outdir / "initrd.img", sq_paths
 
 
+def build_combined_squashfs(iso, source_tree, outdir, workdir):
+    """Build ONE squashfs = base rootfs + our dev code, for PXE.
+
+    On CD/USB boot live-boot stacks every *.squashfs on the medium, so our
+    code can ride in a small separate overlay squashfs. PXE can't do that:
+    live-boot's fetch= takes a single URL, so the two images must be merged.
+    We unsquashfs the base, lay the overlay tree on top (it shadows the base
+    exactly as the union mount would), and re-squash with -all-root so the
+    result is root-owned without needing real root.
+
+    Returns (kernel_path, initrd_path, combined_squashfs_path).
+    """
+    _require("unsquashfs", "squashfs-tools")
+    _require("mksquashfs", "squashfs-tools")
+    workdir = Path(workdir)
+    workdir.mkdir(parents=True, exist_ok=True)
+
+    kernel, initrd, squashes = extract_netboot_assets(iso, workdir / "assets")
+    base = next((p for p in squashes if p.name == "filesystem.squashfs"), None)
+    if base is None:
+        raise IsoToolsError(
+            f"no filesystem.squashfs to merge in {iso}; found "
+            f"{[p.name for p in squashes]}"
+        )
+
+    overlay = build_overlay_tree(source_tree, workdir / "overlay")
+    bundle_python_deps(overlay, workdir)
+
+    root = workdir / "root"
+    if root.exists():
+        shutil.rmtree(root)
+    # unsquashfs runs unprivileged: it skips device nodes (the live rootfs has
+    # none; devtmpfs populates /dev at boot) and -all-root fixes ownership at
+    # re-squash, so root need not be real here.
+    _run(["unsquashfs", "-d", str(root), "-no-progress", str(base)])
+    base.unlink(missing_ok=True)  # free the ~GB base image before re-squashing
+    _run(["cp", "-a", f"{overlay}/.", f"{root}/"])
+
+    outdir = Path(outdir)
+    outdir.mkdir(parents=True, exist_ok=True)
+    combined = outdir / "filesystem.squashfs"
+    combined.unlink(missing_ok=True)
+    _run([
+        "mksquashfs", str(root), str(combined),
+        "-all-root", "-no-progress", "-quiet", "-comp", "zstd", "-noappend",
+    ])
+    shutil.rmtree(root, ignore_errors=True)  # reclaim the unpacked tree
+    return kernel, initrd, combined
+
+
 def write_ipxe_script(path, http_base, squashfs_names, answer_url,
                       console="ttyS0"):
     """Write a #!ipxe boot script for the PXE scenario.

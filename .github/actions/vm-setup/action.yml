@@ -15,6 +15,17 @@ inputs:
 runs:
   using: composite
   steps:
+    - name: Free up disk space
+      shell: bash
+      run: |
+        # The PXE scenario unsquashfs's the full desktop rootfs (~8GB) to
+        # merge our code in; reclaim space the runner image spends on toolsets
+        # we don't use so it fits. Best-effort, never fails the job.
+        df -h / | tail -1
+        sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc \
+          /usr/local/.ghcup /usr/local/share/powershell || true
+        df -h / | tail -1
+
     - name: Enable KVM for the runner user
       shell: bash
       run: |

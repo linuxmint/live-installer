@@ -36,6 +36,7 @@ import vm  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
 INTEGRATION_DIR = HERE.parent
+SOURCE_TREE = INTEGRATION_DIR.parent.parent  # repo root: usr/lib/live-installer/…
 DEFAULT_ISO = INTEGRATION_DIR / "fixtures" / "lmde-7-cinnamon-64bit.iso"
 DEFAULT_DEV_ISO = INTEGRATION_DIR / "fixtures" / "lmde-7-dev.iso"
 WORK_ROOT = INTEGRATION_DIR / ".work"
@@ -211,24 +212,19 @@ def run_full(scenario, iso, workdir, scenario_dir):
 
         if netboot:
             # Phase 1 (PXE): no install media. The kernel/initrd come over
-            # TFTP from QEMU's built-in server; live-boot fetches the squashfs
-            # images over HTTP, and the installer fetches its answer file over
-            # HTTP. Proves the whole boot can be network-delivered.
-            kernel, initrd, squashfs = isotools.extract_netboot_assets(
-                iso, workdir / "netboot")
+            # TFTP from QEMU's built-in server; live-boot fetches a single
+            # squashfs over HTTP (live-boot's fetch= takes one URL, so our
+            # dev code is merged into the base image, not a second squashfs);
+            # the installer fetches its answer file over HTTP.
+            kernel, initrd, squashfs = isotools.build_combined_squashfs(
+                iso, SOURCE_TREE, serve_dir / "live", workdir / "netboot")
             tftp_dir = workdir / "tftp"
             tftp_dir.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(kernel, tftp_dir / "vmlinuz")
             shutil.copyfile(initrd, tftp_dir / "initrd.img")
-            live_dir = serve_dir / "live"
-            live_dir.mkdir(parents=True, exist_ok=True)
-            for sq in squashfs:
-                link = live_dir / sq.name
-                if not link.exists():
-                    link.symlink_to(sq.resolve())
             isotools.write_ipxe_script(
                 tftp_dir / "boot.ipxe", f"http://10.0.2.2:{http_port}",
-                [sq.name for sq in squashfs], answer_url)
+                [squashfs.name], answer_url)
             machine.start(boot="net", firmware=scenario["firmware"],
                           tpm=scenario["tpm"], ssh_port=ssh_port,
                           tftp_dir=str(tftp_dir), bootfile="boot.ipxe")
