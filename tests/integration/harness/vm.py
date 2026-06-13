@@ -148,6 +148,8 @@ class VM:
         initrd=None,
         append=None,
         boot_serial=None,
+        tftp_dir=None,
+        bootfile=None,
     ):
         if self.process is not None:
             raise VMError("VM already running")
@@ -217,11 +219,18 @@ class VM:
             cmd += ["-device", dev]
         if iso:
             cmd += ["-cdrom", str(iso)]
-        cmd += ["-boot", {"cdrom": "d", "disk": "c"}[boot]]
+        cmd += ["-boot", {"cdrom": "d", "disk": "c", "net": "n"}[boot]]
 
+        # QEMU's user-mode network has a built-in TFTP/BOOTP server and the
+        # NIC carries an iPXE option ROM, so a full PXE boot needs no
+        # privileged host networking: the ROM DHCPs, TFTPs `bootfile`, and
+        # (for a #!ipxe script) runs it. The squashfs and answer file are
+        # then pulled over HTTP from the harness server at 10.0.2.2.
         netdev = "user,id=net0"
         if ssh_port:
             netdev += f",hostfwd=tcp:127.0.0.1:{ssh_port}-:22"
+        if tftp_dir:
+            netdev += f",tftp={tftp_dir},bootfile={bootfile}"
         cmd += ["-netdev", netdev, "-device", "virtio-net-pci,netdev=net0"]
 
         if tpm:

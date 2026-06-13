@@ -171,6 +171,10 @@ Useful scenario knobs:
   passphrase over serial at the initramfs prompt during boot-verify.
 - `expect.outcome: failure` — a negative test: the failure marker is the
   expected result and there is no boot/verify phase.
+- `netboot: true` — PXE boot instead of attaching the ISO. The harness
+  serves the kernel/initrd over QEMU's built-in TFTP and the squashfs over
+  HTTP, and the NIC's iPXE ROM boots it (see `pxe-simple`). Give it more
+  `memory_mb` (live-boot fetches the squashfs into RAM).
 
 Add the scenario name to the matrix in
 `.github/workflows/integration-tests.yml` so CI runs it.

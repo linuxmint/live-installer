@@ -176,7 +176,7 @@ def run_full(scenario, iso, workdir, scenario_dir):
         ssh_key, pubkey = generate_ssh_key(workdir)
         stage_answer_file(scenario_dir, answer, serve_dir, pubkey,
                           f"http://10.0.2.2:{http_port}")
-    kernel, initrd = isotools.extract_boot_files(iso, workdir / "boot")
+    netboot = bool(scenario.get("netboot"))
 
     try:
         machine = vm.VM(
@@ -195,19 +195,45 @@ def run_full(scenario, iso, workdir, scenario_dir):
         else:
             machine.create_disk(scenario["disk_gb"])
         ssh_port = vm.free_port()
-
-        # Phase 1: direct-kernel boot of the live ISO with the answer-file
-        # URL on the kernel command line (10.0.2.2 = the host)
         # auto-insecure: the answer file travels over QEMU's host-only user
         # network; there is no TLS endpoint to offer
-        append = (
-            "boot=live components console=ttyS0 "
-            f"live-installer.auto=http://10.0.2.2:{http_port}/{answer} "
-            "live-installer.auto-insecure"
-        )
-        machine.start(iso=iso, boot="cdrom", firmware=scenario["firmware"],
-                      tpm=scenario["tpm"], ssh_port=ssh_port,
-                      kernel=kernel, initrd=initrd, append=append)
+        answer_url = f"http://10.0.2.2:{http_port}/{answer}"
+
+        if netboot:
+            # Phase 1 (PXE): no install media. The kernel/initrd come over
+            # TFTP from QEMU's built-in server; live-boot fetches the squashfs
+            # images over HTTP, and the installer fetches its answer file over
+            # HTTP. Proves the whole boot can be network-delivered.
+            kernel, initrd, squashfs = isotools.extract_netboot_assets(
+                iso, workdir / "netboot")
+            tftp_dir = workdir / "tftp"
+            tftp_dir.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(kernel, tftp_dir / "vmlinuz")
+            shutil.copyfile(initrd, tftp_dir / "initrd.img")
+            live_dir = serve_dir / "live"
+            live_dir.mkdir(parents=True, exist_ok=True)
+            for sq in squashfs:
+                link = live_dir / sq.name
+                if not link.exists():
+                    link.symlink_to(sq.resolve())
+            isotools.write_ipxe_script(
+                tftp_dir / "boot.ipxe", f"http://10.0.2.2:{http_port}",
+                [sq.name for sq in squashfs], answer_url)
+            machine.start(boot="net", firmware=scenario["firmware"],
+                          tpm=scenario["tpm"], ssh_port=ssh_port,
+                          tftp_dir=str(tftp_dir), bootfile="boot.ipxe")
+        else:
+            # Phase 1: direct-kernel boot of the live ISO (rootfs off the
+            # attached CD) with the answer-file URL on the kernel cmdline.
+            kernel, initrd = isotools.extract_boot_files(iso, workdir / "boot")
+            append = (
+                "boot=live components console=ttyS0 "
+                f"live-installer.auto={answer_url} "
+                "live-installer.auto-insecure"
+            )
+            machine.start(iso=iso, boot="cdrom", firmware=scenario["firmware"],
+                          tpm=scenario["tpm"], ssh_port=ssh_port,
+                          kernel=kernel, initrd=initrd, append=append)
         try:
             success = scenario["expect"]["serial_markers"]
             failure = scenario["expect"].get("failure_markers", [])
