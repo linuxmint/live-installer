@@ -231,7 +231,13 @@ class VM:
             netdev += f",hostfwd=tcp:127.0.0.1:{ssh_port}-:22"
         if tftp_dir:
             netdev += f",tftp={tftp_dir},bootfile={bootfile}"
-        cmd += ["-netdev", netdev, "-device", "virtio-net-pci,netdev=net0"]
+        netcard = "virtio-net-pci,netdev=net0"
+        # On UEFI, OVMF honours bootindex rather than the legacy -boot order,
+        # so the NIC must carry one to be tried for PXE. (BIOS PXE already works
+        # via -boot n and the NIC option ROM, so leave it alone.)
+        if boot == "net" and firmware in ("uefi", "uefi-secureboot"):
+            netcard += ",bootindex=0"
+        cmd += ["-netdev", netdev, "-device", netcard]
 
         if tpm:
             self._start_swtpm()

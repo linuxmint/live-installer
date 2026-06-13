@@ -56,6 +56,33 @@ runs:
       shell: bash
       run: pip install pyyaml
 
+    # UEFI PXE needs an EFI boot binary (OVMF can't run a raw iPXE script the
+    # way the BIOS NIC option ROM does). Build ipxe.efi once, with an embedded
+    # script that chainloads the per-run boot.ipxe over TFTP — so the EFI
+    # binary itself is static and cacheable while the real boot script stays
+    # dynamic. Bump the cache key when the embedded script changes.
+    - name: Cache iPXE EFI binary
+      id: ipxe-cache
+      uses: actions/cache@v5
+      with:
+        path: tests/integration/fixtures/ipxe.efi
+        key: ipxe-efi-chain-v1
+
+    - name: Build iPXE EFI for UEFI netboot
+      if: steps.ipxe-cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: |
+        sudo apt-get install -y --no-install-recommends \
+          build-essential liblzma-dev git
+        git clone --depth 1 https://github.com/ipxe/ipxe.git /tmp/ipxe
+        printf '#!ipxe\ndhcp\nchain tftp://${next-server}/boot.ipxe\n' \
+          > /tmp/embed.ipxe
+        make -C /tmp/ipxe/src -j"$(nproc)" bin-x86_64-efi/ipxe.efi \
+          EMBED=/tmp/embed.ipxe
+        mkdir -p tests/integration/fixtures
+        cp /tmp/ipxe/src/bin-x86_64-efi/ipxe.efi \
+          tests/integration/fixtures/ipxe.efi
+
     - name: Cache the base ISO
       id: iso-cache
       uses: actions/cache@v5

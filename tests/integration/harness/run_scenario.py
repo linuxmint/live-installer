@@ -225,9 +225,18 @@ def run_full(scenario, iso, workdir, scenario_dir):
             isotools.write_ipxe_script(
                 tftp_dir / "boot.ipxe", f"http://10.0.2.2:{http_port}",
                 [squashfs.name], answer_url)
+            # BIOS: the NIC's iPXE option ROM runs boot.ipxe directly. UEFI:
+            # OVMF needs an EFI binary, so it loads ipxe.efi (built in
+            # vm-setup), whose embedded script chainloads boot.ipxe over TFTP.
+            if scenario["firmware"].startswith("uefi"):
+                shutil.copyfile(INTEGRATION_DIR / "fixtures" / "ipxe.efi",
+                                tftp_dir / "ipxe.efi")
+                bootfile = "ipxe.efi"
+            else:
+                bootfile = "boot.ipxe"
             machine.start(boot="net", firmware=scenario["firmware"],
                           tpm=scenario["tpm"], ssh_port=ssh_port,
-                          tftp_dir=str(tftp_dir), bootfile="boot.ipxe")
+                          tftp_dir=str(tftp_dir), bootfile=bootfile)
         else:
             # Phase 1: direct-kernel boot of the live ISO (rootfs off the
             # attached CD) with the answer-file URL on the kernel cmdline.
