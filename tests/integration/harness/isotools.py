@@ -288,6 +288,28 @@ def build_combined_squashfs(iso, source_tree, outdir, workdir):
         except IsoToolsError:
             pass  # absent on some images; the engine tolerates a missing one
 
+    # UEFI installs pull the signed bootloader packages from the medium's
+    # /pool, which a netboot medium lacks; carry them in the bundle too.
+    # (Keep in sync with installer.py EFI_PACKAGES.)
+    efi_pkgs = ("grub-efi-amd64", "grub-efi-amd64-bin",
+                "grub-efi-amd64-unsigned", "grub-efi-amd64-signed",
+                "shim-signed")
+    pool_main = bundle / "pool" / "main"
+    pool_main.mkdir(parents=True, exist_ok=True)
+    deb_listing = _run([
+        "xorriso", "-indev", str(iso), "-find", "/pool", "-name", "*.deb",
+    ]).stdout
+    deb_extract = ["xorriso", "-osirrox", "on", "-indev", str(iso)]
+    found_debs = 0
+    for line in deb_listing.splitlines():
+        name = line.strip().strip("'")
+        base = name.rsplit("/", 1)[-1]
+        if any(base.startswith(pkg + "_") for pkg in efi_pkgs):
+            deb_extract += ["-extract", name, str(pool_main / base)]
+            found_debs += 1
+    if found_debs:
+        _run(deb_extract)
+
     # On a netboot the NIC is configured by the initramfs, which NetworkManager
     # leaves unmanaged by default — so it never DHCPs and never writes real DNS,
     # leaving the live image's 'nameserver dhcp' placeholder and breaking apt.
