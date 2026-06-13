@@ -382,7 +382,10 @@ class HeadlessDriver:
                  "network-dependent install steps may fail")
 
     def _nm_dhcp_boot_nic(self, resolv_path):
-        """Force NetworkManager to manage and DHCP the boot interface."""
+        """Force NetworkManager to manage and DHCP the boot interface, then
+        write the DNS it learned into resolv.conf ourselves — NM's rc-manager
+        may be configured not to own /etc/resolv.conf, so we cannot rely on it
+        updating the file even once it has the nameservers."""
         if shutil.which("nmcli") is None:
             return False
         dev = self.runner.output(
@@ -393,13 +396,28 @@ class HeadlessDriver:
                 'case $n in lo) ;; *) echo "$n"; break ;; esac; done')
         if not dev:
             return False
+        d = shlex.quote(dev)
         self.log(f" --> Asking NetworkManager to configure {dev} for DNS")
-        self.runner.run(f"nmcli device set {shlex.quote(dev)} managed yes")
-        self.runner.run(f"nmcli -w 30 device connect {shlex.quote(dev)}")
+        self.runner.run(f"nmcli device set {d} managed yes")
+        connect = self.runner.output(f"nmcli -w 30 device connect {d} 2>&1")
+        self.log(f"[nm] connect: {connect}")
+
         for _ in range(15):
+            dns_out = self.runner.output(
+                f"nmcli -t -f IP4.DNS device show {d} 2>/dev/null")
+            servers = re.findall(r"\d+\.\d+\.\d+\.\d+", dns_out)
+            if servers:
+                try:
+                    with open(resolv_path, "w", encoding="utf-8") as fd:
+                        fd.writelines(f"nameserver {ip}\n" for ip in servers)
+                    self.log(" --> Set DNS from NetworkManager: "
+                             + ", ".join(servers))
+                    return True
+                except OSError as exc:
+                    self.log(f"WARNING: could not write {resolv_path}: {exc}")
+                    return False
             if self._resolv_has_nameserver(resolv_path):
-                self.log(" --> DNS configured via NetworkManager")
-                return True
+                return True  # NM owns resolv.conf after all
             time.sleep(1)
         return False
 
