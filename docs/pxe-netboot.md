@@ -85,11 +85,13 @@ files. So the installer instead looks for them in the rootfs at:
     vmlinuz
     initrd.img
     filesystem.packages-remove
+    pool/main/          # the signed EFI bootloader .debs, for UEFI installs
 ```
 
 A netboot image must place them there. If it does not, the install aborts
-copying the kernel (`No such file or directory`) and, later, reading the
-removal manifest. See `installer.py` (`self.live_files`) and
+copying the kernel (`No such file or directory`), reading the removal
+manifest, or (on UEFI) installing the signed bootloader (`Missing EFI
+package`). See `installer.py` (`self.live_files`, `self.pool`) and
 `isotools.build_combined_squashfs()` (which stages them).
 
 ### 3. A NetworkManager-based live system (for DNS)
@@ -140,18 +142,32 @@ default).
 
 ## How it is tested
 
-The `pxe-simple` integration scenario performs a real PXE install end to
-end with no media, using QEMU's user-mode network: its built-in TFTP/BOOTP
-server plus the NIC's iPXE option ROM boot the kernel/initrd, live-boot
+The `pxe-simple` (BIOS) and `pxe-uefi-simple` (UEFI) integration scenarios
+perform real PXE installs end to end with no media, using QEMU's user-mode
+network: its built-in TFTP/BOOTP server boots the kernel/initrd, live-boot
 fetches the combined squashfs over the harness HTTP server, and the
 install runs and is verified over SSH on the booted system. No privileged
-host networking and no real DHCP/TFTP daemons are involved, so it runs on
+host networking and no real DHCP/TFTP daemons are involved, so they run on
 a standard GitHub hosted runner (with KVM). See
 [../tests/TESTING.md](../tests/TESTING.md) and the `netboot:` scenario
 knob.
 
-This is BIOS PXE. UEFI PXE (and therefore IPv6 netboot, which requires
-UEFI) is not yet covered; see the note below.
+### BIOS vs UEFI
+
+The two differ only at the front of the boot chain:
+
+- **BIOS** — the NIC's iPXE option ROM (shipped with QEMU) runs the
+  `boot.ipxe` script directly.
+- **UEFI** — OVMF cannot run a raw script, so it PXE-loads an EFI binary.
+  The harness builds `ipxe.efi` once (in `vm-setup`, cached) with an
+  embedded script that `dhcp`s and chainloads `boot.ipxe` over TFTP, so the
+  EFI binary stays static while the boot script stays per-run. OVMF honours
+  `bootindex` rather than the legacy boot order, so the NIC carries one.
+  The UEFI install also pulls the signed bootloader packages
+  (`grub-efi-amd64`, `shim-signed`, …) from the pool, which the netboot
+  bundle carries alongside the kernel (requirement 2).
+
+From the chainload onward the two paths are identical.
 
 ## Traps, in the order they bite
 
@@ -171,12 +187,16 @@ listed so the next person does not rediscover them:
 5. **No DNS in the live system** → NetworkManager leaves the
    initramfs-configured NIC unmanaged; force a real DHCP (requirement 3 /
    `_ensure_dns`).
+6. **UEFI: signed bootloader packages not on the medium** → the
+   `grub-efi-amd64` / `shim-signed` `.deb`s come from `/pool`; carry them in
+   the bundle (requirement 2). UEFI also needs an EFI boot binary
+   (`ipxe.efi`) and a NIC `bootindex`, since OVMF cannot run a raw script.
 
-### Not yet covered: UEFI and IPv6
+### Not yet covered: IPv6
 
-IPv6 netboot requires UEFI (BIOS PXE is IPv4-only by spec), and the
-initramfs networking (`ip=dhcp`) is IPv4-only, so IPv6 `fetch=` can fail
-in the initramfs even though the running installer resolves IPv6 fine.
-Treat IPv6 PXE boot as unproven until the UEFI PXE path exists and the
-initramfs IPv6 bring-up has been watched working. Answer-file and keyfile
-fetching over IPv6 (http/https/nfs) in the running installer is supported.
+Both BIOS and UEFI PXE are tested over IPv4. IPv6 netboot is not yet
+covered: the initramfs networking (`ip=dhcp`) is IPv4-only, so an IPv6
+`fetch=` can fail in the initramfs even though the running installer
+resolves IPv6 fine. Treat IPv6 PXE boot as unproven until the initramfs
+IPv6 bring-up has been watched working. Answer-file and keyfile fetching
+over IPv6 (http/https/nfs) in the running installer is supported.
