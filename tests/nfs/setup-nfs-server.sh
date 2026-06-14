@@ -34,6 +34,7 @@ sudo chmod -R a+rX "$EXPORT_DIR"
 
 # Export read-only to everyone on the loopback host. `insecure` allows the
 # client to connect from a non-reserved port; harmless for a localhost test.
+sudo mkdir -p /etc/exports.d
 echo "$EXPORT_DIR *(ro,sync,no_subtree_check,insecure)" \
     | sudo tee /etc/exports.d/li-nfs.exports >/dev/null
 
