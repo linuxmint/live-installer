@@ -1,0 +1,39 @@
+# Custom partition layout: explicit ESP + swap partitions, and an LVM PV
+# carrying a vg0 volume group with root and home logical volumes.
+version: 1
+
+hostname: lmde-custom-01
+locale: en_US.UTF-8
+timezone: America/Toronto
+
+keyboard:
+  model: pc105
+  layout: us
+
+users:
+  - name: testuser
+    gecos: Integration Test User
+    # "testpass", sha512crypt — test fixture only
+    passwd: "$6$rounds=4096$integration.test$kPEsZSlAg3pjDM0yaeSdAVPbHcsiBVMobBC0SXmdGRX9WtflVB.ETP6/yo8Lw0PRJlXP6tEXkbQjnLnnyG5BV1"
+    groups: [sudo]
+
+storage:
+  target:
+    match:
+      first-non-removable: true
+    on_no_match: abort
+  layout: custom
+  partitions:
+    - {size: 512MB, mount: /boot/efi, filesystem: vfat, flags: [esp]}
+    - {size: 2GB, mount: swap, filesystem: swap}
+    - {size: rest, lvm_pv: vg0}
+  lvm:
+    - {vg: vg0, lv: root, size: 8GB, mount: /, filesystem: ext4}
+    - {vg: vg0, lv: home, size: rest, mount: /home, filesystem: ext4}
+
+packages: [openssh-server]
+
+on_failure:
+  partition_mismatch: abort
+  network_unavailable: continue
+  package_install_failure: abort

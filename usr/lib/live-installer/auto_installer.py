@@ -254,8 +254,23 @@ def build_setup(config, *, disk=None, efi=None, is_mint=None, insecure=False):
     setup.autologin = primary.autologin
     setup.ecryptfs = primary.ecryptfs_home
 
+    setup.layout = config.storage.layout
     setup.lvm = config.storage.layout in ("lvm", "lvm-on-luks")
     setup.luks = config.storage.layout == "lvm-on-luks"
+    if config.storage.layout == "custom":
+        # Hand the engine plain dicts; it does not import the schema.
+        setup.custom_partitions = [
+            {"size": p.size, "mount": p.mount, "filesystem": p.filesystem,
+             "flags": list(p.flags), "lvm_pv": p.lvm_pv}
+            for p in config.storage.partitions
+        ]
+        setup.custom_lvm = [
+            {"vg": v.vg, "lv": v.lv, "size": v.size, "mount": v.mount,
+             "filesystem": v.filesystem}
+            for v in config.storage.lvm
+        ]
+        # so write_mtab() runs when the custom layout uses LVM
+        setup.lvm = bool(setup.custom_lvm)
     if setup.luks:
         luks = config.storage.luks
         if luks.passphrase_source == "keyfile":

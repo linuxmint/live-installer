@@ -1,0 +1,57 @@
+# Custom partition layout, UEFI: explicit ESP + swap partitions plus a custom
+# LVM volume group (vg0) with root and home logical volumes. Exercises the
+# layout: custom engine path (parted + pvcreate/vgcreate/lvcreate + per-mount
+# fstab) end to end and verifies the resulting layout on the installed system.
+
+name: custom-uefi
+description: Unattended UEFI install, custom layout (ESP + swap + LVM root/home)
+
+firmware: uefi
+tpm: false
+memory_mb: 4096
+cpus: 2
+disk_gb: 25
+
+answer_file: answers/custom.yaml
+
+install_timeout_s: 1800
+boot_timeout_s: 300
+
+expect:
+  serial_markers:
+    - "Automated installation complete"
+  failure_markers:
+    - "Automated installation FAILED"
+
+ssh:
+  user: testuser
+
+verify:
+  - name: os-is-lmde
+    type: command
+    command: ". /etc/os-release && echo $PRETTY_NAME"
+    expect_substring: "LMDE"
+  - name: hostname-applied
+    type: command
+    command: hostname
+    expect_substring: "lmde-custom-01"
+  - name: root-on-lvm
+    type: mount_source
+    mountpoint: /
+    source_contains: "vg0"
+  - name: home-on-separate-lv
+    type: command
+    command: findmnt -n -o SOURCE /home
+    expect_substring: "vg0"
+  - name: swap-active
+    type: command
+    command: "swapon --show=NAME --noheadings | head -1"
+    expect_substring: "/dev/"
+  - name: esp-mounted
+    type: command
+    command: findmnt -n -o TARGET /boot/efi
+    expect_substring: "/boot/efi"
+  - name: network-manager-running
+    type: command
+    command: systemctl is-active NetworkManager
+    expect_substring: "active"

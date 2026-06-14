@@ -1,5 +1,6 @@
 from glob import glob
 import os
+import re
 import time
 import gettext
 import parted
@@ -402,7 +403,129 @@ class InstallerEngine:
         self.write_mtab()
         self.write_crypttab()
 
+    # -- custom partition layouts (automated) -------------------------------
+
+    @staticmethod
+    def _size_to_mb(size):
+        """'512MB' / '40GB' / '1.5TB' -> integer MB (decimal units, matching
+        parted)."""
+        num = float(re.match(r"^(\d+(?:\.\d+)?)", size.strip()).group(1))
+        factor = {"MB": 1, "GB": 1000, "TB": 1000000}[size.strip()[-2:]]
+        return int(round(num * factor))
+
+    def _wait_for_node(self, path):
+        # Each parted call triggers a partition-table rescan; udev briefly
+        # removes and recreates the device node. Wait or mkfs races it.
+        for _ in range(6):
+            os.system("udevadm settle 2>/dev/null")
+            if os.path.exists(path):
+                return
+            os.system("sync")
+            time.sleep(1)
+        raise Exception(_("The partition %s could not be created. The "
+                          "installation will stop. Restart the computer and "
+                          "try again.") % path)
+
+    def _format_device(self, fs, device):
+        if fs == "swap":
+            cmd = "mkswap %s" % device
+        elif fs in ("ext2", "ext3", "ext4"):
+            cmd = "mkfs.%s -F %s" % (fs, device)
+        elif fs in ("btrfs", "xfs"):
+            cmd = "mkfs.%s -f %s" % (fs, device)
+        elif fs == "vfat":
+            cmd = "mkfs.vfat %s -F 32" % device
+        elif fs == "f2fs":
+            cmd = "mkfs.f2fs -f %s" % device
+        else:
+            cmd = "mkfs.%s %s" % (fs, device)
+        if self.runner.run(cmd) != 0:
+            raise Exception(_("The partition %s could not be formatted. The "
+                              "installation will stop. Restart the computer "
+                              "and try again.") % device)
+
+    def _create_custom_partitions(self):
+        """Automated install of an explicit partition layout (layout: custom):
+        a list of partitions (some of which may be LVM PVs) plus logical
+        volumes. Builds self.auto_mounts = [(device, mount, filesystem), ...],
+        which the mount step and write_fstab then drive."""
+        device_path = self.setup.disk
+        prefix = partitioning.get_device_naming_scheme_prefix(device_path)
+        disk_device = parted.getDevice(device_path)
+        parts = self.setup.custom_partitions
+        lvm = self.setup.custom_lvm
+
+        if self.setup.badblocks:
+            self.update_progress(25, False, False, _("Filling disk with random data (please be patient, this can take hours...)"))
+            self.runner.run("badblocks -c 10240 -s -w -t random -v %s" % device_path)
+
+        self.update_progress(25, False, False, _("Creating partitions on %s") % device_path)
+        print(" --> Creating custom partitions on %s" % device_path)
+        os.system("swapoff -a")
+        os.system("umount -R /target 2>/dev/null || true")
+
+        has_esp = any("esp" in p["flags"] for p in parts)
+        use_gpt = (has_esp or self.setup.gptonefi
+                   or disk_device.getLength('B') > 2**32 * .9 * disk_device.sectorSize)
+        label = "gpt" if use_gpt else "msdos"
+        if os.system("parted -s %s mklabel %s" % (device_path, label)) != 0:
+            raise Exception(_("The partition table couldn't be written for %s. Restart the computer and try again.") % device_path)
+
+        run_parted = lambda cmd: os.system(
+            'parted --script --align optimal %s %s ; sync' % (device_path, cmd))
+        mounts = []        # (device, mount, filesystem)
+        pvs_by_vg = {}     # vg name -> [device path]
+        start_mb = 2
+        for num, part in enumerate(parts, 1):
+            size = part["size"]
+            end = "100%" if size == "rest" else "%dMB" % (
+                start_mb + self._size_to_mb(size))
+            run_parted("mkpart primary %dMB %s" % (start_mb, end))
+            part_path = "%s%s%d" % (device_path, prefix, num)
+            self._wait_for_node(part_path)
+            for flag in part["flags"]:
+                if flag == "esp":
+                    run_parted("set %d esp on" % num)
+                    run_parted("set %d boot on" % num)
+                elif flag == "bios_grub":
+                    run_parted("set %d bios_grub on" % num)
+            if part.get("lvm_pv"):
+                self.runner.run("pvcreate -y %s" % part_path)
+                pvs_by_vg.setdefault(part["lvm_pv"], []).append(part_path)
+            elif "bios_grub" not in part["flags"]:
+                self._format_device(part["filesystem"], part_path)
+                mounts.append((part_path, part["mount"], part["filesystem"]))
+            if size != "rest":
+                start_mb += self._size_to_mb(size) + 1
+
+        for vg, pvs in pvs_by_vg.items():
+            self.runner.run("vgcreate -y %s %s" % (vg, " ".join(pvs)))
+        for vol in lvm:
+            size = vol["size"]
+            if size == "rest":
+                self.runner.run("lvcreate -y -n %s -l 100%%FREE %s" % (vol["lv"], vol["vg"]))
+            else:
+                self.runner.run("lvcreate -y -n %s -L %dM %s" % (vol["lv"], self._size_to_mb(size), vol["vg"]))
+            lv_path = "/dev/%s/%s" % (vol["vg"], vol["lv"])
+            self._wait_for_node("/dev/mapper/%s-%s" % (vol["vg"], vol["lv"]))
+            self._format_device(vol["filesystem"], lv_path)
+            mounts.append((lv_path, vol["mount"], vol["filesystem"]))
+
+        self.auto_mounts = mounts
+        # Mount parents before children: / first, then by path depth.
+        for device, mount, fs in sorted(mounts,
+                                        key=lambda m: (m[1] != "/", m[1].count("/"))):
+            if fs == "swap" or mount == "swap":
+                self.runner.run("swapon %s" % device)
+                continue
+            target = "/target" if mount == "/" else "/target" + mount
+            if mount != "/":
+                self.runner.run("mkdir -p %s" % target)
+            self.do_mount(device, target, fs, None)
+
     def create_partitions(self):
+        if getattr(self.setup, "layout", None) == "custom":
+            return self._create_custom_partitions()
         # Create partitions on the selected disk (automated installation)
         partition_prefix = partitioning.get_device_naming_scheme_prefix(self.setup.disk)
         if self.setup.luks:
@@ -606,7 +729,18 @@ class InstallerEngine:
         fstab.write("#### Static Filesystem Table File\n")
         fstab.write("proc\t/proc\tproc\tdefaults\t0\t0\n")
         if(not self.setup.skip_mount):
-            if self.setup.automated:
+            if self.setup.automated and getattr(self, "auto_mounts", None):
+                for device, mount, fs in self.auto_mounts:
+                    uuid = self.get_blkid(device)
+                    if fs == "swap":
+                        fstab.write("# %s\n" % device)
+                        fstab.write("%s\tswap\tswap\tsw\t0\t0\n" % uuid)
+                    else:
+                        fsck = "1" if fs != "btrfs" and mount in ("/", "/boot", "/boot/efi") else "0"
+                        opts = "rw,errors=remount-ro" if fs.startswith("ext") else "defaults"
+                        fstab.write("# %s\n" % device)
+                        fstab.write("%s\t%s\t%s\t%s\t0\t%s\n" % (uuid, mount, fs, opts, fsck))
+            elif self.setup.automated:
                 fstab.write("# %s\n" % self.auto_root_partition)
                 fstab.write("%s /  ext4 defaults 0 1\n" % self.get_blkid(self.auto_root_partition))
                 fstab.write("# %s\n" % self.auto_swap_partition)
@@ -874,6 +1008,9 @@ class Setup(object):
     passphrase2 = None
     lvm = False
     luks = False
+    layout = "simple"            # simple | lvm | lvm-on-luks | custom
+    custom_partitions = []       # for layout: custom — list of partition dicts
+    custom_lvm = []              # for layout: custom — list of LV dicts
     badblocks = False
     target_disk = None
     gptonefi = False
