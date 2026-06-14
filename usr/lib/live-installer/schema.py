@@ -52,6 +52,10 @@ _GROUP_RE = re.compile(r"^[a-z_][a-z0-9_-]{0,31}$")
 _HOSTNAME_LABEL_RE = re.compile(r"^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?$")
 _LOCALE_RE = re.compile(r"^[a-z]{2,3}(_[A-Z]{2})?(\.[A-Za-z0-9-]+)?$")
 _SIZE_RE = re.compile(r"^\d+(\.\d+)?\s*[MGT]B$")
+_MOUNT_RE = re.compile(r"^/[A-Za-z0-9._/-]*$")
+_FILESYSTEMS = ("ext4", "ext3", "ext2", "xfs", "btrfs", "vfat", "swap", "f2fs")
+_PART_FLAGS = ("esp", "bios_grub", "swap")
+_LV_NAME_RE = re.compile(r"^[A-Za-z0-9_][A-Za-z0-9_.+-]*$")
 
 
 class ConfigError(Exception):
@@ -210,31 +214,157 @@ class Luks(_StrictModel):
         return self
 
 
+def _check_size(value):
+    if value != "rest" and not _SIZE_RE.match(value):
+        raise ValueError(f"size {value!r} must be 'rest' or like 512MB / 40GB / 1TB")
+    return value
+
+
+def _check_filesystem(value):
+    if value is not None and value not in _FILESYSTEMS:
+        raise ValueError(
+            f"filesystem {value!r} is not one of {', '.join(_FILESYSTEMS)}")
+    return value
+
+
+def _check_mount(value):
+    if value is not None and value != "swap" and not _MOUNT_RE.match(value):
+        raise ValueError(f"mount {value!r} must be an absolute path or 'swap'")
+    return value
+
+
+class CustomPartition(_StrictModel):
+    """One partition in a custom layout. It is either mounted (mount +
+    filesystem), an LVM physical volume (lvm_pv), or a flag-only special
+    partition (e.g. bios_grub)."""
+    size: str
+    mount: str = None
+    filesystem: str = None
+    flags: list[str] = Field(default_factory=list)
+    lvm_pv: str = None
+
+    _v_size = field_validator("size")(_check_size)
+    _v_fs = field_validator("filesystem")(_check_filesystem)
+    _v_mount = field_validator("mount")(_check_mount)
+
+    @field_validator("flags")
+    @classmethod
+    def _v_flags(cls, value):
+        for flag in value:
+            if flag not in _PART_FLAGS:
+                raise ValueError(
+                    f"partition flag {flag!r} is not one of "
+                    f"{', '.join(_PART_FLAGS)}")
+        return value
+
+    @model_validator(mode="after")
+    def _consistency(self):
+        if self.lvm_pv is not None:
+            if self.mount or self.filesystem:
+                raise ValueError(
+                    "an LVM PV partition (lvm_pv) takes no mount/filesystem")
+        elif "bios_grub" in self.flags:
+            if self.mount or self.filesystem:
+                raise ValueError(
+                    "a bios_grub partition takes no mount/filesystem")
+        elif not self.mount or not self.filesystem:
+            raise ValueError(
+                "a partition needs both mount and filesystem (or lvm_pv, or "
+                "the bios_grub flag)")
+        if "esp" in self.flags:
+            if self.filesystem != "vfat" or self.mount != "/boot/efi":
+                raise ValueError(
+                    "an esp partition must be filesystem: vfat mounted at "
+                    "/boot/efi")
+        if (self.mount == "swap") != (self.filesystem == "swap"):
+            raise ValueError("mount: swap and filesystem: swap go together")
+        return self
+
+
+class LvmVolume(_StrictModel):
+    """A logical volume in a custom layout, on a VG backed by an lvm_pv
+    partition."""
+    vg: str
+    lv: str
+    size: str
+    mount: str = None
+    filesystem: str = None
+
+    _v_size = field_validator("size")(_check_size)
+    _v_fs = field_validator("filesystem")(_check_filesystem)
+    _v_mount = field_validator("mount")(_check_mount)
+
+    @field_validator("lv")
+    @classmethod
+    def _v_lv(cls, value):
+        if not _LV_NAME_RE.match(value):
+            raise ValueError(f"{value!r} is not a valid logical-volume name")
+        return value
+
+    @model_validator(mode="after")
+    def _consistency(self):
+        if not self.mount or not self.filesystem:
+            raise ValueError("an LVM volume needs both mount and filesystem")
+        if (self.mount == "swap") != (self.filesystem == "swap"):
+            raise ValueError("mount: swap and filesystem: swap go together")
+        return self
+
+
 class Storage(_StrictModel):
     target: StorageTarget
     layout: str = "simple"
     luks: Luks = None
+    partitions: list[CustomPartition] = Field(default_factory=list)
+    lvm: list[LvmVolume] = Field(default_factory=list)
 
     @field_validator("layout")
     @classmethod
     def _check_layout(cls, value):
-        allowed = ("simple", "lvm", "lvm-on-luks")
-        if value == "custom":
-            raise ValueError(
-                "layout: custom is not supported for unattended installs in "
-                f"schema version {SCHEMA_VERSION}; use the GUI installer for "
-                "custom partition layouts"
-            )
+        allowed = ("simple", "lvm", "lvm-on-luks", "custom")
         if value not in allowed:
             raise ValueError(f"layout must be one of {', '.join(allowed)}")
         return value
 
     @model_validator(mode="after")
-    def _luks_consistency(self):
+    def _consistency(self):
         if self.layout == "lvm-on-luks" and self.luks is None:
             self.luks = Luks()  # fail-safe default: prompt on first boot
         if self.layout != "lvm-on-luks" and self.luks is not None:
             raise ValueError("'luks' is only valid with layout: lvm-on-luks")
+
+        if self.layout != "custom":
+            if self.partitions or self.lvm:
+                raise ValueError(
+                    "'partitions'/'lvm' are only valid with layout: custom")
+            return self
+
+        if not self.partitions:
+            raise ValueError(
+                "layout: custom requires a non-empty 'partitions' list")
+        mounts = ([p.mount for p in self.partitions if p.mount]
+                  + [v.mount for v in self.lvm if v.mount])
+        if mounts.count("/") != 1:
+            raise ValueError("custom layout needs exactly one '/' mount point")
+        dupes = sorted({m for m in mounts
+                        if m != "swap" and mounts.count(m) > 1})
+        if dupes:
+            raise ValueError(f"duplicate mount point(s): {', '.join(dupes)}")
+        if sum(1 for p in self.partitions if p.size == "rest") > 1:
+            raise ValueError("at most one partition may use size: rest")
+
+        pv_vgs = {p.lvm_pv for p in self.partitions if p.lvm_pv}
+        lv_vgs = {v.vg for v in self.lvm}
+        if lv_vgs - pv_vgs:
+            raise ValueError(
+                "lvm volume(s) reference VG(s) with no lvm_pv partition: "
+                + ", ".join(sorted(lv_vgs - pv_vgs)))
+        if pv_vgs - lv_vgs:
+            raise ValueError(
+                "lvm_pv partition(s) reference VG(s) with no logical volumes: "
+                + ", ".join(sorted(pv_vgs - lv_vgs)))
+        for vg in lv_vgs:
+            if sum(1 for v in self.lvm if v.vg == vg and v.size == "rest") > 1:
+                raise ValueError(f"at most one LV in VG {vg} may use size: rest")
         return self
 
 

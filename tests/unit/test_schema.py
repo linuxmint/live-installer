@@ -173,12 +173,14 @@ class TestRejections:
         )
         _expect_error(bad, "at least one matcher")
 
-    def test_custom_layout_rejected(self):
-        bad = VALID_FULL.replace("layout: lvm-on-luks", "layout: custom")
-        bad = bad.replace(
-            "      luks:\n        passphrase_source: prompt-on-first-boot\n", ""
+    def test_partitions_without_custom_layout_rejected(self):
+        bad = VALID_MINIMAL.replace(
+            "      first-non-removable: true",
+            "      first-non-removable: true\n"
+            "  partitions:\n"
+            "    - {size: rest, mount: /, filesystem: ext4}",
         )
-        _expect_error(bad, "custom", "GUI installer")
+        _expect_error(bad, "only valid with layout: custom")
 
     def test_luks_without_luks_layout_rejected(self):
         bad = VALID_FULL.replace("layout: lvm-on-luks", "layout: lvm")
@@ -269,3 +271,110 @@ class TestRejections:
         # valid keyboard layout string, so strict typing catches it.
         bad = VALID_FULL.replace("layout: us", "layout: no")
         _expect_error(bad, "keyboard")
+
+
+CUSTOM = textwrap.dedent("""\
+    version: 1
+    locale: en_US.UTF-8
+    timezone: America/Toronto
+    users:
+      - name: admin
+        passwd: "$6$rounds=4096$salt$hashhashhash"
+    storage:
+      target:
+        match:
+          first-non-removable: true
+      layout: custom
+      partitions:
+        - {size: 512MB, mount: /boot/efi, filesystem: vfat, flags: [esp]}
+        - {size: 2GB, mount: swap, filesystem: swap}
+        - {size: rest, lvm_pv: vg0}
+      lvm:
+        - {vg: vg0, lv: root, size: 40GB, mount: /, filesystem: ext4}
+        - {vg: vg0, lv: home, size: rest, mount: /home, filesystem: ext4}
+""")
+
+
+class TestCustomLayout:
+    def test_valid_plain_plus_lvm(self):
+        config = parse_config(CUSTOM)
+        st = config.storage
+        assert st.layout == "custom"
+        assert st.partitions[0].flags == ["esp"]
+        assert st.partitions[2].lvm_pv == "vg0"
+        assert st.lvm[0].vg == "vg0" and st.lvm[0].mount == "/"
+
+    def test_valid_plain_only(self):
+        text = textwrap.dedent("""\
+            version: 1
+            locale: en_US.UTF-8
+            timezone: America/Toronto
+            users:
+              - name: admin
+                passwd: "$6$rounds=4096$salt$hashhashhash"
+            storage:
+              target:
+                match:
+                  first-non-removable: true
+              layout: custom
+              partitions:
+                - {size: 512MB, mount: /boot/efi, filesystem: vfat, flags: [esp]}
+                - {size: 40GB, mount: /, filesystem: ext4}
+                - {size: rest, mount: /home, filesystem: ext4}
+        """)
+        config = parse_config(text)
+        assert config.storage.lvm == []
+        assert any(p.mount == "/" for p in config.storage.partitions)
+
+    def test_no_root_rejected(self):
+        bad = CUSTOM.replace("lv: root, size: 40GB, mount: /,",
+                             "lv: root, size: 40GB, mount: /srv,")
+        _expect_error(bad, "exactly one '/' mount")
+
+    def test_two_roots_rejected(self):
+        bad = CUSTOM.replace("lv: home, size: rest, mount: /home,",
+                             "lv: home, size: rest, mount: /,")
+        _expect_error(bad, "exactly one '/' mount")
+
+    def test_duplicate_mount_rejected(self):
+        bad = CUSTOM.replace("lv: home, size: rest, mount: /home,",
+                             "lv: home, size: rest, mount: /boot/efi,")
+        _expect_error(bad, "duplicate mount")
+
+    def test_two_rest_partitions_rejected(self):
+        bad = CUSTOM.replace("- {size: 2GB, mount: swap, filesystem: swap}",
+                             "- {size: rest, mount: /srv, filesystem: ext4}")
+        _expect_error(bad, "one partition may use size: rest")
+
+    def test_pv_vg_without_volumes_rejected(self):
+        # add a PV for a VG that has no logical volumes
+        bad = CUSTOM.replace(
+            "    - {size: rest, lvm_pv: vg0}\n",
+            "    - {size: 1GB, lvm_pv: vgEmpty}\n"
+            "    - {size: rest, lvm_pv: vg0}\n")
+        _expect_error(bad, "no logical volumes")
+
+    def test_lvm_volume_without_pv_rejected(self):
+        bad = CUSTOM.replace("vg: vg0, lv: home", "vg: vgOther, lv: home")
+        _expect_error(bad, "no lvm_pv partition")
+
+    def test_esp_must_be_vfat_at_boot_efi(self):
+        bad = CUSTOM.replace(
+            "{size: 512MB, mount: /boot/efi, filesystem: vfat, flags: [esp]}",
+            "{size: 512MB, mount: /boot/efi, filesystem: ext4, flags: [esp]}")
+        _expect_error(bad, "esp partition must be filesystem: vfat")
+
+    def test_bad_filesystem_rejected(self):
+        bad = CUSTOM.replace("mount: /home, filesystem: ext4",
+                             "mount: /home, filesystem: reiserfs")
+        _expect_error(bad, "filesystem")
+
+    def test_plain_partition_needs_mount_and_fs(self):
+        bad = CUSTOM.replace("- {size: 2GB, mount: swap, filesystem: swap}",
+                             "- {size: 2GB, filesystem: ext4}")
+        _expect_error(bad, "needs both mount and filesystem")
+
+    def test_swap_mount_needs_swap_fs(self):
+        bad = CUSTOM.replace("- {size: 2GB, mount: swap, filesystem: swap}",
+                             "- {size: 2GB, mount: swap, filesystem: ext4}")
+        _expect_error(bad, "swap")
