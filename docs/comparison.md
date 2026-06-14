@@ -82,6 +82,7 @@ Legend: ✅ full, ◐ partial or preset-only, ✗ not supported.
 | Firewall config | ✅ | ✗ | ◐ | ✗ |
 | SELinux / AppArmor config | ✅ | ✗ | ◐ | ✗ |
 | Locale / timezone / keyboard | ✅ | ✅ | ✅ | ✅ |
+| Multiple keyboard layouts + supplementary locales | ✅ | ◐ | ✅ | ✅ (additional_layouts + toggle, additional_locales) |
 | Kernel cmdline / serial console | ✅ | ◐ | ◐ | ✅ |
 | OEM / first-boot user setup | ◐ | ✗ | ✗ | ✅ |
 | Security hardening add-on (OSCAP) | ✅ | ✗ | ✗ | ✗ |

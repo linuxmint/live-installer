@@ -313,6 +313,33 @@ class TestBuildSetup:
         assert setup.gptonefi is False
         assert setup.is_mint is False
 
+    def test_keyboard_multilayout_and_locales(self):
+        config = make_config(extra=textwrap.dedent("""\
+            keyboard:
+              layout: us
+              additional_layouts:
+                - {layout: ca, variant: fr}
+                - {layout: gr}
+              toggle: grp:alt_shift_toggle
+            additional_locales: [fr_CA.UTF-8, de_DE.UTF-8]
+        """))
+        setup = auto_installer.build_setup(
+            config, disk="/dev/vda", efi=False, is_mint=False)
+        # comma-joined XKB lists, primary first
+        assert setup.keyboard_layout == "us,ca,gr"
+        assert setup.keyboard_variant == ",fr,"
+        assert setup.keyboard_options == "grp:alt_shift_toggle"
+        # codeset-stripped, like the primary language
+        assert setup.additional_locales == ["fr_CA", "de_DE"]
+
+    def test_keyboard_single_layout_no_variant_string(self):
+        config = make_config()  # default keyboard, no extras
+        setup = auto_installer.build_setup(
+            config, disk="/dev/vda", efi=False, is_mint=False)
+        assert setup.keyboard_layout == "us"
+        assert setup.keyboard_variant == ""   # all-empty -> empty, not ","
+        assert setup.keyboard_options is None
+
     def test_lvm_on_luks_with_keyfile(self, tmp_path):
         keyfile = tmp_path / "luks.key"
         keyfile.write_text("sekrit-passphrase\n")

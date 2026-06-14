@@ -150,12 +150,13 @@ Keys that overlap with cloud-init use cloud-init's name and structure.
 | Key | Required | Description |
 |---|---|---|
 | `version` | yes | Schema version. Currently `1`. |
-| `locale` | yes | A locale string, e.g. `en_US.UTF-8` (cloud-init style, top level). |
+| `locale` | yes | The primary locale, e.g. `en_US.UTF-8` — sets `LANG` (cloud-init style, top level). |
+| `additional_locales` | no | Extra locales to also generate (e.g. `[fr_CA.UTF-8]`), available even though `LANG` stays `locale`. |
 | `timezone` | yes | IANA timezone, e.g. `America/Toronto` (top level). |
 | `users` | yes | At least one user; see [users](#users). |
 | `storage` | yes | Disk target and layout; see [storage](#storage). |
 | `hostname` | no | System hostname. Defaults to `mint` if omitted. |
-| `keyboard` | no | `model` (default `pc105`), `layout` (default `us`), `variant`. |
+| `keyboard` | no | `model` (default `pc105`), `layout` (default `us`), `variant`, plus `additional_layouts` (list of `{layout, variant}`) and a `toggle` to switch them; see [keyboard](#keyboard). |
 | `network` | no | Static IP / DNS / VLAN / wifi config (netplan v2 subset); see [network](#network). DHCP on all NICs if omitted. |
 | `packages` | no | Flat list of packages to install (cloud-init style). |
 | `package_remove` | no | Flat list of packages to remove (extension; cloud-init has no declarative remove). |
@@ -165,6 +166,31 @@ Keys that overlap with cloud-init use cloud-init's name and structure.
 | `oem` | no | `enabled`: leave the machine in OEM first-boot state. |
 | `on_failure` | no | Per-failure-mode policy; see [failure handling](#failure-handling). |
 | `logging` | no | `destination` (log file path) and `also_serial` (e.g. `ttyS0`). |
+
+### keyboard and locales
+
+`keyboard.layout`/`keyboard.variant` is the primary layout. Add more layouts
+to switch between with `additional_layouts`, and a `toggle` (an XKB switch
+option) to flip among them — the multi-layout case kickstart and autoinstall
+have long supported (e.g. an `en_CA` + `fr_CA` desktop):
+
+```yaml
+keyboard:
+  model: pc105
+  layout: us
+  additional_layouts:
+    - {layout: ca, variant: fr}
+  toggle: grp:alt_shift_toggle      # e.g. Alt+Shift switches layout
+
+additional_locales:                  # generated alongside the primary `locale`
+  - fr_CA.UTF-8
+```
+
+The layouts are written to `/etc/default/keyboard` as the comma-joined
+`XKBLAYOUT`/`XKBVARIANT` lists (primary first) with `XKBOPTIONS` set to the
+toggle. `toggle` is only valid when `additional_layouts` is non-empty.
+`additional_locales` are `locale-gen`'d so they are available system-wide,
+but `LANG` stays the primary `locale`.
 
 ### users
 

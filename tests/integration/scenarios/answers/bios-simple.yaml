@@ -4,10 +4,16 @@ version: 1
 hostname: lmde-test-01
 locale: en_US.UTF-8
 timezone: America/Toronto
+# Also generate fr_CA so multi-locale support is exercised end to end.
+additional_locales: [fr_CA.UTF-8]
 
 keyboard:
   model: pc105
   layout: us
+  # A second, switchable layout (us + ca/fr) with an explicit toggle.
+  additional_layouts:
+    - {layout: ca, variant: fr}
+  toggle: grp:alt_shift_toggle
 
 users:
   - name: testuser

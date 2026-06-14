@@ -341,3 +341,24 @@ class TestLuksCrypttab:
         cmd = "\n".join(runner.commands)
         assert "none" in cmd
         assert "cryptsetup-keys.d" not in cmd
+
+
+class TestLocaleAndKeyboard:
+    def test_setup_locale_generates_additional(self):
+        engine, runner = make_engine(language="en_CA",
+                                     additional_locales=["fr_CA", "de_DE"])
+        engine.setup_locale()
+        cmd = "\n".join(runner.commands)
+        assert 'echo "en_CA.UTF-8 UTF-8" >> /target/etc/locale.gen' in cmd
+        assert 'echo "fr_CA.UTF-8 UTF-8" >> /target/etc/locale.gen' in cmd
+        assert 'echo "de_DE.UTF-8 UTF-8" >> /target/etc/locale.gen' in cmd
+        assert "locale-gen" in cmd
+        # LANG stays the primary
+        assert "update-locale LANG=en_CA.UTF-8" in cmd
+
+    def test_setup_locale_dedups_primary(self):
+        engine, runner = make_engine(language="en_CA",
+                                     additional_locales=["en_CA"])
+        engine.setup_locale()
+        # primary listed once; the duplicate additional is skipped
+        assert "\n".join(runner.commands).count("en_CA.UTF-8 UTF-8") == 1
