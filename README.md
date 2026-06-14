@@ -2,7 +2,10 @@
 
 The installer used by Linux Mint and LMDE. It runs as a GTK wizard for
 interactive desktop installs, and can also run **unattended** from a YAML
-answer file for labs, fleets, and OEM/imaging pipelines.
+answer file for labs, fleets, and OEM/imaging pipelines — covering disk
+selection and custom partition layouts (LVM, btrfs subvolumes, LUKS), static
+networking (IPv4/IPv6, VLANs, wifi), apt repositories, and PXE/netboot
+delivery (local file, http(s), NFS, or TFTP).
 
 ## Layout
 
@@ -15,6 +18,9 @@ usr/lib/live-installer/        the installer
   auto_installer.py            unattended front-end (answer-file driven)
   schema.py                    answer-file schema + validation
   diskmatch.py                 stable-attribute disk selection
+  discovery.py                 netboot answer-file auto-discovery (mac/serial/uuid)
+  netconfig.py                 network: section -> NetworkManager keyfiles
+  pkgbackend.py                package backend (apt today; swappable)
   commandrunner.py             single shell-out boundary (logging, secrets)
 docs/automated-install.md      unattended-install user guide
 tests/                         unit + integration tests, and TESTING.md

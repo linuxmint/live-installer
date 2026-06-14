@@ -92,7 +92,8 @@ Legend: ✅ full, ◐ partial or preset-only, ✗ not supported.
 |---|---|---|---|---|
 | Local file on media | ✅ | ✅ | ✅ | ✅ |
 | HTTP(S) URL | ✅ | ✅ | ✅ | ✅ (HTTPS default, HTTP opt-in) |
-| NFS | ✅ | ✅ | ◐ | ✅ (cleartext, opt-in) |
+| NFS | ✅ | ✅ | ◐ | ✅ (v3/v4.2, IPv4/IPv6/hostname; cleartext, opt-in) |
+| TFTP | ✅ | ◐ | ✗ | ✅ (RFC 2347 negotiation + RFC 1350 fallback; cleartext, opt-in) |
 | Kernel cmdline trigger | ✅ | ✅ | ✅ | ✅ |
 | PXE / netboot install (no media) | ✅ | ✅ | ✅ | ✅ (BIOS + UEFI; IPv6 data path tested, IPv6 firmware-PXE n/a in CI) |
 | Per-machine by serial | ✅ | ◐ | ◐ | ✅ (auto-discovery by mac/serial/uuid) |
