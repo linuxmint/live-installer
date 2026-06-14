@@ -261,12 +261,16 @@ def build_setup(config, *, disk=None, efi=None, is_mint=None, insecure=False):
         # Hand the engine plain dicts; it does not import the schema.
         setup.custom_partitions = [
             {"size": p.size, "mount": p.mount, "filesystem": p.filesystem,
-             "flags": list(p.flags), "lvm_pv": p.lvm_pv}
+             "flags": list(p.flags), "lvm_pv": p.lvm_pv,
+             "subvolumes": [{"name": s.name, "mount": s.mount}
+                            for s in p.subvolumes]}
             for p in config.storage.partitions
         ]
         setup.custom_lvm = [
             {"vg": v.vg, "lv": v.lv, "size": v.size, "mount": v.mount,
-             "filesystem": v.filesystem}
+             "filesystem": v.filesystem,
+             "subvolumes": [{"name": s.name, "mount": s.mount}
+                            for s in v.subvolumes]}
             for v in config.storage.lvm
         ]
         # so write_mtab() runs when the custom layout uses LVM

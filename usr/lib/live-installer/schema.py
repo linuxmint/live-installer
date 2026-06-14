@@ -56,6 +56,7 @@ _MOUNT_RE = re.compile(r"^/[A-Za-z0-9._/-]*$")
 _FILESYSTEMS = ("ext4", "ext3", "ext2", "xfs", "btrfs", "vfat", "swap", "f2fs")
 _PART_FLAGS = ("esp", "bios_grub", "swap")
 _LV_NAME_RE = re.compile(r"^[A-Za-z0-9_][A-Za-z0-9_.+-]*$")
+_SUBVOL_RE = re.compile(r"^[A-Za-z0-9@._-][A-Za-z0-9@._/-]*$")
 
 
 class ConfigError(Exception):
@@ -233,15 +234,38 @@ def _check_mount(value):
     return value
 
 
+class Subvolume(_StrictModel):
+    """A btrfs subvolume (e.g. @ at /, @home at /home) on a btrfs partition
+    or logical volume."""
+    name: str
+    mount: str
+
+    @field_validator("name")
+    @classmethod
+    def _v_name(cls, value):
+        if not _SUBVOL_RE.match(value):
+            raise ValueError(f"{value!r} is not a valid btrfs subvolume name")
+        return value
+
+    _v_mount = field_validator("mount")(_check_mount)
+
+    @model_validator(mode="after")
+    def _consistency(self):
+        if not self.mount or self.mount == "swap":
+            raise ValueError("a subvolume needs an absolute mount point")
+        return self
+
+
 class CustomPartition(_StrictModel):
     """One partition in a custom layout. It is either mounted (mount +
-    filesystem), an LVM physical volume (lvm_pv), or a flag-only special
-    partition (e.g. bios_grub)."""
+    filesystem), a btrfs filesystem split into subvolumes, an LVM physical
+    volume (lvm_pv), or a flag-only special partition (e.g. bios_grub)."""
     size: str
     mount: str = None
     filesystem: str = None
     flags: list[str] = Field(default_factory=list)
     lvm_pv: str = None
+    subvolumes: list[Subvolume] = Field(default_factory=list)
 
     _v_size = field_validator("size")(_check_size)
     _v_fs = field_validator("filesystem")(_check_filesystem)
@@ -259,6 +283,14 @@ class CustomPartition(_StrictModel):
 
     @model_validator(mode="after")
     def _consistency(self):
+        if self.subvolumes:
+            if self.filesystem != "btrfs":
+                raise ValueError("subvolumes require filesystem: btrfs")
+            if self.mount or self.lvm_pv or "bios_grub" in self.flags:
+                raise ValueError(
+                    "a partition with subvolumes takes no mount/lvm_pv/"
+                    "bios_grub (the subvolumes provide the mounts)")
+            return self
         if self.lvm_pv is not None:
             if self.mount or self.filesystem:
                 raise ValueError(
@@ -269,8 +301,8 @@ class CustomPartition(_StrictModel):
                     "a bios_grub partition takes no mount/filesystem")
         elif not self.mount or not self.filesystem:
             raise ValueError(
-                "a partition needs both mount and filesystem (or lvm_pv, or "
-                "the bios_grub flag)")
+                "a partition needs both mount and filesystem (or lvm_pv, "
+                "subvolumes, or the bios_grub flag)")
         if "esp" in self.flags:
             if self.filesystem != "vfat" or self.mount != "/boot/efi":
                 raise ValueError(
@@ -289,6 +321,7 @@ class LvmVolume(_StrictModel):
     size: str
     mount: str = None
     filesystem: str = None
+    subvolumes: list[Subvolume] = Field(default_factory=list)
 
     _v_size = field_validator("size")(_check_size)
     _v_fs = field_validator("filesystem")(_check_filesystem)
@@ -303,6 +336,14 @@ class LvmVolume(_StrictModel):
 
     @model_validator(mode="after")
     def _consistency(self):
+        if self.subvolumes:
+            if self.filesystem != "btrfs":
+                raise ValueError("subvolumes require filesystem: btrfs")
+            if self.mount:
+                raise ValueError(
+                    "an LVM volume with subvolumes takes no mount (the "
+                    "subvolumes provide the mounts)")
+            return self
         if not self.mount or not self.filesystem:
             raise ValueError("an LVM volume needs both mount and filesystem")
         if (self.mount == "swap") != (self.filesystem == "swap"):
@@ -342,7 +383,9 @@ class Storage(_StrictModel):
             raise ValueError(
                 "layout: custom requires a non-empty 'partitions' list")
         mounts = ([p.mount for p in self.partitions if p.mount]
-                  + [v.mount for v in self.lvm if v.mount])
+                  + [sv.mount for p in self.partitions for sv in p.subvolumes]
+                  + [v.mount for v in self.lvm if v.mount]
+                  + [sv.mount for v in self.lvm for sv in v.subvolumes])
         if mounts.count("/") != 1:
             raise ValueError("custom layout needs exactly one '/' mount point")
         dupes = sorted({m for m in mounts
