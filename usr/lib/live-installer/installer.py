@@ -833,7 +833,15 @@ class InstallerEngine:
 
     def write_crypttab(self, path="/target/etc/crypttab"):
         if self.setup.luks:
-            self.runner.run(f"echo 'lvmmint   {self.get_blkid(self.auto_root_physical_partition)}   none   luks,discard,tries=3' >> {path}")
+            uuid = self.get_blkid(self.auto_root_physical_partition)
+            if self.setup.luks_rekey_on_first_boot:
+                # Auto-unlock the FIRST boot with the throwaway keyfile that the
+                # driver embeds in the initramfs; the first-boot rekey service
+                # then restores `none` (prompt) here and rebuilds the initramfs.
+                keyref = "/etc/cryptsetup-keys.d/cryptroot.key"
+                self.runner.run(f"echo 'lvmmint   {uuid}   {keyref}   luks,discard' >> {path}")
+            else:
+                self.runner.run(f"echo 'lvmmint   {uuid}   none   luks,discard,tries=3' >> {path}")
 
     def finish_installation(self, before_unmount_hook=None):
 
@@ -1054,6 +1062,10 @@ class Setup(object):
     passphrase2 = None
     lvm = False
     luks = False
+    # passphrase_source: prompt-on-first-boot — LUKS is created with a random
+    # throwaway key (auto-unlocks the first boot via a keyfile in the
+    # initramfs); a first-boot service then swaps in the operator's passphrase.
+    luks_rekey_on_first_boot = False
     layout = "simple"            # simple | lvm | lvm-on-luks | custom
     custom_partitions = []       # for layout: custom — list of partition dicts
     custom_lvm = []              # for layout: custom — list of LV dicts
@@ -1095,7 +1107,10 @@ class Setup(object):
                 print("luks: %s" % self.luks)
                 print("badblocks: %s" % self.badblocks)
                 print("lvm: %s" % self.lvm)
-                print("passphrase: %s - %s" % (self.passphrase1, self.passphrase2))
+                # Never log the LUKS passphrase (including the random
+                # first-boot-rekey key) — print_setup output is teed to the
+                # install log and the serial console.
+                print("passphrase: %s" % ("<set>" if self.passphrase1 else "<unset>"))
             if (not self.skip_mount):
                 print("target_disk: %s " % self.target_disk)
                 if self.gptonefi:
