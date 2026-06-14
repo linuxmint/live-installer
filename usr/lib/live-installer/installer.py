@@ -490,6 +490,11 @@ class InstallerEngine:
         os.system("swapoff -a")
         os.system("umount -R /target 2>/dev/null || true")
         if raid:
+            # mdadm must be present in the LIVE environment to build the arrays
+            # (it is reinstalled into the target later for boot). Not guaranteed
+            # on every live image, so make sure it is here first.
+            os.system("mdadm --version >/dev/null 2>&1 || "
+                      "apt-get install -y mdadm >/dev/null 2>&1 || true")
             os.system("mdadm --stop --scan 2>/dev/null || true")
 
         has_esp = any("esp" in p["flags"] for p in parts)
