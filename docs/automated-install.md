@@ -71,7 +71,7 @@ The installer runs in automated mode when **either** is present:
 | Local path | `/cdrom/install.yaml` | On the install media or any mounted filesystem. Zero infrastructure. |
 | HTTPS URL | `https://cfg.example.com/host.yaml` | For PXE / netboot. TLS required (see below). |
 | HTTP URL | `http://10.0.0.1/host.yaml` | Refused unless `live-installer.auto-insecure` is also on the cmdline (or `--insecure`). |
-| NFS URL | `nfs://10.0.0.1/srv/cfg/host.yaml` | The directory is mounted read-only and the file read from it. Cleartext, so refused unless `live-installer.auto-insecure` (or `--insecure`). |
+| NFS URL | `nfs://10.0.0.1/srv/cfg/host.yaml` | The directory is mounted read-only and the file read from it. The protocol version is negotiated (typically v4.2 down to v3); pin it with a `?vers=` query (`nfs://host/srv/host.yaml?vers=3` or `?vers=4.2`) for a version-restricted filer. IPv4, IPv6 (bracketed literal), and hostnames all work. Cleartext, so refused unless `live-installer.auto-insecure` (or `--insecure`). |
 | TFTP URL | `tftp://10.0.0.1/host.yaml` | Fetched with a built-in TFTP read client (no extra tooling), for PXE setups that already run a TFTP server. Negotiates RFC 2347 options (`blksize`/`tsize`) and falls back to plain RFC 1350 against option-unaware servers. Intended for small files (answer file, keyfile) — use HTTP for large payloads. Cleartext, so refused unless `live-installer.auto-insecure` (or `--insecure`). |
 | Auto-discovery | `auto:https://cfg.example.com/` | One entry for a whole fleet: the installer finds its own file from this machine's identity. See [auto-discovery](#auto-discovery-for-netboot). |
 
@@ -565,6 +565,29 @@ still worth protecting) and could tamper with the install in flight. Make
 the choice deliberately, per network — not as a reflex to silence the
 error. HTTP fetches still time out after 60 seconds, so a hung or hostile
 server cannot wedge the install indefinitely.
+
+## Schema versioning policy
+
+The answer file declares `version: 1`. The policy for evolving it (chosen to
+match the closest analogues — Ubuntu autoinstall, whose `version: 1` this
+mirrors, and cloud-init, which parses network-config `version: 1` and `2`
+side by side):
+
+- **Additive changes never bump the version.** New optional keys and sections
+  are added under `version: 1`. An older answer file keeps validating, since
+  the new keys default to off. This is the common case.
+- **A breaking change mints `version: 2`, and `version: 1` stays supported.**
+  If a field is ever renamed, restructured, or removed, that goes in a new
+  `version: 2` shape; the parser keeps a `version: 1` model and routes old
+  files to it. Both are accepted for an extended overlap, so no existing
+  answer file breaks on upgrade.
+- A removed-in-`v1` field would first be accepted with a deprecation warning
+  for a release before it moves to `v2`-only.
+
+In short: grow `v1` additively, and only fork to `v2` for genuinely breaking
+changes while continuing to parse `v1`. (If breaking changes ever become
+frequent, the next step would be an Ignition-style forward-translation tool
+that migrates an old file up to the current version automatically.)
 
 ## Limitations (v1)
 

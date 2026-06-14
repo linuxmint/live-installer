@@ -121,14 +121,19 @@ class TestFetchAnswerFile:
 
 class TestNfsFetch:
     @pytest.mark.parametrize("url,expected", [
-        ("nfs://host/export/dir/a.yaml", ("host", "/export/dir", "a.yaml")),
-        ("nfs://host:2049/export/a.yaml", ("host", "/export", "a.yaml")),
-        ("nfs://10.0.0.1/srv/cfg/host.yaml", ("10.0.0.1", "/srv/cfg", "host.yaml")),
+        ("nfs://host/export/dir/a.yaml", ("host", "/export/dir", "a.yaml", None)),
+        ("nfs://host:2049/export/a.yaml", ("host", "/export", "a.yaml", None)),
+        ("nfs://10.0.0.1/srv/cfg/host.yaml",
+         ("10.0.0.1", "/srv/cfg", "host.yaml", None)),
         # IPv6 literals: urlsplit strips brackets and any :port
         ("nfs://[2001:db8::1]/srv/cfg/host.yaml",
-         ("2001:db8::1", "/srv/cfg", "host.yaml")),
+         ("2001:db8::1", "/srv/cfg", "host.yaml", None)),
         ("nfs://[2001:db8::1]:2049/export/a.yaml",
-         ("2001:db8::1", "/export", "a.yaml")),
+         ("2001:db8::1", "/export", "a.yaml", None)),
+        # explicit protocol version
+        ("nfs://host/export/a.yaml?vers=3", ("host", "/export", "a.yaml", "3")),
+        ("nfs://[2001:db8::1]/export/a.yaml?vers=4.2",
+         ("2001:db8::1", "/export", "a.yaml", "4.2")),
     ])
     def test_parse_nfs_url(self, url, expected):
         assert auto_installer._parse_nfs_url(url) == expected
@@ -136,6 +141,30 @@ class TestNfsFetch:
     def test_parse_nfs_url_malformed(self):
         with pytest.raises(schema.ConfigError):
             auto_installer._parse_nfs_url("nfs://hostonly")
+
+    def test_parse_nfs_url_bad_vers(self):
+        with pytest.raises(schema.ConfigError) as exc:
+            auto_installer._parse_nfs_url("nfs://host/export/a.yaml?vers=5")
+        assert "vers" in str(exc.value)
+
+    def test_nfs_mount_passes_vers_option(self, monkeypatch):
+        captured = {}
+
+        def fake_run(argv, **kw):
+            captured["argv"] = argv
+            class R:  # noqa: D401 - minimal CompletedProcess stand-in
+                returncode = 0
+                stderr = ""
+            return R()
+        monkeypatch.setattr(auto_installer.subprocess, "run", fake_run)
+        monkeypatch.setattr(auto_installer.os, "rmdir", lambda p: None)
+        auto_installer._nfs_mount("host", "/export", vers="4.2")
+        opts = captured["argv"][captured["argv"].index("-o") + 1]
+        assert "vers=4.2" in opts
+        # default (no vers) must not inject a version
+        auto_installer._nfs_mount("host", "/export")
+        opts = captured["argv"][captured["argv"].index("-o") + 1]
+        assert "vers=" not in opts
 
     @pytest.mark.parametrize("host,export,expected", [
         ("host", "/export", "host:/export"),
@@ -153,7 +182,7 @@ class TestNfsFetch:
         (export / "a.yaml").write_text("version: 1\n")
         umounted = []
         monkeypatch.setattr(auto_installer, "_nfs_mount",
-                            lambda host, d: str(export))
+                            lambda host, d, vers=None: str(export))
         monkeypatch.setattr(auto_installer, "_nfs_umount",
                             lambda mp: umounted.append(mp))
         text = auto_installer.fetch_answer_file(
