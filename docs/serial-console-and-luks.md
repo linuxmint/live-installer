@@ -175,6 +175,31 @@ At boot: GRUB (on serial) → kernel (on serial, no plymouth) → initramfs
 cryptroot prompts `Please unlock disk lvmmint:` on `ttyS0` → operator (or
 harness) types the passphrase → LVM activates → root mounts → multi-user.
 
+## Prompt-on-first-boot rekey (serial)
+
+When `luks.passphrase_source: prompt-on-first-boot`, no passphrase is in the
+answer file at all: the installer formats LUKS with a random throwaway key and
+embeds it in the initramfs so the **first** boot unlocks unattended, then a
+one-shot service prompts for the real passphrase on the console — including the
+serial console when `serial_console` is set — and rekeys.
+
+The post-install step `_setup_luks_first_boot_rekey()` (in `auto_installer.py`)
+writes, into the target:
+
+- the keyfile at `/etc/cryptsetup-keys.d/cryptroot.key` (byte-exact, no trailing
+  newline) and the matching `crypttab` keyfile entry, plus the cryptsetup
+  initramfs hook so the key is carried into the initramfs;
+- a `li-luks-rekey` systemd one-shot, ordered `After=systemd-user-sessions`
+  and `Before=getty.target serial-getty@ttyS0.service`, with
+  `StandardInput=tty-force` / `TTYPath=/dev/console`, so its prompt lands on
+  the same console (tty0 *and* serial) as the boot.
+
+On that first boot the service uses a plain `read` on `/dev/console` to collect
+the passphrase, `luksAddKey`s it, `luksRemoveKey`s the throwaway key, rebuilds
+the initramfs (so the key is gone from `/boot`), removes itself, and reboots.
+Every subsequent boot is an ordinary cryptroot prompt as above. The
+`uefi-luks-prompt` integration scenario drives this over serial end to end.
+
 ## How the test exercises it
 
 `tests/integration/scenarios/uefi-lvm-luks.yaml` runs the whole path:

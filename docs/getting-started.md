@@ -170,10 +170,12 @@ mechanics and how to drive it over IPMI Serial-over-LAN.
 Complete, valid answer files live in
 [`tests/integration/scenarios/answers/`](../tests/integration/scenarios/answers/),
 covering each layout (`bios-simple`, `uefi-lvm`, `uefi-lvm-luks`, `custom`,
-`btrfs`) plus multi-disk selection, static networking, and netboot. They
-double as the integration-test fixtures, so they are guaranteed to match the
-current schema. Start from the one closest to what you want and run it
-through `--check`.
+`btrfs`) plus multi-disk selection, software RAID (`raid1-bios`,
+`raid5-lvm-bios`), a LUKS passphrase prompted on first boot
+(`luks-prompt`), flatpak apps (`flatpak`), static networking, and
+netboot. They double as the integration-test fixtures, so they are guaranteed
+to match the current schema. Start from the one closest to what you want and
+run it through `--check`.
 
 ## Reporting back
 
