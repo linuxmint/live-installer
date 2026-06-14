@@ -390,7 +390,8 @@ def cmdline_insecure(cmdline_path="/proc/cmdline"):
         return False
 
 
-def build_setup(config, *, disk=None, efi=None, is_mint=None, insecure=False):
+def build_setup(config, *, disk=None, disks=None, efi=None, is_mint=None,
+                insecure=False):
     """Map a validated AutoInstallConfig onto the engine's Setup object.
 
     disk/efi/is_mint are injectable for tests; by default the disk is
@@ -437,7 +438,7 @@ def build_setup(config, *, disk=None, efi=None, is_mint=None, insecure=False):
         # Hand the engine plain dicts; it does not import the schema.
         setup.custom_partitions = [
             {"size": p.size, "mount": p.mount, "filesystem": p.filesystem,
-             "flags": list(p.flags), "lvm_pv": p.lvm_pv,
+             "flags": list(p.flags), "lvm_pv": p.lvm_pv, "raid": p.raid,
              "subvolumes": [{"name": s.name, "mount": s.mount}
                             for s in p.subvolumes]}
             for p in config.storage.partitions
@@ -448,6 +449,13 @@ def build_setup(config, *, disk=None, efi=None, is_mint=None, insecure=False):
              "subvolumes": [{"name": s.name, "mount": s.mount}
                             for s in v.subvolumes]}
             for v in config.storage.lvm
+        ]
+        setup.custom_raid = [
+            {"name": a.name, "level": a.level, "metadata": a.metadata,
+             "mount": a.mount, "filesystem": a.filesystem, "lvm_pv": a.lvm_pv,
+             "subvolumes": [{"name": s.name, "mount": s.mount}
+                            for s in a.subvolumes]}
+            for a in config.storage.raid
         ]
         # so write_mtab() runs when the custom layout uses LVM
         setup.lvm = bool(setup.custom_lvm)
@@ -479,7 +487,23 @@ def build_setup(config, *, disk=None, efi=None, is_mint=None, insecure=False):
                 "'prompt-on-first-boot')"
             )
 
-    setup.disk = disk or diskmatch.resolve_disk(config.storage.target.match)
+    if config.storage.disks:
+        # Multi-disk (RAID): resolve each match to a distinct disk.
+        if disks is not None:
+            setup.disks = list(disks)
+        else:
+            setup.disks = []
+            for entry in config.storage.disks:
+                resolved = diskmatch.resolve_disk(entry.match)
+                if resolved in setup.disks:
+                    raise diskmatch.DiskMatchError(
+                        f"storage.disks entries resolve to the same disk "
+                        f"({resolved}); each must select a distinct disk")
+                setup.disks.append(resolved)
+        setup.disk = setup.disks[0]
+    else:
+        setup.disk = disk or diskmatch.resolve_disk(config.storage.target.match)
+        setup.disks = [setup.disk]
     setup.diskname = os.path.basename(setup.disk)
     setup.grub_device = setup.disk
     setup.gptonefi = partitioning.is_efi_supported() if efi is None else efi

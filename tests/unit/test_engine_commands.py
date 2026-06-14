@@ -362,3 +362,60 @@ class TestLocaleAndKeyboard:
         engine.setup_locale()
         # primary listed once; the duplicate additional is skipped
         assert "\n".join(runner.commands).count("en_CA.UTF-8 UTF-8") == 1
+
+
+class TestRaidEngine:
+    def _part(self, **kw):
+        base = {"size": "1GB", "mount": None, "filesystem": None, "flags": [],
+                "lvm_pv": None, "raid": None, "subvolumes": []}
+        base.update(kw)
+        return base
+
+    def test_create_raid_command_sequence(self, monkeypatch):
+        engine, runner = make_engine(
+            automated=True, disks=["/dev/vda", "/dev/vdb", "/dev/vdc"],
+            gptonefi=False,
+            custom_partitions=[
+                self._part(size="1GB", raid="md0"),
+                self._part(size="rest", raid="md1"),
+            ],
+            custom_raid=[
+                {"name": "md0", "level": 1, "metadata": "1.2", "mount": "/boot",
+                 "filesystem": "ext4", "lvm_pv": None, "subvolumes": []},
+                {"name": "md1", "level": 5, "metadata": "1.2", "mount": None,
+                 "filesystem": None, "lvm_pv": "vg0", "subvolumes": []},
+            ],
+            custom_lvm=[
+                {"vg": "vg0", "lv": "root", "size": "rest", "mount": "/",
+                 "filesystem": "ext4", "subvolumes": []},
+            ])
+        engine.set_progress_hook(lambda *a: None)
+        engine.do_mount = lambda *a: None
+        sys_cmds = []
+        monkeypatch.setattr(installer.os, "system",
+                            lambda cmd: sys_cmds.append(cmd) or 0)
+        monkeypatch.setattr(installer.time, "sleep", lambda *a: None)
+        monkeypatch.setattr(installer.os.path, "exists", lambda p: True)
+        fake_dev = type("D", (), {"getLength": lambda self, u: 100 * 10**9,
+                                  "sectorSize": 512})()
+        monkeypatch.setattr(installer.parted, "getDevice", lambda p: fake_dev,
+                            raising=False)
+        monkeypatch.setattr(installer.partitioning,
+                            "get_device_naming_scheme_prefix", lambda p: "")
+        engine._create_custom_partitions()
+        cmds = "\n".join(runner.commands)
+        # md0 = RAID1 over the 1GB member on each of the 3 disks
+        assert ("mdadm --create --run --verbose /dev/md0 --level=1 "
+                "--metadata=1.2 --raid-devices=3 /dev/vda1 /dev/vdb1 /dev/vdc1"
+                in cmds)
+        # md1 = RAID5 over the rest member, used as an LVM PV
+        assert ("--level=5 --metadata=1.2 --raid-devices=3 "
+                "/dev/vda2 /dev/vdb2 /dev/vdc2" in cmds)
+        assert "pvcreate -y /dev/md1" in cmds
+        assert "vgcreate -y vg0 /dev/md1" in cmds
+        assert "mkfs.ext4 -F /dev/md0" in cmds        # /boot on md0
+        # every disk got a label + the raid partition flag
+        assert sum(1 for c in sys_cmds if "mklabel" in c) == 3
+        assert any("set 1 raid on" in c for c in sys_cmds)
+        assert ("/dev/vg0/root", "/", "ext4", "") in engine.auto_mounts
+        assert ("/dev/md0", "/boot", "ext4", "") in engine.auto_mounts

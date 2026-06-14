@@ -475,50 +475,93 @@ class InstallerEngine:
 
     def _create_custom_partitions(self):
         """Automated install of an explicit partition layout (layout: custom):
-        a list of partitions (some of which may be LVM PVs) plus logical
-        volumes. Builds self.auto_mounts = [(device, mount, filesystem), ...],
-        which the mount step and write_fstab then drive."""
-        device_path = self.setup.disk
-        prefix = partitioning.get_device_naming_scheme_prefix(device_path)
-        disk_device = parted.getDevice(device_path)
+        a list of partitions (some of which may be LVM PVs or RAID members)
+        plus md arrays and logical volumes, across one or more disks. Builds
+        self.auto_mounts = [(device, mount, filesystem, subvol), ...], which the
+        mount step and write_fstab then drive."""
+        disks = self.setup.disks or [self.setup.disk]
         parts = self.setup.custom_partitions
         lvm = self.setup.custom_lvm
+        raid = self.setup.custom_raid
         self._check_layout_matches_firmware(parts)
 
-        if self.setup.badblocks:
-            self.update_progress(25, False, False, _("Filling disk with random data (please be patient, this can take hours...)"))
-            self.runner.run("badblocks -c 10240 -s -w -t random -v %s" % device_path)
-
-        self.update_progress(25, False, False, _("Creating partitions on %s") % device_path)
-        print(" --> Creating custom partitions on %s" % device_path)
+        self.update_progress(25, False, False, _("Creating partitions"))
+        print(" --> Creating custom partitions on %s" % ", ".join(disks))
         os.system("swapoff -a")
         os.system("umount -R /target 2>/dev/null || true")
+        if raid:
+            os.system("mdadm --stop --scan 2>/dev/null || true")
 
         has_esp = any("esp" in p["flags"] for p in parts)
-        use_gpt = (has_esp or self.setup.gptonefi
-                   or disk_device.getLength('B') > 2**32 * .9 * disk_device.sectorSize)
-        label = "gpt" if use_gpt else "msdos"
-        if os.system("parted -s %s mklabel %s" % (device_path, label)) != 0:
-            raise Exception(_("The partition table couldn't be written for %s. Restart the computer and try again.") % device_path)
+        # Partition every disk identically (RAID members and mirrored ESP/boot
+        # live on each disk). part_paths[(disk_index, part_number)] -> device.
+        part_paths = {}
+        for di, device_path in enumerate(disks):
+            prefix = partitioning.get_device_naming_scheme_prefix(device_path)
+            disk_device = parted.getDevice(device_path)
+            if self.setup.badblocks:
+                self.runner.run("badblocks -c 10240 -s -w -t random -v %s" % device_path)
+            # Clear any stale md/fs signatures so mklabel/mdadm start clean.
+            os.system("wipefs -a %s 2>/dev/null || true" % device_path)
+            use_gpt = (has_esp or self.setup.gptonefi
+                       or disk_device.getLength('B') > 2**32 * .9 * disk_device.sectorSize)
+            label = "gpt" if use_gpt else "msdos"
+            if os.system("parted -s %s mklabel %s" % (device_path, label)) != 0:
+                raise Exception(_("The partition table couldn't be written for %s. Restart the computer and try again.") % device_path)
+            run_parted = lambda cmd, dp=device_path: os.system(
+                'parted --script --align optimal %s %s ; sync' % (dp, cmd))
+            start_mb = 2
+            for num, part in enumerate(parts, 1):
+                size = part["size"]
+                end = "100%" if size == "rest" else "%dMB" % (
+                    start_mb + self._size_to_mb(size))
+                run_parted("mkpart primary %dMB %s" % (start_mb, end))
+                part_path = "%s%s%d" % (device_path, prefix, num)
+                self._wait_for_node(part_path)
+                for flag in part["flags"]:
+                    if flag == "esp":
+                        run_parted("set %d esp on" % num)
+                        run_parted("set %d boot on" % num)
+                    elif flag == "bios_grub":
+                        run_parted("set %d bios_grub on" % num)
+                if part.get("raid"):
+                    run_parted("set %d raid on" % num)
+                part_paths[(di, num)] = part_path
+                if size != "rest":
+                    start_mb += self._size_to_mb(size) + 1
 
-        run_parted = lambda cmd: os.system(
-            'parted --script --align optimal %s %s ; sync' % (device_path, cmd))
-        mounts = []        # (device, mount, filesystem)
+        mounts = []        # (device, mount, filesystem, subvol)
         pvs_by_vg = {}     # vg name -> [device path]
-        start_mb = 2
+
+        # Assemble the md arrays over their member partitions (one per disk).
+        for array in raid:
+            members = [part_paths[(di, num)]
+                       for di in range(len(disks))
+                       for num, part in enumerate(parts, 1)
+                       if part.get("raid") == array["name"]]
+            mddev = "/dev/%s" % array["name"]
+            print(" --> Creating RAID%s %s over %s" % (array["level"], mddev, " ".join(members)))
+            self.runner.run(
+                "yes | mdadm --create --run --verbose %s --level=%s "
+                "--metadata=%s --raid-devices=%d %s"
+                % (mddev, array["level"], array["metadata"], len(members),
+                   " ".join(members)))
+            self._wait_for_node(mddev)
+            if array.get("lvm_pv"):
+                self.runner.run("pvcreate -y %s" % mddev)
+                pvs_by_vg.setdefault(array["lvm_pv"], []).append(mddev)
+            elif array.get("subvolumes"):
+                mounts.extend(self._btrfs_subvol_mounts(mddev, array["subvolumes"]))
+            else:
+                self._format_device(array["filesystem"], mddev)
+                mounts.append((mddev, array["mount"], array["filesystem"], ""))
+
+        # Non-RAID partitions are used from the first disk (the ESP/boot copies
+        # on the other disks exist only for bootloader redundancy).
         for num, part in enumerate(parts, 1):
-            size = part["size"]
-            end = "100%" if size == "rest" else "%dMB" % (
-                start_mb + self._size_to_mb(size))
-            run_parted("mkpart primary %dMB %s" % (start_mb, end))
-            part_path = "%s%s%d" % (device_path, prefix, num)
-            self._wait_for_node(part_path)
-            for flag in part["flags"]:
-                if flag == "esp":
-                    run_parted("set %d esp on" % num)
-                    run_parted("set %d boot on" % num)
-                elif flag == "bios_grub":
-                    run_parted("set %d bios_grub on" % num)
+            if part.get("raid"):
+                continue
+            part_path = part_paths[(0, num)]
             if part.get("lvm_pv"):
                 self.runner.run("pvcreate -y %s" % part_path)
                 pvs_by_vg.setdefault(part["lvm_pv"], []).append(part_path)
@@ -527,8 +570,6 @@ class InstallerEngine:
             elif "bios_grub" not in part["flags"]:
                 self._format_device(part["filesystem"], part_path)
                 mounts.append((part_path, part["mount"], part["filesystem"], ""))
-            if size != "rest":
-                start_mb += self._size_to_mb(size) + 1
 
         for vg, pvs in pvs_by_vg.items():
             self.runner.run("vgcreate -y %s %s" % (vg, " ".join(pvs)))
@@ -916,12 +957,32 @@ class InstallerEngine:
                 f.write('GRUB_CMDLINE_LINUX="cryptdevice=%s:lvmmint root=/dev/mapper/lvmmint-root resume=/dev/mapper/lvmmint-swap"\n' % self.get_blkid(self.auto_root_physical_partition))
             self.do_run_in_chroot("echo 'w /sys/power/disk - - - - shutdown' > /etc/tmpfiles.d/encrypted-swap.conf")
 
+        # Software RAID: bake the array config + modules into the initramfs so
+        # the root array assembles at boot.
+        if getattr(self.setup, "custom_raid", None):
+            print(" --> Configuring software RAID for boot")
+            self.do_run_in_chroot(
+                "DEBIAN_FRONTEND=noninteractive apt-get install -y mdadm")
+            self.do_run_in_chroot("mkdir -p /etc/mdadm")
+            self.do_run_in_chroot(
+                "mdadm --detail --scan >> /etc/mdadm/mdadm.conf")
+            for module in ("md_mod", "raid0", "raid1", "raid456", "raid10"):
+                self.do_run_in_chroot(
+                    "echo %s >> /etc/initramfs-tools/modules" % module)
+
         # write MBR (grub)
         print(" --> Configuring Grub")
         if(self.setup.grub_device is not None):
             self.update_progress(80, False, False, _("Installing bootloader"))
             print(" --> Running grub-install")
-            self.do_run_in_chroot("grub-install --force %s" % self.setup.grub_device)
+            # On a RAID install, put the bootloader on EVERY member disk so the
+            # machine still boots if one disk fails.
+            grub_targets = (self.setup.disks
+                            if getattr(self.setup, "custom_raid", None)
+                            and len(self.setup.disks) > 1
+                            else [self.setup.grub_device])
+            for target in grub_targets:
+                self.do_run_in_chroot("grub-install --force %s" % target)
             # Remove memtest86+ package (it provides multiple memtest unwanted grub entries)
             self.do_run_in_chroot("apt-get remove --purge --yes --force-yes memtest86+")
             #fix not add windows grub entry
@@ -1079,6 +1140,7 @@ class Setup(object):
     layout = "simple"            # simple | lvm | lvm-on-luks | custom
     custom_partitions = []       # for layout: custom — list of partition dicts
     custom_lvm = []              # for layout: custom — list of LV dicts
+    custom_raid = []             # for layout: custom — list of md-array dicts
     badblocks = False
     target_disk = None
     gptonefi = False
