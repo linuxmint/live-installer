@@ -964,3 +964,54 @@ class TestEap:
                "          auth: {method: peap, ca-certificate: /c, identity: u,"
                " password: p, phase2-auth: pap}\n")
         _expect_error(net, "either a WPA-PSK password or EAP")
+
+
+SNAP_BTRFS = textwrap.dedent("""\
+    version: 1
+    locale: en_US.UTF-8
+    timezone: America/Toronto
+    users:
+      - {name: a, passwd: "$6$rounds=4096$s$h"}
+    storage:
+      target: {match: {first-non-removable: true}}
+      layout: custom
+      partitions:
+        - {size: 512MB, mount: /boot/efi, filesystem: vfat, flags: [esp]}
+        - size: rest
+          filesystem: btrfs
+          subvolumes:
+            - {name: "@", mount: /}
+            - {name: "@home", mount: /home}
+""")
+
+
+class TestSnapshots:
+    def test_valid_on_btrfs(self):
+        config = parse_config(
+            SNAP_BTRFS + "snapshots:\n  schedule: {boot: true, daily: 5}\n"
+            "  initial_snapshot: true\n")
+        assert config.snapshots.backend == "timeshift-btrfs"
+        assert config.snapshots.schedule.daily == 5
+        assert config.snapshots.initial_snapshot is True
+
+    def test_absent_is_none(self):
+        assert parse_config(SNAP_BTRFS).snapshots is None
+
+    def test_btrfs_backend_on_ext4_rejected(self):
+        # The cross-validation guard: enabling timeshift-btrfs without a btrfs
+        # root is the silent-failure class we refuse at validation time.
+        _expect_error(VALID_MINIMAL + "snapshots: {enabled: true}\n",
+                      "btrfs root")
+
+    def test_disabled_snapshots_skip_cross_check(self):
+        config = parse_config(VALID_MINIMAL + "snapshots: {enabled: false}\n")
+        assert config.snapshots.enabled is False
+
+    def test_unsupported_backend_rejected(self):
+        _expect_error(
+            SNAP_BTRFS + "snapshots: {backend: timeshift-rsync}\n",
+            "only backend: timeshift-btrfs")
+
+    def test_negative_count_rejected(self):
+        _expect_error(
+            SNAP_BTRFS + "snapshots:\n  schedule: {daily: -1}\n", ">= 0")

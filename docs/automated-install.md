@@ -167,6 +167,7 @@ Keys that overlap with cloud-init use cloud-init's name and structure.
 | `kernel` | no | `cmdline_extra` and `serial_console`; see [kernel](#kernel). |
 | `oem` | no | `enabled`: leave the machine in OEM first-boot state. |
 | `drivers` | no | `install: true` installs recommended proprietary/DKMS drivers; see [drivers](#drivers). |
+| `snapshots` | no | Configure Timeshift snapshots on a btrfs root; see [snapshots](#snapshots). |
 | `on_failure` | no | Per-failure-mode policy; see [failure handling](#failure-handling). |
 | `logging` | no | `destination` (log file path) and `also_serial` (e.g. `ttyS0`). |
 
@@ -613,6 +614,37 @@ Machine Owner Key that must be **enrolled interactively at the next boot**
 universal SecureBoot limitation, not specific to this installer, and even
 autoinstall's `drivers:` hits it. On SecureBoot machines, expect a one-time
 manual MOK enrollment, or disable SecureBoot.
+
+### snapshots
+
+Configure **Timeshift** at install time, on a btrfs root:
+
+```yaml
+snapshots:
+  enabled: true
+  backend: timeshift-btrfs    # v1: the only backend
+  schedule:                   # tool-neutral; counts are how many to keep
+    boot: true
+    daily: 5
+    weekly: 3
+    monthly: 0
+  initial_snapshot: false     # take one on first boot
+```
+
+**Requires a btrfs `@`/`@home` root** (i.e. `layout: custom` with a btrfs root
+split into `@` at `/` and `@home` at `/home`). This is **cross-validated
+against `storage`**: enabling `timeshift-btrfs` without that layout is rejected
+at validation time, so a config can't install and then silently fail to make
+snapshots.
+
+The installer writes `/etc/timeshift/timeshift.json` (installing `timeshift`
+first if needed) before the system is unmounted; a self-removing first-boot
+service then registers Timeshift's schedule and takes the optional initial
+snapshot (Timeshift wants a booted system to wire its timers). Only
+`timeshift-btrfs` exists in v1 — the backend is behind a seam so an rsync or
+Snapper backend, and `backend: auto`, can be added later without a schema
+change. (The exact `timeshift.json` keys can vary across Timeshift releases;
+the format is verified by an integration test against the shipped Timeshift.)
 
 ### late_commands
 

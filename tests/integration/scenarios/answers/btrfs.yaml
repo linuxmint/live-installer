@@ -34,6 +34,16 @@ storage:
 
 packages: [openssh-server]
 
+# Configure Timeshift on the btrfs @/@home root (the cross-validation requires
+# this layout). Exercises the timeshift.json render against the real Timeshift.
+snapshots:
+  enabled: true
+  backend: timeshift-btrfs
+  schedule:
+    boot: true
+    daily: 5
+    weekly: 3
+
 on_failure:
   partition_mismatch: abort
   network_unavailable: continue

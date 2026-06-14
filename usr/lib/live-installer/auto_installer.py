@@ -40,6 +40,7 @@ import mint_detect
 import netconfig
 import pkgbackend
 import schema
+import snapshotbackend
 from commandrunner import CommandRunner
 
 FINAL_MARKER = "Automated installation complete"
@@ -715,6 +716,17 @@ class HeadlessDriver:
             for var in ("http_proxy", "https_proxy", "HTTP_PROXY", "HTTPS_PROXY"):
                 f.write("%s=%s\n" % (var, proxy))
 
+    def _apply_snapshots(self):
+        # Configure Timeshift (snapshots: timeshift-btrfs). The schema's
+        # cross-validation already guaranteed a btrfs @/@home root. Runs after
+        # packages so apt is ready to install timeshift if needed.
+        snaps = self.config.snapshots
+        if snaps is None or not snaps.enabled:
+            return
+        backend = snapshotbackend.get_snapshot_backend(
+            self.config, self.runner, self._policy, self.log)
+        backend.apply(snaps, self.config.storage)
+
     def _apply_drivers(self):
         # autoinstall's drivers: {install: true} — install recommended
         # proprietary/DKMS drivers via ubuntu-drivers (from
@@ -977,6 +989,8 @@ class HeadlessDriver:
                 or self.config.proxy is not None
                 or self.config.ca_certs is not None
                 or self.config.drivers.install
+                or (self.config.snapshots is not None
+                    and self.config.snapshots.enabled)
             )
 
             def post_install_hook():
@@ -987,6 +1001,7 @@ class HeadlessDriver:
                 self._apply_ca_certs()
                 self._apply_packages()
                 self._apply_drivers()
+                self._apply_snapshots()
                 self._apply_network()
                 self._setup_luks_first_boot_rekey(setup)
                 self._regenerate_initramfs_if_luks()
