@@ -330,10 +330,47 @@ points; at most one `rest` per disk and per VG; every `lvm_pv` VG must
 have logical volumes and vice versa; logical-volume names are unique within
 each VG; an `esp` partition must be `vfat` at `/boot/efi`, and a `/boot/efi`
 partition must carry the `esp` flag. Filesystems: `ext4`/`ext3`/`ext2`,
-`xfs`, `btrfs`, `vfat`, `f2fs`, `swap`. Software RAID is not in custom
-layouts yet. (One firmware rule can only be checked at install time, not by
-the schema: an `esp` partition on a BIOS machine, or a `bios_grub` partition
-on a UEFI machine, is rejected by the engine before any partition is created.)
+`xfs`, `btrfs`, `vfat`, `f2fs`, `swap`. (One firmware rule can only be checked
+at install time, not by the schema: an `esp` partition on a BIOS machine, or a
+`bios_grub` partition on a UEFI machine, is rejected by the engine before any
+partition is created.)
+
+#### Software RAID
+
+For redundancy, a custom layout can span multiple disks and assemble md
+arrays. Select the disks with a `disks:` list (instead of a single `target:`),
+mark member partitions with `raid: <array>`, and define each array under
+`raid:`. An array is then mounted, used as an LVM PV, or split into btrfs
+subvolumes — just like a partition. Members are the same partition replicated
+on every disk, so the device count equals the number of disks.
+
+```yaml
+storage:
+  layout: custom
+  disks:                               # selected by stable attribute, as always
+    - {match: {by-id: "...diskA*"}}
+    - {match: {by-id: "...diskB*"}}
+    - {match: {by-id: "...diskC*"}}
+  partitions:
+    - {size: 1GB,  raid: md0}          # one member per disk
+    - {size: rest, raid: md1}
+  raid:
+    - {name: md0, level: 1, mount: /boot, filesystem: ext4}   # mirror
+    - {name: md1, level: 5, lvm_pv: vg0}                       # RAID5 as an LVM PV
+  lvm:
+    - {vg: vg0, lv: root, size: rest, mount: /, filesystem: ext4}
+```
+
+Levels `0`, `1`, `5`, and `10` are supported (`metadata` defaults to `1.2`).
+Validation enforces the minimum disk count per level (2 for 0/1, 3 for 5, 4
+for 10), that every member references a defined array and vice versa, and that
+RAID requires `disks:` (single-disk `target:` and `disks:` are mutually
+exclusive). The installer creates each array with `mdadm`, writes
+`/etc/mdadm/mdadm.conf` and the RAID initramfs modules so the root array
+assembles at boot, and **installs GRUB to every member disk** so the machine
+still boots if one disk fails. Non-RAID partitions (e.g. an ESP) are used from
+the first disk; the copies on the other disks exist only for that bootloader
+redundancy.
 
 ### network
 
@@ -798,7 +835,8 @@ that migrates an old file up to the current version automatically.)
 ## Limitations (v1)
 
 - Custom partition layouts cover explicit partitions, custom LVM, and
-  btrfs subvolumes; software RAID is not supported yet.
+  btrfs subvolumes, and software RAID (md levels 0/1/5/10, LVM-on-RAID,
+  multi-disk via `disks:`).
 - `network:` covers static IPv4/IPv6, gateways, DNS, routes, 802.1Q VLANs,
   wifi (WPA-PSK / open), and 802.1X/EAP (wired + WPA-Enterprise; certs by
   reference) (netplan v2 subset); bonds and bridges are not modelled yet.
