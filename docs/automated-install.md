@@ -156,6 +156,7 @@ Keys that overlap with cloud-init use cloud-init's name and structure.
 | `storage` | yes | Disk target and layout; see [storage](#storage). |
 | `hostname` | no | System hostname. DHCP/default if omitted. |
 | `keyboard` | no | `model` (default `pc105`), `layout` (default `us`), `variant`. |
+| `network` | no | Static IP / DNS / VLAN config (netplan v2 subset); see [network](#network). DHCP on all NICs if omitted. |
 | `packages` | no | Flat list of packages to install (cloud-init style). |
 | `package_remove` | no | Flat list of packages to remove (extension; cloud-init has no declarative remove). |
 | `repositories` | no | Package repositories to add; see [repositories](#repositories). |
@@ -276,6 +277,56 @@ have logical volumes and vice versa. Filesystems: `ext4`/`ext3`/`ext2`,
 `xfs`, `btrfs`, `vfat`, `f2fs`, `swap`. Software RAID is not in custom
 layouts yet.
 
+### network
+
+Configures the **installed** system's networking. With no `network:` section
+every NIC is left to NetworkManager's default DHCP (the live session's own
+networking is never touched). The schema is a subset of netplan's v2 format —
+the same key names and structure — but it is rendered directly to
+NetworkManager keyfiles in `/etc/NetworkManager/system-connections/` (mode
+0600). It does **not** depend on the `netplan` binary, which LMDE/Debian does
+not ship; this mirrors how cloud-init renders its own Network Config v2 to the
+NetworkManager backend on Debian-family systems.
+
+```yaml
+network:
+  version: 2
+  ethernets:
+    lan0:
+      # Select the device by MAC (survives kernel renaming) or by name.
+      match: {macaddress: "52:54:00:aa:bb:01"}
+      addresses: [192.168.50.10/24, 2001:db8:50::10/64]   # dual-stack
+      gateway4: 192.168.50.1
+      gateway6: 2001:db8:50::1
+      nameservers:
+        addresses: [192.168.50.53, 2001:db8:50::53]
+        search: [lab.example]
+      routes:
+        - {to: 10.0.0.0/8, via: 192.168.50.254}           # optional extra route
+  vlans:
+    vlan50:
+      id: 50            # 802.1Q tag, 0..4094
+      link: lan0        # parent interface id
+      addresses: [10.50.0.5/24]
+```
+
+**ethernets** is a map of interface id → config. The id is the interface name
+unless a `match` is given: `match.macaddress` binds by hardware address (the
+robust choice for a mixed fleet, since the kernel name is unpredictable),
+`match.name` binds by interface name. **vlans** is a map of id → config with
+an `id` (the 802.1Q tag) and a `link` (the parent ethernet/vlan id).
+
+Each interface takes: `dhcp4`/`dhcp6` (default false), `addresses` (a list of
+`IP/prefix`, IPv4 and/or IPv6), `gateway4`/`gateway6`, `nameservers`
+(`addresses` + `search`), and `routes` (`to` is `default` or a CIDR, `via` is
+the next hop, optional `metric`). Per family: DHCP → NM `auto`; a static
+address → `manual`; neither → IPv4 `disabled` / IPv6 `link-local`. So a NIC
+with only an IPv4 address gets no global IPv6, and `dhcp6: true` selects
+SLAAC/DHCPv6 (`auto`). Validation rejects addresses without a prefix length,
+gateways of the wrong family or with no matching address, routes whose `via`
+family disagrees with `to`, VLAN ids outside 0..4094, and VLAN links that do
+not name a defined interface. Bonds and bridges are not modelled yet.
+
 ### kernel
 
 ```yaml
@@ -375,6 +426,7 @@ A complete, runnable answer file for each layout lives under
 | `bios-multi-disk.yaml` | Selecting one disk out of several by `by-id` |
 | `custom.yaml` | Custom layout: explicit ESP + swap partitions and a custom LVM vg with root/home |
 | `btrfs.yaml` | Custom layout: btrfs root split into `@` (/) and `@home` (/home) subvolumes |
+| `static-network.yaml` | Static dual-stack (IPv4+IPv6) IP + 802.1Q VLAN on a second NIC |
 
 These double as the integration-test fixtures, so they are guaranteed to
 stay valid against the current schema.
@@ -441,6 +493,8 @@ server cannot wedge the install indefinitely.
 
 - Custom partition layouts cover explicit partitions, custom LVM, and
   btrfs subvolumes; software RAID is not supported yet.
+- `network:` covers static IPv4/IPv6, gateways, DNS, routes, and 802.1Q
+  VLANs (netplan v2 subset); bonds and bridges are not modelled yet.
 - Config delivery is local file, http(s) URL, NFS, or TFTP, plus `auto`
   identity-based discovery; DNS-SRV discovery is not supported.
 - The config is data, not a program — no conditionals, loops, or

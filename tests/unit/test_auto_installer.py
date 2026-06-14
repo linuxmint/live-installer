@@ -1,6 +1,7 @@
 """Unit tests for the headless driver: config mapping, answer-file
 acquisition, and the post-engine failure-policy machinery."""
 
+import os
 import socket
 import textwrap
 import threading
@@ -382,6 +383,64 @@ class TestEnsureDns:
         resolv.write_text("nameserver dhcp\n")
         self._driver()._ensure_dns(str(resolv), str(tmp_path / "absent-*.conf"))
         assert resolv.read_text() == "nameserver dhcp\n"  # nothing to repair with
+
+
+class TestApplyNetwork:
+    NET = textwrap.dedent("""\
+        network:
+          version: 2
+          ethernets:
+            eth0:
+              addresses: [192.168.1.10/24, 2001:db8::5/64]
+              gateway4: 192.168.1.1
+              gateway6: 2001:db8::1
+          vlans:
+            vlan100:
+              id: 100
+              link: eth0
+              addresses: [10.100.0.5/24]
+    """)
+
+    def _run_apply(self, config, tmp_path, monkeypatch):
+        import builtins
+        driver, runner, _engine = make_driver(config)
+        target = tmp_path / "target/etc/NetworkManager/system-connections"
+        prefix = "/target/etc/NetworkManager/system-connections"
+        real_open = builtins.open
+        chmods = {}
+
+        def redir(path, *a, **k):
+            if isinstance(path, str) and path.startswith(prefix):
+                local = tmp_path / ("target" + path[len("/target"):])
+                local.parent.mkdir(parents=True, exist_ok=True)
+                return real_open(local, *a, **k)
+            return real_open(path, *a, **k)
+
+        monkeypatch.setattr(builtins, "open", redir)
+        monkeypatch.setattr(auto_installer.os, "chmod",
+                            lambda p, m: chmods.__setitem__(os.path.basename(p), m))
+        driver._apply_network()
+        return target, chmods, runner
+
+    def test_writes_keyfiles_0600(self, tmp_path, monkeypatch):
+        config = make_config(extra=self.NET)
+        target, chmods, runner = self._run_apply(config, tmp_path, monkeypatch)
+        names = sorted(p.name for p in target.iterdir())
+        assert names == ["eth0.nmconnection", "vlan100.nmconnection"]
+        # Keyfiles must be 0600 or NetworkManager ignores them.
+        assert chmods == {"eth0.nmconnection": 0o600,
+                          "vlan100.nmconnection": 0o600}
+        eth = (target / "eth0.nmconnection").read_text()
+        assert "address1=192.168.1.10/24" in eth
+        assert "address1=2001:db8::5/64" in eth
+        assert any("mkdir -p" in c and "system-connections" in c
+                   for c in runner.commands)
+
+    def test_no_network_section_writes_nothing(self, tmp_path, monkeypatch):
+        config = make_config()  # no network:
+        target, chmods, _runner = self._run_apply(config, tmp_path, monkeypatch)
+        assert not target.exists()
+        assert chmods == {}
 
 
 class TestHeadlessDriver:

@@ -207,6 +207,10 @@ def run_full(scenario, iso, workdir, scenario_dir):
             memory_mb=scenario["memory_mb"],
             cpus=scenario["cpus"],
         )
+        # Extra fixed-MAC NICs for static-IP/VLAN scenarios (bound by the
+        # answer file via match.macaddress). Present in both install and boot
+        # phases so the keyfile's target device exists when NM brings it up.
+        machine.extra_nics = list(scenario.get("extra_nics") or [])
         # Disk topology. Default: one unnamed disk. A scenario may instead
         # declare `disks: [{size_gb, serial?}, ...]`; the first is primary.
         disks = scenario.get("disks")
