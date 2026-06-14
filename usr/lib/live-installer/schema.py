@@ -46,6 +46,7 @@ error, never a guess.
 
 import ipaddress
 import re
+import urllib.parse
 
 import yaml
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator, model_validator
@@ -952,6 +953,7 @@ class AutoInstallConfig(_StrictModel):
     hostname: str = None
     keyboard: Keyboard = Field(default_factory=Keyboard)
     additional_locales: list[str] = Field(default_factory=list)  # also generated
+    proxy: str = None                                        # system http(s) proxy
     network: Network = None                                   # netplan v2 subset
     packages: list[str] = Field(default_factory=list)        # cloud-init: installs
     package_remove: list[str] = Field(default_factory=list)  # extension
@@ -982,6 +984,22 @@ class AutoInstallConfig(_StrictModel):
     def _v_additional_locales(cls, value):
         for loc in value:
             _check_locale(loc)
+        return value
+
+    @field_validator("proxy")
+    @classmethod
+    def _v_proxy(cls, value):
+        if value is None:
+            return value
+        parts = urllib.parse.urlsplit(value)
+        if parts.scheme not in ("http", "https") or not parts.hostname:
+            raise ValueError(
+                f"{value!r} is not a valid proxy URL (e.g. "
+                "http://proxy.example.com:3128)")
+        # apt.conf string and shell env values; forbid the chars that would
+        # let it break out of either quoting context.
+        if any(c in value for c in '"\'\n\r \t'):
+            raise ValueError("proxy URL must not contain quotes or whitespace")
         return value
 
     @field_validator("timezone")

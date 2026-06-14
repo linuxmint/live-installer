@@ -822,3 +822,25 @@ class TestKeyboardAndLocales:
         _expect_error(KBLOCALE.replace("  layout: us\n",
                                        "  layout: us\n  bogus: 1\n"),
                       "bogus")
+
+
+class TestProxy:
+    def test_valid(self):
+        config = parse_config(VALID_MINIMAL + "proxy: http://proxy.corp:3128\n")
+        assert config.proxy == "http://proxy.corp:3128"
+
+    def test_https_proxy(self):
+        config = parse_config(VALID_MINIMAL + "proxy: https://proxy.corp:8080\n")
+        assert config.proxy == "https://proxy.corp:8080"
+
+    def test_absent_is_none(self):
+        assert parse_config(VALID_MINIMAL).proxy is None
+
+    def test_bad_scheme_rejected(self):
+        _expect_error(VALID_MINIMAL + "proxy: ftp://proxy.corp\n", "valid proxy URL")
+
+    def test_no_host_rejected(self):
+        _expect_error(VALID_MINIMAL + 'proxy: "http://"\n', "valid proxy URL")
+
+    def test_whitespace_rejected(self):
+        _expect_error(VALID_MINIMAL + 'proxy: "http://a b"\n', "quotes or whitespace")

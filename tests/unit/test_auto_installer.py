@@ -962,3 +962,21 @@ class TestAcquireAnswerText:
         with pytest.raises(schema.ConfigError):
             auto_installer.acquire_answer_text("auto:https://cfg/",
                                                insecure=False)
+
+
+class TestApplyProxy:
+    def test_writes_apt_and_environment(self, tmp_path):
+        config = make_config(extra="proxy: http://proxy.corp:3128\n")
+        driver, _runner, _e = make_driver(config)
+        driver._apply_proxy(target=str(tmp_path))
+        apt = (tmp_path / "etc/apt/apt.conf.d/00proxy").read_text()
+        assert 'Acquire::http::Proxy "http://proxy.corp:3128";' in apt
+        assert 'Acquire::https::Proxy "http://proxy.corp:3128";' in apt
+        env = (tmp_path / "etc/environment").read_text()
+        assert "http_proxy=http://proxy.corp:3128" in env
+        assert "HTTPS_PROXY=http://proxy.corp:3128" in env
+
+    def test_noop_without_proxy(self, tmp_path):
+        driver, _runner, _e = make_driver(make_config())
+        driver._apply_proxy(target=str(tmp_path))
+        assert list(tmp_path.iterdir()) == []
