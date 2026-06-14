@@ -52,7 +52,7 @@ verify:
     expect_substring: "active"
   - name: timeshift-config-btrfs-mode
     type: command
-    command: grep -o '"btrfs_mode": "true"' /etc/timeshift/timeshift.json
+    command: "grep -o 'btrfs_mode.*true' /etc/timeshift/timeshift.json"
     expect_substring: "btrfs_mode"
   # timeshift --list parsing our config proves the json format is valid for the
   # Timeshift actually shipped (resolves the format-per-version open question).
