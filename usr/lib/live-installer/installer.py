@@ -734,7 +734,7 @@ class InstallerEngine:
                     uuid = self.get_blkid(device)
                     if fs == "swap":
                         fstab.write("# %s\n" % device)
-                        fstab.write("%s\tswap\tswap\tsw\t0\t0\n" % uuid)
+                        fstab.write("%s none swap sw 0 0\n" % uuid)
                     else:
                         fsck = "1" if fs != "btrfs" and mount in ("/", "/boot", "/boot/efi") else "0"
                         opts = "rw,errors=remount-ro" if fs.startswith("ext") else "defaults"
