@@ -152,6 +152,7 @@ Keys that overlap with cloud-init use cloud-init's name and structure.
 | `version` | yes | Schema version. Currently `1`. |
 | `locale` | yes | The primary locale, e.g. `en_US.UTF-8` — sets `LANG` (cloud-init style, top level). |
 | `additional_locales` | no | Extra locales to also generate (e.g. `[fr_CA.UTF-8]`), available even though `LANG` stays `locale`. |
+| `proxy` | no | System-wide http(s) proxy URL (e.g. `http://proxy.corp:3128`); used by apt during the install and by the installed system. |
 | `timezone` | yes | IANA timezone, e.g. `America/Toronto` (top level). |
 | `users` | yes | At least one user; see [users](#users). |
 | `storage` | yes | Disk target and layout; see [storage](#storage). |
@@ -492,6 +493,21 @@ apt/yum/zypper, and here it is executed by a swappable package backend
 (`pkgbackend.py`) rather than hardcoded into the driver, leaving room for
 dnf/zypper later. The agnostic `packages:`/`package_remove:` lists stay
 top-level and are dispatched through whichever backend is selected.
+
+### proxy
+
+A system-wide http(s) proxy for corporate networks:
+
+```yaml
+proxy: http://proxy.corp.example:3128
+```
+
+It is written to `/etc/apt/apt.conf.d/00proxy` **before** packages are
+installed, so the install's own apt fetches go through it, and to
+`/etc/environment` (`http_proxy`/`https_proxy` + upper-case) for every other
+TLS client on the installed system. The URL must be an `http://`/`https://`
+URL with no quotes or whitespace. (Note: this does not affect the installer's
+own answer-file/keyfile fetch, which happens before the proxy is known.)
 
 ### late_commands
 

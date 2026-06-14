@@ -694,6 +694,26 @@ class HeadlessDriver:
         self.log(f"[nm] no DNS learned; last device show:\n{info}")
         return False
 
+    def _apply_proxy(self, target="/target"):
+        # Configure a system-wide http(s) proxy (corporate desktops). Written
+        # BEFORE _apply_packages so the install's own chroot apt-get already
+        # goes through it, and it persists for the installed system.
+        proxy = self.config.proxy
+        if not proxy:
+            return
+        self.log(" --> Configuring system proxy")
+        aptdir = target + "/etc/apt/apt.conf.d"
+        os.makedirs(aptdir, exist_ok=True)
+        os.makedirs(target + "/etc", exist_ok=True)
+        with open(aptdir + "/00proxy", "w") as f:
+            f.write('Acquire::http::Proxy "%s";\n' % proxy)
+            f.write('Acquire::https::Proxy "%s";\n' % proxy)
+        # /etc/environment for every other TLS client on the installed system.
+        with open(target + "/etc/environment", "a") as f:
+            f.write("\n# Added by live-installer (proxy)\n")
+            for var in ("http_proxy", "https_proxy", "HTTP_PROXY", "HTTPS_PROXY"):
+                f.write("%s=%s\n" % (var, proxy))
+
     def _apply_packages(self):
         # Repo config (cloud-init's apt: shape) and the agnostic packages/
         # package_remove lists are applied by a swappable package backend, so
@@ -921,12 +941,14 @@ class HeadlessDriver:
                 or self.config.kernel.serial_console.strip()
                 or self.config.storage.layout == "lvm-on-luks"
                 or self.config.network is not None
+                or self.config.proxy is not None
             )
 
             def post_install_hook():
                 self.log(" --> Applying post-install configuration")
                 self._create_extra_users()
                 self._apply_ssh_keys()
+                self._apply_proxy()
                 self._apply_packages()
                 self._apply_network()
                 self._setup_luks_first_boot_rekey(setup)

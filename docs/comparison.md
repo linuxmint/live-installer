@@ -70,6 +70,7 @@ Legend: ✅ full, ◐ partial or preset-only, ✗ not supported.
 | Package groups / environments | ✅ | ◐ tasks | ◐ | ✗ |
 | Declarative package removal | ✅ | ◐ | ◐ | ✅ |
 | Add third-party repositories | ✅ | ◐ | ✅ | ✅ |
+| System http(s) proxy | ✅ | ✅ | ✅ | ✅ |
 | Pre-install scripts (%pre) | ✅ | ✅ | ✅ | ✗ |
 | Post-install scripts | ✅ | ✅ | ✅ | ✅ (late_commands, in target) |
 | First-boot scripts | ◐ | ✗ | ✅ cloud-init | ✗ |
