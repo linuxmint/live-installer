@@ -1,0 +1,20 @@
+# Regression for review finding #2: a custom layout with a bios_grub partition
+# on a UEFI machine must abort cleanly (engine-side firmware/flag check), not
+# silently create an unbootable layout.
+name: fail-bios-grub-on-uefi
+description: bios_grub partition on UEFI aborts before any destructive action
+
+firmware: uefi
+memory_mb: 3072
+cpus: 2
+disk_gb: 15
+
+answer_file: answers/fail-bios-grub-on-uefi.yaml
+install_timeout_s: 600
+
+expect:
+  outcome: failure
+  serial_markers:
+    - "Automated installation complete"
+  failure_markers:
+    - "Automated installation FAILED"

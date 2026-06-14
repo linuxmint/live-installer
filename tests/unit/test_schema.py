@@ -366,6 +366,18 @@ class TestCustomLayout:
             "{size: 512MB, mount: /boot/efi, filesystem: ext4, flags: [esp]}")
         _expect_error(bad, "esp partition must be filesystem: vfat")
 
+    def test_boot_efi_without_esp_flag_rejected(self):
+        # /boot/efi must carry the esp flag or the GPT entry lacks the ESP
+        # type GUID and UEFI won't boot it (review finding #1).
+        bad = CUSTOM.replace(
+            "{size: 512MB, mount: /boot/efi, filesystem: vfat, flags: [esp]}",
+            "{size: 512MB, mount: /boot/efi, filesystem: vfat}")
+        _expect_error(bad, "esp")
+
+    def test_duplicate_lv_name_in_vg_rejected(self):
+        bad = CUSTOM.replace("lv: home", "lv: root")
+        _expect_error(bad, "duplicate logical-volume name")
+
     def test_bad_filesystem_rejected(self):
         bad = CUSTOM.replace("mount: /home, filesystem: ext4",
                              "mount: /home, filesystem: reiserfs")
