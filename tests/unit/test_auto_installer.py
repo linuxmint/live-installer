@@ -1045,3 +1045,44 @@ class TestBuildSetupRaid:
         assert setup.custom_raid[0]["name"] == "md0"
         assert setup.custom_raid[0]["level"] == 1
         assert setup.custom_partitions[0]["raid"] == "md0"
+
+
+class TestEarlyCommands:
+    def test_noop_when_empty(self):
+        driver, runner, _e = make_driver(make_config())
+        driver._run_early_commands()
+        assert runner.commands == []
+
+    def test_runs_in_live_env_not_chroot(self):
+        config = make_config(extra="early_commands:\n  - mdadm --stop --scan\n")
+        driver, runner, _e = make_driver(config)
+        driver._run_early_commands()
+        # run in the live session: a plain run(), NOT a chroot wrapper
+        assert runner.commands == ["mdadm --stop --scan"]
+        assert not any("chroot" in c for c in runner.commands)
+
+    def test_on_media_script_run_with_sh(self, monkeypatch):
+        config = make_config(
+            extra="early_commands:\n  - /cdrom/prep.sh --wipe\n")
+        driver, runner, _e = make_driver(config)
+        monkeypatch.setattr(auto_installer.os.path, "isfile",
+                            lambda p: p == "/cdrom/prep.sh")
+        driver._run_early_commands()
+        assert runner.commands == ["sh /cdrom/prep.sh --wipe"]
+
+    def test_failure_applies_policy(self):
+        config = make_config(extra=textwrap.dedent("""\
+            early_commands:
+              - /bin/false
+            on_failure:
+              early_command_failure: abort
+        """))
+
+        class FailRunner(RecordingRunner):
+            def run(self, command, check=False, secrets=(), stdin=None):
+                self.commands.append(command)
+                return 1
+        driver, _r, _e = make_driver(config)
+        driver.runner = FailRunner()
+        with pytest.raises(auto_installer.InstallationFailed):
+            driver._run_early_commands()

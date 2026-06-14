@@ -952,6 +952,26 @@ class HeadlessDriver:
             # Keyfiles may hold secrets and NM refuses world-readable ones.
             os.chmod(path, 0o600)
 
+    def _run_early_commands(self):
+        # early_commands: shell commands run in the LIVE environment BEFORE
+        # partitioning (kickstart %pre / Ubuntu autoinstall early-commands).
+        # For prepping the install environment (stop stale arrays, mount an
+        # out-of-band source, place a cert/keyfile on the medium). It runs in
+        # the live session, not a chroot — /target does not exist yet — and it
+        # CANNOT change the layout (the config is data; use a per-machine answer
+        # file or auto: discovery for that). A command that is a path to a file
+        # on the install media is run from there.
+        for command in self.config.early_commands:
+            self.log(f" --> early_command: {command}")
+            first = command.split()[0] if command.split() else ""
+            if first and os.path.isfile(first):
+                rc = self.runner.run(f"sh {command}")
+            else:
+                rc = self.runner.run(command)
+            if rc != 0:
+                self._policy("early_command_failure",
+                             f"early_command failed (rc={rc}): {command}")
+
     def _run_commands(self):
         # late_commands: a list of shell commands run in the target chroot at
         # the end of the install, like Ubuntu autoinstall's late-commands and
@@ -980,6 +1000,9 @@ class HeadlessDriver:
         import installer
 
         try:
+            # %pre: prep the live environment before anything is resolved or
+            # partitioned (e.g. assemble an out-of-band disk, place a keyfile).
+            self._run_early_commands()
             if setup is None:
                 setup = build_setup(self.config, insecure=self.insecure)
             self.log(f" --> Target disk: {setup.disk}")

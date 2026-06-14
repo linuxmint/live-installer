@@ -764,6 +764,7 @@ class OnFailure(_StrictModel):
     network_unavailable: str = "abort"
     package_install_failure: str = "abort"
     post_install_script_failure: str = "abort"
+    early_command_failure: str = "abort"
 
     @field_validator("*")
     @classmethod
@@ -1256,6 +1257,7 @@ class AutoInstallConfig(_StrictModel):
     packages: list[str] = Field(default_factory=list)        # cloud-init: installs
     package_remove: list[str] = Field(default_factory=list)  # extension
     apt: Apt = None                                          # cloud-init: apt:
+    early_commands: list[str] = Field(default_factory=list)  # %pre, live env
     late_commands: list[str] = Field(default_factory=list)   # autoinstall-style
     kernel: Kernel = Field(default_factory=Kernel)
     oem: Oem = Field(default_factory=Oem)

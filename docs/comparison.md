@@ -75,7 +75,7 @@ Legend: ✅ full, ◐ partial or preset-only, ✗ not supported.
 | System http(s) proxy | ✅ | ✅ | ✅ | ✅ |
 | Custom CA trust store | ◐ | ◐ | ◐ (via cloud-init) | ✅ (`ca_certs:`) |
 | Proprietary / DKMS driver install | ◐ | ✗ | ✅ (`drivers:`) | ✅ (`drivers:`; Mint, no-op on LMDE) |
-| Pre-install scripts (%pre) | ✅ | ✅ | ✅ | ✗ |
+| Pre-install scripts (%pre) | ✅ | ✅ | ✅ | ✅ (early_commands, live env; no layout rewrite) |
 | Post-install scripts | ✅ | ✅ | ✅ | ✅ (late_commands, in target) |
 | First-boot scripts | ◐ | ✗ | ✅ cloud-init | ✗ |
 
@@ -125,10 +125,8 @@ this targets:
    all under `layout: custom`.
 5. **TPM2 / NBDE (Clevis-Tang) LUKS unlock.** For passwordless encrypted
    boot at scale. The schema already reserves `tpm2`.
-6. **A `%pre`-style hook.** Run logic before partitioning (e.g. choose a
-   layout from disk size).
-7. **Firewall / SELinux-AppArmor config**, if the fleet needs it.
-8. **Mint (casper) integration testing.** The harness assumes Debian-live;
+6. **Firewall / SELinux-AppArmor config**, if the fleet needs it.
+7. **Mint (casper) integration testing.** The harness assumes Debian-live;
    a casper variant is needed before Mint itself (not just LMDE) is
    covered end to end. See [serial-console-and-luks.md](serial-console-and-luks.md)
    and the testing guide.

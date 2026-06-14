@@ -163,6 +163,7 @@ Keys that overlap with cloud-init use cloud-init's name and structure.
 | `packages` | no | Flat list of packages to install (cloud-init style). |
 | `package_remove` | no | Flat list of packages to remove (extension; cloud-init has no declarative remove). |
 | `apt` | no | Apt repositories to add (cloud-init `apt:` shape); see [apt](#apt). |
+| `early_commands` | no | Shell commands run in the live environment before partitioning (`%pre`); see [early_commands](#early_commands). |
 | `late_commands` | no | Shell commands run in the target at end of install; see [late_commands](#late_commands). |
 | `kernel` | no | `cmdline_extra` and `serial_console`; see [kernel](#kernel). |
 | `oem` | no | `enabled`: leave the machine in OEM first-boot state. |
@@ -682,6 +683,30 @@ snapshot (Timeshift wants a booted system to wire its timers). Only
 Snapper backend, and `backend: auto`, can be added later without a schema
 change. (The exact `timeshift.json` keys can vary across Timeshift releases;
 the format is verified by an integration test against the shipped Timeshift.)
+
+### early_commands
+
+A list of shell commands run in the **live environment, before partitioning**
+— Ubuntu autoinstall's `early-commands` and kickstart's `%pre`:
+
+```yaml
+early_commands:
+  - mdadm --stop --scan          # tear down a stale array before re-partitioning
+  - /cdrom/scripts/site-prep.sh  # an on-media script (run with sh)
+```
+
+They run in the live session (**not** a chroot — `/target` does not exist
+yet), before the disks are touched, so they are for **preparing the install
+environment**: tearing down stale arrays, mounting an out-of-band source,
+placing a cert/keyfile on the medium for `ca_certs`/EAP/LUKS to reference. A
+command that is a path to a file on the install media is run from there.
+Failure is governed by `on_failure.early_command_failure` (default `abort` —
+fail before any disk is touched).
+
+Unlike kickstart's `%pre`, `early_commands` **cannot change the partition
+layout** — the config is data, not a program. For per-machine layouts, generate
+the answer file beforehand or use `auto:` identity-based discovery to fetch a
+per-machine file.
 
 ### late_commands
 

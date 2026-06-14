@@ -1091,3 +1091,26 @@ class TestRaid:
         _expect_error(RAID.replace("{size: 1GB, raid: md0}",
                                    "{size: 1GB, raid: md0, mount: /x, filesystem: ext4}"),
                       "takes no mount")
+
+
+class TestEarlyCommands:
+    def test_early_commands_and_policy(self):
+        config = parse_config(VALID_MINIMAL + textwrap.dedent("""\
+            early_commands:
+              - mdadm --stop --scan
+              - /cdrom/prep.sh
+            on_failure:
+              early_command_failure: continue
+        """))
+        assert config.early_commands == ["mdadm --stop --scan", "/cdrom/prep.sh"]
+        assert config.on_failure.early_command_failure == "continue"
+
+    def test_default_empty_and_abort(self):
+        config = parse_config(VALID_MINIMAL)
+        assert config.early_commands == []
+        assert config.on_failure.early_command_failure == "abort"
+
+    def test_bad_policy_rejected(self):
+        _expect_error(
+            VALID_MINIMAL + "on_failure: {early_command_failure: retry}\n",
+            "abort", "continue")
