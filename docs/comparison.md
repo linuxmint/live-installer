@@ -38,9 +38,9 @@ Legend: ✅ full, ◐ partial or preset-only, ✗ not supported.
 | Disk select by stable id | ✅ | ◐ awkward | ✅ | ✅ |
 | Refuses ambiguous disk match | ◐ | ✗ | ◐ | ✅ |
 | Layout presets | ✅ autopart | ◐ recipes | ✅ | ✅ (3) |
-| Fully custom partitioning | ✅ | ✅ | ✅ | ◐ (explicit partitions + custom LVM + btrfs subvolumes; no RAID) |
+| Fully custom partitioning | ✅ | ✅ | ✅ | ✅ (explicit partitions, LVM, btrfs subvolumes, software RAID) |
 | LVM | ✅ | ✅ | ✅ | ✅ |
-| Software RAID | ✅ | ✅ | ✅ | ✗ |
+| Software RAID | ✅ | ✅ | ✅ | ✅ (md, levels 0/1/5/10, LVM-on-RAID) |
 | btrfs / zfs | ✅ / ◐ | ◐ / ✗ | ✅ / ✅ | ◐ / ✗ (btrfs subvolumes; no zfs) |
 | Snapshot tool config | ✅ (Snapper) | ✗ | ✗ | ✅ (Timeshift on btrfs) |
 | LUKS encryption | ✅ | ✅ | ✅ | ✅ |
@@ -120,9 +120,9 @@ this targets:
    value (e.g. enable ssh, disable a default daemon).
 3. **Package groups / metapackages.** Today it is a flat list; Mint has
    meta-packages that would be convenient to name.
-4. **Custom partition layouts.** Done for explicit partitions, custom
-   LVM, and btrfs subvolumes (`layout: custom`). Software RAID is the
-   remaining extension.
+4. **Custom partition layouts.** Done — explicit partitions, custom LVM,
+   btrfs subvolumes, and software RAID (md, levels 0/1/5/10, LVM-on-RAID),
+   all under `layout: custom`.
 5. **TPM2 / NBDE (Clevis-Tang) LUKS unlock.** For passwordless encrypted
    boot at scale. The schema already reserves `tpm2`.
 6. **A `%pre`-style hook.** Run logic before partitioning (e.g. choose a
