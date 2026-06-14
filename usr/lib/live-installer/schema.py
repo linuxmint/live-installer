@@ -66,6 +66,10 @@ _FILESYSTEMS = ("ext4", "ext3", "ext2", "xfs", "btrfs", "vfat", "swap", "f2fs")
 _PART_FLAGS = ("esp", "bios_grub", "swap")
 _LV_NAME_RE = re.compile(r"^[A-Za-z0-9_][A-Za-z0-9_.+-]*$")
 _SUBVOL_RE = re.compile(r"^[A-Za-z0-9@._-][A-Za-z0-9@._/-]*$")
+_RAID_NAME_RE = re.compile(r"^md[0-9]+$")
+_RAID_LEVELS = (0, 1, 5, 10)
+_RAID_MIN_DEVICES = {0: 2, 1: 2, 5: 3, 10: 4}
+_RAID_METADATA = ("0.90", "1.0", "1.1", "1.2")
 # Linux interface names: up to 15 chars, no '/' or whitespace.
 _IFNAME_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,14}$")
 _MAC_RE = re.compile(r"^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$")
@@ -357,6 +361,7 @@ class CustomPartition(_StrictModel):
     filesystem: str = None
     flags: list[str] = Field(default_factory=list)
     lvm_pv: str = None
+    raid: str = None        # member of the named RAID array (like lvm_pv)
     subvolumes: list[Subvolume] = Field(default_factory=list)
 
     _v_size = field_validator("size")(_check_size)
@@ -375,6 +380,13 @@ class CustomPartition(_StrictModel):
 
     @model_validator(mode="after")
     def _consistency(self):
+        if self.raid is not None:
+            if (self.mount or self.filesystem or self.lvm_pv
+                    or self.subvolumes or self.flags):
+                raise ValueError(
+                    "a RAID member partition (raid:) takes no mount/filesystem/"
+                    "lvm_pv/subvolumes/flags")
+            return self
         if self.subvolumes:
             if self.filesystem != "btrfs":
                 raise ValueError("subvolumes require filesystem: btrfs")
@@ -454,12 +466,74 @@ class LvmVolume(_StrictModel):
         return self
 
 
+class RaidArray(_StrictModel):
+    """A software-RAID (md) array over member partitions (marked `raid: <name>`
+    on each disk). Like a partition, it is then mounted, an LVM PV, or btrfs
+    subvolumes."""
+    name: str               # md0, md1, ...
+    level: int              # 0, 1, 5, 10
+    mount: str = None
+    filesystem: str = None
+    lvm_pv: str = None
+    subvolumes: list[Subvolume] = Field(default_factory=list)
+    metadata: str = "1.2"
+
+    _v_fs = field_validator("filesystem")(_check_filesystem)
+    _v_mount = field_validator("mount")(_check_mount)
+
+    @field_validator("name")
+    @classmethod
+    def _v_name(cls, value):
+        if not _RAID_NAME_RE.match(value):
+            raise ValueError(f"{value!r} is not a valid md array name (md0, md1, ...)")
+        return value
+
+    @field_validator("level")
+    @classmethod
+    def _v_level(cls, value):
+        if value not in _RAID_LEVELS:
+            raise ValueError(
+                f"RAID level must be one of {', '.join(map(str, _RAID_LEVELS))}")
+        return value
+
+    @field_validator("metadata")
+    @classmethod
+    def _v_metadata(cls, value):
+        if value not in _RAID_METADATA:
+            raise ValueError(
+                f"RAID metadata must be one of {', '.join(_RAID_METADATA)}")
+        return value
+
+    @model_validator(mode="after")
+    def _consistency(self):
+        if self.subvolumes:
+            if self.filesystem != "btrfs":
+                raise ValueError("subvolumes require filesystem: btrfs")
+            if self.mount or self.lvm_pv:
+                raise ValueError(
+                    "a RAID array with subvolumes takes no mount/lvm_pv")
+            return self
+        if self.lvm_pv is not None:
+            if self.mount or self.filesystem:
+                raise ValueError(
+                    "a RAID array used as an LVM PV takes no mount/filesystem")
+        elif not self.mount or not self.filesystem:
+            raise ValueError(
+                "a RAID array needs both mount and filesystem (or lvm_pv, or "
+                "subvolumes)")
+        if (self.mount == "swap") != (self.filesystem == "swap"):
+            raise ValueError("mount: swap and filesystem: swap go together")
+        return self
+
+
 class Storage(_StrictModel):
-    target: StorageTarget
+    target: StorageTarget = None
     layout: str = "simple"
     luks: Luks = None
+    disks: list[StorageTarget] = Field(default_factory=list)
     partitions: list[CustomPartition] = Field(default_factory=list)
     lvm: list[LvmVolume] = Field(default_factory=list)
+    raid: list[RaidArray] = Field(default_factory=list)
 
     @field_validator("layout")
     @classmethod
@@ -477,18 +551,61 @@ class Storage(_StrictModel):
             raise ValueError("'luks' is only valid with layout: lvm-on-luks")
 
         if self.layout != "custom":
-            if self.partitions or self.lvm:
+            if self.partitions or self.lvm or self.raid or self.disks:
                 raise ValueError(
-                    "'partitions'/'lvm' are only valid with layout: custom")
+                    "'partitions'/'lvm'/'raid'/'disks' are only valid with "
+                    "layout: custom")
+            if self.target is None:
+                raise ValueError("storage.target is required")
             return self
+
+        # --- custom layout ---
+        # Disk selection: a single `target`, or a `disks:` list (required for
+        # RAID, since members live on different disks). Exactly one of the two.
+        if self.disks and self.target is not None:
+            raise ValueError(
+                "use either storage.target (single disk) or storage.disks "
+                "(multi-disk), not both")
+        if not self.disks and self.target is None:
+            raise ValueError("storage.target (or storage.disks) is required")
+        if self.raid and not self.disks:
+            raise ValueError(
+                "software RAID requires storage.disks (members live on "
+                "separate disks)")
 
         if not self.partitions:
             raise ValueError(
                 "layout: custom requires a non-empty 'partitions' list")
+
+        # RAID referential integrity + device counts. Members are the
+        # raid-marked partitions, replicated across each disk, so the device
+        # count is the number of disks.
+        ndisks = len(self.disks) if self.disks else 1
+        part_raids = {p.raid for p in self.partitions if p.raid}
+        array_names = {a.name for a in self.raid}
+        if part_raids - array_names:
+            raise ValueError(
+                "partition(s) reference RAID array(s) with no definition: "
+                + ", ".join(sorted(part_raids - array_names)))
+        if array_names - part_raids:
+            raise ValueError(
+                "RAID array(s) with no member partitions: "
+                + ", ".join(sorted(array_names - part_raids)))
+        if len(array_names) != len(self.raid):
+            raise ValueError("duplicate RAID array name(s)")
+        for array in self.raid:
+            need = _RAID_MIN_DEVICES[array.level]
+            if ndisks < need:
+                raise ValueError(
+                    f"RAID{array.level} array {array.name} needs at least "
+                    f"{need} disks, but storage.disks has {ndisks}")
+
         mounts = ([p.mount for p in self.partitions if p.mount]
                   + [sv.mount for p in self.partitions for sv in p.subvolumes]
                   + [v.mount for v in self.lvm if v.mount]
-                  + [sv.mount for v in self.lvm for sv in v.subvolumes])
+                  + [sv.mount for v in self.lvm for sv in v.subvolumes]
+                  + [a.mount for a in self.raid if a.mount]
+                  + [sv.mount for a in self.raid for sv in a.subvolumes])
         if mounts.count("/") != 1:
             raise ValueError("custom layout needs exactly one '/' mount point")
         dupes = sorted({m for m in mounts
@@ -498,15 +615,17 @@ class Storage(_StrictModel):
         if sum(1 for p in self.partitions if p.size == "rest") > 1:
             raise ValueError("at most one partition may use size: rest")
 
-        pv_vgs = {p.lvm_pv for p in self.partitions if p.lvm_pv}
+        # LVM PVs may come from partitions OR RAID arrays.
+        pv_vgs = ({p.lvm_pv for p in self.partitions if p.lvm_pv}
+                  | {a.lvm_pv for a in self.raid if a.lvm_pv})
         lv_vgs = {v.vg for v in self.lvm}
         if lv_vgs - pv_vgs:
             raise ValueError(
-                "lvm volume(s) reference VG(s) with no lvm_pv partition: "
+                "lvm volume(s) reference VG(s) with no lvm_pv: "
                 + ", ".join(sorted(lv_vgs - pv_vgs)))
         if pv_vgs - lv_vgs:
             raise ValueError(
-                "lvm_pv partition(s) reference VG(s) with no logical volumes: "
+                "lvm_pv(s) reference VG(s) with no logical volumes: "
                 + ", ".join(sorted(pv_vgs - lv_vgs)))
         for vg in lv_vgs:
             if sum(1 for v in self.lvm if v.vg == vg and v.size == "rest") > 1:

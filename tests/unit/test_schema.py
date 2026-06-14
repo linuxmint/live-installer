@@ -358,7 +358,7 @@ class TestCustomLayout:
 
     def test_lvm_volume_without_pv_rejected(self):
         bad = CUSTOM.replace("vg: vg0, lv: home", "vg: vgOther, lv: home")
-        _expect_error(bad, "no lvm_pv partition")
+        _expect_error(bad, "no lvm_pv")
 
     def test_esp_must_be_vfat_at_boot_efi(self):
         bad = CUSTOM.replace(
@@ -1015,3 +1015,79 @@ class TestSnapshots:
     def test_negative_count_rejected(self):
         _expect_error(
             SNAP_BTRFS + "snapshots:\n  schedule: {daily: -1}\n", ">= 0")
+
+
+RAID = textwrap.dedent("""\
+    version: 1
+    locale: en_US.UTF-8
+    timezone: America/Toronto
+    users:
+      - {name: a, passwd: "$6$rounds=4096$s$h"}
+    storage:
+      layout: custom
+      disks:
+        - {match: {by-id: "diskA*"}}
+        - {match: {by-id: "diskB*"}}
+        - {match: {by-id: "diskC*"}}
+      partitions:
+        - {size: 512MB, mount: /boot/efi, filesystem: vfat, flags: [esp]}
+        - {size: 1GB, raid: md0}
+        - {size: rest, raid: md1}
+      raid:
+        - {name: md0, level: 1, mount: /boot, filesystem: ext4}
+        - {name: md1, level: 5, lvm_pv: vg0}
+      lvm:
+        - {vg: vg0, lv: root, size: rest, mount: /, filesystem: ext4}
+""")
+
+
+class TestRaid:
+    def test_valid_multilevel_lvm_on_raid(self):
+        config = parse_config(RAID)
+        st = config.storage
+        assert len(st.disks) == 3
+        assert [(a.name, a.level) for a in st.raid] == [("md0", 1), ("md1", 5)]
+        assert st.raid[1].lvm_pv == "vg0"
+        assert st.lvm[0].mount == "/"
+
+    def test_raid1_two_disks(self):
+        text = RAID.replace('    - {match: {by-id: "diskC*"}}\n', "")
+        text = text.replace("level: 5", "level: 1")  # RAID1 needs only 2
+        assert parse_config(text).storage.raid[1].level == 1
+
+    def test_raid_requires_disks(self):
+        # raid: present but single-disk target -> rejected
+        text = RAID.replace(
+            "  disks:\n"
+            '    - {match: {by-id: "diskA*"}}\n'
+            '    - {match: {by-id: "diskB*"}}\n'
+            '    - {match: {by-id: "diskC*"}}\n',
+            "  target: {match: {first-non-removable: true}}\n")
+        _expect_error(text, "RAID requires storage.disks")
+
+    def test_target_and_disks_both_rejected(self):
+        text = RAID.replace(
+            "  disks:",
+            "  target: {match: {first-non-removable: true}}\n  disks:")
+        _expect_error(text, "either storage.target")
+
+    def test_level5_needs_three_disks(self):
+        text = RAID.replace('    - {match: {by-id: "diskC*"}}\n', "")
+        _expect_error(text, "needs at least 3 disks")
+
+    def test_bad_level_rejected(self):
+        _expect_error(RAID.replace("level: 5", "level: 6"), "RAID level must be")
+
+    def test_partition_refs_undefined_array(self):
+        _expect_error(RAID.replace("{size: 1GB, raid: md0}",
+                                   "{size: 1GB, raid: mdX}"),
+                      "no definition")
+
+    def test_array_without_members(self):
+        text = RAID.replace("    - {size: 1GB, raid: md0}\n", "")
+        _expect_error(text, "no member partitions")
+
+    def test_raid_member_with_mount_rejected(self):
+        _expect_error(RAID.replace("{size: 1GB, raid: md0}",
+                                   "{size: 1GB, raid: md0, mount: /x, filesystem: ext4}"),
+                      "takes no mount")
