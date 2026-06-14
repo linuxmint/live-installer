@@ -55,3 +55,11 @@ verify:
     type: command
     command: locale -a | grep -i fr_CA
     expect_substring: "fr_CA"
+  - name: ca-cert-installed
+    type: file_exists
+    path: /usr/local/share/ca-certificates/li-ca-1.crt
+  # update-ca-certificates only creates /etc/ssl/certs/<name>.pem for a VALID
+  # cert, so this proves the cert reached the system trust store.
+  - name: ca-cert-trusted
+    type: file_exists
+    path: /etc/ssl/certs/li-ca-1.pem

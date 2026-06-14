@@ -844,3 +844,41 @@ class TestProxy:
 
     def test_whitespace_rejected(self):
         _expect_error(VALID_MINIMAL + 'proxy: "http://a b"\n', "quotes or whitespace")
+
+
+_PEM = ("-----BEGIN CERTIFICATE-----\n"
+        "MIIDcorporate\n"
+        "-----END CERTIFICATE-----")
+
+
+class TestCaCerts:
+    def _cfg(self, block):
+        return VALID_MINIMAL + block
+
+    def test_valid_inline_cert(self):
+        block = 'ca_certs:\n  trusted:\n    - "%s"\n' % _PEM.replace("\n", "\\n")
+        config = parse_config(self._cfg(block))
+        assert len(config.ca_certs.trusted) == 1
+        assert config.ca_certs.remove_defaults is False
+
+    def test_absent_is_none(self):
+        assert parse_config(VALID_MINIMAL).ca_certs is None
+
+    def test_private_key_rejected(self):
+        block = ('ca_certs:\n  trusted:\n    - "-----BEGIN PRIVATE KEY-----'
+                 '\\nabc\\n-----END PRIVATE KEY-----"\n')
+        _expect_error(self._cfg(block), "never", "private key")
+
+    def test_non_pem_rejected(self):
+        block = 'ca_certs:\n  trusted:\n    - "not a certificate"\n'
+        _expect_error(self._cfg(block), "PEM certificate")
+
+    def test_remove_defaults_without_certs_rejected(self):
+        block = "ca_certs:\n  remove_defaults: true\n"
+        _expect_error(self._cfg(block), "empty trust store")
+
+    def test_remove_defaults_with_certs_ok(self):
+        block = ('ca_certs:\n  remove_defaults: true\n  trusted:\n    - "%s"\n'
+                 % _PEM.replace("\n", "\\n"))
+        config = parse_config(self._cfg(block))
+        assert config.ca_certs.remove_defaults is True

@@ -647,6 +647,39 @@ class OnFailure(_StrictModel):
         return value
 
 
+class CaCerts(_StrictModel):
+    """System CA trust store, mirroring cloud-init's `ca_certs:` module:
+    inline PEM CA certificates added to /etc/ssl/certs (via the OS's
+    update-ca-certificates). This is the SYSTEM trust store consulted by apt,
+    curl, and TLS clients — distinct from any per-connection 802.1X/EAP trust."""
+
+    remove_defaults: bool = False
+    trusted: list[str] = Field(default_factory=list)
+
+    @field_validator("trusted")
+    @classmethod
+    def _v_trusted(cls, value):
+        for cert in value:
+            if "PRIVATE KEY" in cert:
+                raise ValueError(
+                    "ca_certs.trusted must contain only CA certificates, never "
+                    "a private key (a trust store holds public certs only)")
+            if ("BEGIN CERTIFICATE" not in cert
+                    or "END CERTIFICATE" not in cert):
+                raise ValueError(
+                    "ca_certs.trusted entries must be PEM certificates "
+                    "(-----BEGIN CERTIFICATE----- ... -----END CERTIFICATE-----)")
+        return value
+
+    @model_validator(mode="after")
+    def _consistency(self):
+        if self.remove_defaults and not self.trusted:
+            raise ValueError(
+                "ca_certs.remove_defaults with no 'trusted' certs would leave "
+                "an empty trust store and break TLS (apt-over-HTTPS, etc.)")
+        return self
+
+
 class Logging(_StrictModel):
     destination: str = "/var/log/live-installer-auto.log"
     also_serial: str = None
@@ -954,6 +987,7 @@ class AutoInstallConfig(_StrictModel):
     keyboard: Keyboard = Field(default_factory=Keyboard)
     additional_locales: list[str] = Field(default_factory=list)  # also generated
     proxy: str = None                                        # system http(s) proxy
+    ca_certs: CaCerts = None                                  # cloud-init: ca_certs:
     network: Network = None                                   # netplan v2 subset
     packages: list[str] = Field(default_factory=list)        # cloud-init: installs
     package_remove: list[str] = Field(default_factory=list)  # extension

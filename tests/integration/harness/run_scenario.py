@@ -17,11 +17,13 @@ installer driver exists.
 
 import argparse
 import http.server
+import os
 import shutil
 import socket
 import socketserver
 import subprocess
 import sys
+import tempfile
 import threading
 import time
 from datetime import datetime, timezone
@@ -155,6 +157,24 @@ def generate_ssh_key(workdir):
     return key, (workdir / "id_ed25519.pub").read_text().strip()
 
 
+def _fill_ca_cert_placeholder(answer):
+    """Replace a `{ca_cert}` placeholder in ca_certs.trusted with a freshly
+    generated self-signed CA cert, so the ca_certs path can be tested end to
+    end without committing a real cert. The runner has openssl."""
+    cc = answer.get("ca_certs")
+    if not cc or "{ca_cert}" not in (cc.get("trusted") or []):
+        return
+    d = tempfile.mkdtemp(prefix="li-ca-")
+    crt = os.path.join(d, "ca.pem")
+    subprocess.run(
+        ["openssl", "req", "-x509", "-newkey", "rsa:2048", "-nodes",
+         "-keyout", os.path.join(d, "key.pem"), "-out", crt,
+         "-days", "3650", "-subj", "/CN=LI Integration Test CA"],
+        check=True, capture_output=True)
+    pem = open(crt).read()
+    cc["trusted"] = [pem if t == "{ca_cert}" else t for t in cc["trusted"]]
+
+
 def stage_answer_file(scenario_dir, answer_rel, serve_dir, pubkey, base_url):
     """Copy the scenario's answer file into the served directory: the
     {server} placeholder is expanded to the harness HTTP server's base URL
@@ -167,6 +187,7 @@ def stage_answer_file(scenario_dir, answer_rel, serve_dir, pubkey, base_url):
     answer = yaml.safe_load(text)
     user = answer["users"][0]
     user.setdefault("ssh_authorized_keys", []).append(pubkey)
+    _fill_ca_cert_placeholder(answer)
     with open(target, "w") as f:
         yaml.safe_dump(answer, f, sort_keys=False)
     for aux in (scenario_dir / answer_rel).parent.iterdir():
