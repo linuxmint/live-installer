@@ -99,6 +99,29 @@ def _ip_section(family, cfg):
     return lines
 
 
+def _8021x_lines(auth):
+    """Render an [802-1x] section (wired 802.1X or wifi EAP). Shared by the
+    ethernet and wifi paths."""
+    lines = ["[802-1x]", "eap=%s" % auth.method]
+    if auth.identity:
+        lines.append("identity=%s" % auth.identity)
+    if auth.anonymous_identity:
+        lines.append("anonymous-identity=%s" % auth.anonymous_identity)
+    if auth.ca_certificate:
+        lines.append("ca-cert=%s" % auth.ca_certificate)
+    if auth.method == "tls":
+        lines.append("client-cert=%s" % auth.client_certificate)
+        lines.append("private-key=%s" % auth.client_key)
+        if auth.client_key_password:
+            lines.append("private-key-password=%s" % auth.client_key_password)
+    else:  # peap / ttls
+        if auth.phase2_auth:
+            lines.append("phase2-auth=%s" % auth.phase2_auth)
+        if auth.password:
+            lines.append("password=%s" % auth.password)
+    return lines
+
+
 def _ethernet_lines(iface_id, cfg):
     lines = ["[connection]",
              "id=%s" % iface_id,
@@ -118,6 +141,9 @@ def _ethernet_lines(iface_id, cfg):
     lines.append("")
     if eth_section:
         lines.extend(eth_section)
+        lines.append("")
+    if getattr(cfg, "auth", None) is not None:
+        lines.extend(_8021x_lines(cfg.auth))   # wired 802.1X
         lines.append("")
     lines.extend(_ip_section(4, cfg))
     lines.append("")
@@ -168,7 +194,12 @@ def _wifi_lines(iface_id, ssid, ap, cfg):
     lines.append("")
     lines.extend(wifi_section)
     lines.append("")
-    if ap.password is not None:
+    if getattr(ap, "auth", None) is not None:
+        # WPA-Enterprise / EAP: key-mgmt=wpa-eap plus an [802-1x] section.
+        lines.extend(["[wifi-security]", "key-mgmt=wpa-eap", ""])
+        lines.extend(_8021x_lines(ap.auth))
+        lines.append("")
+    elif ap.password is not None:
         # WPA-PSK. An open network omits the security section entirely.
         lines.extend(["[wifi-security]", "key-mgmt=wpa-psk",
                       "psk=%s" % ap.password, ""])

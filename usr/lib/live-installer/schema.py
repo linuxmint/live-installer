@@ -815,8 +815,87 @@ class _IpConfig(_StrictModel):
         return self
 
 
+_EAP_METHODS = ("tls", "peap", "ttls")
+_EAP_PHASE2 = ("mschapv2", "mschap", "pap", "chap", "gtc", "md5")
+
+
+def _check_cert_path(value):
+    # by-reference only in v1: an absolute path to a cert/key already on the
+    # target (pre-baked into the image or delivered out-of-band). Inline PEM
+    # is deliberately deferred so a private key need not transit the answer file.
+    if value is None:
+        return value
+    if not value.startswith("/") or any(c in value for c in '"\'\n\r'):
+        raise ValueError(
+            f"{value!r} must be an absolute path to a file on the target "
+            "(inline certs/keys are not supported yet)")
+    return value
+
+
+class Auth(_StrictModel):
+    """802.1X/EAP authentication for a wired ethernet or a wifi access point
+    (netplan v2's `auth:` block). Certs/keys are referenced by absolute path on
+    the target. Rendered to the NetworkManager keyfile's [802-1x] section."""
+
+    method: str                                              # tls | peap | ttls
+    identity: str = None
+    anonymous_identity: str = Field(None, alias="anonymous-identity")
+    ca_certificate: str = Field(None, alias="ca-certificate")
+    client_certificate: str = Field(None, alias="client-certificate")
+    client_key: str = Field(None, alias="client-key")
+    client_key_password: str = Field(None, alias="client-key-password")
+    phase2_auth: str = Field(None, alias="phase2-auth")
+    password: str = None
+    # Opt out of server validation (no ca-certificate). Insecure (rogue-AP
+    # credential theft); refused by default.
+    allow_unvalidated: bool = Field(False, alias="allow-unvalidated")
+
+    _v_ca = field_validator("ca_certificate")(_check_cert_path)
+    _v_cc = field_validator("client_certificate")(_check_cert_path)
+    _v_ck = field_validator("client_key")(_check_cert_path)
+
+    @field_validator("method")
+    @classmethod
+    def _v_method(cls, value):
+        if value not in _EAP_METHODS:
+            raise ValueError(
+                f"EAP method must be one of {', '.join(_EAP_METHODS)}")
+        return value
+
+    @field_validator("phase2_auth")
+    @classmethod
+    def _v_phase2(cls, value):
+        if value is not None and value not in _EAP_PHASE2:
+            raise ValueError(
+                f"phase2-auth must be one of {', '.join(_EAP_PHASE2)}")
+        return value
+
+    @model_validator(mode="after")
+    def _consistency(self):
+        if not self.ca_certificate and not self.allow_unvalidated:
+            raise ValueError(
+                "EAP without a ca-certificate does not validate the server "
+                "(rogue-AP credential theft risk); set ca-certificate, or "
+                "allow-unvalidated: true to accept the risk")
+        if self.method == "tls":
+            if not self.client_certificate or not self.client_key:
+                raise ValueError(
+                    "method: tls (EAP-TLS) requires client-certificate and "
+                    "client-key")
+        else:  # peap / ttls
+            if not self.identity or not self.password:
+                raise ValueError(
+                    f"method: {self.method} requires identity and password")
+            if not self.phase2_auth:
+                raise ValueError(
+                    f"method: {self.method} requires phase2-auth (the inner "
+                    "method, e.g. mschapv2)")
+        return self
+
+
 class EthernetConfig(_IpConfig):
     match: Match = None
+    auth: Auth = None                                       # wired 802.1X
 
 
 class VlanConfig(_IpConfig):
@@ -865,8 +944,9 @@ class AccessPoint(_StrictModel):
     None means an open network; otherwise WPA-PSK. `hidden` marks a
     non-broadcast SSID so the client probes for it actively."""
 
-    password: str = None
+    password: str = None        # WPA-PSK passphrase (omit for open or EAP)
     hidden: bool = False
+    auth: Auth = None           # WPA-Enterprise / EAP (instead of a PSK)
 
     @field_validator("password")
     @classmethod
@@ -874,6 +954,14 @@ class AccessPoint(_StrictModel):
         if value is None:
             return value
         return _check_psk(value)
+
+    @model_validator(mode="after")
+    def _consistency(self):
+        if self.auth and self.password:
+            raise ValueError(
+                "a wifi access point uses either a WPA-PSK password or EAP "
+                "(auth), not both")
+        return self
 
 
 class WifiConfig(_IpConfig):

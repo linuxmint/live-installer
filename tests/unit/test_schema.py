@@ -882,3 +882,85 @@ class TestCaCerts:
                  % _PEM.replace("\n", "\\n"))
         config = parse_config(self._cfg(block))
         assert config.ca_certs.remove_defaults is True
+
+
+EAP_BASE = (
+    "version: 1\n"
+    "locale: en_US.UTF-8\n"
+    "timezone: America/Toronto\n"
+    'users: [{name: a, passwd: "$6$rounds=4096$s$h"}]\n'
+    "storage: {target: {match: {first-non-removable: true}}, layout: simple}\n"
+)
+
+
+class TestEap:
+    def _net(self, auth_block, where="ethernets"):
+        if where == "ethernets":
+            net = "network:\n  version: 2\n  ethernets:\n    e0:\n      dhcp4: true\n      auth:\n%s" % auth_block
+        else:
+            net = ("network:\n  version: 2\n  wifis:\n    w0:\n"
+                   "      access-points:\n        \"S\":\n          auth:\n%s" % auth_block)
+        return EAP_BASE + net
+
+    def test_valid_peap(self):
+        config = parse_config(self._net(
+            "        method: peap\n"
+            "        identity: u@x\n"
+            "        ca-certificate: /etc/ssl/certs/c.pem\n"
+            "        phase2-auth: mschapv2\n"
+            "        password: secret\n"))
+        auth = config.network.ethernets["e0"].auth
+        assert auth.method == "peap"
+        assert auth.ca_certificate == "/etc/ssl/certs/c.pem"
+
+    def test_valid_tls_wifi(self):
+        config = parse_config(self._net(
+            "            method: tls\n"
+            "            identity: ws01\n"
+            "            ca-certificate: /c.pem\n"
+            "            client-certificate: /cc.pem\n"
+            "            client-key: /ck.key\n", where="wifis"))
+        assert config.network.wifis["w0"].access_points["S"].auth.method == "tls"
+
+    def test_no_ca_rejected(self):
+        _expect_error(self._net(
+            "        method: peap\n        identity: u\n"
+            "        phase2-auth: mschapv2\n        password: p\n"),
+            "rogue-AP")
+
+    def test_no_ca_allowed_with_escape_hatch(self):
+        config = parse_config(self._net(
+            "        method: peap\n        identity: u\n"
+            "        phase2-auth: mschapv2\n        password: p\n"
+            "        allow-unvalidated: true\n"))
+        assert config.network.ethernets["e0"].auth.allow_unvalidated is True
+
+    def test_tls_needs_client_cert_key(self):
+        _expect_error(self._net(
+            "        method: tls\n        ca-certificate: /c.pem\n"),
+            "client-certificate and client-key")
+
+    def test_peap_needs_phase2(self):
+        _expect_error(self._net(
+            "        method: peap\n        ca-certificate: /c.pem\n"
+            "        identity: u\n        password: p\n"),
+            "phase2-auth")
+
+    def test_bad_method(self):
+        _expect_error(self._net(
+            "        method: leap\n        ca-certificate: /c.pem\n"),
+            "EAP method must be one of")
+
+    def test_relative_cert_path_rejected(self):
+        _expect_error(self._net(
+            "        method: tls\n        ca-certificate: certs/c.pem\n"
+            "        client-certificate: /cc\n        client-key: /ck\n"),
+            "absolute path")
+
+    def test_wifi_psk_and_eap_both_rejected(self):
+        net = (EAP_BASE + "network:\n  version: 2\n  wifis:\n    w0:\n"
+               "      access-points:\n        \"S\":\n"
+               "          password: pskpass1\n"
+               "          auth: {method: peap, ca-certificate: /c, identity: u,"
+               " password: p, phase2-auth: pap}\n")
+        _expect_error(net, "either a WPA-PSK password or EAP")

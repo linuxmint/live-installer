@@ -432,7 +432,58 @@ cleartext, which is why every keyfile is written `0600`. A password becomes
 WPA-PSK; no password renders an open network. **Note:** wifi cannot be
 exercised end-to-end in CI — QEMU does not emulate 802.11 — so it is validated
 by schema and keyfile-renderer unit tests, not an integration scenario.
-WPA-Enterprise (EAP) is not modelled yet.
+
+#### 802.1X / EAP (wired and WPA-Enterprise)
+
+An `auth:` block on an ethernet (wired 802.1X) or a wifi access point
+(WPA-Enterprise) configures EAP — netplan's own `auth:` shape, rendered to the
+keyfile's `[802-1x]` section:
+
+```yaml
+  ethernets:
+    lan0:
+      dhcp4: true
+      auth:                               # wired 802.1X
+        method: peap                      # tls | peap | ttls
+        identity: host/ws.example.com
+        ca-certificate: /etc/ssl/certs/corp-root.pem    # server validation
+        anonymous-identity: anonymous@example.com
+        phase2-auth: mschapv2             # PEAP/TTLS inner method
+        password: "..."
+  wifis:
+    wlan0:
+      access-points:
+        "CorpSSID":
+          auth:                           # EAP-TLS over wifi
+            method: tls
+            identity: ws01
+            ca-certificate: /etc/ssl/certs/corp-root.pem
+            client-certificate: /etc/ssl/certs/ws01.pem
+            client-key: /etc/ssl/private/ws01.key       # private key
+            client-key-password: "..."
+```
+
+`method: tls` (EAP-TLS) requires `client-certificate` + `client-key`;
+`peap`/`ttls` require `identity`, `password`, and `phase2-auth`.
+
+- **Server validation is required by default.** Omitting `ca-certificate`
+  means the supplicant won't validate the RADIUS server — the textbook
+  rogue-AP credential-theft setup — so it is *rejected* unless you set
+  `allow-unvalidated: true` to accept the risk (the same posture as refusing a
+  raw `/dev/sdX`).
+- **Certs and keys are referenced by absolute path** on the target — placed
+  there beforehand (baked into the image, or copied via `late_commands`). They
+  are deliberately **not** inline in v1, so an EAP-TLS **private key** — a live
+  network credential, higher-value than a password hash — need not travel in
+  the answer file at all. Any EAP secrets that are inline (a PEAP `password`)
+  land in the `0600` keyfile.
+- **Testing boundary:** like wifi, actual EAP authentication is not verifiable
+  in CI (no RADIUS server, no 802.11) — the `[802-1x]` rendering and the
+  validation are unit-tested; the handshake is a bare-metal concern.
+
+This per-connection EAP trust (`ca-certificate`) is separate from the system
+trust store ([`ca_certs`](#ca_certs)) — though you can point both at the same
+file. Bonds and bridges are still not modelled.
 
 ### kernel
 
@@ -717,8 +768,9 @@ that migrates an old file up to the current version automatically.)
 - Custom partition layouts cover explicit partitions, custom LVM, and
   btrfs subvolumes; software RAID is not supported yet.
 - `network:` covers static IPv4/IPv6, gateways, DNS, routes, 802.1Q VLANs,
-  and wifi (WPA-PSK / open) (netplan v2 subset); WPA-Enterprise, bonds, and
-  bridges are not modelled yet. Wifi is unit-tested only (no 802.11 in CI).
+  wifi (WPA-PSK / open), and 802.1X/EAP (wired + WPA-Enterprise; certs by
+  reference) (netplan v2 subset); bonds and bridges are not modelled yet.
+  Wifi and EAP are unit-tested only (no 802.11 / RADIUS in CI).
 - Config delivery is local file, http(s) URL, NFS, or TFTP, plus `auto`
   identity-based discovery; DNS-SRV discovery is not supported.
 - The config is data, not a program — no conditionals, loops, or
