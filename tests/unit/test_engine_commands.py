@@ -187,7 +187,7 @@ class TestCustomPartitions:
         text = path.read_text()
         assert "UUID=ROOT\t/\text4\trw,errors=remount-ro\t0\t1" in text
         assert "UUID=EFI\t/boot/efi\tvfat\tdefaults\t0\t1" in text
-        assert "UUID=SWAP\tswap\tswap\tsw\t0\t0" in text
+        assert "UUID=SWAP none swap sw 0 0" in text
 
     def test_create_custom_partitions_command_sequence(self, monkeypatch):
         engine, runner = make_engine(

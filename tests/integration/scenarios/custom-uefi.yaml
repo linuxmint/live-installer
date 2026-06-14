@@ -43,10 +43,14 @@ verify:
     type: command
     command: findmnt -n -o SOURCE /home
     expect_substring: "vg0"
-  - name: swap-active
+  - name: swap-in-fstab
     type: command
-    command: "swapon --show=NAME --noheadings | head -1"
-    expect_substring: "/dev/"
+    command: "grep -w swap /etc/fstab"
+    expect_substring: "swap"
+  - name: swap-partition-formatted
+    type: command
+    command: "lsblk -nro FSTYPE /dev/vda2"
+    expect_substring: "swap"
   - name: esp-mounted
     type: command
     command: findmnt -n -o TARGET /boot/efi
