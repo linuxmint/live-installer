@@ -50,3 +50,18 @@ verify:
     type: command
     command: systemctl is-active NetworkManager
     expect_substring: "active"
+  - name: timeshift-config-btrfs-mode
+    type: command
+    command: grep -o '"btrfs_mode": "true"' /etc/timeshift/timeshift.json
+    expect_substring: "btrfs_mode"
+  # timeshift --list parsing our config proves the json format is valid for the
+  # Timeshift actually shipped (resolves the format-per-version open question).
+  - name: timeshift-config-valid
+    type: command
+    command: timeshift --list >/dev/null 2>&1 && echo ok || echo fail
+    expect_substring: "ok"
+  # The first-boot one-shot registers the schedule then self-removes.
+  - name: timeshift-firstboot-ran
+    type: command
+    command: "for i in $(seq 1 30); do systemctl cat li-timeshift-firstboot.service >/dev/null 2>&1 || break; sleep 2; done; systemctl cat li-timeshift-firstboot.service >/dev/null 2>&1 && echo present || echo removed"
+    expect_substring: "removed"

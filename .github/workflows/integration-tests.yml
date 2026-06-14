@@ -29,7 +29,7 @@ jobs:
       - uses: ./.github/actions/vm-setup
       - name: Run failure-mode scenarios
         run: |
-          for s in fail-malformed-yaml fail-no-disk-match fail-bios-grub-on-uefi; do
+          for s in fail-malformed-yaml fail-no-disk-match fail-bios-grub-on-uefi fail-snapshots-on-ext4; do
             python tests/integration/harness/run_scenario.py \
               "tests/integration/scenarios/$s.yaml" \
               --junit "tests/integration/.work/$s.xml"

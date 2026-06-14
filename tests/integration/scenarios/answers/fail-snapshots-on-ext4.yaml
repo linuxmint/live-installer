@@ -1,0 +1,26 @@
+# snapshots: timeshift-btrfs requires a btrfs @/@home root, but this is a plain
+# ext4 (simple) layout. The cross-validation must reject it at schema time,
+# before any disk is touched — the silent-failure guard for the feature.
+version: 1
+
+locale: en_US.UTF-8
+timezone: America/Toronto
+
+users:
+  - name: testuser
+    passwd: "$6$rounds=4096$integration.test$kPEsZSlAg3pjDM0yaeSdAVPbHcsiBVMobBC0SXmdGRX9WtflVB.ETP6/yo8Lw0PRJlXP6tEXkbQjnLnnyG5BV1"
+
+storage:
+  target:
+    match:
+      first-non-removable: true
+    on_no_match: abort
+  layout: simple
+
+snapshots:
+  enabled: true
+  backend: timeshift-btrfs
+
+logging:
+  destination: /var/log/live-installer-auto.log
+  also_serial: ttyS0

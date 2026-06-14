@@ -1035,6 +1035,56 @@ class Network(_StrictModel):
         return self
 
 
+def storage_has_btrfs_root(storage):
+    """True if the storage layout produces a btrfs root on an `@` subvolume —
+    the prerequisite for the timeshift-btrfs snapshot backend. Shared by the
+    cross-validation here and the backend's is_compatible()."""
+    if storage.layout != "custom":
+        return False
+    for entry in list(storage.partitions) + list(storage.lvm):
+        if getattr(entry, "filesystem", None) == "btrfs":
+            for sub in entry.subvolumes:
+                if sub.name == "@" and sub.mount == "/":
+                    return True
+    return False
+
+
+class SnapshotSchedule(_StrictModel):
+    """Tool-neutral schedule; translated per backend. Each count is how many
+    snapshots of that level to keep (0 disables it)."""
+
+    boot: bool = False
+    daily: int = 0
+    weekly: int = 0
+    monthly: int = 0
+
+    @field_validator("daily", "weekly", "monthly")
+    @classmethod
+    def _v_count(cls, value):
+        if value < 0:
+            raise ValueError("snapshot counts must be >= 0")
+        return value
+
+
+class Snapshots(_StrictModel):
+    """Configure a snapshot tool at install time. v1: timeshift-btrfs only,
+    behind a backend seam (rsync/snapper can be added later)."""
+
+    enabled: bool = True
+    backend: str = "timeshift-btrfs"
+    schedule: SnapshotSchedule = Field(default_factory=SnapshotSchedule)
+    initial_snapshot: bool = False
+
+    @field_validator("backend")
+    @classmethod
+    def _v_backend(cls, value):
+        if value != "timeshift-btrfs":
+            raise ValueError(
+                "v1 supports only backend: timeshift-btrfs (rsync/snapper and "
+                "backend: auto are not implemented yet)")
+        return value
+
+
 def _check_hostname(value):
     if value is None:
         return value
@@ -1091,6 +1141,7 @@ class AutoInstallConfig(_StrictModel):
     kernel: Kernel = Field(default_factory=Kernel)
     oem: Oem = Field(default_factory=Oem)
     drivers: Drivers = Field(default_factory=Drivers)        # autoinstall: drivers:
+    snapshots: Snapshots = None                              # Timeshift config
     on_failure: OnFailure = Field(default_factory=OnFailure)
     logging: Logging = Field(default_factory=Logging)
 
@@ -1149,6 +1200,24 @@ class AutoInstallConfig(_StrictModel):
             raise ValueError("duplicate usernames in 'users'")
         if sum(1 for user in self.users if user.autologin) > 1:
             raise ValueError("only one user may have autologin: true")
+        return self
+
+    @model_validator(mode="after")
+    def _check_snapshots(self):
+        # Cross-section guard (spans snapshots + storage): the timeshift-btrfs
+        # backend needs the btrfs @/@home layout, which is decided in storage.
+        # Catching the mismatch here means a config that can't make snapshots
+        # fails at validation, not silently after install.
+        snaps = self.snapshots
+        if snaps is None or not snaps.enabled:
+            return self
+        if snaps.backend == "timeshift-btrfs" and not storage_has_btrfs_root(
+                self.storage):
+            raise ValueError(
+                "snapshots backend timeshift-btrfs requires a btrfs root on an "
+                "'@' subvolume, but storage did not produce one — use "
+                "layout: custom with a btrfs root split into @ (/) and "
+                "@home (/home)")
         return self
 
 

@@ -42,6 +42,7 @@ Legend: ✅ full, ◐ partial or preset-only, ✗ not supported.
 | LVM | ✅ | ✅ | ✅ | ✅ |
 | Software RAID | ✅ | ✅ | ✅ | ✗ |
 | btrfs / zfs | ✅ / ◐ | ◐ / ✗ | ✅ / ✅ | ◐ / ✗ (btrfs subvolumes; no zfs) |
+| Snapshot tool config | ✅ (Snapper) | ✗ | ✗ | ✅ (Timeshift on btrfs) |
 | LUKS encryption | ✅ | ✅ | ✅ | ✅ |
 | Passwordless unlock (TPM2 / NBDE) | ✅ | ✗ | ◐ | ✗ (schema reserves tpm2) |
 | LUKS unlock prompt on serial | ◐ | ◐ | ◐ | ✅ |
