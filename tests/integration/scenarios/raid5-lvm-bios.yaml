@@ -45,7 +45,9 @@ verify:
     type: command
     command: "grep -A2 'active raid5' /proc/mdstat | grep -o '\\[UUU\\]'"
     expect_substring: "UUU"
-  - name: lvm-pv-on-md
+  # The root LV's dependency stack (LV -> md1 -> disks) — proves LVM sits on a
+  # RAID device. lsblk needs no root, unlike pvs.
+  - name: lvm-on-raid-stack
     type: command
-    command: "pvs --noheadings -o pv_name | tr -d ' '"
-    expect_substring: "/dev/md"
+    command: "lsblk -nso NAME /dev/mapper/vg0-root | tr -d ' '"
+    expect_substring: "md"
