@@ -662,3 +662,104 @@ class TestApt:
         _expect_error(APT.replace('      key_url: https://example.com/repo.gpg',
                                   '      bogus: 1'),
                       "bogus")
+
+
+WIFI = textwrap.dedent("""\
+    version: 1
+    locale: en_US.UTF-8
+    timezone: America/Toronto
+    users:
+      - name: admin
+        passwd: "$6$rounds=4096$salt$hashhashhash"
+    storage:
+      target:
+        match:
+          first-non-removable: true
+    network:
+      version: 2
+      wifis:
+        wlan0:
+          match: {macaddress: "aa:bb:cc:dd:ee:01"}
+          addresses: [10.0.0.5/24, 2001:db8::5/64]
+          gateway4: 10.0.0.1
+          access-points:
+            "Corp-WPA":
+              password: "supersecret123"
+            "OpenGuest":
+              hidden: true
+""")
+
+
+class TestWifi:
+    def test_valid(self):
+        config = parse_config(WIFI)
+        wifi = config.network.wifis["wlan0"]
+        assert wifi.match.macaddress == "aa:bb:cc:dd:ee:01"
+        assert wifi.addresses == ["10.0.0.5/24", "2001:db8::5/64"]
+        aps = wifi.access_points
+        assert aps["Corp-WPA"].password == "supersecret123"
+        assert aps["OpenGuest"].password is None      # open network
+        assert aps["OpenGuest"].hidden is True
+
+    def test_dhcp_psk_minimal(self):
+        text = VALID_MINIMAL + textwrap.dedent("""\
+            network:
+              version: 2
+              wifis:
+                wlan0:
+                  dhcp4: true
+                  access-points:
+                    "Home": {password: "passw0rd"}
+        """)
+        config = parse_config(text)
+        assert config.network.wifis["wlan0"].dhcp4 is True
+
+    def test_64_hex_psk_accepted(self):
+        text = VALID_MINIMAL + textwrap.dedent("""\
+            network:
+              version: 2
+              wifis:
+                wlan0:
+                  access-points:
+                    "Raw": {password: "%s"}
+        """ % ("a" * 64))
+        assert parse_config(text).network.wifis["wlan0"].access_points["Raw"]
+
+    def test_short_psk_rejected(self):
+        _expect_error(WIFI.replace('"supersecret123"', '"short"'),
+                      "8..63")
+
+    def test_empty_ssid_rejected(self):
+        _expect_error(WIFI.replace('"Corp-WPA"', '""'), "valid SSID")
+
+    def test_overlong_ssid_rejected(self):
+        _expect_error(WIFI.replace('"Corp-WPA"', '"%s"' % ("x" * 33)),
+                      "valid SSID")
+
+    def test_no_access_points_rejected(self):
+        text = VALID_MINIMAL + textwrap.dedent("""\
+            network:
+              version: 2
+              wifis:
+                wlan0: {dhcp4: true}
+        """)
+        _expect_error(text, "at least one access-points")
+
+    def test_unknown_ap_key_rejected(self):
+        _expect_error(WIFI.replace('          hidden: true',
+                                   '          hidden: true\n'
+                                   '          bogus: 1'),
+                      "bogus")
+
+    def test_id_reused_across_ethernet_and_wifi_rejected(self):
+        text = VALID_MINIMAL + textwrap.dedent("""\
+            network:
+              version: 2
+              ethernets:
+                shared: {dhcp4: true}
+              wifis:
+                shared:
+                  access-points:
+                    "N": {password: "passw0rd"}
+        """)
+        _expect_error(text, "used for both")

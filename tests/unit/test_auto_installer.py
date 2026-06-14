@@ -442,6 +442,25 @@ class TestApplyNetwork:
         assert not target.exists()
         assert chmods == {}
 
+    WIFI = textwrap.dedent("""\
+        network:
+          version: 2
+          wifis:
+            wlan0:
+              dhcp4: true
+              access-points:
+                "HomeNet": {password: "hunter2pass"}
+    """)
+
+    def test_wifi_psk_keyfile_is_0600(self, tmp_path, monkeypatch):
+        # The wifi keyfile holds the PSK in cleartext, so 0600 is a security
+        # requirement, not just an NM nicety.
+        config = make_config(extra=self.WIFI)
+        target, chmods, _runner = self._run_apply(config, tmp_path, monkeypatch)
+        assert chmods == {"wlan0.nmconnection": 0o600}
+        body = (target / "wlan0.nmconnection").read_text()
+        assert "psk=hunter2pass" in body
+
 
 class TestHeadlessDriver:
     def test_happy_path(self, tmp_path, capsys):

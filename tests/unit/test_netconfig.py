@@ -236,6 +236,92 @@ class TestRender:
         assert kf["ipv6"]["address1"] == "2001:db8:100::5/64"
         assert kf["ipv6"]["gateway"] == "2001:db8:100::1"
 
+    def test_wifi_wpa_psk(self):
+        files = _render(
+            "network:\n"
+            "  version: 2\n"
+            "  wifis:\n"
+            "    wlan0:\n"
+            "      dhcp4: true\n"
+            "      access-points:\n"
+            '        "HomeNet": {password: "hunter2pass"}\n'
+        )
+        assert set(files) == {"wlan0.nmconnection"}
+        kf = _parse_keyfile(files["wlan0.nmconnection"])
+        assert kf["connection"]["type"] == "wifi"
+        assert kf["connection"]["id"] == "HomeNet"
+        assert kf["connection"]["interface-name"] == "wlan0"
+        assert kf["wifi"]["ssid"] == "HomeNet"
+        assert kf["wifi"]["mode"] == "infrastructure"
+        assert kf["wifi-security"]["key-mgmt"] == "wpa-psk"
+        assert kf["wifi-security"]["psk"] == "hunter2pass"
+        assert kf["ipv4"]["method"] == "auto"
+
+    def test_wifi_open_network_has_no_security(self):
+        files = _render(
+            "network:\n"
+            "  version: 2\n"
+            "  wifis:\n"
+            "    wlan0:\n"
+            "      dhcp4: true\n"
+            "      access-points:\n"
+            '        "Cafe": {}\n'
+        )
+        kf = _parse_keyfile(files["wlan0.nmconnection"])
+        assert not kf.has_section("wifi-security")
+
+    def test_wifi_hidden_and_mac_bind(self):
+        files = _render(
+            "network:\n"
+            "  version: 2\n"
+            "  wifis:\n"
+            "    wlan0:\n"
+            '      match: {macaddress: "aa:bb:cc:dd:ee:01"}\n'
+            "      dhcp4: true\n"
+            "      access-points:\n"
+            '        "Hidden": {password: "secretpass", hidden: true}\n'
+        )
+        kf = _parse_keyfile(files["wlan0.nmconnection"])
+        assert kf["wifi"]["hidden"] == "true"
+        # bound by MAC -> no interface-name, mac in [wifi]
+        assert "interface-name" not in kf["connection"]
+        assert kf["wifi"]["mac-address"] == "AA:BB:CC:DD:EE:01"
+
+    def test_wifi_static_dual_stack(self):
+        files = _render(
+            "network:\n"
+            "  version: 2\n"
+            "  wifis:\n"
+            "    wlan0:\n"
+            "      addresses: [10.0.0.5/24, 2001:db8::5/64]\n"
+            "      gateway4: 10.0.0.1\n"
+            "      gateway6: 2001:db8::1\n"
+            "      access-points:\n"
+            '        "Net": {password: "passw0rd1"}\n'
+        )
+        kf = _parse_keyfile(files["wlan0.nmconnection"])
+        assert kf["ipv4"]["address1"] == "10.0.0.5/24"
+        assert kf["ipv6"]["address1"] == "2001:db8::5/64"
+        assert kf["ipv6"]["gateway"] == "2001:db8::1"
+
+    def test_wifi_multiple_access_points_get_suffixed_files(self):
+        files = _render(
+            "network:\n"
+            "  version: 2\n"
+            "  wifis:\n"
+            "    wlan0:\n"
+            "      dhcp4: true\n"
+            "      access-points:\n"
+            '        "First": {password: "firstpass"}\n'
+            '        "Second": {password: "secondpass"}\n'
+        )
+        assert set(files) == {"wlan0-1.nmconnection", "wlan0-2.nmconnection"}
+        ids = {_parse_keyfile(c)["connection"]["id"] for c in files.values()}
+        assert ids == {"First", "Second"}
+        # distinct uuids per access point
+        uuids = {_parse_keyfile(c)["connection"]["uuid"] for c in files.values()}
+        assert len(uuids) == 2
+
     def test_uuid_is_deterministic(self):
         net = (
             "network:\n"
