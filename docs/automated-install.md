@@ -248,11 +248,33 @@ may include `esp` (an EFI System Partition — must be `vfat` at `/boot/efi`),
 entry is a logical volume (`vg`, `lv`, `size`, `mount`, `filesystem`) on a
 VG backed by an `lvm_pv` partition.
 
+#### btrfs subvolumes
+
+A `btrfs` partition (or LVM logical volume) may carry a `subvolumes` list
+instead of a single `mount`. Each subvolume has a `name` (the on-disk
+subvolume name, e.g. `@`) and a `mount`. The filesystem is created once,
+the subvolumes are created in it, and each is mounted at its `mount` with
+`subvol=<name>` — the snapshot-friendly layout Mint/Timeshift expect.
+
+```yaml
+  partitions:
+    - {size: 512MB, mount: /boot/efi, filesystem: vfat, flags: [esp]}
+    - {size: 2GB,   mount: swap,      filesystem: swap}
+    - size: rest
+      filesystem: btrfs
+      subvolumes:
+        - {name: "@",     mount: /}
+        - {name: "@home", mount: /home}
+```
+
+A partition/LV with `subvolumes` must be `btrfs` and takes no top-level
+`mount`; subvolume mounts participate in the same uniqueness rules below.
+
 Rules, all enforced at validation: exactly one `/`; no duplicate mount
 points; at most one `rest` per disk and per VG; every `lvm_pv` VG must
 have logical volumes and vice versa. Filesystems: `ext4`/`ext3`/`ext2`,
-`xfs`, `btrfs`, `vfat`, `f2fs`, `swap`. RAID and btrfs subvolumes are not
-in custom layouts yet.
+`xfs`, `btrfs`, `vfat`, `f2fs`, `swap`. Software RAID is not in custom
+layouts yet.
 
 ### kernel
 
@@ -352,6 +374,7 @@ A complete, runnable answer file for each layout lives under
 | `uefi-lvm-luks.yaml` | LUKS-encrypted LVM with a keyfile and serial console |
 | `bios-multi-disk.yaml` | Selecting one disk out of several by `by-id` |
 | `custom.yaml` | Custom layout: explicit ESP + swap partitions and a custom LVM vg with root/home |
+| `btrfs.yaml` | Custom layout: btrfs root split into `@` (/) and `@home` (/home) subvolumes |
 
 These double as the integration-test fixtures, so they are guaranteed to
 stay valid against the current schema.
@@ -416,8 +439,8 @@ server cannot wedge the install indefinitely.
 
 ## Limitations (v1)
 
-- Custom partition layouts cover explicit partitions and custom LVM;
-  software RAID and btrfs subvolumes are not supported yet.
+- Custom partition layouts cover explicit partitions, custom LVM, and
+  btrfs subvolumes; software RAID is not supported yet.
 - Config delivery is local file, http(s) URL, NFS, or TFTP, plus `auto`
   identity-based discovery; DNS-SRV discovery is not supported.
 - The config is data, not a program — no conditionals, loops, or
