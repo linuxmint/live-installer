@@ -1,0 +1,43 @@
+# Flatpak install: Flathub remote + two small popular apps installed at install
+# time (in the chroot), then verified present on the booted system over SSH.
+name: flatpak
+description: Unattended install with Flathub + two flatpak apps, verified on boot
+
+firmware: bios
+tpm: false
+memory_mb: 4096
+cpus: 2
+disk_gb: 25
+
+answer_file: answers/flatpak.yaml
+
+# The runtime + apps are a few hundred MB pulled from Flathub during install.
+install_timeout_s: 2400
+boot_timeout_s: 300
+
+expect:
+  serial_markers:
+    - "Automated installation complete"
+  failure_markers:
+    - "Automated installation FAILED"
+
+ssh:
+  user: testuser
+
+verify:
+  - name: flatpak-installed
+    type: command
+    command: command -v flatpak
+    expect_substring: "flatpak"
+  - name: flathub-remote-added
+    type: command
+    command: flatpak remotes
+    expect_substring: "flathub"
+  - name: flatseal-app-installed
+    type: command
+    command: flatpak list --app --columns=application
+    expect_substring: "com.github.tchx84.Flatseal"
+  - name: calculator-app-installed
+    type: command
+    command: flatpak list --app --columns=application
+    expect_substring: "org.gnome.Calculator"

@@ -168,6 +168,7 @@ Keys that overlap with cloud-init use cloud-init's name and structure.
 | `kernel` | no | `cmdline_extra` and `serial_console`; see [kernel](#kernel). |
 | `oem` | no | `enabled`: leave the machine in OEM first-boot state. |
 | `drivers` | no | `install: true` installs recommended proprietary/DKMS drivers; see [drivers](#drivers). |
+| `flatpak` | no | Flatpak remotes to add and apps to install; see [flatpak](#flatpak). |
 | `snapshots` | no | Configure Timeshift snapshots on a btrfs root; see [snapshots](#snapshots). |
 | `on_failure` | no | Per-failure-mode policy; see [failure handling](#failure-handling). |
 | `logging` | no | `destination` (log file path) and `also_serial` (e.g. `ttyS0`). |
@@ -630,6 +631,30 @@ provide replacements), so it is rejected with an empty `trusted`.
 This is the **system** trust store only. It is deliberately separate from any
 future per-connection 802.1X/EAP trust (which lives in a NetworkManager
 profile and does not consult the system store).
+
+### flatpak
+
+Add flatpak remotes and install flatpak apps — the other package system Mint
+uses alongside apt:
+
+```yaml
+flatpak:
+  remotes:
+    - {name: flathub, url: "https://flathub.org/repo/flathub.flatpakrepo"}
+  install:
+    - com.github.tchx84.Flatseal
+    - org.gnome.Calculator
+```
+
+The installer ensures `flatpak` is present (via apt), adds each remote
+(`remote-add --if-not-exists`), and installs each app into the target with
+`flatpak install --system` at install time. Remote URLs must be `https://`,
+and `install:` needs at least one remote to install from. Mint ships flatpak
+and pre-configures Flathub; on LMDE the package is pulled in as needed.
+
+(Snap is intentionally not supported — Mint and LMDE disable snapd by default —
+but a future `snap:` section is not foreclosed: it would be a separate
+additive section, the same way `flatpak:` and `apt:` are.)
 
 ### drivers
 

@@ -1086,3 +1086,45 @@ class TestEarlyCommands:
         driver.runner = FailRunner()
         with pytest.raises(auto_installer.InstallationFailed):
             driver._run_early_commands()
+
+
+class TestApplyFlatpak:
+    FLATPAK = textwrap.dedent("""\
+        flatpak:
+          remotes:
+            - {name: flathub, url: "https://flathub.org/repo/flathub.flatpakrepo"}
+          install:
+            - org.gnome.Calculator
+            - com.github.tchx84.Flatseal
+    """)
+
+    def test_noop_when_absent(self):
+        driver, runner, _e = make_driver(make_config())
+        driver._apply_flatpak()
+        assert runner.commands == []
+
+    def test_installs_flatpak_remotes_and_apps_in_chroot(self):
+        driver, runner, _e = make_driver(make_config(extra=self.FLATPAK))
+        driver._apply_flatpak()
+        joined = "\n".join(runner.commands)
+        # all in the chroot (flatpak install runs as root, --noninteractive)
+        assert "apt-get install -y flatpak" in joined
+        assert ("flatpak remote-add --if-not-exists flathub "
+                "https://flathub.org/repo/flathub.flatpakrepo" in joined)
+        assert ("flatpak install --system -y --noninteractive "
+                "org.gnome.Calculator" in joined)
+        assert ("flatpak install --system -y --noninteractive "
+                "com.github.tchx84.Flatseal" in joined)
+        assert all("chroot" in c for c in runner.commands)
+
+    def test_remotes_only_no_install(self):
+        config = make_config(extra=textwrap.dedent("""\
+            flatpak:
+              remotes:
+                - {name: flathub, url: "https://flathub.org/repo/flathub.flatpakrepo"}
+        """))
+        driver, runner, _e = make_driver(config)
+        driver._apply_flatpak()
+        joined = "\n".join(runner.commands)
+        assert "remote-add" in joined
+        assert "flatpak install" not in joined
