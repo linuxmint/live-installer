@@ -159,7 +159,7 @@ Keys that overlap with cloud-init use cloud-init's name and structure.
 | `network` | no | Static IP / DNS / VLAN config (netplan v2 subset); see [network](#network). DHCP on all NICs if omitted. |
 | `packages` | no | Flat list of packages to install (cloud-init style). |
 | `package_remove` | no | Flat list of packages to remove (extension; cloud-init has no declarative remove). |
-| `repositories` | no | Package repositories to add; see [repositories](#repositories). |
+| `apt` | no | Apt repositories to add (cloud-init `apt:` shape); see [apt](#apt). |
 | `late_commands` | no | Shell commands run in the target at end of install; see [late_commands](#late_commands). |
 | `kernel` | no | `cmdline_extra` and `serial_console`; see [kernel](#kernel). |
 | `oem` | no | `enabled`: leave the machine in OEM first-boot state. |
@@ -349,19 +349,43 @@ Both are applied via a `grub.d` snippet and `update-grub`. For the
 mechanics and the live-system quirks involved, see
 [serial-console-and-luks.md](serial-console-and-luks.md).
 
-### repositories
+### apt
 
-Package repositories to add before installing packages:
+Apt repositories to add before installing packages. This mirrors
+cloud-init's `apt:` section — a `sources` map keyed by an arbitrary name,
+each entry an apt sources.list line plus an optional signing key:
 
 ```yaml
-repositories:
-  - source: "deb https://example.com/repo trixie main"
-    key_url: https://example.com/repo.gpg   # optional, https only
+apt:
+  sources:
+    vendor:
+      source: "deb https://example.com/repo trixie main"
+      key_url: https://example.com/repo.gpg     # extension: fetch over https
+    upstream:
+      source: "deb https://other.example/deb stable main"
+      keyid: "0xABCDEF0123456789"                # fetched from a keyserver
+      keyserver: keyserver.ubuntu.com            # default shown
+    local:
+      source: "deb https://local.example/apt trixie main"
+      key: |                                     # inline ASCII-armored key
+        -----BEGIN PGP PUBLIC KEY BLOCK-----
+        ...
+        -----END PGP PUBLIC KEY BLOCK-----
 ```
 
-The section name is package-system-neutral (cloud-init calls the
-equivalent `apt:`); the `source` value is apt syntax on Debian/Mint.
-`key_url` must use HTTPS.
+Each source must carry **at most one** signing key — `key` (inline armored),
+`keyid` (fetched from `keyserver`), or `key_url` (fetched over https; an
+extension beyond cloud-init). The source line is written to
+`/etc/apt/sources.list.d/<name>.list` (override the basename with
+`filename:`), and the key to `/etc/apt/trusted.gpg.d/<name>`. `key_url` must
+use HTTPS. **Quote `keyid` values** — an unquoted `0x…` is parsed as a YAML
+integer.
+
+Repo config is deliberately apt-specific: cloud-init never unified
+apt/yum/zypper, and here it is executed by a swappable package backend
+(`pkgbackend.py`) rather than hardcoded into the driver, leaving room for
+dnf/zypper later. The agnostic `packages:`/`package_remove:` lists stay
+top-level and are dispatched through whichever backend is selected.
 
 ### late_commands
 
