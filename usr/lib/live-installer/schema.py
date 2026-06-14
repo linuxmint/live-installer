@@ -348,6 +348,17 @@ class CustomPartition(_StrictModel):
                 raise ValueError(
                     "an esp partition must be filesystem: vfat mounted at "
                     "/boot/efi")
+        elif self.mount == "/boot/efi":
+            # The reverse: /boot/efi without the esp flag would create a GPT
+            # entry lacking the EFI System Partition type GUID. The OS mounts
+            # it fine and GRUB writes to it, so the install looks healthy —
+            # but UEFI firmware won't recognise it as an ESP, and the machine
+            # fails to boot (often only surfacing on other hardware or after a
+            # firmware update). Require the flag so this can't slip through.
+            raise ValueError(
+                "the /boot/efi partition must carry the 'esp' flag, so its "
+                "GPT entry gets the EFI System Partition type GUID that UEFI "
+                "firmware boots from")
         if (self.mount == "swap") != (self.filesystem == "swap"):
             raise ValueError("mount: swap and filesystem: swap go together")
         return self
@@ -448,6 +459,12 @@ class Storage(_StrictModel):
         for vg in lv_vgs:
             if sum(1 for v in self.lvm if v.vg == vg and v.size == "rest") > 1:
                 raise ValueError(f"at most one LV in VG {vg} may use size: rest")
+            names = [v.lv for v in self.lvm if v.vg == vg]
+            dup_lvs = sorted({n for n in names if names.count(n) > 1})
+            if dup_lvs:
+                raise ValueError(
+                    f"duplicate logical-volume name(s) in VG {vg}: "
+                    + ", ".join(dup_lvs))
         return self
 
 

@@ -164,6 +164,30 @@ class TestCommandRunner:
         assert captured == ["chroot /target/ /bin/sh -c \"apt install 'thing'\""]
 
 
+class TestLayoutFirmwareCheck:
+    # Review finding #2: esp/bios_grub flags must match the runtime firmware
+    # mode, which the schema can't know. Enforced engine-side before
+    # partitioning.
+    def test_bios_grub_on_uefi_rejected(self):
+        engine, _ = make_engine(gptonefi=True)
+        with pytest.raises(Exception, match="UEFI"):
+            engine._check_layout_matches_firmware([{"flags": ["bios_grub"]}])
+
+    def test_esp_on_bios_rejected(self):
+        engine, _ = make_engine(gptonefi=False)
+        with pytest.raises(Exception, match="BIOS"):
+            engine._check_layout_matches_firmware([{"flags": ["esp"]}])
+
+    def test_esp_on_uefi_ok(self):
+        engine, _ = make_engine(gptonefi=True)
+        engine._check_layout_matches_firmware(
+            [{"flags": ["esp"]}, {"flags": []}])
+
+    def test_bios_grub_on_bios_ok(self):
+        engine, _ = make_engine(gptonefi=False)
+        engine._check_layout_matches_firmware([{"flags": ["bios_grub"]}])
+
+
 class TestCustomPartitions:
     def test_size_to_mb(self):
         f = installer.InstallerEngine._size_to_mb

@@ -444,6 +444,27 @@ class InstallerEngine:
                               "installation will stop. Restart the computer "
                               "and try again.") % device)
 
+    def _check_layout_matches_firmware(self, parts):
+        """Reject flags that don't match the detected firmware mode. The schema
+        can't catch this — firmware mode is only known at runtime — so it is
+        enforced here, before any partition is created. An esp partition on a
+        BIOS machine never gets used; a bios_grub partition on a UEFI machine
+        wastes space and can leave the install unbootable. Fail loudly instead.
+        """
+        uefi = bool(self.setup.gptonefi)
+        for part in parts:
+            flags = part.get("flags", [])
+            if uefi and "bios_grub" in flags:
+                raise Exception(_(
+                    "This is a UEFI system, but the partition layout declares a "
+                    "bios_grub partition (only used for BIOS/GPT boot). Use an "
+                    "esp partition mounted at /boot/efi instead."))
+            if not uefi and "esp" in flags:
+                raise Exception(_(
+                    "This is a BIOS system, but the partition layout declares an "
+                    "esp (EFI System Partition). Use a bios_grub partition "
+                    "instead, or install in UEFI mode."))
+
     def _create_custom_partitions(self):
         """Automated install of an explicit partition layout (layout: custom):
         a list of partitions (some of which may be LVM PVs) plus logical
@@ -454,6 +475,7 @@ class InstallerEngine:
         disk_device = parted.getDevice(device_path)
         parts = self.setup.custom_partitions
         lvm = self.setup.custom_lvm
+        self._check_layout_matches_firmware(parts)
 
         if self.setup.badblocks:
             self.update_progress(25, False, False, _("Filling disk with random data (please be patient, this can take hours...)"))
