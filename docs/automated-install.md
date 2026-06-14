@@ -18,7 +18,7 @@ reference.
 - [Worked examples](#worked-examples)
 - [Failure handling](#failure-handling)
 - [Security notes](#security-notes)
-- [Limitations](#limitations)
+- [Limitations](#limitations-v1)
 
 ## Quick start
 
@@ -158,7 +158,7 @@ Keys that overlap with cloud-init use cloud-init's name and structure.
 | `users` | yes | At least one user; see [users](#users). |
 | `storage` | yes | Disk target and layout; see [storage](#storage). |
 | `hostname` | no | System hostname. Defaults to `mint` if omitted. |
-| `keyboard` | no | `model` (default `pc105`), `layout` (default `us`), `variant`, plus `additional_layouts` (list of `{layout, variant}`) and a `toggle` to switch them; see [keyboard](#keyboard). |
+| `keyboard` | no | `model` (default `pc105`), `layout` (default `us`), `variant`, plus `additional_layouts` (list of `{layout, variant}`) and a `toggle` to switch them; see [keyboard and locales](#keyboard-and-locales). |
 | `network` | no | Static IP / DNS / VLAN / wifi config (netplan v2 subset); see [network](#network). DHCP on all NICs if omitted. |
 | `packages` | no | Flat list of packages to install (cloud-init style). |
 | `package_remove` | no | Flat list of packages to remove (extension; cloud-init has no declarative remove). |
@@ -171,7 +171,7 @@ Keys that overlap with cloud-init use cloud-init's name and structure.
 | `flatpak` | no | Flatpak remotes to add and apps to install; see [flatpak](#flatpak). |
 | `snapshots` | no | Configure Timeshift snapshots on a btrfs root; see [snapshots](#snapshots). |
 | `on_failure` | no | Per-failure-mode policy; see [failure handling](#failure-handling). |
-| `logging` | no | `destination` (log file path) and `also_serial` (e.g. `ttyS0`). |
+| `logging` | no | `destination` (log file path, default `/var/log/live-installer-auto.log`) and `also_serial` (e.g. `ttyS0`; off by default). |
 
 ### keyboard and locales
 
@@ -256,8 +256,9 @@ swap logical volumes), `lvm-on-luks` (the same, on a LUKS2 container).
 For `lvm-on-luks`, `passphrase_source` selects how the encryption passphrase
 is established:
 
-- **`keyfile`** — read from a local path or an http(s) URL (same TLS rule as
-  the answer file). The URL is fetched verbatim: there is no `${...}`
+- **`keyfile`** — read from a local path or a URL, using the same fetchers and
+  cleartext rules as the answer file itself (https by default; http, nfs, and
+  tftp only with `--insecure`). The URL is fetched verbatim: there is no `${...}`
   templating (the config is data, not a program). For per-machine keyfiles,
   let each machine fetch its own answer file via `auto:` discovery and put the
   concrete keyfile URL in it. This is a fully unattended install.
@@ -300,8 +301,9 @@ storage:
 Each **partition** has a `size` (`512MB`/`40GB`/`1TB`, or `rest` for the
 remainder), and is one of: a mounted partition (`mount` + `filesystem`),
 an LVM physical volume (`lvm_pv: <vg>`), or a flag-only partition. `flags`
-may include `esp` (an EFI System Partition — must be `vfat` at `/boot/efi`),
-`bios_grub` (the BIOS-boot partition for GPT), or `swap`. Each **lvm**
+may include `esp` (an EFI System Partition — must be `vfat` at `/boot/efi`)
+or `bios_grub` (the BIOS-boot partition for GPT). Swap is not a flag — it is
+a `filesystem: swap` partition (with `mount: swap`). Each **lvm**
 entry is a logical volume (`vg`, `lv`, `size`, `mount`, `filesystem`) on a
 VG backed by an `lvm_pv` partition.
 
@@ -437,8 +439,8 @@ canonical one:
 ```
 
 `gateway4`/`gateway6` are still accepted as a convenience for configs carried
-over from older netplan, and render identically, but new answer files should
-use `routes`.
+over from older netplan — they produce an equivalent default route in the
+keyfile — but new answer files should use `routes`.
 
 **Binding is your responsibility.** Each connection should select exactly one
 device — bind by `match.macaddress` (best for a mixed fleet) or a unique
@@ -808,6 +810,7 @@ Every failure mode has an explicit policy, and the defaults fail closed
 
 ```yaml
 on_failure:
+  early_command_failure: abort        # an early_commands step failed
   partition_mismatch: abort           # disk match found nothing
   network_unavailable: continue       # an apt/network step failed
   package_install_failure: abort
@@ -818,6 +821,12 @@ on_failure:
 (plus the reason) to the console, log, and serial. `continue` logs a
 warning and proceeds. On any abort the machine is left unbooted rather
 than half-installed.
+
+Note: a disk-target mismatch (no disk matched, or more than one did) always
+aborts — that is the fail-closed `on_no_match: abort` on the target itself, and
+it fires before the `partition_mismatch` policy would be consulted, so in v1
+that knob has no softer setting to reach for. It is kept as an explicit field
+so a future relaxation (e.g. `prompt`) has a place to attach.
 
 ### If the answer file itself cannot be loaded
 
@@ -834,8 +843,8 @@ deploying it to avoid this class of failure entirely.
 
 - **Passwords** are crypt(5) hashes only; plaintext is rejected outright.
 - **Answer files and keyfiles** are refused over cleartext transports
-  (plain HTTP, NFS) by default (they carry secrets) — use HTTPS or opt in
-  with `live-installer.auto-insecure`.
+  (plain HTTP, NFS, TFTP) by default (they carry secrets) — use HTTPS or opt
+  in with `live-installer.auto-insecure`.
 - **LUKS passphrases** are passed to `cryptsetup` on stdin, never as a
   command argument, so they are not visible in the process table; they
   are also redacted from all logs.
@@ -884,8 +893,8 @@ that migrates an old file up to the current version automatically.)
 
 ## Limitations (v1)
 
-- Custom partition layouts cover explicit partitions, custom LVM, and
-  btrfs subvolumes, and software RAID (md levels 0/1/5/10, LVM-on-RAID,
+- Custom partition layouts cover explicit partitions, custom LVM, btrfs
+  subvolumes, and software RAID (md levels 0/1/5/10, LVM-on-RAID,
   multi-disk via `disks:`).
 - `network:` covers static IPv4/IPv6, gateways, DNS, routes, 802.1Q VLANs,
   wifi (WPA-PSK / open), and 802.1X/EAP (wired + WPA-Enterprise; certs by
