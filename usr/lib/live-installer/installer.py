@@ -107,6 +107,11 @@ class InstallerEngine:
     def setup_locale(self):
         print(" --> Setting the locale")
         self.runner.run("echo \"%s.UTF-8 UTF-8\" >> /target/etc/locale.gen" % self.setup.language)
+        # Generate any supplementary locales too (e.g. fr_CA alongside en_CA),
+        # so they are available even though LANG stays the primary.
+        for locale in getattr(self.setup, "additional_locales", None) or []:
+            if locale != self.setup.language:
+                self.runner.run("echo \"%s.UTF-8 UTF-8\" >> /target/etc/locale.gen" % locale)
         self.do_run_in_chroot("locale-gen")
         self.runner.run("echo \"\" > /target/etc/default/locale")
         self.do_run_in_chroot("update-locale LANG=\"%s.UTF-8\"" % self.setup.language)
@@ -170,7 +175,10 @@ class InstallerEngine:
             elif(line.startswith("XKBVARIANT=") and self.setup.keyboard_variant is not None and self.setup.keyboard_variant != ""):
                 newconsolefh.write("XKBVARIANT=\"%s\"\n" % self.setup.keyboard_variant)
             elif(line.startswith("XKBOPTIONS=")):
-                newconsolefh.write("XKBOPTIONS=grp:win_space_toggle")
+                # A multi-layout setup needs a switch option; honour an explicit
+                # keyboard.toggle, else keep the historical default.
+                options = self.setup.keyboard_options or "grp:win_space_toggle"
+                newconsolefh.write("XKBOPTIONS=\"%s\"\n" % options)
             else:
                 newconsolefh.write("%s\n" % line)
         consolefh.close()
@@ -1041,9 +1049,11 @@ class Setup(object):
     oem_mode = False
     language = None
     timezone = None
+    additional_locales = []        # extra locales to also generate
     keyboard_model = None
-    keyboard_layout = None
-    keyboard_variant = None
+    keyboard_layout = None         # may be a comma-joined XKB list
+    keyboard_variant = None        # matching comma-joined variant list
+    keyboard_options = None        # XKB switch option, e.g. grp:alt_shift_toggle
     partitions = [] #Array of PartitionSetup objects
     username = None
     hostname = None

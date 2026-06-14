@@ -107,10 +107,61 @@ class _StrictModel(BaseModel):
     model_config = ConfigDict(extra="forbid", populate_by_name=True)
 
 
+_XKB_LAYOUT_RE = re.compile(r"^[a-z][a-z0-9_-]*$")
+_XKB_VARIANT_RE = re.compile(r"^[a-z0-9][a-z0-9_-]*$")
+_XKB_TOGGLE_RE = re.compile(r"^[a-z0-9_]+:[a-z0-9_]+$")
+
+
+def _check_xkb_layout(value):
+    if not _XKB_LAYOUT_RE.match(value):
+        raise ValueError(f"{value!r} is not a valid keyboard layout code")
+    return value
+
+
+def _check_xkb_variant(value):
+    if value and not _XKB_VARIANT_RE.match(value):
+        raise ValueError(f"{value!r} is not a valid keyboard variant")
+    return value
+
+
+class KbLayout(_StrictModel):
+    """An additional keyboard layout (XKB layout + optional variant)."""
+
+    layout: str
+    variant: str = ""
+
+    _v_layout = field_validator("layout")(_check_xkb_layout)
+    _v_variant = field_validator("variant")(_check_xkb_variant)
+
+
 class Keyboard(_StrictModel):
     model: str = "pc105"
     layout: str = "us"
     variant: str = ""
+    # Extra layouts to switch between (en_CA + fr_CA, etc.); `layout`/`variant`
+    # is the primary/first. `toggle` is the XKB switch option, e.g.
+    # grp:alt_shift_toggle — only meaningful with at least one extra layout.
+    additional_layouts: list[KbLayout] = Field(default_factory=list)
+    toggle: str = None
+
+    _v_layout = field_validator("layout")(_check_xkb_layout)
+    _v_variant = field_validator("variant")(_check_xkb_variant)
+
+    @field_validator("toggle")
+    @classmethod
+    def _v_toggle(cls, value):
+        if value is not None and not _XKB_TOGGLE_RE.match(value):
+            raise ValueError(
+                f"{value!r} is not a valid XKB toggle option (e.g. "
+                "grp:alt_shift_toggle)")
+        return value
+
+    @model_validator(mode="after")
+    def _consistency(self):
+        if self.toggle and not self.additional_layouts:
+            raise ValueError(
+                "keyboard.toggle only applies when additional_layouts are set")
+        return self
 
 
 class User(_StrictModel):
@@ -900,6 +951,7 @@ class AutoInstallConfig(_StrictModel):
     users: list[User] = Field(min_length=1)
     hostname: str = None
     keyboard: Keyboard = Field(default_factory=Keyboard)
+    additional_locales: list[str] = Field(default_factory=list)  # also generated
     network: Network = None                                   # netplan v2 subset
     packages: list[str] = Field(default_factory=list)        # cloud-init: installs
     package_remove: list[str] = Field(default_factory=list)  # extension
@@ -924,6 +976,13 @@ class AutoInstallConfig(_StrictModel):
     @classmethod
     def _v_locale(cls, value):
         return _check_locale(value)
+
+    @field_validator("additional_locales")
+    @classmethod
+    def _v_additional_locales(cls, value):
+        for loc in value:
+            _check_locale(loc)
+        return value
 
     @field_validator("timezone")
     @classmethod

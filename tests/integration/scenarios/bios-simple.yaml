@@ -47,3 +47,11 @@ verify:
     type: command
     command: systemctl is-active NetworkManager
     expect_substring: "active"
+  - name: keyboard-multilayout
+    type: command
+    command: ". /etc/default/keyboard && echo \"$XKBLAYOUT|$XKBVARIANT|$XKBOPTIONS\""
+    expect_substring: "us,ca|,fr|grp:alt_shift_toggle"
+  - name: additional-locale-generated
+    type: command
+    command: locale -a | grep -i fr_CA
+    expect_substring: "fr_CA"

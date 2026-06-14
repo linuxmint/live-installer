@@ -763,3 +763,62 @@ class TestWifi:
                     "N": {password: "passw0rd"}
         """)
         _expect_error(text, "used for both")
+
+
+KBLOCALE = textwrap.dedent("""\
+    version: 1
+    locale: en_CA.UTF-8
+    timezone: America/Toronto
+    users:
+      - name: admin
+        passwd: "$6$rounds=4096$salt$hashhashhash"
+    storage:
+      target:
+        match:
+          first-non-removable: true
+    keyboard:
+      layout: us
+      additional_layouts:
+        - {layout: ca, variant: fr}
+      toggle: grp:alt_shift_toggle
+    additional_locales: [fr_CA.UTF-8, en_US.UTF-8]
+""")
+
+
+class TestKeyboardAndLocales:
+    def test_valid(self):
+        config = parse_config(KBLOCALE)
+        kb = config.keyboard
+        assert kb.layout == "us"
+        assert [(l.layout, l.variant) for l in kb.additional_layouts] == [("ca", "fr")]
+        assert kb.toggle == "grp:alt_shift_toggle"
+        assert config.additional_locales == ["fr_CA.UTF-8", "en_US.UTF-8"]
+
+    def test_defaults_single_layout_no_extras(self):
+        config = parse_config(VALID_MINIMAL)
+        assert config.keyboard.additional_layouts == []
+        assert config.keyboard.toggle is None
+        assert config.additional_locales == []
+
+    def test_toggle_without_extra_layouts_rejected(self):
+        _expect_error(KBLOCALE.replace(
+            "  additional_layouts:\n    - {layout: ca, variant: fr}\n", ""),
+            "toggle only applies")
+
+    def test_bad_layout_code_rejected(self):
+        _expect_error(KBLOCALE.replace("{layout: ca, variant: fr}",
+                                       "{layout: 'BAD!'}"),
+                      "valid keyboard layout")
+
+    def test_bad_toggle_rejected(self):
+        _expect_error(KBLOCALE.replace("grp:alt_shift_toggle", "nonsense"),
+                      "valid XKB toggle")
+
+    def test_bad_additional_locale_rejected(self):
+        _expect_error(KBLOCALE.replace("fr_CA.UTF-8", "not_a_locale!"),
+                      "valid locale")
+
+    def test_unknown_keyboard_key_rejected(self):
+        _expect_error(KBLOCALE.replace("  layout: us\n",
+                                       "  layout: us\n  bogus: 1\n"),
+                      "bogus")

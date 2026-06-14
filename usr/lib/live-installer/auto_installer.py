@@ -404,10 +404,19 @@ def build_setup(config, *, disk=None, efi=None, is_mint=None, insecure=False):
     setup.is_mint = mint_detect.is_mint() if is_mint is None else is_mint
 
     setup.language = config.locale.split(".")[0]
+    # Supplementary locales to also locale-gen (codeset-stripped like language).
+    setup.additional_locales = [loc.split(".")[0]
+                                for loc in config.additional_locales]
     setup.timezone = config.timezone
     setup.keyboard_model = config.keyboard.model
-    setup.keyboard_layout = config.keyboard.layout
-    setup.keyboard_variant = config.keyboard.variant
+    # Comma-joined XKB layout/variant lists (primary first, then extras), which
+    # /etc/default/keyboard expects for a multi-layout, switchable setup.
+    kb = config.keyboard
+    layouts = [kb.layout] + [extra.layout for extra in kb.additional_layouts]
+    variants = [kb.variant] + [extra.variant for extra in kb.additional_layouts]
+    setup.keyboard_layout = ",".join(layouts)
+    setup.keyboard_variant = ",".join(variants) if any(variants) else ""
+    setup.keyboard_options = kb.toggle    # XKB switch option, or None
     setup.hostname = config.hostname or "mint"
 
     primary = config.users[0]
