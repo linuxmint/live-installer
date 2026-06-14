@@ -631,6 +631,13 @@ class Oem(_StrictModel):
     enabled: bool = False
 
 
+class Drivers(_StrictModel):
+    """Third-party/restricted driver installation (autoinstall's
+    `drivers: {install: true}`)."""
+
+    install: bool = False
+
+
 class OnFailure(_StrictModel):
     """Per-failure-mode policy.  Everything defaults to abort (fail closed)."""
 
@@ -995,6 +1002,7 @@ class AutoInstallConfig(_StrictModel):
     late_commands: list[str] = Field(default_factory=list)   # autoinstall-style
     kernel: Kernel = Field(default_factory=Kernel)
     oem: Oem = Field(default_factory=Oem)
+    drivers: Drivers = Field(default_factory=Drivers)        # autoinstall: drivers:
     on_failure: OnFailure = Field(default_factory=OnFailure)
     logging: Logging = Field(default_factory=Logging)
 

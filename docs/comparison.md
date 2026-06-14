@@ -72,6 +72,7 @@ Legend: ✅ full, ◐ partial or preset-only, ✗ not supported.
 | Add third-party repositories | ✅ | ◐ | ✅ | ✅ |
 | System http(s) proxy | ✅ | ✅ | ✅ | ✅ |
 | Custom CA trust store | ◐ | ◐ | ◐ (via cloud-init) | ✅ (`ca_certs:`) |
+| Proprietary / DKMS driver install | ◐ | ✗ | ✅ (`drivers:`) | ✅ (`drivers:`; Mint, no-op on LMDE) |
 | Pre-install scripts (%pre) | ✅ | ✅ | ✅ | ✗ |
 | Post-install scripts | ✅ | ✅ | ✅ | ✅ (late_commands, in target) |
 | First-boot scripts | ◐ | ✗ | ✅ cloud-init | ✗ |
