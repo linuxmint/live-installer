@@ -123,7 +123,6 @@ RemainAfterExit=no
 WantedBy=multi-user.target
 """
 
-
 class InstallationFailed(Exception):
     pass
 
@@ -751,6 +750,33 @@ class HeadlessDriver:
             self.config, self.runner, self._policy, self.log)
         backend.apply(snaps, self.config.storage)
 
+    def _apply_flatpak(self):
+        # Add flatpak remotes and install the apps in the target chroot. The
+        # apps install at install time (run as root with --noninteractive, so
+        # no polkit/session is needed, and the long install timeout absorbs the
+        # download). Runs after the package phase so apt can install flatpak
+        # itself if it is not already present.
+        fp = self.config.flatpak
+        if fp is None:
+            return
+        self.log(" --> Configuring flatpak")
+        rc = self.runner.chroot(
+            "DEBIAN_FRONTEND=noninteractive apt-get install -y flatpak")
+        if rc != 0:
+            self._policy("package_install_failure", "installing flatpak failed")
+            return
+        for remote in fp.remotes:
+            self.runner.chroot("flatpak remote-add --if-not-exists %s %s"
+                               % (shlex.quote(remote.name), shlex.quote(remote.url)))
+        for app in fp.install:
+            self.log("   installing flatpak app: %s" % app)
+            rc = self.runner.chroot(
+                "flatpak install --system -y --noninteractive %s"
+                % shlex.quote(app))
+            if rc != 0:
+                self._policy("package_install_failure",
+                             f"flatpak install {app} failed")
+
     def _apply_drivers(self):
         # autoinstall's drivers: {install: true} — install recommended
         # proprietary/DKMS drivers via ubuntu-drivers (from
@@ -1036,6 +1062,7 @@ class HeadlessDriver:
                 or self.config.proxy is not None
                 or self.config.ca_certs is not None
                 or self.config.drivers.install
+                or self.config.flatpak is not None
                 or (self.config.snapshots is not None
                     and self.config.snapshots.enabled)
             )
@@ -1047,6 +1074,7 @@ class HeadlessDriver:
                 self._apply_proxy()
                 self._apply_ca_certs()
                 self._apply_packages()
+                self._apply_flatpak()
                 self._apply_drivers()
                 self._apply_snapshots()
                 self._apply_network()

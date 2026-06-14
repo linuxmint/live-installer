@@ -1114,3 +1114,49 @@ class TestEarlyCommands:
         _expect_error(
             VALID_MINIMAL + "on_failure: {early_command_failure: retry}\n",
             "abort", "continue")
+
+
+class TestFlatpak:
+    def _cfg(self, block):
+        return VALID_MINIMAL + block
+
+    FLATPAK = textwrap.dedent("""\
+        flatpak:
+          remotes:
+            - {name: flathub, url: "https://flathub.org/repo/flathub.flatpakrepo"}
+          install:
+            - org.gnome.Calculator
+            - com.github.tchx84.Flatseal
+        """)
+
+    def test_valid(self):
+        config = parse_config(self._cfg(self.FLATPAK))
+        assert config.flatpak.remotes[0].name == "flathub"
+        assert config.flatpak.install == ["org.gnome.Calculator",
+                                          "com.github.tchx84.Flatseal"]
+
+    def test_absent_is_none(self):
+        assert parse_config(VALID_MINIMAL).flatpak is None
+
+    def test_install_without_remote_rejected(self):
+        _expect_error(self._cfg(
+            "flatpak:\n  install: [org.gnome.Calculator]\n"),
+            "needs at least one remote")
+
+    def test_http_remote_rejected(self):
+        _expect_error(self._cfg(self.FLATPAK.replace("https://", "http://")),
+                      "must be https")
+
+    def test_bad_app_id_rejected(self):
+        _expect_error(self._cfg(self.FLATPAK.replace("org.gnome.Calculator",
+                                                     "bad id!")),
+                      "valid flatpak app id")
+
+    def test_duplicate_remote_rejected(self):
+        block = textwrap.dedent("""\
+            flatpak:
+              remotes:
+                - {name: flathub, url: "https://a/x.flatpakrepo"}
+                - {name: flathub, url: "https://b/y.flatpakrepo"}
+        """)
+        _expect_error(self._cfg(block), "duplicate flatpak remote")

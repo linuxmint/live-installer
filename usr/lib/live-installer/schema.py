@@ -757,6 +757,57 @@ class Drivers(_StrictModel):
     install: bool = False
 
 
+_FLATPAK_APP_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]+$")
+_FLATPAK_REMOTE_RE = re.compile(r"^[a-z0-9][a-z0-9._-]*$")
+
+
+class FlatpakRemote(_StrictModel):
+    name: str
+    url: str            # an https .flatpakrepo URL
+
+    @field_validator("name")
+    @classmethod
+    def _v_name(cls, value):
+        if not _FLATPAK_REMOTE_RE.match(value):
+            raise ValueError(f"{value!r} is not a valid flatpak remote name")
+        return value
+
+    @field_validator("url")
+    @classmethod
+    def _v_url(cls, value):
+        if not value.startswith("https://"):
+            raise ValueError("flatpak remote url must be https://")
+        return value
+
+
+class Flatpak(_StrictModel):
+    """Flatpak remotes + apps. Remotes are added at install time (config only);
+    the apps are installed by a first-boot one-shot (flatpak install wants a
+    running system, and the app payloads are large)."""
+
+    remotes: list[FlatpakRemote] = Field(default_factory=list)
+    install: list[str] = Field(default_factory=list)   # app IDs
+
+    @field_validator("install")
+    @classmethod
+    def _v_install(cls, value):
+        for app in value:
+            if not _FLATPAK_APP_RE.match(app):
+                raise ValueError(f"{app!r} is not a valid flatpak app id")
+        return value
+
+    @model_validator(mode="after")
+    def _consistency(self):
+        names = [r.name for r in self.remotes]
+        if len(names) != len(set(names)):
+            raise ValueError("duplicate flatpak remote name(s)")
+        if self.install and not self.remotes:
+            raise ValueError(
+                "flatpak.install needs at least one remote to install from "
+                "(e.g. flathub)")
+        return self
+
+
 class OnFailure(_StrictModel):
     """Per-failure-mode policy.  Everything defaults to abort (fail closed)."""
 
@@ -1262,6 +1313,7 @@ class AutoInstallConfig(_StrictModel):
     kernel: Kernel = Field(default_factory=Kernel)
     oem: Oem = Field(default_factory=Oem)
     drivers: Drivers = Field(default_factory=Drivers)        # autoinstall: drivers:
+    flatpak: Flatpak = None                                  # flatpak remotes + apps
     snapshots: Snapshots = None                              # Timeshift config
     on_failure: OnFailure = Field(default_factory=OnFailure)
     logging: Logging = Field(default_factory=Logging)

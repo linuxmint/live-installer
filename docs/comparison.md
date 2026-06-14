@@ -73,6 +73,7 @@ Legend: ✅ full, ◐ partial or preset-only, ✗ not supported.
 | Declarative package removal | ✅ | ◐ | ◐ | ✅ |
 | Add third-party repositories | ✅ | ◐ | ✅ | ✅ |
 | System http(s) proxy | ✅ | ✅ | ✅ | ✅ |
+| Flatpak / Snap apps | ✗ | ✗ | ◐ (snap) | ✅ flatpak (snap not foreclosed) |
 | Custom CA trust store | ◐ | ◐ | ◐ (via cloud-init) | ✅ (`ca_certs:`) |
 | Proprietary / DKMS driver install | ◐ | ✗ | ✅ (`drivers:`) | ✅ (`drivers:`; Mint, no-op on LMDE) |
 | Pre-install scripts (%pre) | ✅ | ✅ | ✅ | ✅ (early_commands, live env; no layout rewrite) |
