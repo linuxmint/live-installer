@@ -162,3 +162,83 @@ class TestCommandRunner:
         runner.run = lambda cmd, check=False: captured.append(cmd) or 0
         runner.chroot('apt install "thing"')
         assert captured == ["chroot /target/ /bin/sh -c \"apt install 'thing'\""]
+
+
+class TestCustomPartitions:
+    def test_size_to_mb(self):
+        f = installer.InstallerEngine._size_to_mb
+        assert f("512MB") == 512
+        assert f("40GB") == 40000
+        assert f("1.5TB") == 1500000
+
+    def test_custom_fstab_from_auto_mounts(self, tmp_path):
+        engine, runner = make_engine(automated=True)
+        runner.outputs = {"blkid": (
+            '/dev/vda1: UUID="EFI" TYPE="vfat"\n'
+            '/dev/vg0/root: UUID="ROOT" TYPE="ext4"\n'
+            '/dev/vda2: UUID="SWAP" TYPE="swap"')}
+        engine.auto_mounts = [
+            ("/dev/vda1", "/boot/efi", "vfat"),
+            ("/dev/vg0/root", "/", "ext4"),
+            ("/dev/vda2", "swap", "swap"),
+        ]
+        path = tmp_path / "fstab"
+        engine.write_fstab(str(path))
+        text = path.read_text()
+        assert "UUID=ROOT\t/\text4\trw,errors=remount-ro\t0\t1" in text
+        assert "UUID=EFI\t/boot/efi\tvfat\tdefaults\t0\t1" in text
+        assert "UUID=SWAP\tswap\tswap\tsw\t0\t0" in text
+
+    def test_create_custom_partitions_command_sequence(self, monkeypatch):
+        engine, runner = make_engine(
+            automated=True, disk="/dev/vda", gptonefi=True,
+            custom_partitions=[
+                {"size": "512MB", "mount": "/boot/efi", "filesystem": "vfat",
+                 "flags": ["esp"], "lvm_pv": None},
+                {"size": "2GB", "mount": "swap", "filesystem": "swap",
+                 "flags": [], "lvm_pv": None},
+                {"size": "rest", "mount": None, "filesystem": None,
+                 "flags": [], "lvm_pv": "vg0"},
+            ],
+            custom_lvm=[
+                {"vg": "vg0", "lv": "root", "size": "40GB", "mount": "/",
+                 "filesystem": "ext4"},
+                {"vg": "vg0", "lv": "home", "size": "rest", "mount": "/home",
+                 "filesystem": "ext4"},
+            ])
+        engine.set_progress_hook(lambda *a: None)
+        mounts = []
+        engine.do_mount = lambda dev, dest, fs, opts: mounts.append((dev, dest, fs))
+        sys_cmds = []
+        monkeypatch.setattr(installer.os, "system",
+                            lambda cmd: sys_cmds.append(cmd) or 0)
+        monkeypatch.setattr(installer.time, "sleep", lambda *a: None)
+        monkeypatch.setattr(installer.os.path, "exists", lambda p: True)
+        fake_dev = type("D", (), {
+            "path": "/dev/vda",
+            "getLength": lambda self, unit: 256 * 10**9,
+            "sectorSize": 512})()
+        monkeypatch.setattr(installer.parted, "getDevice", lambda p: fake_dev,
+                            raising=False)
+        monkeypatch.setattr(installer.partitioning,
+                            "get_device_naming_scheme_prefix", lambda p: "")
+
+        engine._create_custom_partitions()
+
+        # LVM + filesystems through the runner
+        assert "pvcreate -y /dev/vda3" in runner.commands
+        assert "vgcreate -y vg0 /dev/vda3" in runner.commands
+        assert "lvcreate -y -n root -L 40000M vg0" in runner.commands
+        assert "lvcreate -y -n home -l 100%FREE vg0" in runner.commands
+        assert "mkfs.vfat /dev/vda1 -F 32" in runner.commands
+        assert "mkfs.ext4 -F /dev/vg0/root" in runner.commands
+        assert "mkswap /dev/vda2" in runner.commands
+        # parted through os.system
+        assert any("mklabel gpt" in c for c in sys_cmds)
+        assert any("set 1 esp on" in c for c in sys_cmds)
+        # mounts recorded; root mounted before deeper paths
+        targets = [m[1] for m in mounts]
+        assert targets[0] == "/target"                 # / first
+        assert "/target/home" in targets
+        assert "/target/boot/efi" in targets
+        assert ("/dev/vg0/root", "/", "ext4") in engine.auto_mounts

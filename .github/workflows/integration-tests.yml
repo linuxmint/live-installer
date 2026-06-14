@@ -47,7 +47,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        scenario: [bios-simple, uefi-simple, uefi-lvm, uefi-lvm-luks, bios-multi-disk, pxe-simple, pxe-uefi-simple, netboot-ipv6-simple]
+        scenario: [bios-simple, uefi-simple, uefi-lvm, uefi-lvm-luks, bios-multi-disk, pxe-simple, pxe-uefi-simple, netboot-ipv6-simple, custom-uefi]
     steps:
       - uses: actions/checkout@v6
 
