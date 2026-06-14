@@ -1010,3 +1010,38 @@ class TestApplyDrivers:
         joined = "\n".join(driver.runner.commands)
         assert "command -v ubuntu-drivers" in joined
         assert "ubuntu-drivers install" not in joined
+
+
+class TestBuildSetupRaid:
+    RAID = textwrap.dedent("""\
+        storage:
+          layout: custom
+          disks:
+            - {match: {by-id: "diskA*"}}
+            - {match: {by-id: "diskB*"}}
+          partitions:
+            - {size: rest, raid: md0}
+          raid:
+            - {name: md0, level: 1, mount: /, filesystem: ext4}
+    """)
+
+    def _config(self):
+        # make_config sets storage.target; build a fresh config with disks
+        base = textwrap.dedent("""\
+            version: 1
+            locale: en_US.UTF-8
+            timezone: America/Toronto
+            users:
+              - {name: a, passwd: "$6$rounds=4096$s$h"}
+        """)
+        return schema.parse_config(base + self.RAID)
+
+    def test_multidisk_and_raid_passthrough(self):
+        setup = auto_installer.build_setup(
+            self._config(), disks=["/dev/vda", "/dev/vdb"], efi=False,
+            is_mint=False)
+        assert setup.disks == ["/dev/vda", "/dev/vdb"]
+        assert setup.disk == "/dev/vda"
+        assert setup.custom_raid[0]["name"] == "md0"
+        assert setup.custom_raid[0]["level"] == 1
+        assert setup.custom_partitions[0]["raid"] == "md0"
