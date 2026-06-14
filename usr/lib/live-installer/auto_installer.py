@@ -85,11 +85,17 @@ def fetch_answer_file(source, insecure=False):
         raise schema.ConfigError(f"Cannot read {source}: {exc}")
 
 
+_NFS_VERSIONS = ("3", "4", "4.0", "4.1", "4.2")
+
+
 def _parse_nfs_url(source):
-    """nfs://host[:port]/export/dir/file.yaml -> (host, '/export/dir', 'file.yaml').
+    """nfs://host[:port]/export/dir/file.yaml[?vers=N] ->
+    (host, '/export/dir', 'file.yaml', vers_or_None).
 
     The whole directory is mounted and the file read from it; NFSv4 and most
-    NFSv3 exports allow mounting a subdirectory of an export this way.
+    NFSv3 exports allow mounting a subdirectory of an export this way. An
+    optional ?vers= query pins the protocol version (e.g. for a v3-only filer
+    or a policy that requires v4.2); omitted, mount.nfs negotiates.
     """
     # urlsplit is IPv6-aware: it strips the brackets from a [2001:db8::1]
     # literal and separates any :port, which a naive split(":") would mangle.
@@ -99,7 +105,16 @@ def _parse_nfs_url(source):
         raise schema.ConfigError(
             f"Malformed NFS URL {source!r}; expected nfs://host/export/file.yaml"
         )
-    return host, os.path.dirname(path), os.path.basename(path)
+    vers = None
+    if parts.query:
+        query = urllib.parse.parse_qs(parts.query)
+        if "vers" in query:
+            vers = query["vers"][-1]
+            if vers not in _NFS_VERSIONS:
+                raise schema.ConfigError(
+                    f"Unsupported NFS vers={vers!r} in {source!r}; expected one "
+                    f"of {', '.join(_NFS_VERSIONS)}")
+    return host, os.path.dirname(path), os.path.basename(path), vers
 
 
 def _nfs_mount_source(host, export_dir):
@@ -109,14 +124,17 @@ def _nfs_mount_source(host, export_dir):
     return f"{spec_host}:{export_dir}"
 
 
-def _nfs_mount(host, export_dir):
+def _nfs_mount(host, export_dir, vers=None):
     """Mount host:export_dir read-only on a fresh temp dir; return its path.
-    Factored out so tests can stub the actual mount."""
+    Factored out so tests can stub the actual mount. `vers` pins the NFS
+    protocol version when set; otherwise mount.nfs negotiates."""
     mountpoint = tempfile.mkdtemp(prefix="li-nfs-")
     spec = _nfs_mount_source(host, export_dir)
+    options = "ro,nolock,soft,timeo=100,retrans=2"
+    if vers:
+        options += f",vers={vers}"
     result = subprocess.run(
-        ["mount", "-t", "nfs", "-o", "ro,nolock,soft,timeo=100,retrans=2",
-         spec, mountpoint],
+        ["mount", "-t", "nfs", "-o", options, spec, mountpoint],
         capture_output=True, text=True,
     )
     if result.returncode != 0:
@@ -261,8 +279,8 @@ def _tftp_read(family, addr, path, source, timeout, request_options):
 
 
 def _fetch_nfs(source):
-    host, export_dir, filename = _parse_nfs_url(source)
-    mountpoint = _nfs_mount(host, export_dir)
+    host, export_dir, filename, vers = _parse_nfs_url(source)
+    mountpoint = _nfs_mount(host, export_dir, vers=vers)
     try:
         with open(os.path.join(mountpoint, filename), encoding="utf-8") as f:
             return f.read()
