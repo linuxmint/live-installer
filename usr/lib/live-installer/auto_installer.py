@@ -715,6 +715,28 @@ class HeadlessDriver:
             for var in ("http_proxy", "https_proxy", "HTTP_PROXY", "HTTPS_PROXY"):
                 f.write("%s=%s\n" % (var, proxy))
 
+    def _apply_drivers(self):
+        # autoinstall's drivers: {install: true} — install recommended
+        # proprietary/DKMS drivers via ubuntu-drivers (from
+        # ubuntu-drivers-common, present on Mint through its Driver Manager).
+        # Runs after the package phase so apt and any added repos are ready.
+        # NOTE: under SecureBoot, a freshly-built DKMS module still needs
+        # interactive MOK enrollment at next boot — that wall is universal and
+        # cannot be automated here (it is not specific to this installer).
+        if not self.config.drivers.install:
+            return
+        self.log(" --> Installing recommended third-party drivers")
+        if self.runner.chroot("command -v ubuntu-drivers >/dev/null 2>&1") != 0:
+            self.log("WARNING: ubuntu-drivers not available (e.g. on LMDE); "
+                     "skipping. List specific driver packages under 'packages:' "
+                     "instead.")
+            return
+        rc = self.runner.chroot(
+            "DEBIAN_FRONTEND=noninteractive ubuntu-drivers install")
+        if rc != 0:
+            self._policy("package_install_failure",
+                         "ubuntu-drivers install failed")
+
     def _apply_ca_certs(self):
         # Install CA certificates into the system trust store via a swappable
         # backend (update-ca-certificates today). Run BEFORE _apply_packages so
@@ -954,6 +976,7 @@ class HeadlessDriver:
                 or self.config.network is not None
                 or self.config.proxy is not None
                 or self.config.ca_certs is not None
+                or self.config.drivers.install
             )
 
             def post_install_hook():
@@ -963,6 +986,7 @@ class HeadlessDriver:
                 self._apply_proxy()
                 self._apply_ca_certs()
                 self._apply_packages()
+                self._apply_drivers()
                 self._apply_network()
                 self._setup_luks_first_boot_rekey(setup)
                 self._regenerate_initramfs_if_luks()

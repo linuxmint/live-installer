@@ -166,6 +166,7 @@ Keys that overlap with cloud-init use cloud-init's name and structure.
 | `late_commands` | no | Shell commands run in the target at end of install; see [late_commands](#late_commands). |
 | `kernel` | no | `cmdline_extra` and `serial_console`; see [kernel](#kernel). |
 | `oem` | no | `enabled`: leave the machine in OEM first-boot state. |
+| `drivers` | no | `install: true` installs recommended proprietary/DKMS drivers; see [drivers](#drivers). |
 | `on_failure` | no | Per-failure-mode policy; see [failure handling](#failure-handling). |
 | `logging` | no | `destination` (log file path) and `also_serial` (e.g. `ttyS0`). |
 
@@ -539,6 +540,28 @@ provide replacements), so it is rejected with an empty `trusted`.
 This is the **system** trust store only. It is deliberately separate from any
 future per-connection 802.1X/EAP trust (which lives in a NetworkManager
 profile and does not consult the system store).
+
+### drivers
+
+Install recommended proprietary / DKMS drivers (e.g. NVIDIA), the way Ubuntu
+autoinstall's `drivers:` does:
+
+```yaml
+drivers:
+  install: true
+```
+
+This runs `ubuntu-drivers install` after the package phase. `ubuntu-drivers`
+comes from `ubuntu-drivers-common`, which Mint ships (its Driver Manager uses
+it); on **LMDE/Debian** it is absent, so the directive is a logged no-op — list
+the specific driver packages under `packages:` there instead.
+
+**SecureBoot caveat:** a freshly built DKMS module is signed by a local
+Machine Owner Key that must be **enrolled interactively at the next boot**
+(the blue MOK Manager screen). That enrollment cannot be automated — it is a
+universal SecureBoot limitation, not specific to this installer, and even
+autoinstall's `drivers:` hits it. On SecureBoot machines, expect a one-time
+manual MOK enrollment, or disable SecureBoot.
 
 ### late_commands
 

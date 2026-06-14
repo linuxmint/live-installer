@@ -980,3 +980,33 @@ class TestApplyProxy:
         driver, _runner, _e = make_driver(make_config())
         driver._apply_proxy(target=str(tmp_path))
         assert list(tmp_path.iterdir()) == []
+
+
+class TestApplyDrivers:
+    def test_noop_when_not_requested(self):
+        driver, runner, _e = make_driver(make_config())
+        driver._apply_drivers()
+        assert runner.commands == []
+
+    def test_installs_when_available(self):
+        config = make_config(extra="drivers: {install: true}\n")
+        driver, runner, _e = make_driver(config)
+        driver._apply_drivers()
+        joined = "\n".join(runner.commands)
+        assert "command -v ubuntu-drivers" in joined
+        assert "ubuntu-drivers install" in joined
+
+    def test_skips_when_unavailable(self):
+        # ubuntu-drivers absent (e.g. LMDE): the `command -v` probe fails, so
+        # the install is skipped rather than erroring.
+        class Runner(RecordingRunner):
+            def chroot(self, command, check=False, target="/target"):
+                self.commands.append(command)
+                return 1 if "command -v ubuntu-drivers" in command else 0
+        config = make_config(extra="drivers: {install: true}\n")
+        driver, _r, engine = make_driver(config)
+        driver.runner = Runner()
+        driver._apply_drivers()
+        joined = "\n".join(driver.runner.commands)
+        assert "command -v ubuntu-drivers" in joined
+        assert "ubuntu-drivers install" not in joined
