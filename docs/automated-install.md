@@ -214,13 +214,45 @@ than one** matches, the install aborts with the list of available disks
 
 Layout presets: `simple` (single root + swap), `lvm` (LVM with root and
 swap logical volumes), `lvm-on-luks` (the same, on a LUKS2 container).
-Custom partition layouts are not available in unattended mode — use the
-GUI for those.
 
 For `lvm-on-luks`, `passphrase_source` selects how the volume is
 unlocked at boot: `prompt-on-first-boot` (the admin types it), `keyfile`
 (read from a local path or an http(s) URL — same TLS rule as the answer
 file), or `tpm2`.
+
+### Custom partition layouts
+
+For full control, `layout: custom` takes an explicit `partitions` list
+(and optionally an `lvm` list). The disk is wiped and the partitions are
+created in order.
+
+```yaml
+storage:
+  target:
+    match: {first-non-removable: true}
+  layout: custom
+  partitions:
+    - {size: 512MB, mount: /boot/efi, filesystem: vfat, flags: [esp]}
+    - {size: 2GB,   mount: swap,      filesystem: swap}
+    - {size: rest,  lvm_pv: vg0}          # this partition becomes an LVM PV
+  lvm:
+    - {vg: vg0, lv: root, size: 40GB, mount: /,     filesystem: ext4}
+    - {vg: vg0, lv: home, size: rest, mount: /home, filesystem: ext4}
+```
+
+Each **partition** has a `size` (`512MB`/`40GB`/`1TB`, or `rest` for the
+remainder), and is one of: a mounted partition (`mount` + `filesystem`),
+an LVM physical volume (`lvm_pv: <vg>`), or a flag-only partition. `flags`
+may include `esp` (an EFI System Partition — must be `vfat` at `/boot/efi`),
+`bios_grub` (the BIOS-boot partition for GPT), or `swap`. Each **lvm**
+entry is a logical volume (`vg`, `lv`, `size`, `mount`, `filesystem`) on a
+VG backed by an `lvm_pv` partition.
+
+Rules, all enforced at validation: exactly one `/`; no duplicate mount
+points; at most one `rest` per disk and per VG; every `lvm_pv` VG must
+have logical volumes and vice versa. Filesystems: `ext4`/`ext3`/`ext2`,
+`xfs`, `btrfs`, `vfat`, `f2fs`, `swap`. RAID and btrfs subvolumes are not
+in custom layouts yet.
 
 ### kernel
 
@@ -319,6 +351,7 @@ A complete, runnable answer file for each layout lives under
 | `uefi-lvm.yaml` | LVM layout on a UEFI machine |
 | `uefi-lvm-luks.yaml` | LUKS-encrypted LVM with a keyfile and serial console |
 | `bios-multi-disk.yaml` | Selecting one disk out of several by `by-id` |
+| `custom.yaml` | Custom layout: explicit ESP + swap partitions and a custom LVM vg with root/home |
 
 These double as the integration-test fixtures, so they are guaranteed to
 stay valid against the current schema.
@@ -383,7 +416,8 @@ server cannot wedge the install indefinitely.
 
 ## Limitations (v1)
 
-- Custom partition layouts require the GUI installer.
+- Custom partition layouts cover explicit partitions and custom LVM;
+  software RAID and btrfs subvolumes are not supported yet.
 - Config delivery is local file, http(s) URL, NFS, or TFTP, plus `auto`
   identity-based discovery; DNS-SRV discovery is not supported.
 - The config is data, not a program — no conditionals, loops, or

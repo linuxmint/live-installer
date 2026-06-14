@@ -38,7 +38,7 @@ Legend: ✅ full, ◐ partial or preset-only, ✗ not supported.
 | Disk select by stable id | ✅ | ◐ awkward | ✅ | ✅ |
 | Refuses ambiguous disk match | ◐ | ✗ | ◐ | ✅ |
 | Layout presets | ✅ autopart | ◐ recipes | ✅ | ✅ (3) |
-| Fully custom partitioning | ✅ | ✅ | ✅ | ✗ |
+| Fully custom partitioning | ✅ | ✅ | ✅ | ◐ (explicit partitions + custom LVM; no RAID/btrfs-subvol) |
 | LVM | ✅ | ✅ | ✅ | ✅ |
 | Software RAID | ✅ | ✅ | ✅ | ✗ |
 | btrfs / zfs | ✅ / ◐ | ◐ / ✗ | ✅ / ✅ | ✗ |
@@ -110,9 +110,9 @@ this targets:
    value (e.g. enable ssh, disable a default daemon).
 3. **Package groups / metapackages.** Today it is a flat list; Mint has
    meta-packages that would be convenient to name.
-4. **Custom partition layouts.** The hardest one. Would mean exposing more
-   of the engine's partitioning, and touches the GTK-coupled partition
-   code. Big.
+4. **Custom partition layouts.** Done for explicit partitions plus custom
+   LVM (`layout: custom`). Software RAID and btrfs subvolumes are the
+   remaining extensions.
 5. **TPM2 / NBDE (Clevis-Tang) LUKS unlock.** For passwordless encrypted
    boot at scale. The schema already reserves `tpm2`.
 6. **A `%pre`-style hook.** Run logic before partitioning (e.g. choose a
