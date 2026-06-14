@@ -100,6 +100,52 @@ class TestReadMachineIdentity:
             net_dir=str(tmp_path / "none"), dmi_dir=str(tmp_path / "none2"))
         assert ident == {"macs": [], "serial": None, "uuid": None}
 
+    def test_wifi_type1_with_wireless_dir_excluded(self, tmp_path):
+        # Real wifi reports ARPHRD_ETHER (type 1) just like wired, so the type
+        # check alone can't exclude it (review #4); the wireless/ subdir does.
+        net = tmp_path / "net"
+        for name, addr, wireless in [
+            ("eth0", "AA:BB:CC:00:11:22", False),
+            ("wlp2s0", "DD:EE:FF:00:11:22", True),
+        ]:
+            d = net / name
+            d.mkdir(parents=True)
+            (d / "type").write_text("1\n")
+            (d / "address").write_text(addr + "\n")
+            if wireless:
+                (d / "wireless").mkdir()
+        ident = discovery.read_machine_identity(
+            net_dir=str(net), dmi_dir=str(tmp_path / "nodmi"))
+        assert ident["macs"] == ["aa:bb:cc:00:11:22"]  # wifi excluded
+
+    def _dmi(self, tmp_path, serial, uuid):
+        dmi = tmp_path / "dmi"
+        dmi.mkdir()
+        (dmi / "product_serial").write_text(serial + "\n")
+        (dmi / "product_uuid").write_text(uuid + "\n")
+        return dict(net_dir=str(tmp_path / "nonet"), dmi_dir=str(dmi))
+
+    def test_sentinel_uuid_dropped_and_logged(self, tmp_path):
+        logs = []
+        ident = discovery.read_machine_identity(
+            log=logs.append,
+            **self._dmi(tmp_path, "SN-9", "00000000-0000-0000-0000-000000000000"))
+        assert ident["uuid"] is None
+        assert ident["serial"] == "SN-9"
+        assert any("product_uuid" in m for m in logs)
+
+    def test_sentinel_uuid_case_insensitive(self, tmp_path):
+        ident = discovery.read_machine_identity(
+            **self._dmi(tmp_path, "SN-9", "FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF"))
+        assert ident["uuid"] is None
+
+    def test_sentinel_serial_dropped(self, tmp_path):
+        ident = discovery.read_machine_identity(
+            **self._dmi(tmp_path, "To Be Filled By O.E.M.",
+                        "4c4c4544-1234-5678-9abc-def012345678"))
+        assert ident["serial"] is None
+        assert ident["uuid"] == "4c4c4544-1234-5678-9abc-def012345678"  # real, kept
+
 
 class TestDiscover:
     def test_first_valid_wins(self):

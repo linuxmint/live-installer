@@ -147,9 +147,19 @@ def _parse_tftp_url(source):
     return host, parts.port or 69, path
 
 
+# RFC 1350 transfers 512 bytes per round-trip with no options negotiation
+# (no RFC 2347 blksize/tsize). That is fine for an answer file or keyfile —
+# a few hundred packets, sub-second on a LAN — but it gets slow fast for
+# anything large. This client is intended for files under ~64 KiB; fetch
+# larger payloads over HTTP instead. Warn past this so a misuse is visible.
+_TFTP_WARN_BYTES = 256 * 1024
+
+
 def _fetch_tftp(source, timeout=10):
     """Minimal RFC 1350 read client (octet mode, 512-byte blocks): enough for a
-    small answer file or keyfile. TFTP is cleartext, so it is gated like HTTP."""
+    small answer file or keyfile. No option negotiation (RFC 2347), so it is not
+    meant for large payloads — use HTTP for those. TFTP is cleartext, so it is
+    gated like HTTP."""
     host, port, path = _parse_tftp_url(source)
     try:
         family = socket.getaddrinfo(host, port, type=socket.SOCK_DGRAM)[0][0]
@@ -163,6 +173,7 @@ def _fetch_tftp(source, timeout=10):
         data = bytearray()
         expected = 1
         server = None
+        warned = False
         while True:
             try:
                 pkt, src = sock.recvfrom(2048)
@@ -182,6 +193,11 @@ def _fetch_tftp(source, timeout=10):
                 data.extend(pkt[4:])
                 sock.sendto(b"\x00\x04" + block, server)
                 expected += 1
+                if not warned and len(data) > _TFTP_WARN_BYTES:
+                    warned = True
+                    print(f"WARNING: TFTP transfer of {source} exceeds "
+                          f"{_TFTP_WARN_BYTES // 1024} KiB; 512-byte blocks "
+                          "are slow for large files — prefer HTTP.")
                 if len(pkt[4:]) < 512:
                     break  # short block ends the transfer
             else:  # duplicate; re-ack what we got and wait for the right one
@@ -775,7 +791,7 @@ def acquire_answer_text(source, insecure, log=lambda _m: None):
     is_auto, base = discovery.parse_auto_trigger(source)
     if not is_auto:
         return fetch_answer_file(source, insecure)
-    identity = discovery.read_machine_identity()
+    identity = discovery.read_machine_identity(log=log)
     candidates = discovery.candidate_sources(
         base, macs=identity["macs"], serial=identity["serial"],
         uuid=identity["uuid"])

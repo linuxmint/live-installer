@@ -72,7 +72,7 @@ The installer runs in automated mode when **either** is present:
 | HTTPS URL | `https://cfg.example.com/host.yaml` | For PXE / netboot. TLS required (see below). |
 | HTTP URL | `http://10.0.0.1/host.yaml` | Refused unless `live-installer.auto-insecure` is also on the cmdline (or `--insecure`). |
 | NFS URL | `nfs://10.0.0.1/srv/cfg/host.yaml` | The directory is mounted read-only and the file read from it. Cleartext, so refused unless `live-installer.auto-insecure` (or `--insecure`). |
-| TFTP URL | `tftp://10.0.0.1/host.yaml` | Fetched with a built-in TFTP read client (no extra tooling), for PXE setups that already run a TFTP server. Cleartext, so refused unless `live-installer.auto-insecure` (or `--insecure`). |
+| TFTP URL | `tftp://10.0.0.1/host.yaml` | Fetched with a built-in TFTP read client (no extra tooling), for PXE setups that already run a TFTP server. Plain RFC 1350 (512-byte blocks, no options negotiation), so it is meant for small files like an answer file or keyfile — use HTTP for large payloads. Cleartext, so refused unless `live-installer.auto-insecure` (or `--insecure`). |
 | Auto-discovery | `auto:https://cfg.example.com/` | One entry for a whole fleet: the installer finds its own file from this machine's identity. See [auto-discovery](#auto-discovery-for-netboot). |
 
 Answer files carry password hashes (and may reference key material), so
@@ -213,6 +213,11 @@ All present matchers must agree. If **no** disk matches, or if **more
 than one** matches, the install aborts with the list of available disks
 — it never guesses which disk to erase.
 
+`on_no_match` currently accepts only `abort` (the fail-closed default). It
+is a field rather than implied behaviour so future values — e.g. `prompt`
+(ask on the console) or `first-internal-disk` (a documented relaxation) —
+can be added without a schema version bump.
+
 Layout presets: `simple` (single root + swap), `lvm` (LVM with root and
 swap logical volumes), `lvm-on-luks` (the same, on a LUKS2 container).
 
@@ -317,7 +322,7 @@ robust choice for a mixed fleet, since the kernel name is unpredictable),
 an `id` (the 802.1Q tag) and a `link` (the parent ethernet/wifi/vlan id).
 
 Each interface takes: `dhcp4`/`dhcp6` (default false), `addresses` (a list of
-`IP/prefix`, IPv4 and/or IPv6), `gateway4`/`gateway6`, `nameservers`
+`IP/prefix`, IPv4 and/or IPv6), a default gateway, `nameservers`
 (`addresses` + `search`), and `routes` (`to` is `default` or a CIDR, `via` is
 the next hop, optional `metric`). Per family: DHCP → NM `auto`; a static
 address → `manual`; neither → IPv4 `disabled` / IPv6 `link-local`. So a NIC
@@ -326,6 +331,27 @@ SLAAC/DHCPv6 (`auto`). Validation rejects addresses without a prefix length,
 gateways of the wrong family or with no matching address, routes whose `via`
 family disagrees with `to`, VLAN ids outside 0..4094, and VLAN links that do
 not name a defined interface. Bonds and bridges are not modelled yet.
+
+**Default gateway — prefer `routes`.** netplan deprecated `gateway4`/`gateway6`
+in 2022 in favour of an explicit default route, so use that form as the
+canonical one:
+
+```yaml
+      routes:
+        - {to: default, via: 192.168.50.1}      # IPv4 default
+        - {to: default, via: "2001:db8:50::1"}  # IPv6 default
+```
+
+`gateway4`/`gateway6` are still accepted as a convenience for configs carried
+over from older netplan, and render identically, but new answer files should
+use `routes`.
+
+**Binding is your responsibility.** Each connection should select exactly one
+device — bind by `match.macaddress` (best for a mixed fleet) or a unique
+interface name. If a `match` is loose enough to apply to several NICs, or two
+connections claim the same interface name, which one NetworkManager activates
+is undefined. The installer does not set `autoconnect-priority`, so don't rely
+on ordering to disambiguate — make each match specific.
 
 #### wifi
 
