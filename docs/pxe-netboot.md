@@ -143,7 +143,8 @@ default).
 ## How it is tested
 
 The `pxe-simple` (BIOS) and `pxe-uefi-simple` (UEFI) integration scenarios
-perform real PXE installs end to end with no media, using QEMU's user-mode
+perform real PXE installs end to end with no media, and `netboot-ipv6-simple`
+covers the IPv6 data path (see below). They use QEMU's user-mode
 network: its built-in TFTP/BOOTP server boots the kernel/initrd, live-boot
 fetches the combined squashfs over the harness HTTP server, and the
 install runs and is verified over SSH on the booted system. No privileged
@@ -192,11 +193,22 @@ listed so the next person does not rediscover them:
    the bundle (requirement 2). UEFI also needs an EFI boot binary
    (`ipxe.efi`) and a NIC `bootindex`, since OVMF cannot run a raw script.
 
-### Not yet covered: IPv6
+### IPv6
 
-Both BIOS and UEFI PXE are tested over IPv4. IPv6 netboot is not yet
-covered: the initramfs networking (`ip=dhcp`) is IPv4-only, so an IPv6
-`fetch=` can fail in the initramfs even though the running installer
-resolves IPv6 fine. Treat IPv6 PXE boot as unproven until the initramfs
-IPv6 bring-up has been watched working. Answer-file and keyfile fetching
-over IPv6 (http/https/nfs) in the running installer is supported.
+The IPv6 story splits in two:
+
+- **IPv6 data path — supported and tested.** The `netboot-ipv6-simple`
+  scenario performs an unattended install with the rootfs squashfs and the
+  answer file both fetched over IPv6. live-boot's `fetch=` brings up IPv6 in
+  the initramfs via SLAAC (the `ip=dhcp` cmdline starts the link; the kernel
+  autoconfigures IPv6 from router advertisements), and the installer fetches
+  its answer file over IPv6 too. Answer-file and keyfile fetching over IPv6
+  (http/https/nfs) is supported throughout.
+- **IPv6 PXE firmware boot — not testable in slirp-based CI.** Enabling IPv6
+  in QEMU's user-mode network breaks the firmware PXE boot itself (slirp has
+  no DHCPv6 boot-URL option and the IPv4 PXE ROM stalls when IPv6 is
+  present). So the IPv6 scenario boots the kernel directly (QEMU `-kernel`)
+  rather than over PXE, and still fetches everything over IPv6 — which is the
+  part the installer owns. A real IPv6 deployment would PXE-boot over IPv6
+  (DHCPv6 + UEFI HTTP boot); that infrastructure cannot be emulated in
+  user-mode networking.
