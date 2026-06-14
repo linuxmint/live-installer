@@ -33,6 +33,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
+import catrust
 import discovery
 import diskmatch
 import mint_detect
@@ -714,6 +715,16 @@ class HeadlessDriver:
             for var in ("http_proxy", "https_proxy", "HTTP_PROXY", "HTTPS_PROXY"):
                 f.write("%s=%s\n" % (var, proxy))
 
+    def _apply_ca_certs(self):
+        # Install CA certificates into the system trust store via a swappable
+        # backend (update-ca-certificates today). Run BEFORE _apply_packages so
+        # a corporate-PKI cert is trusted when apt fetches over HTTPS.
+        if self.config.ca_certs is None:
+            return
+        backend = catrust.get_ca_trust_backend(
+            self.runner, self._policy, self.log)
+        backend.apply(self.config.ca_certs)
+
     def _apply_packages(self):
         # Repo config (cloud-init's apt: shape) and the agnostic packages/
         # package_remove lists are applied by a swappable package backend, so
@@ -942,6 +953,7 @@ class HeadlessDriver:
                 or self.config.storage.layout == "lvm-on-luks"
                 or self.config.network is not None
                 or self.config.proxy is not None
+                or self.config.ca_certs is not None
             )
 
             def post_install_hook():
@@ -949,6 +961,7 @@ class HeadlessDriver:
                 self._create_extra_users()
                 self._apply_ssh_keys()
                 self._apply_proxy()
+                self._apply_ca_certs()
                 self._apply_packages()
                 self._apply_network()
                 self._setup_luks_first_boot_rekey(setup)

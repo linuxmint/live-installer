@@ -71,6 +71,7 @@ Legend: ✅ full, ◐ partial or preset-only, ✗ not supported.
 | Declarative package removal | ✅ | ◐ | ◐ | ✅ |
 | Add third-party repositories | ✅ | ◐ | ✅ | ✅ |
 | System http(s) proxy | ✅ | ✅ | ✅ | ✅ |
+| Custom CA trust store | ◐ | ◐ | ◐ (via cloud-init) | ✅ (`ca_certs:`) |
 | Pre-install scripts (%pre) | ✅ | ✅ | ✅ | ✗ |
 | Post-install scripts | ✅ | ✅ | ✅ | ✅ (late_commands, in target) |
 | First-boot scripts | ◐ | ✗ | ✅ cloud-init | ✗ |

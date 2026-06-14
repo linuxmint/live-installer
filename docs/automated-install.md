@@ -153,6 +153,7 @@ Keys that overlap with cloud-init use cloud-init's name and structure.
 | `locale` | yes | The primary locale, e.g. `en_US.UTF-8` — sets `LANG` (cloud-init style, top level). |
 | `additional_locales` | no | Extra locales to also generate (e.g. `[fr_CA.UTF-8]`), available even though `LANG` stays `locale`. |
 | `proxy` | no | System-wide http(s) proxy URL (e.g. `http://proxy.corp:3128`); used by apt during the install and by the installed system. |
+| `ca_certs` | no | CA certificates to add to the system trust store (cloud-init `ca_certs:` shape); see [ca_certs](#ca_certs). |
 | `timezone` | yes | IANA timezone, e.g. `America/Toronto` (top level). |
 | `users` | yes | At least one user; see [users](#users). |
 | `storage` | yes | Disk target and layout; see [storage](#storage). |
@@ -508,6 +509,36 @@ installed, so the install's own apt fetches go through it, and to
 TLS client on the installed system. The URL must be an `http://`/`https://`
 URL with no quotes or whitespace. (Note: this does not affect the installer's
 own answer-file/keyfile fetch, which happens before the proxy is known.)
+
+### ca_certs
+
+Add CA certificates to the **system** trust store (`/etc/ssl/certs`, consulted
+by apt, curl, and TLS clients) — for a corporate MITM-proxy CA or an internal
+PKI root. Mirrors cloud-init's `ca_certs:`:
+
+```yaml
+ca_certs:
+  remove_defaults: false        # almost always false; see the warning below
+  trusted:
+    - |
+      -----BEGIN CERTIFICATE-----
+      MIID...corporate root CA...
+      -----END CERTIFICATE-----
+```
+
+Each `trusted` entry is an inline PEM certificate, written to
+`/usr/local/share/ca-certificates/li-ca-N.crt` and merged into the trust store
+with `update-ca-certificates` (run **before** packages install, so a private
+mirror's CA is trusted in time). Validation **rejects a private key** in
+`trusted` (a trust store holds public certs only) and non-PEM junk.
+
+`remove_defaults: true` wipes the bundled (Mozilla) trust and keeps only your
+`trusted` certs — dangerous (it breaks apt-over-HTTPS and most TLS unless you
+provide replacements), so it is rejected with an empty `trusted`.
+
+This is the **system** trust store only. It is deliberately separate from any
+future per-connection 802.1X/EAP trust (which lives in a NetworkManager
+profile and does not consult the system store).
 
 ### late_commands
 
