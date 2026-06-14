@@ -91,7 +91,7 @@ storage:
   target:
     match:
       first-non-removable: true   # or by-id / by-path / model from step 2
-  layout: simple                  # simple | lvm | lvm-on-luks
+  layout: simple                  # simple | lvm | lvm-on-luks | custom
 ```
 
 Generate the password hash with `openssl passwd -6` (plaintext passwords
@@ -167,11 +167,13 @@ mechanics and how to drive it over IPMI Serial-over-LAN.
 
 ## Ready-made examples
 
-Four complete, valid answer files live in
+Complete, valid answer files live in
 [`tests/integration/scenarios/answers/`](../tests/integration/scenarios/answers/),
-one per layout. They double as the integration-test fixtures, so they are
-guaranteed to match the current schema. Start from the one closest to what
-you want and run it through `--check`.
+covering each layout (`bios-simple`, `uefi-lvm`, `uefi-lvm-luks`, `custom`,
+`btrfs`) plus multi-disk selection, static networking, and netboot. They
+double as the integration-test fixtures, so they are guaranteed to match the
+current schema. Start from the one closest to what you want and run it
+through `--check`.
 
 ## Reporting back
 

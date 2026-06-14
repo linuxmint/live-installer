@@ -154,7 +154,7 @@ Keys that overlap with cloud-init use cloud-init's name and structure.
 | `timezone` | yes | IANA timezone, e.g. `America/Toronto` (top level). |
 | `users` | yes | At least one user; see [users](#users). |
 | `storage` | yes | Disk target and layout; see [storage](#storage). |
-| `hostname` | no | System hostname. DHCP/default if omitted. |
+| `hostname` | no | System hostname. Defaults to `mint` if omitted. |
 | `keyboard` | no | `model` (default `pc105`), `layout` (default `us`), `variant`. |
 | `network` | no | Static IP / DNS / VLAN / wifi config (netplan v2 subset); see [network](#network). DHCP on all NICs if omitted. |
 | `packages` | no | Flat list of packages to install (cloud-init style). |
@@ -193,8 +193,8 @@ storage:
     on_no_match: abort   # only 'abort' is supported in v1
   layout: lvm-on-luks    # simple | lvm | lvm-on-luks
   luks:                  # only with layout: lvm-on-luks
-    passphrase_source: keyfile   # prompt-on-first-boot | tpm2 | keyfile
-    keyfile: "https://cfg.example.com/by-serial/${serial}.key"
+    passphrase_source: keyfile   # keyfile (implemented); prompt-on-first-boot/tpm2 reserved
+    keyfile: "https://cfg.example.com/keys/ws-01.key"
 ```
 
 **Disk targeting never uses `/dev/sdX`.** Kernel device naming is not
@@ -221,10 +221,20 @@ can be added without a schema version bump.
 Layout presets: `simple` (single root + swap), `lvm` (LVM with root and
 swap logical volumes), `lvm-on-luks` (the same, on a LUKS2 container).
 
-For `lvm-on-luks`, `passphrase_source` selects how the volume is
-unlocked at boot: `prompt-on-first-boot` (the admin types it), `keyfile`
-(read from a local path or an http(s) URL — same TLS rule as the answer
-file), or `tpm2`.
+For `lvm-on-luks`, `passphrase_source` selects how the installer obtains
+the encryption passphrase. **Only `keyfile` is implemented in the headless
+driver today** — read from a local path or an http(s) URL (same TLS rule as
+the answer file). `prompt-on-first-boot` and `tpm2` are reserved in the
+schema but not yet wired up, and the driver aborts with a clear error if you
+select them. The keyfile URL is fetched verbatim — there is no `${...}`
+templating (the config is data, not a program); for per-machine keyfiles,
+let each machine fetch its own answer file via `auto:` discovery and put the
+concrete keyfile URL in it.
+
+Note: this is the install-time passphrase. The *installed* system still
+prompts for the passphrase at every boot (on the serial console when a
+`kernel.serial_console` is set — see
+[serial-console-and-luks.md](serial-console-and-luks.md)).
 
 ### Custom partition layouts
 
@@ -278,9 +288,13 @@ A partition/LV with `subvolumes` must be `btrfs` and takes no top-level
 
 Rules, all enforced at validation: exactly one `/`; no duplicate mount
 points; at most one `rest` per disk and per VG; every `lvm_pv` VG must
-have logical volumes and vice versa. Filesystems: `ext4`/`ext3`/`ext2`,
+have logical volumes and vice versa; logical-volume names are unique within
+each VG; an `esp` partition must be `vfat` at `/boot/efi`, and a `/boot/efi`
+partition must carry the `esp` flag. Filesystems: `ext4`/`ext3`/`ext2`,
 `xfs`, `btrfs`, `vfat`, `f2fs`, `swap`. Software RAID is not in custom
-layouts yet.
+layouts yet. (One firmware rule can only be checked at install time, not by
+the schema: an `esp` partition on a BIOS machine, or a `bios_grub` partition
+on a UEFI machine, is rejected by the engine before any partition is created.)
 
 ### network
 
@@ -329,8 +343,10 @@ address → `manual`; neither → IPv4 `disabled` / IPv6 `link-local`. So a NIC
 with only an IPv4 address gets no global IPv6, and `dhcp6: true` selects
 SLAAC/DHCPv6 (`auto`). Validation rejects addresses without a prefix length,
 gateways of the wrong family or with no matching address, routes whose `via`
-family disagrees with `to`, VLAN ids outside 0..4094, and VLAN links that do
-not name a defined interface. Bonds and bridges are not modelled yet.
+family disagrees with `to`, VLAN ids outside 0..4094, VLAN links that do not
+name a defined interface (or that point at themselves), and an interface id
+reused across `ethernets`/`wifis`/`vlans`. Bonds and bridges are not
+modelled yet.
 
 **Default gateway — prefer `routes`.** netplan deprecated `gateway4`/`gateway6`
 in 2022 in favour of an explicit default route, so use that form as the
@@ -429,8 +445,10 @@ apt:
 Each source must carry **at most one** signing key — `key` (inline armored),
 `keyid` (fetched from `keyserver`), or `key_url` (fetched over https; an
 extension beyond cloud-init). The source line is written to
-`/etc/apt/sources.list.d/<name>.list` (override the basename with
-`filename:`), and the key to `/etc/apt/trusted.gpg.d/<name>`. `key_url` must
+`/etc/apt/sources.list.d/<name>.list` (override that basename with
+`filename:`), and the key to `/etc/apt/trusted.gpg.d/<name>.asc` (inline
+`key` or `key_url`) or `<name>.gpg` (`keyid`). The key filename always uses
+the source `<name>`; `filename:` only renames the `.list`. `key_url` must
 use HTTPS. **Quote `keyid` values** — an unquoted `0x…` is parsed as a YAML
 integer.
 

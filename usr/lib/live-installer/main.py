@@ -1357,11 +1357,16 @@ if __name__ == "__main__":
     if ("live-installer.auto=" in cmdline
             or any(arg.startswith("--automated") for arg in sys.argv)):
         import auto_installer
+        # Translate the --automated trigger, then forward every other flag to
+        # the headless driver unchanged, so --list-disks/--check/--config/
+        # --insecure/--dry-run all work via the `live-installer` entrypoint.
         auto_argv = []
         for arg in sys.argv[1:]:
             if arg.startswith("--automated="):
                 auto_argv += ["--config", arg.split("=", 1)[1]]
-            elif arg in ("--insecure", "--dry-run"):
+            elif arg == "--automated":
+                continue  # bare trigger, no source value
+            else:
                 auto_argv.append(arg)
         sys.exit(auto_installer.main(auto_argv))
 
