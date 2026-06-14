@@ -55,9 +55,10 @@ CMDLINE_INSECURE = "live-installer.auto-insecure"
 # matching what cryptsetup reads from the boot-time passphrase prompt.
 _LUKS_REKEY_SCRIPT = r"""#!/bin/sh
 # Installed by live-installer for storage.luks.passphrase_source:
-# prompt-on-first-boot. Runs once on first boot.
-set -e
-
+# prompt-on-first-boot. Runs once on first boot, prompting on the console
+# (serial included) for the real passphrase via a plain read on the tty.
+# Deliberately NOT `set -e` (a transient blkid must not kill the rekey) and
+# NOT systemd-ask-password (its agent path is fragile this early / headless).
 KEYFILE=/etc/cryptsetup-keys.d/cryptroot.key
 CRYPTTAB=/etc/crypttab
 HOOK=/etc/cryptsetup-initramfs/conf-hook
@@ -66,20 +67,25 @@ HOOK=/etc/cryptsetup-initramfs/conf-hook
 
 DEV=$(awk '$1=="lvmmint"{print $2}' "$CRYPTTAB")
 case "$DEV" in
-    UUID=*) DEV=$(blkid -U "${DEV#UUID=}") ;;
+    UUID=*) RES=$(blkid -U "${DEV#UUID=}" 2>/dev/null) && DEV="$RES" ;;
 esac
 
+stty -echo 2>/dev/null
 while :; do
-    PASS=$(systemd-ask-password --no-tty "Set the disk-encryption passphrase for this system:")
-    PASS2=$(systemd-ask-password --no-tty "Confirm the disk-encryption passphrase:")
+    printf '\n>>> Set the disk-encryption passphrase for this system: ' > /dev/console
+    IFS= read -r PASS || PASS=""
+    printf '\n>>> Confirm the disk-encryption passphrase: ' > /dev/console
+    IFS= read -r PASS2 || PASS2=""
     if [ -n "$PASS" ] && [ "$PASS" = "$PASS2" ]; then
         break
     fi
-    echo "Passphrases were empty or did not match; try again." > /dev/console
+    printf '\nPassphrases were empty or did not match; try again.\n' > /dev/console
 done
+stty echo 2>/dev/null
+printf '\n' > /dev/console
 
-printf '%s' "$PASS" | cryptsetup luksAddKey --key-file "$KEYFILE" "$DEV" -
-cryptsetup luksRemoveKey --key-file "$KEYFILE" "$DEV"
+printf '%s' "$PASS" | cryptsetup luksAddKey --key-file "$KEYFILE" "$DEV" - || exit 1
+cryptsetup luksRemoveKey --key-file "$KEYFILE" "$DEV" || exit 1
 
 shred -u "$KEYFILE" 2>/dev/null || rm -f "$KEYFILE"
 sed -i "s#$KEYFILE#none#" "$CRYPTTAB"
@@ -95,16 +101,20 @@ _LUKS_REKEY_SERVICE = """\
 [Unit]
 Description=First-boot LUKS passphrase setup (live-installer)
 ConditionPathExists=/etc/cryptsetup-keys.d/cryptroot.key
-Before=getty.target systemd-user-sessions.service
-After=local-fs.target
+# Run late (the system is up and the tty layer is ready) but before any getty
+# claims the console, so this owns the serial line for the prompt.
+After=systemd-user-sessions.service
+Before=getty.target serial-getty@ttyS0.service getty@tty1.service
 
 [Service]
 Type=oneshot
 ExecStart=/usr/local/sbin/li-luks-rekey
-StandardInput=tty
-StandardOutput=journal+console
+StandardInput=tty-force
+StandardOutput=tty
 StandardError=journal+console
 TTYPath=/dev/console
+TTYReset=yes
+TTYVHangup=yes
 RemainAfterExit=no
 
 [Install]
