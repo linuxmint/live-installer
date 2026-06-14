@@ -1,0 +1,51 @@
+# BIOS RAID1 /boot + RAID5 (3 disks) -> LVM -> root. The full multi-level +
+# LVM-on-RAID case, booted from the array and verified over SSH.
+name: raid5-lvm-bios
+description: Unattended BIOS install, RAID1 /boot + RAID5 LVM root, booted from the array
+
+firmware: bios
+tpm: false
+memory_mb: 4096
+cpus: 2
+
+disks:
+  - {size_gb: 16, serial: r5a}
+  - {size_gb: 16, serial: r5b}
+  - {size_gb: 16, serial: r5c}
+boot_disk_serial: r5a
+
+answer_file: answers/raid5-lvm-bios.yaml
+
+install_timeout_s: 1800
+boot_timeout_s: 360
+
+expect:
+  serial_markers:
+    - "Automated installation complete"
+  failure_markers:
+    - "Automated installation FAILED"
+
+ssh:
+  user: testuser
+
+verify:
+  - name: hostname-applied
+    type: command
+    command: hostname
+    expect_substring: "lmde-raid5-01"
+  - name: root-on-lvm
+    type: command
+    command: findmnt -n -o SOURCE /
+    expect_substring: "/dev/mapper/vg0-root"
+  - name: raid1-and-raid5-active
+    type: command
+    command: "grep -cE 'active raid(1|5)' /proc/mdstat"
+    expect_substring: "2"
+  - name: raid5-three-members
+    type: command
+    command: "grep -A2 'active raid5' /proc/mdstat | grep -o '\\[UUU\\]'"
+    expect_substring: "UUU"
+  - name: lvm-pv-on-md
+    type: command
+    command: "pvs --noheadings -o pv_name | tr -d ' '"
+    expect_substring: "/dev/md"
