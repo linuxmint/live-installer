@@ -492,9 +492,11 @@ class InstallerEngine:
             if part.get("lvm_pv"):
                 self.runner.run("pvcreate -y %s" % part_path)
                 pvs_by_vg.setdefault(part["lvm_pv"], []).append(part_path)
+            elif part.get("subvolumes"):
+                mounts.extend(self._btrfs_subvol_mounts(part_path, part["subvolumes"]))
             elif "bios_grub" not in part["flags"]:
                 self._format_device(part["filesystem"], part_path)
-                mounts.append((part_path, part["mount"], part["filesystem"]))
+                mounts.append((part_path, part["mount"], part["filesystem"], ""))
             if size != "rest":
                 start_mb += self._size_to_mb(size) + 1
 
@@ -508,20 +510,37 @@ class InstallerEngine:
                 self.runner.run("lvcreate -y -n %s -L %dM %s" % (vol["lv"], self._size_to_mb(size), vol["vg"]))
             lv_path = "/dev/%s/%s" % (vol["vg"], vol["lv"])
             self._wait_for_node("/dev/mapper/%s-%s" % (vol["vg"], vol["lv"]))
-            self._format_device(vol["filesystem"], lv_path)
-            mounts.append((lv_path, vol["mount"], vol["filesystem"]))
+            if vol.get("subvolumes"):
+                mounts.extend(self._btrfs_subvol_mounts(lv_path, vol["subvolumes"]))
+            else:
+                self._format_device(vol["filesystem"], lv_path)
+                mounts.append((lv_path, vol["mount"], vol["filesystem"], ""))
 
         self.auto_mounts = mounts
         # Mount parents before children: / first, then by path depth.
-        for device, mount, fs in sorted(mounts,
-                                        key=lambda m: (m[1] != "/", m[1].count("/"))):
+        for device, mount, fs, subvol in sorted(
+                mounts, key=lambda m: (m[1] != "/", m[1].count("/"))):
             if fs == "swap" or mount == "swap":
                 self.runner.run("swapon %s" % device)
                 continue
             target = "/target" if mount == "/" else "/target" + mount
             if mount != "/":
                 self.runner.run("mkdir -p %s" % target)
-            self.do_mount(device, target, fs, None)
+            options = ("subvol=%s" % subvol) if subvol else None
+            self.do_mount(device, target, fs, options)
+
+    def _btrfs_subvol_mounts(self, device, subvolumes):
+        """Format `device` btrfs, create its subvolumes, and return the mount
+        entries (device, mount, 'btrfs', subvol) that point each subvolume at
+        its mountpoint."""
+        self._format_device("btrfs", device)
+        top = "/run/li-btrfs-top"
+        self.runner.run("mkdir -p %s" % top)
+        self.runner.run("mount %s %s" % (device, top))
+        for sv in subvolumes:
+            self.runner.run("btrfs subvolume create %s/%s" % (top, sv["name"]))
+        self.runner.run("umount %s" % top)
+        return [(device, sv["mount"], "btrfs", sv["name"]) for sv in subvolumes]
 
     def create_partitions(self):
         if getattr(self.setup, "layout", None) == "custom":
@@ -730,14 +749,19 @@ class InstallerEngine:
         fstab.write("proc\t/proc\tproc\tdefaults\t0\t0\n")
         if(not self.setup.skip_mount):
             if self.setup.automated and getattr(self, "auto_mounts", None):
-                for device, mount, fs in self.auto_mounts:
+                for device, mount, fs, subvol in self.auto_mounts:
                     uuid = self.get_blkid(device)
                     if fs == "swap":
                         fstab.write("# %s\n" % device)
                         fstab.write("%s none swap sw 0 0\n" % uuid)
                     else:
                         fsck = "1" if fs != "btrfs" and mount in ("/", "/boot", "/boot/efi") else "0"
-                        opts = "rw,errors=remount-ro" if fs.startswith("ext") else "defaults"
+                        if subvol:
+                            opts = "defaults,subvol=%s" % subvol
+                        elif fs.startswith("ext"):
+                            opts = "rw,errors=remount-ro"
+                        else:
+                            opts = "defaults"
                         fstab.write("# %s\n" % device)
                         fstab.write("%s\t%s\t%s\t%s\t0\t%s\n" % (uuid, mount, fs, opts, fsck))
             elif self.setup.automated:

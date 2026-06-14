@@ -378,3 +378,81 @@ class TestCustomLayout:
         bad = CUSTOM.replace("- {size: 2GB, mount: swap, filesystem: swap}",
                              "- {size: 2GB, mount: swap, filesystem: ext4}")
         _expect_error(bad, "swap")
+
+
+BTRFS = textwrap.dedent("""\
+    version: 1
+    locale: en_US.UTF-8
+    timezone: America/Toronto
+    users:
+      - name: admin
+        passwd: "$6$rounds=4096$salt$hashhashhash"
+    storage:
+      target:
+        match:
+          first-non-removable: true
+      layout: custom
+      partitions:
+        - {size: 512MB, mount: /boot/efi, filesystem: vfat, flags: [esp]}
+        - size: rest
+          filesystem: btrfs
+          subvolumes:
+            - {name: "@", mount: /}
+            - {name: "@home", mount: /home}
+""")
+
+
+class TestBtrfsSubvolumes:
+    def test_valid(self):
+        config = parse_config(BTRFS)
+        part = config.storage.partitions[1]
+        assert part.mount is None and part.filesystem == "btrfs"
+        assert [(s.name, s.mount) for s in part.subvolumes] == [
+            ("@", "/"), ("@home", "/home")]
+
+    def test_valid_on_lvm(self):
+        text = textwrap.dedent("""\
+            version: 1
+            locale: en_US.UTF-8
+            timezone: America/Toronto
+            users:
+              - name: admin
+                passwd: "$6$rounds=4096$salt$hashhashhash"
+            storage:
+              target:
+                match:
+                  first-non-removable: true
+              layout: custom
+              partitions:
+                - {size: 512MB, mount: /boot/efi, filesystem: vfat, flags: [esp]}
+                - {size: rest, lvm_pv: vg0}
+              lvm:
+                - vg: vg0
+                  lv: root
+                  size: rest
+                  filesystem: btrfs
+                  subvolumes:
+                    - {name: "@", mount: /}
+                    - {name: "@home", mount: /home}
+        """)
+        config = parse_config(text)
+        assert config.storage.lvm[0].subvolumes[0].name == "@"
+
+    def test_subvolumes_require_btrfs(self):
+        bad = BTRFS.replace("filesystem: btrfs", "filesystem: ext4")
+        _expect_error(bad, "subvolumes require filesystem: btrfs")
+
+    def test_subvol_partition_takes_no_mount(self):
+        bad = BTRFS.replace(
+            "    - size: rest\n      filesystem: btrfs\n",
+            "    - size: rest\n      mount: /srv\n      filesystem: btrfs\n")
+        _expect_error(bad, "takes no mount")
+
+    def test_subvolume_provides_the_root_mount(self):
+        bad = BTRFS.replace('        - {name: "@", mount: /}\n', "")
+        _expect_error(bad, "exactly one '/' mount")
+
+    def test_duplicate_subvol_mount_rejected(self):
+        bad = BTRFS.replace('{name: "@home", mount: /home}',
+                            '{name: "@home", mount: /boot/efi}')
+        _expect_error(bad, "duplicate mount")

@@ -178,9 +178,9 @@ class TestCustomPartitions:
             '/dev/vg0/root: UUID="ROOT" TYPE="ext4"\n'
             '/dev/vda2: UUID="SWAP" TYPE="swap"')}
         engine.auto_mounts = [
-            ("/dev/vda1", "/boot/efi", "vfat"),
-            ("/dev/vg0/root", "/", "ext4"),
-            ("/dev/vda2", "swap", "swap"),
+            ("/dev/vda1", "/boot/efi", "vfat", ""),
+            ("/dev/vg0/root", "/", "ext4", ""),
+            ("/dev/vda2", "swap", "swap", ""),
         ]
         path = tmp_path / "fstab"
         engine.write_fstab(str(path))
@@ -188,6 +188,19 @@ class TestCustomPartitions:
         assert "UUID=ROOT\t/\text4\trw,errors=remount-ro\t0\t1" in text
         assert "UUID=EFI\t/boot/efi\tvfat\tdefaults\t0\t1" in text
         assert "UUID=SWAP none swap sw 0 0" in text
+
+    def test_custom_fstab_btrfs_subvolumes(self, tmp_path):
+        engine, runner = make_engine(automated=True)
+        runner.outputs = {"blkid": '/dev/vda2: UUID="BTR" TYPE="btrfs"'}
+        engine.auto_mounts = [
+            ("/dev/vda2", "/", "btrfs", "@"),
+            ("/dev/vda2", "/home", "btrfs", "@home"),
+        ]
+        path = tmp_path / "fstab"
+        engine.write_fstab(str(path))
+        text = path.read_text()
+        assert "UUID=BTR\t/\tbtrfs\tdefaults,subvol=@\t0\t0" in text
+        assert "UUID=BTR\t/home\tbtrfs\tdefaults,subvol=@home\t0\t0" in text
 
     def test_create_custom_partitions_command_sequence(self, monkeypatch):
         engine, runner = make_engine(
@@ -241,4 +254,41 @@ class TestCustomPartitions:
         assert targets[0] == "/target"                 # / first
         assert "/target/home" in targets
         assert "/target/boot/efi" in targets
-        assert ("/dev/vg0/root", "/", "ext4") in engine.auto_mounts
+        assert ("/dev/vg0/root", "/", "ext4", "") in engine.auto_mounts
+
+    def test_create_btrfs_subvolumes(self, monkeypatch):
+        engine, runner = make_engine(
+            automated=True, disk="/dev/vda", gptonefi=True,
+            custom_partitions=[
+                {"size": "512MB", "mount": "/boot/efi", "filesystem": "vfat",
+                 "flags": ["esp"], "lvm_pv": None, "subvolumes": []},
+                {"size": "rest", "mount": None, "filesystem": "btrfs",
+                 "flags": [], "lvm_pv": None,
+                 "subvolumes": [{"name": "@", "mount": "/"},
+                                {"name": "@home", "mount": "/home"}]},
+            ],
+            custom_lvm=[])
+        engine.set_progress_hook(lambda *a: None)
+        mounts = []
+        engine.do_mount = lambda d, dest, fs, opts: mounts.append((d, dest, fs, opts))
+        monkeypatch.setattr(installer.os, "system", lambda c: 0)
+        monkeypatch.setattr(installer.time, "sleep", lambda *a: None)
+        monkeypatch.setattr(installer.os.path, "exists", lambda p: True)
+        fake_dev = type("D", (), {
+            "path": "/dev/vda",
+            "getLength": lambda self, unit: 256 * 10**9,
+            "sectorSize": 512})()
+        monkeypatch.setattr(installer.parted, "getDevice", lambda p: fake_dev,
+                            raising=False)
+        monkeypatch.setattr(installer.partitioning,
+                            "get_device_naming_scheme_prefix", lambda p: "")
+
+        engine._create_custom_partitions()
+
+        assert "mkfs.btrfs -f /dev/vda2" in runner.commands
+        assert "btrfs subvolume create /run/li-btrfs-top/@" in runner.commands
+        assert "btrfs subvolume create /run/li-btrfs-top/@home" in runner.commands
+        assert ("/dev/vda2", "/", "btrfs", "@") in engine.auto_mounts
+        assert ("/dev/vda2", "/home", "btrfs", "@home") in engine.auto_mounts
+        assert ("/dev/vda2", "/target", "btrfs", "subvol=@") in mounts
+        assert ("/dev/vda2", "/target/home", "btrfs", "subvol=@home") in mounts

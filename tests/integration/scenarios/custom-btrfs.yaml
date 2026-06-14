@@ -1,0 +1,52 @@
+# Custom layout with btrfs subvolumes, UEFI: ESP + swap + a btrfs filesystem
+# split into @ (/) and @home (/home). Exercises the subvolume engine path
+# (mkfs.btrfs + btrfs subvolume create + subvol= mounts and fstab options).
+
+name: custom-btrfs
+description: Unattended UEFI install, custom layout with btrfs @/@home subvolumes
+
+firmware: uefi
+tpm: false
+memory_mb: 4096
+cpus: 2
+disk_gb: 25
+
+answer_file: answers/btrfs.yaml
+
+install_timeout_s: 1800
+boot_timeout_s: 300
+
+expect:
+  serial_markers:
+    - "Automated installation complete"
+  failure_markers:
+    - "Automated installation FAILED"
+
+ssh:
+  user: testuser
+
+verify:
+  - name: os-is-lmde
+    type: command
+    command: ". /etc/os-release && echo $PRETTY_NAME"
+    expect_substring: "LMDE"
+  - name: hostname-applied
+    type: command
+    command: hostname
+    expect_substring: "lmde-btrfs-01"
+  - name: root-is-btrfs
+    type: command
+    command: findmnt -n -o FSTYPE /
+    expect_substring: "btrfs"
+  - name: root-on-at-subvolume
+    type: command
+    command: findmnt -n -o OPTIONS /
+    expect_substring: "subvol=/@"
+  - name: home-on-athome-subvolume
+    type: command
+    command: findmnt -n -o OPTIONS /home
+    expect_substring: "subvol=/@home"
+  - name: network-manager-running
+    type: command
+    command: systemctl is-active NetworkManager
+    expect_substring: "active"
