@@ -1,13 +1,47 @@
 """Unit tests for the headless driver: config mapping, answer-file
 acquisition, and the post-engine failure-policy machinery."""
 
+import socket
 import textwrap
+import threading
 
 import pytest
 
 import auto_installer
 import schema
 from test_engine_commands import RecordingRunner
+
+
+def _start_tftp_server(content, *, send_error=False):
+    """One-shot localhost TFTP read server for tests. Returns (host, port)."""
+    srv = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    srv.bind(("127.0.0.1", 0))
+    port = srv.getsockname()[1]
+
+    def serve():
+        srv.settimeout(5)
+        try:
+            _rrq, client = srv.recvfrom(2048)
+        except OSError:
+            srv.close()
+            return
+        if send_error:
+            srv.sendto(b"\x00\x05\x00\x01File not found\x00", client)
+            srv.close()
+            return
+        blocks = [content[i:i + 512] for i in range(0, len(content), 512)]
+        if not blocks or len(blocks[-1]) == 512:
+            blocks.append(b"")  # short/empty block terminates the transfer
+        for n, chunk in enumerate(blocks, 1):
+            srv.sendto(b"\x00\x03" + n.to_bytes(2, "big") + chunk, client)
+            try:
+                srv.recvfrom(2048)  # ACK
+            except OSError:
+                break
+        srv.close()
+
+    threading.Thread(target=serve, daemon=True).start()
+    return "127.0.0.1", port
 
 
 def make_config(extra="", logging_dest="/tmp/test-auto-install.log"):
@@ -95,6 +129,45 @@ class TestNfsFetch:
             "nfs://host/export/a.yaml", insecure=True)
         assert text == "version: 1\n"
         assert umounted == [str(export)]  # always unmounts
+
+
+class TestTftpFetch:
+    @pytest.mark.parametrize("url,expected", [
+        ("tftp://host/install.yaml", ("host", 69, "install.yaml")),
+        ("tftp://host:6900/sub/dir/a.yaml", ("host", 6900, "sub/dir/a.yaml")),
+        ("tftp://[2001:db8::1]/x.yaml", ("2001:db8::1", 69, "x.yaml")),
+    ])
+    def test_parse(self, url, expected):
+        assert auto_installer._parse_tftp_url(url) == expected
+
+    def test_parse_malformed(self):
+        with pytest.raises(schema.ConfigError):
+            auto_installer._parse_tftp_url("tftp://hostonly")
+
+    @pytest.mark.parametrize("content", [
+        b"version: 1\n",          # one short block
+        b"x" * 1500,              # three blocks
+        b"y" * 512,               # exact block boundary (needs the EOF block)
+        b"",                      # empty file
+    ])
+    def test_fetch_roundtrip(self, content):
+        host, port = _start_tftp_server(content)
+        text = auto_installer.fetch_answer_file(
+            f"tftp://{host}:{port}/anything", insecure=True)
+        assert text == content.decode("utf-8")
+
+    def test_refused_without_insecure(self):
+        with pytest.raises(schema.ConfigError) as excinfo:
+            auto_installer.fetch_answer_file("tftp://host/a.yaml")
+        assert "TFTP" in str(excinfo.value)
+        assert "--insecure" in str(excinfo.value)
+
+    def test_server_error_packet(self):
+        host, port = _start_tftp_server(b"", send_error=True)
+        with pytest.raises(schema.ConfigError) as excinfo:
+            auto_installer.fetch_answer_file(
+                f"tftp://{host}:{port}/missing", insecure=True)
+        assert "TFTP error" in str(excinfo.value)
 
 
 class TestCmdlineSource:
