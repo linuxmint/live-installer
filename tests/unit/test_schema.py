@@ -46,9 +46,11 @@ VALID_FULL = textwrap.dedent("""\
         passphrase_source: prompt-on-first-boot
     packages: [openssh-server, build-essential]
     package_remove: [hexchat]
-    repositories:
-      - source: "deb https://example.com/repo trixie main"
-        key_url: https://example.com/repo.gpg
+    apt:
+      sources:
+        example:
+          source: "deb https://example.com/repo trixie main"
+          key_url: https://example.com/repo.gpg
     late_commands:
       - /cdrom/scripts/join-domain.sh
       - systemctl enable ssh
@@ -87,7 +89,7 @@ class TestValidConfigs:
         assert config.on_failure.network_unavailable == "continue"
         assert config.packages == ["openssh-server", "build-essential"]
         assert config.package_remove == ["hexchat"]
-        assert config.repositories[0].source.startswith("deb https://")
+        assert config.apt.sources["example"].source.startswith("deb https://")
         assert config.late_commands == ["/cdrom/scripts/join-domain.sh",
                                         "systemctl enable ssh"]
 
@@ -559,4 +561,92 @@ class TestNetwork:
     def test_unknown_key_rejected(self):
         _expect_error(NETWORK.replace("  version: 2\n",
                                       "  version: 2\n  bogus: 1\n"),
+                      "bogus")
+
+
+APT = textwrap.dedent("""\
+    version: 1
+    locale: en_US.UTF-8
+    timezone: America/Toronto
+    users:
+      - name: admin
+        passwd: "$6$rounds=4096$salt$hashhashhash"
+    storage:
+      target:
+        match:
+          first-non-removable: true
+    apt:
+      sources:
+        vendor:
+          source: "deb https://example.com/repo trixie main"
+          key_url: https://example.com/repo.gpg
+        keyserver-repo:
+          source: "deb https://other.example/deb stable main"
+          keyid: "0xABCDEF0123456789"
+""")
+
+
+class TestApt:
+    def test_valid(self):
+        config = parse_config(APT)
+        srcs = config.apt.sources
+        assert set(srcs) == {"vendor", "keyserver-repo"}
+        assert srcs["vendor"].source.startswith("deb https://")
+        assert srcs["vendor"].key_url == "https://example.com/repo.gpg"
+        # keyserver defaults to cloud-init's
+        assert srcs["keyserver-repo"].keyserver == "keyserver.ubuntu.com"
+        assert srcs["keyserver-repo"].keyid == "0xABCDEF0123456789"
+
+    def test_absent_apt_is_none(self):
+        assert parse_config(VALID_MINIMAL).apt is None
+
+    def test_inline_key(self):
+        text = VALID_MINIMAL + textwrap.dedent("""\
+            apt:
+              sources:
+                inline:
+                  source: "deb https://example.com/repo trixie main"
+                  key: |
+                    -----BEGIN PGP PUBLIC KEY BLOCK-----
+                    abc
+                    -----END PGP PUBLIC KEY BLOCK-----
+        """)
+        config = parse_config(text)
+        assert "BEGIN PGP PUBLIC KEY" in config.apt.sources["inline"].key
+
+    def test_non_deb_source_rejected(self):
+        _expect_error(APT.replace('"deb https://example.com/repo trixie main"',
+                                  '"ppa:some/ppa"'),
+                      "deb ")
+
+    def test_http_key_url_rejected(self):
+        _expect_error(APT.replace("https://example.com/repo.gpg",
+                                  "http://example.com/repo.gpg"),
+                      "https://")
+
+    def test_two_key_sources_rejected(self):
+        bad = APT.replace(
+            '      key_url: https://example.com/repo.gpg',
+            '      key_url: https://example.com/repo.gpg\n'
+            '      keyid: "ABCDEF12"')
+        _expect_error(bad, "at most one signing key")
+
+    def test_bad_keyid_rejected(self):
+        _expect_error(APT.replace('keyid: "0xABCDEF0123456789"',
+                                  'keyid: "not-hex!"'),
+                      "valid GPG key id")
+
+    def test_bad_source_name_rejected(self):
+        _expect_error(APT.replace("    vendor:", '    "bad/name":'),
+                      "valid apt source name")
+
+    def test_bad_filename_rejected(self):
+        bad = APT.replace(
+            '      key_url: https://example.com/repo.gpg',
+            '      filename: "../escape"')
+        _expect_error(bad, "valid filename")
+
+    def test_unknown_key_rejected(self):
+        _expect_error(APT.replace('      key_url: https://example.com/repo.gpg',
+                                  '      bogus: 1'),
                       "bogus")

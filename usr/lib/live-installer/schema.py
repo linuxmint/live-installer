@@ -24,8 +24,11 @@ equivalent for (disk selection, partition layout, LUKS, kernel cmdline,
 failure policy) keep their own shapes. Notable divergences:
   - `package_remove` is an extension: cloud-init has no declarative
     package removal.
-  - `repositories` carries an apt sources.list line (cloud-init calls the
-    equivalent `apt:`).
+  - `apt` mirrors cloud-init's `apt:` section (the `sources:` map, each with
+    `source`/`key`/`keyid`/`keyserver`, plus a `key_url` extension). Repo
+    config is deliberately backend-specific — cloud-init never unified
+    apt/yum/zypper — and is executed by a swappable package backend
+    (pkgbackend.py), not hardcoded into the driver.
   - `late_commands` runs in the target during install (in the chroot),
     matching Ubuntu autoinstall's `late-commands` and kickstart `%post`.
     This is deliberately NOT cloud-init's `runcmd`, which runs on first
@@ -65,6 +68,10 @@ _SUBVOL_RE = re.compile(r"^[A-Za-z0-9@._-][A-Za-z0-9@._/-]*$")
 # Linux interface names: up to 15 chars, no '/' or whitespace.
 _IFNAME_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,14}$")
 _MAC_RE = re.compile(r"^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$")
+# apt source-list filename component (no path separators, .list added by us).
+_APT_NAME_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
+# A GPG long key id / fingerprint: 8..40 hex digits (optional 0x prefix).
+_KEYID_RE = re.compile(r"^(0x)?[0-9A-Fa-f]{8,40}$")
 
 
 def _check_cidr(value):
@@ -444,24 +451,87 @@ class Storage(_StrictModel):
         return self
 
 
-class Repository(_StrictModel):
-    """An apt repository to add. The `repositories:` key borrows cloud-init's
-    neutral concept, but the contents are apt-specific: on Debian/Mint
-    `source` is a sources.list line. A non-apt backend would need a
-    structured form (type/url/suite/components); that is not a goal today."""
+class AptSource(_StrictModel):
+    """One entry in cloud-init's `apt.sources` map. Same shapes as cloud-init
+    (`source`, `key`, `keyid`, `keyserver`), plus a `key_url` extension and an
+    optional `filename` override. The signing key may be given exactly one of:
+    `key` (inline ASCII-armored), `keyid` (fetched from `keyserver`), or
+    `key_url` (fetched over https). cloud-init keeps repo config per-backend
+    (it never unified apt/yum/zypper), so this stays apt-specific by design."""
 
-    source: str                          # apt sources.list line, e.g.
+    source: str                          # sources.list line, e.g.
                                          # "deb https://repo trixie main"
-    key_url: str = None                  # optional signing key, https only
+    key: str = None                      # inline ASCII-armored public key
+    keyid: str = None                    # key id/fingerprint to fetch
+    keyserver: str = "keyserver.ubuntu.com"
+    key_url: str = None                  # extension: fetch key over https
+    filename: str = None                 # override the .list basename
+
+    @field_validator("source")
+    @classmethod
+    def _check_source(cls, value):
+        if not (value.startswith("deb ") or value.startswith("deb-src ")):
+            raise ValueError(
+                "apt source must be a sources.list line starting with 'deb ' "
+                "or 'deb-src ' (ppa: shorthand is not supported)"
+            )
+        return value
 
     @field_validator("key_url")
     @classmethod
     def _https_only(cls, value):
         if value is not None and not value.startswith("https://"):
             raise ValueError(
-                "repositories[].key_url must use https:// — a key fetched "
-                "over plain HTTP can be tampered with in transit"
+                "apt source key_url must use https:// — a key fetched over "
+                "plain HTTP can be tampered with in transit"
             )
+        return value
+
+    @field_validator("keyid")
+    @classmethod
+    def _check_keyid(cls, value):
+        if value is not None and not _KEYID_RE.match(value):
+            raise ValueError(
+                f"{value!r} is not a valid GPG key id (8..40 hex digits)"
+            )
+        return value
+
+    @field_validator("filename")
+    @classmethod
+    def _check_filename(cls, value):
+        if value is not None and not _APT_NAME_RE.match(value):
+            raise ValueError(
+                f"{value!r} is not a valid filename (letters, digits, '.', "
+                "'_', '-'; no path separators)"
+            )
+        return value
+
+    @model_validator(mode="after")
+    def _consistency(self):
+        given = [k for k in ("key", "keyid", "key_url")
+                 if getattr(self, k) is not None]
+        if len(given) > 1:
+            raise ValueError(
+                "give at most one signing key per source (key, keyid, or "
+                f"key_url) — got {', '.join(given)}"
+            )
+        return self
+
+
+class Apt(_StrictModel):
+    """cloud-init's `apt:` section (the `sources` subset we support)."""
+
+    sources: dict[str, AptSource] = Field(default_factory=dict)
+
+    @field_validator("sources")
+    @classmethod
+    def _check_names(cls, value):
+        for name in value:
+            if not _APT_NAME_RE.match(name):
+                raise ValueError(
+                    f"{name!r} is not a valid apt source name (letters, "
+                    "digits, '.', '_', '-')"
+                )
         return value
 
 
@@ -750,7 +820,7 @@ class AutoInstallConfig(_StrictModel):
     network: Network = None                                   # netplan v2 subset
     packages: list[str] = Field(default_factory=list)        # cloud-init: installs
     package_remove: list[str] = Field(default_factory=list)  # extension
-    repositories: list[Repository] = Field(default_factory=list)
+    apt: Apt = None                                          # cloud-init: apt:
     late_commands: list[str] = Field(default_factory=list)   # autoinstall-style
     kernel: Kernel = Field(default_factory=Kernel)
     oem: Oem = Field(default_factory=Oem)

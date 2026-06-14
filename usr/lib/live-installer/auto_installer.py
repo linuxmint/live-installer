@@ -36,6 +36,7 @@ import discovery
 import diskmatch
 import mint_detect
 import netconfig
+import pkgbackend
 import schema
 from commandrunner import CommandRunner
 
@@ -512,57 +513,12 @@ class HeadlessDriver:
         return False
 
     def _apply_packages(self):
-        add = self.config.packages
-        remove = self.config.package_remove
-        repos = self.config.repositories
-
-        for repo in repos:
-            if repo.key_url:
-                name = os.path.basename(repo.key_url) or "extra-key"
-                rc = self.runner.chroot(
-                    f"wget -O /etc/apt/trusted.gpg.d/{name} "
-                    + shlex.quote(repo.key_url)
-                )
-                if rc != 0:
-                    self._policy("network_unavailable",
-                                 f"fetching {repo.key_url} failed")
-            self.runner.chroot(
-                f"echo {shlex.quote(repo.source)} "
-                ">> /etc/apt/sources.list.d/live-installer-auto.list"
-            )
-
-        if add or repos:
-            rc = self.runner.chroot("apt-get update")
-            if rc != 0:
-                self._policy("network_unavailable", "apt-get update failed")
-            # On EFI installs the engine dpkg-installs the bootloader stack
-            # (shim-signed, grub-efi) from the ISO pool without its full
-            # dependency closure, leaving dpkg in a state apt refuses to
-            # build on. Complete it before installing anything else.
-            rc = self.runner.chroot(
-                "DEBIAN_FRONTEND=noninteractive apt-get install -f -y"
-            )
-            if rc != 0:
-                self.log("WARNING: apt-get install -f failed; "
-                         "continuing to package installation")
-        if add:
-            self.log(" --> Installing packages: " + " ".join(add))
-            rc = self.runner.chroot(
-                "DEBIAN_FRONTEND=noninteractive apt-get install -y "
-                + " ".join(shlex.quote(p) for p in add)
-            )
-            if rc != 0:
-                self._policy("package_install_failure",
-                             "package installation failed")
-        if remove:
-            self.log(" --> Removing packages: " + " ".join(remove))
-            rc = self.runner.chroot(
-                "DEBIAN_FRONTEND=noninteractive apt-get remove --purge -y "
-                + " ".join(shlex.quote(p) for p in remove)
-            )
-            if rc != 0:
-                self._policy("package_install_failure",
-                             "package removal failed")
+        # Repo config (cloud-init's apt: shape) and the agnostic packages/
+        # package_remove lists are applied by a swappable package backend, so
+        # the install step is not apt-hardcoded. Only apt exists today.
+        backend = pkgbackend.get_backend(self.runner, self._policy, self.log)
+        backend.apply(self.config.apt, self.config.packages,
+                      self.config.package_remove)
 
     def _regenerate_initramfs_if_luks(self):
         """Rebuild the target initramfs so it can unlock the encrypted root.
@@ -731,7 +687,7 @@ class HeadlessDriver:
                 len(self.config.users) > 1
                 or any(user.ssh_authorized_keys for user in self.config.users)
                 or self.config.packages or self.config.package_remove
-                or self.config.repositories or self.config.late_commands
+                or self.config.apt is not None or self.config.late_commands
                 or self.config.kernel.cmdline_extra.strip()
                 or self.config.kernel.serial_console.strip()
                 or self.config.storage.layout == "lvm-on-luks"
