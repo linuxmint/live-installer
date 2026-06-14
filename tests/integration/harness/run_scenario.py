@@ -161,8 +161,10 @@ def _fill_ca_cert_placeholder(answer):
     """Replace a `{ca_cert}` placeholder in ca_certs.trusted with a freshly
     generated self-signed CA cert, so the ca_certs path can be tested end to
     end without committing a real cert. The runner has openssl."""
+    marker = "LI_HARNESS_CA_CERT_PLACEHOLDER"
     cc = answer.get("ca_certs")
-    if not cc or "{ca_cert}" not in (cc.get("trusted") or []):
+    trusted = (cc or {}).get("trusted") or []
+    if not any(marker in t for t in trusted):
         return
     d = tempfile.mkdtemp(prefix="li-ca-")
     crt = os.path.join(d, "ca.pem")
@@ -172,7 +174,7 @@ def _fill_ca_cert_placeholder(answer):
          "-days", "3650", "-subj", "/CN=LI Integration Test CA"],
         check=True, capture_output=True)
     pem = open(crt).read()
-    cc["trusted"] = [pem if t == "{ca_cert}" else t for t in cc["trusted"]]
+    cc["trusted"] = [pem if marker in t else t for t in trusted]
 
 
 def stage_answer_file(scenario_dir, answer_rel, serve_dir, pubkey, base_url):
