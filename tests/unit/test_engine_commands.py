@@ -316,3 +316,28 @@ class TestCustomPartitions:
         assert ("/dev/vda2", "/home", "btrfs", "@home") in engine.auto_mounts
         assert ("/dev/vda2", "/target", "btrfs", "subvol=@") in mounts
         assert ("/dev/vda2", "/target/home", "btrfs", "subvol=@home") in mounts
+
+
+class TestLuksCrypttab:
+    def _engine(self, **flags):
+        engine, runner = make_engine(**flags)
+        engine.auto_root_physical_partition = "/dev/vda3"
+        runner.outputs = {"blkid": '/dev/vda3: UUID="LUKSUUID" TYPE="crypto_LUKS"'}
+        return engine, runner
+
+    def test_rekey_crypttab_uses_keyfile(self):
+        # prompt-on-first-boot: the first boot auto-unlocks via the embedded
+        # keyfile, so crypttab names it instead of `none`.
+        engine, runner = self._engine(luks=True, luks_rekey_on_first_boot=True)
+        engine.write_crypttab("/target/etc/crypttab")
+        cmd = "\n".join(runner.commands)
+        assert "/etc/cryptsetup-keys.d/cryptroot.key" in cmd
+        assert "UUID=LUKSUUID" in cmd
+        assert " none " not in cmd
+
+    def test_normal_crypttab_prompts(self):
+        engine, runner = self._engine(luks=True)
+        engine.write_crypttab("/target/etc/crypttab")
+        cmd = "\n".join(runner.commands)
+        assert "none" in cmd
+        assert "cryptsetup-keys.d" not in cmd

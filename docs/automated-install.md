@@ -193,8 +193,8 @@ storage:
     on_no_match: abort   # only 'abort' is supported in v1
   layout: lvm-on-luks    # simple | lvm | lvm-on-luks
   luks:                  # only with layout: lvm-on-luks
-    passphrase_source: keyfile   # keyfile (implemented); prompt-on-first-boot/tpm2 reserved
-    keyfile: "https://cfg.example.com/keys/ws-01.key"
+    passphrase_source: keyfile   # keyfile | prompt-on-first-boot (default); tpm2 reserved
+    keyfile: "https://cfg.example.com/keys/ws-01.key"   # only for passphrase_source: keyfile
 ```
 
 **Disk targeting never uses `/dev/sdX`.** Kernel device naming is not
@@ -221,19 +221,28 @@ can be added without a schema version bump.
 Layout presets: `simple` (single root + swap), `lvm` (LVM with root and
 swap logical volumes), `lvm-on-luks` (the same, on a LUKS2 container).
 
-For `lvm-on-luks`, `passphrase_source` selects how the installer obtains
-the encryption passphrase. **Only `keyfile` is implemented in the headless
-driver today** — read from a local path or an http(s) URL (same TLS rule as
-the answer file). `prompt-on-first-boot` and `tpm2` are reserved in the
-schema but not yet wired up, and the driver aborts with a clear error if you
-select them. The keyfile URL is fetched verbatim — there is no `${...}`
-templating (the config is data, not a program); for per-machine keyfiles,
-let each machine fetch its own answer file via `auto:` discovery and put the
-concrete keyfile URL in it.
+For `lvm-on-luks`, `passphrase_source` selects how the encryption passphrase
+is established:
 
-Note: this is the install-time passphrase. The *installed* system still
-prompts for the passphrase at every boot (on the serial console when a
-`kernel.serial_console` is set — see
+- **`keyfile`** — read from a local path or an http(s) URL (same TLS rule as
+  the answer file). The URL is fetched verbatim: there is no `${...}`
+  templating (the config is data, not a program). For per-machine keyfiles,
+  let each machine fetch its own answer file via `auto:` discovery and put the
+  concrete keyfile URL in it. This is a fully unattended install.
+- **`prompt-on-first-boot`** (the default) — nothing secret in the answer
+  file. The installer formats LUKS with a random throwaway key and embeds it
+  in the initramfs so the **first** boot unlocks unattended; a one-shot
+  service then prompts the operator for the real passphrase (on the console,
+  including serial), adds it, removes the throwaway key, rebuilds the
+  initramfs, and reboots. Every subsequent boot prompts normally. This suits
+  image-now / set-the-passphrase-on-deployment workflows. The tradeoff: the
+  random throwaway key sits in the unencrypted `/boot` initramfs until that
+  first boot completes the rekey.
+- **`tpm2`** — reserved in the schema, not yet implemented (the driver aborts
+  with a clear error).
+
+Either way, the *installed* system prompts for the passphrase at every boot —
+on the serial console when a `kernel.serial_console` is set (see
 [serial-console-and-luks.md](serial-console-and-luks.md)).
 
 ### Custom partition layouts

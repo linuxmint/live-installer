@@ -21,6 +21,7 @@ import argparse
 import glob
 import os
 import re
+import secrets
 import shlex
 import shutil
 import socket
@@ -45,6 +46,71 @@ FAILURE_MARKER = "Automated installation FAILED"
 CMDLINE_KEY = "live-installer.auto="
 # kernel-cmdline equivalent of --insecure (cmdline boots have no argv)
 CMDLINE_INSECURE = "live-installer.auto-insecure"
+
+# First-boot LUKS rekey (passphrase_source: prompt-on-first-boot). The install
+# formats LUKS with a random throwaway key and embeds it in the initramfs so the
+# first boot auto-unlocks; this oneshot then prompts the operator for the real
+# passphrase, swaps it in, removes the throwaway key + keyfile, and restores a
+# normal prompting boot. printf %s feeds the new key with no trailing newline,
+# matching what cryptsetup reads from the boot-time passphrase prompt.
+_LUKS_REKEY_SCRIPT = r"""#!/bin/sh
+# Installed by live-installer for storage.luks.passphrase_source:
+# prompt-on-first-boot. Runs once on first boot.
+set -e
+
+KEYFILE=/etc/cryptsetup-keys.d/cryptroot.key
+CRYPTTAB=/etc/crypttab
+HOOK=/etc/cryptsetup-initramfs/conf-hook
+
+[ -f "$KEYFILE" ] || exit 0   # already rekeyed
+
+DEV=$(awk '$1=="lvmmint"{print $2}' "$CRYPTTAB")
+case "$DEV" in
+    UUID=*) DEV=$(blkid -U "${DEV#UUID=}") ;;
+esac
+
+while :; do
+    PASS=$(systemd-ask-password --no-tty "Set the disk-encryption passphrase for this system:")
+    PASS2=$(systemd-ask-password --no-tty "Confirm the disk-encryption passphrase:")
+    if [ -n "$PASS" ] && [ "$PASS" = "$PASS2" ]; then
+        break
+    fi
+    echo "Passphrases were empty or did not match; try again." > /dev/console
+done
+
+printf '%s' "$PASS" | cryptsetup luksAddKey --key-file "$KEYFILE" "$DEV" -
+cryptsetup luksRemoveKey --key-file "$KEYFILE" "$DEV"
+
+shred -u "$KEYFILE" 2>/dev/null || rm -f "$KEYFILE"
+sed -i "s#$KEYFILE#none#" "$CRYPTTAB"
+rm -f "$HOOK"
+update-initramfs -u
+
+systemctl disable li-luks-rekey.service
+rm -f /etc/systemd/system/li-luks-rekey.service /usr/local/sbin/li-luks-rekey
+systemctl reboot
+"""
+
+_LUKS_REKEY_SERVICE = """\
+[Unit]
+Description=First-boot LUKS passphrase setup (live-installer)
+ConditionPathExists=/etc/cryptsetup-keys.d/cryptroot.key
+Before=getty.target systemd-user-sessions.service
+After=local-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/li-luks-rekey
+StandardInput=tty
+StandardOutput=journal+console
+StandardError=journal+console
+TTYPath=/dev/console
+RemainAfterExit=no
+
+[Install]
+WantedBy=multi-user.target
+"""
+
 
 class InstallationFailed(Exception):
     pass
@@ -376,10 +442,20 @@ def build_setup(config, *, disk=None, efi=None, is_mint=None, insecure=False):
                     f"LUKS keyfile {luks.keyfile} is empty"
                 )
             setup.passphrase1 = setup.passphrase2 = passphrase
+        elif luks.passphrase_source == "prompt-on-first-boot":
+            # Format LUKS with a random throwaway key so the install stays
+            # unattended; a keyfile holding it is embedded in the initramfs to
+            # auto-unlock the first boot, where a oneshot service prompts the
+            # operator for the real passphrase and removes the throwaway key.
+            # token_urlsafe gives a newline-free ASCII key (matters: the same
+            # bytes are written to the keyfile, see _setup_luks_first_boot_rekey).
+            setup.passphrase1 = setup.passphrase2 = secrets.token_urlsafe(32)
+            setup.luks_rekey_on_first_boot = True
         else:
             raise schema.ConfigError(
                 f"passphrase_source: {luks.passphrase_source} is not yet "
-                "implemented in the headless driver (use 'keyfile')"
+                "implemented in the headless driver (use 'keyfile' or "
+                "'prompt-on-first-boot')"
             )
 
     setup.disk = disk or diskmatch.resolve_disk(config.storage.target.match)
@@ -607,6 +683,53 @@ class HeadlessDriver:
         backend.apply(self.config.apt, self.config.packages,
                       self.config.package_remove)
 
+    def _setup_luks_first_boot_rekey(self, setup, target="/target"):
+        """Prepare the first-boot LUKS rekey (passphrase_source:
+        prompt-on-first-boot): embed the throwaway key in the initramfs so the
+        first boot auto-unlocks, and install the oneshot that prompts the
+        operator for the real passphrase. Runs BEFORE the initramfs is rebuilt
+        (_regenerate_initramfs_if_luks) so the keyfile is baked in."""
+        if not getattr(setup, "luks_rekey_on_first_boot", False):
+            return
+        self.log(" --> Configuring first-boot LUKS passphrase prompt")
+
+        # 1. Write the throwaway key to a root-only keyfile, byte-for-byte the
+        #    key LUKS was formatted with (no trailing newline).
+        keydir = target + "/etc/cryptsetup-keys.d"
+        os.makedirs(keydir, exist_ok=True)
+        os.chmod(keydir, 0o700)
+        keypath = os.path.join(keydir, "cryptroot.key")
+        with open(keypath, "w") as f:
+            f.write(setup.passphrase1)   # NO newline — must equal the LUKS key
+        os.chmod(keypath, 0o600)
+
+        # 2. Have the cryptsetup initramfs hook copy the keyfile in, and lock
+        #    down the initramfs (it holds the throwaway key on /boot until the
+        #    first boot completes the rekey).
+        hookdir = target + "/etc/cryptsetup-initramfs"
+        os.makedirs(hookdir, exist_ok=True)
+        with open(hookdir + "/conf-hook", "w") as f:
+            f.write('KEYFILE_PATTERN="/etc/cryptsetup-keys.d/*.key"\n')
+        os.makedirs(target + "/etc/initramfs-tools", exist_ok=True)
+        with open(target + "/etc/initramfs-tools/initramfs.conf", "a") as f:
+            f.write("\n# live-installer: protect the embedded first-boot LUKS "
+                    "key\nUMASK=0077\n")
+
+        # 3. Install and enable the first-boot rekey oneshot.
+        sbindir = target + "/usr/local/sbin"
+        os.makedirs(sbindir, exist_ok=True)
+        script = sbindir + "/li-luks-rekey"
+        with open(script, "w") as f:
+            f.write(_LUKS_REKEY_SCRIPT)
+        os.chmod(script, 0o755)
+        os.makedirs(target + "/etc/systemd/system", exist_ok=True)
+        with open(target + "/etc/systemd/system/li-luks-rekey.service", "w") as f:
+            f.write(_LUKS_REKEY_SERVICE)
+        rc = self.runner.chroot("systemctl enable li-luks-rekey.service")
+        if rc != 0:
+            self._policy("post_install_script_failure",
+                         "enabling the first-boot LUKS rekey service failed")
+
     def _regenerate_initramfs_if_luks(self):
         """Rebuild the target initramfs so it can unlock the encrypted root.
 
@@ -787,6 +910,7 @@ class HeadlessDriver:
                 self._apply_ssh_keys()
                 self._apply_packages()
                 self._apply_network()
+                self._setup_luks_first_boot_rekey(setup)
                 self._regenerate_initramfs_if_luks()
                 self._apply_kernel_config()
                 self._run_commands()

@@ -5,6 +5,7 @@ import os
 import socket
 import textwrap
 import threading
+import types
 
 import pytest
 
@@ -366,8 +367,22 @@ class TestBuildSetup:
                 insecure=True)
         assert "plain HTTP" not in str(excinfo2.value)
 
-    def test_unimplemented_passphrase_source_fails_early(self):
-        config = schema.parse_config(textwrap.dedent("""\
+    def _luks_config(self, source_line=""):
+        return schema.parse_config(textwrap.dedent(f"""\
+            version: 1
+            locale: en_CA.UTF-8
+            timezone: America/Toronto
+            users:
+              - name: admin
+                passwd: "$6$rounds=4096$salt$hash"
+            storage:
+              layout: lvm-on-luks
+              luks:
+                {source_line}
+              target:
+                match:
+                  first-non-removable: true
+        """)) if source_line else schema.parse_config(textwrap.dedent("""\
             version: 1
             locale: en_CA.UTF-8
             timezone: America/Toronto
@@ -380,6 +395,23 @@ class TestBuildSetup:
                 match:
                   first-non-removable: true
         """))
+
+    def test_prompt_on_first_boot_generates_throwaway_key(self):
+        # Default passphrase_source is prompt-on-first-boot.
+        setup = auto_installer.build_setup(
+            self._luks_config(), disk="/dev/vda", efi=False, is_mint=False)
+        assert setup.luks is True
+        assert setup.luks_rekey_on_first_boot is True
+        # A random, newline-free key, used for both slots.
+        assert setup.passphrase1 and "\n" not in setup.passphrase1
+        assert setup.passphrase1 == setup.passphrase2
+        # Two installs must not share the throwaway key.
+        other = auto_installer.build_setup(
+            self._luks_config(), disk="/dev/vda", efi=False, is_mint=False)
+        assert other.passphrase1 != setup.passphrase1
+
+    def test_tpm2_passphrase_source_still_unimplemented(self):
+        config = self._luks_config("passphrase_source: tpm2")
         with pytest.raises(schema.ConfigError) as excinfo:
             auto_installer.build_setup(
                 config, disk="/dev/vda", efi=False, is_mint=False)
@@ -553,6 +585,50 @@ class TestApplyNetwork:
         assert chmods == {"wlan0.nmconnection": 0o600}
         body = (target / "wlan0.nmconnection").read_text()
         assert "psk=hunter2pass" in body
+
+
+class TestLuksFirstBootRekey:
+    def _setup(self, key="ThrowAwayKey_no_newline_1234567890"):
+        return types.SimpleNamespace(
+            passphrase1=key, luks_rekey_on_first_boot=True)
+
+    def test_noop_when_flag_unset(self, tmp_path):
+        driver, runner, _e = make_driver(make_config())
+        driver._setup_luks_first_boot_rekey(
+            types.SimpleNamespace(luks_rekey_on_first_boot=False),
+            target=str(tmp_path))
+        assert list(tmp_path.iterdir()) == []
+        assert runner.commands == []
+
+    def test_writes_keyfile_crypttab_hook_and_service(self, tmp_path):
+        driver, runner, _e = make_driver(make_config())
+        key = "ThrowAwayKey_no_newline_1234567890"
+        driver._setup_luks_first_boot_rekey(self._setup(key), target=str(tmp_path))
+
+        # 1. Keyfile holds the LUKS key EXACTLY (no trailing newline), 0600.
+        keyfile = tmp_path / "etc/cryptsetup-keys.d/cryptroot.key"
+        assert keyfile.read_bytes() == key.encode()  # byte-exact, no newline
+        assert (keyfile.stat().st_mode & 0o777) == 0o600
+        assert (keyfile.parent.stat().st_mode & 0o777) == 0o700
+
+        # 2. initramfs hook copies the keyfile in and locks down the image.
+        hook = (tmp_path / "etc/cryptsetup-initramfs/conf-hook").read_text()
+        assert 'KEYFILE_PATTERN="/etc/cryptsetup-keys.d/*.key"' in hook
+        conf = (tmp_path / "etc/initramfs-tools/initramfs.conf").read_text()
+        assert "UMASK=0077" in conf
+
+        # 3. Rekey oneshot installed (executable) and enabled.
+        script = tmp_path / "usr/local/sbin/li-luks-rekey"
+        assert script.exists() and (script.stat().st_mode & 0o111)
+        body = script.read_text()
+        assert "luksAddKey" in body and "luksRemoveKey" in body
+        assert "systemctl reboot" in body
+        # new key added with no trailing newline (matches the boot prompt)
+        assert "printf '%s' \"$PASS\" | cryptsetup luksAddKey" in body
+        unit = (tmp_path / "etc/systemd/system/li-luks-rekey.service").read_text()
+        assert "ExecStart=/usr/local/sbin/li-luks-rekey" in unit
+        assert any("systemctl enable li-luks-rekey.service" in c
+                   for c in runner.commands)
 
 
 class TestHeadlessDriver:
