@@ -1,0 +1,46 @@
+# Answer file for the uefi-luks-prompt scenario: LVM-on-LUKS with
+# passphrase_source: prompt-on-first-boot. No secret is in the answer file —
+# the install formats LUKS with a random throwaway key (auto-unlocks the first
+# boot via a keyfile in the initramfs), then a one-shot prompts the operator
+# for the real passphrase on serial, rekeys, and reboots.
+version: 1
+
+hostname: lmde-luks-prompt-01
+locale: en_US.UTF-8
+timezone: America/Toronto
+
+keyboard:
+  model: pc105
+  layout: us
+
+users:
+  - name: testuser
+    gecos: Integration Test User
+    # "testpass", sha512crypt — test fixture only
+    passwd: "$6$rounds=4096$integration.test$kPEsZSlAg3pjDM0yaeSdAVPbHcsiBVMobBC0SXmdGRX9WtflVB.ETP6/yo8Lw0PRJlXP6tEXkbQjnLnnyG5BV1"
+    groups: [sudo]
+
+storage:
+  target:
+    match:
+      first-non-removable: true
+    on_no_match: abort
+  layout: lvm-on-luks
+  luks:
+    passphrase_source: prompt-on-first-boot
+
+kernel:
+  # Serial console so the first-boot rekey prompt AND the subsequent
+  # initramfs unlock prompt both appear on ttyS0 (answerable over SoL).
+  serial_console: "ttyS0,115200"
+
+packages: [openssh-server]
+
+on_failure:
+  partition_mismatch: abort
+  network_unavailable: continue
+  package_install_failure: abort
+
+logging:
+  destination: /var/log/live-installer-auto.log
+  also_serial: ttyS0

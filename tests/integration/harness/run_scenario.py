@@ -338,6 +338,36 @@ def run_full(scenario, iso, workdir, scenario_dir):
                       tpm=scenario["tpm"], ssh_port=ssh_port,
                       boot_serial=scenario.get("boot_disk_serial"))
         try:
+            # passphrase_source: prompt-on-first-boot — the first boot
+            # auto-unlocks (throwaway key in the initramfs), a one-shot prompts
+            # to set + confirm the real passphrase on serial, then the service
+            # rekeys and reboots; the second boot prompts at the initramfs.
+            rekey = scenario.get("first_boot_rekey")
+            if rekey:
+                pw = (scenario_dir / rekey["passphrase_file"]).read_text().rstrip("\n")
+                try:
+                    machine.wait_serial([rekey["set_prompt"]],
+                                        rekey.get("set_timeout_s", 300))
+                    time.sleep(1)
+                    machine.send_serial(pw + "\n")
+                    machine.wait_serial([rekey["confirm_prompt"]], 60)
+                    time.sleep(1)
+                    machine.send_serial(pw + "\n")
+                    cases.append(("rekey-set-passphrase", True, ""))
+                    # The service rekeys and reboots; the second boot prompts at
+                    # the initramfs (boot_prompt is distinct from the set prompt,
+                    # and only appears on this second boot since the first
+                    # auto-unlocked).
+                    machine.wait_serial([rekey["boot_prompt"]],
+                                        rekey.get("boot_timeout_s", 300))
+                    time.sleep(1)
+                    machine.send_serial(pw + "\n")
+                    cases.append(("rekey-second-boot-unlock", True, ""))
+                except (TimeoutError, vm.VMError) as exc:
+                    cases.append(("first-boot-rekey", False,
+                                  f"rekey flow failed: {exc}"))
+                    return cases
+
             # Encrypted installs prompt for the LUKS passphrase at the
             # initramfs; type it over serial as a real admin would via SOL.
             unlock = scenario.get("boot_unlock")
