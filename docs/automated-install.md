@@ -156,7 +156,7 @@ Keys that overlap with cloud-init use cloud-init's name and structure.
 | `storage` | yes | Disk target and layout; see [storage](#storage). |
 | `hostname` | no | System hostname. DHCP/default if omitted. |
 | `keyboard` | no | `model` (default `pc105`), `layout` (default `us`), `variant`. |
-| `network` | no | Static IP / DNS / VLAN config (netplan v2 subset); see [network](#network). DHCP on all NICs if omitted. |
+| `network` | no | Static IP / DNS / VLAN / wifi config (netplan v2 subset); see [network](#network). DHCP on all NICs if omitted. |
 | `packages` | no | Flat list of packages to install (cloud-init style). |
 | `package_remove` | no | Flat list of packages to remove (extension; cloud-init has no declarative remove). |
 | `apt` | no | Apt repositories to add (cloud-init `apt:` shape); see [apt](#apt). |
@@ -314,7 +314,7 @@ network:
 unless a `match` is given: `match.macaddress` binds by hardware address (the
 robust choice for a mixed fleet, since the kernel name is unpredictable),
 `match.name` binds by interface name. **vlans** is a map of id → config with
-an `id` (the 802.1Q tag) and a `link` (the parent ethernet/vlan id).
+an `id` (the 802.1Q tag) and a `link` (the parent ethernet/wifi/vlan id).
 
 Each interface takes: `dhcp4`/`dhcp6` (default false), `addresses` (a list of
 `IP/prefix`, IPv4 and/or IPv6), `gateway4`/`gateway6`, `nameservers`
@@ -326,6 +326,33 @@ SLAAC/DHCPv6 (`auto`). Validation rejects addresses without a prefix length,
 gateways of the wrong family or with no matching address, routes whose `via`
 family disagrees with `to`, VLAN ids outside 0..4094, and VLAN links that do
 not name a defined interface. Bonds and bridges are not modelled yet.
+
+#### wifi
+
+**wifis** is a map of interface id → config, taking all the same IP keys as an
+ethernet (static/DHCP, dual-stack, gateways, DNS, routes, `match`) plus an
+`access-points` map of SSID → access point. Each access point has an optional
+`password` (omit for an open network) and an optional `hidden: true` for a
+non-broadcast SSID:
+
+```yaml
+  wifis:
+    wlan0:
+      dhcp4: true
+      access-points:
+        "Corp-WPA":
+          password: "a-wpa2-passphrase"     # 8..63 chars, or a 64-hex PSK
+        "Guest":
+          hidden: true                       # open, non-broadcast
+```
+
+Each access point becomes its own NetworkManager wifi connection (so a device
+with several APs roams between them); the connection keyfile carries the PSK in
+cleartext, which is why every keyfile is written `0600`. A password becomes
+WPA-PSK; no password renders an open network. **Note:** wifi cannot be
+exercised end-to-end in CI — QEMU does not emulate 802.11 — so it is validated
+by schema and keyfile-renderer unit tests, not an integration scenario.
+WPA-Enterprise (EAP) is not modelled yet.
 
 ### kernel
 
@@ -517,8 +544,9 @@ server cannot wedge the install indefinitely.
 
 - Custom partition layouts cover explicit partitions, custom LVM, and
   btrfs subvolumes; software RAID is not supported yet.
-- `network:` covers static IPv4/IPv6, gateways, DNS, routes, and 802.1Q
-  VLANs (netplan v2 subset); bonds and bridges are not modelled yet.
+- `network:` covers static IPv4/IPv6, gateways, DNS, routes, 802.1Q VLANs,
+  and wifi (WPA-PSK / open) (netplan v2 subset); WPA-Enterprise, bonds, and
+  bridges are not modelled yet. Wifi is unit-tested only (no 802.11 in CI).
 - Config delivery is local file, http(s) URL, NFS, or TFTP, plus `auto`
   identity-based discovery; DNS-SRV discovery is not supported.
 - The config is data, not a program — no conditionals, loops, or

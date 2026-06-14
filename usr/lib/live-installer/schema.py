@@ -746,12 +746,74 @@ class VlanConfig(_IpConfig):
         return value
 
 
+def _check_ssid(value):
+    # 802.11 SSIDs are 1..32 octets. NM keys the connection on the SSID, so an
+    # empty or over-long one can never match a real network.
+    if not 1 <= len(value.encode("utf-8")) <= 32:
+        raise ValueError(
+            f"{value!r} is not a valid SSID (1..32 bytes)"
+        )
+    return value
+
+
+def _check_psk(value):
+    # WPA-PSK: either an 8..63 character passphrase or a 64-hex-digit raw key.
+    if len(value) == 64 and all(c in "0123456789abcdefABCDEF" for c in value):
+        return value
+    if 8 <= len(value) <= 63:
+        return value
+    raise ValueError(
+        "wifi password must be an 8..63 character WPA passphrase or a "
+        "64-hex-digit PSK"
+    )
+
+
+class AccessPoint(_StrictModel):
+    """One wifi network (a netplan/cloud-init access-points entry). `password`
+    None means an open network; otherwise WPA-PSK. `hidden` marks a
+    non-broadcast SSID so the client probes for it actively."""
+
+    password: str = None
+    hidden: bool = False
+
+    @field_validator("password")
+    @classmethod
+    def _v_password(cls, value):
+        if value is None:
+            return value
+        return _check_psk(value)
+
+
+class WifiConfig(_IpConfig):
+    match: Match = None
+    access_points: dict[str, AccessPoint] = Field(
+        default_factory=dict, alias="access-points")
+
+    @field_validator("access_points")
+    @classmethod
+    def _v_access_points(cls, value):
+        for ssid in value:
+            _check_ssid(ssid)
+        return value
+
+    @model_validator(mode="after")
+    def _wifi_consistency(self):
+        # Enforced here (not in the field validator) so an omitted
+        # access-points key — which never triggers a field validator — is
+        # still rejected.
+        if not self.access_points:
+            raise ValueError(
+                "a wifi interface needs at least one access-points entry")
+        return self
+
+
 class Network(_StrictModel):
-    """A subset of netplan's v2 schema: ethernets and vlans with static or
-    DHCP addressing. Bonds/bridges are intentionally not modelled yet."""
+    """A subset of netplan's v2 schema: ethernets, wifis, and vlans with static
+    or DHCP addressing. Bonds/bridges are intentionally not modelled yet."""
 
     version: int = 2
     ethernets: dict[str, EthernetConfig] = Field(default_factory=dict)
+    wifis: dict[str, WifiConfig] = Field(default_factory=dict)
     vlans: dict[str, VlanConfig] = Field(default_factory=dict)
 
     @field_validator("version")
@@ -761,7 +823,7 @@ class Network(_StrictModel):
             raise ValueError("network.version must be 2 (netplan v2 schema)")
         return value
 
-    @field_validator("ethernets", "vlans")
+    @field_validator("ethernets", "wifis", "vlans")
     @classmethod
     def _v_ids(cls, value):
         for name in value:
@@ -771,18 +833,22 @@ class Network(_StrictModel):
 
     @model_validator(mode="after")
     def _consistency(self):
-        overlap = set(self.ethernets) & set(self.vlans)
-        if overlap:
-            raise ValueError(
-                "interface id used for both an ethernet and a vlan: "
-                + ", ".join(sorted(overlap))
-            )
-        known = set(self.ethernets) | set(self.vlans)
+        groups = {"ethernet": self.ethernets, "wifi": self.wifis,
+                  "vlan": self.vlans}
+        seen = {}
+        for kind, table in groups.items():
+            for name in table:
+                if name in seen:
+                    raise ValueError(
+                        f"interface id {name!r} used for both a {seen[name]} "
+                        f"and a {kind}")
+                seen[name] = kind
+        known = set(seen)
         for name, vlan in self.vlans.items():
             if vlan.link not in known:
                 raise ValueError(
                     f"vlan {name!r} link {vlan.link!r} is not a defined "
-                    "ethernet or vlan"
+                    "ethernet, wifi, or vlan"
                 )
             if vlan.link == name:
                 raise ValueError(f"vlan {name!r} cannot link to itself")

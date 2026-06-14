@@ -9,6 +9,9 @@ format (``/etc/NetworkManager/system-connections/<id>.nmconnection``, mode
 0600) is the natural target. This mirrors how cloud-init renders its own
 Network Config v2 to the NetworkManager backend on Debian-family systems.
 
+Handles ethernets, wifis (one keyfile per access point; the PSK lands in the
+keyfile, which is exactly why 0600 matters), and vlans.
+
 The single public entry point, :func:`render`, is pure: it takes a validated
 :class:`schema.Network` (or any object with the same attributes) and returns
 an ordered ``{filename: content}`` dict. The caller writes each file with
@@ -143,6 +146,39 @@ def _vlan_lines(iface_id, cfg):
     return "\n".join(lines)
 
 
+def _wifi_lines(iface_id, ssid, ap, cfg):
+    # Each access point becomes its own NM wifi connection. The connection is
+    # keyed on the device (interface-name or mac-address) and the SSID; NM
+    # activates whichever configured SSID is in range.
+    uuid = _conn_uuid("%s\x00%s" % (iface_id, ssid))
+    lines = ["[connection]",
+             "id=%s" % ssid,
+             "uuid=%s" % uuid,
+             "type=wifi"]
+    wifi_section = ["[wifi]", "ssid=%s" % ssid, "mode=infrastructure"]
+    if ap.hidden:
+        wifi_section.append("hidden=true")
+    match = getattr(cfg, "match", None)
+    if match is not None and match.macaddress:
+        wifi_section.append("mac-address=%s" % match.macaddress.upper())
+    elif match is not None and match.name:
+        lines.append("interface-name=%s" % match.name)
+    else:
+        lines.append("interface-name=%s" % iface_id)
+    lines.append("")
+    lines.extend(wifi_section)
+    lines.append("")
+    if ap.password is not None:
+        # WPA-PSK. An open network omits the security section entirely.
+        lines.extend(["[wifi-security]", "key-mgmt=wpa-psk",
+                      "psk=%s" % ap.password, ""])
+    lines.extend(_ip_section(4, cfg))
+    lines.append("")
+    lines.extend(_ip_section(6, cfg))
+    lines.append("")
+    return "\n".join(lines)
+
+
 def render(network):
     """Render a Network config to ``{filename: keyfile-content}``.
 
@@ -154,6 +190,13 @@ def render(network):
     files = {}
     for iface_id, cfg in network.ethernets.items():
         files["%s.nmconnection" % iface_id] = _ethernet_lines(iface_id, cfg)
+    for iface_id, cfg in network.wifis.items():
+        # One keyfile per access point; suffix the filename only when a device
+        # has more than one, so the common single-AP case stays "<id>.nmconnection".
+        aps = list(cfg.access_points.items())
+        for index, (ssid, ap) in enumerate(aps, start=1):
+            name = iface_id if len(aps) == 1 else "%s-%d" % (iface_id, index)
+            files["%s.nmconnection" % name] = _wifi_lines(iface_id, ssid, ap, cfg)
     for iface_id, cfg in network.vlans.items():
         files["%s.nmconnection" % iface_id] = _vlan_lines(iface_id, cfg)
     return files
