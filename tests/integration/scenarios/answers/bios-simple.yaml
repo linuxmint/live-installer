@@ -29,11 +29,15 @@ storage:
     on_no_match: abort
   layout: simple
 
-# A self-signed CA added to the system trust store. {ca_cert} is replaced by
-# the harness with a freshly generated cert at run time.
+# A self-signed CA added to the system trust store. The placeholder is a
+# structurally valid PEM (so the file passes schema validation as-is); the
+# harness swaps in a freshly generated cert at run time.
 ca_certs:
   trusted:
-    - "{ca_cert}"
+    - |
+      -----BEGIN CERTIFICATE-----
+      LI_HARNESS_CA_CERT_PLACEHOLDER
+      -----END CERTIFICATE-----
 
 packages: [openssh-server]
 
