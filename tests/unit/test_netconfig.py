@@ -333,3 +333,59 @@ class TestRender:
         b = _render(net)["eth0.nmconnection"]
         assert a == b
         assert _parse_keyfile(a)["connection"]["uuid"]
+
+
+class TestEap8021x:
+    def test_wired_peap(self):
+        files = _render(
+            "network:\n"
+            "  version: 2\n"
+            "  ethernets:\n"
+            "    lan0:\n"
+            "      dhcp4: true\n"
+            "      auth:\n"
+            "        method: peap\n"
+            "        identity: host/ws.example.com\n"
+            "        ca-certificate: /etc/ssl/certs/corp.pem\n"
+            "        anonymous-identity: anon@example.com\n"
+            "        phase2-auth: mschapv2\n"
+            "        password: secret123\n"
+        )
+        kf = _parse_keyfile(files["lan0.nmconnection"])
+        assert kf["802-1x"]["eap"] == "peap"
+        assert kf["802-1x"]["identity"] == "host/ws.example.com"
+        assert kf["802-1x"]["ca-cert"] == "/etc/ssl/certs/corp.pem"
+        assert kf["802-1x"]["anonymous-identity"] == "anon@example.com"
+        assert kf["802-1x"]["phase2-auth"] == "mschapv2"
+        assert kf["802-1x"]["password"] == "secret123"
+        assert kf["connection"]["type"] == "ethernet"
+
+    def test_wifi_eap_tls(self):
+        files = _render(
+            "network:\n"
+            "  version: 2\n"
+            "  wifis:\n"
+            "    wlan0:\n"
+            "      access-points:\n"
+            '        "CorpTLS":\n'
+            "          auth:\n"
+            "            method: tls\n"
+            "            identity: ws01\n"
+            "            ca-certificate: /etc/ssl/certs/corp.pem\n"
+            "            client-certificate: /etc/ssl/certs/ws01.pem\n"
+            "            client-key: /etc/ssl/private/ws01.key\n"
+            "            client-key-password: keypass\n"
+        )
+        kf = _parse_keyfile(files["wlan0.nmconnection"])
+        # EAP wifi uses wpa-eap, not wpa-psk
+        assert kf["wifi-security"]["key-mgmt"] == "wpa-eap"
+        assert "psk" not in kf["wifi-security"]
+        assert kf["802-1x"]["eap"] == "tls"
+        assert kf["802-1x"]["client-cert"] == "/etc/ssl/certs/ws01.pem"
+        assert kf["802-1x"]["private-key"] == "/etc/ssl/private/ws01.key"
+        assert kf["802-1x"]["private-key-password"] == "keypass"
+
+    def test_no_8021x_section_without_auth(self):
+        files = _render(
+            "network:\n  version: 2\n  ethernets:\n    eth0: {dhcp4: true}\n")
+        assert not _parse_keyfile(files["eth0.nmconnection"]).has_section("802-1x")

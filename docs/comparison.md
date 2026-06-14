@@ -55,7 +55,8 @@ Legend: ✅ full, ◐ partial or preset-only, ✗ not supported.
 | Static IP / DNS / gateway | ✅ | ✅ | ✅ | ✅ |
 | IPv6 | ✅ | ✅ | ✅ | ✅ |
 | VLAN / bonding / bridges | ✅ | ◐ | ✅ (netplan) | ◐ (VLAN; no bond/bridge) |
-| WiFi (WPA-PSK) | ◐ | ◐ | ✅ (netplan) | ✅ (WPA-PSK / open; no EAP) |
+| WiFi (WPA-PSK) | ◐ | ◐ | ✅ (netplan) | ✅ (WPA-PSK / open) |
+| 802.1X / EAP (wired + WPA-Enterprise) | ✅ | ◐ | ✅ (netplan) | ✅ (PEAP/TTLS/TLS; certs by-reference) |
 | Hostname | ✅ | ✅ | ✅ | ✅ |
 
 ## Users, packages, scripting
@@ -110,10 +111,10 @@ Roughly in order of value for a desktop/workstation fleet, which is what
 this targets:
 
 1. **Static networking.** Done. The `network:` section uses netplan's v2
-   schema (static IPv4/IPv6, gateways, DNS, routes, 802.1Q VLANs, and wifi
-   WPA-PSK), but it is rendered to NetworkManager keyfiles directly rather
-   than via the netplan binary (which LMDE/Debian does not ship).
-   WPA-Enterprise, bonds, and bridges are the remaining extensions.
+   schema (static IPv4/IPv6, gateways, DNS, routes, 802.1Q VLANs, wifi
+   WPA-PSK, and 802.1X/EAP), but it is rendered to NetworkManager keyfiles
+   directly rather than via the netplan binary (which LMDE/Debian does not
+   ship). Bonds and bridges are the remaining extensions.
 2. **Services enable/disable.** A small `services:` section. Easy, high
    value (e.g. enable ssh, disable a default daemon).
 3. **Package groups / metapackages.** Today it is a flat list; Mint has
