@@ -28,7 +28,7 @@ storage:
     - {size: 2GB, mount: swap, filesystem: swap}
     - {size: rest, lvm_pv: vg0}
   lvm:
-    - {vg: vg0, lv: root, size: 8GB, mount: /, filesystem: ext4}
+    - {vg: vg0, lv: root, size: 16GB, mount: /, filesystem: ext4}
     - {vg: vg0, lv: home, size: rest, mount: /home, filesystem: ext4}
 
 packages: [openssh-server]
