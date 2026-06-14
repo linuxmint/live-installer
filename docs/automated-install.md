@@ -72,10 +72,11 @@ The installer runs in automated mode when **either** is present:
 | HTTPS URL | `https://cfg.example.com/host.yaml` | For PXE / netboot. TLS required (see below). |
 | HTTP URL | `http://10.0.0.1/host.yaml` | Refused unless `live-installer.auto-insecure` is also on the cmdline (or `--insecure`). |
 | NFS URL | `nfs://10.0.0.1/srv/cfg/host.yaml` | The directory is mounted read-only and the file read from it. Cleartext, so refused unless `live-installer.auto-insecure` (or `--insecure`). |
+| TFTP URL | `tftp://10.0.0.1/host.yaml` | Fetched with a built-in TFTP read client (no extra tooling), for PXE setups that already run a TFTP server. Cleartext, so refused unless `live-installer.auto-insecure` (or `--insecure`). |
 | Auto-discovery | `auto:https://cfg.example.com/` | One entry for a whole fleet: the installer finds its own file from this machine's identity. See [auto-discovery](#auto-discovery-for-netboot). |
 
 Answer files carry password hashes (and may reference key material), so
-cleartext transports (plain HTTP, NFS) are refused by default. Use HTTPS,
+cleartext transports (plain HTTP, NFS, TFTP) are refused by default. Use HTTPS,
 or opt in explicitly with `live-installer.auto-insecure` on a trusted
 network.
 
@@ -363,10 +364,10 @@ deploying it to avoid this class of failure entirely.
 - Do not put secrets in `late_commands` command text. It is logged.
   Reference a script on the media instead.
 
-### When `--insecure` (plain HTTP / NFS) is appropriate
+### When `--insecure` (plain HTTP / NFS / TFTP) is appropriate
 
 The default refuses to fetch an answer file or keyfile over a cleartext
-transport (plain HTTP or NFS) because both carry secrets. `--insecure` (or
+transport (plain HTTP, NFS, or TFTP) because they carry secrets. `--insecure` (or
 `live-installer.auto-insecure`) lifts that, and there are legitimate uses:
 an air-gapped lab, an isolated provisioning VLAN, or a manufacturing floor
 where standing up trusted TLS is real work for little gain, and the wire is
@@ -383,7 +384,7 @@ server cannot wedge the install indefinitely.
 ## Limitations (v1)
 
 - Custom partition layouts require the GUI installer.
-- Config delivery is local file, http(s) URL, or NFS, plus `auto`
-  identity-based discovery; TFTP and DNS-SRV discovery are not supported.
+- Config delivery is local file, http(s) URL, NFS, or TFTP, plus `auto`
+  identity-based discovery; DNS-SRV discovery is not supported.
 - The config is data, not a program — no conditionals, loops, or
   templating. Generate the YAML beforehand if you need that.

@@ -23,6 +23,7 @@ import os
 import re
 import shlex
 import shutil
+import socket
 import subprocess
 import sys
 import tempfile
@@ -51,13 +52,14 @@ def fetch_answer_file(source, insecure=False):
     """Return the text of an unattended-install file from a path or URL.
 
     Used for the answer file and for LUKS keyfiles — both carry secrets,
-    so cleartext transports (plain HTTP, NFS) are refused unless explicitly
-    opted into.
+    so cleartext transports (plain HTTP, NFS, TFTP) are refused unless
+    explicitly opted into.
     """
-    if source.startswith(("http://", "nfs://")) and not insecure:
-        proto = "plain HTTP" if source.startswith("http://") else "NFS"
+    scheme = source.split("://", 1)[0] if "://" in source else ""
+    if scheme in ("http", "nfs", "tftp") and not insecure:
+        label = {"http": "plain HTTP", "nfs": "NFS", "tftp": "TFTP"}[scheme]
         raise schema.ConfigError(
-            f"Refusing to fetch {source} over {proto}: unattended-install "
+            f"Refusing to fetch {source} over {label}: unattended-install "
             "files carry secrets (password hashes, key material). Use "
             "https://, or pass --insecure / boot with "
             f"{CMDLINE_INSECURE} if you accept the risk."
@@ -72,6 +74,8 @@ def fetch_answer_file(source, insecure=False):
             )
     if source.startswith("nfs://"):
         return _fetch_nfs(source)
+    if source.startswith("tftp://"):
+        return _fetch_tftp(source)
     try:
         with open(source, encoding="utf-8") as f:
             return f.read()
@@ -128,6 +132,61 @@ def _nfs_umount(mountpoint):
         os.rmdir(mountpoint)
     except OSError:
         pass
+
+
+def _parse_tftp_url(source):
+    """tftp://host[:port]/path -> (host, port, path). IPv6-aware via urlsplit."""
+    parts = urllib.parse.urlsplit(source)
+    host, path = parts.hostname, parts.path.lstrip("/")
+    if not host or not path:
+        raise schema.ConfigError(
+            f"Malformed TFTP URL {source!r}; expected tftp://host/path"
+        )
+    return host, parts.port or 69, path
+
+
+def _fetch_tftp(source, timeout=10):
+    """Minimal RFC 1350 read client (octet mode, 512-byte blocks): enough for a
+    small answer file or keyfile. TFTP is cleartext, so it is gated like HTTP."""
+    host, port, path = _parse_tftp_url(source)
+    try:
+        family = socket.getaddrinfo(host, port, type=socket.SOCK_DGRAM)[0][0]
+        addr = (host, port)
+    except OSError as exc:
+        raise schema.ConfigError(f"Cannot resolve {host} for {source}: {exc}")
+    sock = socket.socket(family, socket.SOCK_DGRAM)
+    sock.settimeout(timeout)
+    try:
+        sock.sendto(b"\x00\x01" + path.encode() + b"\x00octet\x00", addr)
+        data = bytearray()
+        expected = 1
+        server = None
+        while True:
+            try:
+                pkt, src = sock.recvfrom(2048)
+            except socket.timeout:
+                raise schema.ConfigError(f"TFTP timed out fetching {source}")
+            if server is None:
+                server = src  # the server answers from a fresh transfer port
+            opcode = int.from_bytes(pkt[:2], "big")
+            if opcode == 5:  # ERROR
+                msg = pkt[4:].split(b"\x00", 1)[0].decode(errors="replace")
+                raise schema.ConfigError(f"TFTP error for {source}: {msg}")
+            if opcode != 3:  # not DATA
+                raise schema.ConfigError(
+                    f"TFTP unexpected opcode {opcode} for {source}")
+            block = pkt[2:4]
+            if int.from_bytes(block, "big") == expected:
+                data.extend(pkt[4:])
+                sock.sendto(b"\x00\x04" + block, server)
+                expected += 1
+                if len(pkt[4:]) < 512:
+                    break  # short block ends the transfer
+            else:  # duplicate; re-ack what we got and wait for the right one
+                sock.sendto(b"\x00\x04" + block, server)
+        return data.decode("utf-8")
+    finally:
+        sock.close()
 
 
 def _fetch_nfs(source):
@@ -739,7 +798,7 @@ def main(argv=None):
     )
     parser.add_argument(
         "--config",
-        help="answer file path or URL (file, http(s)://, nfs://), or "
+        help="answer file path or URL (file, http(s)://, nfs://, tftp://), or "
              "'auto' / 'auto:<base-url>' to discover it from this machine's "
              "MAC/serial/UUID. Default: live-installer.auto= from the kernel "
              "command line.",
@@ -747,7 +806,7 @@ def main(argv=None):
     parser.add_argument(
         "--insecure", action="store_true",
         help="allow fetching the answer file over cleartext transports "
-             "(plain HTTP, NFS)",
+             "(plain HTTP, NFS, TFTP)",
     )
     parser.add_argument(
         "--list-disks", action="store_true",
