@@ -72,7 +72,7 @@ The installer runs in automated mode when **either** is present:
 | HTTPS URL | `https://cfg.example.com/host.yaml` | For PXE / netboot. TLS required (see below). |
 | HTTP URL | `http://10.0.0.1/host.yaml` | Refused unless `live-installer.auto-insecure` is also on the cmdline (or `--insecure`). |
 | NFS URL | `nfs://10.0.0.1/srv/cfg/host.yaml` | The directory is mounted read-only and the file read from it. Cleartext, so refused unless `live-installer.auto-insecure` (or `--insecure`). |
-| TFTP URL | `tftp://10.0.0.1/host.yaml` | Fetched with a built-in TFTP read client (no extra tooling), for PXE setups that already run a TFTP server. Plain RFC 1350 (512-byte blocks, no options negotiation), so it is meant for small files like an answer file or keyfile — use HTTP for large payloads. Cleartext, so refused unless `live-installer.auto-insecure` (or `--insecure`). |
+| TFTP URL | `tftp://10.0.0.1/host.yaml` | Fetched with a built-in TFTP read client (no extra tooling), for PXE setups that already run a TFTP server. Negotiates RFC 2347 options (`blksize`/`tsize`) and falls back to plain RFC 1350 against option-unaware servers. Intended for small files (answer file, keyfile) — use HTTP for large payloads. Cleartext, so refused unless `live-installer.auto-insecure` (or `--insecure`). |
 | Auto-discovery | `auto:https://cfg.example.com/` | One entry for a whole fleet: the installer finds its own file from this machine's identity. See [auto-discovery](#auto-discovery-for-netboot). |
 
 Answer files carry password hashes (and may reference key material), so

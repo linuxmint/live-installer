@@ -147,58 +147,111 @@ def _parse_tftp_url(source):
     return host, parts.port or 69, path
 
 
-# RFC 1350 transfers 512 bytes per round-trip with no options negotiation
-# (no RFC 2347 blksize/tsize). That is fine for an answer file or keyfile —
-# a few hundred packets, sub-second on a LAN — but it gets slow fast for
-# anything large. This client is intended for files under ~64 KiB; fetch
-# larger payloads over HTTP instead. Warn past this so a misuse is visible.
+# Large TFTP transfers are discouraged regardless of block size; warn past this.
 _TFTP_WARN_BYTES = 256 * 1024
+# RFC 2348 block size we request. 1428 keeps a DATA packet inside a 1500-byte
+# Ethernet MTU (1428 + 4 TFTP + 8 UDP + 20 IPv4 ≈ 1460), avoiding fragmentation.
+_TFTP_BLKSIZE = 1428
+_TFTP_DEFAULT_BLKSIZE = 512   # RFC 1350 default, used until/unless negotiated
+
+
+class _TftpOptionRejected(Exception):
+    """Server returned ERROR code 8 (option negotiation); retry without options."""
+
+
+def _parse_oack(payload):
+    """Parse an OACK option payload (name\\0value\\0... pairs) into a dict with
+    lower-cased option names."""
+    fields = [f for f in payload.split(b"\x00") if f != b""]
+    opts = {}
+    for i in range(0, len(fields) - 1, 2):
+        opts[fields[i].decode(errors="replace").lower()] = \
+            fields[i + 1].decode(errors="replace")
+    return opts
 
 
 def _fetch_tftp(source, timeout=10):
-    """Minimal RFC 1350 read client (octet mode, 512-byte blocks): enough for a
-    small answer file or keyfile. No option negotiation (RFC 2347), so it is not
-    meant for large payloads — use HTTP for those. TFTP is cleartext, so it is
-    gated like HTTP."""
+    """TFTP read client (octet mode), for a small answer file or keyfile.
+
+    Negotiates RFC 2347 options (RFC 2348 ``blksize``, RFC 2349 ``tsize``) for
+    fewer round-trips, and falls back cleanly to RFC 1350 (512-byte blocks)
+    when the server ignores the options or rejects them with ERROR code 8 — so
+    it works against option-aware and option-unaware servers alike. TFTP is
+    cleartext, so it is gated like HTTP."""
     host, port, path = _parse_tftp_url(source)
     try:
         family = socket.getaddrinfo(host, port, type=socket.SOCK_DGRAM)[0][0]
         addr = (host, port)
     except OSError as exc:
         raise schema.ConfigError(f"Cannot resolve {host} for {source}: {exc}")
+    try:
+        return _tftp_read(family, addr, path, source, timeout,
+                          request_options=True)
+    except _TftpOptionRejected:
+        # A strict server actively refused our options; retry as plain RFC 1350.
+        return _tftp_read(family, addr, path, source, timeout,
+                          request_options=False)
+
+
+def _tftp_read(family, addr, path, source, timeout, request_options):
     sock = socket.socket(family, socket.SOCK_DGRAM)
     sock.settimeout(timeout)
     try:
-        sock.sendto(b"\x00\x01" + path.encode() + b"\x00octet\x00", addr)
+        rrq = bytearray(b"\x00\x01" + path.encode() + b"\x00octet\x00")
+        if request_options:
+            rrq += b"blksize\x00%d\x00" % _TFTP_BLKSIZE
+            rrq += b"tsize\x000\x00"
+        sock.sendto(bytes(rrq), addr)
+
         data = bytearray()
+        blksize = _TFTP_DEFAULT_BLKSIZE
         expected = 1
         server = None
         warned = False
+        negotiated = False     # have we seen the first DATA/OACK yet?
         while True:
             try:
-                pkt, src = sock.recvfrom(2048)
+                pkt, src = sock.recvfrom(65536)
             except socket.timeout:
                 raise schema.ConfigError(f"TFTP timed out fetching {source}")
             if server is None:
                 server = src  # the server answers from a fresh transfer port
             opcode = int.from_bytes(pkt[:2], "big")
+            if opcode == 6 and not negotiated:  # OACK
+                opts = _parse_oack(pkt[2:])
+                if "blksize" in opts:
+                    try:
+                        blksize = int(opts["blksize"])
+                    except ValueError:
+                        raise schema.ConfigError(
+                            f"TFTP server sent a bad blksize for {source}")
+                negotiated = True
+                sock.sendto(b"\x00\x04\x00\x00", server)  # ACK block 0
+                continue
             if opcode == 5:  # ERROR
+                code = int.from_bytes(pkt[2:4], "big")
                 msg = pkt[4:].split(b"\x00", 1)[0].decode(errors="replace")
+                if code == 8 and request_options and not negotiated:
+                    raise _TftpOptionRejected()
                 raise schema.ConfigError(f"TFTP error for {source}: {msg}")
             if opcode != 3:  # not DATA
                 raise schema.ConfigError(
                     f"TFTP unexpected opcode {opcode} for {source}")
+            # A direct DATA reply means the server ignored our options: fall
+            # back to the 512-byte default already in `blksize`.
+            negotiated = True
             block = pkt[2:4]
             if int.from_bytes(block, "big") == expected:
-                data.extend(pkt[4:])
+                chunk = pkt[4:]
+                data.extend(chunk)
                 sock.sendto(b"\x00\x04" + block, server)
                 expected += 1
                 if not warned and len(data) > _TFTP_WARN_BYTES:
                     warned = True
                     print(f"WARNING: TFTP transfer of {source} exceeds "
-                          f"{_TFTP_WARN_BYTES // 1024} KiB; 512-byte blocks "
-                          "are slow for large files — prefer HTTP.")
-                if len(pkt[4:]) < 512:
+                          f"{_TFTP_WARN_BYTES // 1024} KiB; TFTP is slow for "
+                          "large files — prefer HTTP.")
+                if len(chunk) < blksize:
                     break  # short block ends the transfer
             else:  # duplicate; re-ack what we got and wait for the right one
                 sock.sendto(b"\x00\x04" + block, server)
