@@ -13,25 +13,24 @@ import schema
 from test_engine_commands import RecordingRunner
 
 
-def _start_tftp_server(content, *, send_error=False):
-    """One-shot localhost TFTP read server for tests. Returns (host, port)."""
+def _start_tftp_server(content, *, send_error=False, oack_blksize=None,
+                       reject_options=False):
+    """One-shot localhost TFTP read server for tests. Returns (host, port).
+
+    Modes:
+      - default: ignores any options, serves plain RFC 1350 (512-byte blocks).
+        This exercises the client's option-negotiation FALLBACK path.
+      - oack_blksize=N: negotiates blksize=N via an OACK (RFC 2347/2348).
+      - reject_options: answers an options request with ERROR code 8, then
+        serves the client's bare retry as plain RFC 1350.
+    """
     srv = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     srv.bind(("127.0.0.1", 0))
     port = srv.getsockname()[1]
 
-    def serve():
-        srv.settimeout(5)
-        try:
-            _rrq, client = srv.recvfrom(2048)
-        except OSError:
-            srv.close()
-            return
-        if send_error:
-            srv.sendto(b"\x00\x05\x00\x01File not found\x00", client)
-            srv.close()
-            return
-        blocks = [content[i:i + 512] for i in range(0, len(content), 512)]
-        if not blocks or len(blocks[-1]) == 512:
+    def send_blocks(client, blksize):
+        blocks = [content[i:i + blksize] for i in range(0, len(content), blksize)]
+        if not blocks or len(blocks[-1]) == blksize:
             blocks.append(b"")  # short/empty block terminates the transfer
         for n, chunk in enumerate(blocks, 1):
             srv.sendto(b"\x00\x03" + n.to_bytes(2, "big") + chunk, client)
@@ -39,6 +38,37 @@ def _start_tftp_server(content, *, send_error=False):
                 srv.recvfrom(2048)  # ACK
             except OSError:
                 break
+
+    def serve():
+        srv.settimeout(5)
+        try:
+            rrq, client = srv.recvfrom(2048)
+        except OSError:
+            srv.close()
+            return
+        if send_error:
+            srv.sendto(b"\x00\x05\x00\x01File not found\x00", client)
+            srv.close()
+            return
+        has_options = b"blksize\x00" in rrq
+        if reject_options and has_options:
+            srv.sendto(b"\x00\x05\x00\x08option rejected\x00", client)
+            try:
+                _retry, client = srv.recvfrom(2048)  # the bare retry
+            except OSError:
+                srv.close()
+                return
+            send_blocks(client, 512)
+        elif oack_blksize is not None and has_options:
+            srv.sendto(b"\x00\x06blksize\x00%d\x00" % oack_blksize, client)
+            try:
+                srv.recvfrom(2048)  # ACK of block 0
+            except OSError:
+                srv.close()
+                return
+            send_blocks(client, oack_blksize)
+        else:
+            send_blocks(client, 512)  # ignore options -> RFC 1350 fallback
         srv.close()
 
     threading.Thread(target=serve, daemon=True).start()
@@ -179,6 +209,30 @@ class TestTftpFetch:
             f"tftp://{host}:{port}/big", insecure=True)
         assert len(text) == len(big)
         assert "exceeds" in capsys.readouterr().out
+
+    def test_negotiates_blksize_oack(self):
+        # Server OACKs blksize=1024 and serves in 1024-byte blocks. The content
+        # is chosen so its last block (700 bytes) is > 512: a client that did
+        # NOT honour the OACK (still expecting 512) would treat that as a
+        # non-terminal block and hang, so a clean roundtrip proves negotiation.
+        content = b"z" * (1024 * 2 + 700)
+        host, port = _start_tftp_server(content, oack_blksize=1024)
+        text = auto_installer.fetch_answer_file(
+            f"tftp://{host}:{port}/file", insecure=True)
+        assert text == content.decode("utf-8")
+
+    def test_option_rejection_falls_back_to_rfc1350(self):
+        # Server answers the options request with ERROR code 8; the client must
+        # retry without options and still complete over plain RFC 1350.
+        content = b"version: 1\n" + b"k" * 2000
+        host, port = _start_tftp_server(content, reject_options=True)
+        text = auto_installer.fetch_answer_file(
+            f"tftp://{host}:{port}/file", insecure=True)
+        assert text == content.decode("utf-8")
+
+    def test_parse_oack(self):
+        opts = auto_installer._parse_oack(b"blksize\x001428\x00tsize\x004096\x00")
+        assert opts == {"blksize": "1428", "tsize": "4096"}
 
 
 class TestCmdlineSource:
