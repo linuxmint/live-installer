@@ -1,0 +1,55 @@
+# BIOS software RAID1 install across two disks, booted and verified over SSH.
+# Proves the multi-disk + mdadm + grub-to-every-member path: the system boots
+# from an assembled array with both mirrors healthy.
+name: raid1-bios
+description: Unattended BIOS install onto RAID1 (/boot + /), booted from the array
+
+firmware: bios
+tpm: false
+memory_mb: 4096
+cpus: 2
+
+disks:
+  - {size_gb: 20, serial: raidA}
+  - {size_gb: 20, serial: raidB}
+boot_disk_serial: raidA
+
+answer_file: answers/raid1-bios.yaml
+
+install_timeout_s: 1800
+boot_timeout_s: 360
+
+expect:
+  serial_markers:
+    - "Automated installation complete"
+  failure_markers:
+    - "Automated installation FAILED"
+
+ssh:
+  user: testuser
+
+verify:
+  - name: os-is-lmde
+    type: command
+    command: ". /etc/os-release && echo $PRETTY_NAME"
+    expect_substring: "LMDE"
+  - name: hostname-applied
+    type: command
+    command: hostname
+    expect_substring: "lmde-raid1-01"
+  - name: root-on-md-device
+    type: command
+    command: findmnt -n -o SOURCE /
+    expect_substring: "/dev/md"
+  - name: two-raid1-arrays-active
+    type: command
+    command: "grep -c 'active raid1' /proc/mdstat"
+    expect_substring: "2"
+  # [UU] = both mirror members present and in sync (no degraded array).
+  - name: arrays-healthy
+    type: command
+    command: "grep -c '\\[UU\\]' /proc/mdstat"
+    expect_substring: "2"
+  - name: mdadm-conf-written
+    type: file_exists
+    path: /etc/mdadm/mdadm.conf
