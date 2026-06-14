@@ -37,6 +37,19 @@ class DiscoveryError(Exception):
 DEFAULT_MEDIA_DIRS = ("/cdrom", "/run/live/medium")
 WELL_KNOWN_NAME = "auto-install.yaml"
 
+# Manufacturers ship machines with placeholder DMI values. A by-uuid/ or
+# by-serial/ answer file built from one of these would match every defective
+# unit in a fleet, so discovery never keys on them. Compared case-folded.
+_SENTINEL_UUIDS = frozenset({
+    "00000000-0000-0000-0000-000000000000",
+    "ffffffff-ffff-ffff-ffff-ffffffffffff",
+    "03000200-0400-0500-0006-000700080009",  # a known QEMU/SMBIOS default
+})
+_SENTINEL_SERIALS = frozenset({
+    "system serial number", "default string", "to be filled by o.e.m.",
+    "not specified", "not applicable", "none", "0", "123456789",
+})
+
 
 def parse_auto_trigger(source):
     """Return (is_discovery, base_or_None) for an answer-file source.
@@ -60,9 +73,11 @@ def _read(path):
         return ""
 
 
-def read_machine_identity(net_dir="/sys/class/net", dmi_dir="/sys/class/dmi/id"):
+def read_machine_identity(net_dir="/sys/class/net", dmi_dir="/sys/class/dmi/id",
+                          log=lambda _m: None):
     """Collect the stable identifiers a per-machine answer file is keyed on:
-    ethernet MAC(s), SMBIOS serial, SMBIOS UUID."""
+    wired ethernet MAC(s), SMBIOS serial, SMBIOS UUID. Sentinel/placeholder
+    DMI values are dropped (and logged) so discovery never keys on garbage."""
     macs = []
     try:
         names = sorted(os.listdir(net_dir))
@@ -71,14 +86,25 @@ def read_machine_identity(net_dir="/sys/class/net", dmi_dir="/sys/class/dmi/id")
     for name in names:
         if name == "lo":
             continue
-        # type 1 == ARPHRD_ETHER; skips wifi/virtual link types
+        # ARPHRD_ETHER (type 1) excludes loopback/bridges/tunnels but NOT wifi
+        # (wifi is also type 1), so filter wifi explicitly: a wireless NIC has
+        # a wireless/ subdir. by-mac discovery is wired-only — a laptop's wifi
+        # MAC is a poor fleet key (often down in the installer, may randomise).
         if _read(os.path.join(net_dir, name, "type")) != "1":
+            continue
+        if os.path.isdir(os.path.join(net_dir, name, "wireless")):
             continue
         addr = _read(os.path.join(net_dir, name, "address")).lower()
         if addr and addr != "00:00:00:00:00:00" and addr not in macs:
             macs.append(addr)
     serial = _read(os.path.join(dmi_dir, "product_serial")) or None
+    if serial and serial.strip().lower() in _SENTINEL_SERIALS:
+        log(f"auto-discovery: ignoring placeholder product_serial {serial!r}")
+        serial = None
     uuid = _read(os.path.join(dmi_dir, "product_uuid")) or None
+    if uuid and uuid.strip().lower() in _SENTINEL_UUIDS:
+        log(f"auto-discovery: ignoring placeholder product_uuid {uuid!r}")
+        uuid = None
     return {"macs": macs, "serial": serial, "uuid": uuid}
 
 

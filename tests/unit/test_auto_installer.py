@@ -170,6 +170,16 @@ class TestTftpFetch:
                 f"tftp://{host}:{port}/missing", insecure=True)
         assert "TFTP error" in str(excinfo.value)
 
+    def test_large_transfer_warns(self, capsys):
+        # RFC1350 512-byte blocks are slow for big files; warn past the
+        # threshold (review #8). Still completes correctly.
+        big = b"a" * (auto_installer._TFTP_WARN_BYTES + 2048)
+        host, port = _start_tftp_server(big)
+        text = auto_installer.fetch_answer_file(
+            f"tftp://{host}:{port}/big", insecure=True)
+        assert len(text) == len(big)
+        assert "exceeds" in capsys.readouterr().out
+
 
 class TestCmdlineSource:
     def test_present(self, tmp_path):
