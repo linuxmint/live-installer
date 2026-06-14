@@ -91,6 +91,11 @@ class VM:
         self._serial_stop = None
         self._serial_dir = None
         self._disks = []  # list of (path, serial)
+        # Extra NICs (besides the SSH/boot NIC), each pinned to a fixed MAC so
+        # the answer file can bind a static/VLAN config to it by macaddress.
+        # Each gets its own isolated user-net (no hostfwd), so it never
+        # competes with the primary NIC's port-forwarded SSH.
+        self.extra_nics = []  # list of MAC strings
 
     # -- setup ------------------------------------------------------------
 
@@ -244,6 +249,14 @@ class VM:
         if boot == "net" and firmware in ("uefi", "uefi-secureboot"):
             netcard += ",bootindex=0"
         cmd += ["-netdev", netdev, "-device", netcard]
+
+        # Additional NICs with fixed MACs on isolated user-nets. They carry no
+        # boot/SSH role — they exist so the installed system has a stable
+        # hardware address to bind a static/VLAN connection to.
+        for index, mac in enumerate(self.extra_nics, start=1):
+            nid = f"net{index}"
+            cmd += ["-netdev", f"user,id={nid}",
+                    "-device", f"virtio-net-pci,netdev={nid},mac={mac}"]
 
         if tpm:
             self._start_swtpm()

@@ -31,12 +31,17 @@ failure policy) keep their own shapes. Notable divergences:
     This is deliberately NOT cloud-init's `runcmd`, which runs on first
     boot — a different lifecycle, so it gets a different name. `runcmd`
     is left unused, reserved for true first-boot semantics later.
+  - `network` is a subset of netplan's v2 schema (the same shapes cloud-init
+    uses for Network Config v2), but it is rendered to NetworkManager
+    keyfiles by netconfig.py rather than via the netplan binary, which
+    LMDE/Debian does not ship.
 
 Strict validation deliberately defangs YAML's type-coercion footguns:
 anything that does not parse cleanly into the declared types is an
 error, never a guess.
 """
 
+import ipaddress
 import re
 
 import yaml
@@ -57,6 +62,34 @@ _FILESYSTEMS = ("ext4", "ext3", "ext2", "xfs", "btrfs", "vfat", "swap", "f2fs")
 _PART_FLAGS = ("esp", "bios_grub", "swap")
 _LV_NAME_RE = re.compile(r"^[A-Za-z0-9_][A-Za-z0-9_.+-]*$")
 _SUBVOL_RE = re.compile(r"^[A-Za-z0-9@._-][A-Za-z0-9@._/-]*$")
+# Linux interface names: up to 15 chars, no '/' or whitespace.
+_IFNAME_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,14}$")
+_MAC_RE = re.compile(r"^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$")
+
+
+def _check_cidr(value):
+    if "/" not in value:
+        raise ValueError(
+            f"{value!r} must include a prefix length (e.g. 192.168.1.10/24)"
+        )
+    try:
+        ipaddress.ip_interface(value)
+    except ValueError:
+        raise ValueError(
+            f"{value!r} is not a valid IP address with prefix "
+            "(e.g. 192.168.1.10/24 or 2001:db8::5/64)"
+        )
+    return value
+
+
+def _check_ip(value, version=None):
+    try:
+        addr = ipaddress.ip_address(value)
+    except ValueError:
+        raise ValueError(f"{value!r} is not a valid IP address")
+    if version is not None and addr.version != version:
+        raise ValueError(f"{value!r} is not an IPv{version} address")
+    return value
 
 
 class ConfigError(Exception):
@@ -480,6 +513,195 @@ class Logging(_StrictModel):
     also_serial: str = None
 
 
+# --- network: a subset of the netplan v2 schema --------------------------
+# We adopt netplan's *shapes* (the same key names and structure) but render
+# them ourselves to NetworkManager keyfiles, the format Mint/LMDE installed
+# systems already use — we do NOT depend on the netplan binary (LMDE/Debian
+# does not ship it). This configures the INSTALLED system's networking; the
+# live session's own networking is unaffected.
+
+
+class NameServers(_StrictModel):
+    addresses: list[str] = Field(default_factory=list)
+    search: list[str] = Field(default_factory=list)
+
+    @field_validator("addresses")
+    @classmethod
+    def _v_addresses(cls, value):
+        for addr in value:
+            _check_ip(addr)
+        return value
+
+
+class Route(_StrictModel):
+    to: str            # "default" or a CIDR (e.g. 10.0.0.0/24)
+    via: str           # next-hop IP
+    metric: int = None
+
+    @field_validator("to")
+    @classmethod
+    def _v_to(cls, value):
+        if value == "default":
+            return value
+        return _check_cidr(value)
+
+    @field_validator("via")
+    @classmethod
+    def _v_via(cls, value):
+        return _check_ip(value)
+
+    @model_validator(mode="after")
+    def _consistency(self):
+        # default routes may be either family; a CIDR target and via must
+        # agree on family (no IPv6 next-hop for an IPv4 destination).
+        if self.to != "default":
+            to_v = ipaddress.ip_network(self.to, strict=False).version
+            via_v = ipaddress.ip_address(self.via).version
+            if to_v != via_v:
+                raise ValueError(
+                    f"route to {self.to!r} (IPv{to_v}) cannot use an IPv{via_v} "
+                    f"via {self.via!r}"
+                )
+        return self
+
+
+class Match(_StrictModel):
+    """Select the physical device. macaddress binds by hardware address
+    (survives kernel interface renaming); name binds by interface name."""
+
+    macaddress: str = None
+    name: str = None
+
+    @field_validator("macaddress")
+    @classmethod
+    def _v_mac(cls, value):
+        if value is not None and not _MAC_RE.match(value):
+            raise ValueError(f"{value!r} is not a valid MAC address")
+        return value
+
+    @field_validator("name")
+    @classmethod
+    def _v_name(cls, value):
+        if value is not None and not _IFNAME_RE.match(value):
+            raise ValueError(f"{value!r} is not a valid interface name")
+        return value
+
+    @model_validator(mode="after")
+    def _consistency(self):
+        if self.macaddress is None and self.name is None:
+            raise ValueError("match must set at least one of macaddress, name")
+        return self
+
+
+class _IpConfig(_StrictModel):
+    """IP settings shared by ethernets and vlans."""
+
+    dhcp4: bool = False
+    dhcp6: bool = False
+    addresses: list[str] = Field(default_factory=list)
+    gateway4: str = None
+    gateway6: str = None
+    nameservers: NameServers = Field(default_factory=NameServers)
+    routes: list[Route] = Field(default_factory=list)
+
+    @field_validator("addresses")
+    @classmethod
+    def _v_addresses(cls, value):
+        for addr in value:
+            _check_cidr(addr)
+        return value
+
+    @field_validator("gateway4")
+    @classmethod
+    def _v_gateway4(cls, value):
+        if value is None:
+            return value
+        return _check_ip(value, version=4)
+
+    @field_validator("gateway6")
+    @classmethod
+    def _v_gateway6(cls, value):
+        if value is None:
+            return value
+        return _check_ip(value, version=6)
+
+    @model_validator(mode="after")
+    def _ip_consistency(self):
+        has_v4 = any(":" not in a for a in self.addresses)
+        has_v6 = any(":" in a for a in self.addresses)
+        if self.gateway4 and not has_v4:
+            raise ValueError("gateway4 set but no IPv4 address configured")
+        if self.gateway6 and not has_v6:
+            raise ValueError("gateway6 set but no IPv6 address configured")
+        return self
+
+
+class EthernetConfig(_IpConfig):
+    match: Match = None
+
+
+class VlanConfig(_IpConfig):
+    id: int
+    link: str
+
+    @field_validator("id")
+    @classmethod
+    def _v_id(cls, value):
+        if not 0 <= value <= 4094:
+            raise ValueError("vlan id must be between 0 and 4094")
+        return value
+
+    @field_validator("link")
+    @classmethod
+    def _v_link(cls, value):
+        if not _IFNAME_RE.match(value):
+            raise ValueError(f"{value!r} is not a valid interface id")
+        return value
+
+
+class Network(_StrictModel):
+    """A subset of netplan's v2 schema: ethernets and vlans with static or
+    DHCP addressing. Bonds/bridges are intentionally not modelled yet."""
+
+    version: int = 2
+    ethernets: dict[str, EthernetConfig] = Field(default_factory=dict)
+    vlans: dict[str, VlanConfig] = Field(default_factory=dict)
+
+    @field_validator("version")
+    @classmethod
+    def _v_version(cls, value):
+        if value != 2:
+            raise ValueError("network.version must be 2 (netplan v2 schema)")
+        return value
+
+    @field_validator("ethernets", "vlans")
+    @classmethod
+    def _v_ids(cls, value):
+        for name in value:
+            if not _IFNAME_RE.match(name):
+                raise ValueError(f"{name!r} is not a valid interface id")
+        return value
+
+    @model_validator(mode="after")
+    def _consistency(self):
+        overlap = set(self.ethernets) & set(self.vlans)
+        if overlap:
+            raise ValueError(
+                "interface id used for both an ethernet and a vlan: "
+                + ", ".join(sorted(overlap))
+            )
+        known = set(self.ethernets) | set(self.vlans)
+        for name, vlan in self.vlans.items():
+            if vlan.link not in known:
+                raise ValueError(
+                    f"vlan {name!r} link {vlan.link!r} is not a defined "
+                    "ethernet or vlan"
+                )
+            if vlan.link == name:
+                raise ValueError(f"vlan {name!r} cannot link to itself")
+        return self
+
+
 def _check_hostname(value):
     if value is None:
         return value
@@ -525,6 +747,7 @@ class AutoInstallConfig(_StrictModel):
     users: list[User] = Field(min_length=1)
     hostname: str = None
     keyboard: Keyboard = Field(default_factory=Keyboard)
+    network: Network = None                                   # netplan v2 subset
     packages: list[str] = Field(default_factory=list)        # cloud-init: installs
     package_remove: list[str] = Field(default_factory=list)  # extension
     repositories: list[Repository] = Field(default_factory=list)

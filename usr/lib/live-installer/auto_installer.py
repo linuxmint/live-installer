@@ -35,6 +35,7 @@ import urllib.request
 import discovery
 import diskmatch
 import mint_detect
+import netconfig
 import schema
 from commandrunner import CommandRunner
 
@@ -655,6 +656,28 @@ class HeadlessDriver:
         self.log(" --> grub.cfg kernel line: " + self.runner.output(
             "grep -m1 'vmlinuz' /target/boot/grub/grub.cfg | sed 's/^[[:space:]]*//'"))
 
+    def _apply_network(self):
+        # Render the netplan-v2-shaped network: section to NetworkManager
+        # keyfiles in the target. NM is what the installed Mint/LMDE system
+        # uses; we write the keyfiles directly rather than depending on the
+        # netplan binary (which LMDE/Debian does not ship). With no network:
+        # section the system keeps its default (NM-managed DHCP).
+        network = self.config.network
+        if network is None:
+            return
+        files = netconfig.render(network)
+        if not files:
+            return
+        conn_dir = "/target/etc/NetworkManager/system-connections"
+        self.runner.run("mkdir -p %s" % conn_dir)
+        for name, content in files.items():
+            path = os.path.join(conn_dir, name)
+            self.log(" --> Writing NetworkManager connection: %s" % name)
+            with open(path, "w") as f:
+                f.write(content)
+            # Keyfiles may hold secrets and NM refuses world-readable ones.
+            os.chmod(path, 0o600)
+
     def _run_commands(self):
         # late_commands: a list of shell commands run in the target chroot at
         # the end of the install, like Ubuntu autoinstall's late-commands and
@@ -712,6 +735,7 @@ class HeadlessDriver:
                 or self.config.kernel.cmdline_extra.strip()
                 or self.config.kernel.serial_console.strip()
                 or self.config.storage.layout == "lvm-on-luks"
+                or self.config.network is not None
             )
 
             def post_install_hook():
@@ -719,6 +743,7 @@ class HeadlessDriver:
                 self._create_extra_users()
                 self._apply_ssh_keys()
                 self._apply_packages()
+                self._apply_network()
                 self._regenerate_initramfs_if_luks()
                 self._apply_kernel_config()
                 self._run_commands()

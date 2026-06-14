@@ -456,3 +456,107 @@ class TestBtrfsSubvolumes:
         bad = BTRFS.replace('{name: "@home", mount: /home}',
                             '{name: "@home", mount: /boot/efi}')
         _expect_error(bad, "duplicate mount")
+
+
+NETWORK = textwrap.dedent("""\
+    version: 1
+    locale: en_US.UTF-8
+    timezone: America/Toronto
+    users:
+      - name: admin
+        passwd: "$6$rounds=4096$salt$hashhashhash"
+    storage:
+      target:
+        match:
+          first-non-removable: true
+    network:
+      version: 2
+      ethernets:
+        primary:
+          match: {macaddress: "aa:bb:cc:dd:ee:ff"}
+          addresses: [192.168.1.10/24, 2001:db8::5/64]
+          gateway4: 192.168.1.1
+          gateway6: 2001:db8::1
+          nameservers:
+            addresses: [192.168.1.53, 2001:db8::53]
+            search: [example.com]
+          routes:
+            - {to: 10.0.0.0/8, via: 192.168.1.254}
+      vlans:
+        vlan100:
+          id: 100
+          link: primary
+          addresses: [10.100.0.5/24]
+""")
+
+
+class TestNetwork:
+    def test_valid(self):
+        config = parse_config(NETWORK)
+        net = config.network
+        assert net.version == 2
+        eth = net.ethernets["primary"]
+        assert eth.match.macaddress == "aa:bb:cc:dd:ee:ff"
+        assert eth.addresses == ["192.168.1.10/24", "2001:db8::5/64"]
+        assert eth.gateway4 == "192.168.1.1"
+        assert eth.nameservers.search == ["example.com"]
+        assert eth.routes[0].to == "10.0.0.0/8"
+        vlan = net.vlans["vlan100"]
+        assert vlan.id == 100 and vlan.link == "primary"
+
+    def test_absent_network_is_none(self):
+        assert parse_config(VALID_MINIMAL).network is None
+
+    def test_dhcp_only(self):
+        text = VALID_MINIMAL + textwrap.dedent("""\
+            network:
+              version: 2
+              ethernets:
+                eth0: {dhcp4: true}
+        """)
+        config = parse_config(text)
+        assert config.network.ethernets["eth0"].dhcp4 is True
+
+    def test_wrong_version_rejected(self):
+        _expect_error(NETWORK.replace("version: 2", "version: 3"),
+                      "network.version must be 2")
+
+    def test_bad_mac_rejected(self):
+        _expect_error(NETWORK.replace("aa:bb:cc:dd:ee:ff", "nope"),
+                      "valid MAC")
+
+    def test_address_without_prefix_rejected(self):
+        _expect_error(NETWORK.replace("192.168.1.10/24", "192.168.1.10"),
+                      "prefix length")
+
+    def test_gateway4_must_be_ipv4(self):
+        _expect_error(NETWORK.replace("gateway4: 192.168.1.1",
+                                      "gateway4: 2001:db8::1"),
+                      "not an IPv4 address")
+
+    def test_gateway_without_matching_address_rejected(self):
+        bad = NETWORK.replace("addresses: [192.168.1.10/24, 2001:db8::5/64]",
+                              "addresses: [2001:db8::5/64]")
+        _expect_error(bad, "gateway4 set but no IPv4 address")
+
+    def test_route_family_mismatch_rejected(self):
+        bad = NETWORK.replace("{to: 10.0.0.0/8, via: 192.168.1.254}",
+                              "{to: 10.0.0.0/8, via: 'fe80::1'}")
+        _expect_error(bad, "cannot use an IPv6")
+
+    def test_vlan_dangling_link_rejected(self):
+        _expect_error(NETWORK.replace("link: primary", "link: missing0"),
+                      "is not a defined")
+
+    def test_vlan_id_range_rejected(self):
+        _expect_error(NETWORK.replace("id: 100", "id: 5000"),
+                      "between 0 and 4094")
+
+    def test_bad_interface_id_rejected(self):
+        _expect_error(NETWORK.replace("    primary:", '    "bad/if":'),
+                      "valid interface id")
+
+    def test_unknown_key_rejected(self):
+        _expect_error(NETWORK.replace("  version: 2\n",
+                                      "  version: 2\n  bogus: 1\n"),
+                      "bogus")
