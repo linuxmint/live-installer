@@ -717,6 +717,24 @@ class InstallerEngine:
         # recreate initramfs (needed in case of skip_mount also, to include things like mdadm/dm-crypt/etc in case its needed to boot a custom install)
         print(" --> Configuring Initramfs")
         self.do_run_in_chroot("/usr/sbin/update-initramfs -t -u -k all")
+        if self.setup.luks:
+            # The target is copied from the live squashfs, so it carries
+            # live-boot's diverted update-initramfs: a wrapper that no-ops
+            # unless the live medium is mounted at /run/live/medium inside
+            # the chroot. /run is bind-mounted non-recursively, so that
+            # submount is absent and the call above is silently skipped --
+            # the crypttab never reaches the initramfs and the encrypted
+            # root can't be unlocked at boot (the system drops to an
+            # initramfs shell). Plain and LVM installs boot the stock
+            # initramfs and are unaffected; only LUKS needs the rebuild.
+            #
+            # Remove live-boot's initramfs hook (it references a live-only
+            # path, /usr/lib/live/boot, and fails on the installed system)
+            # and run the real, un-diverted update-initramfs so the crypttab
+            # is baked in.
+            self.do_run_in_chroot("rm -f /usr/share/initramfs-tools/hooks/live")
+            real_update_initramfs = subprocess.getoutput("chroot /target/ /bin/sh -c 'dpkg-divert --truename /usr/sbin/update-initramfs'").strip() or "/usr/sbin/update-initramfs"
+            self.do_run_in_chroot("%s -u -k all" % real_update_initramfs)
         self.do_run_in_chroot(self.grub_adjustment_script)
         kernelversion= subprocess.getoutput("uname -r")
         self.do_run_in_chroot("/usr/bin/sha1sum /boot/initrd.img-%s > /var/lib/initramfs-tools/%s" % (kernelversion,kernelversion))
