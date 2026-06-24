@@ -5,7 +5,6 @@ import time
 import gettext
 import parted
 import partitioning
-import shlex
 from functools import cmp_to_key
 
 gettext.install("live-installer", "/usr/share/locale")
@@ -442,12 +441,18 @@ class InstallerEngine:
         disk_device = parted.getDevice(self.setup.disk)
         partitioning.full_disk_format(disk_device, create_boot=(self.auto_boot_partition is not None), create_swap=(self.auto_swap_partition is not None))
 
-        # Encrypt root partition
+        # Encrypt root partition. The passphrase is fed to cryptsetup on
+        # stdin (--key-file -), never as a command argument: this keeps it
+        # out of the process table (ps) and out of any logs. Previously the
+        # engine built 'echo -n <pass> | cryptsetup ...', so the passphrase
+        # was briefly visible to any local user running ps.
         if self.setup.luks:
             print(" --> Encrypting root partition %s" % self.auto_root_partition)
-            os.system("echo -n %s | cryptsetup luksFormat -c aes-xts-plain64 -h sha256 -s 512 %s" % (shlex.quote(self.setup.passphrase1), self.auto_root_partition))
+            subprocess.run("cryptsetup luksFormat -c aes-xts-plain64 -h sha256 -s 512 --key-file - %s" % self.auto_root_partition,
+                           shell=True, input=self.setup.passphrase1.encode("utf-8"))
             print(" --> Opening root partition %s" % self.auto_root_partition)
-            os.system("echo -n %s | cryptsetup luksOpen %s lvmmint" % (shlex.quote(self.setup.passphrase1), self.auto_root_partition))
+            subprocess.run("cryptsetup luksOpen --key-file - %s lvmmint" % self.auto_root_partition,
+                           shell=True, input=self.setup.passphrase1.encode("utf-8"))
             self.auto_root_partition = "/dev/mapper/lvmmint"
 
         # Setup LVM
