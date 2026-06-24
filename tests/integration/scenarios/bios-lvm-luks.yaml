@@ -1,0 +1,49 @@
+# BIOS firmware, LVM-on-LUKS layout, passphrase from a keyfile URL.
+#
+# The BIOS counterpart of uefi-lvm-luks: same encrypted LVM-on-LUKS
+# layout and serial-console unlock, but MBR/GRUB-on-disk instead of an
+# ESP. The installer picks the partition layout from firmware detection,
+# so the answer file is identical; only the firmware and the bootloader
+# path differ. Encrypted installs were UEFI-only in the matrix; the BIOS
+# boot path is a distinct initramfs/GRUB route, so it is covered here too.
+name: bios-lvm-luks
+description: Unattended BIOS install with LUKS-encrypted LVM, unlocked over serial
+
+firmware: bios
+tpm: false
+memory_mb: 4096
+cpus: 2
+disk_gb: 25
+
+answer_file: answers/bios-lvm-luks.yaml
+
+install_timeout_s: 1800
+boot_timeout_s: 300
+
+boot_unlock:
+  prompt: "Please unlock disk"
+  passphrase_file: answers/luks.key
+  timeout_s: 180
+
+expect:
+  serial_markers:
+    - "Automated installation complete"
+  failure_markers:
+    - "Automated installation FAILED"
+
+ssh:
+  user: testuser
+
+verify:
+  - name: hostname-applied
+    type: command
+    command: hostname
+    expect_substring: "lmde-luks-bios-01"
+  - name: root-on-luks-lvm
+    type: mount_source
+    mountpoint: /
+    source_contains: "lvmmint-root"
+  - name: luks-device-open
+    type: command
+    command: "lsblk -rno TYPE | grep -c crypt"
+    expect_substring: "1"
