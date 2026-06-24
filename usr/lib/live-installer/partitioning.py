@@ -470,6 +470,10 @@ def full_disk_format(device, create_boot=False, create_swap=True):
             partition_path = "%s%s%d" % (device.path, partition_prefix, partition_number)
             num_tries = 0
             while True:
+                # Each parted invocation triggers a partition-table rescan;
+                # udev briefly removes and recreates the device nodes. Wait
+                # for it to finish or mkfs can race a vanishing node.
+                os.system("udevadm settle 2>/dev/null")
                 if os.path.exists(partition_path):
                     break
                 if num_tries < 5:
@@ -481,7 +485,11 @@ def full_disk_format(device, create_boot=False, create_swap=True):
                     raise Exception(_("The partition %s could not be created. The installation will stop. Restart the computer and try again.") % partition_path)
             mkfs = mkfs.format(partition_path)
             print(mkfs)
-            os.system(mkfs)
+            if os.system(mkfs) != 0:
+                # A failed format must stop the installation here: if this is
+                # tolerated, mounting fails silently and the file copy lands
+                # in the live session's tmpfs until it fills up.
+                raise Exception(_("The partition %s could not be formatted. The installation will stop. Restart the computer and try again.") % partition_path)
             start_mb += size_mb + 1
     if installer.setup.gptonefi:
         run_parted('set 1 boot on')
