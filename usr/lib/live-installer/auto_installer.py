@@ -879,7 +879,12 @@ class HeadlessDriver:
         """
         if self.config.storage.layout != "lvm-on-luks":
             return
-        self.log(" --> Regenerating initramfs for the encrypted root")
+        # The engine's own update-initramfs (finish_installation) already ran
+        # and logged "update-initramfs is disabled (live system ...)" -- that
+        # is live-boot's diverted wrapper no-opping, not a failure. This
+        # authoritative rebuild below is what actually bakes in the crypttab.
+        self.log(" --> Regenerating initramfs for the encrypted root "
+                 "(supersedes the engine's no-op update-initramfs under live-boot)")
         # Remove live-boot's initramfs hook: it references a live-only path
         # (/usr/lib/live/boot) and fails on the installed system, which made
         # update-initramfs exit non-zero. The installed system is not a live
