@@ -1034,6 +1034,26 @@ class HeadlessDriver:
             self.log(f" --> Target disk: {setup.disk}")
             setup.print_setup()
 
+            # A re-install can target a disk whose partitions the live session
+            # auto-mounted, or whose swap it activated; parted mklabel then
+            # aborts with "the partition table couldn't be written". The GUI
+            # offers to unmount interactively (ensure_paths_unmounted), but an
+            # unattended run has no operator, so release them here before the
+            # engine starts partitioning.
+            import partitioning
+            mounted = []
+            for disk in setup.disks:
+                for path in partitioning.get_mounted_partitions_on_target_disk(disk):
+                    if path not in mounted:
+                        mounted.append(path)
+            if mounted:
+                self.log(" --> Unmounting stale mounts on target disk(s): "
+                         + ", ".join(mounted))
+                failed = partitioning.unmount_partitions(mounted)
+                if failed:
+                    raise InstallationFailed(
+                        "could not unmount target partitions: " + "; ".join(failed))
+
             # Before the engine copies resolv.conf into the target, make sure
             # the live session can actually resolve names (netboot leaves a
             # placeholder resolv.conf; see _ensure_dns).
