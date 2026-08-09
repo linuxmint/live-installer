@@ -4,3 +4,10 @@ debian/files
 debian/*substvar*
 *interface.ui~
 usr/share/locale/*
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+tests/integration/fixtures/*.iso
+tests/integration/fixtures/sha256sum.txt
+tests/integration/.work/

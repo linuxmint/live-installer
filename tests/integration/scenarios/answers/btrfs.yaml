@@ -1,0 +1,50 @@
+# Custom layout with btrfs subvolumes: ESP + swap, and a btrfs root split into
+# @ (mounted /) and @home (mounted /home) — the snapshot-friendly layout.
+version: 1
+
+hostname: lmde-btrfs-01
+locale: en_US.UTF-8
+timezone: America/Toronto
+
+keyboard:
+  model: pc105
+  layout: us
+
+users:
+  - name: testuser
+    gecos: Integration Test User
+    # "testpass", sha512crypt — test fixture only
+    passwd: "$6$rounds=4096$integration.test$kPEsZSlAg3pjDM0yaeSdAVPbHcsiBVMobBC0SXmdGRX9WtflVB.ETP6/yo8Lw0PRJlXP6tEXkbQjnLnnyG5BV1"
+    groups: [sudo]
+
+storage:
+  target:
+    match:
+      first-non-removable: true
+    on_no_match: abort
+  layout: custom
+  partitions:
+    - {size: 512MB, mount: /boot/efi, filesystem: vfat, flags: [esp]}
+    - {size: 2GB, mount: swap, filesystem: swap}
+    - size: rest
+      filesystem: btrfs
+      subvolumes:
+        - {name: "@", mount: /}
+        - {name: "@home", mount: /home}
+
+packages: [openssh-server]
+
+# Configure Timeshift on the btrfs @/@home root (the cross-validation requires
+# this layout). Exercises the timeshift.json render against the real Timeshift.
+snapshots:
+  enabled: true
+  backend: timeshift-btrfs
+  schedule:
+    boot: true
+    daily: 5
+    weekly: 3
+
+on_failure:
+  partition_mismatch: abort
+  network_unavailable: continue
+  package_install_failure: abort

@@ -1,0 +1,49 @@
+# UEFI firmware, LVM-on-LUKS layout, passphrase from a keyfile URL.
+#
+# Full boot/verify: the answer file's kernel.serial_console provisions a
+# serial console on the installed system, so the initramfs LUKS prompt
+# appears on ttyS0; the harness types the passphrase over serial, then
+# verifies the unlocked system over SSH. Exercises luksFormat (passphrase
+# via stdin), LVM-on-LUKS stacking, crypttab, grub-efi, and the
+# serial-console provisioning path end to end.
+name: uefi-lvm-luks
+description: Unattended UEFI install with LUKS-encrypted LVM, unlocked over serial
+
+firmware: uefi
+tpm: false
+memory_mb: 4096
+cpus: 2
+disk_gb: 25
+
+answer_file: answers/uefi-lvm-luks.yaml
+
+install_timeout_s: 1800
+boot_timeout_s: 300
+
+boot_unlock:
+  prompt: "Please unlock disk"
+  passphrase_file: answers/luks.key
+  timeout_s: 180
+
+expect:
+  serial_markers:
+    - "Automated installation complete"
+  failure_markers:
+    - "Automated installation FAILED"
+
+ssh:
+  user: testuser
+
+verify:
+  - name: hostname-applied
+    type: command
+    command: hostname
+    expect_substring: "lmde-luks-01"
+  - name: root-on-luks-lvm
+    type: mount_source
+    mountpoint: /
+    source_contains: "lvmmint-root"
+  - name: luks-device-open
+    type: command
+    command: "lsblk -rno TYPE | grep -c crypt"
+    expect_substring: "1"

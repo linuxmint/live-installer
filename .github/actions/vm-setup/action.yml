@@ -1,0 +1,105 @@
+name: VM test setup
+description: >
+  Enable KVM, install QEMU/OVMF/swtpm and ISO tooling, fetch the pinned
+  LMDE ISO (cached), and build the dev ISO with the working-tree
+  installer. Leaves fixtures/lmde-7-dev.iso ready for run_scenario.py.
+
+inputs:
+  iso-name:
+    description: Base ISO filename under tests/integration/fixtures
+    default: lmde-7-cinnamon-64bit.iso
+  iso-url:
+    description: Download URL for the base ISO
+    default: https://mirrors.kernel.org/linuxmint/debian/lmde-7-cinnamon-64bit.iso
+
+runs:
+  using: composite
+  steps:
+    - name: Free up disk space
+      shell: bash
+      run: |
+        # The PXE scenario unsquashfs's the full desktop rootfs (~8GB) to
+        # merge our code in; reclaim space the runner image spends on toolsets
+        # we don't use so it fits. Best-effort, never fails the job.
+        df -h / | tail -1
+        sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc \
+          /usr/local/.ghcup /usr/local/share/powershell || true
+        df -h / | tail -1
+
+    - name: Enable KVM for the runner user
+      shell: bash
+      run: |
+        echo "=== KVM diagnostics ==="
+        echo "cpu virt flags: $(grep -c -E 'vmx|svm' /proc/cpuinfo) cores"
+        ls -l /dev/kvm 2>&1 || echo "/dev/kvm absent"
+        # The udev rule persists the permission; the direct chmod applies
+        # it synchronously so there is no race with the next step (the
+        # udev trigger is asynchronous and `test -w` can run before it).
+        echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
+          | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+        sudo udevadm control --reload-rules
+        sudo udevadm trigger --name-match=kvm || true
+        sudo chmod 0666 /dev/kvm
+        ls -l /dev/kvm
+        test -w /dev/kvm && echo "KVM is writable" \
+          || { echo "KVM NOT available — hosted runner lacks hardware virtualization"; exit 1; }
+
+    - name: Install QEMU, OVMF, swtpm and ISO tooling
+      shell: bash
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y --no-install-recommends \
+          qemu-system-x86 qemu-utils ovmf swtpm swtpm-tools \
+          squashfs-tools xorriso openssh-client
+
+    - name: Install Python deps for the harness
+      shell: bash
+      run: pip install pyyaml
+
+    # UEFI PXE needs an EFI boot binary (OVMF can't run a raw iPXE script the
+    # way the BIOS NIC option ROM does). Build ipxe.efi once, with an embedded
+    # script that chainloads the per-run boot.ipxe over TFTP — so the EFI
+    # binary itself is static and cacheable while the real boot script stays
+    # dynamic. Bump the cache key when the embedded script changes.
+    - name: Cache iPXE EFI binary
+      id: ipxe-cache
+      uses: actions/cache@v5
+      with:
+        path: tests/integration/fixtures/ipxe.efi
+        key: ipxe-efi-chain-v1
+
+    - name: Build iPXE EFI for UEFI netboot
+      if: steps.ipxe-cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: |
+        sudo apt-get install -y --no-install-recommends \
+          build-essential liblzma-dev git
+        git clone --depth 1 https://github.com/ipxe/ipxe.git /tmp/ipxe
+        printf '#!ipxe\ndhcp\nchain tftp://${next-server}/boot.ipxe\n' \
+          > /tmp/embed.ipxe
+        make -C /tmp/ipxe/src -j"$(nproc)" bin-x86_64-efi/ipxe.efi \
+          EMBED=/tmp/embed.ipxe
+        mkdir -p tests/integration/fixtures
+        cp /tmp/ipxe/src/bin-x86_64-efi/ipxe.efi \
+          tests/integration/fixtures/ipxe.efi
+
+    - name: Cache the base ISO
+      id: iso-cache
+      uses: actions/cache@v5
+      with:
+        path: tests/integration/fixtures/${{ inputs.iso-name }}
+        key: lmde-iso-${{ inputs.iso-name }}
+
+    - name: Download and verify the base ISO
+      if: steps.iso-cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: |
+        mkdir -p tests/integration/fixtures
+        cd tests/integration/fixtures
+        curl -sLO https://mirrors.kernel.org/linuxmint/debian/sha256sum.txt
+        curl -sLo "${{ inputs.iso-name }}" "${{ inputs.iso-url }}"
+        sha256sum -c <(grep "${{ inputs.iso-name }}" sha256sum.txt)
+
+    - name: Build the dev ISO
+      shell: bash
+      run: python tests/integration/harness/make_test_iso.py

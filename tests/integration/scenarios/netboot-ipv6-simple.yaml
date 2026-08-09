@@ -1,0 +1,40 @@
+# IPv6 data-path netboot: the rootfs squashfs and the answer file are fetched
+# over IPv6, proving the install works on an IPv6 network.
+#
+# This is NOT a PXE boot. Enabling IPv6 in QEMU's user-mode network breaks the
+# firmware PXE boot (slirp has no DHCPv6 boot-URL option and the IPv4 PXE ROM
+# stalls when IPv6 is present), so the kernel/initrd are loaded directly by
+# QEMU instead. From there live-boot's fetch= (rootfs) and the installer's
+# live-installer.auto= (answer file) both use the IPv6 host (fd00::2), so the
+# part our code owns runs over IPv6. A real IPv6 deployment would PXE-boot over
+# IPv6 too (DHCPv6 + UEFI HTTP boot), which no slirp-based CI can emulate.
+
+name: netboot-ipv6-simple
+description: Unattended install fetching rootfs + answer file over IPv6
+
+firmware: bios
+tpm: false
+memory_mb: 8192
+cpus: 2
+disk_gb: 25
+
+netboot: true
+ipv6: true
+
+answer_file: answers/netboot-ipv6.yaml
+
+install_timeout_s: 1800
+boot_timeout_s: 300
+
+# The proof here is that the install completes after fetching the rootfs and
+# the answer file over IPv6. The installed-system boot + SSH verify is the same
+# code the BIOS/UEFI PXE scenarios already cover, and it needs apt (internet
+# DNS), which is out of scope for an IPv6 data-path test — so skip phase 2.
+skip_boot_phase: true
+skip_boot_reason: "IPv6 data-path scenario; phase-2 boot/verify covered by the PXE scenarios"
+
+expect:
+  serial_markers:
+    - "Automated installation complete"
+  failure_markers:
+    - "Automated installation FAILED"

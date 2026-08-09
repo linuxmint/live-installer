@@ -1,0 +1,90 @@
+name: integration tests
+
+# Boots real VMs and performs full unattended installs — slow and
+# KVM-dependent, so it runs nightly and on demand rather than per-push.
+on:
+  schedule:
+    - cron: "0 4 * * *"   # 04:00 UTC nightly
+  workflow_dispatch:
+    inputs:
+      scenarios:
+        description: "Space-separated scenario names (default: all)"
+        required: false
+        default: ""
+
+# A newer run supersedes an in-flight one on the same ref (these are
+# expensive; don't pile them up).
+concurrency:
+  group: integration-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Fast gate: the failure-mode scenarios abort in ~2 min and need no
+  # successful install, so they run first and block the slow matrix.
+  failure-modes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/vm-setup
+      - name: Run failure-mode scenarios
+        run: |
+          for s in fail-malformed-yaml fail-no-disk-match fail-bios-grub-on-uefi fail-snapshots-on-ext4; do
+            python tests/integration/harness/run_scenario.py \
+              "tests/integration/scenarios/$s.yaml" \
+              --junit "tests/integration/.work/$s.xml"
+          done
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: failure-mode-results
+          path: tests/integration/.work/*.xml
+
+  install-scenarios:
+    needs: failure-modes
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        scenario: [bios-simple, uefi-simple, uefi-lvm, uefi-lvm-luks, bios-multi-disk, pxe-simple, pxe-uefi-simple, netboot-ipv6-simple, custom-uefi, custom-btrfs, static-network, uefi-luks-prompt, raid1-bios, raid5-lvm-bios, flatpak]
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Skip if not selected
+        id: gate
+        run: |
+          sel="${{ github.event.inputs.scenarios }}"
+          if [ -n "$sel" ] && ! echo "$sel" | grep -qw "${{ matrix.scenario }}"; then
+            echo "run=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: ./.github/actions/vm-setup
+        if: steps.gate.outputs.run == 'true'
+
+      - name: Run ${{ matrix.scenario }}
+        if: steps.gate.outputs.run == 'true'
+        run: |
+          python tests/integration/harness/run_scenario.py \
+            "tests/integration/scenarios/${{ matrix.scenario }}.yaml" \
+            --keep \
+            --junit "tests/integration/.work/${{ matrix.scenario }}.xml"
+
+      - name: Collect serial log on failure
+        if: failure() && steps.gate.outputs.run == 'true'
+        run: |
+          mkdir -p artifacts
+          cp "tests/integration/.work/${{ matrix.scenario }}/${{ matrix.scenario }}-serial.log" \
+            "artifacts/${{ matrix.scenario }}-serial.log" || true
+          cp tests/integration/.work/*.xml artifacts/ || true
+
+      - uses: actions/upload-artifact@v7
+        if: always() && steps.gate.outputs.run == 'true'
+        with:
+          name: ${{ matrix.scenario }}-results
+          path: |
+            tests/integration/.work/${{ matrix.scenario }}.xml
+            artifacts/
+          if-no-files-found: ignore

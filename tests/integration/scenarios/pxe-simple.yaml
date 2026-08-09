@@ -1,0 +1,53 @@
+# Network-boot scenario: BIOS firmware, PXE/iPXE, single disk, simple layout.
+#
+# Unlike the other scenarios, no install media is attached. QEMU's user-mode
+# network provides DHCP/TFTP and the NIC's iPXE ROM; the kernel/initrd come
+# over TFTP, live-boot fetches the squashfs over HTTP, and the installer
+# fetches its answer file over HTTP. Proves the unattended install works end
+# to end when everything is network-delivered.
+#
+# Reuses the bios-simple answer file and checks; only the delivery differs.
+
+name: pxe-simple
+description: Unattended BIOS install, network-booted via iPXE, simple layout
+
+firmware: bios
+tpm: false
+# Higher than the media scenarios: live-boot fetches the squashfs into RAM.
+memory_mb: 8192
+cpus: 2
+disk_gb: 25
+
+netboot: true
+
+answer_file: answers/bios-simple.yaml
+
+install_timeout_s: 1800
+boot_timeout_s: 300
+
+expect:
+  serial_markers:
+    - "Automated installation complete"
+  failure_markers:
+    - "Automated installation FAILED"
+
+ssh:
+  user: testuser
+
+verify:
+  - name: os-is-lmde
+    type: command
+    command: ". /etc/os-release && echo $PRETTY_NAME"
+    expect_substring: "LMDE"
+  - name: hostname-applied
+    type: command
+    command: hostname
+    expect_substring: "lmde-test-01"
+  - name: root-on-plain-partition
+    type: mount_source
+    mountpoint: /
+    source_contains: "/dev/"
+  - name: network-manager-running
+    type: command
+    command: systemctl is-active NetworkManager
+    expect_substring: "active"

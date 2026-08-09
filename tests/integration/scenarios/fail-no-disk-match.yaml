@@ -1,0 +1,19 @@
+# Failure mode: a disk matcher that matches nothing must abort with a
+# clear error (on_no_match: abort) before any destructive action.
+name: fail-no-disk-match
+description: Unmatchable disk selector fails fast with the failure marker
+
+firmware: bios
+memory_mb: 3072
+cpus: 2
+disk_gb: 10
+
+answer_file: answers/no-disk-match.yaml
+install_timeout_s: 420
+
+expect:
+  outcome: failure
+  serial_markers:
+    - "Automated installation complete"
+  failure_markers:
+    - "Automated installation FAILED"
