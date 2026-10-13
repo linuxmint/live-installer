@@ -1,3 +1,14 @@
+live-installer (2026.10.13) adrien; urgency=medium
+
+  [ Clement Lefebvre ]
+  * Update slideshow
+  * l10n: Update POT
+
+  [ Michael Webster ]
+  * paritioning: Offer to unmount before continuing if the install targets are mounted or, in the case of automated paritioning, the drive contains a mounted partition or active swap.
+
+ -- Clement Lefebvre <root@linuxmint.com>  Tue, 13 Oct 2026 14:54:13 +0100
+
 live-installer (2026.04.23) unstable; urgency=medium
 
   * luks: Use tmpfiles.d instead of sysfsutil
