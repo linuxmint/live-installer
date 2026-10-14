@@ -3,6 +3,7 @@
 from installer import InstallerEngine, Setup
 from dialogs import MessageDialog, QuestionDialog, ErrorDialog, WarningDialog, ConfirmDialog
 import distro
+import mint_detect
 import timezones
 import partitioning
 import gettext
@@ -39,7 +40,7 @@ HAS_LOWER_REGEX = r"[A-Z]+"
 
 DISTRIBUTION = distro.name()
 VERSION = distro.version()
-IS_MINT = os.path.exists("/usr/share/doc/ubuntu-system-adjustments/copyright") or "ubuntu" in distro.like()
+IS_MINT = mint_detect.is_mint()
 
 NON_LATIN_KB_LAYOUTS = ['am', 'af', 'ara', 'ben', 'bd', 'bg', 'bn', 'bt', 'by', 'deva', 'et', 'ge', 'gh', 'gn', 'gr', 'guj', 'guru', 'id', 'il', 'iku', 'in', 'iq', 'ir', 'kan', 'kg', 'kh', 'kz', 'la', 'lao', 'lk', 'ma', 'mk', 'mm', 'mn', 'mv', 'mal', 'my', 'np', 'ori', 'pk', 'ru', 'rs', 'scc', 'sy', 'syr', 'tel', 'th', 'tj', 'tam', 'tz', 'ua', 'uz']
 
@@ -1349,6 +1350,26 @@ class InstallerWindow:
 
 # main entry
 if __name__ == "__main__":
+    # Unattended installation: --automated=<source> on the command line, or
+    # live-installer.auto=<source> on the kernel command line. Everything
+    # else falls through to the GUI unchanged.
+    cmdline = subprocess.getoutput("cat /proc/cmdline")
+    if ("live-installer.auto=" in cmdline
+            or any(arg.startswith("--automated") for arg in sys.argv)):
+        import auto_installer
+        # Translate the --automated trigger, then forward every other flag to
+        # the headless driver unchanged, so --list-disks/--check/--config/
+        # --insecure/--dry-run all work via the `live-installer` entrypoint.
+        auto_argv = []
+        for arg in sys.argv[1:]:
+            if arg.startswith("--automated="):
+                auto_argv += ["--config", arg.split("=", 1)[1]]
+            elif arg == "--automated":
+                continue  # bare trigger, no source value
+            else:
+                auto_argv.append(arg)
+        sys.exit(auto_installer.main(auto_argv))
+
     expert_mode = "--expert-mode" in sys.argv
     oem_mode = "--oem-mode" in sys.argv
     oem_config = "--oem-config" in sys.argv

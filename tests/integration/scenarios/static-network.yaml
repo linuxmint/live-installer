@@ -1,0 +1,76 @@
+# Static IP + VLAN networking (dual-stack). A second, fixed-MAC NIC is given a
+# static IPv4+IPv6 address and an 802.1Q VLAN on top, all via the answer file's
+# netplan-v2 network: section rendered to NetworkManager keyfiles. The primary
+# NIC stays on DHCP so the harness keeps SSH reachability.
+
+name: static-network
+description: Unattended BIOS install, static dual-stack IP + VLAN on a 2nd NIC
+
+firmware: bios
+tpm: false
+memory_mb: 4096
+cpus: 2
+disk_gb: 25
+
+answer_file: answers/static-network.yaml
+
+# A second NIC with a stable MAC the answer file binds its static config to.
+extra_nics:
+  - "52:54:00:aa:bb:01"
+
+install_timeout_s: 1800
+boot_timeout_s: 300
+
+expect:
+  serial_markers:
+    - "Automated installation complete"
+  failure_markers:
+    - "Automated installation FAILED"
+
+ssh:
+  user: testuser
+
+verify:
+  - name: os-is-lmde
+    type: command
+    command: ". /etc/os-release && echo $PRETTY_NAME"
+    expect_substring: "LMDE"
+  - name: hostname-applied
+    type: command
+    command: hostname
+    expect_substring: "lmde-net-01"
+  # Wait (bounded) for NetworkManager to bring up the static connection, then
+  # assert the static IPv4 address landed on the second NIC.
+  - name: static-ipv4-configured
+    type: command
+    command: >-
+      for i in $(seq 1 30); do ip -4 addr | grep -q 192.168.50.10 && break; sleep 1; done; ip -4 addr
+    expect_substring: "192.168.50.10/24"
+  - name: static-ipv6-configured
+    type: command
+    command: ip -6 addr
+    expect_substring: "2001:db8:50::10"
+  - name: static-ipv4-gateway
+    type: command
+    command: ip -4 route
+    expect_substring: "default via 192.168.50.1"
+  - name: static-ipv6-gateway
+    type: command
+    command: ip -6 route
+    expect_substring: "default via 2001:db8:50::1"
+  - name: vlan-interface-id
+    type: command
+    command: ip -d link show vlan50
+    expect_substring: "id 50"
+  - name: vlan-ipv4-configured
+    type: command
+    command: ip -4 addr show vlan50
+    expect_substring: "10.50.0.5/24"
+  - name: vlan-ipv6-configured
+    type: command
+    command: ip -6 addr show vlan50
+    expect_substring: "2001:db8:5050::5"
+  - name: network-manager-running
+    type: command
+    command: systemctl is-active NetworkManager
+    expect_substring: "active"

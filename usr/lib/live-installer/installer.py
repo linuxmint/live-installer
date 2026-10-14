@@ -1,11 +1,12 @@
 from glob import glob
 import os
-import subprocess
+import re
 import time
 import gettext
 import parted
 import partitioning
 import shlex
+from commandrunner import CommandRunner
 from functools import cmp_to_key
 
 gettext.install("live-installer", "/usr/share/locale")
@@ -13,17 +14,30 @@ gettext.install("live-installer", "/usr/share/locale")
 class InstallerEngine:
     ''' This is central to the live installer '''
 
-    def __init__(self, setup):
+    def __init__(self, setup, runner=None):
         self.setup = setup
+        self.runner = runner or CommandRunner()
         if self.setup.is_mint:
             self.casper = "/cdrom/casper"
             self.pool = "/cdrom/pool"
+            self.live_files = self.casper
             self.manifest = "/cdrom/casper/filesystem.manifest"
             self.grub_adjustment_script = "/usr/share/ubuntu-system-adjustments/systemd/adjust-grub-title"
         else:
             self.casper = "/run/live/medium/live"
             self.pool = "/run/live/medium/pool"
-            self.manifest = "/run/live/medium/live/filesystem.packages"
+            # The kernel, initrd, and package manifests normally sit next to
+            # the squashfs on the medium. A PXE/netboot image can't: live-boot
+            # fetch= delivers only the squashfs, so a netboot image carries
+            # those files in the rootfs instead, and we read them from there.
+            self.live_files = self.casper
+            _bundled = "/usr/lib/live-installer/netboot-live"
+            if not os.path.exists(f"{self.casper}/vmlinuz") and os.path.isdir(_bundled):
+                self.live_files = _bundled
+                # UEFI installs pull the signed bootloader .debs from the pool,
+                # which the netboot image carries in the bundle too.
+                self.pool = f"{_bundled}/pool"
+            self.manifest = f"{self.live_files}/filesystem.packages"
             self.grub_adjustment_script = "/usr/share/debian-system-adjustments/systemd/adjust-grub-title"
 
     def set_progress_hook(self, progresshook):
@@ -52,12 +66,15 @@ class InstallerEngine:
         fp = open("/target/dev/shm/.passwd", "w")
         fp.write(self.setup.username +  ":" + self.setup.password1 + "\n")
         fp.close()
-        self.do_run_in_chroot("cat /dev/shm/.passwd | chpasswd")
-        os.system("rm -f /target/dev/shm/.passwd")
+        # password_is_crypted: password1 is a crypt(5) hash (unattended
+        # installs never carry plaintext); -e tells chpasswd it's pre-hashed
+        chpasswd = "chpasswd -e" if self.setup.password_is_crypted else "chpasswd"
+        self.do_run_in_chroot("cat /dev/shm/.passwd | %s" % chpasswd)
+        self.runner.run("rm -f /target/dev/shm/.passwd")
 
         # Set autologin
         if self.setup.oem_mode:
-            os.system("cp /usr/share/live-installer/lightdm-oem-config.conf /target/etc/lightdm/lightdm.conf.d/90-oem-config.conf")
+            self.runner.run("cp /usr/share/live-installer/lightdm-oem-config.conf /target/etc/lightdm/lightdm.conf.d/90-oem-config.conf")
         elif self.setup.autologin:
             self.do_run_in_chroot(r"sed -i -r 's/^#?(autologin-user)\s*=.*/\1={user}/' /etc/lightdm/lightdm.conf".format(user=self.setup.username))
 
@@ -89,39 +106,44 @@ class InstallerEngine:
 
     def setup_locale(self):
         print(" --> Setting the locale")
-        os.system("echo \"%s.UTF-8 UTF-8\" >> /target/etc/locale.gen" % self.setup.language)
+        self.runner.run("echo \"%s.UTF-8 UTF-8\" >> /target/etc/locale.gen" % self.setup.language)
+        # Generate any supplementary locales too (e.g. fr_CA alongside en_CA),
+        # so they are available even though LANG stays the primary.
+        for locale in getattr(self.setup, "additional_locales", None) or []:
+            if locale != self.setup.language:
+                self.runner.run("echo \"%s.UTF-8 UTF-8\" >> /target/etc/locale.gen" % locale)
         self.do_run_in_chroot("locale-gen")
-        os.system("echo \"\" > /target/etc/default/locale")
+        self.runner.run("echo \"\" > /target/etc/default/locale")
         self.do_run_in_chroot("update-locale LANG=\"%s.UTF-8\"" % self.setup.language)
         self.do_run_in_chroot("update-locale LANG=%s.UTF-8" % self.setup.language)
 
     def setup_timezone(self):
         print(" --> Setting the timezone")
-        os.system("echo \"%s\" > /target/etc/timezone" % self.setup.timezone)
-        os.system("rm -f /target/etc/localtime")
-        os.system("ln -s /usr/share/zoneinfo/%s /target/etc/localtime" % self.setup.timezone)
+        self.runner.run("echo \"%s\" > /target/etc/timezone" % self.setup.timezone)
+        self.runner.run("rm -f /target/etc/localtime")
+        self.runner.run("ln -s /usr/share/zoneinfo/%s /target/etc/localtime" % self.setup.timezone)
 
     def setup_localization(self):
         print(" --> Localizing packages")
         if self.setup.oem_mode:
             # Copy the l10n pkgs from the ISO to the target so oem-config can install from it later on.
-            os.system("mkdir -p /target/oem/l10n_pkgs")
-            l10ns = subprocess.getoutput(f"find {self.pool} | grep 'l10n-\\|hunspell-'")
+            self.runner.run("mkdir -p /target/oem/l10n_pkgs")
+            l10ns = self.runner.output(f"find {self.pool} | grep 'l10n-\\|hunspell-'")
             for l10n in l10ns.split("\n"):
-                os.system(f"cp {l10n} /target/oem/l10n_pkgs/")
+                self.runner.run(f"cp {l10n} /target/oem/l10n_pkgs/")
         elif self.setup.language != "en_US":
-            os.system("mkdir -p /target/debs")
+            self.runner.run("mkdir -p /target/debs")
             language_code = self.setup.language
             if "_" in self.setup.language:
                 language_code = self.setup.language.split("_")[0]
             if self.setup.oem_config:
-                l10ns = subprocess.getoutput("find /oem/l10n_pkgs | grep 'l10n-%s\\|hunspell-%s'" % (language_code, language_code))
+                l10ns = self.runner.output("find /oem/l10n_pkgs | grep 'l10n-%s\\|hunspell-%s'" % (language_code, language_code))
             else:
-                l10ns = subprocess.getoutput(f"find {self.pool} | grep 'l10n-%s\\|hunspell-%s'" % (language_code, language_code))
+                l10ns = self.runner.output(f"find {self.pool} | grep 'l10n-%s\\|hunspell-%s'" % (language_code, language_code))
             for l10n in l10ns.split("\n"):
-                os.system("cp %s /target/debs/" % l10n)
+                self.runner.run("cp %s /target/debs/" % l10n)
             self.do_run_in_chroot("dpkg -i /debs/*")
-            os.system("rm -rf /target/debs")
+            self.runner.run("rm -rf /target/debs")
 
     def setup_keyboard(self):
         print(" --> Setting the keyboard")
@@ -153,7 +175,10 @@ class InstallerEngine:
             elif(line.startswith("XKBVARIANT=") and self.setup.keyboard_variant is not None and self.setup.keyboard_variant != ""):
                 newconsolefh.write("XKBVARIANT=\"%s\"\n" % self.setup.keyboard_variant)
             elif(line.startswith("XKBOPTIONS=")):
-                newconsolefh.write("XKBOPTIONS=grp:win_space_toggle")
+                # A multi-layout setup needs a switch option; honour an explicit
+                # keyboard.toggle, else keep the historical default.
+                options = self.setup.keyboard_options or "grp:win_space_toggle"
+                newconsolefh.write("XKBOPTIONS=\"%s\"\n" % options)
             else:
                 newconsolefh.write("%s\n" % line)
         consolefh.close()
@@ -163,7 +188,7 @@ class InstallerEngine:
 
     def clean_apt(self):
         print(" --> Cleaning APT")
-        os.system("chroot /target/ /bin/sh -c \"dpkg --configure -a\"")
+        self.runner.run("chroot /target/ /bin/sh -c \"dpkg --configure -a\"")
         self.do_run_in_chroot("sed -i 's/^deb cdrom/#deb cdrom/' /etc/apt/sources.list")
         self.do_run_in_chroot("apt-get -y --force-yes autoremove")
 
@@ -171,7 +196,7 @@ class InstallerEngine:
         print(" --> Performing OEM config")
 
         # Setup a /target -> / link, this is so we can reuse code used for the live installation.
-        os.system("ln -s / /target")
+        self.runner.run("ln -s / /target")
 
         self.update_progress(10, False, False, _("Adding new user to the system"))
         self.setup_user()
@@ -197,12 +222,12 @@ class InstallerEngine:
         # OEM Config cleanup
         print(" --> Cleaning up OEM config")
         self.update_progress(80, True, False, _("Cleaning OEM configuration"))
-        os.system("rm -f /etc/lightdm/lightdm.conf.d/90-oem-config.conf")
-        os.system("rm -rf /root/.config/gtk-3.0")
-        os.system("apt-get remove --purge --yes --force-yes `cat /oem/live-packages.list`")
-        os.system("rm -f /oem/live-packages.list")
-        os.system("rm -f /target")
-        os.system("touch /oem/done.flag") # Leave a flag for mintsystem to clean up the OEM user account
+        self.runner.run("rm -f /etc/lightdm/lightdm.conf.d/90-oem-config.conf")
+        self.runner.run("rm -rf /root/.config/gtk-3.0")
+        self.runner.run("apt-get remove --purge --yes --force-yes `cat /oem/live-packages.list`")
+        self.runner.run("rm -f /oem/live-packages.list")
+        self.runner.run("rm -f /target")
+        self.runner.run("touch /oem/done.flag") # Leave a flag for mintsystem to clean up the OEM user account
 
         self.update_progress(100, False, True, _("Installation finished"))
         print(" --> All done")
@@ -220,13 +245,13 @@ class InstallerEngine:
         if(not os.path.exists("/source")):
             os.mkdir("/source")
 
-        os.system("umount --force /target/sys/firmware/efi/efivars")
-        os.system("umount --force /target/dev/shm")
-        os.system("umount --force /target/dev/pts")
-        os.system("umount --force /target/dev/")
-        os.system("umount --force /target/sys/")
-        os.system("umount --force /target/proc/")
-        os.system("umount --force /target/run/")
+        self.runner.run("umount --force /target/sys/firmware/efi/efivars")
+        self.runner.run("umount --force /target/dev/shm")
+        self.runner.run("umount --force /target/dev/pts")
+        self.runner.run("umount --force /target/dev/")
+        self.runner.run("umount --force /target/sys/")
+        self.runner.run("umount --force /target/proc/")
+        self.runner.run("umount --force /target/run/")
 
         # Mount the installation media
         print(" --> Mounting partitions")
@@ -271,13 +296,12 @@ class InstallerEngine:
         EXCLUDE_DIRS = "home/* dev/* proc/* sys/* tmp/* run/* mnt/* media/* lost+found source target".split()
         num_copied = 0
         # (Valid) assumption: num-of-files-to-copy ~= num-of-used-inodes-on-/
-        num_files = int(subprocess.getoutput("df --inodes /{src} | awk 'END{{ print $3 }}'".format(src=SOURCE.strip('/'))))
+        num_files = int(self.runner.output("df --inodes /{src} | awk 'END{{ print $3 }}'".format(src=SOURCE.strip('/'))))
         print(f" --> Copying {num_files} files")
         rsync_filter = ' '.join('--exclude=' + SOURCE + d for d in EXCLUDE_DIRS)
-        rsync = subprocess.Popen("rsync --verbose --archive --no-D --acls "
-                                 "--hard-links --xattrs {rsync_filter} "
-                                 "{src}* {dst}".format(src=SOURCE, dst=DEST, rsync_filter=rsync_filter),
-                                 shell=True, encoding='utf-8', errors='ignore', stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        rsync = self.runner.popen("rsync --verbose --archive --no-D --acls "
+                                  "--hard-links --xattrs {rsync_filter} "
+                                  "{src}* {dst}".format(src=SOURCE, dst=DEST, rsync_filter=rsync_filter))
         while rsync.poll() is None:
             line = rsync.stdout.readline()
             if not line:  # still copying the previous file, just wait
@@ -291,25 +315,25 @@ class InstallerEngine:
         # chroot
         print(" --> Chrooting")
         self.update_progress(10, False, False, _("Entering the system..."))
-        os.system("mount --bind /dev/ /target/dev/")
-        os.system("mount --bind /dev/shm /target/dev/shm")
-        os.system("mount --bind /dev/pts /target/dev/pts")
-        os.system("mount --bind /sys/ /target/sys/")
-        os.system("mount --bind /proc/ /target/proc/")
-        os.system("mount --bind /run/ /target/run/")
-        os.system("mv /target/etc/resolv.conf /target/etc/resolv.conf.bk")
-        os.system("cp -f /etc/resolv.conf /target/etc/resolv.conf")
+        self.runner.run("mount --bind /dev/ /target/dev/")
+        self.runner.run("mount --bind /dev/shm /target/dev/shm")
+        self.runner.run("mount --bind /dev/pts /target/dev/pts")
+        self.runner.run("mount --bind /sys/ /target/sys/")
+        self.runner.run("mount --bind /proc/ /target/proc/")
+        self.runner.run("mount --bind /run/ /target/run/")
+        self.runner.run("mv /target/etc/resolv.conf /target/etc/resolv.conf.bk")
+        self.runner.run("cp -f /etc/resolv.conf /target/etc/resolv.conf")
 
         if os.path.exists("/sys/firmware/efi/efivars"):
-            os.system("mkdir -p /target/sys/firmware/efi/efivars")
-            os.system("mount --bind /sys/firmware/efi/efivars /target/sys/firmware/efi/efivars/")
+            self.runner.run("mkdir -p /target/sys/firmware/efi/efivars")
+            self.runner.run("mount --bind /sys/firmware/efi/efivars /target/sys/firmware/efi/efivars/")
 
-        kernelversion= subprocess.getoutput("uname -r")
-        os.system(f"cp {self.casper}/vmlinuz /target/boot/vmlinuz-{kernelversion}")
+        kernelversion= self.runner.output("uname -r")
+        self.runner.run(f"cp {self.live_files}/vmlinuz /target/boot/vmlinuz-{kernelversion}")
         found_initrd = False
-        for initrd in [f"{self.casper}/initrd.img", f"{self.casper}/initrd.lz"]:
+        for initrd in [f"{self.live_files}/initrd.img", f"{self.live_files}/initrd.lz"]:
             if os.path.exists(initrd):
-                os.system("cp %s /target/boot/initrd.img-%s" % (initrd, kernelversion))
+                self.runner.run("cp %s /target/boot/initrd.img-%s" % (initrd, kernelversion))
                 found_initrd = True
                 break
 
@@ -318,7 +342,7 @@ class InstallerEngine:
 
         if self.setup.grub_device and self.setup.gptonefi:
             print(" --> Installing signed boot loader")
-            os.system("mkdir -p /target/debs")
+            self.runner.run("mkdir -p /target/debs")
             EFI_PACKAGES = [
                 "grub-efi-amd64",
                 "grub-efi-amd64-bin",
@@ -330,25 +354,33 @@ class InstallerEngine:
                 matches = glob(f"{self.pool}/main/**/{pkg}_*.deb", recursive=True)
                 if not matches:
                     raise Exception(f"Missing EFI package: {pkg}")
-                os.system(f"cp {max(matches)} /target/debs/")
+                self.runner.run(f"cp {max(matches)} /target/debs/")
 
             self.do_run_in_chroot("DEBIAN_FRONTEND=noninteractive apt-get remove --purge --yes grub-pc grub-pc-bin grub-gfxpayload-lists")
             self.do_run_in_chroot("dpkg -i /debs/*")
-            os.system("rm -rf /target/debs")
+            self.runner.run("rm -rf /target/debs")
             # remove the MOK key generated by shim-signed. We want debconf to trigger the enrollment
             # of a new one when the user installs the first proprietary driver package that needs it
-            os.system("rm -rf /target/var/lib/shim-signed/mok/*")
+            self.runner.run("rm -rf /target/var/lib/shim-signed/mok/*")
 
         # Prepare directory for oem_config
         if self.setup.oem_mode:
-            os.system("mkdir -p /target/oem/")
+            self.runner.run("mkdir -p /target/oem/")
 
         # remove live-packages (or w/e)
         print(" --> Removing live packages")
         self.update_progress(20, False, False, _("Removing live configuration (packages)"))
-        with open(f"{self.manifest}-remove", "r") as fd:
-            line = fd.read().replace('\n', ' ')
-        if self.setup.oem_mode:
+        remove_manifest = f"{self.manifest}-remove"
+        if not os.path.exists(remove_manifest):
+            print(f"WARNING: no live-package manifest at {remove_manifest}; "
+                  "skipping live-package removal")
+            line = ""
+        else:
+            with open(remove_manifest, "r") as fd:
+                line = fd.read().replace('\n', ' ')
+        if not line.strip():
+            pass  # nothing to remove
+        elif self.setup.oem_mode:
             # in OEM mode don't remove pkgs just yet
             self.do_run_in_chroot(f'echo "{line}" > /oem/live-packages.list')
             self.do_run_in_chroot("rm -f /usr/share/applications/debian-installer-launcher.desktop")
@@ -379,7 +411,216 @@ class InstallerEngine:
         self.write_mtab()
         self.write_crypttab()
 
+    # -- custom partition layouts (automated) -------------------------------
+
+    @staticmethod
+    def _size_to_mb(size):
+        """'512MB' / '40GB' / '1.5TB' -> integer MB (decimal units, matching
+        parted)."""
+        num = float(re.match(r"^(\d+(?:\.\d+)?)", size.strip()).group(1))
+        factor = {"MB": 1, "GB": 1000, "TB": 1000000}[size.strip()[-2:]]
+        return int(round(num * factor))
+
+    def _wait_for_node(self, path):
+        # Each parted call triggers a partition-table rescan; udev briefly
+        # removes and recreates the device node. Wait or mkfs races it.
+        for _ in range(6):
+            os.system("udevadm settle 2>/dev/null")
+            if os.path.exists(path):
+                return
+            os.system("sync")
+            time.sleep(1)
+        raise Exception(_("The partition %s could not be created. The "
+                          "installation will stop. Restart the computer and "
+                          "try again.") % path)
+
+    def _format_device(self, fs, device):
+        if fs == "swap":
+            cmd = "mkswap %s" % device
+        elif fs in ("ext2", "ext3", "ext4"):
+            cmd = "mkfs.%s -F %s" % (fs, device)
+        elif fs in ("btrfs", "xfs"):
+            cmd = "mkfs.%s -f %s" % (fs, device)
+        elif fs == "vfat":
+            cmd = "mkfs.vfat %s -F 32" % device
+        elif fs == "f2fs":
+            cmd = "mkfs.f2fs -f %s" % device
+        else:
+            cmd = "mkfs.%s %s" % (fs, device)
+        if self.runner.run(cmd) != 0:
+            raise Exception(_("The partition %s could not be formatted. The "
+                              "installation will stop. Restart the computer "
+                              "and try again.") % device)
+
+    def _check_layout_matches_firmware(self, parts):
+        """Reject flags that don't match the detected firmware mode. The schema
+        can't catch this — firmware mode is only known at runtime — so it is
+        enforced here, before any partition is created. An esp partition on a
+        BIOS machine never gets used; a bios_grub partition on a UEFI machine
+        wastes space and can leave the install unbootable. Fail loudly instead.
+        """
+        uefi = bool(self.setup.gptonefi)
+        for part in parts:
+            flags = part.get("flags", [])
+            if uefi and "bios_grub" in flags:
+                raise Exception(_(
+                    "This is a UEFI system, but the partition layout declares a "
+                    "bios_grub partition (only used for BIOS/GPT boot). Use an "
+                    "esp partition mounted at /boot/efi instead."))
+            if not uefi and "esp" in flags:
+                raise Exception(_(
+                    "This is a BIOS system, but the partition layout declares an "
+                    "esp (EFI System Partition). Use a bios_grub partition "
+                    "instead, or install in UEFI mode."))
+
+    def _create_custom_partitions(self):
+        """Automated install of an explicit partition layout (layout: custom):
+        a list of partitions (some of which may be LVM PVs or RAID members)
+        plus md arrays and logical volumes, across one or more disks. Builds
+        self.auto_mounts = [(device, mount, filesystem, subvol), ...], which the
+        mount step and write_fstab then drive."""
+        disks = self.setup.disks or [self.setup.disk]
+        parts = self.setup.custom_partitions
+        lvm = self.setup.custom_lvm
+        raid = self.setup.custom_raid
+        self._check_layout_matches_firmware(parts)
+
+        self.update_progress(25, False, False, _("Creating partitions"))
+        print(" --> Creating custom partitions on %s" % ", ".join(disks))
+        os.system("swapoff -a")
+        os.system("umount -R /target 2>/dev/null || true")
+        if raid:
+            # mdadm must be present in the LIVE environment to build the arrays
+            # (it is reinstalled into the target later for boot). Not guaranteed
+            # on every live image, so make sure it is here first.
+            os.system("mdadm --version >/dev/null 2>&1 || "
+                      "apt-get install -y mdadm >/dev/null 2>&1 || true")
+            os.system("mdadm --stop --scan 2>/dev/null || true")
+
+        has_esp = any("esp" in p["flags"] for p in parts)
+        # Partition every disk identically (RAID members and mirrored ESP/boot
+        # live on each disk). part_paths[(disk_index, part_number)] -> device.
+        part_paths = {}
+        for di, device_path in enumerate(disks):
+            prefix = partitioning.get_device_naming_scheme_prefix(device_path)
+            disk_device = parted.getDevice(device_path)
+            if self.setup.badblocks:
+                self.runner.run("badblocks -c 10240 -s -w -t random -v %s" % device_path)
+            # Clear any stale md/fs signatures so mklabel/mdadm start clean.
+            os.system("wipefs -a %s 2>/dev/null || true" % device_path)
+            use_gpt = (has_esp or self.setup.gptonefi
+                       or disk_device.getLength('B') > 2**32 * .9 * disk_device.sectorSize)
+            label = "gpt" if use_gpt else "msdos"
+            if os.system("parted -s %s mklabel %s" % (device_path, label)) != 0:
+                raise Exception(_("The partition table couldn't be written for %s. Restart the computer and try again.") % device_path)
+            run_parted = lambda cmd, dp=device_path: os.system(
+                'parted --script --align optimal %s %s ; sync' % (dp, cmd))
+            start_mb = 2
+            for num, part in enumerate(parts, 1):
+                size = part["size"]
+                end = "100%" if size == "rest" else "%dMB" % (
+                    start_mb + self._size_to_mb(size))
+                run_parted("mkpart primary %dMB %s" % (start_mb, end))
+                part_path = "%s%s%d" % (device_path, prefix, num)
+                self._wait_for_node(part_path)
+                for flag in part["flags"]:
+                    if flag == "esp":
+                        run_parted("set %d esp on" % num)
+                        run_parted("set %d boot on" % num)
+                    elif flag == "bios_grub":
+                        run_parted("set %d bios_grub on" % num)
+                if part.get("raid"):
+                    run_parted("set %d raid on" % num)
+                part_paths[(di, num)] = part_path
+                if size != "rest":
+                    start_mb += self._size_to_mb(size) + 1
+
+        mounts = []        # (device, mount, filesystem, subvol)
+        pvs_by_vg = {}     # vg name -> [device path]
+
+        # Assemble the md arrays over their member partitions (one per disk).
+        for array in raid:
+            members = [part_paths[(di, num)]
+                       for di in range(len(disks))
+                       for num, part in enumerate(parts, 1)
+                       if part.get("raid") == array["name"]]
+            mddev = "/dev/%s" % array["name"]
+            print(" --> Creating RAID%s %s over %s" % (array["level"], mddev, " ".join(members)))
+            self.runner.run(
+                "yes | mdadm --create --run --verbose %s --level=%s "
+                "--metadata=%s --raid-devices=%d %s"
+                % (mddev, array["level"], array["metadata"], len(members),
+                   " ".join(members)))
+            self._wait_for_node(mddev)
+            if array.get("lvm_pv"):
+                self.runner.run("pvcreate -y %s" % mddev)
+                pvs_by_vg.setdefault(array["lvm_pv"], []).append(mddev)
+            elif array.get("subvolumes"):
+                mounts.extend(self._btrfs_subvol_mounts(mddev, array["subvolumes"]))
+            else:
+                self._format_device(array["filesystem"], mddev)
+                mounts.append((mddev, array["mount"], array["filesystem"], ""))
+
+        # Non-RAID partitions are used from the first disk (the ESP/boot copies
+        # on the other disks exist only for bootloader redundancy).
+        for num, part in enumerate(parts, 1):
+            if part.get("raid"):
+                continue
+            part_path = part_paths[(0, num)]
+            if part.get("lvm_pv"):
+                self.runner.run("pvcreate -y %s" % part_path)
+                pvs_by_vg.setdefault(part["lvm_pv"], []).append(part_path)
+            elif part.get("subvolumes"):
+                mounts.extend(self._btrfs_subvol_mounts(part_path, part["subvolumes"]))
+            elif "bios_grub" not in part["flags"]:
+                self._format_device(part["filesystem"], part_path)
+                mounts.append((part_path, part["mount"], part["filesystem"], ""))
+
+        for vg, pvs in pvs_by_vg.items():
+            self.runner.run("vgcreate -y %s %s" % (vg, " ".join(pvs)))
+        for vol in lvm:
+            size = vol["size"]
+            if size == "rest":
+                self.runner.run("lvcreate -y -n %s -l 100%%FREE %s" % (vol["lv"], vol["vg"]))
+            else:
+                self.runner.run("lvcreate -y -n %s -L %dM %s" % (vol["lv"], self._size_to_mb(size), vol["vg"]))
+            lv_path = "/dev/%s/%s" % (vol["vg"], vol["lv"])
+            self._wait_for_node("/dev/mapper/%s-%s" % (vol["vg"], vol["lv"]))
+            if vol.get("subvolumes"):
+                mounts.extend(self._btrfs_subvol_mounts(lv_path, vol["subvolumes"]))
+            else:
+                self._format_device(vol["filesystem"], lv_path)
+                mounts.append((lv_path, vol["mount"], vol["filesystem"], ""))
+
+        self.auto_mounts = mounts
+        # Mount parents before children: / first, then by path depth.
+        for device, mount, fs, subvol in sorted(
+                mounts, key=lambda m: (m[1] != "/", m[1].count("/"))):
+            if fs == "swap" or mount == "swap":
+                self.runner.run("swapon %s" % device)
+                continue
+            target = "/target" if mount == "/" else "/target" + mount
+            if mount != "/":
+                self.runner.run("mkdir -p %s" % target)
+            options = ("subvol=%s" % subvol) if subvol else None
+            self.do_mount(device, target, fs, options)
+
+    def _btrfs_subvol_mounts(self, device, subvolumes):
+        """Format `device` btrfs, create its subvolumes, and return the mount
+        entries (device, mount, 'btrfs', subvol) that point each subvolume at
+        its mountpoint."""
+        self._format_device("btrfs", device)
+        top = "/run/li-btrfs-top"
+        self.runner.run("mkdir -p %s" % top)
+        self.runner.run("mount %s %s" % (device, top))
+        for sv in subvolumes:
+            self.runner.run("btrfs subvolume create %s/%s" % (top, sv["name"]))
+        self.runner.run("umount %s" % top)
+        return [(device, sv["mount"], "btrfs", sv["name"]) for sv in subvolumes]
+
     def create_partitions(self):
+        if getattr(self.setup, "layout", None) == "custom":
+            return self._create_custom_partitions()
         # Create partitions on the selected disk (automated installation)
         partition_prefix = partitioning.get_device_naming_scheme_prefix(self.setup.disk)
         if self.setup.luks:
@@ -434,49 +675,51 @@ class InstallerEngine:
         if self.setup.badblocks:
             self.update_progress(25, False, False, _("Filling disk with random data (please be patient, this can take hours...)"))
             print(" --> Filling %s with random data" % self.setup.disk)
-            os.system("badblocks -c 10240 -s -w -t random -v %s" % self.setup.disk)
+            self.runner.run("badblocks -c 10240 -s -w -t random -v %s" % self.setup.disk)
 
         # Create partitions
         self.update_progress(25, False, False, _("Creating partitions on %s") % self.setup.disk)
         print(" --> Creating partitions on %s" % self.setup.disk)
         disk_device = parted.getDevice(self.setup.disk)
-        partitioning.full_disk_format(disk_device, create_boot=(self.auto_boot_partition is not None), create_swap=(self.auto_swap_partition is not None))
+        partitioning.full_disk_format(disk_device, self.setup, create_boot=(self.auto_boot_partition is not None), create_swap=(self.auto_swap_partition is not None))
 
-        # Encrypt root partition
+        # Encrypt root partition. The passphrase is fed to cryptsetup on
+        # stdin (--key-file -), never as a command argument: this keeps it
+        # out of the process table (ps) and out of every log sink.
         if self.setup.luks:
             print(" --> Encrypting root partition %s" % self.auto_root_partition)
-            os.system("echo -n %s | cryptsetup luksFormat -c aes-xts-plain64 -h sha256 -s 512 %s" % (shlex.quote(self.setup.passphrase1), self.auto_root_partition))
+            self.runner.run("cryptsetup luksFormat -c aes-xts-plain64 -h sha256 -s 512 --key-file - %s" % self.auto_root_partition, stdin=self.setup.passphrase1)
             print(" --> Opening root partition %s" % self.auto_root_partition)
-            os.system("echo -n %s | cryptsetup luksOpen %s lvmmint" % (shlex.quote(self.setup.passphrase1), self.auto_root_partition))
+            self.runner.run("cryptsetup luksOpen --key-file - %s lvmmint" % self.auto_root_partition, stdin=self.setup.passphrase1)
             self.auto_root_partition = "/dev/mapper/lvmmint"
 
         # Setup LVM
         if self.setup.lvm:
             print(" --> LVM: Creating PV")
-            os.system("pvcreate -y %s" % self.auto_root_partition)
+            self.runner.run("pvcreate -y %s" % self.auto_root_partition)
             print(" --> LVM: Creating VG")
-            os.system("vgcreate -y lvmmint %s" % self.auto_root_partition)
+            self.runner.run("vgcreate -y lvmmint %s" % self.auto_root_partition)
             print(" --> LVM: Creating LV root")
-            os.system("lvcreate -y -n root -L 1GB lvmmint")
+            self.runner.run("lvcreate -y -n root -L 1GB lvmmint")
             print(" --> LVM: Creating LV swap")
-            os.system("lvcreate -y -n swap -L 2GB lvmmint")
+            self.runner.run("lvcreate -y -n swap -L 2GB lvmmint")
             print(" --> LVM: Extending LV root")
-            os.system(r"lvextend -l 100%FREE /dev/lvmmint/root")
+            self.runner.run(r"lvextend -l 100%FREE /dev/lvmmint/root")
             print(" --> LVM: Formatting LV root")
-            os.system("mkfs.ext4 /dev/mapper/lvmmint-root -FF")
+            self.runner.run("mkfs.ext4 /dev/mapper/lvmmint-root -FF")
             print(" --> LVM: Formatting LV swap")
-            os.system("mkswap -f /dev/mapper/lvmmint-swap")
+            self.runner.run("mkswap -f /dev/mapper/lvmmint-swap")
             print(" --> LVM: Enabling LV swap")
-            os.system("swapon /dev/mapper/lvmmint-swap")
+            self.runner.run("swapon /dev/mapper/lvmmint-swap")
             self.auto_root_partition = "/dev/mapper/lvmmint-root"
             self.auto_swap_partition = "/dev/mapper/lvmmint-swap"
 
         self.do_mount(self.auto_root_partition, "/target", "ext4", None)
         if (self.auto_boot_partition is not None):
-            os.system("mkdir -p /target/boot")
+            self.runner.run("mkdir -p /target/boot")
             self.do_mount(self.auto_boot_partition, "/target/boot", "ext4", None)
         if (self.auto_efi_partition is not None):
-            os.system("mkdir -p /target/boot/efi")
+            self.runner.run("mkdir -p /target/boot/efi")
             self.do_mount(self.auto_efi_partition, "/target/boot/efi", "vfat", None)
 
     def format_partitions(self):
@@ -517,19 +760,19 @@ class InstallerEngine:
                     self.do_mount(partition.path, "/target", fs, None)
                     if fs == "btrfs":
                         # Create subvolumes for Btrfs
-                        os.system("btrfs subvolume create /target/@")
-                        os.system("btrfs subvolume list -p /target")
+                        self.runner.run("btrfs subvolume create /target/@")
+                        self.runner.run("btrfs subvolume list -p /target")
                         print(" ------ Umount btrfs to remount subvolume @")
-                        os.system("umount --force /target")
+                        self.runner.run("umount --force /target")
                         self.do_mount(partition.path, "/target", fs, "subvol=@")
                         if not self.setup_has_dedicated_home():
                             # If there is no dedicated home partition, add a @home subvolume to /
-                            os.system("mkdir -p /target/home")
+                            self.runner.run("mkdir -p /target/home")
                             self.do_mount(partition.path, "/target/home", fs, None)
-                            os.system("btrfs subvolume create /target/home/@home")
-                            os.system("btrfs subvolume list -p /target/home")
+                            self.runner.run("btrfs subvolume create /target/home/@home")
+                            self.runner.run("btrfs subvolume list -p /target/home")
                             print(" ------- Umount btrfs to remount subvolume @home")
-                            os.system("umount --force /target/home")
+                            self.runner.run("umount --force /target/home")
                             self.do_mount(partition.path, "/target/home", fs, "subvol=@home")
                     break
 
@@ -537,22 +780,22 @@ class InstallerEngine:
         for partition in self.setup.partitions:
             if(partition.mount_as is not None and partition.mount_as != "" and partition.mount_as != "/" and partition.mount_as != "swap"):
                 print(" ------ Mounting %s on %s" % (partition.path, "/target" + partition.mount_as))
-                os.system("mkdir -p /target" + partition.mount_as)
+                self.runner.run("mkdir -p /target" + partition.mount_as)
                 fs = partition.type
                 if fs == "fat16" or fs == "fat32":
                     fs = "vfat"
                 self.do_mount(partition.path, "/target" + partition.mount_as, fs, None)
                 if partition.mount_as == "/home" and fs == "btrfs":
                     # Dedicated home partition with Btrfs, needs a @home subvolume
-                    os.system("btrfs subvolume create /target/home/@home")
-                    os.system("btrfs subvolume list -p /target/home")
+                    self.runner.run("btrfs subvolume create /target/home/@home")
+                    self.runner.run("btrfs subvolume list -p /target/home")
                     print(" ------- Umount btrfs to remount subvolume @home")
-                    os.system("umount --force /target/home")
+                    self.runner.run("umount --force /target/home")
                     self.do_mount(partition.path, "/target/home", fs, "subvol=@home")
 
     def get_blkid(self, path):
         uuid = path # If we can't find the UUID we use the path
-        blkid = subprocess.getoutput('blkid').split('\n')
+        blkid = self.runner.output('blkid').split('\n')
         for blkid_line in blkid:
             blkid_elements = blkid_line.split(':')
             if blkid_elements[0] == path:
@@ -581,7 +824,23 @@ class InstallerEngine:
         fstab.write("#### Static Filesystem Table File\n")
         fstab.write("proc\t/proc\tproc\tdefaults\t0\t0\n")
         if(not self.setup.skip_mount):
-            if self.setup.automated:
+            if self.setup.automated and getattr(self, "auto_mounts", None):
+                for device, mount, fs, subvol in self.auto_mounts:
+                    uuid = self.get_blkid(device)
+                    if fs == "swap":
+                        fstab.write("# %s\n" % device)
+                        fstab.write("%s none swap sw 0 0\n" % uuid)
+                    else:
+                        fsck = "1" if fs != "btrfs" and mount in ("/", "/boot", "/boot/efi") else "0"
+                        if subvol:
+                            opts = "defaults,subvol=%s" % subvol
+                        elif fs.startswith("ext"):
+                            opts = "rw,errors=remount-ro"
+                        else:
+                            opts = "defaults"
+                        fstab.write("# %s\n" % device)
+                        fstab.write("%s\t%s\t%s\t%s\t0\t%s\n" % (uuid, mount, fs, opts, fsck))
+            elif self.setup.automated:
                 fstab.write("# %s\n" % self.auto_root_partition)
                 fstab.write("%s /  ext4 defaults 0 1\n" % self.get_blkid(self.auto_root_partition))
                 fstab.write("# %s\n" % self.auto_swap_partition)
@@ -624,13 +883,21 @@ class InstallerEngine:
 
     def write_mtab(self, fstab="/target/etc/fstab", mtab="/target/etc/mtab"):
         if self.setup.lvm:
-            os.system(f"grep -v swap {fstab} > {mtab}")
+            self.runner.run(f"grep -v swap {fstab} > {mtab}")
 
     def write_crypttab(self, path="/target/etc/crypttab"):
         if self.setup.luks:
-            os.system(f"echo 'lvmmint   {self.get_blkid(self.auto_root_physical_partition)}   none   luks,discard,tries=3' >> {path}")
+            uuid = self.get_blkid(self.auto_root_physical_partition)
+            if self.setup.luks_rekey_on_first_boot:
+                # Auto-unlock the FIRST boot with the throwaway keyfile that the
+                # driver embeds in the initramfs; the first-boot rekey service
+                # then restores `none` (prompt) here and rebuilds the initramfs.
+                keyref = "/etc/cryptsetup-keys.d/cryptroot.key"
+                self.runner.run(f"echo 'lvmmint   {uuid}   {keyref}   luks,discard' >> {path}")
+            else:
+                self.runner.run(f"echo 'lvmmint   {uuid}   none   luks,discard,tries=3' >> {path}")
 
-    def finish_installation(self):
+    def finish_installation(self, before_unmount_hook=None):
 
         self.update_progress(50, False, False, _("Setting hostname"))
         self.setup_hostname()
@@ -650,21 +917,21 @@ class InstallerEngine:
             self.update_progress(70, False, False, _("Installing drivers"))
 
             # Broadcom
-            drivers = subprocess.getoutput("mint-drivers")
+            drivers = self.runner.output("mint-drivers")
             if "broadcom-sta-dkms" in drivers:
                 try:
-                    os.system("mkdir -p /target/debs")
-                    os.system(f"cp {self.pool}/non-free/b/broadcom-sta/*.deb /target/debs/")
+                    self.runner.run("mkdir -p /target/debs")
+                    self.runner.run(f"cp {self.pool}/non-free/b/broadcom-sta/*.deb /target/debs/")
                     self.do_run_in_chroot("dpkg -i /debs/*")
                     self.do_run_in_chroot("modprobe wl")
-                    os.system("rm -rf /target/debs")
+                    self.runner.run("rm -rf /target/debs")
                 except:
                     print("Failed to install Broadcom drivers")
 
             # NVIDIA
             driver = "/usr/share/live-installer/nvidia-driver.tar.gz"
             if os.path.exists(driver):
-                if "install-nvidia" in subprocess.getoutput("cat /proc/cmdline"):
+                if "install-nvidia" in self.runner.output("cat /proc/cmdline"):
                     print(" --> Installing NVIDIA driver")
                     try:
                         self.do_run_in_chroot("tar zxvf %s" % driver)
@@ -673,7 +940,7 @@ class InstallerEngine:
                     except Exception as e:
                         print("Failed to install NVIDIA driver: ", e)
 
-                os.system("rm -f /target/usr/share/live-installer/nvidia-driver.tar.gz")
+                self.runner.run("rm -f /target/usr/share/live-installer/nvidia-driver.tar.gz")
 
         # set the keyboard options..
         self.update_progress(75, False, False, _("Setting keyboard options"))
@@ -695,12 +962,32 @@ class InstallerEngine:
                 f.write('GRUB_CMDLINE_LINUX="cryptdevice=%s:lvmmint root=/dev/mapper/lvmmint-root resume=/dev/mapper/lvmmint-swap"\n' % self.get_blkid(self.auto_root_physical_partition))
             self.do_run_in_chroot("echo 'w /sys/power/disk - - - - shutdown' > /etc/tmpfiles.d/encrypted-swap.conf")
 
+        # Software RAID: bake the array config + modules into the initramfs so
+        # the root array assembles at boot.
+        if getattr(self.setup, "custom_raid", None):
+            print(" --> Configuring software RAID for boot")
+            self.do_run_in_chroot(
+                "DEBIAN_FRONTEND=noninteractive apt-get install -y mdadm")
+            self.do_run_in_chroot("mkdir -p /etc/mdadm")
+            self.do_run_in_chroot(
+                "mdadm --detail --scan >> /etc/mdadm/mdadm.conf")
+            for module in ("md_mod", "raid0", "raid1", "raid456", "raid10"):
+                self.do_run_in_chroot(
+                    "echo %s >> /etc/initramfs-tools/modules" % module)
+
         # write MBR (grub)
         print(" --> Configuring Grub")
         if(self.setup.grub_device is not None):
             self.update_progress(80, False, False, _("Installing bootloader"))
             print(" --> Running grub-install")
-            self.do_run_in_chroot("grub-install --force %s" % self.setup.grub_device)
+            # On a RAID install, put the bootloader on EVERY member disk so the
+            # machine still boots if one disk fails.
+            grub_targets = (self.setup.disks
+                            if getattr(self.setup, "custom_raid", None)
+                            and len(self.setup.disks) > 1
+                            else [self.setup.grub_device])
+            for target in grub_targets:
+                self.do_run_in_chroot("grub-install --force %s" % target)
             # Remove memtest86+ package (it provides multiple memtest unwanted grub entries)
             self.do_run_in_chroot("apt-get remove --purge --yes --force-yes memtest86+")
             #fix not add windows grub entry
@@ -718,31 +1005,37 @@ class InstallerEngine:
         print(" --> Configuring Initramfs")
         self.do_run_in_chroot("/usr/sbin/update-initramfs -t -u -k all")
         self.do_run_in_chroot(self.grub_adjustment_script)
-        kernelversion= subprocess.getoutput("uname -r")
+        kernelversion= self.runner.output("uname -r")
         self.do_run_in_chroot("/usr/bin/sha1sum /boot/initrd.img-%s > /var/lib/initramfs-tools/%s" % (kernelversion,kernelversion))
 
         # Clean APT
         self.update_progress(95, True, False, _("Cleaning APT"))
         self.clean_apt()
 
+        # Give the caller a chance to act on the fully-configured system
+        # while the chroot is still mounted and has network access (the
+        # headless driver applies extra users / packages / scripts here)
+        if before_unmount_hook is not None:
+            before_unmount_hook()
+
         # now unmount it
         print(" --> Unmounting partitions")
 
         if os.path.exists("/target/sys/firmware/efi/efivars"):
-            os.system("umount --force /target/sys/firmware/efi/efivars")
+            self.runner.run("umount --force /target/sys/firmware/efi/efivars")
 
-        os.system("umount --force /target/dev/shm")
-        os.system("umount --force /target/dev/pts")
+        self.runner.run("umount --force /target/dev/shm")
+        self.runner.run("umount --force /target/dev/pts")
         if self.setup.gptonefi:
-            os.system("umount --force /target/boot/efi")
-            os.system("umount --force /target/media/cdrom")
-        os.system("umount --force /target/boot")
-        os.system("umount --force /target/dev/")
-        os.system("umount --force /target/sys/")
-        os.system("umount --force /target/proc/")
-        os.system("umount --force /target/run/")
-        os.system("rm -f /target/etc/resolv.conf")
-        os.system("mv /target/etc/resolv.conf.bk /target/etc/resolv.conf")
+            self.runner.run("umount --force /target/boot/efi")
+            self.runner.run("umount --force /target/media/cdrom")
+        self.runner.run("umount --force /target/boot")
+        self.runner.run("umount --force /target/dev/")
+        self.runner.run("umount --force /target/sys/")
+        self.runner.run("umount --force /target/proc/")
+        self.runner.run("umount --force /target/run/")
+        self.runner.run("rm -f /target/etc/resolv.conf")
+        self.runner.run("mv /target/etc/resolv.conf.bk /target/etc/resolv.conf")
         if(not self.setup.skip_mount):
             for partition in self.setup.partitions:
                 if(partition.mount_as is not None and partition.mount_as != "" and partition.mount_as != "/" and partition.mount_as != "swap"):
@@ -759,15 +1052,13 @@ class InstallerEngine:
         print(" --> All done")
 
     def do_run_in_chroot(self, command):
-        command = command.replace('"', "'").strip()
-        print("chroot /target/ /bin/sh -c \"%s\"" % command)
-        os.system("chroot /target/ /bin/sh -c \"%s\"" % command)
+        self.runner.chroot(command)
 
     def do_configure_grub(self):
         self.update_progress(85, True, False, _("Configuring bootloader"))
         print(" --> Running grub-mkconfig")
         self.do_run_in_chroot("grub-mkconfig -o /boot/grub/grub.cfg")
-        grub_output = subprocess.getoutput("chroot /target/ /bin/sh -c \"grub-mkconfig -o /boot/grub/grub.cfg\"")
+        grub_output = self.runner.output("chroot /target/ /bin/sh -c \"grub-mkconfig -o /boot/grub/grub.cfg\"")
         grubfh = open("/var/log/live-installer-grub-output.log", "w")
         grubfh.writelines(grub_output)
         grubfh.close()
@@ -809,7 +1100,7 @@ class InstallerEngine:
 
     # Execute schell command and return output in a list
     def exec_cmd(self, cmd):
-        p = subprocess.Popen(cmd, shell=True, encoding='utf-8', errors='ignore', stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        p = self.runner.popen(cmd)
         lstOut = []
         for line in p.stdout.readlines():
             # Strip the line, also from null spaces (strip() only strips white spaces)
@@ -824,9 +1115,11 @@ class Setup(object):
     oem_mode = False
     language = None
     timezone = None
+    additional_locales = []        # extra locales to also generate
     keyboard_model = None
-    keyboard_layout = None
-    keyboard_variant = None
+    keyboard_layout = None         # may be a comma-joined XKB list
+    keyboard_variant = None        # matching comma-joined variant list
+    keyboard_options = None        # XKB switch option, e.g. grp:alt_shift_toggle
     partitions = [] #Array of PartitionSetup objects
     username = None
     hostname = None
@@ -834,6 +1127,7 @@ class Setup(object):
     ecryptfs = False
     password1 = None
     password2 = None
+    password_is_crypted = False
     real_name = None
     grub_device = None
     disks = []
@@ -844,6 +1138,14 @@ class Setup(object):
     passphrase2 = None
     lvm = False
     luks = False
+    # passphrase_source: prompt-on-first-boot — LUKS is created with a random
+    # throwaway key (auto-unlocks the first boot via a keyfile in the
+    # initramfs); a first-boot service then swaps in the operator's passphrase.
+    luks_rekey_on_first_boot = False
+    layout = "simple"            # simple | lvm | lvm-on-luks | custom
+    custom_partitions = []       # for layout: custom — list of partition dicts
+    custom_lvm = []              # for layout: custom — list of LV dicts
+    custom_raid = []             # for layout: custom — list of md-array dicts
     badblocks = False
     target_disk = None
     gptonefi = False
@@ -882,7 +1184,10 @@ class Setup(object):
                 print("luks: %s" % self.luks)
                 print("badblocks: %s" % self.badblocks)
                 print("lvm: %s" % self.lvm)
-                print("passphrase: %s - %s" % (self.passphrase1, self.passphrase2))
+                # Never log the LUKS passphrase (including the random
+                # first-boot-rekey key) — print_setup output is teed to the
+                # install log and the serial console.
+                print("passphrase: %s" % ("<set>" if self.passphrase1 else "<unset>"))
             if (not self.skip_mount):
                 print("target_disk: %s " % self.target_disk)
                 if self.gptonefi:

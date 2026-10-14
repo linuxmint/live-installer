@@ -1,0 +1,19 @@
+# Failure mode: a syntactically broken answer file must abort cleanly
+# before touching any disk — never guess, never half-install.
+name: fail-malformed-yaml
+description: Malformed answer file fails fast with the failure marker
+
+firmware: bios
+memory_mb: 3072
+cpus: 2
+disk_gb: 10
+
+answer_file: answers/malformed.yaml
+install_timeout_s: 420
+
+expect:
+  outcome: failure
+  serial_markers:
+    - "Automated installation complete"
+  failure_markers:
+    - "Automated installation FAILED"

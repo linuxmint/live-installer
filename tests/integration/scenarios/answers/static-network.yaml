@@ -1,0 +1,59 @@
+# Static IP + VLAN networking, dual-stack (IPv4 + IPv6).
+#
+# The primary NIC is left to NetworkManager's default DHCP so the harness can
+# reach the installed system over SSH. A SECOND NIC (bound by MAC) gets a
+# static dual-stack address, and an 802.1Q VLAN rides on top of it — also
+# dual-stack. This proves the installer renders the netplan-v2 network: section
+# to working NetworkManager keyfiles on the booted system.
+version: 1
+
+hostname: lmde-net-01
+locale: en_US.UTF-8
+timezone: America/Toronto
+
+keyboard:
+  model: pc105
+  layout: us
+
+users:
+  - name: testuser
+    gecos: Integration Test User
+    # "testpass", sha512crypt — test fixture only
+    passwd: "$6$rounds=4096$integration.test$kPEsZSlAg3pjDM0yaeSdAVPbHcsiBVMobBC0SXmdGRX9WtflVB.ETP6/yo8Lw0PRJlXP6tEXkbQjnLnnyG5BV1"
+    groups: [sudo]
+
+storage:
+  target:
+    match:
+      first-non-removable: true
+    on_no_match: abort
+  layout: simple
+
+network:
+  version: 2
+  ethernets:
+    lan1:
+      # Bind by hardware address — the kernel name is unpredictable.
+      match: {macaddress: "52:54:00:aa:bb:01"}
+      addresses: [192.168.50.10/24, 2001:db8:50::10/64]
+      gateway4: 192.168.50.1
+      gateway6: 2001:db8:50::1
+      nameservers:
+        addresses: [192.168.50.53, 2001:db8:50::53]
+        search: [lab.example]
+  vlans:
+    vlan50:
+      id: 50
+      link: lan1
+      addresses: [10.50.0.5/24, 2001:db8:5050::5/64]
+
+packages: [openssh-server]
+
+on_failure:
+  partition_mismatch: abort
+  network_unavailable: continue
+  package_install_failure: abort
+
+logging:
+  destination: /var/log/live-installer-auto.log
+  also_serial: ttyS0
