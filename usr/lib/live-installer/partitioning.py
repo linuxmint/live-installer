@@ -112,10 +112,18 @@ with open(RESOURCE_DIR + 'disk-partitions.html') as f:
     DISK_TEMPLATE = re.sub(r'<style>[\s\S]+?</style>', lambda match: match.group().replace('{', '{{').replace('}', '}}'), DISK_TEMPLATE)
 
 
+def get_live_device():
+    for mount_point in ("/cdrom", "/run/live/medium"):
+        source = subprocess.getoutput("findmnt -n -o SOURCE %s" % mount_point).split('\n')[0].strip()
+        if source.startswith("/dev/"):
+            parent = subprocess.getoutput("lsblk -dn -o PKNAME %s" % source).strip()
+            return "/dev/%s" % parent if parent else source
+    return None
+
 def get_disks():
     disks = []
-    live_device = subprocess.getoutput("findmnt -n -o source /run/live/medium").split('\n')[0]
-    live_device = re.sub('[0-9]+$', '', live_device) # remove partition numbers if any
+    live_device = get_live_device()
+    print("Live device: %s" % live_device)
     lsblk = shell_exec('LC_ALL=en_US.UTF-8 lsblk -rindo TYPE,NAME,RM,SIZE,MODEL | sort -k3,2')
     for line in lsblk.stdout:
         try:
