@@ -12,7 +12,6 @@ import subprocess
 import sys
 import threading
 import time
-import parted
 import requests
 
 import gi
@@ -1064,29 +1063,33 @@ class InstallerWindow:
                     return
 
                 if self.setup.gptonefi:
-                    # Check for an EFI partition
-                    found_efi_partition = False
-                    for partition in self.setup.partitions:
-                        if(partition.mount_as == "/boot/efi"):
-                            found_efi_partition = True
-                            if not partition.partition.getFlag(parted.PARTITION_BOOT):
-                                ErrorDialog(_("Installer"), _("The EFI partition is not bootable. Please edit the partition flags."))
-                                return
-                            if int(float(partition.partition.getLength('MB'))) < 35:
-                                ErrorDialog(_("Installer"), _("The EFI partition is too small. It must be at least 35MB."))
-                                return
-                            if partition.format_as == None or partition.format_as == "":
-                                # No partitioning
-                                if partition.type != "vfat" and partition.type != "fat32" and partition.type != "fat16":
-                                    ErrorDialog(_("Installer"), _("The EFI partition must be formatted as vfat."))
-                                    return
-                            else:
-                                if partition.format_as != "vfat":
-                                    ErrorDialog(_("Installer"), _("The EFI partition must be formatted as vfat."))
-                                    return
+                    # Several ESPs may have been pre-assigned during detection,
+                    # keep the one on the same disk as the root partition.
+                    efi_partitions = [p for p in self.setup.partitions if p.mount_as == partitioning.EFI_MOUNT_POINT]
+                    if len(efi_partitions) > 1:
+                        root_disk = [p for p in self.setup.partitions if p.mount_as == "/"][0].partition.disk.device.path
+                        same_disk = [p for p in efi_partitions if p.partition.disk.device.path == root_disk]
+                        preferred = same_disk[0] if same_disk else efi_partitions[0]
+                        partitioning.assign_mount_point(preferred, partitioning.EFI_MOUNT_POINT, preferred.format_as)
+                        efi_partitions = [preferred]
 
-                    if not found_efi_partition:
-                        ErrorDialog(_("Installer"), "<b>%s</b>" % _("Please select an EFI partition."),_("An EFI system partition is needed with the following requirements:\n\n - Mount point: /boot/efi\n - Partition flags: Bootable\n - Size: at least 35MB (100MB or more recommended)\n - Format: vfat or fat32\n\nTo ensure compatibility with Windows we recommend you use the first partition of the disk as the EFI system partition.\n "))
+                    for partition in efi_partitions:
+                        if not partition.is_esp:
+                            ErrorDialog(_("Installer"), _("%s is not an EFI System Partition. Please edit the partition type or flags, or select another partition.") % partition.path)
+                            return
+                        if int(float(partition.partition.getLength('MB'))) < 35:
+                            ErrorDialog(_("Installer"), _("The EFI partition (%s) is too small. It must be at least 35MB.") % partition.path)
+                            return
+                        if partition.format_as:
+                            fs = partition.format_as
+                        else:
+                            fs = partition.type
+                        if fs not in ("vfat", "fat32", "fat16"):
+                            ErrorDialog(_("Installer"), _("The EFI partition (%s) must be formatted as vfat.") % partition.path)
+                            return
+
+                    if not efi_partitions:
+                        ErrorDialog(_("Installer"), "<b>%s</b>" % _("Please select an EFI partition."),_("An EFI system partition is needed with the following requirements:\n\n - Mount point: /boot/efi\n - Partition type: EFI System Partition (the 'esp' flag)\n - Size: at least 35MB (100MB or more recommended)\n - Format: vfat or fat32\n\nTo ensure compatibility with Windows we recommend you use the first partition of the disk as the EFI system partition.\n "))
                         return
 
                 partitioning.build_grub_partitions()

@@ -112,10 +112,18 @@ with open(RESOURCE_DIR + 'disk-partitions.html') as f:
     DISK_TEMPLATE = re.sub(r'<style>[\s\S]+?</style>', lambda match: match.group().replace('{', '{{').replace('}', '}}'), DISK_TEMPLATE)
 
 
+def get_live_device():
+    for mount_point in ("/cdrom", "/run/live/medium"):
+        source = subprocess.getoutput("findmnt -n -o SOURCE %s" % mount_point).split('\n')[0].strip()
+        if source.startswith("/dev/"):
+            parent = subprocess.getoutput("lsblk -dn -o PKNAME %s" % source).strip()
+            return "/dev/%s" % parent if parent else source
+    return None
+
 def get_disks():
     disks = []
-    live_device = subprocess.getoutput("findmnt -n -o source /run/live/medium").split('\n')[0]
-    live_device = re.sub('[0-9]+$', '', live_device) # remove partition numbers if any
+    live_device = get_live_device()
+    print("Live device: %s" % live_device)
     lsblk = shell_exec('LC_ALL=en_US.UTF-8 lsblk -rindo TYPE,NAME,RM,SIZE,MODEL | sort -k3,2')
     for line in lsblk.stdout:
         try:
@@ -548,6 +556,18 @@ class Partition(object):
         if "swap" in self.type:
             self.mount_as = SWAP_MOUNT_POINT
 
+        # The ESP flag is the partition type (GPT GUID or MBR 0xEF) on both label types,
+        # unlike the 'boot' flag which is just the active bit on MBR disks.
+        try:
+            self.is_esp = partition.active and partition.getFlag(parted.PARTITION_ESP)
+        except Exception as detail:
+            print("Could not read partition flags for %s: %s" % (self.path, detail))
+            self.is_esp = False
+        if self.is_esp:
+            print("                  . is an EFI System Partition")
+            if installer.setup.gptonefi:
+                self.mount_as = EFI_MOUNT_POINT
+
         # identify partition's description and used space
         try:
             print("                  . About to mount it...")
@@ -559,6 +579,8 @@ class Partition(object):
             print("                  . value error!")
             if "swap" in self.type:
                 self.os_fs_info, self.description, self.free_space, self.used_percent = ': '+self.type, 'swap', '', 0
+            elif self.is_esp:
+                self.os_fs_info, self.description, self.free_space, self.used_percent = ': '+self.type, 'EFI System Partition', '', 0
             else:
                 print('WARNING: Partition {} or type {} failed to mount!'.format(self.path, partition.type))
                 self.os_fs_info, self.description, self.free_space, self.used_percent = ': '+self.type, '', '', 0
@@ -569,7 +591,9 @@ class Partition(object):
             self.free_space = to_human_readable(int(free)*1024)  # df returns values in 1024B-blocks by default
             self.used_percent = self.used_percent.strip('%') or 0
             description = ''
-            if path_exists(mount_point, 'etc/linuxmint/info'):
+            if self.is_esp:
+                description = 'EFI System Partition'
+            elif path_exists(mount_point, 'etc/linuxmint/info'):
                 description = getoutput("cat %s/etc/linuxmint/info | grep GRUB_TITLE" % mount_point).replace('GRUB_TITLE', '').replace('=', '').replace('"', '').strip()
             elif path_exists(mount_point, 'Windows/servicing/Version'):
                 description = 'Windows ' + {
@@ -589,22 +613,11 @@ class Partition(object):
                 description = 'Windows bootloader/recovery'
             elif path_exists(mount_point, 'Windows/System32'):
                 description = 'Windows'
-            elif path_exists(mount_point, 'System/Library/CoreServices/SystemVersion.plist'):
+            elif self.type == 'hfs' and path_exists(mount_point, 'System/Library/CoreServices/SystemVersion.plist'):
                 description = 'Mac OS X'
             elif path_exists(mount_point, 'etc/'):
                 description = getoutput("su -c '{{ . {0}/etc/lsb-release && echo $DISTRIB_DESCRIPTION; }} || \
                                                 {{ . {0}/etc/os-release && echo $PRETTY_NAME; }}' mint".format(mount_point)) or 'Unix'
-            else:
-                try:
-                    if partition.active:
-                        for flag in partition.getFlagsAsString().split(", "):
-                            if flag in ["boot", "esp"]:
-                                description = 'EFI System Partition'
-                                self.mount_as = EFI_MOUNT_POINT
-                                break
-                except Exception as detail:
-                    # best effort
-                    print("Could not read partition flags for %s: %s" % (self.path, detail))
             self.description = description
             self.os_fs_info = ': {0.description} ({0.type}; {0.size}; {0.free_space})'.format(self) if description else ': ' + self.type
             print("                  . self.description %s self.os_fs_info %s" % (self.description, self.os_fs_info))
