@@ -2,27 +2,32 @@ Source: live-installer
 Section: admin
 Priority: optional
 Maintainer: Linux Mint <root@linuxmint.com>
-Build-Depends: debhelper (>= 10)
-Standards-Version: 3.9.5
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.7.0
+Rules-Requires-Root: no
 Vcs-Git: git://github.com/linuxmint/live-installer.git
 Vcs-Browser: https://github.com/linuxmint/live-installer
 
 Package: live-installer
 Architecture: all
-Depends: ${misc:Depends}, gir1.2-webkit2-4.1
-  , gir1.2-timezonemap-1.0
-  , python3
-  , python3-distro
-  , python3-parted, parted, gparted
-  , python3-gi-cairo
-  , python3-pil
-  , isoquery
-  , desktop-file-utils
-  , shared-mime-info
-  , gdisk
-  , isoquery, iso-codes, locales
-  , adduser
-  , rsync
-  , circle-flags-svg
+Depends: ${misc:Depends},
+         adduser,
+         circle-flags-svg,
+         desktop-file-utils,
+         gdisk,
+         gir1.2-timezonemap-1.0,
+         gir1.2-webkit2-4.1,
+         gparted,
+         iso-codes,
+         isoquery,
+         locales,
+         parted,
+         python3,
+         python3-distro,
+         python3-gi-cairo,
+         python3-parted,
+         python3-pil,
+         rsync,
+         shared-mime-info
 Description: Live Installer
  A live installer

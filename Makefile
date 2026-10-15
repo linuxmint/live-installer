@@ -1,13 +1,11 @@
-all: buildmo
+PO_FILES = $(wildcard po/live-installer-*.po)
+MO_FILES = $(patsubst po/live-installer-%.po,usr/share/locale/%/LC_MESSAGES/live-installer.mo,$(PO_FILES))
 
-buildmo:
-	@echo "Building the mo files"
-	# WARNING: the second sed below will only works correctly with the languages that don't contain "-"
-	for file in `ls po/*.po`; do \
-		lang=`echo $$file | sed 's@po/@@' | sed 's/\.po//' | sed 's/live-installer-//'`; \
-		install -d usr/share/locale/$$lang/LC_MESSAGES/; \
-		msgfmt -o usr/share/locale/$$lang/LC_MESSAGES/live-installer.mo $$file; \
-	done \
+all: $(MO_FILES)
+
+usr/share/locale/%/LC_MESSAGES/live-installer.mo: po/live-installer-%.po
+	install -d $(dir $@)
+	msgfmt -o $@ $<
 
 clean:
 	rm -rf usr/share/locale
