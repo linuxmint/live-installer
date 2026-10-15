@@ -184,9 +184,9 @@ class InstallerWindow:
         text = Gtk.CellRendererText()
         for i in (partitioning.IDX_PART_PATH,
                   partitioning.IDX_PART_TYPE,
-                  partitioning.IDX_PART_DESCRIPTION,
                   partitioning.IDX_PART_MOUNT_AS,
                   partitioning.IDX_PART_FORMAT_AS,
+                  partitioning.IDX_PART_DESCRIPTION,
                   partitioning.IDX_PART_SIZE,
                   partitioning.IDX_PART_FREE_SPACE):
             col = Gtk.TreeViewColumn("", text, markup=i)  # real title is set in i18n()
@@ -418,9 +418,9 @@ class InstallerWindow:
         for col, title in zip(self.builder.get_object("treeview_disks").get_columns(),
                               (_("Device"),
                                _("Type"),
-                               _("Operating system"),
                                _("Mount point"),
                                _("Format as"),
+                               _("Operating system"),
                                _("Size"),
                                _("Free space"))):
             col.set_title(title)
