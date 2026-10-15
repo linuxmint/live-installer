@@ -1,9 +1,3 @@
-#TimezoneLabel {
-  color: #efefef;
-  background-color: #3f3f43;
-  border-radius: 4px;
-}
-
 .live-installer-welcome-oem-config {
   background-color: #1575ca;
   background-image: repeating-linear-gradient(-45deg, transparent, transparent 35px, rgba(255,255,255,.05) 35px, rgba(255,255,255,.05) 70px);
@@ -21,11 +15,6 @@
   background-color: #3f3f43;
 }
 
-.live-installer-map {
-  background-color: #91A4C4;
-  background-image: repeating-linear-gradient(-45deg, transparent, transparent 35px, rgba(255,255,255,.05) 35px, rgba(255,255,255,.05) 70px);
-}
-
-.live-installer-map frame {
+#TimezoneMap {
   background-color: transparent;
 }

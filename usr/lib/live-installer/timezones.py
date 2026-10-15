@@ -1,40 +1,25 @@
 # coding: utf-8
 
-import math
-import re
 import subprocess
-from gi.repository import Gtk, Gdk
+import gi
+gi.require_version('TimezoneMap', '1.0')
+from gi.repository import Gtk, Gdk, GLib, TimezoneMap
 from collections import defaultdict, namedtuple
-from datetime import datetime, timedelta
+from datetime import datetime
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
-# Check map size, MAP_CENTER depends on this size to be exact
-MAP_FILE = '/usr/share/live-installer/miller.png'
-MAP_SIZE = (752, 384)
-MAP_CENTER = (354, 243) # pixel coords where the equatorial line and the 0th meridian intersect
-
-ADJUST_HOURS_MINUTES = re.compile('([+-])([0-9][0-9])([0-9][0-9])')
-TZ_SPLIT_COORDS = re.compile('([+-][0-9]+)([+-][0-9]+)')
-
-def to_float(position, wholedigits):
-    assert position and len(position) > 4 and wholedigits < 9
-    return float(position[:wholedigits + 1] + '.' + position[wholedigits + 1:])
-
-def pixel_position(lat, lon):
-    # Transform lat/long pair into map pixel coordinates
-    dx = MAP_SIZE[0] / 2 / 180
-    dy = MAP_SIZE[1] / 2 / 90
-    # formula from http://en.wikipedia.org/wiki/Miller_cylindrical_projection
-    x = MAP_CENTER[0] + dx * lon
-    y = MAP_CENTER[1] - dy * math.degrees(5/4 * math.log(math.tan(math.pi/4 + 2/5 * math.radians(lat))))
-    return int(x), int(y)
+TZDATA_FILE = '/usr/share/zoneinfo/tzdata.zi'
+# The map stretches to whatever it's allocated, this keeps its ratio at the window's default width
+MAP_HEIGHT = 385
 
 timezones = []
 region_menus = {}
+zone_links = {}
 
-Timezone = namedtuple('Timezone', 'name ccode x y'.split())
+Timezone = namedtuple('Timezone', 'name ccode'.split())
 
 def build_timezones(_installer):
-    global installer, time_label, time_label_box, timezone
+    global installer, time_label, date_label, tz_map
     installer = _installer
 
     cssProvider = Gtk.CssProvider()
@@ -43,27 +28,35 @@ def build_timezones(_installer):
     styleContext = Gtk.StyleContext()
     styleContext.add_provider_for_screen(screen, cssProvider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
 
-    # Add the label displaying current time
     time_label = installer.builder.get_object("label_time")
-    time_label_box = installer.builder.get_object("eventbox_time")
+    date_label = installer.builder.get_object("label_date")
 
-    time_label_box.set_name('TimezoneLabel')
+    GLib.timeout_add_seconds(1, update_local_time_label)
 
-    update_local_time_label()
+    tz_map = TimezoneMap.TimezoneMap.new()
+    tz_map.set_size_request(-1, MAP_HEIGHT)
+    tz_map.connect('location-changed', map_location_changed)
+    installer.builder.get_object("aspectframe_timezones").add(tz_map)
+    tz_map.show()
+
+    # The map's city data can use legacy zone names (Europe/Kiev...), tzdata.zi lists them as links
+    try:
+        with open(TZDATA_FILE) as f:
+            for line in f:
+                parts = line.split()
+                if len(parts) == 3 and parts[0] == 'L':
+                    zone_links[parts[2]] = parts[1]
+    except OSError as e:
+        print("Could not read %s: %s" % (TZDATA_FILE, e))
 
     # Populate timezones model
-    installer.builder.get_object("image_timezones").set_from_file(MAP_FILE)
-
     def autovivified():
         return defaultdict(autovivified)
     hierarchy = autovivified()
 
-    for line in subprocess.getoutput("awk '/^[^#]/{ print $1,$2,$3 }' /usr/share/zoneinfo/zone.tab | sort -k3").split('\n'):
-        ccode, coords, name = line.split()
-        lat, lon = TZ_SPLIT_COORDS.search(coords).groups()
-        x, y = pixel_position(to_float(lat, 2), to_float(lon, 3))
-        if x < 0: x = MAP_SIZE[0] + x
-        tup = Timezone(name, ccode, x, y)
+    for line in subprocess.getoutput("awk '/^[^#]/{ print $1,$3 }' /usr/share/zoneinfo/zone.tab | sort -k2").split('\n'):
+        ccode, name = line.split()
+        tup = Timezone(name, ccode)
         submenu = hierarchy
         parts = name.split('/')
         for i, part in enumerate(parts, 1):
@@ -106,9 +99,11 @@ def build_timezones(_installer):
     installer.builder.get_object('cont_button').connect('event', button_callback)
     installer.builder.get_object('cont_button').menu = cont_menu
     installer.builder.get_object('tz_button').connect('event', button_callback)
-    installer.builder.get_object("event_timezones").connect('button-release-event', map_clicked)
 
-adjust_time = timedelta(0)
+current_zone = None
+current_country = None
+syncing_map = False
+map_updated = False
 
 def button_callback(button, event):
     menu = button.menu
@@ -119,8 +114,16 @@ def button_callback(button, event):
     return False
 
 def update_local_time_label():
-    now = datetime.utcnow() + adjust_time
-    time_label.set_label(now.strftime('%H:%M'))
+    if current_zone is None:
+        return True
+    try:
+        now = datetime.now(ZoneInfo(current_zone))
+    except ZoneInfoNotFoundError as e:
+        print("Could not load timezone %s: %s" % (current_zone, e))
+        return True
+    time_label.set_markup(now.strftime('<span size="x-large" weight="bold">%H:%M</span> (%-I:%M %p)'))
+    date_format = '%A, %B %-d, %Y' if current_country == 'US' else '%A, %-d %B %Y'
+    date_label.set_label(now.strftime(date_format))
     return True
 
 def cont_menu_selected(widget, cont):
@@ -131,41 +134,41 @@ def cont_menu_selected(widget, cont):
 def tz_menu_selected(widget, tz):
     select_timezone(tz)
 
-def map_clicked(widget, event, data=None):
-    x, y = event.x, event.y
-    if event.window != installer.builder.get_object("event_timezones").get_window():
-        dx, dy = event.window.get_position()
-        x, y = x + dx, y + dy
-    closest_timezone = min(timezones, key=lambda tz: math.sqrt((x - tz.x)**2 + (y - tz.y)**2))
-    select_timezone(closest_timezone)
+def map_location_changed(widget, location):
+    global map_updated
+    map_updated = True
+    if syncing_map or location is None:
+        return
+    name = zone_links.get(location.props.zone, location.props.zone)
+    tz = next((tz for tz in timezones if tz.name == name), None)
+    if tz is None:
+        tz = Timezone(name, location.props.country)
+    select_timezone(tz, from_map=True)
 
-def select_timezone(tz):
-    # Adjust time preview to current timezone (using `date` removes need for pytz package)
-    offset = subprocess.getoutput('TZ={} date +%z'.format(tz.name))
-    tzadj = ADJUST_HOURS_MINUTES.search(offset).groups()
-    global adjust_time
-    adjust_time = timedelta(hours=int(tzadj[0] + tzadj[1]),
-                            minutes=int(tzadj[0] + tzadj[2]))
+def show_on_map(name):
+    global syncing_map, map_updated
+    syncing_map = True
+    map_updated = False
+    tz_map.set_timezone(name)
+    if not map_updated:
+        # The map has no city for this zone, don't leave a stale pin on it
+        tz_map.clear_location()
+    syncing_map = False
+
+def select_timezone(tz, from_map=False):
+    global current_zone, current_country
+    current_zone = tz.name
+    current_country = tz.ccode
 
     installer.setup.timezone = tz.name
     cont, separator, tz_str = tz.name.partition("/")
 
     installer.builder.get_object("cont_button").set_label(cont)
     installer.builder.get_object("tz_button").set_label(tz_str.replace("_", " "))
-    installer.builder.get_object("tz_button").menu = region_menus[cont]
+    if cont in region_menus:
+        installer.builder.get_object("tz_button").menu = region_menus[cont]
 
     update_local_time_label()
 
-    # Move the current time label to appropriate position
-    a = time_label_box.get_allocation()
-    width = a.width
-    height = a.height
-
-    x = tz.x - (width / 2)
-    y = tz.y - (height / 2)
-
-    if x < 0: x = 0
-    if y < 0: y = 0
-    if (x + width) > MAP_SIZE[0]: x = MAP_SIZE[0] - width
-    if (y + height) > MAP_SIZE[1]: y = MAP_SIZE[1] - height
-    installer.builder.get_object("fixed_timezones").move(time_label_box, x, y)
+    if not from_map:
+        show_on_map(tz.name)

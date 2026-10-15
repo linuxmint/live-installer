@@ -370,98 +370,68 @@
                       <object class="GtkBox" id="vbox_timezones">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
-                        <property name="margin-bottom">12</property>
                         <property name="orientation">vertical</property>
                         <child>
-                          <object class="GtkFrame">
+                          <object class="GtkAspectFrame" id="aspectframe_timezones">
+                            <property name="name">TimezoneMap</property>
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
                             <property name="hexpand">True</property>
-                            <property name="vexpand">True</property>
-                            <property name="border-width">0</property>
                             <property name="label-xalign">0</property>
                             <property name="shadow-type">none</property>
+                            <property name="ratio">1.9512</property>
+                            <property name="obey-child">False</property>
                             <child>
-                              <object class="GtkAlignment">
-                                <property name="visible">True</property>
-                                <property name="can-focus">False</property>
-                                <property name="hexpand">True</property>
-                                <property name="vexpand">True</property>
-                                <child>
-                                  <object class="GtkEventBox" id="event_timezones">
-                                    <property name="visible">True</property>
-                                    <property name="can-focus">False</property>
-                                    <property name="halign">center</property>
-                                    <property name="valign">center</property>
-                                    <child>
-                                      <object class="GtkFixed" id="fixed_timezones">
-                                        <property name="visible">True</property>
-                                        <property name="can-focus">False</property>
-                                        <property name="halign">center</property>
-                                        <property name="valign">center</property>
-                                        <child>
-                                          <object class="GtkImage" id="image_timezones">
-                                            <property name="visible">True</property>
-                                            <property name="can-focus">False</property>
-                                            <property name="halign">center</property>
-                                            <property name="valign">center</property>
-                                            <property name="stock">gtk-missing-image</property>
-                                          </object>
-                                        </child>
-                                        <child>
-                                          <object class="GtkEventBox" id="eventbox_time">
-                                            <property name="visible">True</property>
-                                            <property name="can-focus">False</property>
-                                            <child>
-                                              <object class="GtkBox">
-                                                <property name="visible">True</property>
-                                                <property name="can-focus">False</property>
-                                                <property name="border-width">4</property>
-                                                <child>
-                                                  <object class="GtkLabel" id="label_time">
-                                                    <property name="visible">True</property>
-                                                    <property name="can-focus">False</property>
-                                                    <property name="use-markup">True</property>
-                                                  </object>
-                                                  <packing>
-                                                    <property name="expand">False</property>
-                                                    <property name="fill">True</property>
-                                                    <property name="position">0</property>
-                                                  </packing>
-                                                </child>
-                                              </object>
-                                            </child>
-                                          </object>
-                                        </child>
-                                      </object>
-                                    </child>
-                                  </object>
-                                </child>
-                              </object>
-                            </child>
-                            <child type="label_item">
                               <placeholder/>
                             </child>
                           </object>
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">True</property>
-                            <property name="position">1</property>
+                            <property name="position">0</property>
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkButtonBox">
+                          <object class="GtkBox" id="box_timezone_details">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
-                            <property name="border-width">12</property>
+                            <property name="margin-start">12</property>
+                            <property name="margin-end">12</property>
+                            <property name="margin-top">6</property>
+                            <property name="margin-bottom">12</property>
+                            <property name="spacing">12</property>
                             <property name="homogeneous">True</property>
-                            <property name="layout-style">expand</property>
                             <child>
-                              <object class="GtkButton" id="cont_button">
-                                <property name="width-request">200</property>
+                              <object class="GtkBox">
                                 <property name="visible">True</property>
-                                <property name="can-focus">True</property>
-                                <property name="receives-default">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="orientation">vertical</property>
+                                <property name="valign">center</property>
+                                <property name="spacing">6</property>
+                                <child>
+                                  <object class="GtkButton" id="cont_button">
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">True</property>
+                                    <property name="receives-default">True</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkButton" id="tz_button">
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">True</property>
+                                    <property name="receives-default">True</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
                               </object>
                               <packing>
                                 <property name="expand">True</property>
@@ -470,28 +440,49 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkButton" id="tz_button">
-                                <property name="width-request">200</property>
+                              <object class="GtkBox">
                                 <property name="visible">True</property>
-                                <property name="can-focus">True</property>
-                                <property name="receives-default">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="orientation">vertical</property>
+                                <property name="valign">center</property>
+                                <property name="spacing">6</property>
+                                <child>
+                                  <object class="GtkLabel" id="label_time">
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">False</property>
+                                    <property name="use-markup">True</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel" id="label_date">
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">False</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
                               </object>
                               <packing>
                                 <property name="expand">True</property>
                                 <property name="fill">True</property>
-                                <property name="position">3</property>
+                                <property name="position">1</property>
                               </packing>
                             </child>
                           </object>
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">True</property>
-                            <property name="position">2</property>
+                            <property name="position">1</property>
                           </packing>
                         </child>
-                        <style>
-                          <class name="live-installer-map"/>
-                        </style>
                       </object>
                       <packing>
                         <property name="position">2</property>
