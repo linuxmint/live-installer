@@ -748,7 +748,7 @@ class InstallerWindow:
         ''' Do some xml kung-fu and load the keyboard stuffs '''
         # Determine the layouts in use
         (keyboard_geom,
-         self.setup.keyboard_layout) = subprocess.getoutput("setxkbmap -query | awk '/^(model|layout)/{print $2}'").split()
+         self.setup.keyboard_layout) = subprocess.check_output("setxkbmap -query | awk '/^(model|layout)/{print $2}'", shell=True, encoding='utf-8').split()
         # Build the models
         from collections import defaultdict
         def _ListStore_factory():
