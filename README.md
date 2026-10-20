@@ -1,19 +1,21 @@
 # live-installer
 
 The installer used by Linux Mint and LMDE. It runs as a GTK wizard for
-interactive desktop installs, and can also run **unattended** from a YAML
-answer file for labs, fleets, and OEM/imaging pipelines — covering disk
-selection and custom partition layouts (LVM, btrfs subvolumes, software RAID,
-LUKS with an optional first-boot passphrase prompt), static networking
-(IPv4/IPv6, VLANs, wifi, 802.1X/EAP), apt repositories, a custom CA trust
-store, an http(s) proxy, proprietary drivers, flatpak apps, Timeshift
-snapshots, multi-layout keyboards, and PXE/netboot delivery (local file,
-http(s), NFS, or TFTP).
+interactive desktop installs, and can also run unattended from a YAML answer
+file, for labs, fleets and OEM or imaging pipelines.
+
+An answer file covers disk selection and custom partition layouts (LVM,
+btrfs subvolumes, software RAID, LUKS with an optional passphrase prompt at
+first boot), static networking (IPv4/IPv6, VLANs, wifi, 802.1X/EAP), apt
+repositories, a custom CA trust store, an http(s) proxy, proprietary drivers,
+flatpak apps, Timeshift snapshots and multi-layout keyboards. The answer
+file can be a local file, or fetched over http(s), NFS or TFTP for PXE/netboot
+installs.
 
 ## Layout
 
 ```
-usr/bin/                       entry points (live-installer, oem-config, …)
+usr/bin/                       entry points (live-installer, oem-config, ...)
 usr/lib/live-installer/        the installer
   main.py                      GTK wizard (interactive front-end)
   installer.py                 install engine (GUI-agnostic)
@@ -39,25 +41,26 @@ Boot the live medium with an answer file on the kernel command line:
 live-installer.auto=/cdrom/install.yaml
 ```
 
-New to it? **[docs/getting-started.md](docs/getting-started.md)** is a
-hands-on walkthrough for trying it on a VM or spare machine. For the full
-reference — every answer-file key, delivery options, examples, and security
-notes — see **[docs/automated-install.md](docs/automated-install.md)**.
-A feature comparison against kickstart, preseed, and autoinstall is in
-**[docs/comparison.md](docs/comparison.md)**. The interactive GUI is
-unchanged when no answer file is supplied.
+Without an answer file, the interactive GUI runs as before.
 
-For the mechanics of serial-console provisioning and encrypted (LUKS)
-boot — and the live-system quirks they work around — see
-**[docs/serial-console-and-luks.md](docs/serial-console-and-luks.md)**.
-For running the installer from a fully network-booted (PXE/iPXE) live
-system, see **[docs/pxe-netboot.md](docs/pxe-netboot.md)**.
+- [docs/getting-started.md](docs/getting-started.md): a walkthrough for
+  trying it on a VM or a spare machine.
+- [docs/automated-install.md](docs/automated-install.md): the reference,
+  with every answer-file key, the delivery options, examples and security
+  notes.
+- [docs/comparison.md](docs/comparison.md): how it compares with kickstart,
+  preseed and autoinstall.
+- [docs/serial-console-and-luks.md](docs/serial-console-and-luks.md): how
+  serial-console provisioning and encrypted (LUKS) boot work, and the
+  live-system quirks they work around.
+- [docs/pxe-netboot.md](docs/pxe-netboot.md): running the installer from a
+  live system booted over the network (PXE/iPXE).
 
 ## Development & testing
 
 Unit tests need only Python; integration tests perform real installs in a
-VM. See **[tests/TESTING.md](tests/TESTING.md)** for the architecture, how
-to run and extend the suite, and the known traps.
+VM. [tests/TESTING.md](tests/TESTING.md) covers how the suite is built, how
+to run and extend it, and the known pitfalls.
 
 ```sh
 # unit tests
