@@ -1,0 +1,24 @@
+[Unit]
+Description=Unattended installation (live-installer)
+Documentation=man:live-installer(1)
+# Only runs when an answer-file source is on the kernel command line.
+# ConditionKernelCommandLine= cannot prefix-match live-installer.auto=<url>,
+# so the check is an ExecCondition instead.
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecCondition=/bin/sh -c 'grep -q live-installer.auto= /proc/cmdline'
+ExecStart=/usr/bin/live-installer
+# Crash-before-marker safety net: if the installer process dies without
+# printing its own failure marker (e.g. an import error), emit one so
+# unattended callers watching the console fail fast instead of timing out.
+# A condition skip counts as success, so normal boots stay silent.
+ExecStopPost=/bin/sh -c 'if [ "$$SERVICE_RESULT" != "success" ]; then echo "Automated installation FAILED (service result: $$SERVICE_RESULT)" > /dev/console; fi'
+StandardOutput=journal+console
+StandardError=journal+console
+TimeoutStartSec=infinity
+
+[Install]
+WantedBy=multi-user.target

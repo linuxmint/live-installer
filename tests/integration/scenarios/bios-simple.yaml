@@ -1,0 +1,65 @@
+# Baseline scenario: BIOS firmware, single disk, simple layout.
+#
+# NOTE: the full install phase requires the headless driver and
+# answer-file support in the installer (not yet implemented).  Until
+# then this scenario is only runnable in smoke mode:
+#
+#   harness/run_scenario.py scenarios/bios-simple.yaml --smoke
+
+name: bios-simple
+description: Unattended BIOS install, single disk, simple partition layout
+
+firmware: bios
+tpm: false
+memory_mb: 4096
+cpus: 2
+disk_gb: 25
+
+# Served to the VM over HTTP from this directory (10.0.2.2 = host)
+answer_file: answers/bios-simple.yaml
+
+install_timeout_s: 1800
+boot_timeout_s: 300
+
+expect:
+  serial_markers:
+    - "Automated installation complete"
+  failure_markers:
+    - "Automated installation FAILED"
+
+ssh:
+  user: testuser
+
+verify:
+  - name: os-is-lmde
+    type: command
+    command: ". /etc/os-release && echo $PRETTY_NAME"
+    expect_substring: "LMDE"
+  - name: hostname-applied
+    type: command
+    command: hostname
+    expect_substring: "lmde-test-01"
+  - name: root-on-plain-partition
+    type: mount_source
+    mountpoint: /
+    source_contains: "/dev/"
+  - name: network-manager-running
+    type: command
+    command: systemctl is-active NetworkManager
+    expect_substring: "active"
+  - name: keyboard-multilayout
+    type: command
+    command: ". /etc/default/keyboard && echo \"$XKBLAYOUT|$XKBVARIANT|$XKBOPTIONS\""
+    expect_substring: "us,ca|,fr|grp:alt_shift_toggle"
+  - name: additional-locale-generated
+    type: command
+    command: locale -a | grep -i fr_CA
+    expect_substring: "fr_CA"
+  - name: ca-cert-installed
+    type: file_exists
+    path: /usr/local/share/ca-certificates/li-ca-1.crt
+  # update-ca-certificates only creates /etc/ssl/certs/<name>.pem for a VALID
+  # cert, so this proves the cert reached the system trust store.
+  - name: ca-cert-trusted
+    type: file_exists
+    path: /etc/ssl/certs/li-ca-1.pem

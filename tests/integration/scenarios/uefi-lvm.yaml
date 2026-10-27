@@ -1,0 +1,46 @@
+# UEFI firmware, single disk, LVM layout (vg lvmmint, lv root + swap).
+name: uefi-lvm
+description: Unattended UEFI install with the lvm layout preset
+
+firmware: uefi
+tpm: false
+memory_mb: 4096
+cpus: 2
+disk_gb: 25
+
+answer_file: answers/uefi-lvm.yaml
+
+install_timeout_s: 1800
+boot_timeout_s: 300
+
+expect:
+  serial_markers:
+    - "Automated installation complete"
+  failure_markers:
+    - "Automated installation FAILED"
+
+ssh:
+  user: testuser
+
+verify:
+  - name: os-is-lmde
+    type: command
+    command: ". /etc/os-release && echo $PRETTY_NAME"
+    expect_substring: "LMDE"
+  - name: hostname-applied
+    type: command
+    command: hostname
+    expect_substring: "lmde-lvm-01"
+  - name: root-on-lvm
+    type: mount_source
+    mountpoint: /
+    source_contains: "lvmmint-root"
+  - name: swap-on-lvm
+    # lsblk, not swapon: /usr/sbin is not on a non-root SSH user's PATH
+    type: command
+    command: "lsblk -rno NAME,MOUNTPOINTS"
+    expect_substring: "lvmmint-swap [SWAP]"
+  - name: network-manager-running
+    type: command
+    command: systemctl is-active NetworkManager
+    expect_substring: "active"

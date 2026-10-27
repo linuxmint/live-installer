@@ -1,0 +1,20 @@
+# Valid answer file whose disk matcher cannot match anything in the VM.
+version: 1
+
+locale: en_US.UTF-8
+timezone: America/Toronto
+
+users:
+  - name: testuser
+    passwd: "$6$rounds=4096$integration.test$kPEsZSlAg3pjDM0yaeSdAVPbHcsiBVMobBC0SXmdGRX9WtflVB.ETP6/yo8Lw0PRJlXP6tEXkbQjnLnnyG5BV1"
+
+storage:
+  target:
+    match:
+      by-id: "nvme-Definitely_Nonexistent_Disk_*"
+    on_no_match: abort
+  layout: simple
+
+logging:
+  destination: /var/log/live-installer-auto.log
+  also_serial: ttyS0

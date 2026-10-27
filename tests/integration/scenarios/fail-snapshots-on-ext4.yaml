@@ -1,0 +1,19 @@
+# Regression: snapshots: timeshift-btrfs on a non-btrfs layout must abort at
+# schema validation (the cross-section guard), before any destructive action.
+name: fail-snapshots-on-ext4
+description: timeshift-btrfs snapshots on an ext4 layout fails fast at validation
+
+firmware: bios
+memory_mb: 3072
+cpus: 2
+disk_gb: 10
+
+answer_file: answers/fail-snapshots-on-ext4.yaml
+install_timeout_s: 420
+
+expect:
+  outcome: failure
+  serial_markers:
+    - "Automated installation complete"
+  failure_markers:
+    - "Automated installation FAILED"

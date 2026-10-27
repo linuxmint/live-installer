@@ -1,0 +1,6 @@
+# Test-only dependencies. The installer's runtime deps (pyyaml, pydantic)
+# are declared in debian/control; they are repeated here so the unit
+# suite can run in a bare virtualenv without the .deb installed.
+pytest>=7
+pyyaml>=6
+pydantic>=2

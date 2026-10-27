@@ -1,0 +1,67 @@
+# UEFI, LVM-on-LUKS with passphrase_source: prompt-on-first-boot.
+#
+# Exercises the full first-boot rekey dance over serial: the first boot
+# auto-unlocks with the throwaway key embedded in the initramfs, a one-shot
+# prompts the operator to set + confirm the real passphrase, the service
+# rekeys and reboots, the second boot prompts at the initramfs, and the
+# unlocked system is verified over SSH — with no secret ever in the answer file.
+name: uefi-luks-prompt
+description: Unattended UEFI LUKS install, passphrase set + unlocked over serial on first boot
+
+firmware: uefi
+tpm: false
+memory_mb: 4096
+cpus: 2
+disk_gb: 25
+
+answer_file: answers/luks-prompt.yaml
+
+install_timeout_s: 1800
+boot_timeout_s: 360
+
+# Drive the first-boot rekey: set + confirm the passphrase, then unlock the
+# second boot at the initramfs. The passphrase the operator "types" is the
+# same fixture string the keyfile scenario uses.
+first_boot_rekey:
+  set_prompt: "Set the disk-encryption passphrase"
+  confirm_prompt: "Confirm the disk-encryption passphrase"
+  boot_prompt: "Please unlock disk"
+  passphrase_file: answers/luks.key
+  set_timeout_s: 360
+  boot_timeout_s: 360
+
+expect:
+  serial_markers:
+    - "Automated installation complete"
+  failure_markers:
+    - "Automated installation FAILED"
+
+ssh:
+  user: testuser
+
+verify:
+  - name: hostname-applied
+    type: command
+    command: hostname
+    expect_substring: "lmde-luks-prompt-01"
+  - name: root-on-luks-lvm
+    type: mount_source
+    mountpoint: /
+    source_contains: "lvmmint-root"
+  - name: luks-device-open
+    type: command
+    command: "lsblk -rno TYPE | grep -c crypt"
+    expect_substring: "1"
+  # The throwaway key, keyfile, and rekey one-shot must all be gone after rekey.
+  - name: throwaway-keyfile-removed
+    type: command
+    command: "test -e /etc/cryptsetup-keys.d/cryptroot.key && echo present || echo absent"
+    expect_substring: "absent"
+  - name: rekey-service-removed
+    type: command
+    command: "systemctl cat li-luks-rekey.service >/dev/null 2>&1 && echo present || echo absent"
+    expect_substring: "absent"
+  - name: crypttab-prompts
+    type: command
+    command: "awk '$1==\"lvmmint\"{print $3}' /etc/crypttab"
+    expect_substring: "none"

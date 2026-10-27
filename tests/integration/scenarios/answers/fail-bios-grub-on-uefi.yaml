@@ -1,0 +1,29 @@
+# Valid BIOS-style custom layout (a bios_grub partition + root) deliberately
+# run on a UEFI machine. The schema can't catch this — firmware mode is only
+# known at runtime — so the engine must reject it before touching the disk
+# (review finding #2). Expected outcome: a clean abort, no partitioning.
+version: 1
+
+locale: en_US.UTF-8
+timezone: America/Toronto
+
+users:
+  - name: testuser
+    passwd: "$6$rounds=4096$integration.test$kPEsZSlAg3pjDM0yaeSdAVPbHcsiBVMobBC0SXmdGRX9WtflVB.ETP6/yo8Lw0PRJlXP6tEXkbQjnLnnyG5BV1"
+
+storage:
+  target:
+    match:
+      first-non-removable: true
+    on_no_match: abort
+  layout: custom
+  partitions:
+    - {size: 1MB, flags: [bios_grub]}
+    - {size: rest, mount: /, filesystem: ext4}
+
+on_failure:
+  partition_mismatch: abort
+
+logging:
+  destination: /var/log/live-installer-auto.log
+  also_serial: ttyS0

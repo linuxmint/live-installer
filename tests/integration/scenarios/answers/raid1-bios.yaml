@@ -1,0 +1,45 @@
+# BIOS, software RAID1 across two disks: /boot and / each on a RAID1 mirror.
+# No LVM — the simplest bootable RAID, to prove the multi-disk + mdadm + grub
+# path end to end. grub is installed to both disks for boot redundancy.
+version: 1
+
+hostname: lmde-raid1-01
+locale: en_US.UTF-8
+timezone: America/Toronto
+
+keyboard:
+  model: pc105
+  layout: us
+
+users:
+  - name: testuser
+    gecos: Integration Test User
+    # "testpass", sha512crypt — test fixture only
+    passwd: "$6$rounds=4096$integration.test$kPEsZSlAg3pjDM0yaeSdAVPbHcsiBVMobBC0SXmdGRX9WtflVB.ETP6/yo8Lw0PRJlXP6tEXkbQjnLnnyG5BV1"
+    groups: [sudo]
+
+storage:
+  layout: custom
+  disks:
+    - match: {by-id: "virtio-raidA"}
+    - match: {by-id: "virtio-raidB"}
+  partitions:
+    - {size: 1GB, raid: md0}
+    - {size: rest, raid: md1}
+  raid:
+    - {name: md0, level: 1, mount: /boot, filesystem: ext4}
+    - {name: md1, level: 1, mount: /, filesystem: ext4}
+
+packages: [openssh-server]
+
+kernel:
+  serial_console: "ttyS0,115200"
+
+on_failure:
+  partition_mismatch: abort
+  network_unavailable: continue
+  package_install_failure: abort
+
+logging:
+  destination: /var/log/live-installer-auto.log
+  also_serial: ttyS0

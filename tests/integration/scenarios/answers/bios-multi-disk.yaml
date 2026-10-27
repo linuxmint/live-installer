@@ -1,0 +1,36 @@
+# Answer file for bios-multi-disk: select the target by stable by-id,
+# NOT by enumeration order. The target is the second disk (vdb).
+version: 1
+
+hostname: lmde-multidisk-01
+locale: en_US.UTF-8
+timezone: America/Toronto
+
+keyboard:
+  model: pc105
+  layout: us
+
+users:
+  - name: testuser
+    gecos: Integration Test User
+    passwd: "$6$rounds=4096$integration.test$kPEsZSlAg3pjDM0yaeSdAVPbHcsiBVMobBC0SXmdGRX9WtflVB.ETP6/yo8Lw0PRJlXP6tEXkbQjnLnnyG5BV1"
+    groups: [sudo]
+
+storage:
+  target:
+    match:
+      # virtio serial 'installtarget' -> /dev/disk/by-id/virtio-installtarget
+      by-id: "virtio-installtarget"
+    on_no_match: abort
+  layout: simple
+
+packages: [openssh-server]
+
+on_failure:
+  partition_mismatch: abort
+  network_unavailable: continue
+  package_install_failure: abort
+
+logging:
+  destination: /var/log/live-installer-auto.log
+  also_serial: ttyS0
