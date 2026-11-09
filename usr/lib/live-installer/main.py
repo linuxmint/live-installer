@@ -96,6 +96,13 @@ class InstallerWindow:
 
         # load the window object
         self.window = self.builder.get_object("main_window")
+        # The icon is a scalable SVG, so GTK would only hand the window manager a 48px raster
+        # which looks blurry when enlarged (e.g. in alt-tab). Provide several sizes.
+        try:
+            icon_theme = Gtk.IconTheme.get_default()
+            self.window.set_icon_list([icon_theme.load_icon("live-installer", size, 0) for size in (16, 32, 48, 64, 128, 256)])
+        except GLib.Error as e:
+            print("could not load window icon: %s" % e.message)
         self.window.connect("delete-event", self.quit_cb)
         self.scale = self.window.get_scale_factor()
 
@@ -159,23 +166,27 @@ class InstallerWindow:
         timezones.build_timezones(self)
 
         # type page
-        model = Gtk.ListStore(str, str)
+        model = Gtk.ListStore(str, str, str)
         model.set_sort_column_id(0, Gtk.SortType.ASCENDING)
         for disk_path, disk_description in partitioning.get_disks():
-            iterator = model.append(("%s (%s)" % (disk_description, disk_path), disk_path))
+            iterator = model.append(("%s (%s)" % (disk_description, disk_path), disk_path,
+                                     "%s <span alpha='60%%'>%s</span>" % (GLib.markup_escape_text(disk_description), GLib.markup_escape_text(disk_path))))
         self.builder.get_object("combo_disk").set_model(model)
         renderer_text = Gtk.CellRendererText()
         self.builder.get_object("combo_disk").pack_start(renderer_text, True)
-        self.builder.get_object("combo_disk").add_attribute(renderer_text, "text", 0)
+        self.builder.get_object("combo_disk").add_attribute(renderer_text, "markup", 2)
 
         self.builder.get_object("entry_passphrase").connect("changed", self.assign_passphrase)
         self.builder.get_object("entry_passphrase2").connect("changed", self.assign_passphrase)
         self.builder.get_object("radio_automated").connect("toggled", self.assign_type_options)
         self.builder.get_object("radio_manual").connect("toggled", self.assign_type_options)
-        self.builder.get_object("check_badblocks").connect("toggled", self.assign_type_options)
-        self.builder.get_object("check_encrypt").connect("toggled", self.assign_type_options)
-        self.builder.get_object("check_lvm").connect("toggled", self.assign_type_options)
+        for name in ("check_badblocks", "check_encrypt", "check_lvm"):
+            self.builder.get_object(name).connect("notify::active", self.assign_type_options)
+        for name, switch in (("event_badblocks", "check_badblocks"), ("event_encrypt", "check_encrypt"), ("event_lvm", "check_lvm")):
+            self.builder.get_object(name).connect("button-release-event", self.toggle_switch, self.builder.get_object(switch))
         self.builder.get_object("combo_disk").connect("changed", self.assign_type_options)
+        if len(model) == 1:
+            self.builder.get_object("combo_disk").set_active(0)
 
         # partitions
         self.builder.get_object("button_expert").connect("clicked", self.show_customwarning)
@@ -186,6 +197,7 @@ class InstallerWindow:
         self.builder.get_object("treeview_disks").connect("row_activated", partitioning.edit_partition_dialog)
         self.builder.get_object("treeview_disks").connect("button-release-event", partitioning.partitions_popup_menu)
         text = Gtk.CellRendererText()
+        text.set_property("ypad", 4)
         for i in (partitioning.IDX_PART_PATH,
                   partitioning.IDX_PART_TYPE,
                   partitioning.IDX_PART_MOUNT_AS,
@@ -204,13 +216,16 @@ class InstallerWindow:
         self.builder.get_object("entry_password").connect("changed", self.assign_password)
         self.builder.get_object("entry_confirm").connect("changed", self.assign_password)
 
-        self.builder.get_object("radiobutton_passwordlogin").connect("toggled", self.assign_login_options)
-        self.builder.get_object("checkbutton_encrypt_home").connect("toggled", self.assign_login_options)
+        for name in ("switch_password_login", "switch_encrypt_home"):
+            self.builder.get_object(name).connect("notify::active", self.assign_login_options)
+        for name, switch in (("event_password_login", "switch_password_login"), ("event_encrypt_home", "switch_encrypt_home")):
+            self.builder.get_object(name).connect("button-release-event", self.toggle_switch, self.builder.get_object(switch))
 
         # link the checkbutton to the combobox
         grub_check = self.builder.get_object("checkbutton_grub")
         grub_box = self.builder.get_object("combobox_grub")
-        grub_check.connect("toggled", self.assign_grub_install, grub_box)
+        grub_check.connect("notify::active", self.assign_grub_install, grub_box)
+        self.builder.get_object("event_grub").connect("button-release-event", self.toggle_switch, grub_check)
         grub_box.connect("changed", self.assign_grub_device)
 
         # install Grub by default
@@ -226,24 +241,20 @@ class InstallerWindow:
 
         # kb layouts
         ren = Gtk.CellRendererText()
+        ren.set_property("ypad", 6)
         self.column10 = Gtk.TreeViewColumn(_("Layout"), ren)
         self.column10.add_attribute(ren, "text", 0)
         self.builder.get_object("treeview_layouts").append_column(self.column10)
         self.builder.get_object("treeview_layouts").connect("cursor-changed", self.assign_keyboard_layout)
 
         ren = Gtk.CellRendererText()
+        ren.set_property("ypad", 6)
         self.column11 = Gtk.TreeViewColumn(_("Variant"), ren)
         self.column11.add_attribute(ren, "text", 0)
         self.builder.get_object("treeview_variants").append_column(self.column11)
         self.builder.get_object("treeview_variants").connect("cursor-changed", self.assign_keyboard_variant)
 
         self.build_kb_lists()
-
-        # 'about to install' aka overview
-        ren = Gtk.CellRendererText()
-        self.column12 = Gtk.TreeViewColumn("", ren)
-        self.column12.add_attribute(ren, "markup", 0)
-        self.builder.get_object("treeview_overview").append_column(self.column12)
 
         # i18n
         self.i18n()
@@ -269,9 +280,8 @@ class InstallerWindow:
             self.builder.get_object("entry_confirm").set_text("oem")
             self.builder.get_object("entry_confirm").set_visibility(True)
             self.builder.get_object("entry_confirm").set_sensitive(False)
-            self.builder.get_object("radiobutton_autologin").set_active(True)
-            self.builder.get_object("radiobutton_autologin").set_sensitive(False)
-            self.builder.get_object("radiobutton_passwordlogin").set_sensitive(False)
+            self.builder.get_object("switch_password_login").set_active(False)
+            self.builder.get_object("switch_password_login").set_sensitive(False)
             self.builder.get_object("check_lvm").set_sensitive(False)
             self.builder.get_object("check_badblocks").set_sensitive(False)
             self.builder.get_object("check_encrypt").set_sensitive(False)
@@ -288,6 +298,9 @@ class InstallerWindow:
         context.set_cache_model(WebKit2.CacheModel.DOCUMENT_VIEWER)
 
         self.partitions_browser = WebKit2.WebView()
+        # The ancestors' colors are only resolved once the window is mapped (and change with the theme)
+        self.partitions_browser.connect('map', self.update_partitions_background)
+        self.partitions_browser.connect('style-updated', self.update_partitions_background)
         s = self.partitions_browser.get_settings()
         s.set_allow_file_access_from_file_urls(True)
         self.partitions_browser.connect('context-menu', self.on_context_menu)
@@ -298,6 +311,17 @@ class InstallerWindow:
         self.builder.get_object("button_lets_go").connect("clicked", self.on_lets_go_clicked)
 
         self.window.show_all()
+
+    def update_partitions_background(self, widget=None):
+        # A transparent webview shows the desktop through the window, so paint it with the
+        # color of the nearest ancestor which has a background (the page's, in the current theme).
+        parent = self.builder.get_object("scrolled_partitions")
+        while parent is not None:
+            color = parent.get_style_context().get_background_color(Gtk.StateFlags.NORMAL)
+            if color.alpha > 0:
+                self.partitions_browser.set_background_color(color)
+                return
+            parent = parent.get_parent()
 
     def on_key_press(self, widget, event):
         # CTRL+T key
@@ -387,6 +411,7 @@ class InstallerWindow:
         self.column10.set_title(_("Layout"))
         self.column11.set_title(_("Variant"))
         self.builder.get_object("entry_test_kb").set_placeholder_text(_("Type here to test your keyboard layout"))
+        self.builder.get_object("entry_test_kb").set_icon_from_icon_name(Gtk.EntryIconPosition.PRIMARY, "input-keyboard-symbolic")
         self.builder.get_object("label_non_latin").set_text(_("* Your username, your computer's name and your password should only contain Latin characters. In addition to your selected layout, English (US) is set as the default. You can switch layouts by pressing Super+Space."))
 
         # User page
@@ -397,14 +422,14 @@ class InstallerWindow:
         self.builder.get_object("label_password").set_text(_("Choose a password:"))
         self.builder.get_object("label_confirm").set_text(_("Confirm your password:"))
 
-        self.builder.get_object("radiobutton_autologin").set_label(_("Log in automatically"))
-        self.builder.get_object("radiobutton_passwordlogin").set_label(_("Require my password to log in"))
-        self.builder.get_object("checkbutton_encrypt_home").set_label(_("Encrypt my home folder"))
+        self.builder.get_object("label_password_login").set_label(_("Require my password to log in"))
+        self.builder.get_object("label_encrypt_home").set_label(_("Encrypt my home folder"))
 
         # Type page
         self.builder.get_object("label_automated").set_text(_("Automated Installation"))
         self.builder.get_object("label_automated2").set_text(_("Erase a disk and install %s on it.") % DISTRIBUTION)
         self.builder.get_object("label_disk").set_text(_("Disk:"))
+        self.builder.get_object("label_erase_warning").set_text(_("All data on the selected disk will be erased."))
         self.builder.get_object("label_encrypt").set_text(_("Encrypt the operating system"))
         self.builder.get_object("entry_passphrase").set_placeholder_text(_("Passphrase"))
         self.builder.get_object("entry_passphrase2").set_placeholder_text(_("Confirm passphrase"))
@@ -430,7 +455,9 @@ class InstallerWindow:
             col.set_title(title)
 
         # Advanced page
-        self.builder.get_object("checkbutton_grub").set_label(_("Install the GRUB boot menu on:"))
+        self.builder.get_object("label_grub").set_label(_("Install the GRUB boot menu"))
+        self.builder.get_object("label_grub_device").set_label(_("Install on:"))
+        self.builder.get_object("label_grub_hint").set_label(_("The default settings work for most computers. If you are unsure, leave them as they are. Change them only if you know your computer starts from another disk, or if you use a different boot manager."))
 
         # Custom install warning
         self.builder.get_object("label_custom_install_directions_1").set_label(_("You selected to manage your partitions manually, this feature is for ADVANCED USERS ONLY."))
@@ -612,6 +639,15 @@ class InstallerWindow:
             self.builder.get_object("check_badblocks").set_sensitive(True)
 
         self.setup.badblocks = self.builder.get_object("check_badblocks").get_active()
+
+        self.builder.get_object("revealer_automated").set_reveal_child(self.setup.automated)
+        self.builder.get_object("revealer_passphrase").set_reveal_child(self.builder.get_object("check_encrypt").get_active())
+        for name, selected in (("card_automated", self.setup.automated), ("card_manual", not self.setup.automated)):
+            context = self.builder.get_object(name).get_style_context()
+            if selected:
+                context.add_class("selected")
+            else:
+                context.remove_class("selected")
 
         block_next = False
 
@@ -821,19 +857,27 @@ class InstallerWindow:
                 except:
                     pass # Best effort. Fails the first time as self.column1 doesn't exist yet.
 
-    def assign_login_options(self, checkbox, data=None):
-        if self.builder.get_object("radiobutton_passwordlogin").get_active():
-            self.builder.get_object("checkbutton_encrypt_home").set_sensitive(True)
-        else:
-            self.builder.get_object("checkbutton_encrypt_home").set_active(False)
-            self.builder.get_object("checkbutton_encrypt_home").set_sensitive(False)
+    def toggle_switch(self, widget, event, switch):
+        if switch.get_sensitive():
+            switch.set_active(not switch.get_active())
+        return True
 
-        self.setup.ecryptfs = self.builder.get_object("checkbutton_encrypt_home").get_active()
-        self.setup.autologin = self.builder.get_object("radiobutton_autologin").get_active()
+    def assign_login_options(self, switch, data=None):
+        password_login = self.builder.get_object("switch_password_login").get_active()
+        encrypt_home = self.builder.get_object("switch_encrypt_home")
+        if password_login:
+            encrypt_home.set_sensitive(True)
+        else:
+            encrypt_home.set_active(False)
+            encrypt_home.set_sensitive(False)
+
+        self.setup.ecryptfs = encrypt_home.get_active()
+        self.setup.autologin = not password_login
         self.setup.print_setup()
 
-    def assign_grub_install(self, checkbox, grub_box, data=None):
+    def assign_grub_install(self, checkbox, pspec, grub_box):
         grub_box.set_sensitive(checkbox.get_active())
+        self.builder.get_object("revealer_grub").set_reveal_child(checkbox.get_active())
         if checkbox.get_active():
             self.assign_grub_device(grub_box)
         else:
@@ -1035,7 +1079,6 @@ class InstallerWindow:
                     # OEM config, skip straight from user page to overview. HDD, GRUB is already set up.
                     self.activate_page(self.PAGE_OVERVIEW)
                     self.show_overview()
-                    self.builder.get_object("treeview_overview").expand_all()
                     self.builder.get_object("button_next").set_label(_("Install"))
                 else:
                     self.activate_page(self.PAGE_TYPE)
@@ -1115,7 +1158,6 @@ class InstallerWindow:
             elif(sel == self.PAGE_ADVANCED):
                 self.activate_page(self.PAGE_OVERVIEW)
                 self.show_overview()
-                self.builder.get_object("treeview_overview").expand_all()
                 self.builder.get_object("button_next").set_label(_("Install"))
             elif(sel == self.PAGE_OVERVIEW):
                 self.activate_page(self.PAGE_INSTALL)
@@ -1176,40 +1218,99 @@ class InstallerWindow:
                 self.activate_page(self.PAGE_LANGUAGE)
 
     def show_overview(self):
-        bold = lambda str: '<b>' + str + '</b>'
-        model = Gtk.TreeStore(str)
-        self.builder.get_object("treeview_overview").set_model(model)
-        top = model.append(None, (_("Localization"),))
-        model.append(top, (_("Language: ") + bold(self.setup.language),))
-        model.append(top, (_("Timezone: ") + bold(self.setup.timezone),))
-        model.append(top, (_("Keyboard layout: ") +
-                           "<b>%s - %s %s</b>" % (self.setup.keyboard_model_description, self.setup.keyboard_layout_description,
-                                                  '(%s)' % self.setup.keyboard_variant_description if self.setup.keyboard_variant_description else ''),))
-        top = model.append(None, (_("User settings"),))
-        model.append(top, (_("Real name: ") + bold(self.setup.real_name),))
-        model.append(top, (_("Username: ") + bold(self.setup.username),))
-        model.append(top, (_("Automatic login: ") + bold(_("enabled") if self.setup.autologin else _("disabled")),))
-        model.append(top, (_("Home encryption: ") + bold(_("enabled") if self.setup.ecryptfs else _("disabled")),))
-        top = model.append(None, (_("System settings"),))
-        model.append(top, (_("Computer's name: ") + bold(self.setup.hostname),))
+        box = self.builder.get_object("box_overview")
+        for child in box.get_children():
+            box.remove(child)
+        keys = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
+        escape = GLib.markup_escape_text
+        dim = lambda text: "<span alpha='60%%'>%s</span>" % escape(text)
+        on_off = lambda value: _("On") if value else _("Off")
+        key_text = lambda msgid: msgid.strip().rstrip(":\uff1a").strip()  # reuse the "Language: " strings
+
+        def section(title):
+            heading = Gtk.Label(label=title, xalign=0)
+            heading.get_style_context().add_class("live-installer-overview-heading")
+            grid = Gtk.Grid(row_spacing=6, column_spacing=16, margin_start=12)
+            wrapper = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
+            wrapper.pack_start(heading, False, False, 0)
+            wrapper.pack_start(grid, False, False, 0)
+            box.pack_start(wrapper, False, False, 0)
+            rows = [0]
+
+            def add(key, value):
+                value_label = Gtk.Label(xalign=0, wrap=True, selectable=True)
+                value_label.set_markup(value)
+                if key is None:
+                    grid.attach(value_label, 0, rows[0], 2, 1)
+                else:
+                    key_label = Gtk.Label(label=key_text(key), xalign=0, yalign=0)
+                    key_label.get_style_context().add_class("live-installer-form-hint")
+                    keys.add_widget(key_label)
+                    grid.attach(key_label, 0, rows[0], 1, 1)
+                    grid.attach(value_label, 1, rows[0], 1, 1)
+                rows[0] += 1
+            return add
+
+        if self.setup.automated and not self.oem_config and not self.setup.skip_mount:
+            notice = Gtk.Box(spacing=12)
+            notice.get_style_context().add_class("live-installer-notice")
+            notice.pack_start(Gtk.Image.new_from_icon_name("dialog-warning-symbolic", Gtk.IconSize.DIALOG), False, False, 0)
+            text = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2, valign=Gtk.Align.CENTER)
+            title = Gtk.Label(xalign=0, wrap=True)
+            title.set_markup("<b>%s</b>" % escape(_("All data on the selected disk will be erased.")))
+            detail = Gtk.Label(xalign=0, wrap=True)
+            detail.set_markup(escape(self.setup.diskname or ""))
+            text.pack_start(title, False, False, 0)
+            text.pack_start(detail, False, False, 0)
+            notice.pack_start(text, True, True, 0)
+            box.pack_start(notice, False, False, 0)
+
+        language = self.setup.language
+        for row in self.builder.get_object("treeview_language_list").get_model() or []:
+            if row[3] == self.setup.language:
+                language = "%s (%s)" % (row[0], row[1])
+                break
+        timezone = self.setup.timezone or ""
+        if "/" in timezone:
+            timezone = "%s, %s" % (timezone.rpartition("/")[2].replace("_", " "), timezone.partition("/")[0].replace("_", " "))
+        keyboard = escape(self.setup.keyboard_layout_description or "")
+        variant = self.setup.keyboard_variant_description
+        if variant and variant != self.setup.keyboard_layout_description:
+            keyboard += " (%s)" % escape(variant)
+        if self.setup.keyboard_model_description:
+            keyboard += "  " + dim(self.setup.keyboard_model_description)
+
+        add = section(_("Localization"))
+        add(_("Language: "), escape(language or ""))
+        add(_("Timezone: "), escape(timezone))
+        add(_("Keyboard layout: "), keyboard)
+
+        add = section(_("User settings"))
+        add(_("Real name: "), escape(self.setup.real_name or ""))
+        add(_("Username: "), escape(self.setup.username or ""))
+        add(_("Automatic login: "), on_off(self.setup.autologin))
+        add(_("Home encryption: "), on_off(self.setup.ecryptfs))
+
+        add = section(_("System settings"))
+        add(_("Computer's name: "), escape(self.setup.hostname or ""))
 
         if not self.oem_config:
-            top = model.append(None, (_("Filesystem operations"),))
-            model.append(top, (bold(_("Install bootloader on %s") % self.setup.grub_device) if self.setup.grub_device else _("Do not install bootloader"),))
+            add = section(_("Filesystem operations"))
+            add(None, escape(_("Install bootloader on %s") % self.setup.grub_device) if self.setup.grub_device else escape(_("Do not install bootloader")))
             if self.setup.skip_mount:
-                model.append(top, (bold(_("Use already-mounted /target.")),))
-                return
-            if self.setup.automated:
-                model.append(top, (bold(_("Automated installation on %s") % self.setup.diskname),))
-                model.append(top, (_("LVM: ") + bold(_("enabled") if self.setup.lvm else _("disabled")),))
-                model.append(top, (_("Disk Encryption: ") + bold(_("enabled") if self.setup.luks else _("disabled")),))
+                add(None, escape(_("Use already-mounted /target.")))
+            elif self.setup.automated:
+                add(None, escape(_("Automated installation on %s") % self.setup.diskname))
+                add(_("LVM: "), on_off(self.setup.lvm))
+                add(_("Disk Encryption: "), on_off(self.setup.luks))
             else:
                 for p in self.setup.partitions:
                     if p.format_as:
-                        model.append(top, (bold(_("Format %(path)s as %(filesystem)s") % {'path':p.path, 'filesystem':p.format_as}),))
+                        add(None, escape(_("Format %(path)s as %(filesystem)s") % {'path': p.path, 'filesystem': p.format_as}))
                 for p in self.setup.partitions:
                     if p.mount_as:
-                        model.append(top, (bold(_("Mount %(path)s as %(mount)s") % {'path': p.path, 'mount':p.mount_as}),))
+                        add(None, escape(_("Mount %(path)s as %(mount)s") % {'path': p.path, 'mount': p.mount_as}))
+        box.show_all()
 
     @idle
     def show_error_dialog(self, message, detail):
