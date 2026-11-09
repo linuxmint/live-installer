@@ -92,6 +92,10 @@ treeview.live-installer-list:focus {
   margin-right: 0;
 }
 
+.live-installer-card.compact {
+  padding: 8px 14px;
+}
+
 .live-installer-card.selected {
   border-color: @theme_selected_bg_color;
   box-shadow: 0 0 0 1px @theme_selected_bg_color;

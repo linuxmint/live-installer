@@ -1,7 +1,9 @@
 #!/usr/bin/python3
 # coding: utf-8
 #
+import glob
 import json
+import math
 import os
 import re
 import subprocess
@@ -276,6 +278,12 @@ def partitions_popup_menu(widget, event):
             menuItem = Gtk.MenuItem(_("Assign to /boot/efi"))
             menuItem.connect("activate", lambda w: assign_mount_point(partition, EFI_MOUNT_POINT, ''))
             menu.append(menuItem)
+    else:
+        menuItem = Gtk.SeparatorMenuItem()
+        menu.append(menuItem)
+        menuItem = Gtk.MenuItem(_("Assign to swap"))
+        menuItem.connect("activate", lambda w: assign_mount_point(partition, SWAP_MOUNT_POINT, ''))
+        menu.append(menuItem)
     menu.show_all()
     menu.popup(None, None, None, None, 0, event.time)
 
@@ -426,6 +434,54 @@ def get_device_naming_scheme_prefix(device_name):
     else:
         return ""
 
+def get_swap_size_mb():
+    # equal to RAM for hibernate to work well (but capped at ~8GB)
+    return min(8800, int(round(1.1/1024 * int(getoutput("awk '/^MemTotal/{ print $2 }' /proc/meminfo")), -2)))
+
+def is_laptop():
+    # A system battery or a portable chassis (laptop, notebook, tablet, convertible...)
+    for battery_type in glob.glob("/sys/class/power_supply/*/type"):
+        try:
+            with open(battery_type) as f:
+                if f.read().strip() != "Battery":
+                    continue
+            scope = os.path.join(os.path.dirname(battery_type), "scope")
+            if os.path.exists(scope):
+                with open(scope) as f:
+                    if f.read().strip() == "Device":  # e.g. a wireless mouse
+                        continue
+            return True
+        except OSError:
+            pass
+    try:
+        with open("/sys/class/dmi/id/chassis_type") as f:
+            return int(f.read().strip()) in (8, 9, 10, 11, 14, 30, 31, 32)
+    except (OSError, ValueError):
+        return False
+
+# No swapfile should take more than this share of the root filesystem: small disks keep their space
+SWAPFILE_MAX_SHARE = 0.10
+
+def get_disk_size_mb(path):
+    return parted.getDevice(path).getLength('B') / (1024 * 1024)
+
+def get_ram_mb():
+    return int(getoutput("awk '/^MemTotal/{ print $2 }' /proc/meminfo")) / 1024
+
+def get_swapfile_recommended_mb(ram_mb, total_mb, laptop):
+    # Either large enough to hibernate (laptops with a large enough disk), or modest:
+    # a swapfile too small to hibernate is no use at a large size.
+    max_mb = SWAPFILE_MAX_SHARE * total_mb
+    if laptop and ram_mb * 1.1 <= max_mb:
+        size_mb = ram_mb * 1.1
+    else:
+        size_mb = min(math.sqrt(ram_mb / 1024) * 1024, max_mb)  # the square root of the memory in GB
+    return max(256, int(size_mb // 100 * 100))
+
+def get_swapfile_size_mb(path="/target"):
+    stat = os.statvfs(path)
+    return get_swapfile_recommended_mb(get_ram_mb(), stat.f_blocks * stat.f_frsize / (1024 * 1024), is_laptop())
+
 def full_disk_format(device, create_boot=False, create_swap=True):
     # If some LVM volumes use the selected device, remove them.
     try:
@@ -461,7 +517,7 @@ def full_disk_format(device, create_boot=False, create_swap=True):
         # boot
         (create_boot, '/boot', 'ext4', 'mkfs.ext4 -F {}', 1024),
         # swap - equal to RAM for hibernate to work well (but capped at ~8GB)
-        (create_swap, SWAP_MOUNT_POINT, 'swap', 'mkswap {}', min(8800, int(round(1.1/1024 * int(getoutput("awk '/^MemTotal/{ print $2 }' /proc/meminfo")), -2)))),
+        (create_swap, SWAP_MOUNT_POINT, 'swap', 'mkswap {}', get_swap_size_mb()),
         # root
         (True, '/', 'ext4', 'mkfs.ext4 -F {}', 0),
     )
@@ -563,9 +619,6 @@ class Partition(object):
                 parted.PARTITION_FREESPACE: 'freespace',
             }.get(partition.type, '')
             print("                  . type %s" % self.type)
-
-        if "swap" in self.type:
-            self.mount_as = SWAP_MOUNT_POINT
 
         # The ESP flag is the partition type (GPT GUID or MBR 0xEF) on both label types,
         # unlike the 'boot' flag which is just the active bit on MBR disks.

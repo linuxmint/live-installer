@@ -177,11 +177,27 @@ class InstallerWindow:
         self.builder.get_object("entry_passphrase2").connect("changed", self.assign_passphrase)
         self.builder.get_object("radio_automated").connect("toggled", self.assign_type_options)
         self.builder.get_object("radio_manual").connect("toggled", self.assign_type_options)
-        for name in ("check_badblocks", "check_encrypt", "check_lvm"):
-            self.builder.get_object(name).connect("notify::active", self.assign_type_options)
-        for name, switch in (("event_badblocks", "check_badblocks"), ("event_encrypt", "check_encrypt"), ("event_lvm", "check_lvm")):
-            self.builder.get_object(name).connect("button-release-event", self.toggle_switch, self.builder.get_object(switch))
+        self.builder.get_object("check_encrypt").connect("notify::active", self.assign_type_options)
+        self.builder.get_object("event_encrypt").connect("button-release-event", self.toggle_switch, self.builder.get_object("check_encrypt"))
         self.builder.get_object("combo_disk").connect("changed", self.assign_type_options)
+        # Each setting of the Advanced options page is a card
+        for switch in ("checkbutton_grub", "check_swapfile", "check_encrypt"):
+            group = self.builder.get_object(switch).get_parent().get_parent()
+            card = group.get_style_context()
+            card.add_class("live-installer-card")
+            card.add_class("compact")
+            # The space above a section is its own, so a collapsed section leaves no gap
+            group.set_spacing(0)
+            for child in group.get_children()[1:]:
+                (child.get_child() if isinstance(child, Gtk.Revealer) else child).set_margin_top(6)
+        self.swapfile_supported = False
+        self.swapfile_laptop = False
+        self.swapfile_recommended_mb = None
+        spin = self.builder.get_object("spin_swapfile")
+        spin.configure(Gtk.Adjustment(value=1, lower=0.25, upper=64, step_increment=0.5, page_increment=1), 0.5, 1)
+        spin.connect("value-changed", self.assign_swapfile_size)
+        self.builder.get_object("check_swapfile").connect("notify::active", self.assign_swapfile)
+        self.builder.get_object("event_swapfile").connect("button-release-event", self.toggle_switch, self.builder.get_object("check_swapfile"))
         if len(model) == 1:
             self.builder.get_object("combo_disk").set_active(0)
 
@@ -279,8 +295,6 @@ class InstallerWindow:
             self.builder.get_object("entry_confirm").set_sensitive(False)
             self.builder.get_object("switch_password_login").set_active(False)
             self.builder.get_object("switch_password_login").set_sensitive(False)
-            self.builder.get_object("check_lvm").set_sensitive(False)
-            self.builder.get_object("check_badblocks").set_sensitive(False)
             self.builder.get_object("check_encrypt").set_sensitive(False)
             self.builder.get_object("entry_passphrase").set_sensitive(False)
             self.builder.get_object("entry_passphrase2").set_sensitive(False)
@@ -432,13 +446,16 @@ class InstallerWindow:
         self.builder.get_object("label_manual").set_text(_("Manual Partitioning"))
         self.builder.get_object("label_manual2").set_text(_("Manually create, resize or choose partitions for %s.") % DISTRIBUTION)
 
+        self.builder.get_object("label_swapfile").set_label(_("Create a swapfile"))
+        self.builder.get_object("label_swapfile_size").set_label(_("Swapfile size (GB)"))
+        self.builder.get_object("label_swapfile_hint").set_label(_("Swap is disk space the system uses when its memory is full. It can also be used for hibernation if it is larger than the memory."))
         self.builder.get_object("label_advanced_intro").set_label(_("The defaults on this page suit most computers. If you are unsure, leave them as they are."))
-        self.builder.get_object("label_lvm").set_text(_("Use LVM (Logical Volume Management)"))
-        self.builder.get_object("label_lvm_hint").set_label("")
-        self.builder.get_object("label_encrypt").set_text(_("Encrypt the operating system"))
-        self.builder.get_object("label_encrypt_hint").set_label("")
-        self.builder.get_object("label_badblocks").set_text(_("Fill the disk with random data"))
-        self.builder.get_object("label_badblocks_hint").set_label(_("This provides extra security but it can take hours."))
+        self.builder.get_object("label_encrypt").set_text(_("Encrypt the system partition"))
+        self.builder.get_object("label_encrypt_hint").set_label(_("This encrypts the partition the system is installed on, including the swapfile and temporary files. Every user needs the passphrase, which is asked before the boot sequence."))
+        for hint in ("label_encrypt_hint",):
+            label = self.builder.get_object(hint)
+            label.set_no_show_all(True)
+            label.set_visible(bool(label.get_label()))
 
         # Partitions page
         self.builder.get_object("button_edit").set_label(_("Edit"))
@@ -595,28 +612,14 @@ class InstallerWindow:
         self.setup.automated = self.builder.get_object("radio_automated").get_active()
         self.builder.get_object("combo_disk").set_sensitive(self.setup.automated)
         if not self.oem_mode:
-            self.builder.get_object("check_badblocks").set_sensitive(self.setup.automated)
             self.builder.get_object("check_encrypt").set_sensitive(self.setup.automated)
-            self.builder.get_object("check_lvm").set_sensitive(self.setup.automated)
             self.builder.get_object("entry_passphrase").set_sensitive(self.setup.automated)
             self.builder.get_object("entry_passphrase2").set_sensitive(self.setup.automated)
         if not self.setup.automated:
-            self.builder.get_object("check_badblocks").set_active(False)
             self.builder.get_object("check_encrypt").set_active(False)
-            self.builder.get_object("check_lvm").set_active(False)
             self.builder.get_object("combo_disk").set_active(-1)
             self.builder.get_object("entry_passphrase").set_text("")
             self.builder.get_object("entry_passphrase2").set_text("")
-
-        self.setup.lvm = self.builder.get_object("check_lvm").get_active()
-        if not self.setup.lvm:
-            # Force LVM for LUKs
-            self.builder.get_object("check_badblocks").set_active(False)
-            self.builder.get_object("check_encrypt").set_active(False)
-            self.builder.get_object("entry_passphrase").set_text("")
-            self.builder.get_object("entry_passphrase2").set_text("")
-            self.builder.get_object("check_badblocks").set_sensitive(False)
-            self.builder.get_object("check_encrypt").set_sensitive(False)
 
         self.setup.passphrase1 = self.builder.get_object("entry_passphrase").get_text()
         self.setup.passphrase2 = self.builder.get_object("entry_passphrase2").get_text()
@@ -632,14 +635,9 @@ class InstallerWindow:
             self.builder.get_object("entry_passphrase2").set_text("")
             self.builder.get_object("entry_passphrase").set_sensitive(False)
             self.builder.get_object("entry_passphrase2").set_sensitive(False)
-            self.builder.get_object("check_badblocks").set_active(False)
-            self.builder.get_object("check_badblocks").set_sensitive(False)
         else:
             self.builder.get_object("entry_passphrase").set_sensitive(True)
             self.builder.get_object("entry_passphrase2").set_sensitive(True)
-            self.builder.get_object("check_badblocks").set_sensitive(True)
-
-        self.setup.badblocks = self.builder.get_object("check_badblocks").get_active()
 
         self.builder.get_object("revealer_automated").set_reveal_child(self.setup.automated)
         self.builder.get_object("revealer_passphrase").set_reveal_child(self.builder.get_object("check_encrypt").get_active())
@@ -904,6 +902,70 @@ class InstallerWindow:
         except:
             pass # Best effort. Fails the first time as self.language_column doesn't exist yet.
 
+    def get_swapfile_context(self):
+        ''' Whether a swapfile can be created in the root filesystem, and the size of that filesystem in MB '''
+        if self.setup.skip_mount:
+            return False, 0
+        if self.setup.automated:
+            try:
+                disk_mb = partitioning.get_disk_size_mb(self.setup.disk)
+            except Exception as detail:
+                print("Could not get the size of %s: %s" % (self.setup.disk, detail))
+                return False, 0
+            # The EFI and boot partitions are small, and the filesystem has some overhead
+            return True, max(0, (disk_mb - 1500) * 0.93)
+        for partition in self.setup.partitions:
+            if partition.mount_as == "/":
+                if partition.format_as in ("ext4", "xfs"):
+                    return True, partition.partition.getLength('B') / (1024 * 1024) * 0.93
+                return False, 0
+        return False, 0
+
+    def update_swapfile_options(self):
+        ''' Called when the Advanced options page is shown '''
+        supported, root_mb = self.get_swapfile_context()
+        self.swapfile_supported = supported
+        self.builder.get_object("revealer_swapfile").set_reveal_child(supported)
+        if not supported:
+            self.setup.swapfile = False
+            self.setup.swapfile_size = 0
+            return
+        self.swapfile_laptop = partitioning.is_laptop()
+        self.swapfile_recommended_mb = partitioning.get_swapfile_recommended_mb(partitioning.get_ram_mb(), root_mb, self.swapfile_laptop)
+        # Always start from the defaults: the recommended size, and no swapfile if a swap partition was chosen
+        spin = self.builder.get_object("spin_swapfile")
+        spin.set_range(0.25, max(0.5, root_mb / 1024 / 2))  # up to half of the filesystem
+        spin.set_value(self.swapfile_recommended_mb / 1024)
+        self.assign_swapfile_size(spin)
+        has_swap_partition = not self.setup.automated and any(p.mount_as == partitioning.SWAP_MOUNT_POINT for p in self.setup.partitions)
+        switch = self.builder.get_object("check_swapfile")
+        switch.set_active(not has_swap_partition)
+        self.assign_swapfile(switch)
+        self.update_swapfile_hint()
+
+    def assign_swapfile(self, switch, pspec=None):
+        self.setup.swapfile = switch.get_active()
+        self.builder.get_object("revealer_swapfile_size").set_reveal_child(self.setup.swapfile)
+        self.setup.print_setup()
+
+    def assign_swapfile_size(self, spin):
+        self.setup.swapfile_size = int(round(spin.get_value() * 1024))
+        self.update_swapfile_hint()
+        self.setup.print_setup()
+
+    def update_swapfile_hint(self):
+        if self.swapfile_recommended_mb is None:
+            return
+        gb = lambda mb: "%.1f GB" % (mb / 1024)
+        ram_mb = partitioning.get_ram_mb()
+        if self.swapfile_laptop and self.swapfile_recommended_mb >= ram_mb:
+            hint = _("This computer seems to be a laptop. A large swapfile of %(size)s is recommended for hibernation.")
+        elif self.swapfile_laptop:
+            hint = _("This computer seems to be a laptop, but there is not enough disk space for hibernation. A swapfile of %(size)s is recommended.")
+        else:
+            hint = _("This computer doesn't seem to be a laptop, so you probably don't need hibernation. A small swapfile of %(size)s is recommended.")
+        self.builder.get_object("label_swapfile_size_hint").set_text(hint % {"size": gb(self.swapfile_recommended_mb), "ram": gb(ram_mb)})
+
     def toggle_switch(self, widget, event, switch):
         if switch.get_sensitive():
             switch.set_active(not switch.get_active())
@@ -1056,6 +1118,8 @@ class InstallerWindow:
         if index in (self.PAGE_TYPE, self.PAGE_ADVANCED):
             self.builder.get_object("revealer_disk_options").set_reveal_child(self.setup.automated)
             self.update_next_button()
+        if index == self.PAGE_ADVANCED:
+            self.update_swapfile_options()
         if index == self.PAGE_CUSTOMWARNING:
             self.setup.skip_mount = True
 
@@ -1350,7 +1414,6 @@ class InstallerWindow:
                 add(None, escape(_("Use already-mounted /target.")))
             elif self.setup.automated:
                 add(None, escape(_("Automated installation on %s") % self.setup.diskname))
-                add(_("LVM: "), on_off(self.setup.lvm))
                 add(_("Disk Encryption: "), on_off(self.setup.luks))
             else:
                 for p in self.setup.partitions:
@@ -1359,6 +1422,8 @@ class InstallerWindow:
                 for p in self.setup.partitions:
                     if p.mount_as:
                         add(None, escape(_("Mount %(path)s as %(mount)s") % {'path': p.path, 'mount': p.mount_as}))
+            if self.swapfile_supported:
+                add(_("Swapfile: "), "%.1f GB" % (self.setup.swapfile_size / 1024) if self.setup.swapfile else on_off(False))
         box.show_all()
 
     @idle
@@ -1429,7 +1494,6 @@ class InstallerWindow:
                 if(partition.format_as is not None and partition.format_as != ""):
                     partition.type = partition.format_as
             self.installer.write_fstab("dummy_fstab")
-            self.installer.write_mtab("dummy_fstab", "dummy_mtab")
             self.installer.write_crypttab("dummy_crypttab")
             time.sleep(200)
             Gtk.main_quit()

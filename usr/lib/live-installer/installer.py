@@ -1,5 +1,6 @@
 from glob import glob
 import os
+import re
 import subprocess
 import time
 import gettext
@@ -9,8 +10,14 @@ from functools import cmp_to_key
 
 gettext.install("live-installer", "/usr/share/locale")
 
+# Name of the encrypted root device (/dev/mapper/cryptroot)
+LUKS_NAME = "cryptroot"
+
 class InstallerEngine:
     ''' This is central to the live installer '''
+
+    swapfile_created = False
+    resume_arguments = []
 
     def __init__(self, setup):
         self.setup = setup
@@ -266,6 +273,7 @@ class InstallerEngine:
             else:
                 self.format_partitions()
                 self.mount_partitions()
+            self.create_swapfile()
 
         # Transfer the files
         SOURCE = "/source/"
@@ -375,10 +383,9 @@ class InstallerEngine:
         # Set LightDM to show user list by default
         self.do_run_in_chroot(r"sed -i -r 's/^#?(greeter-hide-users)\s*=.*/\1=false/' /etc/lightdm/lightdm.conf")
 
-        # /etc/fstab, mtab and crypttab
+        # /etc/fstab and crypttab
         self.update_progress(40, False, False, _("Writing filesystem mount information to /etc/fstab"))
         self.write_fstab()
-        self.write_mtab()
         self.write_crypttab()
 
     def create_partitions(self):
@@ -386,63 +393,38 @@ class InstallerEngine:
         partition_prefix = partitioning.get_device_naming_scheme_prefix(self.setup.disk)
         if self.setup.luks:
             if self.setup.gptonefi:
-                # EFI+LUKS/LVM
+                # EFI+LUKS
                 # sdx1=EFI, sdx2=BOOT, sdx3=ROOT
                 self.auto_efi_partition  = self.setup.disk + partition_prefix + "1"
                 self.auto_boot_partition = self.setup.disk + partition_prefix + "2"
-                self.auto_swap_partition = None
                 self.auto_root_partition = self.setup.disk + partition_prefix + "3"
             else:
-                # BIOS+LUKS/LVM
+                # BIOS+LUKS
                 # sdx1=BOOT, sdx2=ROOT
                 self.auto_efi_partition  = None
                 self.auto_boot_partition = self.setup.disk + partition_prefix + "1"
-                self.auto_swap_partition = None
                 self.auto_root_partition = self.setup.disk + partition_prefix + "2"
-        elif self.setup.lvm:
-            if self.setup.gptonefi:
-                # EFI+LVM
-                # sdx1=EFI, sdx2=ROOT
-                self.auto_efi_partition  = self.setup.disk + partition_prefix + "1"
-                self.auto_boot_partition = None
-                self.auto_swap_partition = None
-                self.auto_root_partition = self.setup.disk + partition_prefix + "2"
-            else:
-                # BIOS+LVM:
-                # sdx1=ROOT
-                self.auto_efi_partition  = None
-                self.auto_boot_partition = None
-                self.auto_swap_partition = None
-                self.auto_root_partition = self.setup.disk + partition_prefix + "1"
         else:
             if self.setup.gptonefi:
                 # EFI
-                # sdx1=EFI, sdx2=SWAP, sdx3=ROOT
+                # sdx1=EFI, sdx2=ROOT
                 self.auto_efi_partition  = self.setup.disk + partition_prefix + "1"
                 self.auto_boot_partition = None
-                self.auto_swap_partition = self.setup.disk + partition_prefix + "2"
-                self.auto_root_partition = self.setup.disk + partition_prefix + "3"
+                self.auto_root_partition = self.setup.disk + partition_prefix + "2"
             else:
                 # BIOS:
-                # sdx1=SWAP, sdx2=ROOT
+                # sdx1=ROOT
                 self.auto_efi_partition  = None
                 self.auto_boot_partition = None
-                self.auto_swap_partition = self.setup.disk + partition_prefix + "1"
-                self.auto_root_partition = self.setup.disk + partition_prefix + "2"
+                self.auto_root_partition = self.setup.disk + partition_prefix + "1"
 
         self.auto_root_physical_partition = self.auto_root_partition
-
-        # Wipe HDD
-        if self.setup.badblocks:
-            self.update_progress(25, False, False, _("Filling disk with random data (please be patient, this can take hours...)"))
-            print(" --> Filling %s with random data" % self.setup.disk)
-            os.system("badblocks -c 10240 -s -w -t random -v %s" % self.setup.disk)
 
         # Create partitions
         self.update_progress(25, False, False, _("Creating partitions on %s") % self.setup.disk)
         print(" --> Creating partitions on %s" % self.setup.disk)
         disk_device = parted.getDevice(self.setup.disk)
-        partitioning.full_disk_format(disk_device, create_boot=(self.auto_boot_partition is not None), create_swap=(self.auto_swap_partition is not None))
+        partitioning.full_disk_format(disk_device, create_boot=(self.auto_boot_partition is not None), create_swap=False)
 
         # Encrypt root partition. The passphrase is fed to cryptsetup on
         # stdin (--key-file -), never as a command argument: this keeps it
@@ -454,30 +436,13 @@ class InstallerEngine:
             subprocess.run("cryptsetup luksFormat -c aes-xts-plain64 -h sha256 -s 512 --key-file - %s" % self.auto_root_partition,
                            shell=True, input=self.setup.passphrase1.encode("utf-8"))
             print(" --> Opening root partition %s" % self.auto_root_partition)
-            subprocess.run("cryptsetup luksOpen --key-file - %s lvmmint" % self.auto_root_partition,
+            subprocess.run("cryptsetup luksOpen --key-file - %s %s" % (self.auto_root_partition, LUKS_NAME),
                            shell=True, input=self.setup.passphrase1.encode("utf-8"))
-            self.auto_root_partition = "/dev/mapper/lvmmint"
-
-        # Setup LVM
-        if self.setup.lvm:
-            print(" --> LVM: Creating PV")
-            os.system("pvcreate -y %s" % self.auto_root_partition)
-            print(" --> LVM: Creating VG")
-            os.system("vgcreate -y lvmmint %s" % self.auto_root_partition)
-            print(" --> LVM: Creating LV root")
-            os.system("lvcreate -y -n root -L 1GB lvmmint")
-            print(" --> LVM: Creating LV swap")
-            os.system("lvcreate -y -n swap -L 2GB lvmmint")
-            print(" --> LVM: Extending LV root")
-            os.system(r"lvextend -l 100%FREE /dev/lvmmint/root")
-            print(" --> LVM: Formatting LV root")
-            os.system("mkfs.ext4 /dev/mapper/lvmmint-root -FF")
-            print(" --> LVM: Formatting LV swap")
-            os.system("mkswap -f /dev/mapper/lvmmint-swap")
-            print(" --> LVM: Enabling LV swap")
-            os.system("swapon /dev/mapper/lvmmint-swap")
-            self.auto_root_partition = "/dev/mapper/lvmmint-root"
-            self.auto_swap_partition = "/dev/mapper/lvmmint-swap"
+            self.auto_root_partition = "/dev/mapper/%s" % LUKS_NAME
+            # The partition was formatted before being encrypted, so create the filesystem inside the encrypted device
+            print(" --> Formatting the encrypted root partition %s" % self.auto_root_partition)
+            if os.system("mkfs.ext4 -F %s" % self.auto_root_partition) != 0:
+                raise Exception(_("The partition %s could not be formatted. The installation will stop. Restart the computer and try again.") % self.auto_root_partition)
 
         self.do_mount(self.auto_root_partition, "/target", "ext4", None)
         if (self.auto_boot_partition is not None):
@@ -486,6 +451,42 @@ class InstallerEngine:
         if (self.auto_efi_partition is not None):
             os.system("mkdir -p /target/boot/efi")
             self.do_mount(self.auto_efi_partition, "/target/boot/efi", "vfat", None)
+
+    def create_swapfile(self):
+        # The swap is a file in the root filesystem, so it is encrypted along with it.
+        self.swapfile_created = False
+        self.resume_arguments = []
+        enabled = self.setup.swapfile if self.setup.swapfile is not None else self.setup.automated
+        if not enabled:
+            return
+        size = self.setup.swapfile_size or partitioning.get_swapfile_size_mb("/target")
+        print(" --> Creating a %d MB swapfile" % size)
+        path = "/target/swapfile"
+        self.swapfile_created = (os.system("fallocate -l %dM %s" % (size, path)) == 0
+                                 and os.system("chmod 600 %s" % path) == 0
+                                 and os.system("mkswap %s" % path) == 0)
+        if not self.swapfile_created:
+            print(" --> Could not create the swapfile, the system will have no swap")
+            os.system("rm -f %s" % path)
+        elif size >= partitioning.get_ram_mb():
+            self.resume_arguments = self.get_resume_arguments(path)
+
+    def get_resume_arguments(self, path):
+        # Hibernation needs the filesystem holding the swapfile and the offset of the file in it, as mintsysadm computes them.
+        # It is only possible when the swapfile can hold the memory.
+        uuid = subprocess.getoutput("findmnt -no UUID -T %s" % path).strip()
+        output = subprocess.getoutput("LANG=C filefrag -v %s" % path)
+        try:
+            block_size = int(re.search(r"blocks of (\d+) bytes", output).group(1))
+            extent = re.search(r"^\s*0:\s+\d+\.\.\s*\d+:\s+(\d+)\.\.", output, re.MULTILINE)
+            offset = int(extent.group(1)) * block_size // 4096
+        except (AttributeError, ValueError):
+            offset = None
+        if not uuid or offset is None:
+            print(" --> Could not find the resume offset, hibernation will not be set up")
+            return []
+        print(" --> Hibernation: resume=UUID=%s resume_offset=%d" % (uuid, offset))
+        return ["resume=UUID=" + uuid, "resume_offset=%d" % offset]
 
     def format_partitions(self):
         for partition in self.setup.partitions:
@@ -592,8 +593,6 @@ class InstallerEngine:
             if self.setup.automated:
                 fstab.write("# %s\n" % self.auto_root_partition)
                 fstab.write("%s /  ext4 defaults 0 1\n" % self.get_blkid(self.auto_root_partition))
-                fstab.write("# %s\n" % self.auto_swap_partition)
-                fstab.write("%s none   swap sw 0 0\n" % self.get_blkid(self.auto_swap_partition))
                 if (self.auto_boot_partition is not None):
                     fstab.write("# %s\n" % self.auto_boot_partition)
                     fstab.write("%s /boot  ext4 defaults 0 1\n" % self.get_blkid(self.auto_boot_partition))
@@ -628,15 +627,14 @@ class InstallerEngine:
                         if fs == "btrfs" and partition.mount_as == "/" and not self.setup_has_dedicated_home():
                             # Special case, if / is btrfs and there is no dedicated /home, add the @home subvolume to /
                             fstab.write("%s\t%s\t%s\t%s\t%s\t%s\n" % (partition_uuid, "/home", "btrfs", "subvol=@home,defaults,noatime,compress=zstd:1", "0", "0"))
+            if self.swapfile_created:
+                fstab.write("# /swapfile\n")
+                fstab.write("/swapfile none   swap sw 0 0\n")
         fstab.close()
-
-    def write_mtab(self, fstab="/target/etc/fstab", mtab="/target/etc/mtab"):
-        if self.setup.lvm:
-            os.system(f"grep -v swap {fstab} > {mtab}")
 
     def write_crypttab(self, path="/target/etc/crypttab"):
         if self.setup.luks:
-            os.system(f"echo 'lvmmint   {self.get_blkid(self.auto_root_physical_partition)}   none   luks,discard,tries=3' >> {path}")
+            os.system(f"echo '{LUKS_NAME}   {self.get_blkid(self.auto_root_physical_partition)}   none   luks,discard,tries=3' >> {path}")
 
     def finish_installation(self):
 
@@ -700,8 +698,15 @@ class InstallerEngine:
             with open("/target/etc/default/grub.d/61_live-installer.cfg", "w") as f:
                 f.write("#! /bin/sh\n")
                 f.write("set -e\n\n")
-                f.write('GRUB_CMDLINE_LINUX="cryptdevice=%s:lvmmint root=/dev/mapper/lvmmint-root resume=/dev/mapper/lvmmint-swap"\n' % self.get_blkid(self.auto_root_physical_partition))
+                f.write('GRUB_CMDLINE_LINUX="cryptdevice=%s:%s root=%s"\n' % (self.get_blkid(self.auto_root_physical_partition), LUKS_NAME, self.auto_root_partition))
             self.do_run_in_chroot("echo 'w /sys/power/disk - - - - shutdown' > /etc/tmpfiles.d/encrypted-swap.conf")
+
+        if self.resume_arguments:
+            os.makedirs("/target/etc/default/grub.d", exist_ok=True)
+            with open("/target/etc/default/grub.d/62_live-installer-resume.cfg", "w") as f:
+                f.write("#! /bin/sh\n")
+                f.write("set -e\n\n")
+                f.write('GRUB_CMDLINE_LINUX_DEFAULT="$GRUB_CMDLINE_LINUX_DEFAULT %s"\n' % " ".join(self.resume_arguments))
 
         # write MBR (grub)
         print(" --> Configuring Grub")
@@ -733,7 +738,7 @@ class InstallerEngine:
             # submount is absent and the call above is silently skipped --
             # the crypttab never reaches the initramfs and the encrypted
             # root can't be unlocked at boot (the system drops to an
-            # initramfs shell). Plain and LVM installs boot the stock
+            # initramfs shell). Plain installs boot the stock
             # initramfs and are unaffected; only LUKS needs the rebuild.
             #
             # Remove live-boot's initramfs hook (it references a live-only
@@ -868,9 +873,9 @@ class Setup(object):
     diskname = None
     passphrase1 = None
     passphrase2 = None
-    lvm = False
     luks = False
-    badblocks = False
+    swapfile = None  # None: not chosen, a swapfile is created in automated installs
+    swapfile_size = 0  # in MB, 0 for the recommended size
     target_disk = None
     gptonefi = False
     # Optionally skip all mouting/partitioning for advanced users with custom setups (raid/dmcrypt/etc)
@@ -906,8 +911,7 @@ class Setup(object):
             if self.automated:
                 print("disk: %s (%s)" % (self.disk, self.diskname))
                 print("luks: %s" % self.luks)
-                print("badblocks: %s" % self.badblocks)
-                print("lvm: %s" % self.lvm)
+                print("swapfile: %s (%s MB)" % (self.swapfile, self.swapfile_size))
                 print("passphrase: %s - %s" % (self.passphrase1, self.passphrase2))
             if (not self.skip_mount):
                 print("target_disk: %s " % self.target_disk)
