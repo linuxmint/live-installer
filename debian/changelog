@@ -1,3 +1,41 @@
+live-installer (2026.11.09) adrien; urgency=medium
+
+  [ Michael Webster ]
+  * partitioning: Fix live media exclusion
+  * partitioning: Identify the efi partition by type, not by boot flag or contents
+  * css: Override any GtkFrame background for the map
+  * keyboard: Only parse setxkbmap's stdout
+  * timezones: Use libtimezonemap
+  * packaging: Modernize the build
+  * main.py: Move the "Operating System" column in the partition list after format and mount-point
+
+  [ Anaxímeno Brito ]
+  * btrfs: Improve fstab mount options during a btrfs install (#172)
+
+  [ Gary T. Giesen ]
+  * partitioning: Fix udev race in full_disk_format; fail on format errors (#184)
+  * installer: Feed the LUKS passphrase via stdin, not a shell pipe (#185)
+  * installer: Rebuild the initramfs for LUKS so the encrypted root boots (#186)
+
+  [ rlbxku1r ]
+  * OEM: Use a different UID for internal oem user (#170)
+
+  [ Clement Lefebvre ]
+  * l10n: Update POT
+  * ui: Redesign splash screen
+  * ui: Redesign header
+  * ui: Improve user page
+  * ui: Improve timezone page
+  * ui: Various improvements
+  * ui: Redesign the locale page
+  * debug_mode: Add additional guards
+  * ui: Move advanced features to advanced page
+  * l10n: Update POT
+  * Migrate from LVM to Swapfiles
+  * l10n: Update POT
+
+ -- Clement Lefebvre <root@linuxmint.com>  Mon, 09 Nov 2026 19:11:23 +0000
+
 live-installer (2026.10.13) adrien; urgency=medium
 
   [ Clement Lefebvre ]
