@@ -49,7 +49,7 @@
                 <property name="halign">center</property>
                 <property name="valign">center</property>
                 <property name="orientation">vertical</property>
-                <property name="spacing">10</property>
+                <property name="spacing">20</property>
                 <child>
                   <object class="GtkImage" id="welcome_image">
                     <property name="visible">True</property>
@@ -97,6 +97,9 @@
                     <property name="use-markup">True</property>
                     <property name="justify">center</property>
                     <property name="wrap">True</property>
+                    <style>
+                      <class name="live-installer-welcome-subtitle"/>
+                    </style>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -109,6 +112,10 @@
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
+                    <property name="halign">center</property>
+                    <style>
+                      <class name="live-installer-welcome-button"/>
+                    </style>
                     <child>
                       <object class="GtkLabel" id="welcome_button_label">
                         <property name="visible">True</property>

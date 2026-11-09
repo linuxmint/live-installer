@@ -6,8 +6,44 @@
 
 .live-installer-welcome {
   background-color: #2b2b2b;
-  background-image: repeating-linear-gradient(-45deg, transparent, transparent 35px, rgba(255,255,255,.05) 35px, rgba(255,255,255,.05) 70px);
+  background-image: radial-gradient(circle at 50% 40%, #3d3d40 0%, #2b2b2b 55%, #202020 100%);
   color: #efefef;
+}
+
+.live-installer-welcome separator {
+  background-color: rgba(255, 255, 255, 0.08);
+  min-height: 1px;
+}
+
+.live-installer-welcome .live-installer-welcome-subtitle {
+  color: #b5b5b5;
+}
+
+.live-installer-welcome .live-installer-welcome-button {
+  min-width: 200px;
+  margin-top: 16px;
+  padding: 12px 48px;
+  border-radius: 6px;
+  border: none;
+  background-image: none;
+  background-color: #87cf3e;
+  color: #ffffff;
+  box-shadow: none;
+  text-shadow: none;
+}
+
+.live-installer-welcome .live-installer-welcome-button:hover {
+  background-color: #9bda57;
+}
+
+.live-installer-welcome .live-installer-welcome-button:active {
+  background-color: #74b536;
+}
+
+.live-installer-welcome .live-installer-welcome-button label {
+  color: #ffffff;
+  font-size: 120%;
+  font-weight: bold;
 }
 
 .live-installer-header {
