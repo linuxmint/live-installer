@@ -1055,6 +1055,9 @@ class InstallerWindow:
         # Offer to unmount any mounted partitions that would cause format to fail.
         if not mounted:
             return True
+        if __debug__:
+            print(" ## DEBUG MODE - NOT UNMOUNTING %s" % ", ".join(mounted))
+            return True
         paths = ""
         for p in mounted:
             paths += f"{GLib.markup_escape_text(p)}\n"

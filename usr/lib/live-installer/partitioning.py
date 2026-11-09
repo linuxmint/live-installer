@@ -337,6 +337,9 @@ class PartitionSetup(Gtk.TreeStore):
                                         _("No partition table was found on the hard drive: %s. Do you want the installer to create a set of partitions for you? Note: This will ERASE ALL DATA present on this disk.") % disk_description,
                                         None, installer.window)
                 if not dialog: continue  # the user said No, skip this disk
+                if __debug__:
+                    print(" ## DEBUG MODE - NOT FORMATTING %s" % disk_path)
+                    continue
                 try:
                     installer.window.get_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
                     print("Performing a full disk format")
