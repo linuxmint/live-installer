@@ -19,7 +19,7 @@ zone_links = {}
 Timezone = namedtuple('Timezone', 'name ccode'.split())
 
 def build_timezones(_installer):
-    global installer, time_label, date_label, tz_map
+    global installer, time_label, date_label, info_label, tz_map
     installer = _installer
 
     cssProvider = Gtk.CssProvider()
@@ -30,6 +30,7 @@ def build_timezones(_installer):
 
     time_label = installer.builder.get_object("label_time")
     date_label = installer.builder.get_object("label_date")
+    info_label = installer.builder.get_object("label_tz_info")
 
     GLib.timeout_add_seconds(1, update_local_time_label)
 
@@ -99,6 +100,11 @@ def build_timezones(_installer):
     installer.builder.get_object('cont_button').connect('event', button_callback)
     installer.builder.get_object('cont_button').menu = cont_menu
     installer.builder.get_object('tz_button').connect('event', button_callback)
+    for name in ('cont_button', 'tz_button'):
+        button = installer.builder.get_object(name)
+        button.set_image(Gtk.Image.new_from_icon_name('pan-down-symbolic', Gtk.IconSize.BUTTON))
+        button.set_image_position(Gtk.PositionType.RIGHT)
+        button.set_always_show_image(True)
 
 current_zone = None
 current_country = None
@@ -113,6 +119,14 @@ def button_callback(button, event):
         return True
     return False
 
+def utc_offset_label(now):
+    minutes = int(now.utcoffset().total_seconds() // 60)
+    hours, minutes = divmod(abs(minutes), 60)
+    label = "UTC%s%d" % ("-" if now.utcoffset().total_seconds() < 0 else "+", hours)
+    if minutes:
+        label += ":%02d" % minutes
+    return label
+
 def update_local_time_label():
     if current_zone is None:
         return True
@@ -121,7 +135,8 @@ def update_local_time_label():
     except ZoneInfoNotFoundError as e:
         print("Could not load timezone %s: %s" % (current_zone, e))
         return True
-    time_label.set_markup(now.strftime('<span size="x-large" weight="bold">%H:%M</span> (%-I:%M %p)'))
+    time_label.set_markup(now.strftime('<span size="xx-large" weight="bold">%H:%M</span> (%-I:%M %p)'))
+    info_label.set_label("%s, %s" % (current_zone.rpartition("/")[2].replace("_", " "), utc_offset_label(now)))
     date_format = '%A, %B %-d, %Y' if current_country == 'US' else '%A, %-d %B %Y'
     date_label.set_label(now.strftime(date_format))
     return True

@@ -857,3 +857,11 @@ msgstr ""
 #: usr/share/live-installer/interface.ui:1240
 msgid "Manually create, resize or choose partitions for LMDE."
 msgstr ""
+
+#: usr/share/live-installer/interface.ui:453
+msgid "Region"
+msgstr ""
+
+#: usr/share/live-installer/interface.ui:494
+msgid "City"
+msgstr ""

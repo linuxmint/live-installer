@@ -425,39 +425,98 @@
                           <object class="GtkBox" id="box_timezone_details">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
+                            <property name="valign">center</property>
                             <property name="margin-start">12</property>
                             <property name="margin-end">12</property>
-                            <property name="margin-top">6</property>
+                            <property name="margin-top">12</property>
                             <property name="margin-bottom">12</property>
-                            <property name="spacing">12</property>
+                            <property name="spacing">24</property>
                             <property name="homogeneous">True</property>
                             <child>
                               <object class="GtkBox">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
-                                <property name="orientation">vertical</property>
                                 <property name="valign">center</property>
-                                <property name="spacing">6</property>
+                                <property name="spacing">12</property>
+                                <property name="homogeneous">True</property>
                                 <child>
-                                  <object class="GtkButton" id="cont_button">
+                                  <object class="GtkBox">
                                     <property name="visible">True</property>
-                                    <property name="can-focus">True</property>
-                                    <property name="receives-default">True</property>
+                                    <property name="can-focus">False</property>
+                                    <property name="orientation">vertical</property>
+                                    <property name="spacing">4</property>
+                                    <child>
+                                      <object class="GtkLabel" id="label_region">
+                                        <property name="visible">True</property>
+                                        <property name="can-focus">False</property>
+                                        <property name="halign">start</property>
+                                        <property name="label" translatable="yes">Region</property>
+                                        <style>
+                                          <class name="live-installer-form-hint"/>
+                                        </style>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">0</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkButton" id="cont_button">
+                                        <property name="visible">True</property>
+                                        <property name="can-focus">True</property>
+                                        <property name="receives-default">True</property>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">1</property>
+                                      </packing>
+                                    </child>
                                   </object>
                                   <packing>
-                                    <property name="expand">False</property>
+                                    <property name="expand">True</property>
                                     <property name="fill">True</property>
                                     <property name="position">0</property>
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkButton" id="tz_button">
+                                  <object class="GtkBox">
                                     <property name="visible">True</property>
-                                    <property name="can-focus">True</property>
-                                    <property name="receives-default">True</property>
+                                    <property name="can-focus">False</property>
+                                    <property name="orientation">vertical</property>
+                                    <property name="spacing">4</property>
+                                    <child>
+                                      <object class="GtkLabel" id="label_city">
+                                        <property name="visible">True</property>
+                                        <property name="can-focus">False</property>
+                                        <property name="halign">start</property>
+                                        <property name="label" translatable="yes">City</property>
+                                        <style>
+                                          <class name="live-installer-form-hint"/>
+                                        </style>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">0</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkButton" id="tz_button">
+                                        <property name="visible">True</property>
+                                        <property name="can-focus">True</property>
+                                        <property name="receives-default">True</property>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">1</property>
+                                      </packing>
+                                    </child>
                                   </object>
                                   <packing>
-                                    <property name="expand">False</property>
+                                    <property name="expand">True</property>
                                     <property name="fill">True</property>
                                     <property name="position">1</property>
                                   </packing>
@@ -475,7 +534,7 @@
                                 <property name="can-focus">False</property>
                                 <property name="orientation">vertical</property>
                                 <property name="valign">center</property>
-                                <property name="spacing">6</property>
+                                <property name="spacing">4</property>
                                 <child>
                                   <object class="GtkLabel" id="label_time">
                                     <property name="visible">True</property>
@@ -489,6 +548,20 @@
                                   </packing>
                                 </child>
                                 <child>
+                                  <object class="GtkLabel" id="label_tz_info">
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">False</property>
+                                    <style>
+                                      <class name="live-installer-form-hint"/>
+                                    </style>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                                <child>
                                   <object class="GtkLabel" id="label_date">
                                     <property name="visible">True</property>
                                     <property name="can-focus">False</property>
@@ -496,7 +569,7 @@
                                   <packing>
                                     <property name="expand">False</property>
                                     <property name="fill">True</property>
-                                    <property name="position">1</property>
+                                    <property name="position">2</property>
                                   </packing>
                                 </child>
                               </object>
@@ -508,7 +581,7 @@
                             </child>
                           </object>
                           <packing>
-                            <property name="expand">False</property>
+                            <property name="expand">True</property>
                             <property name="fill">True</property>
                             <property name="position">1</property>
                           </packing>
@@ -2003,7 +2076,7 @@
                 </style>
               </object>
               <packing>
-                <property name="expand">False</property>
+                <property name="expand">True</property>
                 <property name="fill">True</property>
                 <property name="position">1</property>
               </packing>
