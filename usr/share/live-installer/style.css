@@ -46,9 +46,39 @@
   font-weight: bold;
 }
 
+treeview.live-installer-language-list,
+treeview.live-installer-language-list:focus {
+  outline-style: none;
+}
+
 .live-installer-header {
-  color: #efefef;
-  background-color: #3f3f43;
+  padding: 14px 10px 12px 10px;
+}
+
+.live-installer-header-question {
+  opacity: 0.7;
+}
+
+.live-installer-progress-dot {
+  min-width: 10px;
+  min-height: 10px;
+  margin: 0 4px;
+  border-radius: 999px;
+  background-color: alpha(@theme_fg_color, 0.25);
+}
+
+.live-installer-header-icon {
+  padding: 10px;
+  border-radius: 999px;
+  background-color: alpha(@theme_fg_color, 0.1);
+}
+
+.live-installer-progress-dot.current {
+  box-shadow: 0 0 0 3px alpha(@theme_selected_bg_color, 0.3);
+}
+
+.live-installer-progress-dot.done {
+  background-color: @theme_selected_bg_color;
 }
 
 #TimezoneMap {

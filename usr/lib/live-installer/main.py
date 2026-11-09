@@ -127,11 +127,14 @@ class InstallerWindow:
         self.builder.get_object("button_quit").connect("clicked", self.quit_cb)
 
         ren = Gtk.CellRendererPixbuf()
-        col = Gtk.TreeViewColumn("Flags", ren)
+        ren.set_property("ypad", 6)
+        ren.set_property("xpad", 6)
+        col = Gtk.TreeViewColumn("", ren)
         col.add_attribute(ren, "pixbuf", 2)
         col.set_cell_data_func(ren, self.data_func_surface)
         self.builder.get_object("treeview_language_list").append_column(col)
         ren = Gtk.CellRendererText()
+        ren.set_property("ypad", 6)
         self.language_column = Gtk.TreeViewColumn(_("Language"), ren, text=0)
         self.language_column.set_sort_column_id(0)
         self.language_column.set_expand(True)
@@ -140,6 +143,7 @@ class InstallerWindow:
         self.builder.get_object("treeview_language_list").append_column(self.language_column)
 
         ren = Gtk.CellRendererText()
+        ren.set_property("ypad", 6)
         self.country_column = Gtk.TreeViewColumn(_("Location"), ren, text=1)
         self.country_column.set_sort_column_id(1)
         self.country_column.set_expand(True)
@@ -934,11 +938,18 @@ class InstallerWindow:
 
         # progress images
         for i in range(8):
-            img = self.builder.get_object("progress_%d" % i)
+            dot = self.builder.get_object("progress_%d" % i)
+            dot.set_valign(Gtk.Align.CENTER)
+            context = dot.get_style_context()
+            context.add_class("live-installer-progress-dot")
             if i <= index:
-                img.set_from_file("/usr/share/icons/live-installer-progress-dot-on.png")
+                context.add_class("done")
             else:
-                img.set_from_file("/usr/share/icons/live-installer-progress-dot-off.png")
+                context.remove_class("done")
+            if i == index:
+                context.add_class("current")
+            else:
+                context.remove_class("current")
         help_text = _(self.wizard_pages[index].help_text)
         self.builder.get_object("help_label").set_markup("<big><b>%s</b></big>" % help_text)
         self.builder.get_object("help_icon").set_from_icon_name(self.wizard_pages[index].icon, Gtk.IconSize.LARGE_TOOLBAR)
