@@ -133,32 +133,29 @@ class InstallerWindow:
         self.builder.get_object("button_back").connect("clicked", self.wizard_cb, True)
         self.builder.get_object("button_quit").connect("clicked", self.quit_cb)
 
-        ren = Gtk.CellRendererPixbuf()
-        ren.set_property("ypad", 6)
-        ren.set_property("xpad", 6)
-        col = Gtk.TreeViewColumn("", ren)
-        col.add_attribute(ren, "pixbuf", 2)
-        col.set_cell_data_func(ren, self.data_func_surface)
-        self.builder.get_object("treeview_language_list").append_column(col)
         ren = Gtk.CellRendererText()
         ren.set_property("ypad", 6)
         self.language_column = Gtk.TreeViewColumn(_("Language"), ren, text=0)
-        self.language_column.set_sort_column_id(0)
         self.language_column.set_expand(True)
-        self.language_column.set_resizable(True)
         ren.set_property("ellipsize", Pango.EllipsizeMode.MIDDLE)
         self.builder.get_object("treeview_language_list").append_column(self.language_column)
 
+        # The location (country) of the selected language, with its flag
+        combo_location = self.builder.get_object("combo_location")
+        ren = Gtk.CellRendererPixbuf()
+        ren.set_property("xpad", 6)
+        combo_location.pack_start(ren, False)
+        combo_location.set_cell_data_func(ren, self.data_func_surface)
         ren = Gtk.CellRendererText()
-        ren.set_property("ypad", 6)
-        self.country_column = Gtk.TreeViewColumn(_("Location"), ren, text=1)
-        self.country_column.set_sort_column_id(1)
-        self.country_column.set_expand(True)
-        self.country_column.set_resizable(True)
-        ren.set_property("ellipsize", Pango.EllipsizeMode.MIDDLE)
-        self.builder.get_object("treeview_language_list").append_column(self.country_column)
+        combo_location.pack_start(ren, True)
+        combo_location.add_attribute(ren, "text", 1)
+        combo_location.connect("changed", self.assign_location)
+        self.locales = {}
+        self.locale_names = {}
+        self.preferred_locale = None
 
         self.builder.get_object("treeview_language_list").connect("cursor-changed", self.assign_language)
+        self.builder.get_object("treeview_language_list").connect("map", self.center_language)
 
         self.detect_geoip()
 
@@ -404,7 +401,7 @@ class InstallerWindow:
 
         # Language page
         self.language_column.set_title(_("Language"))
-        self.country_column.set_title(_("Location"))
+        self.builder.get_object("label_location").set_label(_("Location"))
 
         # Keyboard page
         self.builder.get_object("label_kb_model").set_label(_("Keyboard Model:"))
@@ -691,7 +688,7 @@ class InstallerWindow:
         cell.set_property("surface", surface)
 
     def flag(self, lang, language, ccode):
-        for filename in [language.lower(), ccode.lower(), "united_nations"]:
+        for filename in [ccode.lower(), language.lower(), "united_nations"]:  # the flag of the country, or else of the language
             path = f"/usr/share/circle-flags-svg/{filename}.svg"
             if os.path.exists(path):
                 break
@@ -736,9 +733,11 @@ class InstallerWindow:
                     name = cols[1].replace(";", ",")
                     languages[cols[0]] = name
 
-        # Construct language selection model
-        model = Gtk.ListStore(str, str, GdkPixbuf.Pixbuf, str)
-        set_iter = None
+        # Gather the locales by language
+        self.locales = {}
+        self.locale_names = {}
+        language_names = {}
+        best = None
         for locale in subprocess.getoutput("awk -F'[@ .]' '/UTF-8/{ print $1 }' /usr/share/i18n/SUPPORTED | uniq").split('\n'):
             if '_' in locale:
                 lang, ccode = locale.split('_')
@@ -766,23 +765,30 @@ class InstallerWindow:
             if country == '':
                 continue
             pixbuf = self.flag(lang, language, ccode)
-            iter = model.append((language, country, pixbuf, locale))
+            language_names[lang] = language
+            self.locales.setdefault(lang, []).append((language, country, pixbuf, locale))
+            self.locale_names[locale] = "%s (%s)" % (language, country)
             if (ccode == self.cur_country_code and
-                (not set_iter or
-                 set_iter and lang == 'en' or  # prefer English, or
-                 set_iter and lang == ccode.lower())):  # fuzzy: lang matching ccode (fr_FR, de_DE, es_ES, ...)
-                set_iter = iter
+                (best is None or
+                 lang == 'en' or  # prefer English, or
+                 lang == ccode.lower())):  # fuzzy: lang matching ccode (fr_FR, de_DE, es_ES, ...)
+                best = (lang, locale)
 
-        # Sort by language then country
-        model.set_sort_column_id(1, Gtk.SortType.ASCENDING)
+        # Sort by language
+        model = Gtk.ListStore(str, str)
         model.set_sort_column_id(0, Gtk.SortType.ASCENDING)
-        # Set the model and pre-select the correct language
+        selected = None
+        for lang, name in language_names.items():
+            iterator = model.append((name, lang))
+            if best and lang == best[0]:
+                selected = iterator
+        # Set the model and pre-select the language (and, through it, the location) from the IP
         treeview = self.builder.get_object("treeview_language_list")
         treeview.set_model(model)
-        if set_iter:
-            path = model.get_path(set_iter)
-            treeview.set_cursor(path)
-            treeview.scroll_to_cell(path, None, True, 0.0, 0.0)
+        self.preferred_locale = best[1] if best else None
+        if selected:
+            treeview.set_cursor(model.get_path(selected))
+            self.center_language(treeview)
 
     def build_kb_lists(self):
         ''' Do some xml kung-fu and load the keyboard stuffs '''
@@ -840,22 +846,58 @@ class InstallerWindow:
             treeview.scroll_to_cell(path)
         except NameError: pass  # set_keyboard_layout not set
 
+    def center_language(self, treeview):
+        # Row heights are only known once the list is shown, so do it when idle
+        def scroll():
+            model, iterator = treeview.get_selection().get_selected()
+            if iterator is not None:
+                treeview.scroll_to_cell(model.get_path(iterator), None, True, 0.5, 0.0)
+            return False
+        GLib.idle_add(scroll)
+
     def assign_language(self, treeview, data=None):
-        ''' Called whenever someone updates the language '''
-        model = treeview.get_model()
+        ''' Called whenever someone selects a language: list its locations '''
         selection = treeview.get_selection()
-        if selection.count_selected_rows() > 0:
-            (model, iter) = selection.get_selected()
-            if iter is not None:
-                self.setup.language = model.get_value(iter, 3)
-                self.setup.print_setup()
-                gettext.translation('live-installer', "/usr/share/locale",
-                                languages=[self.setup.language, self.setup.language.split('_')[0]],
-                                fallback=True).install()  # Try e.g. zh_CN, zh, or fallback to hardcoded English
-                try:
-                    self.i18n()
-                except:
-                    pass # Best effort. Fails the first time as self.column1 doesn't exist yet.
+        if selection.count_selected_rows() == 0:
+            return
+        model, iterator = selection.get_selected()
+        if iterator is None:
+            return
+        entries = sorted(self.locales.get(model.get_value(iterator, 1), []), key=lambda entry: entry[1])
+        if not entries:
+            return
+        locations = Gtk.ListStore(str, str, GdkPixbuf.Pixbuf, str)
+        for entry in entries:
+            locations.append(entry)
+        lang = model.get_value(iterator, 1)
+        # Pick the location: the preselected one, the country of the IP if the language is spoken there,
+        # the country matching the language (fr_FR, de_DE...) or else the first one
+        country_of = lambda entry: entry[3].split('_')[-1]
+        index = next((i for i, entry in enumerate(entries) if entry[3] == self.preferred_locale), None)
+        if index is None:
+            index = next((i for i, entry in enumerate(entries) if country_of(entry) == self.cur_country_code), None)
+        if index is None:
+            index = next((i for i, entry in enumerate(entries) if country_of(entry).lower() == lang), 0)
+        combo = self.builder.get_object("combo_location")
+        combo.set_model(locations)
+        combo.set_active(index)
+        combo.set_sensitive(len(entries) > 1)  # nothing to choose from for single-country languages
+        self.builder.get_object("revealer_location").set_reveal_child(True)
+
+    def assign_location(self, combo, data=None):
+        ''' Called whenever the location of the language is set '''
+        active = combo.get_active()
+        if active < 0:
+            return
+        self.setup.language = combo.get_model()[active][3]
+        self.setup.print_setup()
+        gettext.translation('live-installer', "/usr/share/locale",
+                        languages=[self.setup.language, self.setup.language.split('_')[0]],
+                        fallback=True).install()  # Try e.g. zh_CN, zh, or fallback to hardcoded English
+        try:
+            self.i18n()
+        except:
+            pass # Best effort. Fails the first time as self.language_column doesn't exist yet.
 
     def toggle_switch(self, widget, event, switch):
         if switch.get_sensitive():
@@ -1265,11 +1307,7 @@ class InstallerWindow:
             notice.pack_start(text, True, True, 0)
             box.pack_start(notice, False, False, 0)
 
-        language = self.setup.language
-        for row in self.builder.get_object("treeview_language_list").get_model() or []:
-            if row[3] == self.setup.language:
-                language = "%s (%s)" % (row[0], row[1])
-                break
+        language = self.locale_names.get(self.setup.language, self.setup.language)
         timezone = self.setup.timezone or ""
         if "/" in timezone:
             timezone = "%s, %s" % (timezone.rpartition("/")[2].replace("_", " "), timezone.partition("/")[0].replace("_", " "))
