@@ -686,9 +686,12 @@
                           <!-- n-columns=3 n-rows=7 -->
                           <object class="GtkGrid">
                             <property name="visible">True</property>
+                            <style>
+                              <class name="live-installer-form"/>
+                            </style>
                             <property name="can-focus">False</property>
                             <property name="halign">center</property>
-                            <property name="valign">start</property>
+                            <property name="valign">center</property>
                             <property name="row-spacing">10</property>
                             <property name="column-spacing">10</property>
                             <child>
@@ -753,6 +756,9 @@
                               <object class="GtkLabel" id="label_username">
                                 <property name="name">label_username</property>
                                 <property name="visible">True</property>
+                                <style>
+                                  <class name="live-installer-form-group-start"/>
+                                </style>
                                 <property name="can-focus">False</property>
                                 <property name="halign">end</property>
                                 <property name="label" translatable="yes">Pick a username:</property>
@@ -767,14 +773,13 @@
                             <child>
                               <object class="GtkLabel" id="label_hostname_help">
                                 <property name="visible">True</property>
+                                <style>
+                                  <class name="live-installer-form-hint"/>
+                                </style>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">The name it uses when it talks to other computers.</property>
                                 <property name="wrap">True</property>
                                 <property name="xalign">0</property>
-                                <attributes>
-                                  <attribute name="font-desc" value="Sans 8"/>
-                                  <attribute name="style" value="normal"/>
-                                </attributes>
                               </object>
                               <packing>
                                 <property name="left-attach">1</property>
@@ -785,6 +790,9 @@
                               <object class="GtkEntry" id="entry_username">
                                 <property name="name">entry_username</property>
                                 <property name="visible">True</property>
+                                <style>
+                                  <class name="live-installer-form-group-start"/>
+                                </style>
                                 <property name="can-focus">True</property>
                                 <property name="invisible-char">●</property>
                                 <property name="primary-icon-activatable">False</property>
@@ -858,6 +866,9 @@
                             <child>
                               <object class="GtkBox">
                                 <property name="visible">True</property>
+                                <style>
+                                  <class name="live-installer-form-group-start"/>
+                                </style>
                                 <property name="can-focus">False</property>
                                 <property name="orientation">vertical</property>
                                 <property name="spacing">3</property>

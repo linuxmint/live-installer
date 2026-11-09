@@ -59,6 +59,24 @@ treeview.live-installer-language-list:focus {
   opacity: 0.7;
 }
 
+.live-installer-form entry {
+  min-height: 22px;
+}
+
+.live-installer-form radiobutton,
+.live-installer-form checkbutton {
+  padding: 3px 0;
+}
+
+.live-installer-form-group-start {
+  margin-top: 14px;
+}
+
+.live-installer-form-hint {
+  font-size: 90%;
+  opacity: 0.7;
+}
+
 .live-installer-progress-dot {
   min-width: 10px;
   min-height: 10px;
