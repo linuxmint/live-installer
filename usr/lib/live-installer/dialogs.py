@@ -3,8 +3,18 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
+def main_window():
+    ''' The installer window, which the dialogs belong to '''
+    for window in Gtk.Window.list_toplevels():
+        if window.get_visible() and not isinstance(window, Gtk.Dialog):
+            return window
+    return None
+
 class Dialog(Gtk.MessageDialog):
     def __init__(self, style, buttons, title, text, text2=None, parent=None):
+        if parent is None:
+            parent = main_window()  # without a parent window, the focus isn't given back when the dialog closes
+        self.parent_window = parent
         Gtk.MessageDialog.__init__(self, parent, 0, style, buttons)
         self.set_position(Gtk.WindowPosition.CENTER)
         self.set_icon_name("live-installer")
@@ -25,6 +35,8 @@ class Dialog(Gtk.MessageDialog):
                 return False
         finally:
             self.destroy()
+            if self.parent_window is not None:
+                self.parent_window.present()
 
 def MessageDialog(*args):
     dialog = Dialog(Gtk.MessageType.INFO, Gtk.ButtonsType.NONE, *args)

@@ -427,14 +427,18 @@ class InstallerWindow:
         self.builder.get_object("label_automated2").set_text(_("Erase a disk and install %s on it.") % DISTRIBUTION)
         self.builder.get_object("label_disk").set_text(_("Disk:"))
         self.builder.get_object("label_erase_warning").set_text(_("All data on the selected disk will be erased."))
-        self.builder.get_object("label_encrypt").set_text(_("Encrypt the operating system"))
         self.builder.get_object("entry_passphrase").set_placeholder_text(_("Passphrase"))
         self.builder.get_object("entry_passphrase2").set_placeholder_text(_("Confirm passphrase"))
-        self.builder.get_object("label_lvm").set_text(_("Use LVM (Logical Volume Management)"))
         self.builder.get_object("label_manual").set_text(_("Manual Partitioning"))
         self.builder.get_object("label_manual2").set_text(_("Manually create, resize or choose partitions for %s.") % DISTRIBUTION)
+
+        self.builder.get_object("label_advanced_intro").set_label(_("The defaults on this page suit most computers. If you are unsure, leave them as they are."))
+        self.builder.get_object("label_lvm").set_text(_("Use LVM (Logical Volume Management)"))
+        self.builder.get_object("label_lvm_hint").set_label("")
+        self.builder.get_object("label_encrypt").set_text(_("Encrypt the operating system"))
+        self.builder.get_object("label_encrypt_hint").set_label("")
         self.builder.get_object("label_badblocks").set_text(_("Fill the disk with random data"))
-        self.builder.get_object("check_badblocks").set_tooltip_text(_("This provides extra security but it can take hours."))
+        self.builder.get_object("label_badblocks_hint").set_label(_("This provides extra security but it can take hours."))
 
         # Partitions page
         self.builder.get_object("button_edit").set_label(_("Edit"))
@@ -454,7 +458,7 @@ class InstallerWindow:
         # Advanced page
         self.builder.get_object("label_grub").set_label(_("Install the GRUB boot menu"))
         self.builder.get_object("label_grub_device").set_label(_("Install on:"))
-        self.builder.get_object("label_grub_hint").set_label(_("The default settings work for most computers. If you are unsure, leave them as they are. Change them only if you know your computer starts from another disk, or if you use a different boot manager."))
+        self.builder.get_object("label_grub_hint").set_label(_("Change this only if you know your computer starts from another disk, or if you use a different boot manager."))
 
         # Custom install warning
         self.builder.get_object("label_custom_install_directions_1").set_label(_("You selected to manage your partitions manually, this feature is for ADVANCED USERS ONLY."))
@@ -646,14 +650,8 @@ class InstallerWindow:
             else:
                 context.remove_class("selected")
 
-        block_next = False
-
-        if self.setup.automated:
-            block_next = block_next or self.setup.disk == None
-            if self.builder.get_object("check_encrypt").get_active():
-                block_next = block_next or self.setup.passphrase1 in (None, "") or self.setup.passphrase1 != self.setup.passphrase2
-
-        self.builder.get_object("button_next").set_sensitive(not block_next)
+        self.builder.get_object("revealer_disk_options").set_reveal_child(self.setup.automated)
+        self.update_next_button()
         self.setup.print_setup()
 
     def assign_passphrase(self, widget):
@@ -663,13 +661,20 @@ class InstallerWindow:
         self.validate_entry(self.builder.get_object("entry_passphrase"), PASSWORD_REGEX, PASSWORD_LENGTHS, also_true=self.setup.luks)
         self.validate_entry(self.builder.get_object("entry_passphrase2"), PASSWORD_REGEX, PASSWORD_LENGTHS, check_match=self.setup.passphrase1, also_true=self.setup.luks)
 
-        self.update_disk_selection_next()
+        self.update_next_button()
         self.setup.print_setup()
 
-    def update_disk_selection_next(self):
-        error = self.setup.disk == None
-        error = error or self.setup.luks and (self.setup.passphrase1 in (None, "") or self.setup.passphrase1 != self.setup.passphrase2)
-
+    def update_next_button(self):
+        ''' The Type page needs a disk, the Advanced page a valid passphrase when encrypting '''
+        page = self.builder.get_object("notebook1").get_current_page()
+        if page not in (self.PAGE_TYPE, self.PAGE_ADVANCED):
+            return
+        error = False
+        if self.setup.automated:
+            if page == self.PAGE_TYPE:
+                error = self.setup.disk is None
+            else:
+                error = bool(self.setup.luks and (self.setup.passphrase1 in (None, "") or self.setup.passphrase1 != self.setup.passphrase2))
         self.builder.get_object("button_next").set_sensitive(not error)
 
     def quit_cb(self, widget, data=None):
@@ -1048,6 +1053,9 @@ class InstallerWindow:
             self.builder.get_object("button_back").show()
         if index == self.PAGE_PARTITIONS:
             self.setup.skip_mount = False
+        if index in (self.PAGE_TYPE, self.PAGE_ADVANCED):
+            self.builder.get_object("revealer_disk_options").set_reveal_child(self.setup.automated)
+            self.update_next_button()
         if index == self.PAGE_CUSTOMWARNING:
             self.setup.skip_mount = True
 
