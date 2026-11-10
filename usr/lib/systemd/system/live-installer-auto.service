@@ -1,0 +1,21 @@
+[Unit]
+Description=Unattended installation (live-installer)
+# Runs only when the kernel command line has live-installer.auto=<path>.
+# ConditionKernelCommandLine= cannot match a key with any value, hence
+# the ExecCondition.
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecCondition=/bin/sh -c 'grep -q live-installer.auto= /proc/cmdline'
+ExecStart=/usr/bin/python3 -OO /usr/lib/live-installer/auto_installer.py
+# If the installer dies before printing its own result (an import error,
+# for example), say so on the console so nobody waits for nothing.
+ExecStopPost=/bin/sh -c 'if [ "$$SERVICE_RESULT" != "success" ]; then echo "Automated installation FAILED (service result: $$SERVICE_RESULT)" > /dev/console; fi'
+StandardOutput=journal+console
+StandardError=journal+console
+TimeoutStartSec=infinity
+
+[Install]
+WantedBy=multi-user.target
