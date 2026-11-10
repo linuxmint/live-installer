@@ -336,9 +336,19 @@ class InstallerEngine:
                 "grub-efi-amd64-signed",
                 "shim-signed",
             ]
-            for pkg in EFI_PACKAGES:
+            # Debian's shim-signed depends on these, so LMDE's pool carries
+            # them; without them dpkg leaves shim-signed unconfigured and apt
+            # broken. Ubuntu's shim-signed does not need them.
+            SHIM_DEPENDENCIES = [
+                "shim-signed-common",
+                "shim-helpers-amd64-signed",
+                "shim-unsigned",
+            ]
+            for pkg in EFI_PACKAGES + SHIM_DEPENDENCIES:
                 matches = glob(f"{self.pool}/main/**/{pkg}_*.deb", recursive=True)
                 if not matches:
+                    if pkg in SHIM_DEPENDENCIES:
+                        continue
                     raise Exception(f"Missing EFI package: {pkg}")
                 os.system(f"cp {max(matches)} /target/debs/")
 
