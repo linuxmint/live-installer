@@ -1,3 +1,9 @@
+live-installer (2026.11.16.1) adrien; urgency=medium
+
+  * Update slideshow
+
+ -- Clement Lefebvre <root@linuxmint.com>  Mon, 16 Nov 2026 15:12:36 +0000
+
 live-installer (2026.11.16) adrien; urgency=medium
 
   * advanced page: Make the first hint more prominent
