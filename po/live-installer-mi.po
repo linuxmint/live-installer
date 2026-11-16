@@ -1,0 +1,954 @@
+# Maori translation for linuxmint
+# Copyright (c) 2026 Rosetta Contributors and Canonical Ltd 2026
+# This file is distributed under the same license as the linuxmint package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: linuxmint\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2026-11-09 19:08+0000\n"
+"PO-Revision-Date: 2026-04-28 01:44+0000\n"
+"Last-Translator: shylohana <shylohana@gmail.com>\n"
+"Language-Team: Maori <mi@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2026-11-16 11:51+0000\n"
+"X-Generator: Launchpad (build 72ba15af7e009b17d4aa1467977127ac8392a4de)\n"
+
+#: usr/lib/live-installer/dialogs.py:43 usr/lib/live-installer/dialogs.py:54
+#: usr/lib/live-installer/dialogs.py:59
+#: usr/lib/live-installer/partitioning.py:738
+msgid "OK"
+msgstr "Pai"
+
+#: usr/lib/live-installer/dialogs.py:48
+msgid "No"
+msgstr "Kāo"
+
+#: usr/lib/live-installer/dialogs.py:49
+msgid "Yes"
+msgstr "Āe"
+
+#: usr/lib/live-installer/installer.py:185
+#: usr/lib/live-installer/installer.py:377
+msgid "Adding new user to the system"
+msgstr "E tāpiri ana i te kaiwhakamahi hou ki te pūnaha"
+
+#: usr/lib/live-installer/installer.py:188
+#: usr/lib/live-installer/installer.py:641
+msgid "Setting hostname"
+msgstr "E tautuhi ana i te ingoa kaihautū"
+
+#: usr/lib/live-installer/installer.py:191
+#: usr/lib/live-installer/installer.py:644
+msgid "Setting locale"
+msgstr "E tautuhi ana i te rohe reo"
+
+#: usr/lib/live-installer/installer.py:194
+#: usr/lib/live-installer/installer.py:647
+msgid "Setting timezone"
+msgstr ""
+
+#: usr/lib/live-installer/installer.py:197
+#: usr/lib/live-installer/installer.py:650
+msgid "Localizing packages"
+msgstr "E whakarohe ana i ngā mōkihi"
+
+#: usr/lib/live-installer/installer.py:200
+#: usr/lib/live-installer/installer.py:685
+msgid "Setting keyboard options"
+msgstr "E tautuhi ana i ngā kōwhiringa papapātuhi"
+
+#: usr/lib/live-installer/installer.py:203
+#: usr/lib/live-installer/installer.py:756
+msgid "Cleaning APT"
+msgstr "E whakapai ana i te APT"
+
+#: usr/lib/live-installer/installer.py:208
+msgid "Cleaning OEM configuration"
+msgstr ""
+
+#: usr/lib/live-installer/installer.py:216
+#: usr/lib/live-installer/installer.py:789 usr/lib/live-installer/main.py:1437
+msgid "Installation finished"
+msgstr "Kua oti te tāutanga"
+
+#: usr/lib/live-installer/installer.py:226
+msgid ""
+"ERROR: You must first manually mount your target filesystem(s) at /target to "
+"do a custom install!"
+msgstr ""
+"HAPA: Me hono ā-ringa tuatahi i ō pūnaha kōnae ūnga ki /target hei mahi "
+"tāutanga ritenga!"
+
+#: usr/lib/live-installer/installer.py:242
+msgid "Mounting partitions..."
+msgstr ""
+
+#: usr/lib/live-installer/installer.py:246
+msgid "Live medium not found!"
+msgstr ""
+
+#: usr/lib/live-installer/installer.py:298
+msgid "Copying files..."
+msgstr ""
+
+#: usr/lib/live-installer/installer.py:303
+msgid "Entering the system..."
+msgstr ""
+
+#: usr/lib/live-installer/installer.py:358
+msgid "Removing live configuration (packages)"
+msgstr "E tango ana i te whirihoranga ora (mōkihi)"
+
+#: usr/lib/live-installer/installer.py:387
+msgid "Writing filesystem mount information to /etc/fstab"
+msgstr "E tuhi ana i ngā mōhiohio hono pūnaha kōnae ki /etc/fstab"
+
+#: usr/lib/live-installer/installer.py:424
+#, python-format
+msgid "Creating partitions on %s"
+msgstr "E waihanga ana i ngā wehenga ki %s"
+
+#: usr/lib/live-installer/installer.py:445
+#: usr/lib/live-installer/partitioning.py:559
+#, python-format
+msgid ""
+"The partition %s could not be formatted. The installation will stop. Restart "
+"the computer and try again."
+msgstr ""
+
+#: usr/lib/live-installer/installer.py:495
+msgid "Formatting partitions..."
+msgstr ""
+
+#: usr/lib/live-installer/installer.py:521
+#, python-format
+msgid "Mounting %(partition)s on %(mountpoint)s"
+msgstr "E hono ana i %(partition)s ki %(mountpoint)s"
+
+#: usr/lib/live-installer/installer.py:656
+msgid "Installing drivers"
+msgstr "E tāuta ana i ngā atekōkiri"
+
+#: usr/lib/live-installer/installer.py:714
+msgid "Installing bootloader"
+msgstr "E tāuta ana i te kaitīmata"
+
+#: usr/lib/live-installer/installer.py:727
+msgid ""
+"WARNING: The grub bootloader was not configured properly! You need to "
+"configure it manually."
+msgstr ""
+"WHAKATŪPATO: Kāore te kaitīmata grub i whirihora tika! Me whirihora ā-ringa "
+"koe."
+
+#: usr/lib/live-installer/installer.py:798
+msgid "Configuring bootloader"
+msgstr "E whirihora ana i te kaitīmata"
+
+#: usr/lib/live-installer/installer.py:807
+msgid "Checking bootloader"
+msgstr "E tiro ana i te kaitīmata"
+
+#: usr/lib/live-installer/main.py:138 usr/lib/live-installer/main.py:377
+#: usr/lib/live-installer/main.py:417
+msgid "Language"
+msgstr "Reo"
+
+#: usr/lib/live-installer/main.py:258 usr/lib/live-installer/main.py:422
+msgid "Layout"
+msgstr "Whakatakotoranga"
+
+#: usr/lib/live-installer/main.py:265 usr/lib/live-installer/main.py:423
+msgid "Variant"
+msgstr "Rerekētanga"
+
+#: usr/lib/live-installer/main.py:359 usr/lib/live-installer/main.py:1146
+#: usr/lib/live-installer/main.py:1159 usr/lib/live-installer/main.py:1226
+#: usr/lib/live-installer/main.py:1230 usr/lib/live-installer/main.py:1249
+#: usr/lib/live-installer/main.py:1252 usr/lib/live-installer/main.py:1259
+#: usr/lib/live-installer/main.py:1263 usr/lib/live-installer/main.py:1271
+msgid "Installer"
+msgstr "Kaitāuta"
+
+#: usr/lib/live-installer/main.py:363
+msgid "Initial Setup"
+msgstr ""
+
+#: usr/lib/live-installer/main.py:377
+msgid "What language would you like to use?"
+msgstr "He aha te reo e hiahia ana koe ki te whakamahi?"
+
+#: usr/lib/live-installer/main.py:378
+msgid "Timezone"
+msgstr "Rohe wā"
+
+#: usr/lib/live-installer/main.py:378
+msgid "Where are you?"
+msgstr "Kei hea koe?"
+
+#: usr/lib/live-installer/main.py:379
+msgid "Keyboard layout"
+msgstr "Whakatakotoranga papapātuhi"
+
+#: usr/lib/live-installer/main.py:379
+msgid "What is your keyboard layout?"
+msgstr "He aha tō whakatakotoranga papapātuhi?"
+
+#: usr/lib/live-installer/main.py:380
+msgid "User account"
+msgstr "Pūkete kaiwhakamahi"
+
+#: usr/lib/live-installer/main.py:380
+msgid "Who are you?"
+msgstr "Ko wai koe?"
+
+#: usr/lib/live-installer/main.py:381
+msgid "Installation Type"
+msgstr "Momo tāutanga"
+
+#: usr/lib/live-installer/main.py:381 usr/lib/live-installer/main.py:382
+#, python-format
+msgid "Where do you want to install %s?"
+msgstr ""
+
+#: usr/lib/live-installer/main.py:382
+msgid "Partitioning"
+msgstr "Wehewehe"
+
+#: usr/lib/live-installer/main.py:383
+msgid "Advanced options"
+msgstr "Kōwhiringa matatau"
+
+#: usr/lib/live-installer/main.py:383
+msgid "Configure the boot menu"
+msgstr ""
+
+#: usr/lib/live-installer/main.py:384
+msgid "Summary"
+msgstr "Whakarāpopototanga"
+
+#: usr/lib/live-installer/main.py:384
+msgid "Check that everything is correct"
+msgstr ""
+
+#: usr/lib/live-installer/main.py:385
+msgid "Installing"
+msgstr "E tāuta ana"
+
+#: usr/lib/live-installer/main.py:386 usr/lib/live-installer/main.py:464
+#: usr/share/live-installer/interface.ui:1462
+msgid "Expert mode"
+msgstr "Aratau tohunga"
+
+#: usr/lib/live-installer/main.py:387 usr/lib/live-installer/main.py:1452
+msgid "Installation paused"
+msgstr "Kua whakatārewatia te tāutanga"
+
+#: usr/lib/live-installer/main.py:390
+msgid "Quit"
+msgstr "Puta"
+
+#: usr/lib/live-installer/main.py:391
+msgid "Back"
+msgstr "Hoki"
+
+#: usr/lib/live-installer/main.py:392 usr/lib/live-installer/main.py:1311
+#: usr/lib/live-installer/main.py:1447
+msgid "Next"
+msgstr "Panuku"
+
+#: usr/lib/live-installer/main.py:399
+msgid "Welcome to your new computer!"
+msgstr ""
+
+#: usr/lib/live-installer/main.py:400
+msgid "Start"
+msgstr ""
+
+#: usr/lib/live-installer/main.py:418 usr/share/live-installer/interface.ui:412
+msgid "Location"
+msgstr "Wahi"
+
+#: usr/lib/live-installer/main.py:421 usr/share/live-installer/interface.ui:694
+msgid "Keyboard Model:"
+msgstr "Tauira papapātuhi:"
+
+#: usr/lib/live-installer/main.py:424 usr/share/live-installer/interface.ui:797
+msgid "Type here to test your keyboard layout"
+msgstr "Patohia ki konei hei whakamātau i tō whakatakotoranga papapātuhi"
+
+#: usr/lib/live-installer/main.py:426
+msgid ""
+"* Your username, your computer's name and your password should only contain "
+"Latin characters. In addition to your selected layout, English (US) is set "
+"as the default. You can switch layouts by pressing Super+Space."
+msgstr ""
+"* Me whakamahi pū Latin anake mō tō ingoa kaiwhakamahi, te ingoa o tō "
+"rorohiko, me tō kupuhipa. I tua atu i tō whakatakotoranga kua tīpakohia, ka "
+"tautuhia te reo Ingarihi (US) hei taunoa. Ka taea te huri whakatakotoranga "
+"mā te pēhi i Super+Space."
+
+#: usr/lib/live-installer/main.py:429 usr/share/live-installer/interface.ui:839
+msgid "Your name:"
+msgstr "Tō ingoa:"
+
+#: usr/lib/live-installer/main.py:430 usr/share/live-installer/interface.ui:882
+msgid "Your computer's name:"
+msgstr "Te ingoa o tō rorohiko:"
+
+#: usr/lib/live-installer/main.py:431 usr/share/live-installer/interface.ui:916
+msgid "The name it uses when it talks to other computers."
+msgstr "Ko te ingoa ka whakamahia ina kōrero ki ētahi atu rorohiko."
+
+#: usr/lib/live-installer/main.py:432 usr/share/live-installer/interface.ui:900
+msgid "Pick a username:"
+msgstr "Tīpako ingoa kaiwhakamahi:"
+
+#: usr/lib/live-installer/main.py:433 usr/share/live-installer/interface.ui:948
+msgid "Choose a password:"
+msgstr "Kōwhiri kupuhipa:"
+
+#: usr/lib/live-installer/main.py:434 usr/share/live-installer/interface.ui:993
+msgid "Confirm your password:"
+msgstr "Whakaū tō kupuhipa:"
+
+#: usr/lib/live-installer/main.py:436
+msgid "Require my password to log in"
+msgstr "Me tono taku kupuhipa hei takiuru"
+
+#: usr/lib/live-installer/main.py:437
+msgid "Encrypt my home folder"
+msgstr "Whakamuna taku kōpaki kāinga"
+
+#: usr/lib/live-installer/main.py:440
+#: usr/share/live-installer/interface.ui:1183
+msgid "Automated Installation"
+msgstr "Tāutanga aunoa"
+
+#: usr/lib/live-installer/main.py:441
+#, python-format
+msgid "Erase a disk and install %s on it."
+msgstr ""
+
+#: usr/lib/live-installer/main.py:442
+#: usr/share/live-installer/interface.ui:1238
+msgid "Disk:"
+msgstr "Kōpae:"
+
+#: usr/lib/live-installer/main.py:443 usr/lib/live-installer/main.py:1377
+#: usr/share/live-installer/interface.ui:1288
+msgid "All data on the selected disk will be erased."
+msgstr ""
+
+#: usr/lib/live-installer/main.py:444
+msgid "Passphrase"
+msgstr "Kupuhipa roa"
+
+#: usr/lib/live-installer/main.py:445
+msgid "Confirm passphrase"
+msgstr "Whakaū kupuhipa roa"
+
+#: usr/lib/live-installer/main.py:446
+#: usr/share/live-installer/interface.ui:1347
+msgid "Manual Partitioning"
+msgstr "Wehewehe ā-ringa"
+
+#: usr/lib/live-installer/main.py:447
+#, python-format
+msgid "Manually create, resize or choose partitions for %s."
+msgstr ""
+
+#: usr/lib/live-installer/main.py:449
+msgid "Create a swapfile"
+msgstr ""
+
+#: usr/lib/live-installer/main.py:450
+msgid "Swapfile size (GB)"
+msgstr ""
+
+#: usr/lib/live-installer/main.py:451
+msgid ""
+"Swap is disk space the system uses when its memory is full. It can also be "
+"used for hibernation if it is larger than the memory."
+msgstr ""
+
+#: usr/lib/live-installer/main.py:452
+msgid ""
+"The defaults on this page suit most computers. If you are unsure, leave them "
+"as they are."
+msgstr ""
+
+#: usr/lib/live-installer/main.py:453
+msgid "Encrypt the system partition"
+msgstr ""
+
+#: usr/lib/live-installer/main.py:454
+msgid ""
+"This encrypts the partition the system is installed on, including the "
+"swapfile and temporary files. Every user needs the passphrase, which is "
+"asked before the boot sequence."
+msgstr ""
+
+#: usr/lib/live-installer/main.py:461
+#: usr/lib/live-installer/partitioning.py:262
+#: usr/share/live-installer/interface.ui:1475
+msgid "Edit"
+msgstr "Whakatika"
+
+#: usr/lib/live-installer/main.py:462
+#: usr/share/live-installer/interface.ui:1502
+msgid "Launch GParted"
+msgstr "Whakarewa GParted"
+
+#: usr/lib/live-installer/main.py:463
+msgid "Refresh"
+msgstr "Uta anō"
+
+#: usr/lib/live-installer/main.py:466
+msgid "Device"
+msgstr "Pūrere"
+
+#: usr/lib/live-installer/main.py:467
+msgid "Type"
+msgstr "Momo"
+
+#: usr/lib/live-installer/main.py:468
+msgid "Mount point"
+msgstr "Wāhi hono"
+
+#: usr/lib/live-installer/main.py:469
+msgid "Format as"
+msgstr "Whakahōputu hei"
+
+#: usr/lib/live-installer/main.py:470
+msgid "Operating system"
+msgstr "Pūnaha whakahaere"
+
+#: usr/lib/live-installer/main.py:471
+msgid "Size"
+msgstr "Rahi"
+
+#: usr/lib/live-installer/main.py:472
+#: usr/lib/live-installer/partitioning.py:613
+msgid "Free space"
+msgstr "Wāhi wātea"
+
+#: usr/lib/live-installer/main.py:476
+msgid "Install the GRUB boot menu"
+msgstr ""
+
+#: usr/lib/live-installer/main.py:477
+msgid "Install on:"
+msgstr ""
+
+#: usr/lib/live-installer/main.py:478
+msgid ""
+"Change this only if you know your computer starts from another disk, or if "
+"you use a different boot manager."
+msgstr ""
+
+#: usr/lib/live-installer/main.py:481
+#: usr/share/live-installer/interface.ui:2084
+msgid ""
+"You selected to manage your partitions manually, this feature is for "
+"ADVANCED USERS ONLY."
+msgstr ""
+"Kua tīpako koe kia whakahaere ā-ringa i ō wehenga; mō NGĀ KAIWHAKAMAHI "
+"MATATAU ANAKE tēnei āhuatanga."
+
+#: usr/lib/live-installer/main.py:482 usr/lib/live-installer/main.py:1271
+#: usr/share/live-installer/interface.ui:2122
+msgid "Before continuing, mount your target filesystem(s) on /target."
+msgstr "I mua i te haere tonu, hono i ō pūnaha kōnae ūnga ki /target."
+
+#: usr/lib/live-installer/main.py:483
+#: usr/share/live-installer/interface.ui:2160
+msgid ""
+"Do NOT mount virtual devices such as /dev, /proc, /sys, etc on /target/."
+msgstr ""
+"KAUA e hono i ngā pūrere mariko pēnei i /dev, /proc, /sys, me ērā atu ki "
+"/target/."
+
+#: usr/lib/live-installer/main.py:484
+#: usr/share/live-installer/interface.ui:2198
+msgid ""
+"During the install, you will be given time to chroot into /target and "
+"install any packages that will be needed to boot your new system."
+msgstr ""
+"I te wā o te tāutanga, ka whai wā koe ki te chroot ki /target me te tāuta i "
+"ngā mōkihi e hiahiatia ana hei tīmata i tō pūnaha hou."
+
+#: usr/lib/live-installer/main.py:485
+#: usr/share/live-installer/interface.ui:2236
+msgid ""
+"During the install, you will be required to write your own /etc/fstab."
+msgstr "I te wā o te tāutanga, me tuhi koe i tō ake /etc/fstab."
+
+#: usr/lib/live-installer/main.py:488
+#: usr/share/live-installer/interface.ui:2273
+msgid "Do the following and then click Next to finish installation:"
+msgstr "Mahia ēnei, kātahi pāwhiria Panuku hei whakaoti i te tāutanga:"
+
+#: usr/lib/live-installer/main.py:489
+#: usr/share/live-installer/interface.ui:2304
+msgid ""
+"Create /target/etc/fstab for the filesystems as they will be mounted in your "
+"new system, matching those currently mounted at /target (without using the "
+"/target prefix in the mount paths themselves)."
+msgstr ""
+"Waihangatia /target/etc/fstab mō ngā pūnaha kōnae ka honoa ki tō pūnaha hou, "
+"kia ōrite ki ngā mea e hono ana ināianei ki /target (kaua e whakamahi i te "
+"kuhimua /target i roto i ngā ara hono ake)."
+
+#: usr/lib/live-installer/main.py:490
+#: usr/share/live-installer/interface.ui:2342
+msgid ""
+"Install any packages that may be needed for first boot (mdadm, cryptsetup, "
+"dmraid, etc) by calling \"sudo chroot /target\" followed by the relevant apt-"
+"get/aptitude installations."
+msgstr ""
+"Tāutahia ngā mōkihi ka hiahiatia pea mō te tīmatanga tuatahi (mdadm, "
+"cryptsetup, dmraid, me ērā atu) mā te karanga \"sudo chroot /target\", "
+"kātahi ngā tāutanga apt-get/aptitude e hāngai ana."
+
+#: usr/lib/live-installer/main.py:491
+#: usr/share/live-installer/interface.ui:2380
+msgid ""
+"Note that in order for update-initramfs to work properly in some cases (such "
+"as dm-crypt), you may need to have drives currently mounted using the same "
+"block device name as they appear in /target/etc/fstab."
+msgstr ""
+"Kia mōhio: kia tika ai te mahi a update-initramfs i ētahi āhuatanga (pērā i "
+"dm-crypt), tērā pea me hono ngā puku ināianei mā te ingoa pūrere paraka "
+"ōrite ki tā rātou putanga i /target/etc/fstab."
+
+#: usr/lib/live-installer/main.py:492
+#: usr/share/live-installer/interface.ui:2418
+msgid ""
+"Double-check that your /target/etc/fstab is correct, matches what your new "
+"system will have at first boot, and matches what is currently mounted at "
+"/target."
+msgstr ""
+"Tirohia anō kia tika tō /target/etc/fstab, kia ōrite ki tā tō pūnaha hou i "
+"te tīmatanga tuatahi, ā, kia ōrite ki ngā mea e hono ana ināianei ki /target."
+
+#: usr/lib/live-installer/main.py:494
+msgid "Calculating file indexes ..."
+msgstr "E tātai ana i ngā taupū kōnae"
+
+#: usr/lib/live-installer/main.py:505
+msgid "The values do not match."
+msgstr "Kāore ngā uara e ōrite."
+
+#: usr/lib/live-installer/main.py:508
+msgid "This field cannot be empty."
+msgstr "Kāore tēnei āpure e āhei kia noho kau."
+
+#: usr/lib/live-installer/main.py:511
+msgid "This field may not contain space characters."
+msgstr "Kāore tēnei āpure e āhei kia whai pūāhua mokowā."
+
+#: usr/lib/live-installer/main.py:514
+msgid "This field must be lower case."
+msgstr "Me pūriki tēnei āpure."
+
+#: usr/lib/live-installer/main.py:517
+msgid "This field cannot start or end with a hyphen or period."
+msgstr ""
+"Kāore tēnei āpure e āhei kia tīmata, kia mutu rānei ki te tohuhono, ki te "
+"ira rānei."
+
+#: usr/lib/live-installer/main.py:521
+msgid "The entry is too short."
+msgstr "He poto rawa te tāurunga."
+
+#: usr/lib/live-installer/main.py:523
+msgid "The entry is too long."
+msgstr "He roa rawa te tāurunga."
+
+#: usr/lib/live-installer/main.py:528
+msgid "This field contains invalid characters."
+msgstr "Kei roto i tēnei āpure ētahi pūāhua muhu."
+
+#: usr/lib/live-installer/main.py:679
+msgid "Quit?"
+msgstr "Puta?"
+
+#: usr/lib/live-installer/main.py:679
+msgid "Are you sure you want to quit?"
+msgstr ""
+
+#: usr/lib/live-installer/main.py:962
+#, python-format
+msgid ""
+"This computer seems to be a laptop. A large swapfile of %(size)s is "
+"recommended for hibernation."
+msgstr ""
+
+#: usr/lib/live-installer/main.py:964
+#, python-format
+msgid ""
+"This computer seems to be a laptop, but there is not enough disk space for "
+"hibernation. A swapfile of %(size)s is recommended."
+msgstr ""
+
+#: usr/lib/live-installer/main.py:966
+#, python-format
+msgid ""
+"This computer doesn't seem to be a laptop, so you probably don't need "
+"hibernation. A small swapfile of %(size)s is recommended."
+msgstr ""
+
+#: usr/lib/live-installer/main.py:1136
+msgid "Unmount required"
+msgstr ""
+
+#: usr/lib/live-installer/main.py:1137
+msgid "The following partitions must be unmounted before proceeding:"
+msgstr ""
+
+#: usr/lib/live-installer/main.py:1139
+msgid "Unmount"
+msgstr ""
+
+#: usr/lib/live-installer/main.py:1139
+#: usr/lib/live-installer/partitioning.py:737
+msgid "Cancel"
+msgstr "Whakakore"
+
+#: usr/lib/live-installer/main.py:1146
+msgid "Failed to unmount one or more partitions."
+msgstr ""
+
+#: usr/lib/live-installer/main.py:1159
+msgid "Please choose a language"
+msgstr "Kōwhiria tētahi reo"
+
+#: usr/lib/live-installer/main.py:1199 usr/lib/live-installer/main.py:1278
+msgid "Install"
+msgstr "Tāuta"
+
+#: usr/lib/live-installer/main.py:1205
+msgid "Warning"
+msgstr "Whakatūpato"
+
+#: usr/lib/live-installer/main.py:1205
+#, python-format
+msgid "This will delete all the data on %s. Are you sure?"
+msgstr "Ka muku tēnei i ngā raraunga katoa ki %s. Kei te tino hiahia?"
+
+#: usr/lib/live-installer/main.py:1226
+msgid ""
+"Please indicate a filesystem to format the root (/) partition with before "
+"proceeding."
+msgstr ""
+"Tohua tētahi pūnaha kōnae hei whakahōputu i te wehenga pakiaka (/) i mua i "
+"te haere tonu."
+
+#: usr/lib/live-installer/main.py:1230
+msgid "Please select a root (/) partition."
+msgstr "Tīpakohia tētahi wehenga pakiaka (/)."
+
+#: usr/lib/live-installer/main.py:1231
+msgid ""
+"A root partition is needed to install Linux Mint on.\n"
+"\n"
+" - Mount point: /\n"
+" - Recommended size: 30GB\n"
+" - Recommended filesystem format: ext4\n"
+msgstr ""
+"Me whai wehenga pakiaka hei tāuta i Linux Mint.\n"
+"\n"
+" - Wāhi hono: /\n"
+" - Rahi tūtohu: 30GB\n"
+" - Hōputu pūnaha kōnae tūtohu: ext4\n"
+
+#: usr/lib/live-installer/main.py:1249
+#, python-format
+msgid ""
+"%s is not an EFI System Partition. Please edit the partition type or flags, "
+"or select another partition."
+msgstr ""
+
+#: usr/lib/live-installer/main.py:1252
+#, python-format
+msgid "The EFI partition (%s) is too small. It must be at least 35MB."
+msgstr ""
+
+#: usr/lib/live-installer/main.py:1259
+#, python-format
+msgid "The EFI partition (%s) must be formatted as vfat."
+msgstr ""
+
+#: usr/lib/live-installer/main.py:1263
+msgid "Please select an EFI partition."
+msgstr "Tīpakohia tētahi wehenga EFI."
+
+#: usr/lib/live-installer/main.py:1263
+msgid ""
+"An EFI system partition is needed with the following requirements:\n"
+"\n"
+" - Mount point: /boot/efi\n"
+" - Partition type: EFI System Partition (the 'esp' flag)\n"
+" - Size: at least 35MB (100MB or more recommended)\n"
+" - Format: vfat or fat32\n"
+"\n"
+"To ensure compatibility with Windows we recommend you use the first "
+"partition of the disk as the EFI system partition.\n"
+" "
+msgstr ""
+
+#: usr/lib/live-installer/main.py:1344
+msgid "On"
+msgstr ""
+
+#: usr/lib/live-installer/main.py:1344
+msgid "Off"
+msgstr ""
+
+#: usr/lib/live-installer/main.py:1396
+msgid "Localization"
+msgstr "Whakaritenga ā-rohe"
+
+#: usr/lib/live-installer/main.py:1397
+msgid "Language: "
+msgstr "Reo: "
+
+#: usr/lib/live-installer/main.py:1398
+msgid "Timezone: "
+msgstr "Rohe wā: "
+
+#: usr/lib/live-installer/main.py:1399
+msgid "Keyboard layout: "
+msgstr "Whakatakotoranga papapātuhi: "
+
+#: usr/lib/live-installer/main.py:1401
+msgid "User settings"
+msgstr "Tautuhinga kaiwhakamahi"
+
+#: usr/lib/live-installer/main.py:1402
+msgid "Real name: "
+msgstr "Ingoa tūturu: "
+
+#: usr/lib/live-installer/main.py:1403
+msgid "Username: "
+msgstr "Ingoa kaiwhakamahi: "
+
+#: usr/lib/live-installer/main.py:1404
+msgid "Automatic login: "
+msgstr "Takiuru aunoa: "
+
+#: usr/lib/live-installer/main.py:1405
+msgid "Home encryption: "
+msgstr "Whakamuna kāinga: "
+
+#: usr/lib/live-installer/main.py:1407
+msgid "System settings"
+msgstr "Tautuhinga pūnaha"
+
+#: usr/lib/live-installer/main.py:1408
+msgid "Computer's name: "
+msgstr "Ingoa rorohiko: "
+
+#: usr/lib/live-installer/main.py:1411
+msgid "Filesystem operations"
+msgstr "Mahi pūnaha kōnae"
+
+#: usr/lib/live-installer/main.py:1412
+#, python-format
+msgid "Install bootloader on %s"
+msgstr "Tāuta kaitīmata ki %s"
+
+#: usr/lib/live-installer/main.py:1412
+msgid "Do not install bootloader"
+msgstr "Kaua e tāuta kaitīmata"
+
+#: usr/lib/live-installer/main.py:1414
+msgid "Use already-mounted /target."
+msgstr "Whakamahia te /target kua hono kē."
+
+#: usr/lib/live-installer/main.py:1416
+#, python-format
+msgid "Automated installation on %s"
+msgstr "Tāutanga aunoa ki %s"
+
+#: usr/lib/live-installer/main.py:1417
+msgid "Disk Encryption: "
+msgstr "Whakamuna kōpae: "
+
+#: usr/lib/live-installer/main.py:1421
+#, python-format
+msgid "Format %(path)s as %(filesystem)s"
+msgstr "Whakahōputu %(path)s hei %(filesystem)s"
+
+#: usr/lib/live-installer/main.py:1424
+#, python-format
+msgid "Mount %(path)s as %(mount)s"
+msgstr "Hono %(path)s hei %(mount)s"
+
+#: usr/lib/live-installer/main.py:1426
+msgid "Swapfile: "
+msgstr ""
+
+#: usr/lib/live-installer/main.py:1437
+msgid ""
+"The installation is now complete. Do you want to restart your computer to "
+"use the new system?"
+msgstr ""
+"Kua oti te tāutanga. Kei te hiahia tīmata anō i tō rorohiko kia whakamahi i "
+"te pūnaha hou?"
+
+#: usr/lib/live-installer/main.py:1452
+msgid ""
+"The installation is now paused. Please read the instructions on the page "
+"carefully before clicking Next to finish the installation."
+msgstr ""
+"Kua whakatārewatia te tāutanga. Pānuitia ngā tohutohu i te whārangi me te "
+"āta whakaaro i mua i te pāwhiri Panuku hei whakaoti i te tāutanga."
+
+#: usr/lib/live-installer/main.py:1476
+msgid "OEM config error"
+msgstr ""
+
+#: usr/lib/live-installer/main.py:1531
+msgid "Installation error"
+msgstr "Hapa tāutanga"
+
+#: usr/lib/live-installer/partitioning.py:103
+msgid "unknown error"
+msgstr ""
+
+#: usr/lib/live-installer/partitioning.py:167
+msgid "B"
+msgstr "B"
+
+#: usr/lib/live-installer/partitioning.py:167
+#: usr/lib/live-installer/partitioning.py:567
+msgid "kB"
+msgstr "kB"
+
+#: usr/lib/live-installer/partitioning.py:167
+#: usr/lib/live-installer/partitioning.py:567
+msgid "MB"
+msgstr "MB"
+
+#: usr/lib/live-installer/partitioning.py:167
+#: usr/lib/live-installer/partitioning.py:567
+msgid "GB"
+msgstr "GB"
+
+#: usr/lib/live-installer/partitioning.py:167
+#: usr/lib/live-installer/partitioning.py:567
+msgid "TB"
+msgstr "TB"
+
+#: usr/lib/live-installer/partitioning.py:172
+msgid "Removable:"
+msgstr "Ka taea te tango:"
+
+#: usr/lib/live-installer/partitioning.py:269
+msgid "Assign to /"
+msgstr "Tautapa ki /"
+
+#: usr/lib/live-installer/partitioning.py:272
+msgid "Assign to /home"
+msgstr "Tautapa ki /home"
+
+#: usr/lib/live-installer/partitioning.py:278
+msgid "Assign to /boot/efi"
+msgstr "Tautapa ki /boot/efi"
+
+#: usr/lib/live-installer/partitioning.py:284
+msgid "Assign to swap"
+msgstr ""
+
+#: usr/lib/live-installer/partitioning.py:344
+msgid "Installation Tool"
+msgstr "Utauta tāutanga"
+
+#: usr/lib/live-installer/partitioning.py:345
+#, python-format
+msgid ""
+"No partition table was found on the hard drive: %s. Do you want the "
+"installer to create a set of partitions for you? Note: This will ERASE ALL "
+"DATA present on this disk."
+msgstr ""
+"Kāore i kitea he ripanga wehenga ki te puku mārō: %s. Kei te hiahia koe kia "
+"waihangatia e te kaitāuta he huinga wehenga mōu? Kia mōhio: KA MUKU TĒNEI I "
+"NGĀ RARAUNGA KATOA kei tēnei kōpae."
+
+#: usr/lib/live-installer/partitioning.py:511
+#, python-format
+msgid ""
+"The partition table couldn't be written for %s. Restart the computer and try "
+"again."
+msgstr ""
+"Kāore i taea te tuhi i te ripanga wehenga mō %s. Tīmata anō i te rorohiko, "
+"kātahi anō ka ngana."
+
+#: usr/lib/live-installer/partitioning.py:552
+#, python-format
+msgid ""
+"The partition %s could not be created. The installation will stop. Restart "
+"the computer and try again."
+msgstr ""
+"Kāore i taea te waihanga i te wehenga %s. Ka mutu te tāutanga. Tīmata anō i "
+"te rorohiko, kātahi anō ka ngana."
+
+#: usr/lib/live-installer/partitioning.py:611
+msgid "Logical partition"
+msgstr "Wehenga arorau"
+
+#: usr/lib/live-installer/partitioning.py:612
+msgid "Extended partition"
+msgstr "Wehenga whakawhānui"
+
+#: usr/lib/live-installer/partitioning.py:616
+msgid "Unknown"
+msgstr "Kāore i te mōhiotia"
+
+#: usr/lib/live-installer/partitioning.py:732
+msgid "Edit partition"
+msgstr "Whakatika wehenga"
+
+#: usr/lib/live-installer/partitioning.py:733
+msgid "Device:"
+msgstr "Pūrere:"
+
+#: usr/lib/live-installer/partitioning.py:735
+msgid "Format as:"
+msgstr "Whakahōputu hei:"
+
+#: usr/lib/live-installer/partitioning.py:736
+msgid "Mount point:"
+msgstr "Wāhi hono:"
+
+#: usr/lib/live-installer/timezones.py:146
+msgid "Select timezone"
+msgstr ""
+
+#: usr/share/live-installer/interface.ui:15
+#: usr/share/live-installer/interface.ui:26
+msgid " "
+msgstr " "
+
+#: usr/share/live-installer/interface.ui:503
+msgid "Region"
+msgstr ""
+
+#: usr/share/live-installer/interface.ui:544
+msgid "City"
+msgstr ""
+
+#: usr/share/live-installer/interface.ui:1199
+msgid "Erase a disk and install LMDE on it."
+msgstr "Muku kōpae, ka tāuta i a LMDE ki runga."
+
+#: usr/share/live-installer/interface.ui:1363
+msgid "Manually create, resize or choose partitions for LMDE."
+msgstr ""
+"Waihanga, whakarahi/whakaiti, tīpako rānei i ngā wehenga mō LMDE ā-ringa."
