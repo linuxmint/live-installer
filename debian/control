@@ -27,6 +27,8 @@ Depends: ${misc:Depends},
          python3-gi-cairo,
          python3-parted,
          python3-pil,
+         python3-pydantic,
+         python3-yaml,
          rsync,
          shared-mime-info
 Description: Live Installer

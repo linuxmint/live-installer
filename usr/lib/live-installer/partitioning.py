@@ -482,7 +482,11 @@ def get_swapfile_size_mb(path="/target"):
     stat = os.statvfs(path)
     return get_swapfile_recommended_mb(get_ram_mb(), stat.f_blocks * stat.f_frsize / (1024 * 1024), is_laptop())
 
-def full_disk_format(device, create_boot=False, create_swap=True):
+def full_disk_format(device, create_boot=False, create_swap=True, gptonefi=None):
+    # gptonefi: the GUI leaves it to the global installer's setup; the
+    # automated installer, which has no GUI, passes it in.
+    if gptonefi is None:
+        gptonefi = installer.setup.gptonefi
     # If some LVM volumes use the selected device, remove them.
     try:
         output = subprocess.getoutput("pvs --reportformat json")
@@ -504,7 +508,7 @@ def full_disk_format(device, create_boot=False, create_swap=True):
     os.system("umount -R /target 2>/dev/null || true")
     # Create a default partition set up
     disk_label = ('gpt' if device.getLength('B') > 2**32*.9 * device.sectorSize  # size of disk > ~2TB
-                           or installer.setup.gptonefi
+                           or gptonefi
                         else 'msdos')
     return_code = os.system("parted -s %s mklabel %s" % (device.path, disk_label))
     if return_code != 0:
@@ -513,7 +517,7 @@ def full_disk_format(device, create_boot=False, create_swap=True):
     mkpart = (
         # (condition, mount_as, format_as, mkfs command, size_mb)
         # EFI
-        (installer.setup.gptonefi, EFI_MOUNT_POINT, 'vfat', 'mkfs.vfat {} -F 32 ', 300),
+        (gptonefi, EFI_MOUNT_POINT, 'vfat', 'mkfs.vfat {} -F 32 ', 300),
         # boot
         (create_boot, '/boot', 'ext4', 'mkfs.ext4 -F {}', 1024),
         # swap - equal to RAM for hibernate to work well (but capped at ~8GB)
@@ -558,7 +562,7 @@ def full_disk_format(device, create_boot=False, create_swap=True):
                 # in the live session's tmpfs until it fills up.
                 raise Exception(_("The partition %s could not be formatted. The installation will stop. Restart the computer and try again.") % partition_path)
             start_mb += size_mb + 1
-    if installer.setup.gptonefi:
+    if gptonefi:
         run_parted('set 1 boot on')
     return ((i[1], i[2]) for i in mkpart if i[0])
 

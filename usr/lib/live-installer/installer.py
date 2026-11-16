@@ -61,7 +61,9 @@ class InstallerEngine:
         fp = open("/target/dev/shm/.passwd", "w")
         fp.write(self.setup.username +  ":" + self.setup.password1 + "\n")
         fp.close()
-        self.do_run_in_chroot("cat /dev/shm/.passwd | chpasswd")
+        # The automated installer passes a crypt(5) hash, never plaintext
+        chpasswd = "chpasswd -e" if self.setup.password_is_crypted else "chpasswd"
+        self.do_run_in_chroot("cat /dev/shm/.passwd | %s" % chpasswd)
         os.system("rm -f /target/dev/shm/.passwd")
 
         # Set autologin
@@ -424,7 +426,7 @@ class InstallerEngine:
         self.update_progress(25, False, False, _("Creating partitions on %s") % self.setup.disk)
         print(" --> Creating partitions on %s" % self.setup.disk)
         disk_device = parted.getDevice(self.setup.disk)
-        partitioning.full_disk_format(disk_device, create_boot=(self.auto_boot_partition is not None), create_swap=False)
+        partitioning.full_disk_format(disk_device, create_boot=(self.auto_boot_partition is not None), create_swap=False, gptonefi=self.setup.gptonefi)
 
         # Encrypt root partition. The passphrase is fed to cryptsetup on
         # stdin (--key-file -), never as a command argument: this keeps it
@@ -636,7 +638,7 @@ class InstallerEngine:
         if self.setup.luks:
             os.system(f"echo '{LUKS_NAME}   {self.get_blkid(self.auto_root_physical_partition)}   none   luks,discard,tries=3' >> {path}")
 
-    def finish_installation(self):
+    def finish_installation(self, before_unmount_hook=None):
 
         self.update_progress(50, False, False, _("Setting hostname"))
         self.setup_hostname()
@@ -756,6 +758,11 @@ class InstallerEngine:
         self.update_progress(95, True, False, _("Cleaning APT"))
         self.clean_apt()
 
+        # Let the automated installer run its late commands in the finished
+        # system, while the chroot is still mounted
+        if before_unmount_hook is not None:
+            before_unmount_hook()
+
         # now unmount it
         print(" --> Unmounting partitions")
 
@@ -853,6 +860,7 @@ class InstallerEngine:
 class Setup(object):
     is_mint = False
     oem_mode = False
+    oem_config = False
     language = None
     timezone = None
     keyboard_model = None
@@ -865,6 +873,7 @@ class Setup(object):
     ecryptfs = False
     password1 = None
     password2 = None
+    password_is_crypted = False
     real_name = None
     grub_device = None
     disks = []
