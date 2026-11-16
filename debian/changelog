@@ -1,3 +1,10 @@
+live-installer (2026.11.16) adrien; urgency=medium
+
+  * advanced page: Make the first hint more prominent
+  * l10n: Update translations
+
+ -- Clement Lefebvre <root@linuxmint.com>  Mon, 16 Nov 2026 13:32:50 +0000
+
 live-installer (2026.11.09) adrien; urgency=medium
 
   [ Michael Webster ]
