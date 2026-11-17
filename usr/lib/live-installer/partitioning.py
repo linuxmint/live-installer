@@ -231,7 +231,7 @@ def edit_partition_dialog(*args):
     partition = row[IDX_PART_OBJECT]
     if (partition.partition.type != parted.PARTITION_EXTENDED and
         partition.partition.number != -1):
-        dlg = PartitionDialog(row[IDX_PART_PATH],
+        dlg = PartitionDialog(partition.path,
                               row[IDX_PART_MOUNT_AS],
                               row[IDX_PART_FORMAT_AS],
                               row[IDX_PART_TYPE])
@@ -419,7 +419,7 @@ class PartitionSetup(Gtk.TreeStore):
                 print("        . Appending partition %s..." % partition.name)
                 partition.size_percent = math.floor(partition.size_percent / sum_size_percent * 1000) / 10  # always rounded down
                 installer.setup.partitions.append(partition)
-                self.append(disk_iter, (partition.name,
+                self.append(disk_iter, (os.path.basename(partition.name),
                                         '<span foreground="{}">{}</span>'.format(partition.color, partition.type),
                                         partition.description,
                                         partition.format_as,
