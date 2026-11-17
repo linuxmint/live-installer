@@ -1,3 +1,13 @@
+live-installer (2026.11.17) adrien; urgency=medium
+
+  * Only inject the reboot message in LMDE
+  * partitions page: Make the graph use the entire width
+  * partitions page: Use TB for disk sizes > 1000 GB
+  * partitions page: Optimize width
+  * partitions page: Show device names without /dev/ prefix
+
+ -- Clement Lefebvre <root@linuxmint.com>  Tue, 17 Nov 2026 11:45:01 +0000
+
 live-installer (2026.11.16.1) adrien; urgency=medium
 
   * Update slideshow
