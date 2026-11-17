@@ -1,3 +1,15 @@
+live-installer (2026.11.17.1) adrien; urgency=medium
+
+  * LUKS: Increase the /boot partition to 2 GB
+  * LUKS: Don't add initramfs modules twice
+  * LUKS: Add GPU modules to initramfs
+  * installer: Copy joined networks into the target
+  * installer: Copy bluetooth pairings into the target
+  * keyboard page: Override selection for specific locales
+  * installer: Copy the logs to the target
+
+ -- Clement Lefebvre <root@linuxmint.com>  Tue, 17 Nov 2026 17:20:24 +0000
+
 live-installer (2026.11.17) adrien; urgency=medium
 
   * Only inject the reboot message in LMDE
