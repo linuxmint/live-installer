@@ -164,8 +164,12 @@ def get_disks():
 
             # Convert size to manufacturer's size (i.e. GB, not GiB)
             unit_index = 'BKMGTPEZY'.index(size.upper()[-1])
+            value = float(size[:-1]) * (1024/1000)**unit_index
+            while value >= 1000 and unit_index < 8:
+                value /= 1000
+                unit_index += 1
             l10n_unit = [_('B'), _('kB'), _('MB'), _('GB'), _('TB'), 'PB', 'EB', 'ZB', 'YB'][unit_index]
-            size = "%s %s" % (str(int(float(size[:-1]) * (1024/1000)**unit_index)), l10n_unit)
+            size = ("%d" % value if value >= 100 else ("%.1f" % value).rstrip('0').rstrip('.')) + " " + l10n_unit
             model = model.replace("\\x20", " ")
             description = '{} ({})'.format(model.strip(), size)
             if int(removable):
