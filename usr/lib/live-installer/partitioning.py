@@ -528,7 +528,7 @@ def full_disk_format(device, create_boot=False, create_swap=True):
         # EFI
         (installer.setup.gptonefi, EFI_MOUNT_POINT, 'vfat', 'mkfs.vfat {} -F 32 ', 300),
         # boot
-        (create_boot, '/boot', 'ext4', 'mkfs.ext4 -F {}', 1024),
+        (create_boot, '/boot', 'ext4', 'mkfs.ext4 -F {}', 2048),
         # swap - equal to RAM for hibernate to work well (but capped at ~8GB)
         (create_swap, SWAP_MOUNT_POINT, 'swap', 'mkswap {}', get_swap_size_mb()),
         # root
