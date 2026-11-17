@@ -115,6 +115,19 @@ class InstallerEngine:
                     except Exception as e:
                         print("Failed to copy %s: %s" % (source, e))
 
+    def copy_bluetooth_config(self):
+        if self.setup.oem_mode:
+            return
+        source = "/var/lib/bluetooth"
+        if not os.path.isdir(source):
+            return
+        print(" --> Copying Bluetooth pairings")
+        try:
+            # copytree keeps the permissions: these files contain pairing keys
+            shutil.copytree(source, "/target" + source, dirs_exist_ok=True)
+        except Exception as e:
+            print("Failed to copy %s: %s" % (source, e))
+
     def setup_locale(self):
         print(" --> Setting the locale")
         os.system("echo \"%s.UTF-8 UTF-8\" >> /target/etc/locale.gen" % self.setup.language)
@@ -729,6 +742,7 @@ class InstallerEngine:
         self.setup_keyboard()
 
         self.copy_network_config()
+        self.copy_bluetooth_config()
 
         # Perform OS adjustments
         if os.path.exists("/target/usr/lib/linuxmint/mintSystem/mint-adjust.py"):
