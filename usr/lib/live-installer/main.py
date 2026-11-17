@@ -40,6 +40,36 @@ DISTRIBUTION = distro.name()
 VERSION = distro.version()
 IS_MINT = os.path.exists("/usr/share/doc/ubuntu-system-adjustments/copyright") or "ubuntu" in distro.like()
 
+KEYBOARD_OVERRIDES = {
+    "nl_NL": ("us", "intl"),
+    "fy_NL": ("us", "intl"),
+    "li_NL": ("us", "intl"),
+    "nds_NL": ("us", "intl"),
+    "en_CA": ("us", None),
+    "en_IN": ("us", None),
+    "ms_MY": ("us", None),
+    "fr_CH": ("ch", "fr"),
+    "es_AR": ("latam", None),
+    "es_BO": ("latam", None),
+    "es_CL": ("latam", None),
+    "es_CO": ("latam", None),
+    "es_CR": ("latam", None),
+    "es_CU": ("latam", None),
+    "es_DO": ("latam", None),
+    "es_EC": ("latam", None),
+    "es_GT": ("latam", None),
+    "es_HN": ("latam", None),
+    "es_MX": ("latam", None),
+    "es_NI": ("latam", None),
+    "es_PA": ("latam", None),
+    "es_PE": ("latam", None),
+    "es_PR": ("latam", None),
+    "es_PY": ("latam", None),
+    "es_SV": ("latam", None),
+    "es_UY": ("latam", None),
+    "es_VE": ("latam", None),
+}
+
 NON_LATIN_KB_LAYOUTS = ['am', 'af', 'ara', 'ben', 'bd', 'bg', 'bn', 'bt', 'by', 'deva', 'et', 'ge', 'gh', 'gn', 'gr', 'guj', 'guru', 'id', 'il', 'iku', 'in', 'iq', 'ir', 'kan', 'kg', 'kh', 'kz', 'la', 'lao', 'lk', 'ma', 'mk', 'mm', 'mn', 'mv', 'mal', 'my', 'np', 'ori', 'pk', 'ru', 'rs', 'scc', 'sy', 'syr', 'tel', 'th', 'tj', 'tam', 'tz', 'ua', 'uz']
 
 # Used as a decorator to run things in the background
@@ -867,6 +897,16 @@ class InstallerWindow:
             treeview.scroll_to_cell(path)
         except NameError: pass  # set_keyboard_layout not set
 
+    def select_keyboard_row(self, name, value):
+        ''' Select the row of a keyboard list whose code (column 1) is value '''
+        treeview = self.builder.get_object(name)
+        model = treeview.get_model()
+        for row in model:
+            if row[1] is not None and row[1].lower() == value.lower():
+                treeview.set_cursor(row.path)
+                treeview.scroll_to_cell(row.path, column=treeview.get_column(0))
+                break
+
     def center_language(self, treeview):
         # Row heights are only known once the list is shown, so do it when idle
         def scroll():
@@ -1193,22 +1233,13 @@ class InstallerWindow:
                         break
                     self.activate_page(self.PAGE_TIMEZONE)
             elif (sel == self.PAGE_TIMEZONE):
-                if ("_" in self.setup.language):
-                    country_code = self.setup.language.split("_")[1]
-                else:
-                    country_code = self.setup.language
-                treeview = self.builder.get_object("treeview_layouts")
-                model = treeview.get_model()
-                iter = model.get_iter_first()
-                while iter is not None:
-                    iter_country_code = model.get_value(iter, 1)
-                    if iter_country_code.lower() == country_code.lower():
-                        column = treeview.get_column(0)
-                        path = model.get_path(iter)
-                        treeview.set_cursor(path)
-                        treeview.scroll_to_cell(path, column=column)
-                        break
-                    iter = model.iter_next(iter)
+                layout = self.setup.language.split("_")[-1].lower()
+                variant = None
+                if self.setup.language in KEYBOARD_OVERRIDES:
+                    layout, variant = KEYBOARD_OVERRIDES[self.setup.language]
+                self.select_keyboard_row("treeview_layouts", layout)
+                if variant is not None:
+                    self.select_keyboard_row("treeview_variants", variant)
                 self.activate_page(self.PAGE_KEYBOARD)
             elif(sel == self.PAGE_KEYBOARD):
                 self.activate_page(self.PAGE_USER)
