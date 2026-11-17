@@ -19,4 +19,6 @@ optimize='OO'; case "$*" in *--debug*) unset optimize; esac
 # Slideshow is broken in virtualbox without this.
 export WEBKIT_DISABLE_COMPOSITING_MODE=1
 
-python3 -tt${optimize} //usr/lib/live-installer/main.py "$@"
+# Keep a log of the installation, it is copied to the installed system
+# (-u: unbuffered, so the output stays in order with the commands it runs)
+python3 -u -tt${optimize} //usr/lib/live-installer/main.py "$@" 2>&1 | tee -a /var/log/live-installer.log

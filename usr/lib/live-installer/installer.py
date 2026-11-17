@@ -128,6 +128,26 @@ class InstallerEngine:
         except Exception as e:
             print("Failed to copy %s: %s" % (source, e))
 
+    def copy_logs(self):
+        print(" --> Copying the installation logs")
+        target_directory = "/target/var/log/installer"
+        logs = {
+            "/var/log/live-installer.log": "live-installer.log",
+            "/var/log/live-installer-grub-output.log": "grub-output.log",
+            os.path.join(os.path.dirname(self.casper), ".disk/info"): "media-info",
+        }
+        try:
+            os.makedirs(target_directory, exist_ok=True)
+            for source, name in logs.items():
+                if os.path.isfile(source):
+                    target = os.path.join(target_directory, name)
+                    shutil.copyfile(source, target)
+                    # Like other logs: readable by administrators only
+                    os.chmod(target, 0o640)
+                    shutil.chown(target, group="adm")
+        except Exception as e:
+            print("Failed to copy the logs: %s" % e)
+
     def setup_locale(self):
         print(" --> Setting the locale")
         os.system("echo \"%s.UTF-8 UTF-8\" >> /target/etc/locale.gen" % self.setup.language)
@@ -814,6 +834,8 @@ class InstallerEngine:
         self.update_progress(95, True, False, _("Cleaning APT"))
         self.clean_apt()
 
+        self.copy_logs()
+
         # now unmount it
         print(" --> Unmounting partitions")
 
@@ -962,7 +984,7 @@ class Setup(object):
             print("autologin: ", self.autologin)
             print("ecryptfs: ", self.ecryptfs)
             print("hostname: %s " % self.hostname)
-            print("passwords: %s - %s" % (self.password1, self.password2))
+            print("passwords match: %s" % (self.password1 == self.password2))
             print("grub_device: %s " % self.grub_device)
             print("skip_mount: %s" % self.skip_mount)
             print("automated: %s" % self.automated)
@@ -970,7 +992,7 @@ class Setup(object):
                 print("disk: %s (%s)" % (self.disk, self.diskname))
                 print("luks: %s" % self.luks)
                 print("swapfile: %s (%s MB)" % (self.swapfile, self.swapfile_size))
-                print("passphrase: %s - %s" % (self.passphrase1, self.passphrase2))
+                print("passphrases match: %s" % (self.passphrase1 == self.passphrase2))
             if (not self.skip_mount):
                 print("target_disk: %s " % self.target_disk)
                 if self.gptonefi:
