@@ -1,6 +1,7 @@
 from glob import glob
 import os
 import re
+import shutil
 import subprocess
 import time
 import gettext
@@ -95,6 +96,24 @@ class InstallerEngine:
         hostsfh.write("ff02::2 ip6-allrouters\n")
         hostsfh.write("ff02::3 ip6-allhosts\n")
         hostsfh.close()
+
+    def copy_network_config(self):
+        if self.setup.oem_mode:
+            return
+        print(" --> Copying network connections")
+        sources = [("/etc/NetworkManager/system-connections", "*"), ("/etc/netplan", "90-NM-*")]
+        for directory, pattern in sources:
+            target_directory = "/target" + directory
+            if not os.path.isdir(target_directory):
+                continue
+            for source in glob(os.path.join(directory, pattern)):
+                target = os.path.join(target_directory, os.path.basename(source))
+                if os.path.isfile(source) and not os.path.exists(target):
+                    try:
+                        # copy2 keeps the permissions: these files contain passwords
+                        shutil.copy2(source, target)
+                    except Exception as e:
+                        print("Failed to copy %s: %s" % (source, e))
 
     def setup_locale(self):
         print(" --> Setting the locale")
@@ -708,6 +727,8 @@ class InstallerEngine:
         # set the keyboard options..
         self.update_progress(75, False, False, _("Setting keyboard options"))
         self.setup_keyboard()
+
+        self.copy_network_config()
 
         # Perform OS adjustments
         if os.path.exists("/target/usr/lib/linuxmint/mintSystem/mint-adjust.py"):
