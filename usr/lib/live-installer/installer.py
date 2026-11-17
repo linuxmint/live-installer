@@ -559,6 +559,19 @@ class InstallerEngine:
                     os.system("umount --force /target/home")
                     self.do_mount(partition.path, "/target/home", fs, "subvol=@home")
 
+    def get_gpu_modules(self):
+        # Kernel modules of the graphics drivers used by the live session.
+        # NVIDIA drivers are skipped: nouveau's firmware is too big for the
+        # initramfs, and loading it there would block the proprietary driver.
+        modules = set()
+        for card in glob("/sys/class/drm/card*"):
+            module = os.path.join(card, "device", "driver", "module")
+            if os.path.exists(module):
+                name = os.path.basename(os.path.realpath(module))
+                if name != "nouveau" and not name.startswith("nvidia"):
+                    modules.add(name)
+        return sorted(modules)
+
     def add_initramfs_module(self, module, path="/target/etc/initramfs-tools/modules"):
         with open(path, "a+") as f:
             f.seek(0)
@@ -702,6 +715,8 @@ class InstallerEngine:
 
         if self.setup.luks:
             for module in ["aes-i586", "aes_x86_64", "dm-crypt", "dm-mod", "xts"]:
+                self.add_initramfs_module(module)
+            for module in self.get_gpu_modules():
                 self.add_initramfs_module(module)
             with open("/target/etc/default/grub.d/61_live-installer.cfg", "w") as f:
                 f.write("#! /bin/sh\n")
