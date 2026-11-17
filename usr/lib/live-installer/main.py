@@ -209,8 +209,6 @@ class InstallerWindow:
         self.builder.get_object("treeview_disks").get_selection().connect("changed", partitioning.selection_changed)
         self.builder.get_object("treeview_disks").connect("row_activated", partitioning.edit_partition_dialog)
         self.builder.get_object("treeview_disks").connect("button-release-event", partitioning.partitions_popup_menu)
-        text = Gtk.CellRendererText()
-        text.set_property("ypad", 4)
         for i in (partitioning.IDX_PART_PATH,
                   partitioning.IDX_PART_TYPE,
                   partitioning.IDX_PART_MOUNT_AS,
@@ -218,8 +216,24 @@ class InstallerWindow:
                   partitioning.IDX_PART_DESCRIPTION,
                   partitioning.IDX_PART_SIZE,
                   partitioning.IDX_PART_FREE_SPACE):
+            text = Gtk.CellRendererText()
+            text.set_property("ypad", 4)
             col = Gtk.TreeViewColumn("", text, markup=i)  # real title is set in i18n()
+            if i == partitioning.IDX_PART_PATH:
+                # Long disk names are cut to keep the table within the window, the partitions never are
+                col.set_cell_data_func(text, self.set_disk_name_ellipsize)
+                col.set_expand(True)
+            elif i == partitioning.IDX_PART_DESCRIPTION:
+                text.set_property("ellipsize", Pango.EllipsizeMode.END)
+                col.set_min_width(170)
+            else:
+                col.set_min_width({partitioning.IDX_PART_MOUNT_AS: 100, partitioning.IDX_PART_FORMAT_AS: 90,
+                                   partitioning.IDX_PART_SIZE: 70, partitioning.IDX_PART_FREE_SPACE: 80}.get(i, 0))
             self.builder.get_object("treeview_disks").append_column(col)
+        self.builder.get_object("treeview_disks").set_tooltip_column(partitioning.IDX_PART_PATH)
+        # The disks are always expanded, so no expander arrows: the partitions are only slightly indented
+        self.builder.get_object("treeview_disks").set_show_expanders(False)
+        self.builder.get_object("treeview_disks").set_level_indentation(12)
 
         self.builder.get_object("entry_name").connect("notify::text", self.assign_realname)
         self.builder.get_object("entry_username").connect("notify::text", self.assign_username)
@@ -471,6 +485,10 @@ class InstallerWindow:
                                _("Size"),
                                _("Free space"))):
             col.set_title(title)
+            # Long translated titles are cut rather than widening the table
+            label = Gtk.Label(label=title, ellipsize=Pango.EllipsizeMode.END, tooltip_text=title)
+            label.show()
+            col.set_widget(label)
 
         # Advanced page
         self.builder.get_object("label_grub").set_label(_("Install the GRUB boot menu"))
@@ -901,6 +919,10 @@ class InstallerWindow:
             self.i18n()
         except:
             pass # Best effort. Fails the first time as self.language_column doesn't exist yet.
+
+    def set_disk_name_ellipsize(self, column, cell, model, iter, data=None):
+        is_disk = model.iter_parent(iter) is None
+        cell.set_property("ellipsize", Pango.EllipsizeMode.END if is_disk else Pango.EllipsizeMode.NONE)
 
     def get_swapfile_context(self):
         ''' Whether a swapfile can be created in the root filesystem, and the size of that filesystem in MB '''

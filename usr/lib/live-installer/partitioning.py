@@ -122,6 +122,9 @@ def get_live_device():
             return "/dev/%s" % parent if parent else source
     return None
 
+# The name and size of each disk, shown in separate columns of the partition list
+disk_names = {}
+
 def get_disks():
     disks = []
     live_device = get_live_device()
@@ -171,9 +174,12 @@ def get_disks():
             l10n_unit = [_('B'), _('kB'), _('MB'), _('GB'), _('TB'), 'PB', 'EB', 'ZB', 'YB'][unit_index]
             size = ("%d" % value if value >= 100 else ("%.1f" % value).rstrip('0').rstrip('.')) + " " + l10n_unit
             model = model.replace("\\x20", " ")
-            description = '{} ({})'.format(model.strip(), size)
+            name = model.strip()
+            description = '{} ({})'.format(name, size)
             if int(removable):
+                name = _('Removable:') + ' ' + name
                 description = _('Removable:') + ' ' + description
+            disk_names[device] = (name, size)
             disks.append((device, description))
         except Exception as detail:
             print("Could not parse blkid output: %s (%s)" % (line, detail))
@@ -369,7 +375,10 @@ class PartitionSetup(Gtk.TreeStore):
                     print("      - Found another issue while looking for the disk: %s" % detail)
                     continue # Something is wrong with this disk, skip it
 
-            disk_iter = self.append(None, (disk_description, '', '', '', '', '', '', None, disk_path))
+            disk_name, disk_size = disk_names.get(disk_path, (disk_description, ''))
+            disk_markup = '<span size="small" weight="bold">{}</span>'
+            disk_iter = self.append(None, (disk_markup.format(GLib.markup_escape_text(disk_name)), '', '', '', '',
+                                           disk_markup.format(GLib.markup_escape_text(disk_size)), '', None, disk_path))
             print("      - Looking at partitions...")
             free_space_partition = disk.getFreeSpacePartitions()
             print("           -> %d free space partitions" % len(free_space_partition))
