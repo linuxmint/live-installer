@@ -4,6 +4,7 @@
 
 body {
   background-color: transparent;
+  margin: 0;
 }
 
 .partition {
@@ -15,11 +16,15 @@ body {
 }
 .partition-cell {
   position:relative;
+  box-sizing: border-box;
   margin: 2px 5px 2px 0;
   padding: 1px;
   float: left;
   background: #9c9c9c;
   border-radius: 3px;
+}
+.partition-cell:last-child {
+  margin-right: 0;
 }
 .partition-text {
   position:absolute;
@@ -111,7 +116,7 @@ body {
 
 <!-- Expected format for each partition: CUT_HERE
 
-<td class='partition-cell' title='{0.name}{0.os_fs_info}' width='{0.size_percent}%'>
+<td class='partition-cell' title='{0.name}{0.os_fs_info}' style='width: calc({0.size_percent}% - 5px)'>
   <div class='partition {0.style}'> 
     <div class='shine' style='width: {0.used_percent}%; height: 50px'></div> 
     <div class='partition-text'>{0.html_name}</div>
