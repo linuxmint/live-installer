@@ -559,6 +559,17 @@ class InstallerEngine:
                     os.system("umount --force /target/home")
                     self.do_mount(partition.path, "/target/home", fs, "subvol=@home")
 
+    def add_initramfs_module(self, module, path="/target/etc/initramfs-tools/modules"):
+        with open(path, "a+") as f:
+            f.seek(0)
+            content = f.read()
+            lines = [line.split() for line in content.splitlines()]
+            if [module] in [line[:1] for line in lines]:
+                return
+            if content and not content.endswith("\n"):
+                f.write("\n")
+            f.write(f"{module}\n")
+
     def get_blkid(self, path):
         uuid = path # If we can't find the UUID we use the path
         blkid = subprocess.getoutput('blkid').split('\n')
@@ -690,11 +701,8 @@ class InstallerEngine:
             self.do_run_in_chroot("/usr/lib/linuxmint/mintSystem/mint-adjust.py")
 
         if self.setup.luks:
-            self.do_run_in_chroot("echo aes-i586 >> /etc/initramfs-tools/modules")
-            self.do_run_in_chroot("echo aes_x86_64 >> /etc/initramfs-tools/modules")
-            self.do_run_in_chroot("echo dm-crypt >> /etc/initramfs-tools/modules")
-            self.do_run_in_chroot("echo dm-mod >> /etc/initramfs-tools/modules")
-            self.do_run_in_chroot("echo xts >> /etc/initramfs-tools/modules")
+            for module in ["aes-i586", "aes_x86_64", "dm-crypt", "dm-mod", "xts"]:
+                self.add_initramfs_module(module)
             with open("/target/etc/default/grub.d/61_live-installer.cfg", "w") as f:
                 f.write("#! /bin/sh\n")
                 f.write("set -e\n\n")
