@@ -24,6 +24,20 @@ gettext.install("live-installer", "/usr/share/locale")
 USERNAME_REGEX = r"[a-z_]{1}[a-z0-9_-]*[$]?"
 USERNAME_LENGTH = (1, 32)
 
+# The translations of the iso-codes and xkeyboard-config names are in the langpacks of the live system
+TRANSLATION_DIRS = ("/usr/share/locale-langpack", "/usr/share/locale")
+
+def get_translation(domain, locale):
+    for localedir in TRANSLATION_DIRS:
+        try:
+            return gettext.translation(domain, localedir, languages=[locale, locale.split("_")[0]])
+        except OSError:
+            pass
+    return gettext.NullTranslations()
+
+ISO_LANGUAGE_DOMAINS = ("iso_639-2", "iso_639", "iso_639_3")
+ISO_COUNTRY_DOMAINS = ("iso_3166-1", "iso_3166")
+
 # "[[:ascii:]]+" gives nested set warning. https://www.regular-expressions.info/posixbrackets.html
 PASSWORD_REGEX = r"[\x00-\x7F]+"
 PASSWORD_LENGTHS = (1, 2147483647)
@@ -182,6 +196,7 @@ class InstallerWindow:
         combo_location.connect("changed", self.assign_location)
         self.locales = {}
         self.locale_names = {}
+        self.locale_iso_names = {}
         self.preferred_locale = None
 
         self.builder.get_object("treeview_language_list").connect("cursor-changed", self.assign_language)
@@ -299,21 +314,21 @@ class InstallerWindow:
         cell = Gtk.CellRendererText()
         cell.set_property("ellipsize", Pango.EllipsizeMode.MIDDLE)
         self.builder.get_object("combobox_kb_model").pack_start(cell, True)
-        self.builder.get_object("combobox_kb_model").add_attribute(cell, 'text', 0)
+        self.builder.get_object("combobox_kb_model").set_cell_data_func(cell, self.translate_keyboard_cell)
         self.builder.get_object("combobox_kb_model").connect("changed", self.assign_keyboard_model)
 
         # kb layouts
         ren = Gtk.CellRendererText()
         ren.set_property("ypad", 6)
         self.column10 = Gtk.TreeViewColumn(_("Layout"), ren)
-        self.column10.add_attribute(ren, "text", 0)
+        self.column10.set_cell_data_func(ren, self.translate_keyboard_cell)
         self.builder.get_object("treeview_layouts").append_column(self.column10)
         self.builder.get_object("treeview_layouts").connect("cursor-changed", self.assign_keyboard_layout)
 
         ren = Gtk.CellRendererText()
         ren.set_property("ypad", 6)
         self.column11 = Gtk.TreeViewColumn(_("Variant"), ren)
-        self.column11.add_attribute(ren, "text", 0)
+        self.column11.set_cell_data_func(ren, self.translate_keyboard_cell)
         self.builder.get_object("treeview_variants").append_column(self.column11)
         self.builder.get_object("treeview_variants").connect("cursor-changed", self.assign_keyboard_variant)
 
@@ -773,6 +788,39 @@ class InstallerWindow:
         except:
             self.cur_country_code, self.cur_timezone = "US", "America/New_York"  # no internet connection
 
+    def translate_iso_name(self, domains, name, locale):
+        for domain in domains:
+            translated = get_translation(domain, locale).gettext(name)
+            if translated != name:
+                name = translated
+                break
+        return name.split(",")[0].split("(")[0]
+
+    def translate_keyboard_name(self, name):
+        translation = get_translation("xkeyboard-config", self.setup.language or "en_US").gettext
+        suffix = ""
+        if name.endswith(" *"):
+            name, suffix = name[:-2], " *"
+        prefix = ""
+        if name.startswith("English (US) + "):
+            name = name[len("English (US) + "):]
+            prefix = translation("English (US)") + " + "
+        translated = translation(name)
+        if translated == name and " - " in name:
+            translated = " - ".join(translation(part) for part in name.split(" - "))
+        return prefix + translated + suffix
+
+    def translate_keyboard_cell(self, column, cell, model, iter_, data=None):
+        cell.set_property("text", self.translate_keyboard_name(model.get_value(iter_, 0) or ""))
+
+    def get_localized_locale_name(self, locale):
+        ''' "French (France)" in the language of the locale '''
+        if locale not in self.locale_iso_names:
+            return self.locale_names.get(locale, locale)
+        language, country = self.locale_iso_names[locale]
+        return "%s (%s)" % (self.translate_iso_name(ISO_LANGUAGE_DOMAINS, language, locale),
+                            self.translate_iso_name(ISO_COUNTRY_DOMAINS, country, locale))
+
     def build_lang_list(self):
         #Load countries into memory
         countries = {}
@@ -827,13 +875,16 @@ class InstallerWindow:
                     print(f"Skipping unknown language code '{lang}'")
                     continue
                 country = ''
+            self.locale_iso_names[locale] = (language, country)
             language = language.split(",")[0].split("(")[0]
             country = country.split(",")[0].split("(")[0]
             if country == '':
                 continue
             pixbuf = self.flag(lang, language, ccode)
-            language_names[lang] = language
-            self.locales.setdefault(lang, []).append((language, country, pixbuf, locale))
+            native_language = self.translate_iso_name(ISO_LANGUAGE_DOMAINS, self.locale_iso_names[locale][0], locale)
+            native_country = self.translate_iso_name(ISO_COUNTRY_DOMAINS, self.locale_iso_names[locale][1], locale)
+            language_names[lang] = (language, native_language)
+            self.locales.setdefault(lang, []).append((language, native_country, pixbuf, locale))
             self.locale_names[locale] = "%s (%s)" % (language, country)
             if (ccode == self.cur_country_code and
                 (best is None or
@@ -842,11 +893,11 @@ class InstallerWindow:
                 best = (lang, locale)
 
         # Sort by language
-        model = Gtk.ListStore(str, str)
-        model.set_sort_column_id(0, Gtk.SortType.ASCENDING)
+        model = Gtk.ListStore(str, str, str)  # name, language code, English name to sort by
+        model.set_sort_column_id(2, Gtk.SortType.ASCENDING)
         selected = None
-        for lang, name in language_names.items():
-            iterator = model.append((name, lang))
+        for lang, (name, native_name) in language_names.items():
+            iterator = model.append((native_name, lang, name))
             if best and lang == best[0]:
                 selected = iterator
         # Set the model and pre-select the language (and, through it, the location) from the IP
@@ -940,7 +991,7 @@ class InstallerWindow:
         model, iterator = selection.get_selected()
         if iterator is None:
             return
-        entries = sorted(self.locales.get(model.get_value(iterator, 1), []), key=lambda entry: entry[1])
+        entries = sorted(self.locales.get(model.get_value(iterator, 1), []), key=lambda entry: self.locale_iso_names[entry[3]][1])
         if not entries:
             return
         locations = Gtk.ListStore(str, str, GdkPixbuf.Pixbuf, str)
@@ -1451,16 +1502,16 @@ class InstallerWindow:
             notice.pack_start(text, True, True, 0)
             box.pack_start(notice, False, False, 0)
 
-        language = self.locale_names.get(self.setup.language, self.setup.language)
+        language = self.get_localized_locale_name(self.setup.language)
         timezone = self.setup.timezone or ""
         if "/" in timezone:
             timezone = "%s, %s" % (timezone.rpartition("/")[2].replace("_", " "), timezone.partition("/")[0].replace("_", " "))
-        keyboard = escape(self.setup.keyboard_layout_description or "")
+        keyboard = escape(self.translate_keyboard_name(self.setup.keyboard_layout_description or ""))
         variant = self.setup.keyboard_variant_description
         if variant and variant != self.setup.keyboard_layout_description:
-            keyboard += " (%s)" % escape(variant)
+            keyboard += " (%s)" % escape(self.translate_keyboard_name(variant))
         if self.setup.keyboard_model_description:
-            keyboard += "  " + dim(self.setup.keyboard_model_description)
+            keyboard += "  " + dim(self.translate_keyboard_name(self.setup.keyboard_model_description))
 
         add = section(_("Localization"))
         add(_("Language: "), escape(language or ""))
