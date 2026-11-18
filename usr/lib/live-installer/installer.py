@@ -162,12 +162,43 @@ class InstallerEngine:
         os.system("rm -f /target/etc/localtime")
         os.system("ln -s /usr/share/zoneinfo/%s /target/etc/localtime" % self.setup.timezone)
 
+    def keep_language_packages(self, packages):
+        language, _separator, country = self.setup.language.partition("_")
+        country = country.split("@")[0].lower()
+        removable = set(packages)
+        keep = set()
+        try:
+            with open("/usr/share/linuxmint/mintlocale/language_packs", "r", encoding="utf-8") as fd:
+                for line in fd:
+                    columns = line.strip().split(":")
+                    if len(columns) != 4 or columns[1] not in ("", language):
+                        continue
+                    package = columns[3]
+                    names = [package + "LANG", package + "LANG-COUNTRY"] if package.endswith("-") else [package]
+                    for name in names:
+                        name = name.replace("LANG", language).replace("COUNTRY", country)
+                        if name in removable:
+                            keep.add(name)
+        except OSError as e:
+            print("Could not read the mintlocale language packs: %s" % e)
+        to_scan = set(keep)
+        while to_scan:
+            output = subprocess.getoutput("dpkg-query -W -f='${Pre-Depends},${Depends},${Recommends}\\n' %s 2>/dev/null" % " ".join(to_scan))
+            to_scan = set()
+            for alternatives in output.replace("\n", ",").split(","):
+                for alternative in alternatives.split("|"):
+                    name = re.split(r"[ (:]", alternative.strip())[0]
+                    if name in removable and name not in keep:
+                        keep.add(name)
+                        to_scan.add(name)
+        return [pkg for pkg in packages if pkg not in keep]
+
     def setup_localization(self):
         print(" --> Localizing packages")
         if self.setup.oem_mode:
             # Copy the l10n pkgs from the ISO to the target so oem-config can install from it later on.
             os.system("mkdir -p /target/oem/l10n_pkgs")
-            l10ns = subprocess.getoutput(f"find {self.pool} | grep 'l10n-\\|hunspell-'")
+            l10ns = subprocess.getoutput(f"find {self.pool} | grep 'l10n-\\|hunspell-\\|firefox-locale-\\|thunderbird-locale-'")
             for l10n in l10ns.split("\n"):
                 os.system(f"cp {l10n} /target/oem/l10n_pkgs/")
         elif self.setup.language != "en_US":
@@ -176,9 +207,9 @@ class InstallerEngine:
             if "_" in self.setup.language:
                 language_code = self.setup.language.split("_")[0]
             if self.setup.oem_config:
-                l10ns = subprocess.getoutput("find /oem/l10n_pkgs | grep 'l10n-%s\\|hunspell-%s'" % (language_code, language_code))
+                l10ns = subprocess.getoutput("find /oem/l10n_pkgs | grep 'l10n-%s\\|hunspell-%s\\|firefox-locale-%s\\|thunderbird-locale-%s'" % ((language_code,) * 4))
             else:
-                l10ns = subprocess.getoutput(f"find {self.pool} | grep 'l10n-%s\\|hunspell-%s'" % (language_code, language_code))
+                l10ns = subprocess.getoutput(f"find {self.pool} | grep 'l10n-%s\\|hunspell-%s\\|firefox-locale-%s\\|thunderbird-locale-%s'" % ((language_code,) * 4))
             for l10n in l10ns.split("\n"):
                 os.system("cp %s /target/debs/" % l10n)
             self.do_run_in_chroot("dpkg -i /debs/*")
@@ -260,7 +291,9 @@ class InstallerEngine:
         self.update_progress(80, True, False, _("Cleaning OEM configuration"))
         os.system("rm -f /etc/lightdm/lightdm.conf.d/90-oem-config.conf")
         os.system("rm -rf /root/.config/gtk-3.0")
-        os.system("apt-get remove --purge --yes --force-yes `cat /oem/live-packages.list`")
+        with open("/oem/live-packages.list", "r") as fd:
+            live_packages = self.keep_language_packages(fd.read().split())
+        os.system("apt-get remove --purge --yes --force-yes %s" % " ".join(live_packages))
         os.system("rm -f /oem/live-packages.list")
         os.system("rm -f /target")
         os.system("touch /oem/done.flag") # Leave a flag for mintsystem to clean up the OEM user account
@@ -409,7 +442,7 @@ class InstallerEngine:
         print(" --> Removing live packages")
         self.update_progress(20, False, False, _("Removing live configuration (packages)"))
         with open(f"{self.manifest}-remove", "r") as fd:
-            line = fd.read().replace('\n', ' ')
+            line = " ".join(self.keep_language_packages(fd.read().split()))
         if self.setup.oem_mode:
             # in OEM mode don't remove pkgs just yet
             self.do_run_in_chroot(f'echo "{line}" > /oem/live-packages.list')
