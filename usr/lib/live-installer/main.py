@@ -430,7 +430,7 @@ class InstallerWindow:
         self.wizard_pages[self.PAGE_USER] = WizardPage(_("User account"), "avatar-default-symbolic", _("Who are you?"))
         self.wizard_pages[self.PAGE_TYPE] = WizardPage(_("Installation Type"), "drive-harddisk-system-symbolic", _("Where do you want to install %s?") % DISTRIBUTION)
         self.wizard_pages[self.PAGE_PARTITIONS] = WizardPage(_("Partitioning"), "drive-harddisk-system-symbolic", _("Where do you want to install %s?") % DISTRIBUTION)
-        self.wizard_pages[self.PAGE_ADVANCED] = WizardPage(_("Advanced options"), "preferences-system-symbolic", _("Configure the boot menu"))
+        self.wizard_pages[self.PAGE_ADVANCED] = WizardPage(_("Advanced options"), "preferences-system-symbolic", _("Anything else to set up?"))
         self.wizard_pages[self.PAGE_OVERVIEW] = WizardPage(_("Summary"), "object-select-symbolic", _("Check that everything is correct"))
         self.wizard_pages[self.PAGE_INSTALL] = WizardPage(_("Installing"), "system-run-symbolic", "Please wait...")
         self.wizard_pages[self.PAGE_CUSTOMWARNING] = WizardPage(_("Expert mode"), "drive-harddisk-system-symbolic", "")

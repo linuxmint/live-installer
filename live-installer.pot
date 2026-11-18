@@ -220,7 +220,7 @@ msgid "Advanced options"
 msgstr ""
 
 #: usr/lib/live-installer/main.py:383
-msgid "Configure the boot menu"
+msgid "Anything else to set up?"
 msgstr ""
 
 #: usr/lib/live-installer/main.py:384
