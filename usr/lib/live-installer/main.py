@@ -1034,7 +1034,7 @@ class InstallerWindow:
     def update_swapfile_hint(self):
         if self.swapfile_recommended_mb is None:
             return
-        gb = lambda mb: "%.1f GB" % (mb / 1024)
+        gb = lambda mb: "%.1f %s" % (mb / 1024, _("GB"))
         ram_mb = partitioning.get_ram_mb()
         if self.swapfile_laptop and self.swapfile_recommended_mb >= ram_mb:
             hint = _("This computer seems to be a laptop. A large swapfile of %(size)s is recommended for hibernation.")
@@ -1492,7 +1492,7 @@ class InstallerWindow:
                     if p.mount_as:
                         add(None, escape(_("Mount %(path)s as %(mount)s") % {'path': p.path, 'mount': p.mount_as}))
             if self.swapfile_supported:
-                add(_("Swapfile: "), "%.1f GB" % (self.setup.swapfile_size / 1024) if self.setup.swapfile else on_off(False))
+                add(_("Swapfile: "), "%.1f %s" % (self.setup.swapfile_size / 1024, _("GB")) if self.setup.swapfile else on_off(False))
         box.show_all()
 
     @idle
