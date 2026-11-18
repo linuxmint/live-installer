@@ -466,6 +466,8 @@ class InstallerWindow:
         # Language page
         self.language_column.set_title(_("Language"))
         self.builder.get_object("label_location").set_label(_("Location"))
+        self.builder.get_object("label_region").set_label(_("Region"))
+        self.builder.get_object("label_city").set_label(_("City"))
 
         # Keyboard page
         self.builder.get_object("label_kb_model").set_label(_("Keyboard Model:"))

@@ -135,10 +135,9 @@ def update_local_time_label():
     except ZoneInfoNotFoundError as e:
         print("Could not load timezone %s: %s" % (current_zone, e))
         return True
-    time_label.set_markup(now.strftime('<span size="xx-large" weight="bold">%H:%M</span> (%-I:%M %p)'))
-    info_label.set_label("%s, %s" % (current_zone.rpartition("/")[2].replace("_", " "), utc_offset_label(now)))
-    date_format = '%A, %B %-d, %Y' if current_country == 'US' else '%A, %-d %B %Y'
-    date_label.set_label(now.strftime(date_format))
+    info_label.set_markup("<b>%s</b>, %s" % (GLib.markup_escape_text(current_zone.rpartition("/")[2].replace("_", " ")), utc_offset_label(now)))
+    date_label.set_label(now.strftime("%Y-%m-%d"))
+    time_label.set_label(now.strftime("%H:%M"))
     return True
 
 def cont_menu_selected(widget, cont):
