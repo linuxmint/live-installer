@@ -353,7 +353,7 @@ class PartitionSetup(Gtk.TreeStore):
                 print("      - Found an issue while looking for the disk: %s" % detail)
                 if installer.setup.automated:
                     continue  # Automated installs already warn about all the data being deleted
-                dialog = QuestionDialog(_("Installation Tool"),
+                dialog = QuestionDialog(_("Installer"),
                                         _("No partition table was found on the hard drive: %s. Do you want the installer to create a set of partitions for you? Note: This will ERASE ALL DATA present on this disk.") % disk_description,
                                         None, installer.window)
                 if not dialog: continue  # the user said No, skip this disk
