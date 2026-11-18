@@ -273,6 +273,12 @@ class InstallerWindow:
         self.builder.get_object("entry_password").connect("changed", self.assign_password)
         self.builder.get_object("entry_confirm").connect("changed", self.assign_password)
 
+        entry = self.builder.get_object("entry_password")
+        entry.set_icon_from_icon_name(Gtk.EntryIconPosition.SECONDARY, "view-reveal-symbolic")
+        entry.set_icon_activatable(Gtk.EntryIconPosition.SECONDARY, True)
+        entry.set_icon_tooltip_text(Gtk.EntryIconPosition.SECONDARY, _("Show the password"))
+        entry.connect("icon-press", self.toggle_password_visibility)
+
         for name in ("switch_password_login", "switch_encrypt_home"):
             self.builder.get_object(name).connect("notify::active", self.assign_login_options)
         for name, switch in (("event_password_login", "switch_password_login"), ("event_encrypt_home", "switch_encrypt_home")):
@@ -586,6 +592,15 @@ class InstallerWindow:
 
         return error
 
+    def toggle_password_visibility(self, entry, icon_pos, event):
+        if icon_pos != Gtk.EntryIconPosition.SECONDARY:
+            return
+        visible = not entry.get_visibility()
+        for name in ("entry_password", "entry_confirm"):
+            self.builder.get_object(name).set_visibility(visible)
+        entry.set_icon_from_icon_name(Gtk.EntryIconPosition.SECONDARY, "view-conceal-symbolic" if visible else "view-reveal-symbolic")
+        entry.set_icon_tooltip_text(Gtk.EntryIconPosition.SECONDARY, _("Hide the password") if visible else _("Show the password"))
+
     def validate_user_page(self, focus_widget=False):
         for name in ["entry_name", "entry_hostname", "entry_username", "entry_password", "entry_confirm"]:
             entry = self.builder.get_object(name)
@@ -651,7 +666,6 @@ class InstallerWindow:
         self.setup.password1 = self.builder.get_object("entry_password").get_text()
         self.setup.password2 = self.builder.get_object("entry_confirm").get_text()
 
-        self.validate_entry(self.builder.get_object("entry_password"), PASSWORD_REGEX, PASSWORD_LENGTHS)
         self.validate_entry(self.builder.get_object("entry_confirm"), PASSWORD_REGEX, PASSWORD_LENGTHS, check_match=self.setup.password1)
         self.validate_user_page()
         self.setup.print_setup()
