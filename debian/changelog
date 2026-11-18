@@ -1,3 +1,16 @@
+live-installer (2026.11.18) adrien; urgency=medium
+
+  * user page: Add a password visibility toggle
+  * automated install: Don't warn about deleting the disk twice
+  * advanced page: Fix subtitle
+  * l10n: Fix issues in timezone page
+  * l10n: Translate swap file size in summary page
+  * l10n: Translate language, locale and keyboard names
+  * l10n: Fix language packages
+  * l10n: Update POT
+
+ -- Clement Lefebvre <root@linuxmint.com>  Wed, 18 Nov 2026 15:44:11 +0000
+
 live-installer (2026.11.17.1) adrien; urgency=medium
 
   * LUKS: Increase the /boot partition to 2 GB
